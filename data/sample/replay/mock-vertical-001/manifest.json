@@ -1,0 +1,56 @@
+{
+ "schema_version": "1.0",
+ "run_id": "mock-vertical-001",
+ "mode": "REPLAY",
+ "map_version": 2,
+ "timestamp_sim_s": 1794669333.4824839,
+ "recorded_from": "LIVE",
+ "clock_source": "system",
+ "time_start_sim_s": 1794669329.4498756,
+ "record_count": 16,
+ "event_count": 9,
+ "terrain_meta": {
+  "header": {
+   "stamp": {
+    "sec": 1794669333,
+    "nanosec": 478353278
+   },
+   "frame_id": "map"
+  },
+  "run_id": "mock-vertical-001",
+  "dataset_id": "MOCK-flat-grid",
+  "map_version": 2,
+  "origin_x_m": -500.0,
+  "origin_y_m": -500.0,
+  "resolution_m": 5.0,
+  "rows": 200,
+  "cols": 200,
+  "crs": "MOCK",
+  "origin_lat_deg": 0.0,
+  "origin_lon_deg": 0.0,
+  "vertical_datum": "MOCK",
+  "nodata_value": null,
+  "sources": [
+   "MOCK synthetic flat grid, not derived from any mission data"
+  ],
+  "checksum_sha256": ""
+ },
+ "agents": [
+  {
+   "agent_id": "drone_1",
+   "agent_kind": "DRONE"
+  },
+  {
+   "agent_id": "human_1",
+   "agent_kind": "HUMAN"
+  },
+  {
+   "agent_id": "rover_1",
+   "agent_kind": "ROVER"
+  }
+ ],
+ "files": {
+  "timeline": "timeline.jsonl",
+  "snapshot": "snapshot.json"
+ }
+}
