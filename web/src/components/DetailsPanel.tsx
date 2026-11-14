@@ -1,15 +1,24 @@
 import type { DetailData, Stat } from '../lib/management';
+import type { Portrait } from '../lib/portraits';
 
 /** Contextual details of the selected agent, task or route. */
-export function DetailsPanel({ data }: { data: DetailData }) {
+export function DetailsPanel({ data, portrait }: { data: DetailData; portrait?: Portrait | null }) {
   return (
     <section className="panel details" aria-label={`Details of ${data.title}`}>
       <div className="tab">
         <span>Details</span>
       </div>
 
-      <h2 className="details__title">{data.title}</h2>
-      <p className="details__sub mono">{data.subtitle}</p>
+      <div className="details__head">
+        {portrait && (
+          // The image carries its own burned-in "AI-generated" watermark (AGENTS.md section 11).
+          <img className="details__portrait" src={portrait.url} alt={portrait.alt} title="AI-generated illustration" width={80} height={80} />
+        )}
+        <div>
+          <h2 className="details__title">{data.title}</h2>
+          <p className="details__sub mono">{data.subtitle}</p>
+        </div>
+      </div>
 
       {data.stats.length > 0 && (
         <div className="stats" title="Percentages are relative to the first received sample, not to a certified budget.">

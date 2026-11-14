@@ -701,6 +701,23 @@ input[type='checkbox'] {
     linear-gradient(90deg, var(--line-soft) 1px, transparent 1px) 0 0 / 24px 100%;
 }
 
+.details__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Rounded square, not a circle: a circle would clip the burned-in "AI-generated" band. */
+.details__portrait {
+  flex: none;
+  width: 80px;
+  height: 80px;
+  margin-top: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  object-fit: cover;
+}
+
 .details__title {
   font-family: var(--f-title);
   font-weight: 500;

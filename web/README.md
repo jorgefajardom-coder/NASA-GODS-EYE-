@@ -23,6 +23,7 @@ on `feat/integration` is not connected to the viewer yet. Two saved runs can be 
 | Earth and Mars clocks | Your device clock; Mars time from the NASA GISS Mars24 algorithm (real present time, not the replay's) |
 | Shadows, footprints, dust, rotor blur, wheel and joint motion | **Cosmetic display** derived from the drawn poses; they never change a position in the data |
 | Rover, drone, base models | NASA/JPL models with branding removed; the base is the team's own Blender model |
+| Astronaut portrait | **AI-generated** (ChatGPT), shown beside human_1 in the details panel with a burned-in `AI-generated` watermark |
 | Slope layer | Derived from the orbital CTX DTM (Horn 3x3, about 60 m window); a lower bound for local slope, not a hazard map |
 | Surroundings (option, off by default) | Same CTX DTM over 20 km (100 m box average, `scripts/extract-ctx-context.mjs`) and CTX orthomosaic at 40 m; context only |
 

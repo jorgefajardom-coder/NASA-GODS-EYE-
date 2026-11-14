@@ -29,6 +29,7 @@ import { AtmosDetails, AtmosList } from './components/AtmosPanel';
 import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
 import { CameraBar } from './components/CameraBar';
+import { PORTRAITS } from './lib/portraits';
 import { rotateView, ROTATE_STEP_RAD } from './components/ViewRotator';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
 import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './components/Frame';
@@ -340,7 +341,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           ) : mode === 'atmos' ? (
             <AtmosDetails data={bundle.atmosphere} />
           ) : (
-            details && <DetailsPanel data={details} />
+            details && <DetailsPanel data={details} portrait={sel.kind === 'agent' ? PORTRAITS[sel.id] ?? null : null} />
           )}
           {/* One stacked column: the details scroll, the dial keeps its height below them. */}
           <RadialHud

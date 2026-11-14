@@ -623,13 +623,23 @@
       "use": "Viewer display only: walk cycle re-timed and pelvis motion kept for the legs so the planted foot does not slide; distance pins shown only when a model is a few pixels tall; grab-to-drag map camera; cameras for each agent and the base; camera kept above the drawn terrain; replay restart skips the idle lead-in; running crew dose estimate from the published RAD surface rate (not a dosimeter reading); monotone cubic interpolation between received samples; drone drawn with gentle take-off and landing; rover tilted to the terrain with spinning wheels; boot-shaped footprints; radial agent HUD with per-element gauges (use rates derived from the received samples, route figures as published, latest MEDA summary, pressure map estimated barometrically from it); astronaut projected shadow; files.public_rasters attachment read and validated; live Earth and Mars clocks (Mars24 algorithm, NASA GISS); drone rotor spin-up, blur and downwash dust; demo regenerated with rover turns in place and a drone spin-up/climb/descent profile (simulated values). No data or values generated."
     }
   ],
-  "generated_media": [],
+  "generated_media": [
+    {
+      "path": "web/public/assets/portraits/human_1.webp",
+      "kind": "ai_generated_image",
+      "tool": "ChatGPT (OpenAI) image generation, supplied by the owner (the source carries a 'Created with ChatGPT' mark)",
+      "editing": "Cropped to the face and resized to 256 x 256 with Pillow; a visible 'AI-generated' band burned into the bottom of the image",
+      "watermark": "AI-generated (burned into the pixels; legible at the 80 px display size)",
+      "use": "Illustrative portrait beside astronaut human_1 in the viewer's details panel. Not a photograph of a crew member and not NASA data; no NASA logos, flags or mission marks.",
+      "sha256": "7d0b020623f6c864c1486a7320961ad62e5361e8d7bfc11d63db85cfcbf24e3e"
+    }
+  ],
   "scientific_datasets_generated": false,
   "measured_results_generated": true,
   "notes": [
     "Project idea and science specifications supplied by the human team.",
     "Update this register and descriptive disclosure when generated artifacts change.",
-    "No generated bitmap, video or audio asset is included at scaffold time.",
+    "No generated bitmap, video or audio asset was included at scaffold time; the only generated image since is listed in generated_media.",
     "Fresh CTX/HiRISE processing occurs during competition; source observations pre-exist and are cited.",
     "Contract reconciliation synthetic raster attachments and metadata exist only in explicitly labelled tests; no NASA dataset, measured outcome, image, video or audio is generated.",
     "Terrain arrays in data/sample/ and data/reference/ are derived via GDAL/rasterio from observational NASA PDS / USGS Astrogeology products, not AI-generated.",
