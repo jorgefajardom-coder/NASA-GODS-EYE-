@@ -1,3 +1,4 @@
+import { LiveClocks } from './LiveClocks';
 import type { ReplayManifest } from '../types/replay';
 import type { AgentState } from '../types/icd';
 import type { MissionAlert } from '../lib/management';
@@ -74,8 +75,8 @@ export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, 
         <dd>v{mapVersion}</dd>
         <dt>Sim time</dt>
         <dd>{fmtSimTime(t)}</dd>
-        <dt>Mars time</dt>
-        <dd>Not available</dd>
+        {/* Real present time on Earth (the viewer's) and on Mars; the sim time above is the replay's. */}
+        <LiveClocks lonEastDeg={manifest.terrain_meta.origin_lon_deg ?? undefined} />
         <dt>Relief</dt>
         <dd>{exaggeration === 1 ? 'true scale' : `${exaggeration}× (visual only)`}</dd>
       </dl>
