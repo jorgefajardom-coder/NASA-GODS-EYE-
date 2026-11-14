@@ -45,7 +45,7 @@ jobs:
         shell: bash
         run: |
           apt-get update
-          apt-get install -y python3-colcon-common-extensions python3-rosdep python3-pytest
+          apt-get install -y python3-colcon-common-extensions python3-rosdep python3-pytest python3-jsonschema
           rosdep update --rosdistro jazzy
           rosdep install --from-paths src --ignore-src --rosdistro jazzy -r -y
       - name: Build and inspect all custom interfaces
