@@ -95,6 +95,15 @@ ul {
   inset: 0;
 }
 
+/* Free pan: hand cursor, closed while dragging the map. */
+.scene--grab canvas {
+  cursor: grab;
+}
+
+.scene--grab canvas:active {
+  cursor: grabbing;
+}
+
 .vignette {
   position: absolute;
   inset: 0;
@@ -119,7 +128,7 @@ ul {
   position: absolute;
   left: var(--gutter);
   top: var(--gutter);
-  bottom: 214px;
+  bottom: calc(var(--bottom) + 178px); /* above the timeline, which sits on the footer */
   width: var(--col-left);
   display: flex;
   flex-direction: column;
@@ -131,7 +140,7 @@ ul {
   position: absolute;
   right: var(--gutter);
   top: var(--gutter);
-  bottom: 262px; /* room for the circular agent HUD below */
+  bottom: var(--bottom); /* status, details, resources and the agent HUD stacked in one column */
   width: var(--col-right);
   display: flex;
   flex-direction: column;
@@ -418,6 +427,28 @@ ul {
 }
 
 /* ---------------------------------------------------------------- prompts and options */
+.camera-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.camera-bar__rotate {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 4px;
+}
+
+.camera-bar__label {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-right: 2px;
+}
+
 .prompts {
   display: flex;
   flex-wrap: wrap;
@@ -907,90 +938,12 @@ input[type='checkbox'] {
   font-size: 15px;
 }
 
-/* ---------------------------------------------------------------- vitals */
-.vitals {
-  position: absolute;
-  right: var(--gutter); /* circular HUD on the right, under the details panel */
-  bottom: var(--bottom);
-  width: var(--col-right);
-  display: grid;
-  gap: 4px;
-}
-
-.vitals__who {
-  font-family: var(--f-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--gray);
-}
-
-.vital {
-  display: grid;
-  grid-template-columns: 56px 1fr 132px;
-  align-items: center;
-  column-gap: 10px;
-}
-
-.vital__label {
-  font-size: 15px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.vital--na {
-  color: var(--gray);
-}
-
-.vital__bar {
-  height: 14px;
-  background: rgba(201, 215, 221, 0.14);
-  position: relative;
-}
-
-.vital__bar::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(90deg, transparent 0 22px, var(--carbon) 22px 24px);
-  pointer-events: none;
-}
-
-.vital__fill {
-  height: 100%;
-  background: var(--blue);
-}
-
-.vital__bar--unknown {
-  background: repeating-linear-gradient(135deg, rgba(120, 130, 141, 0.5) 0 4px, transparent 4px 8px);
-}
-
-.vital__value {
-  font-size: 14px;
-  text-align: right;
-  white-space: nowrap;
-}
-
-.vitals__route {
-  margin-top: 4px;
-  border-top: 1px solid var(--line);
-  padding-top: 4px;
-  display: grid;
-  gap: 1px;
-}
-
-.vitals__routehead {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 15px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.vitals__routehead .mono {
-  font-size: 12px;
-  text-transform: none;
+/* The details panel gives up height first; below a useful minimum it scrolls. */
+.right > .details,
+.right > .inspector,
+.right > .atmos-details {
+  flex: 1 1 auto;
+  min-height: 90px;
 }
 
 .tone-ok {
@@ -1261,7 +1214,6 @@ input[type='checkbox'] {
 
   .left,
   .right,
-  .vitals,
   .timeline,
   .alert {
     position: static;
@@ -1364,70 +1316,18 @@ input[type='checkbox'] {
   margin: 0;
 }
 
-
 .strata { margin-top: 8px; }
 .strata__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13px; }
 .strata__list li { display: grid; grid-template-columns: 14px 1fr; gap: 8px; align-items: start; }
 .strata__list .geo__swatch { margin-top: 3px; }
 
-/* ---------------------------------------------------------------- circular agent HUD */
-.hud {
-  position: relative;
-  display: grid;
-  grid-template-columns: 160px 1fr;
-  align-items: center;
-  gap: 10px;
-}
-
-.hud__dial { grid-row: 1; grid-column: 1; }
-
-.hud__map {
-  grid-row: 1;
-  grid-column: 1;
-  justify-self: center;
-  align-self: center;
-  display: grid;
-  place-items: center;
-}
-
-.hud__map .minimap {
-  position: static;
-  width: auto;
-  height: auto;
-  filter: none;
-}
-
-.hud__readout { display: grid; gap: 3px; min-width: 0; }
-
-.hud__who {
-  font-family: var(--f-mono);
-  font-size: 12px;
-  text-transform: uppercase;
-  color: var(--gray);
-  margin-bottom: 2px;
-}
-
-.hud__row {
-  display: grid;
-  grid-template-columns: 8px 1fr auto;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  white-space: nowrap;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.hud__row--na { opacity: 0.45; }
-.hud__dot { width: 8px; height: 8px; border-radius: 50%; }
-.hud__pct { display: none; }
-.hud__value { font-size: 12px; justify-self: end; }
+ /* units keep their case: µSv, Wh */
 
 /* ---------------------------------------------------------------- minimap */
 .minimap {
   position: absolute;
   left: calc(var(--col-left) + 2 * var(--gutter));
-  bottom: 214px;
+  bottom: calc(var(--bottom) + 178px);
   width: 168px;
   height: 168px;
   padding: 0;
@@ -1622,4 +1522,216 @@ input[type='checkbox'] {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- radial agent HUD */
+.rhud {
+  flex: none; /* bottom of the right column */
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+
+
+.rhud__dial {
+  position: relative;
+  max-width: 100%;
+}
+
+.rhud__frame {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.rhud__halo {
+  fill: rgba(9, 13, 17, 0.72);
+  stroke: rgba(101, 203, 232, 0.18);
+  stroke-width: 1;
+}
+
+.rhud__orbit {
+  fill: none;
+  stroke: rgba(101, 203, 232, 0.45);
+  stroke-width: 1;
+}
+
+.rhud__tick {
+  stroke: rgba(101, 203, 232, 0.8);
+  stroke-width: 2;
+}
+
+.rhud__spoke {
+  stroke: rgba(101, 203, 232, 0.35);
+  stroke-width: 1;
+}
+
+.rhud__map {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 0 2px rgba(101, 203, 232, 0.75), 0 0 14px rgba(101, 203, 232, 0.35);
+  display: grid;
+  place-items: center;
+}
+
+.rhud__map .minimap {
+  position: static;
+  width: auto;
+  height: auto;
+  filter: none;
+}
+
+.rhud__btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  color: #e8f4ff;
+  background: radial-gradient(circle at 50% 40%, #13202b, #070b0f 75%);
+  border: 2px solid rgba(101, 203, 232, 0.8);
+  box-shadow: 0 0 10px rgba(101, 203, 232, 0.35), inset 0 0 8px rgba(101, 203, 232, 0.15);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.rhud__btn:hover,
+.rhud__btn:focus-visible {
+  transform: scale(1.08);
+  box-shadow: 0 0 16px rgba(101, 203, 232, 0.6), inset 0 0 8px rgba(101, 203, 232, 0.25);
+  outline: none;
+}
+
+/* Active option: the button and its icon glow, with a slow pulse. */
+.rhud__btn--on {
+  color: #ffffff;
+  background: radial-gradient(circle at 50% 45%, #1f4a5e, #0a1820 75%);
+  border-color: #9fe6ff;
+  animation: rhud-glow 1.8s ease-in-out infinite;
+}
+
+.rhud__btn--on svg {
+  filter: drop-shadow(0 0 3px #9fe6ff) drop-shadow(0 0 7px #65cbe8);
+}
+
+@keyframes rhud-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(101, 203, 232, 0.7), 0 0 26px rgba(101, 203, 232, 0.35), inset 0 0 10px rgba(101, 203, 232, 0.4); }
+  50% { box-shadow: 0 0 18px rgba(159, 230, 255, 0.95), 0 0 38px rgba(101, 203, 232, 0.55), inset 0 0 14px rgba(159, 230, 255, 0.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rhud__btn--on { animation: none; box-shadow: 0 0 16px rgba(101, 203, 232, 0.85); }
+}
+
+.rhud__spoke--on {
+  stroke: #9fe6ff;
+  stroke-width: 1.5;
+}
+
+
+
+/* ---------------------------------------------------------------- HUD inner gauges */
+
+
+.hg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hg__bar {
+  transition: d 0.4s ease;
+}
+
+.hg__val {
+  font: 600 10.5px var(--f-mono);
+  fill: #ffffff;
+  paint-order: stroke;
+  stroke: rgba(4, 8, 12, 0.9);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.hg__atmos {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hg__atmos canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hg__over {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hg__val--big {
+  font-size: 17px;
+}
+
+.hg__val--sub {
+  font-size: 10px;
+  font-weight: 400;
+  fill: #b9c9d2;
+}
+
+.hg__t {
+  font: 11px var(--f-mono);
+  fill: #d7e6ee;
+  paint-order: stroke;
+  stroke: rgba(4, 8, 12, 0.85);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.hg__t--big {
+  font-size: 18px;
+  font-weight: 600;
+  fill: #ffffff;
+}
+
+.hg__t--icon {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  fill: #9fe6ff;
+}
+
+.hg__fill {
+  transition: y 0.4s ease, height 0.4s ease;
+}
+
+.hg__wave {
+  animation: hg-wave 3s ease-in-out infinite alternate;
+}
+
+@keyframes hg-wave {
+  from { transform: translateX(-10px); }
+  to { transform: translateX(10px); }
+}
+
+.hg__bubble {
+  animation: hg-rise 2.4s linear infinite;
+}
+
+.hg__bubble--late {
+  animation-delay: 1.2s;
+}
+
+@keyframes hg-rise {
+  from { transform: translateY(0); opacity: 0.6; }
+  to { transform: translateY(-60px); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hg__bubble,
+  .hg__wave { animation: none; }
 }

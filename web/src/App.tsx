@@ -3,10 +3,10 @@ import type { ReplayBundle } from './types/replay';
 import { assetUrl, loadEvaluatorReference, loadReplay } from './data/replayAdapter';
 import { REFERENCE_SOURCES } from './data/referenceSources';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from './lib/smoothing';
-import { viewAt } from './lib/replay';
+import { firstMotionTime, viewAt } from './lib/replay';
+import { crewDose } from './lib/atmos';
 import type { TerrainLayer } from './lib/layers';
 import {
-  agentStats,
   AGENT_NAME,
   detailsFor,
   initialBudgets,
@@ -18,12 +18,18 @@ import {
 import { MissionScene } from './components/MissionScene';
 import { ManagementList } from './components/ManagementList';
 import { DetailsPanel } from './components/DetailsPanel';
-import { HUD_MAP_PX, Vitals } from './components/Vitals';
+import { HUD_MAP_PX, RadialHud, type HudOption } from './components/RadialHud';
+import { HudGauge } from './components/HudGauge';
+import { resourceLines } from './lib/resources';
+import { fmtDuration, isTrustedRoute } from './lib/format';
+import { fmtMicroSv } from './lib/atmos';
 import { EventInspector } from './components/EventInspector';
 import { GeologyDetails, GeologyList } from './components/GeologyPanel';
 import { AtmosDetails, AtmosList } from './components/AtmosPanel';
 import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
+import { CameraBar } from './components/CameraBar';
+import { rotateView, ROTATE_STEP_RAD } from './components/ViewRotator';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
 import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './components/Frame';
 
@@ -73,15 +79,20 @@ function Splash({ title, detail, error }: { title: string; detail: string; error
 function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const m = bundle.manifest;
   const duration = m.duration_s;
-  const [t, setT] = useState(0);
+  // Opens where Restart goes: 4 s before the first motion (see firstMotionTime).
+  const [t, setT] = useState(() => firstMotionTime(bundle));
   const [playing, setPlaying] = useState(false);
-  // Short recorded runs (seconds long) start at real time; the long demo starts at 20x.
-  const [speed, setSpeed] = useState(duration < 120 ? 1 : 20);
+  // Short recorded runs (seconds long) start at real time; the long demo starts at 10x (the cap).
+  const [speed, setSpeed] = useState(duration < 120 ? 1 : 10);
   const [layer, setLayer] = useState<TerrainLayer>('belief');
   const [exaggeration, setExaggeration] = useState(m.vertical_exaggeration_default);
   const [showControlPoints, setShowControlPoints] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
-  const [follow, setFollow] = useState(false);
+  // Camera: 'free' (map), 'base', or the id of the agent it follows.
+  const [camView, setCamView] = useState<string>('free');
+  const follow = camView !== 'free' && camView !== 'base';
+  // Grab-to-drag is the default for the free camera: left drag slides the map, right drag orbits.
+  const [freePan, setFreePan] = useState(true);
   // The follow view plays at 1x so the walk is drawn at its natural pace (legs synced to the
   // ground); leaving it restores the speed chosen before. The speed can still be changed while following.
   const speedBeforeFollow = useRef<number | null>(null);
@@ -137,6 +148,30 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const agentId = sel.kind === 'agent' ? sel.id : primaryId;
   const agent = view.state?.agents.find((a) => a.agent_id === agentId) ?? null;
   const alert = useMemo(() => missionAlert(view), [view]);
+  // HUD option shown in the dial's inner circle (none: the minimap).
+  const [hudOption, setHudOption] = useState<HudOption | null>(null);
+  const hudLines = agent ? resourceLines(bundle, t, agent, view.activeRoute, budgets[agent.agent_id]) : [];
+  const hudWarn = new Set<HudOption>();
+  const hudHints: Partial<Record<HudOption, string>> = {};
+  for (const l of hudLines) {
+    if (l.tone === 'warn' || l.tone === 'alert') hudWarn.add(l.key);
+    hudHints[l.key] = l.key === 'time' ? fmtDuration(l.remaining) : l.remaining == null ? 'no data' : `${l.remaining.toFixed(0)} ${l.unit}`;
+  }
+  if (agent?.agent_kind !== 'HUMAN') hudHints.oxygen = 'not applicable';
+  if (view.activeRoute && (!isTrustedRoute(view.activeRoute) || view.state?.mission_state === 'REPLAN')) hudWarn.add('route');
+  hudHints.route = view.activeRoute ? view.activeRoute.route_id : 'none';
+  if (agent?.agent_kind === 'HUMAN' && bundle.atmosphere) hudHints.dose = `${fmtMicroSv(crewDose(bundle.atmosphere, t).usv)} µSv`;
+  // Following an agent shows its telemetry too; F toggles following the selected agent.
+  const followAgent = useCallback((id: string) => {
+    setCamView(id);
+    setSelection({ kind: 'agent', id });
+  }, []);
+  const setFollow = useCallback((on: boolean) => setCamView(on && agentId ? agentId : 'free'), [agentId]);
+  const hasBase = m.pois.some((p) => p.kind === 'base');
+  // While following, picking another agent in the list moves the camera to it.
+  useEffect(() => {
+    if (follow && sel.kind === 'agent' && sel.id && sel.id !== camView) setCamView(sel.id);
+  }, [follow, sel.kind, sel.id, camView]);
 
   // Replay clock: advances simulated time by wall time x speed.
   const last = useRef<number | null>(null);
@@ -161,14 +196,17 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   }, [playing, speed, duration]);
 
   const seek = useCallback((v: number) => setT(Math.max(0, Math.min(duration, v))), [duration]);
+  // Restart shortens the lead-in where every agent is still idle (10 s in the demo, which at 1x
+  // looks like a frozen replay) to 4 s. Earlier events stay listed; the scrubber can still reach t = 0.
+  const startT = useMemo(() => firstMotionTime(bundle), [bundle]);
   const restart = useCallback(() => {
-    setT(0);
+    setT(startT);
     setPlaying(false);
-  }, []);
+  }, [startT]);
   const playPause = useCallback(() => {
-    setT((prev) => (prev >= duration ? 0 : prev));
+    setT((prev) => (prev >= duration ? startT : prev));
     setPlaying((p) => !p);
-  }, [duration]);
+  }, [duration, startT]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -180,14 +218,28 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       } else if (e.code === 'ArrowRight' && tag !== 'BUTTON') seek(t + 5);
       else if (e.code === 'ArrowLeft' && tag !== 'BUTTON') seek(t - 5);
       else if (e.code === 'Home') restart();
-      else if (e.code === 'KeyF') setFollow((f) => !f);
+      else if (e.code === 'KeyF') setFollow(!follow);
+      else if (e.code === 'KeyG') setFreePan((g) => !g);
+      else if (e.code === 'KeyQ') rotateView(-ROTATE_STEP_RAD);
+      else if (e.code === 'KeyE') rotateView(ROTATE_STEP_RAD);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [playPause, seek, restart, t]);
+  }, [playPause, seek, restart, t, follow, setFollow]);
+
+  // The footer wraps to more lines on narrow screens; the panels above it sit on its measured height.
+  const appRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const app = appRef.current;
+    const foot = app?.querySelector('.disclaimer') as HTMLElement | null;
+    if (!app || !foot || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => app.style.setProperty('--bottom', `${Math.ceil(foot.getBoundingClientRect().height) + 8}px`));
+    ro.observe(foot);
+    return () => ro.disconnect();
+  }, []);
 
   return (
-    <div className="app">
+    <div className="app" ref={appRef}>
       <MissionScene
         bundle={bundle}
         view={view}
@@ -197,7 +249,9 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         showLabels={showLabels}
         playing={playing}
         replaySpeed={speed}
-        followAgentId={follow ? agentId : null}
+        followAgentId={follow ? camView : null}
+        baseCamera={camView === 'base'}
+        freePan={freePan && camView === 'free'}
         selectedAgentId={agentId}
         contours={contours}
         cameraSmoothing={cameraSmoothing}
@@ -223,9 +277,17 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           ) : (
             <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
           )}
+          <CameraBar
+            agents={view.state?.agents ?? []}
+            view={camView}
+            hasBase={hasBase}
+            onFree={() => setCamView('free')}
+            onBase={() => setCamView('base')}
+            onAgent={followAgent}
+          />
           <div className="prompts">
-            <button type="button" className="chip" aria-pressed={follow} onClick={() => setFollow((f) => !f)}>
-              <kbd>F</kbd> Follow camera
+            <button type="button" className="chip" aria-pressed={freePan} onClick={() => setFreePan((g) => !g)} title="On: left drag slides the map, right drag orbits. Off: left drag orbits, right drag slides. Wheel zooms.">
+              <kbd>G</kbd> Grab map
             </button>
             <button type="button" className="chip" onClick={playPause}>
               <kbd>Space</kbd> {playing ? 'Pause' : 'Play'}
@@ -280,17 +342,25 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           ) : (
             details && <DetailsPanel data={details} />
           )}
+          {/* One stacked column: the details scroll, the dial keeps its height below them. */}
+          <RadialHud
+            who={agent ? `${AGENT_NAME[agent.agent_kind]} · ${agent.agent_id}` : 'No agent'}
+            center={
+              // The 2D map only with no option or Route; every other option fills the circle with its own gauge.
+              hudOption && hudOption !== 'route' ? (
+                <HudGauge option={hudOption} size={HUD_MAP_PX} bundle={bundle} view={view} t={t} agent={agent} route={view.activeRoute} budget={agent ? budgets[agent.agent_id] : undefined} atmosphere={bundle.atmosphere} />
+              ) : (
+                <Minimap bundle={bundle} view={view} agentId={agentId} size={HUD_MAP_PX} />
+              )
+            }
+            active={hudOption}
+            onSelect={setHudOption}
+            warn={hudWarn}
+            hints={hudHints}
+          />
         </aside>
 
         <AlertBanner alert={alert} />
-
-        <Vitals
-          who={agent ? `${AGENT_NAME[agent.agent_kind]} · ${agent.agent_id}` : 'No agent'}
-          map={<Minimap bundle={bundle} view={view} agentId={agentId} size={HUD_MAP_PX} />}
-          stats={agent ? agentStats(agent, budgets[agent.agent_id]) : []}
-          route={view.activeRoute}
-          replanning={view.state?.mission_state === 'REPLAN'}
-        />
 
         <Timeline
           t={t}

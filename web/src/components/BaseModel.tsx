@@ -23,7 +23,7 @@ interface Props {
 }
 
 /** Offset of the habitat cluster from the site point (east, north), metres. */
-const CLUSTER_OFFSET = { x: 34, y: -22 };
+export const CLUSTER_OFFSET = { x: 34, y: -22 };
 
 const WHITE = new THREE.MeshStandardMaterial({ color: '#e9e6df', roughness: 0.55, metalness: 0.05 });
 const PANEL_WHITE = new THREE.MeshStandardMaterial({ color: '#d6d2c8', roughness: 0.7 });
