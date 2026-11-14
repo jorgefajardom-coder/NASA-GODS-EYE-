@@ -3,7 +3,7 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
-**Status: real planner, data/mapping and gateway available; mission integration candidate.**
+**Status: mission authority, planner, data/mapping and gateway implemented; integrated mission acceptance pending.**
 This branch preserves the existing real mission authority, resource models,
 recorder and tests from feat/mission. The default synthetic vertical keeps
 MOCK terrain/agents/mission; select mission:=real with explicit configuration

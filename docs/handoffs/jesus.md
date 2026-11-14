@@ -154,3 +154,30 @@ unchanged: ROS ICD-ROS2-V1/package 1.0.0, JSON/replay 1.0.0, baseline review
   `vertical_mock.launch.py`; reconcile both selections when it is reviewed.
   Then public raster recording (JES-04) and survey observations from the
   simulated drone (JES-02). No mission or scientific acceptance is claimed.
+
+## Public raster recording cut (JES-04)
+
+Source: `feat/integration` on main `059f8ef`. Baselines: ROS ICD-ROS2-V1 /
+package 1.0.0 with one proposed additive topic, JSON/replay 1.0.0 with one
+optional file, raster attachment `mge-public-rasters-1.0.0`, baseline review
+1.0.0-rc.1 (not frozen). Dataset `jezero_mvp`.
+
+- **Input.** `/mge/terrain/prior` and the stamped batch: metadata, belief,
+  sigma and the new `/mge/terrain/observed` (`mono8`, published by
+  `mapping_node` and `mock_terrain`). Owner decision recorded: additive topic
+  instead of inferring coverage from sigma or masks.
+- **Output.** `<run_id>/public_rasters.json`, named by `files.public_rasters`;
+  `read_public_rasters` and `check_replay` validate it; `to_viewer` turns the
+  package READY. Version 0 needs no raster; extra keys only for recorded
+  TerrainMeta versions; no nearest-version fallback.
+- **Commands.** In `mge-dev`: `colcon build --symlink-install`,
+  `python3 -m pytest` (805 passed, 1 skipped), `python3 scripts/check_repository.py`
+  (passed). Python 3.12 without ROS: `python -m pytest` (730 passed, 13 skipped).
+- **MOCK and gaps.** Mission and agents MOCK; observations come from tests.
+  The viewer does not read the attachment yet. Not run: Gazebo, real mission
+  with model agreement.
+- **Blockers / next.** Daniel reviews the `mapping_node` publisher, Jorge the
+  consumer (JOR-03). Intermittent planner `SEARCH_LIMIT` in
+  `test_terrain_batch.py` goes to Diego. Next for Jesus: JES-02 kinematic
+  execution and stop acknowledgement. Organizer endorsement (JES-07) remains
+  undocumented.

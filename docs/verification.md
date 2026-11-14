@@ -1,5 +1,71 @@
 # Current contract reconciliation verification
 
+## Experimental scenario approval validation, 14 November 2026
+
+The human approval of JZ-P01..JZ-P07 is recorded separately from runtime/model
+authorization. The [new readiness report](../evidence/jezero-scenario-approval-20261114/readiness/scenario_diagnostic.json)
+verifies the hash-bound receipt and unchanged numerical values, reports
+`APPROVED_EXPERIMENTAL_VALUES`, and retains `NOT_READY` with six operational
+requirements outstanding. All source profiles remain proposed, no cost
+agreement is asserted and all 1024 public cells remain unobserved.
+
+Windows: 723 cases passed, 16 platform/ROS skips. Jazzy: eight packages built,
+eight interfaces inspected, 533 mission/contract/integration cases passed with
+one optional snapshot skip. The real MissionNode rejects the experimental file
+with CONFIG_NOT_READY. Tampered values, receipt hashes, scope, decisions,
+profile approval and original proposal are rejected. Frontend: 84 tests/build
+passed; repository/whitespace checks passed. See the
+[validation record](../evidence/jezero-scenario-approval-20261114/validation.json).
+Existing tooling notices remain. No execution or scientific-model approval
+was inferred, and the original proposal/results were not changed.
+
+## Jezero scientific proposal validation, 14 November 2026
+
+Proposal `jezero-primary-review-01` is a review artifact, not an operational
+approval. Its public-prior cost probes, directed return, separate service/wait,
+20% reserve policy, rejected low-speed rover envelope and rejected 300 s
+additional sample are reproducible in
+[the sizing report](../evidence/jezero-proposal-review-20261114/proposal_sizing.json).
+The diagnostic validates Daniel's unchanged public package and retains six
+approval/model/snapshot requirements. The operational template, profile
+approval states, observations and all ROS interfaces remain unchanged.
+
+Windows: 714 Python cases passed, 16 platform/ROS skips. Jazzy: eight packages
+compiled, eight interfaces inspected, 523 mission/contract/integration cases
+passed with one optional published-snapshot skip. Frontend: 84 tests and build
+passed. Repository/whitespace checks passed. Exact sources, JUnit and target
+logs are retained in the [validation record](../evidence/jezero-proposal-review-20261114/validation.json).
+Existing Starlette deprecation and tooling notices remain. No execution,
+scientific approval or A/B/C result is inferred from these software checks.
+
+## Direct mission/main integration validation, 14 November 2026
+
+The owner-authorized reconciliation combines mission `37a2bd6` and main
+`4b72d30`, retaining the durable journal and public-scenario tools with the
+published viewer/provider integration. Conflicts affected documentation and
+the validation snapshot helper only; owner implementations and wire types
+match main. GitHub reports main unprotected with no applicable rules/rulesets.
+Mission PR #10 was already merged; planner PR #12 is outside this operation.
+
+Validation: 709 Windows Python cases passed (16 ROS/platform skips); 518
+Jazzy mission/contract/integration cases passed (one optional published-source
+snapshot skip); all eight packages compiled and all six messages/two services
+were inspected. The complete viewer passed 84 tests and its production build.
+Repository and whitespace checks passed. See the
+[retained reports and source hashes](../evidence/mission-main-direct-20261114/validation.json).
+
+The first WSL run lacked HTTP dependencies. A subsequent run omitted the
+integration package because WebSocket support was absent; its 484 passes are
+not the final acceptance count. The final run used the declared gateway
+requirements in a temporary virtual environment and a fresh source snapshot
+excluding Windows bytecode caches. Original attempts remain recorded. No
+assertion, production limit, model agreement or scientific approval was relaxed.
+Existing Starlette deprecation, four npm development-tool advisories and the
+frontend install-script notice are retained as limitations. These software
+checks do not establish physical execution or mission success.
+
+## Original baseline record
+
 Source `f2af4b23b57e0ef28c245cca0ad64a886ded039e`, based on updated main
 `004b3b2`; baseline `1.0.0-rc.1`, 2026-11-14 (America/Bogota).
 
@@ -194,3 +260,28 @@ checks passed. All eight ROS packages built and all eight custom definitions
 were inspected. The real mission service is unique; model disagreement remains
 BLOCKED with no active route. Web4tests/build, repository and whitespace checks
 passed. [Logs, JUnit, source hashes and limits](../evidence/mission-service-handoff-20261114/README.md).
+
+## Durable mission evidence and public scenario, 14 November 2026
+
+After reconciling main `6ec9b84` (including Daniel's PR #8), Windows Python
+passed 670 cases with 13 platform/ROS skips. Ubuntu 24.04/Jazzy compiled all
+eight packages, inspected the six messages/two services, and passed 466
+mission/contract cases with one optional planner-snapshot skip. Repository
+checks passed; frontend tests passed four cases and the production build passed.
+The existing Starlette deprecation and frontend chunk-size warnings remain.
+
+The [retained validation](../evidence/mission-durable-scenario-validation-20261114/validation.json)
+contains exact source hashes, JUnit reports and target build logs. An early
+Linux snapshot caught an unfinished concurrent edit; another omitted the data
+owner's public manifest schema. Those attempts are retained as failed checks;
+the completed source and corrected public-only snapshot passed on repeat.
+Mission tests now use a package namespace to avoid basename collisions with
+the planner suite; no planner test or implementation was changed.
+
+The [public scenario diagnostic](../evidence/mission-public-scenario-20261114/scenario_diagnostic.json)
+validates the 32 by 32 public grid, four controls, native 20 m prior/grid 4 m
+distinction and explicit uncertainty. It retains 1024 unobserved cells and
+reports NOT_READY with 13 operational inputs/approvals missing. The
+[refreshed planner comparison](../evidence/mission-planner-refresh-20261114/conformance.json)
+at `8259001` remains BLOCKED, with one agreement and six disagreements.
+None of these outputs is a mission execution, scientific approval or A/B/C result.

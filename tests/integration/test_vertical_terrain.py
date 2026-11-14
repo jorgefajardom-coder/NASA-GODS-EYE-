@@ -28,6 +28,8 @@ rclpy = pytest.importorskip('rclpy', reason='Requires built ROS 2 workspace')
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy  # noqa: E402
 from sensor_msgs.msg import Image  # noqa: E402
 
+from mge_gateway.contract_replay import (  # noqa: E402
+    read_package, read_public_rasters, to_viewer)
 from mge_gateway.replay_check import check_package  # noqa: E402
 from mge_interfaces.msg import TerrainObservation  # noqa: E402
 from tests.integration.test_vertical_mock import wait_for  # noqa: E402
@@ -234,6 +236,16 @@ def test_recorded_package_is_complete_after_the_run_stops(stack):
         return ms and ms['route_id'] == route_id
 
     wait_for(recorded, what='route in the recorded snapshot')
+
+    def rasters_recorded():
+        with open(os.path.join(stack.package, 'manifest.json'), encoding='utf-8') as f:
+            names = json.load(f)['files']
+        if 'public_rasters' not in names:
+            return False
+        with open(os.path.join(stack.package, names['public_rasters']), encoding='utf-8') as f:
+            return set(json.load(f)['versions']) == {'1', '2'}
+
+    wait_for(rasters_recorded, what='public rasters of map versions 1 and 2')
     stack.stop()
     assert check_package(stack.package) == []
     with open(os.path.join(stack.package, 'manifest.json'), encoding='utf-8') as f:
@@ -243,3 +255,21 @@ def test_recorded_package_is_complete_after_the_run_stops(stack):
         snap = json.load(f)
     assert snap['terrain_meta']['dataset_id'] == 'jezero_mvp'
     assert snap['terrain_meta']['map_version'] == 2
+
+
+def test_recorded_public_rasters_make_the_package_viewer_ready(stack):
+    # Runs after the stack stopped: the package alone is read, offline.
+    manifest, records, snapshot = read_package(stack.package)
+    rasters = read_public_rasters(stack.package, manifest)
+    assert rasters['dataset_id'] == 'jezero_mvp' and (rasters['rows'], rasters['cols']) == (ROWS, COLS)
+    assert 'reference' not in json.dumps(rasters)
+    v1, v2 = rasters['versions']['1'], rasters['versions']['2']
+    # Before the observation nothing is observed and the belief is the prior.
+    assert v1['observed'] == [] and v1['belief'] == rasters['prior']
+    # The observation covered the block, and only the block.
+    assert v2['observed'] == sorted(BLOCK)
+    assert all(v2['sigma'][i] == pytest.approx(0.25) for i in BLOCK)
+    result = to_viewer(manifest, records, snapshot, public_rasters=rasters)
+    assert result['status'] == 'READY', result['reason_code']
+    assert result['manifest']['source_mode'] == 'MOCK'
+    assert all(v is None for v in result['rasters']['reference'])
