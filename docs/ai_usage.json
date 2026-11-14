@@ -67,11 +67,20 @@
         "docs/planner_handoff.md"
       ],
       "use": "Implement coherent ROS service boundary and fresh upstream processing; create test-only profiles, tests and relevo. HiRISE reference is excluded from distribution; CTX prior is not a verified corridor."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "computational_evidence",
+      "generation": "Illustrative scenarios AI-assisted; measurements produced by actual new executions",
+      "paths": [
+        "evidence/planner-p0-20261114"
+      ],
+      "use": "Run three seeded newly generated benchmark scenarios and a fresh unverified CTX prior check; retain exact code commit, costs, timing, environment and limitations."
     }
   ],
   "generated_media": [],
   "scientific_datasets_generated": false,
-  "measured_results_generated": false,
+  "measured_results_generated": true,
   "notes": [
     "Project idea and science specifications supplied by the human team.",
     "Update this register and descriptive disclosure when generated artifacts change.",
@@ -91,5 +100,6 @@
       ],
       "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
     }
-  ]
+  ],
+  "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements"
 }

@@ -46,3 +46,9 @@ Motion/resource profiles require human scientific review. NASA source data remai
 observations from cited upstream products; new processing does not make those
 observations newly acquired by the team. See planner_provenance.md for the crop
 workflow and its separation from the pre-event Sandbox reference.
+
+Fresh computational benchmark measurements are now recorded under
+evidence/planner-p0-20261114. Their scenarios were AI-assisted illustrative test
+data; reported timings and costs are actual new executions of the recorded code
+commit. They are not physical measurements, NASA mission results or copied
+Sandbox metrics. No generated image, video or audio asset was added.

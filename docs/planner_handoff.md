@@ -3,6 +3,10 @@
 Branch: **feat/planner**. Continue here; do not restart from the original scaffold.
 Integration review: Jesus. Scientific profiles/mission acceptance: David.
 
+Last computational run: code commit `6e4984d`, recorded in
+[evidence](../evidence/planner-p0-20261114/README.md). 154 local tests passed;
+ROS-only modules run in Jazzy CI. Read the latest PR checks before integrating.
+
 ## Implemented
 
 - Pure typed inputs: TerrainGrid, MotionProfile, PlanRequest, ResourceBudget,
