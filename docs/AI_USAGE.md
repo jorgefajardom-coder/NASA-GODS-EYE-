@@ -37,7 +37,16 @@ Python/ROS regression tests. The published planner source was inspected at
 34c515b6b86f73336844e8b3614c70b144574ec3; its code was not modified or merged.
 These changes preserve failure reasons and do not approve scientific profiles.
 
-## Delivery verification
+## Planner model conformance, 14 November 2026
+
+OpenAI Codex assisted with the isolated published-source loader, synthetic
+seven-case cost comparison, reproducible CLI, tests and technical report.
+The generated numerical diagnostics are classified MODEL_CONFORMANCE; they
+are not NASA observations, integrated missions or an A/B/C benchmark. All
+profile approval states remain unchanged and authorization remains blocked.
+Exact source/model/profile hashes are retained with the comparison.
+
+## Delivery verification checklist
 
 - Record actual tool uses and affected code/data/assets in text and metadata.
 - Keep a visible `AI-generated` watermark on generated images/videos and submitted

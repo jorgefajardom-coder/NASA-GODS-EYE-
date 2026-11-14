@@ -1,0 +1,5 @@
+# Optional diagnostic dependency range shared with the published planner.
+# Normal mission/resource/benchmark code does not require NumPy or SciPy.
+-r requirements-dev.txt
+numpy>=1.26,<3
+scipy>=1.11,<2

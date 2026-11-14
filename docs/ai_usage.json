@@ -100,6 +100,20 @@
         "docs/ICD.md"
       ],
       "use": "Preserve non-feasible unavailable metrics and original reasons, accept canonical map-batch timestamps with independent pose/resource checks; no planner code merged and no scientific approval granted."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_model_conformance",
+      "generation": "AI-assisted diagnostic code, documentation, tests and synthetic formula comparison",
+      "paths": [
+        "src/mge_mission/mge_mission/conformance.py",
+        "scripts/check_planner_conformance.py",
+        "tests/mission/test_conformance.py",
+        "requirements-conformance.txt",
+        "docs/planner_model_conformance.md",
+        "evidence/planner-conformance-20261114"
+      ],
+      "use": "Compare the exact published planner source to mission activity/grade costs on seven public synthetic grids, preserve mismatch evidence and hashes, keep authorization blocked; no observational data or mission benchmark generated."
     }
   ],
   "generated_media": [],

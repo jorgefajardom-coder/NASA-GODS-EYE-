@@ -20,6 +20,7 @@ Confirm any earlier local judging cutoff separately.
 - [Requirements and acceptance](docs/requirements.md)
 - [Scientific decisions](docs/science_decisions.md)
 - [Scientific models and proposed coefficients](docs/science_models.md)
+- [Planner model conformance and known differences](docs/planner_model_conformance.md)
 - [Mission integration handoff](docs/mission_handoff.md)
 - [A/B/C protocol, awaiting integrated runs](docs/science_benchmark.md)
 - [Competition checklist](docs/competition.md)
