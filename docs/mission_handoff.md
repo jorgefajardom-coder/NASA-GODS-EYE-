@@ -79,3 +79,17 @@ packages/eight inspected definitions and exact hashes for the tested source.
 Linux executes the symlink-isolation cases unavailable on Windows. The actual
 published-planner probe is separate from the optional snapshot test in the
 Linux build copy.
+
+## Public evidence recording and coefficient sweep
+
+The [recorder/exporter and sensitivity API](mission_recording.md) are available
+without new ROS fields or planner changes. The recorder accepts typed public
+execution observations, preserves raw causal records and exports hashed files
+for the existing auditor. A final explicit traversal closure is required for
+full verification; missing measurements remain unknown. Runtime wiring stays
+with the integration front and no execution evidence is invented here.
+
+The coefficient sweep uses illustrative directed routes/services/waits and
+existing reserves, varying traced low/nominal/high values independently. Its
+reports are model checks and cannot enter mission A/B/C results. The operational
+scenario and scientific approval remain pending Daniel and David respectively.

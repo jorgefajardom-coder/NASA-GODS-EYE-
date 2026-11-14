@@ -7,6 +7,25 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "code_configuration_and_synthetic_model_checks",
+      "generation": "AI-assisted generation, pending human review",
+      "paths": [
+        "src/mge_mission/mge_mission/recorder.py",
+        "src/mge_mission/mge_mission/sensitivity.py",
+        "scripts/sweep_mission_sensitivity.py",
+        "tests/mission/test_recorder.py",
+        "tests/mission/test_sensitivity.py",
+        "config/scenario_demo.yaml",
+        "docs/mission_recording.md",
+        "docs/mission_handoff.md",
+        "docs/verification.md",
+        "evidence/mission-sensitivity-20261114",
+        "evidence/mission-recorder-validation-20261114"
+      ],
+      "use": "Record typed public evidence and export hashed artifacts, preserve unknowns and coverage limits, and evaluate independent coefficient sensitivities on illustrative routes. No integrated mission or A/B/C outcome is generated; ROS and planner interfaces are unchanged."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "code_and_configuration",
       "generation": "AI-assisted generation, pending human review",
       "paths": [

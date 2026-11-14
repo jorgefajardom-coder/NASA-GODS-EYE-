@@ -109,3 +109,24 @@ mission:
       reserve_wh: 1
   discovery_inputs: []
   notes: ["Tasks must be created by public observations. No evaluator or hidden sites are included.","The 90 s drone budget is a synthetic scenario choice, not certified endurance.","Opening this file or planning a route is not evidence of mission execution or success."]
+
+# Synthetic directed paths for offline coefficient checks; no terrain dataset.
+sensitivity_cases:
+  - case_id: human-uphill-roundtrip
+    agent_id: human_1
+    outbound_enu_m: [[0,0,0], [10,0,1]]
+    return_enu_m: [[10,0,1], [0,0,0]]
+    services: [[sample,60]]
+    wait_s: 10
+  - case_id: rover-uphill-roundtrip
+    agent_id: rover_1
+    outbound_enu_m: [[0,0,0], [10,0,1]]
+    return_enu_m: [[10,0,1], [0,0,0]]
+    services: [[inspect,60]]
+    wait_s: 10
+  - case_id: drone-uphill-roundtrip
+    agent_id: drone_1
+    outbound_enu_m: [[0,0,0], [10,0,1]]
+    return_enu_m: [[10,0,1], [0,0,0]]
+    services: [[observe,60]]
+    wait_s: 10

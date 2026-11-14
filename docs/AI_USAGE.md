@@ -56,6 +56,15 @@ The recorded draft-readiness diagnostic reports NOT_READY and zero observed
 mission runs. Software validation logs/JUnit reports record actual command
 outcomes and preserve source hashes; they grant no scientific approval.
 
+## Public evidence recorder and sensitivity tools, 14 November 2026
+
+OpenAI Codex assisted with the typed public execution recorder/exporter,
+interval accounting and traversal closure checks, offline coefficient sweep,
+illustrative sensitivity cases, regression tests and handoff documentation.
+The disclosure metadata lists the affected files and retained software/model
+checks. No ROS evidence input, planner change, physical observation, mission
+execution or A/B/C outcome was generated. Model coefficients remain proposed.
+
 ## Delivery verification checklist
 
 - Record actual tool uses and affected code/data/assets in text and metadata.

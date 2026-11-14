@@ -103,3 +103,24 @@ records 15 synthetic formula estimates, input profiles and code/configuration
 hashes. It is labelled MODEL_CHECK and does not establish NASA observations,
 scientific acceptance or an A/B/C benchmark. Existing Starlette/httpx deprecation
 and frontend bundle-size warnings remain outside this module's changes.
+
+## Evidence recorder and sensitivity follow-up, 14 November 2026
+
+The isolated `feat/mission` follow-up passed 366 Python cases on Windows
+(five platform/ROS skips) and 312 mission/contract cases on Ubuntu 24.04/Jazzy
+(one optional published-planner-snapshot skip). The eight packages compiled
+and six messages/two services were inspected. Repository checks, both frontend
+tests and frontend production build passed. Existing Starlette deprecation
+and frontend chunk-size warnings remain. A sandboxed Windows full-suite attempt
+stalled and was interrupted; the successful complete suite used the permitted
+launcher outside that restriction.
+
+The [retained validation record](../evidence/mission-recorder-validation-20261114/validation.json)
+includes exact tested source hashes and JUnit/log exports. The
+[sensitivity report](../evidence/mission-sensitivity-20261114/sensitivity.json)
+contains 138 low/nominal/high model evaluations across three illustrative
+round trips. Nominal time/energy estimates are human 98.801 s / 12.850 Wh,
+rover 628.326 s / 24.095 Wh, drone 80 s / 4.823 Wh. Low drone horizontal
+speed changes model budget feasibility because the illustrative time reserve
+leaves only one second nominal margin. These are synthetic calculations,
+not observed endurance, mission success, scientific approval or A/B/C results.
