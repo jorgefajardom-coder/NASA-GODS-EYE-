@@ -7,6 +7,7 @@ import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js
 import type { AgentMode } from '../types/icd';
 import { assetUrl } from '../data/replayAdapter';
 import { calmClip } from '../lib/astronautPose';
+import { FootDust } from './FootDust';
 
 /**
  * Astronaut GLB ("Animated Astronaut Character in Space Suit Loop" by LasquetiSpice,
@@ -84,7 +85,7 @@ export function AstronautModel({ mode, playing, screenSpeedMps }: Props) {
       const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       for (const m of mats as THREE.MeshStandardMaterial[]) {
         m.envMap = envMap;
-        m.envMapIntensity = 0.7;
+        m.envMapIntensity = 1.05; // brighter suit reflections, still physically based
         // Sharper textures at grazing angles (default anisotropy of 1 blurs them).
         for (const slot of TEXTURE_SLOTS) {
           const tex = (m as unknown as Record<string, THREE.Texture | null | undefined>)[slot];
@@ -127,9 +128,35 @@ export function AstronautModel({ mode, playing, screenSpeedMps }: Props) {
     // The parent group faces +x (east) at yaw 0; the model faces +z, so turn it 90°.
     <group ref={root} rotation={[0, Math.PI / 2, 0]}>
       <primitive object={model} scale={fit.scale} position={fit.offset} />
+      <FootDust model={model} active={walking && playing} screenSpeedMps={screenSpeedMps} />
+      {/* Display lighting for the model only (distance-limited): warm key from the front-left,
+          cool rim from behind to separate the suit from the ground, soft contact shadow. */}
+      <pointLight position={[-2.2, 3.4, 2.6]} intensity={9} distance={9} decay={1.6} color="#ffe6cc" />
+      <pointLight position={[1.6, 3.8, -2.8]} intensity={7} distance={9} decay={1.6} color="#a9d4ff" />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]} renderOrder={-1}>
+        <circleGeometry args={[1.25, 32]} />
+        <meshBasicMaterial map={contactShadow} transparent depthWrite={false} toneMapped={false} />
+      </mesh>
     </group>
   );
 }
+
+/** Radial dark falloff used as a cheap contact shadow under the feet. */
+const contactShadow = (() => {
+  if (typeof document === 'undefined') return null;
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const g = c.getContext('2d')!;
+  const grad = g.createRadialGradient(32, 32, 2, 32, 32, 32);
+  grad.addColorStop(0, 'rgba(0,0,0,0.55)');
+  grad.addColorStop(0.55, 'rgba(0,0,0,0.25)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 64, 64);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+})();
 
 /** Falls back to the simple avatar if the model cannot be loaded (plan B of the guide). */
 export class ModelBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
