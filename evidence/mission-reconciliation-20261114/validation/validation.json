@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "mission-main-reconciliation-validation-20261114",
+  "classification": "SOFTWARE_VALIDATION_AND_MODEL_DIAGNOSTICS",
+  "recorded_at_utc": "2026-11-14T23:30:09.985064+00:00",
+  "mission_parent": "ec819e52befb0fce0189dd46e02869c781c3e0c7",
+  "main_parent": "5898e7d74c3eb00a018a2061a9b2264d947f12a8",
+  "working_tree_dirty": true,
+  "source_identity": "Pending merge; exact tested public sources in jazzy.source.json, not revision alone",
+  "conflicts_resolved": [
+    "docs/AI_USAGE.md",
+    "docs/ai_usage.json"
+  ],
+  "preservation": {
+    "main_ai_uses": 60,
+    "merged_ai_uses": 62,
+    "generated_media": 2,
+    "owner_paths_equal_main": [
+      "src/mge_planning",
+      "src/mge_sim",
+      "src/mge_gateway",
+      "src/mge_data",
+      "src/mge_mapping",
+      "src/mge_interfaces",
+      "src/mge_bringup",
+      "web"
+    ],
+    "approved_experimental_values_changed": false,
+    "old_evidence_rewritten": false
+  },
+  "versions": {
+    "windows_python": "3.12.14",
+    "node": "24.18.0",
+    "npm": "12.0.1",
+    "ubuntu": "24.04.4 LTS",
+    "linux_python": "3.12.3",
+    "ros": "Jazzy",
+    "pytest_jazzy": "8.4.2",
+    "numpy_jazzy": "1.26.4",
+    "websockets_jazzy": "17.4"
+  },
+  "checks": [
+    {
+      "command": "python -m pytest --basetemp=tmp/pytest-mission-main-merge --junitxml=tmp/mission-main-merge-python.junit.xml -q",
+      "exit_code": 1,
+      "tests": 998,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 19,
+      "passed": 978,
+      "failure": "WinError5 during replay atomic manifest replacement; unchanged gateway code; cause undetermined"
+    },
+    {
+      "command": "python -m pytest tests/contract/test_replay_conversion.py --basetemp=tmp/pytest-mission-replay-recheck --junitxml=tmp/mission-replay-recheck.junit.xml -q",
+      "exit_code": 0,
+      "tests": 38,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 38
+    },
+    {
+      "command": "python -m pytest --basetemp=tmp/pytest-mission-main-final --junitxml=tmp/mission-main-final-python.junit.xml -q",
+      "exit_code": 0,
+      "tests": 998,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 19,
+      "passed": 979,
+      "limitations": "ROS imports and Windows symlink privileges skipped; one existing Starlette/httpx deprecation warning"
+    },
+    {
+      "command": "python scripts/check_repository.py",
+      "exit_code": 0,
+      "result": "8 package manifests checked"
+    },
+    {
+      "command": "npm test",
+      "cwd": "web",
+      "exit_code": 0,
+      "passed": 161,
+      "skipped": 1,
+      "skip": "Optional external MGE_REPLAY_PACKAGE not supplied"
+    },
+    {
+      "command": "npm run build",
+      "cwd": "web",
+      "exit_code": 0
+    },
+    {
+      "command": "wsl -d Ubuntu-24.04 --cd <mission-worktree> --exec bash tmp/validate_mission_ros_env.sh",
+      "reproducible_validator": "scripts/validate_mission_ros.sh",
+      "build_command": "colcon build --symlink-install --cmake-args -DPython3_EXECUTABLE=<active-environment-python>",
+      "test_command": "ROS_DOMAIN_ID=83 python -m pytest tests/mission tests/contract tests/integration -q --tb=short --junitxml=<retained-report>",
+      "exit_code": 0,
+      "packages_built": 8,
+      "messages_inspected": 6,
+      "services_inspected": 2,
+      "tests": 589,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 588,
+      "skip": "Optional materialized planner snapshot unavailable; separate exact-main conformance ran"
+    }
+  ],
+  "diagnostics": {
+    "planner_conformance": {
+      "ref": "5898e7d74c3eb00a018a2061a9b2264d947f12a8",
+      "agree": 1,
+      "disagree": 6,
+      "feasible": 7,
+      "authorization": "BLOCKED"
+    },
+    "scenario_readiness": {
+      "status": "NOT_READY",
+      "findings": 0,
+      "missing_inputs": 6,
+      "scenario_approval": "APPROVED_EXPERIMENTAL_VALUES"
+    }
+  },
+  "logs": "Text logs and JUnit normalized to UTF-8/LF; line-end whitespace and trailing blank lines removed; raw console captures retained locally",
+  "artifacts_sha256": {
+    "conformance-main/conformance.json": "527a6c6769aa12ccc937018b43ddda3a5c7ad59ee0fd373093001540a2589d73",
+    "readiness/mission_candidate.json": "662b7859695a960d3f224bfcefb5bf961f1452dafafdabd3cf1e939fd23fbaa1",
+    "readiness/scenario_diagnostic.json": "5e29e509f56304c095e700f2cd71bf2b2825981bbfd8b2d438d1df0cb478de9b",
+    "README.md": "e094531bc6bd2cc616f09cff17da77a3153e56708756b72027225e1618c81d87",
+    "validation/jazzy-platform.log": "0b76c6f1c98ded28545c6183ec4fedc815f6a9a87fcfe9cba7c3e31e78c8419f",
+    "validation/jazzy.junit.xml": "5135bfe55bed309efaa96e9d121595b30b3cc3ff50851246473be671a9cec9cf",
+    "validation/jazzy.log": "8ff5af43e44a04edd377fc267c4157f40e79b64a6e9005e202e40a2cda5ebbf0",
+    "validation/jazzy.source.json": "a3c79ac296bd7f2f0d692005350ba1ae8ffb6437be99dbbfbc8c11e8a1a5a661",
+    "validation/python-initial.junit.xml": "d62ee08fee09ae83cbd4fce364569f4dfd07c538de9ac902ed30c7fc7e9c6ed5",
+    "validation/python-initial.log": "b017610af81b0231ea0030cb77d71fa166b3ec0d1a3c14f6ac26d5eab815a59e",
+    "validation/python.junit.xml": "9f71b3d52f083730c957e9d4b4489332db664bb339d7d79476bdc266ca63a1ff",
+    "validation/python.log": "718325267562af431391abb9ccc822844b1c96a65efb6b0ecba7a4f17a35a93a",
+    "validation/replay-recheck.junit.xml": "d8f7fa6b1bdc3d1b5786d51b198edf288be0760fa39a07f0e23a19409cc89d50",
+    "validation/replay-recheck.log": "0b8020cd2aa96a3d6d0d94196fe41a8f15146f4236d869d33aef72927fff82dc",
+    "validation/repository.log": "b9bcb2ddade0cb2e0bc348ce5136bc030862ca986c6c9522f1db03043e1aba2d",
+    "validation/web-build.log": "38943f5d17ab7587c719a57850f1526e6722a656b4ebaf2735c5c6db31f90ef2",
+    "validation/web-tests.log": "a1fcfa49a8f59132204ba2c3b1671b49d08ae4b527dbf9efdda6481aeb235251"
+  },
+  "profiles_approved": false,
+  "cost_agreement_approved": false,
+  "execution_evidence_approved": false,
+  "mission_execution_authorized": false,
+  "new_mocks_created": false,
+  "limitations": [
+    "Existing controlled ROS and MOCK fixtures prove software exchange only, not a scientific mission.",
+    "Remote PR CI is recorded by GitHub after this local source snapshot; no remote result is invented here."
+  ]
+}

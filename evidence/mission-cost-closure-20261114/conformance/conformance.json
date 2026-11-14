@@ -1,0 +1,1079 @@
+{
+  "schema_version": "1.0.0",
+  "classification": "MODEL_CONFORMANCE",
+  "synthetic": true,
+  "authorization": "BLOCKED",
+  "scientific_approval_changed": false,
+  "status": "COMPLETED",
+  "reason_code": "MODEL_DISAGREEMENT",
+  "planner": {
+    "revision": "69101e983c9a9668ba852460c484b5db8f12a1a5",
+    "repository": "https://github.com/jorgefajardom-coder/NASA-GODS-EYE-.git",
+    "source_manifest_sha256": "f4db68afc70f564a7653cba356ffe7e7f692f5c276a80bea0e170db06952fc96",
+    "source_files_sha256": {
+      "src/mge_planning/MODEL.md": "acc8bb5d81a2cf3ca34c1a2c63c1f1f3282b3f28a4dd63de993ac9a2e3b51eb6",
+      "src/mge_planning/README.md": "169a71657e6a6862fb5f3e7dc679f43727dfab456f7abe5c5f113a5827e024b3",
+      "src/mge_planning/mge_planning/__init__.py": "a26f5fd6f9d68940c8358b1cebcb48d4fdada7b0d4af1383a9444f5d0a567bca",
+      "src/mge_planning/mge_planning/adapter.py": "6292f64759cb306ed1fc751fe397f214631142dc99aa16dfaac7e594355dce73",
+      "src/mge_planning/mge_planning/core.py": "5080c7dbae5762ac036e8c7fc862acd1da849759151e55eef33ad965a4e79f78",
+      "src/mge_planning/mge_planning/node.py": "ed11eacde8b6c7414d4508a8a4c99d92b57dd3d63ee91514410cb044dada8f5d",
+      "src/mge_planning/mge_planning/replan.py": "5d4e929b454a842a57c2f3aeee0199f2e81b149e9332b8e6880c30224d33f065",
+      "src/mge_planning/package.xml": "c9452115caa183d91c0a6dc8a4adde794c368cd172ff8f59298bc28521d5e5bc",
+      "src/mge_planning/resource/mge_planning": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/mge_planning/setup.cfg": "196dd9448d66431d354f1542b18650992b6d90604144618b3fded6315f7e41ed",
+      "src/mge_planning/setup.py": "786c549894d68af73c7786d59e886983f67a35d80932bdcafec81775d85fa446"
+    },
+    "package_python_files": [
+      "src/mge_planning/mge_planning/__init__.py",
+      "src/mge_planning/mge_planning/adapter.py",
+      "src/mge_planning/mge_planning/core.py",
+      "src/mge_planning/mge_planning/node.py",
+      "src/mge_planning/mge_planning/replan.py"
+    ]
+  },
+  "science": {
+    "model_id": "mge-science-1.0.0",
+    "model_source_sha256": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "probe_source_sha256": "60cf240d8408252b9d34d0fd2e42c2b55f87d89fb68402262ba9738f84b0daaa",
+    "profiles_sha256": "131293c9877da66e607f18c3864dab41b1b0d08c091ef05ccbf096a152b69fac",
+    "profiles": {
+      "drone_1": {
+        "agent_id": "drone_1",
+        "kind": "drone",
+        "capabilities": [
+          "observe"
+        ],
+        "parameters": {
+          "mass_kg": 1.8,
+          "speed_m_s": 2.0,
+          "vertical_speed_m_s": 1.0,
+          "climb_efficiency": 0.5,
+          "gravity_m_s2": 3.71,
+          "max_slope_deg": 90.0,
+          "max_step_m": 1000000.0,
+          "radius_m": 0.6,
+          "localization_error_m": 0.25,
+          "max_sigma_m": 1.0
+        },
+        "activity_power_w": {
+          "ground_wait": 5.0,
+          "translate": 350.0,
+          "ascent": 350.0,
+          "descent": 230.0,
+          "hover": 230.0,
+          "observe": 230.0
+        },
+        "approval_status": "proposed",
+        "model_id": "mge-science-1.0.0"
+      },
+      "human_1": {
+        "agent_id": "human_1",
+        "kind": "human",
+        "capabilities": [
+          "reach",
+          "sample"
+        ],
+        "parameters": {
+          "body_mass_kg": 80.7,
+          "suit_mass_kg": 120.0,
+          "speed_m_s": 0.8333,
+          "slope_slowdown": 2.0,
+          "climb_efficiency": 0.25,
+          "gravity_m_s2": 3.71,
+          "max_slope_deg": 10.0,
+          "max_step_m": 0.2,
+          "radius_m": 0.5,
+          "localization_error_m": 0.25,
+          "max_sigma_m": 1.0,
+          "oxygen_scale": 1.0
+        },
+        "activity_power_w": {
+          "walk": 417.7,
+          "wait": 358.08,
+          "inspect": 358.08,
+          "sample": 461.17
+        },
+        "approval_status": "proposed",
+        "model_id": "mge-science-1.0.0"
+      },
+      "rover_1": {
+        "agent_id": "rover_1",
+        "kind": "rover",
+        "capabilities": [
+          "inspect"
+        ],
+        "parameters": {
+          "mass_kg": 1025.0,
+          "speed_m_s": 0.04,
+          "rolling_resistance": 0.05,
+          "slip": 0.1,
+          "drive_efficiency": 0.35,
+          "auxiliary_power_w": 100.0,
+          "gravity_m_s2": 3.71,
+          "max_slope_deg": 20.0,
+          "max_step_m": 0.2,
+          "radius_m": 1.5,
+          "localization_error_m": 0.25,
+          "max_sigma_m": 1.0
+        },
+        "activity_power_w": {
+          "wait": 80.0,
+          "inspect": 200.0
+        },
+        "approval_status": "proposed",
+        "model_id": "mge-science-1.0.0"
+      }
+    },
+    "oxygen_volume_basis": {
+      "gas": "ideal dry O2",
+      "temperature_k": 273.15,
+      "pressure_pa": 101325
+    }
+  },
+  "tolerances": {
+    "relative": 1e-05,
+    "absolute": 0.001
+  },
+  "cases": [
+    {
+      "case_id": "human_flat",
+      "agent_id": "human_1",
+      "status": "DISAGREE",
+      "inputs": {
+        "grid_rows": 13,
+        "grid_cols": 13,
+        "resolution_m": 1.0,
+        "height_per_column_m": 0.0,
+        "all_cells_public_admissible": true,
+        "sigma_m": 0.0,
+        "start_enu_m": [
+          4.5,
+          4.5,
+          0.0
+        ],
+        "goal_enu_m": [
+          6.5,
+          4.5,
+          0.0
+        ],
+        "return_to_enu_m": [
+          4.5,
+          4.5,
+          0.0
+        ],
+        "service_activity": "sample",
+        "service_time_s": 0.0,
+        "wait_time_s": 0.0,
+        "budget": {
+          "time_s": 100000.0,
+          "energy_wh": 100000.0,
+          "oxygen_l": 100000.0
+        },
+        "required_reserve_time_s": 10.0,
+        "required_reserve_wh": 10.0,
+        "required_reserve_oxygen_l": 10.0
+      },
+      "inputs_sha256": "15c416f45923bd3e3eb6b23303eb02319a5f2726990049231cf2292d26dd5358",
+      "planner_status": "FEASIBLE",
+      "planner_reason_code": "FEASIBLE_UNDER_MODEL",
+      "audit": {
+        "paths": {
+          "outbound_path": [
+            [
+              4.5,
+              4.5,
+              0.0
+            ],
+            [
+              5.5,
+              4.5,
+              0.0
+            ],
+            [
+              6.5,
+              4.5,
+              0.0
+            ]
+          ],
+          "return_path": [
+            [
+              6.5,
+              4.5,
+              0.0
+            ],
+            [
+              5.5,
+              4.5,
+              0.0
+            ],
+            [
+              4.5,
+              4.5,
+              0.0
+            ]
+          ]
+        },
+        "planner_costs": {
+          "time_s": 4.800192007680307,
+          "energy_wh": 0.5569556115577956,
+          "oxygen_l": 0.20182301396287766
+        },
+        "science_costs": {
+          "time_s": 4.800192007680307,
+          "energy_wh": 0.5569556115577956,
+          "oxygen_l": 0.11373185029212017
+        },
+        "planner_reserves": {
+          "time_s": 99995.19980799232,
+          "energy_wh": 99999.44304438845,
+          "oxygen_l": 99999.79817698603
+        },
+        "science_reserves": {
+          "time_s": 99995.19980799232,
+          "energy_wh": 99999.44304438845,
+          "oxygen_l": 99999.88626814971
+        },
+        "cost_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": 0.0,
+          "oxygen_l": 0.08809116367075749
+        },
+        "reserve_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": 0.0,
+          "oxygen_l": -0.0880911636777455
+        },
+        "costs_within_tolerance": {
+          "time_s": true,
+          "energy_wh": true,
+          "oxygen_l": false
+        },
+        "reserves_within_tolerance": {
+          "time_s": true,
+          "energy_wh": true,
+          "oxygen_l": true
+        },
+        "agreement": false
+      }
+    },
+    {
+      "case_id": "human_slope",
+      "agent_id": "human_1",
+      "status": "DISAGREE",
+      "inputs": {
+        "grid_rows": 13,
+        "grid_cols": 13,
+        "resolution_m": 1.0,
+        "height_per_column_m": 0.05,
+        "all_cells_public_admissible": true,
+        "sigma_m": 0.0,
+        "start_enu_m": [
+          4.5,
+          4.5,
+          0.2
+        ],
+        "goal_enu_m": [
+          6.5,
+          4.5,
+          0.30000000000000004
+        ],
+        "return_to_enu_m": [
+          4.5,
+          4.5,
+          0.2
+        ],
+        "service_activity": "sample",
+        "service_time_s": 0.0,
+        "wait_time_s": 0.0,
+        "budget": {
+          "time_s": 100000.0,
+          "energy_wh": 100000.0,
+          "oxygen_l": 100000.0
+        },
+        "required_reserve_time_s": 10.0,
+        "required_reserve_wh": 10.0,
+        "required_reserve_oxygen_l": 10.0
+      },
+      "inputs_sha256": "6ccfbda661ee21ad544de6b449ad4b75b8bd03ad8fbec9461effa3e99211b93e",
+      "planner_status": "FEASIBLE",
+      "planner_reason_code": "FEASIBLE_UNDER_MODEL",
+      "audit": {
+        "paths": {
+          "outbound_path": [
+            [
+              4.5,
+              4.5,
+              0.2
+            ],
+            [
+              5.5,
+              4.5,
+              0.25
+            ],
+            [
+              6.5,
+              4.5,
+              0.30000000000000004
+            ]
+          ],
+          "return_path": [
+            [
+              6.5,
+              4.5,
+              0.30000000000000004
+            ],
+            [
+              5.5,
+              4.5,
+              0.25
+            ],
+            [
+              4.5,
+              4.5,
+              0.2
+            ]
+          ]
+        },
+        "planner_costs": {
+          "time_s": 5.286807352442306,
+          "energy_wh": 0.6683702917639229,
+          "oxygen_l": 0.22228264877817572
+        },
+        "science_costs": {
+          "time_s": 5.280211208448338,
+          "energy_wh": 0.6953841727135752,
+          "oxygen_l": 0.14199933887974345
+        },
+        "planner_reserves": {
+          "time_s": 99994.71319264756,
+          "energy_wh": 99999.33162970823,
+          "oxygen_l": 99999.77771735121
+        },
+        "science_reserves": {
+          "time_s": 99994.71978879155,
+          "energy_wh": 99999.30461582729,
+          "oxygen_l": 99999.85800066112
+        },
+        "cost_deltas_planner_minus_science": {
+          "time_s": 0.006596143993967907,
+          "energy_wh": -0.02701388094965229,
+          "oxygen_l": 0.08028330989843227
+        },
+        "reserve_deltas_planner_minus_science": {
+          "time_s": -0.0065961439977400005,
+          "energy_wh": 0.027013880942831747,
+          "oxygen_l": -0.0802833099005511
+        },
+        "costs_within_tolerance": {
+          "time_s": false,
+          "energy_wh": false,
+          "oxygen_l": false
+        },
+        "reserves_within_tolerance": {
+          "time_s": true,
+          "energy_wh": true,
+          "oxygen_l": true
+        },
+        "agreement": false
+      }
+    },
+    {
+      "case_id": "human_service_wait",
+      "agent_id": "human_1",
+      "status": "DISAGREE",
+      "inputs": {
+        "grid_rows": 13,
+        "grid_cols": 13,
+        "resolution_m": 1.0,
+        "height_per_column_m": 0.0,
+        "all_cells_public_admissible": true,
+        "sigma_m": 0.0,
+        "start_enu_m": [
+          4.5,
+          4.5,
+          0.0
+        ],
+        "goal_enu_m": [
+          6.5,
+          4.5,
+          0.0
+        ],
+        "return_to_enu_m": [
+          4.5,
+          4.5,
+          0.0
+        ],
+        "service_activity": "sample",
+        "service_time_s": 20.0,
+        "wait_time_s": 15.0,
+        "budget": {
+          "time_s": 100000.0,
+          "energy_wh": 100000.0,
+          "oxygen_l": 100000.0
+        },
+        "required_reserve_time_s": 10.0,
+        "required_reserve_wh": 10.0,
+        "required_reserve_oxygen_l": 10.0
+      },
+      "inputs_sha256": "6ee8069225ac0d4b488823e9c9461effeab3d51c8d33eaaf6055772d2253badb",
+      "planner_status": "FEASIBLE",
+      "planner_reason_code": "FEASIBLE_UNDER_MODEL",
+      "audit": {
+        "paths": {
+          "outbound_path": [
+            [
+              4.5,
+              4.5,
+              0.0
+            ],
+            [
+              5.5,
+              4.5,
+              0.0
+            ],
+            [
+              6.5,
+              4.5,
+              0.0
+            ]
+          ],
+          "return_path": [
+            [
+              6.5,
+              4.5,
+              0.0
+            ],
+            [
+              5.5,
+              4.5,
+              0.0
+            ],
+            [
+              4.5,
+              4.5,
+              0.0
+            ]
+          ]
+        },
+        "planner_costs": {
+          "time_s": 39.8001920076803,
+          "energy_wh": 5.040552833780018,
+          "oxygen_l": 1.673390292396455
+        },
+        "science_costs": {
+          "time_s": 39.80019200768031,
+          "energy_wh": 4.611011167113351,
+          "oxygen_l": 0.9415810180754606
+        },
+        "planner_reserves": {
+          "time_s": 99960.19980799232,
+          "energy_wh": 99994.95944716621,
+          "oxygen_l": 99998.3266097076
+        },
+        "science_reserves": {
+          "time_s": 99960.19980799232,
+          "energy_wh": 99995.38898883288,
+          "oxygen_l": 99999.05841898192
+        },
+        "cost_deltas_planner_minus_science": {
+          "time_s": -7.105427357601002e-15,
+          "energy_wh": 0.42954166666666715,
+          "oxygen_l": 0.7318092743209944
+        },
+        "reserve_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": -0.42954166667186655,
+          "oxygen_l": -0.7318092743225861
+        },
+        "costs_within_tolerance": {
+          "time_s": true,
+          "energy_wh": false,
+          "oxygen_l": false
+        },
+        "reserves_within_tolerance": {
+          "time_s": true,
+          "energy_wh": true,
+          "oxygen_l": true
+        },
+        "agreement": false
+      }
+    },
+    {
+      "case_id": "rover_flat",
+      "agent_id": "rover_1",
+      "status": "AGREE",
+      "inputs": {
+        "grid_rows": 13,
+        "grid_cols": 13,
+        "resolution_m": 1.0,
+        "height_per_column_m": 0.0,
+        "all_cells_public_admissible": true,
+        "sigma_m": 0.0,
+        "start_enu_m": [
+          4.5,
+          4.5,
+          0.0
+        ],
+        "goal_enu_m": [
+          6.5,
+          4.5,
+          0.0
+        ],
+        "return_to_enu_m": [
+          4.5,
+          4.5,
+          0.0
+        ],
+        "service_activity": "inspect",
+        "service_time_s": 0.0,
+        "wait_time_s": 0.0,
+        "budget": {
+          "time_s": 100000.0,
+          "energy_wh": 100000.0,
+          "oxygen_l": null
+        },
+        "required_reserve_time_s": 10.0,
+        "required_reserve_wh": 10.0,
+        "required_reserve_oxygen_l": null
+      },
+      "inputs_sha256": "db702b80b5254967285f0797e1aaec51dbf39c9190b86a00fb44268eddbf77ca",
+      "planner_status": "FEASIBLE",
+      "planner_reason_code": "FEASIBLE_UNDER_MODEL",
+      "audit": {
+        "paths": {
+          "outbound_path": [
+            [
+              4.5,
+              4.5,
+              0.0
+            ],
+            [
+              5.5,
+              4.5,
+              0.0
+            ],
+            [
+              6.5,
+              4.5,
+              0.0
+            ]
+          ],
+          "return_path": [
+            [
+              6.5,
+              4.5,
+              0.0
+            ],
+            [
+              5.5,
+              4.5,
+              0.0
+            ],
+            [
+              4.5,
+              4.5,
+              0.0
+            ]
+          ]
+        },
+        "planner_costs": {
+          "time_s": 111.1111111111111,
+          "energy_wh": 3.7570987654320986,
+          "oxygen_l": null
+        },
+        "science_costs": {
+          "time_s": 111.1111111111111,
+          "energy_wh": 3.7570987654320986,
+          "oxygen_l": null
+        },
+        "planner_reserves": {
+          "time_s": 99888.88888888889,
+          "energy_wh": 99996.24290123457,
+          "oxygen_l": null
+        },
+        "science_reserves": {
+          "time_s": 99888.88888888889,
+          "energy_wh": 99996.24290123457,
+          "oxygen_l": null
+        },
+        "cost_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": 0.0,
+          "oxygen_l": null
+        },
+        "reserve_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": 0.0,
+          "oxygen_l": null
+        },
+        "costs_within_tolerance": {
+          "time_s": true,
+          "energy_wh": true,
+          "oxygen_l": true
+        },
+        "reserves_within_tolerance": {
+          "time_s": true,
+          "energy_wh": true,
+          "oxygen_l": true
+        },
+        "agreement": true
+      }
+    },
+    {
+      "case_id": "rover_slope",
+      "agent_id": "rover_1",
+      "status": "DISAGREE",
+      "inputs": {
+        "grid_rows": 13,
+        "grid_cols": 13,
+        "resolution_m": 1.0,
+        "height_per_column_m": 0.05,
+        "all_cells_public_admissible": true,
+        "sigma_m": 0.0,
+        "start_enu_m": [
+          4.5,
+          4.5,
+          0.2
+        ],
+        "goal_enu_m": [
+          6.5,
+          4.5,
+          0.30000000000000004
+        ],
+        "return_to_enu_m": [
+          4.5,
+          4.5,
+          0.2
+        ],
+        "service_activity": "inspect",
+        "service_time_s": 0.0,
+        "wait_time_s": 0.0,
+        "budget": {
+          "time_s": 100000.0,
+          "energy_wh": 100000.0,
+          "oxygen_l": null
+        },
+        "required_reserve_time_s": 10.0,
+        "required_reserve_wh": 10.0,
+        "required_reserve_oxygen_l": null
+      },
+      "inputs_sha256": "0a70e87492c931f6eeec5a0f633d5e5e2477f092b7021c842d37431b6f0a5cf2",
+      "planner_status": "FEASIBLE",
+      "planner_reason_code": "FEASIBLE_UNDER_MODEL",
+      "audit": {
+        "paths": {
+          "outbound_path": [
+            [
+              4.5,
+              4.5,
+              0.2
+            ],
+            [
+              5.5,
+              4.5,
+              0.25
+            ],
+            [
+              6.5,
+              4.5,
+              0.30000000000000004
+            ]
+          ],
+          "return_path": [
+            [
+              6.5,
+              4.5,
+              0.30000000000000004
+            ],
+            [
+              5.5,
+              4.5,
+              0.25
+            ],
+            [
+              4.5,
+              4.5,
+              0.2
+            ]
+          ]
+        },
+        "planner_costs": {
+          "time_s": 111.24991330278213,
+          "energy_wh": 4.097550626217333,
+          "oxygen_l": null
+        },
+        "science_costs": {
+          "time_s": 111.24991330278213,
+          "energy_wh": 3.760954381867405,
+          "oxygen_l": null
+        },
+        "planner_reserves": {
+          "time_s": 99888.75008669721,
+          "energy_wh": 99995.90244937378,
+          "oxygen_l": null
+        },
+        "science_reserves": {
+          "time_s": 99888.75008669721,
+          "energy_wh": 99996.23904561813,
+          "oxygen_l": null
+        },
+        "cost_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": 0.33659624434992796,
+          "oxygen_l": null
+        },
+        "reserve_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": -0.33659624434949365,
+          "oxygen_l": null
+        },
+        "costs_within_tolerance": {
+          "time_s": true,
+          "energy_wh": false,
+          "oxygen_l": true
+        },
+        "reserves_within_tolerance": {
+          "time_s": true,
+          "energy_wh": true,
+          "oxygen_l": true
+        },
+        "agreement": false
+      }
+    },
+    {
+      "case_id": "rover_service_wait",
+      "agent_id": "rover_1",
+      "status": "DISAGREE",
+      "inputs": {
+        "grid_rows": 13,
+        "grid_cols": 13,
+        "resolution_m": 1.0,
+        "height_per_column_m": 0.0,
+        "all_cells_public_admissible": true,
+        "sigma_m": 0.0,
+        "start_enu_m": [
+          4.5,
+          4.5,
+          0.0
+        ],
+        "goal_enu_m": [
+          6.5,
+          4.5,
+          0.0
+        ],
+        "return_to_enu_m": [
+          4.5,
+          4.5,
+          0.0
+        ],
+        "service_activity": "inspect",
+        "service_time_s": 20.0,
+        "wait_time_s": 15.0,
+        "budget": {
+          "time_s": 100000.0,
+          "energy_wh": 100000.0,
+          "oxygen_l": null
+        },
+        "required_reserve_time_s": 10.0,
+        "required_reserve_wh": 10.0,
+        "required_reserve_oxygen_l": null
+      },
+      "inputs_sha256": "a0b155ca0256d5c5b0e99e121fa2f4fab19840f429633d78d765eb95d897d4fa",
+      "planner_status": "FEASIBLE",
+      "planner_reason_code": "FEASIBLE_UNDER_MODEL",
+      "audit": {
+        "paths": {
+          "outbound_path": [
+            [
+              4.5,
+              4.5,
+              0.0
+            ],
+            [
+              5.5,
+              4.5,
+              0.0
+            ],
+            [
+              6.5,
+              4.5,
+              0.0
+            ]
+          ],
+          "return_path": [
+            [
+              6.5,
+              4.5,
+              0.0
+            ],
+            [
+              5.5,
+              4.5,
+              0.0
+            ],
+            [
+              4.5,
+              4.5,
+              0.0
+            ]
+          ]
+        },
+        "planner_costs": {
+          "time_s": 146.1111111111111,
+          "energy_wh": 5.701543209876543,
+          "oxygen_l": null
+        },
+        "science_costs": {
+          "time_s": 146.1111111111111,
+          "energy_wh": 5.201543209876543,
+          "oxygen_l": null
+        },
+        "planner_reserves": {
+          "time_s": 99853.88888888889,
+          "energy_wh": 99994.29845679013,
+          "oxygen_l": null
+        },
+        "science_reserves": {
+          "time_s": 99853.88888888889,
+          "energy_wh": 99994.79845679013,
+          "oxygen_l": null
+        },
+        "cost_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": 0.5,
+          "oxygen_l": null
+        },
+        "reserve_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": -0.5,
+          "oxygen_l": null
+        },
+        "costs_within_tolerance": {
+          "time_s": true,
+          "energy_wh": false,
+          "oxygen_l": true
+        },
+        "reserves_within_tolerance": {
+          "time_s": true,
+          "energy_wh": true,
+          "oxygen_l": true
+        },
+        "agreement": false
+      }
+    },
+    {
+      "case_id": "drone_observe",
+      "agent_id": "drone_1",
+      "status": "DISAGREE",
+      "inputs": {
+        "grid_rows": 13,
+        "grid_cols": 13,
+        "resolution_m": 1.0,
+        "height_per_column_m": 0.0,
+        "all_cells_public_admissible": true,
+        "sigma_m": 0.0,
+        "start_enu_m": [
+          4.5,
+          4.5,
+          0.0
+        ],
+        "goal_enu_m": [
+          6.5,
+          4.5,
+          0.0
+        ],
+        "return_to_enu_m": [
+          4.5,
+          4.5,
+          0.0
+        ],
+        "service_activity": "observe",
+        "service_time_s": 30.0,
+        "wait_time_s": 0.0,
+        "budget": {
+          "time_s": 100000.0,
+          "energy_wh": 100000.0,
+          "oxygen_l": null
+        },
+        "required_reserve_time_s": 10.0,
+        "required_reserve_wh": 10.0,
+        "required_reserve_oxygen_l": null
+      },
+      "inputs_sha256": "36f0c86278d74a3cdfd2933d94334345bb7973572c795be56c17215e9ff297ea",
+      "planner_status": "FEASIBLE",
+      "planner_reason_code": "FEASIBLE_UNDER_MODEL",
+      "audit": {
+        "paths": {
+          "outbound_path": [
+            [
+              4.5,
+              4.5,
+              0.0
+            ],
+            [
+              5.5,
+              4.5,
+              0.0
+            ],
+            [
+              6.5,
+              4.5,
+              0.0
+            ]
+          ],
+          "return_path": [
+            [
+              6.5,
+              4.5,
+              0.0
+            ],
+            [
+              5.5,
+              4.5,
+              0.0
+            ],
+            [
+              4.5,
+              4.5,
+              0.0
+            ]
+          ]
+        },
+        "planner_costs": {
+          "time_s": 32.0,
+          "energy_wh": 3.111111111111111,
+          "oxygen_l": null
+        },
+        "science_costs": {
+          "time_s": 32.0,
+          "energy_wh": 2.111111111111111,
+          "oxygen_l": null
+        },
+        "planner_reserves": {
+          "time_s": 99968.0,
+          "energy_wh": 99996.88888888889,
+          "oxygen_l": null
+        },
+        "science_reserves": {
+          "time_s": 99968.0,
+          "energy_wh": 99997.88888888889,
+          "oxygen_l": null
+        },
+        "cost_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": 1.0,
+          "oxygen_l": null
+        },
+        "reserve_deltas_planner_minus_science": {
+          "time_s": 0.0,
+          "energy_wh": -1.0,
+          "oxygen_l": null
+        },
+        "costs_within_tolerance": {
+          "time_s": true,
+          "energy_wh": false,
+          "oxygen_l": true
+        },
+        "reserves_within_tolerance": {
+          "time_s": true,
+          "energy_wh": false,
+          "oxygen_l": true
+        },
+        "agreement": false
+      }
+    }
+  ],
+  "limits": [
+    "Synthetic known-public grids, not mission execution or an A/B/C benchmark.",
+    "Agreement on finite cases cannot approve profiles or planner model identity.",
+    "No evaluator reference, hidden observations, or LIVE mission is used."
+  ],
+  "dependencies": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  },
+  "planner_projection": {
+    "schema_version": "1.0.0",
+    "model_id": "mge-science-1.0.0",
+    "status": "pending_model_agreement",
+    "profiles": {
+      "human_1": {
+        "agent_kind": "human",
+        "speed_m_s": 0.8333,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "energy_wh_per_m": 0.1392389028894489,
+        "oxygen_l_per_s": 0.04204477938381649,
+        "uphill_time_factor": 2.0,
+        "downhill_time_factor": 2.0,
+        "uphill_energy_factor": 7.941802059851569,
+        "downhill_energy_factor": 0.0,
+        "service_power_w": 461.17,
+        "max_downhill_slope_deg": 10.0,
+        "max_sigma_m": 1.0
+      },
+      "rover_1": {
+        "agent_kind": "rover",
+        "speed_m_s": 0.036000000000000004,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "energy_wh_per_m": 0.9392746913580247,
+        "oxygen_l_per_s": null,
+        "uphill_time_factor": 0.0,
+        "downhill_time_factor": 0.0,
+        "uphill_energy_factor": 3.570196336153783,
+        "downhill_energy_factor": 0.0,
+        "service_power_w": 200.0,
+        "max_downhill_slope_deg": 20.0,
+        "max_sigma_m": 1.0
+      },
+      "drone_1": {
+        "agent_kind": "drone",
+        "speed_m_s": 2.0,
+        "max_slope_deg": 90.0,
+        "max_step_m": 1000000.0,
+        "radius_m": 0.6,
+        "localization_error_m": 0.25,
+        "energy_wh_per_m": 0.04861111111111111,
+        "oxygen_l_per_s": null,
+        "uphill_time_factor": 2.0,
+        "downhill_time_factor": 2.0,
+        "uphill_energy_factor": 2.07632,
+        "downhill_energy_factor": 0.0,
+        "service_power_w": 350.0,
+        "max_downhill_slope_deg": 90.0,
+        "max_sigma_m": 1.0
+      }
+    },
+    "approximation": {
+      "exact_science_model": false,
+      "reason": "Current planner has per-distance energy and constant human oxygen; mission audits full activity/grade costs independently.",
+      "human_oxygen": "Maximum admitted climb/activity rate, not a constant physiological measurement.",
+      "drone": "Ground-grid projection; it cannot verify flight clearance or 3D collision avoidance.",
+      "approval": "Scientific profile approval does not approve this projection."
+    }
+  },
+  "summary": {
+    "AGREE": 1,
+    "DISAGREE": 6,
+    "NOT_FEASIBLE": 0,
+    "ERROR": 0
+  },
+  "run_id": "cost-agreement-review-20261114",
+  "recorded_at_utc": "2026-11-14T22:46:10.635008+00:00",
+  "profile_registry_sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+  "command": [
+    "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+    "scripts/check_planner_conformance.py",
+    "--planner-ref",
+    "69101e983c9a9668ba852460c484b5db8f12a1a5",
+    "--run-id",
+    "cost-agreement-review-20261114",
+    "--output-dir",
+    "evidence/mission-cost-closure-20261114/conformance"
+  ]
+}

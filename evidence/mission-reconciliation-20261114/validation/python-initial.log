@@ -1,0 +1,79 @@
+........................................................................ [  7%]
+..........................F............................................. [ 14%]
+........................................................................ [ 21%]
+........................................................................ [ 29%]
+...................ss................................................... [ 36%]
+...............................s........................................ [ 43%]
+........................................................................ [ 51%]
+....................................................................s... [ 58%]
+........................................................................ [ 65%]
+........................................................................ [ 73%]
+........................................................................ [ 80%]
+........................................................................ [ 87%]
+........................................................................ [ 95%]
+...............................................                          [100%]
+================================== FAILURES ===================================
+___________ test_late_writer_events_roundtrip_through_viewer_oracle ___________
+
+package = ({'agents': [{'agent_id': 'drone_1', 'agent_kind': 'DRONE'}, {'agent_id': 'human_1', 'agent_kind': 'HUMAN'}, {'agent_i.....}, 'active_task_id': 'primary', 'active_task_kind': 'primary', 'active_task_state': '', ...}, 'mode': 'REPLAY', ...})
+tmp_path = WindowsPath('C:/Users/User/.codex/worktrees/david-mission/Hackt�n NASA/tmp/pytest-mission-main-merge/test_late_writer_events_roundt0')
+
+    def test_late_writer_events_roundtrip_through_viewer_oracle(package, tmp_path):
+        manifest, records, _ = package
+        first, second = [r for r in records if r["type"] == "event"][:2]
+        writer = ReplayWriter(str(tmp_path), manifest["run_id"], manifest["clock_source"])
+        for record in records:
+            if record is first:
+                continue
+>           assert writer.record(record["type"], record[record["type"]])
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\contract\test_replay_conversion.py:164:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src\mge_gateway\mge_gateway\replay.py:91: in record
+    self._write_summary()
+src\mge_gateway\mge_gateway\replay.py:107: in _write_summary
+    write_json(os.path.join(self.dir, MANIFEST), self.store.envelope(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-mission-main-merge\\test_late_writer_events_roundt0\\mock-vertical-001\\manifest.json'
+data = {'agents': [{'agent_id': 'drone_1', 'agent_kind': 'DRONE'}, {'agent_id': 'human_1', 'agent_kind': 'HUMAN'}, {'agent_id... 'clock_source': 'system', 'event_count': 6, 'files': {'snapshot': 'snapshot.json', 'timeline': 'timeline.jsonl'}, ...}
+
+    def write_json(path, data):
+        tmp = path + '.tmp'
+        with open(tmp, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=1, allow_nan=False)
+            f.write('\n')
+>       os.replace(tmp, path)
+E       PermissionError: [WinError 5] Acceso denegado: 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-mission-main-merge\\test_late_writer_events_roundt0\\mock-vertical-001\\manifest.json.tmp' -> 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-mission-main-merge\\test_late_writer_events_roundt0\\mock-vertical-001\\manifest.json'
+
+src\mge_gateway\mge_gateway\replay.py:50: PermissionError
+============================== warnings summary ===============================
+..\..\..\..\Documents\ChatGPT\Hackt�n NASA\.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\User\Documents\ChatGPT\Hackt�n NASA\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: C:\Users\User\.codex\worktrees\david-mission\Hackt�n NASA\tmp\mission-main-merge-python.junit.xml -
+=========================== short test summary info ===========================
+SKIPPED [1] tests\contract\test_generated_conversion.py:8: Requires built ROS 2 Jazzy interfaces
+SKIPPED [1] tests\contract\test_interfaces.py:4: Requires built ROS 2 workspace
+SKIPPED [1] tests\contract\test_mission_launch.py:7: Requires ROS 2 Jazzy launch packages
+SKIPPED [1] tests\contract\test_mission_service.py:12: Requires ROS 2 Jazzy
+SKIPPED [1] tests\contract\test_mock_recovery.py:7: Requires ROS 2 Jazzy messages
+SKIPPED [1] tests\contract\test_planner_service.py:10: Requires ROS 2 Jazzy and a sourced workspace
+SKIPPED [1] tests\contract\test_profile_launch.py:8: Requires ROS 2 Jazzy launch runtime
+SKIPPED [1] tests\integration\test_planner_concurrency.py:10: Requires built ROS 2 workspace
+SKIPPED [1] tests\integration\test_replay_package.py:11: Requires built ROS 2 workspace
+SKIPPED [1] tests\integration\test_terrain_batch.py:24: Requires built ROS 2 workspace
+SKIPPED [1] tests\integration\test_vertical_execution.py:27: Requires built ROS 2 workspace
+SKIPPED [1] tests\integration\test_vertical_mission.py:17: Requires built ROS 2 Jazzy workspace
+SKIPPED [1] tests\integration\test_vertical_mock.py:18: Requires built ROS 2 workspace
+SKIPPED [1] tests\integration\test_vertical_planner.py:18: Requires built ROS 2 workspace
+SKIPPED [1] tests\integration\test_vertical_terrain.py:26: Requires built ROS 2 workspace
+SKIPPED [1] tests\mission\test_audit.py:155: This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-mission-main-merge\\test_symlinks_cannot_open_exte0\\outside.json' -> 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-mission-main-merge\\test_symlinks_cannot_open_exte0\\run\\public.json'
+SKIPPED [1] tests\mission\test_audit.py:155: This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-mission-main-merge\\test_symlinks_cannot_open_exte1\\run\\reference\\hidden.json' -> 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-mission-main-merge\\test_symlinks_cannot_open_exte1\\run\\public.json'
+SKIPPED [1] tests\mission\test_conformance.py:93: Host does not permit creating symlink fixtures
+SKIPPED [1] tests\mission\test_scenario.py:131: Host does not allow symlink fixture: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-mission-main-merge\\test_symlinked_public_archive_0\\outside.npz' -> 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-mission-main-merge\\test_symlinked_public_archive_0\\public\\terrain.npz'
+FAILED tests/contract/test_replay_conversion.py::test_late_writer_events_roundtrip_through_viewer_oracle
+1 failed, 978 passed, 19 skipped, 1 warning in 13.51s

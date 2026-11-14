@@ -88,7 +88,12 @@ difference is 0.13013 m. A direct diagonal instead reaches 0.23047 m, exceeding
 the proposed 0.20 m step proxy. Do not substitute that diagonal or label the L
 probe safe: footprint clearance and local obstacles are unverified. All 1024
 cells remain unobserved, with initial sigma 2.5 m versus the proposed 1 m limit.
-The dataset therefore cannot currently support an authorized ground itinerary.
+Subsequent main decision D-EST-01 permits hypothetical planning over valid
+estimated prior; unobserved is not synonymous with NoData. It does not verify
+traversal, change the proposed uncertainty limit or authorize this itinerary.
+The producer/consumer bindings remain pending; see the
+[mission success contract](mission_success_contract.md). Original sizing
+outputs retain their historical assumptions and hashes.
 Drone chord calculations prescribe no altitude, takeoff/landing, swept volume
 or executable flight path. Missing flight validation is not solved by budget fit.
 
