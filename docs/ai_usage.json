@@ -661,6 +661,22 @@
         "docs/mission_scenario.md"
       ],
       "use": "Record David explicit JZ-P01..07 approval of nominal experimental scenario values only, bind receipt to unchanged reviewed proposal and current values, and verify runtime stays blocked. Profiles, cost-model agreement, snapshot/execution evidence and operational authorization remain unapproved. No terrain, observations, tasks, mock or execution was generated; original proposal and evidence retained unchanged."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "estimated_terrain_scope_decision_documentation",
+      "generation": "AI-assisted documentation of the project owner accepted scope decision; implementation and acceptance pending",
+      "paths": [
+        "docs/decisions/2026-11-14-estimated-terrain-planning.md",
+        "AGENTS.md",
+        "docs/ICD.md",
+        "docs/mission_checklist.md",
+        "docs/team.md",
+        "docs/research_hypotheses.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Record D-EST-01 superseding the blanket observation prerequisite for hypothetical planning over valid orbital estimates. Preserve NoData/obstacle distinctions, provenance/uncertainty, contradiction-driven invalidation/stop/replan and ownership. Keep integration steps 4/5 open and scene/size/domain-randomization extensions optional. No implementation, generated terrain, media, experiment or mission result claimed."
     }
   ],
   "generated_media": [],
