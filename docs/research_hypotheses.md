@@ -3,6 +3,14 @@
 These are proposed experiments, not implemented capabilities or acceptance
 results. They do not block the [probable mission](mission_checklist.md).
 
+Extension status, 14 November 2026: the owner reports Daniel is trying more
+varied scenes and considering a larger map. These are ongoing module explorations,
+not independently verified benchmark results or an approved baseline expansion.
+Keep the reproducible baseline and integration steps 4/5 protected; use distinct
+dataset/run/seed/configuration identities for extensions. The informed random
+detail generator below remains pending, P1/time permitting. Initial knowledge
+and planning must follow accepted [D-EST-01](decisions/2026-11-14-estimated-terrain-planning.md).
+
 ## H-DAN-01: informed synthetic terrain and seeded planner adaptation
 
 Recorded: 14 November 2026, from the project owner's proposal.
@@ -35,8 +43,9 @@ images for visual learning; it is not evidence for this terrain/planning hypothe
 ### Smallest useful experiment
 
 1. Freeze the public orbital prior, source hashes, extent, frame/datum, NoData,
-   initial knowledge, A/B, resource model and budgets. Keep observed and unknown
-   cells distinct. Reuse P0 handoffs rather than changing their interfaces.
+   initial knowledge, A/B, resource model and budgets. Distinguish estimated,
+   observed and NoData cells; allow hypothetical planning on valid estimates
+   under D-EST-01. Reuse P0 handoffs rather than changing their interfaces.
 2. Generate a private synthetic world using a versioned procedural generator,
    scenario family, parameters and seed. Preserve the coarse terrain envelope
    within a tolerance agreed by David; add bounded hypothetical relief,
