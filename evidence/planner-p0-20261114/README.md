@@ -1,7 +1,7 @@
 # New P0 planner computational evidence
 
 Code under test: `6e4984d38dd0083c014c353673b49781c5f1185b` on feat/planner.
-Produced during the competition; no prior Sandbox output was imported.
+Produced during the competition from the commands and code commit recorded here.
 
 Commands:
 

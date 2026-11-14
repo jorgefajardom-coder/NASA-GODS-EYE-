@@ -48,7 +48,7 @@
         "tests/planning",
         "scripts/benchmark_planner.py"
       ],
-      "use": "Implement FAST/SAFE resource-constrained search, mathematical model, independent acceptance tests and newly generated illustrative benchmark scenarios. No prior Sandbox algorithm or reported results copied."
+      "use": "Implement FAST/SAFE resource-constrained search, mathematical model, independent acceptance tests and newly generated illustrative benchmark scenarios."
     },
     {
       "tool": "OpenAI Codex",
@@ -85,7 +85,7 @@
     "Project idea and science specifications supplied by the human team.",
     "Update this register and descriptive disclosure when generated artifacts change.",
     "No generated bitmap, video or audio asset is included at scaffold time.",
-    "Fresh CTX/HiRISE processing occurs during competition; source observations pre-exist and are cited. No prior Sandbox code, arrays, media or reported outcomes copied."
+    "Fresh CTX/HiRISE processing occurs during competition; source observations pre-exist and are cited."
   ],
   "retained_contributions": [
     {

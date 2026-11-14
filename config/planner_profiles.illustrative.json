@@ -1,6 +1,6 @@
 {
   "status": "illustrative",
-  "provenance": "New test-only profiles. Speed/slope are tentative references to NASA-Sandbox scenario at 827da15; other values are invented test assumptions, not certified physical limits.",
+  "provenance": "New test-only profiles. Tentative speed/slope references and illustrative assumptions are recorded in docs/planner_provenance.md; values are not certified physical limits.",
   "profiles": {
     "human_1": {
       "agent_kind": "human", "speed_m_s": 0.9, "max_slope_deg": 22.0,

@@ -1,13 +1,15 @@
 # Provisional planner terrain provenance
 
 The planner's temporary terrain is a newly processed derivative of official
-USGS/MRO source products. It is not copied from the preparation repository.
-The predecessor `dryanguasr/NASA-Sandbox` at commit `827da15` (10 November 2026)
-was consulted only to identify upstream product URLs and their citations. Its
-Apache-2.0 source code, cached arrays, scenario outcomes, metrics and media are
-not imported by this workflow. Existing upstream observations remain pre-existing
-scientific data and are cited as such; processing them now does not make the
-measurements new or establish competition eligibility by itself.
+USGS/MRO source products, with processing dates and checksums in the manifests.
+Source observations retain their original provenance.
+
+Development reference: [NASA-Sandbox at 827da15](https://github.com/dryanguasr/NASA-Sandbox/tree/827da15)
+was consulted for upstream product citations and tentative speed/slope assumptions.
+The reference repository is Apache-2.0; its source code and assets were not imported.
+This single record also covers
+the reference used for the illustrative motion profiles; NASA product sources
+are listed below.
 
 ## New import
 
@@ -26,7 +28,7 @@ NoData. The warp is bilinear and NoData-aware. A separate mask records finite
 output samples; that mask is **not** evidence of local ground verification.
 
 The HTTP reader requires bounded 206 range responses and provides no full-file
-or cached-Sandbox fallback. This avoids a native GDAL curl failure observed in
+or cached-data fallback. This avoids a native GDAL curl failure observed in
 the Windows environment while retaining bounded source-window acquisition.
 
 ## Distribution boundary
@@ -59,10 +61,6 @@ held-out-reference boundaries; it must not require modifying the search engine.
   Mars 2020 Terrain Relative Navigation HiRISE DTM Mosaic, USGS.
 - [USGS copyrights and credits](https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits).
 - [Official Space Apps clarification on prior work and resource disclosure](https://github.com/nasa/spaceapps/discussions/1827).
-
-No claim is made that regenerating pre-event artifacts retroactively changes
-their origin or eligibility. Keep antecedents distinct from the newly implemented
-competition code and newly measured test results.
 
 ## Actual import record
 

@@ -63,8 +63,9 @@ cannot trigger a false global rejection. Tests also cover snapshot invalidation
 and bounds. Whole mission R01-R18 acceptance is still pending.
 
 Profiles in config/planner_profiles.illustrative.json are not approved scientific
-parameters. Only tentative speed/slope references came from Sandbox; energy,
-oxygen, footprint and other values are invented illustrative assumptions. The
+parameters. Speed/slope are tentative references recorded in
+[data provenance](planner_provenance.md); energy, oxygen, footprint and other
+values are invented illustrative assumptions. The
 fresh CTX crop remains unverified orbital prior: loading it alone returns UNKNOWN.
 Neither these tests nor its finite pixels prove EVA, flight or vehicle safety.
 

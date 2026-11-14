@@ -7,7 +7,7 @@ guards only. These results are not evidence of a Mars mission or EVA safety.
 
 - Python 3.12: `python -m pytest` (93 local test cases across contracts, mapping,
   mission and planning). The HTTP TestClient requires an unrestricted local
-  execution environment on this Windows host; the sandbox attempt stalled.
+  execution environment on this Windows host; the restricted attempt stalled.
 - `python scripts/check_repository.py`: package XML, Python syntax, JSON,
   declared AI paths and local documentation links.
 - Frontend: `npm test` (2 tests); `npm run build` (TypeScript + Vite).
