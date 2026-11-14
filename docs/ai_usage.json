@@ -459,7 +459,7 @@
         "docs/AI_USAGE.md",
         "docs/integration_log.md"
       ],
-      "use": "Set an explicit bounded functional-test search budget and establish real planner readiness before the mission request; preserve production limits, scientific rejection and test assertions."
+      "use": "Set an explicit bounded functional-test search budget and establish real planner readiness before the mission request; preserve production limits, scientific rejection and test assertions. Scope the authority smoke to an explicitly synthetic16x16 grid using the actual production launch description; production200x200 defaults remain unchanged."
     }
   ],
   "generated_media": [],

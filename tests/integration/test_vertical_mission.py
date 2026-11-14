@@ -7,6 +7,7 @@ from pathlib import Path
 import os
 import signal
 import subprocess
+import sys
 from threading import Thread
 from time import monotonic, sleep
 
@@ -75,11 +76,36 @@ def stack(tmp_path_factory):
     thread.start()
     directory = tmp_path_factory.mktemp('real-mission-transport')
     log_path = directory / 'launch.log'
+    runner_path = directory / 'launch_small_map.py'
+    # Exercise the actual production LaunchDescription with a small test-only
+    # synthetic map. This verifies authority/model gates, not 200x200 throughput.
+    # SetParameter is scoped to this child LaunchService; provider defaults and
+    # production search limits are unchanged.
+    runner_path.write_text("""import importlib.util
+import sys
+from launch import LaunchDescription, LaunchService
+from launch.actions import SetLaunchConfiguration
+from launch_ros.actions import SetParameter
+
+spec = importlib.util.spec_from_file_location('actual_vertical_launch', sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+arguments = sys.argv[2:]
+service = LaunchService(argv=arguments)
+# LaunchService retains argv; SetLaunchConfiguration supplies named overrides
+# exactly as IncludeLaunchDescription does for parsed ros2 launch arguments.
+configurations = [SetLaunchConfiguration(*argument.split(':=', 1)) for argument in arguments]
+service.include_launch_description(LaunchDescription([
+    SetParameter(name='rows', value=16), SetParameter(name='cols', value=16),
+    *configurations, *module.generate_launch_description().entities,
+]))
+raise SystemExit(service.run())
+""", encoding='utf-8')
     proc = None
     try:
         with log_path.open('w', encoding='utf-8') as output:
             proc = subprocess.Popen([
-                'ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py',
+                sys.executable, str(runner_path), str(ROOT / 'src/mge_bringup/launch/vertical_mock.launch.py'),
                 f'run_id:={RUN_ID}', f'port:={PORT}', 'mission:=real', 'planner:=real',
                 'use_sim_time:=true', f'mission_profiles_path:={ROOT / "config/scenario_demo.yaml"}',
                 f'mission_path:={ROOT / "config/scenario_demo.yaml"}',
@@ -95,6 +121,7 @@ def stack(tmp_path_factory):
             planner = clock_node.create_client(PlanRoute, '/mge/planner/plan_route')
             wait_for(planner.service_is_ready)
             attempts = [0]
+            last_reason = [None]
             def planner_ready():
                 attempts[0] += 1
                 request = PlanRoute.Request()
@@ -115,6 +142,9 @@ def stack(tmp_path_factory):
                 if decision.status == 'FEASIBLE':
                     return True
                 assert decision.status == 'UNKNOWN', (decision.status, decision.reason_code)
+                if decision.reason_code != last_reason[0]:
+                    print('Planner readiness UNKNOWN:', decision.reason_code, decision.detail)
+                    last_reason[0] = decision.reason_code
                 return False
             wait_for(planner_ready)
             clock_node.destroy_client(planner)
@@ -161,6 +191,8 @@ def test_real_mission_is_the_only_goal_and_route_authority(stack):
     manifest = httpx.get(f'{BASE}/api/manifest', timeout=5).json()
     assert manifest['schema_version'] == '1.0.0'
     assert manifest['terrain_meta']['dataset_id'] == 'MOCK-flat-grid'
+    assert (manifest['terrain_meta']['rows'], manifest['terrain_meta']['cols']) == (16, 16)
+    assert manifest['terrain_meta']['resolution_m'] == 5.0
 
 
 def test_actual_planner_candidate_is_blocked_without_model_agreement(stack):

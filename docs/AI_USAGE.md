@@ -293,3 +293,9 @@ feasibility assertions remain unchanged. The mission fixture probes the actual
 canonical planner for a complete loaded map before submitting its one mission
 goal, and retains diagnostic state on failure. No runtime policy, scientific
 approval, observation or resource model is changed.
+
+The authority smoke now scopes its synthetic grid to16x16 cells at the same
+five-metre resolution through a test-only LaunchService wrapper around the
+unchanged production LaunchDescription. Actual service providers, positions,
+readiness/model checks and the default production200x200 grid are preserved.
+This fixture is not a large-map throughput benchmark or a scientific dataset.

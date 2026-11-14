@@ -167,3 +167,12 @@ HTTP cases (one optional published-snapshot skip). Ten focused launch/consumer
 cases passed; native Python636passed/15platform-or-optional skips. Repository
 and whitespace checks passed. Frontend84tests/build remain passed from the
 unchanged merged viewer. Production planner and mission sources are unchanged.
+
+The next CI passed the terrain fixture but the authority smoke's200x200 grid
+still did not produce a ready planner within its fixture deadline. Diagnostics
+retained the IDLE mission snapshot with no submitted goal. The authority smoke
+now uses a test-only scoped16x16 grid (5m cells, same explicit positions) while
+loading the actual production LaunchDescription and actual providers. The
+manifest dimensions are asserted. Production providers/defaults remain unchanged.
+Fresh Jazzy validation again passed10focused cases and556selected cases (one
+optional snapshot skip), with eight packages built/eight definitions inspected.
