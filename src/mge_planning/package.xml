@@ -2,11 +2,16 @@
 <package format="3">
   <name>mge_planning</name>
   <version>0.0.0</version>
-  <description>P0 scaffold; F03: route feasibility and resource verification</description>
+  <description>Bounded resource-constrained route planning and PlanRoute server</description>
   <maintainer email="team@example.invalid">MARS GODS EYE team</maintainer>
   <license>LicenseRef-UNSPECIFIED</license>
   <buildtool_depend>ament_python</buildtool_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>mge_interfaces</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-scipy</exec_depend>
   <export><build_type>ament_python</build_type></export>
 </package>

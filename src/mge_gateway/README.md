@@ -1,24 +1,38 @@
-# Web gateway scaffold
+# Web gateway
 
 Owner: Jesus. R13/R15/R17/R18; F06; WebGateway/ReplayRecorder.
 
-The FastAPI surface exists for `/api/health`, `/api/manifest`,
-`/api/run/{run_id}/snapshot`, `/api/mission/goal` and WebSocket `/api/events`.
-There is **no ROS executor, recorder, mission store or control forwarding yet**.
-Health returns `NOT_READY` with `ros_connected=false`; all data/command routes
-return HTTP 503 and events close with 1013. `mode`, map version and simulated time
-are null without an active run. This inactive envelope is not LIVE or REPLAY.
+`gateway` serves `/api/health`, `/api/manifest`, `/api/run/{run_id}/snapshot`,
+`/api/run/{run_id}/events`, `POST /api/mission/goal` and WebSocket `/api/events`
+over the ROS graph. The contract is in `docs/ICD.md`, section 6.
 
-After installing this package and its `requirements.txt`, use
-`ros2 run mge_gateway gateway` (or `uvicorn mge_gateway.api:app --host 127.0.0.1`).
-The service binds to loopback by default. Do not expose ROS control publicly
-without authentication, origin restrictions and HTTPS/WSS design.
+- `ros_bridge.py`: ROS node in its own executor thread. Subscriptions feed the
+  store; goal requests are forwarded to `/mge/mission/set_goal`.
+- `store.py`: thread-safe run state with the ordering rules. It drops data of
+  another run, duplicate events and mission states older than the one held.
+  No ROS imports.
+- `app.py`: FastAPI application. No planning or mission logic.
+- `replay.py`, `recorder.py`: `replay_recorder` writes a run as `manifest.json`,
+  `timeline.jsonl` and `snapshot.json`; an existing run is never overwritten.
+- `replay_check.py`: `check_replay <dir>` validates a package offline.
 
-Next: typed JSON adapters, a ROS executor separated from the web event loop,
-idempotent request/event handling, stale-response rejection and replay recording.
+Until a mission state of the configured run arrives there is no active run:
+health reports `NOT_READY` with `ros_connected=false`, data and command routes
+return HTTP 503, and the event stream closes with 1013. `mode`, map version and
+simulated time are null. A running process alone is never LIVE.
+
+Run with `ros2 run mge_gateway gateway --ros-args -p run_id:=<id>`. Parameters:
+`run_id`, `host` (default `127.0.0.1`), `port` (default `8000`),
+`cors_origins`. The service binds to loopback by default. If the environment
+variable `MGE_CONTROL_TOKEN` is set, `POST` requires
+`Authorization: Bearer <token>`. Do not expose ROS control publicly without
+that token, origin restrictions and an HTTPS/WSS design.
+
 MissionManager remains the only authority of mission state and active routes.
-A recorder must save manifest, timeline, snapshot and referenced rasters by run ID.
 
-Validation: HTTP tests can verify 503/no invented state without ROS; real
-message-to-route and replay tests remain pending. Maintainer contact and repository
-license are placeholders awaiting a team decision.
+Validation: `tests/contracts/test_gateway.py` and `tests/unit` run without ROS.
+`tests/integration` runs the ROS-to-HTTP flow and the recorder against the MOCK
+producers of `mge_sim`; that is integration plumbing, not a validated mission.
+Pending: rasters in the replay package, Gazebo `/clock`, and a web client.
+Maintainer contact and repository license are placeholders awaiting a team
+decision.
