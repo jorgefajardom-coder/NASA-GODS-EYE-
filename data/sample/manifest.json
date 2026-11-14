@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "status": "ready",
+  "region_id": "jezero_mvp",
+  "frame_id": "map",
+  "local_origin": {
+    "lat_planetocentric_deg": 18.45,
+    "lon_east_deg": 77.45
+  },
+  "resolution_m": 4.0,
+  "rows": 32,
+  "cols": 32,
+  "row_orientation": "south_to_north",
+  "vertical_units": "m",
+  "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+  "sources": [
+    {
+      "mission": "MRO",
+      "instrument": "CTX",
+      "role": "prior",
+      "product_id": "JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0",
+      "native_resolution_m": 20.0,
+      "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/CTX/JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0.tif",
+      "sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+      "license_or_terms_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits"
+    },
+    {
+      "mission": "MRO",
+      "instrument": "HiRISE",
+      "role": "evaluation_reference",
+      "product_id": "JEZ_hirise_soc_006_DTM_MOLAtopography_DeltaGeoid_1m_Eqc_latTs0_lon0_blend40",
+      "native_resolution_m": 1.0,
+      "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/HiRISE/JEZ_hirise_soc_006_DTM_MOLAtopography_DeltaGeoid_1m_Eqc_latTs0_lon0_blend40.tif",
+      "sha256": "7bb9c85f28806d99064dc6413b6b74f65e07a9f2b1ef613ba12cbb5ea4af5680",
+      "license_or_terms_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits"
+    },
+    {
+      "mission": "Mars Global Surveyor",
+      "instrument": "MOLA",
+      "role": "regional_context",
+      "product_id": "Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0)",
+      "native_resolution_m": 463.0,
+      "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Mars_MGS_MOLA_DEM_mosaic_global_463m.tif",
+      "sha256": "b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6",
+      "license_or_terms_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits"
+    }
+  ]
+}

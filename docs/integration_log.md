@@ -76,3 +76,26 @@ computational acceptance evidence, not mission safety or scientific validation.
   Exact commands, source references and remaining gates: [Jesus handoff](handoffs/jesus.md#pr-3-correction-and-reconciliation-cut).
 - No new NASA observation, scientific model approval or validated LIVE mission
   is claimed. Internal hours remain outside Git.
+
+## Real terrain providers against the planner, 2026-11-14
+
+- Cut: PR #8 (`feat/data`, Daniel) with main `8afc7bf` merged in; integration
+  review and corrections by Jesus.
+- Finding: `data_node` and `mapping_node` both published TerrainMeta for map
+  version 1 with different stamps, metadata went out after its layers, nothing
+  was repeated, and an invalid observation raised inside the callback. The
+  planner rejects same-version metadata with another stamp, so it would never
+  have held a usable map.
+- Correction: `mapping_node` is the only metadata publisher and sends the batch
+  metadata-first under one stamp per map version, repeated every
+  `repeat_period_s`; `data_node` publishes the prior only; invalid observations
+  are logged and dropped; both nodes exit if the terrain cannot be loaded.
+- Evidence: `tests/integration/test_terrain_batch.py` in the `mge-dev` Jazzy
+  container. Before any observation every mask cell is unknown and the planner
+  answers without a route. After one SIMULATED observation that repeats the
+  prior heights of a 16 x 16 cell block, `mge_planning` returns a FEASIBLE rover
+  route inside that block (illustrative profiles). This is plumbing on the
+  public Jezero package, not a validated route or a mission run.
+- Open for David: slope limits in `mapping_node` are placeholders; the 20 m CTX
+  product is resampled to a 4 m grid. Next: a vertical launch on this terrain
+  needs agent positions on its cell centres and the real mission provider.
