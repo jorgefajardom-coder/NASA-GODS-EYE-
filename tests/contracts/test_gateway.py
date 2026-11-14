@@ -153,6 +153,44 @@ def test_malformed_goal_is_422(client, bridge):
     assert bridge.goals == []
 
 
+@pytest.mark.parametrize('point', ['base', 'goal'])
+@pytest.mark.parametrize('axis', ['x', 'y', 'z'])
+@pytest.mark.parametrize('value', ['NaN', 'Infinity', '-Infinity'])
+def test_nonfinite_coordinates_never_reach_ros(client, bridge, point, axis, value):
+    activate(bridge)
+    bridge.answer = {'accepted': True}
+    payload = {**GOAL, point: {**GOAL[point], axis: value}}
+    response = client.post('/api/mission/goal', json=payload)
+    assert response.status_code == 422
+    assert bridge.goals == []
+
+
+@pytest.mark.parametrize('field', [
+    'time_budget_s', 'energy_budget_wh', 'oxygen_budget_l',
+    'reserve_time_s', 'reserve_wh', 'reserve_oxygen_l',
+])
+@pytest.mark.parametrize('value', ['NaN', 'Infinity', '-Infinity', -1, 1e100])
+def test_invalid_resource_values_never_reach_ros(client, bridge, field, value):
+    activate(bridge)
+    bridge.answer = {'accepted': True}
+    response = client.post('/api/mission/goal', json={**GOAL, field: value})
+    assert response.status_code == 422
+    assert bridge.goals == []
+
+
+def test_finite_coordinates_and_zero_reserves_are_forwarded(client, bridge):
+    activate(bridge)
+    bridge.answer = {'accepted': True}
+    response = client.post('/api/mission/goal', json={
+        **GOAL, 'goal': {'x': -10.5, 'y': 2.25, 'z': 0.5},
+        'oxygen_budget_l': 100, 'reserve_time_s': 0, 'reserve_wh': 0,
+        'reserve_oxygen_l': 0,
+    })
+    assert response.status_code == 200
+    assert bridge.goals[0]['goal'] == {'x': -10.5, 'y': 2.25, 'z': 0.5}
+    assert bridge.goals[0]['reserve_wh'] == 0
+
+
 def test_control_token_is_enforced(bridge, monkeypatch):
     monkeypatch.setenv('MGE_CONTROL_TOKEN', 'secret')
     activate(bridge)

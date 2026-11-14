@@ -16,17 +16,21 @@ import uuid
 from fastapi import FastAPI, Header, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, confloat
 
 from mge_gateway.store import unavailable
 
 NO_ACTIVE_RUN = 'NO_ACTIVE_RUN'
 
+# Match float64 geometry and float32 resource fields on the existing ROS wire.
+FiniteCoordinate = confloat(allow_inf_nan=False)
+ResourceValue = confloat(ge=0, le=3.4028234663852886e38, allow_inf_nan=False)
+
 
 class PointIn(BaseModel):
-    x: float
-    y: float
-    z: float = 0.0
+    x: FiniteCoordinate
+    y: FiniteCoordinate
+    z: FiniteCoordinate = 0.0
 
 
 class GoalIn(BaseModel):
@@ -35,12 +39,14 @@ class GoalIn(BaseModel):
     base: PointIn
     goal: PointIn
     mode: Literal['FAST', 'EFFICIENT', 'SAFE'] = 'FAST'
-    time_budget_s: float
-    energy_budget_wh: float
-    oxygen_budget_l: float = math.nan
-    reserve_time_s: float = 0.0
-    reserve_wh: float = 0.0
-    reserve_oxygen_l: float = 0.0
+    time_budget_s: ResourceValue
+    energy_budget_wh: ResourceValue
+    # Preserve the omitted-oxygen ROS sentinel; explicitly supplied values
+    # must be finite. Mission remains responsible for agent applicability.
+    oxygen_budget_l: ResourceValue = math.nan
+    reserve_time_s: ResourceValue = 0.0
+    reserve_wh: ResourceValue = 0.0
+    reserve_oxygen_l: ResourceValue = 0.0
 
 
 def create_app(bridge):

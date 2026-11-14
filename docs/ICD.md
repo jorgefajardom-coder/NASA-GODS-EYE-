@@ -182,6 +182,10 @@ a rover).
   `reason_code`. If the mission service does not answer, the reply is `503`
   with the inactive envelope, `status: "ERROR"` and
   `reason_code: "MISSION_SERVICE_UNAVAILABLE"`.
+- Base/goal coordinates must be finite. Explicit resource budgets/reserves must
+  be finite, nonnegative and fit the ROS float32 fields. Invalid values answer
+  `422` before any ROS request is sent. Omitted oxygen retains the existing
+  internal NaN sentinel; mission still checks applicability to the selected agent.
 - Repeating a `request_id` returns the first answer and creates no events.
 - A planning failure is not an HTTP error: the goal is accepted, the mission
   goes to `BLOCKED`, and `mission_state.active_route` carries the `status`,

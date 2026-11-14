@@ -62,3 +62,12 @@ evidence/planner-p0-20261114. Their scenarios were AI-assisted illustrative test
 data; reported timings and costs are actual new executions of the recorded code
 commit. They are computational test measurements, not physical or NASA mission
 measurements. No generated image, video or audio asset was added.
+
+## PR #3 input-validation correction
+
+OpenAI Codex assisted finite coordinate and explicit resource-input validation in
+the gateway and its new HTTP regression cases. Tests use illustrative malformed
+and valid requests; no scientific dataset, mission run or media was generated.
+The existing ROS fields, optional oxygen sentinel and mission authority remain
+unchanged. The affected code/tests and contract clarification are listed in
+ai_usage.json.

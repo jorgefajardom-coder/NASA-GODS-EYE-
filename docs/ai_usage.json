@@ -99,6 +99,17 @@
         "evidence/planner-p0-20261114"
       ],
       "use": "Run three seeded newly generated benchmark scenarios and a fresh unverified CTX prior check; retain exact code commit, costs, timing, environment and limitations."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "gateway_validation_and_regression_tests",
+      "generation": "AI-assisted code and illustrative test requests; no scientific observation generated",
+      "paths": [
+        "src/mge_gateway/mge_gateway/app.py",
+        "tests/contracts/test_gateway.py",
+        "docs/ICD.md"
+      ],
+      "use": "Reject non-finite base/goal coordinates and explicitly supplied invalid float32 resource values before ROS forwarding; verify HTTP 422 with no bridge call and retain valid finite requests."
     }
   ],
   "generated_media": [],
