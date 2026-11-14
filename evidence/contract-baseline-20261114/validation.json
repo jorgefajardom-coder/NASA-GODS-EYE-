@@ -1,0 +1,43 @@
+{
+  "run_id": "contract-baseline-20261114",
+  "classification": "software_contract_verification_not_mission_validation",
+  "tested_source_commit": "f2af4b23b57e0ef28c245cca0ad64a886ded039e",
+  "reference_main_sha": "004b3b2c59a27794a1e49a61f48d0569bad020b2",
+  "baseline_version": "1.0.0-rc.1",
+  "windows_python": "3.12.14",
+  "node": "24.18.0",
+  "windows_pytest": {
+    "tests": 267,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4
+  },
+  "target": "WSL Ubuntu 24.04 / ROS 2 Jazzy",
+  "target_build": "8 packages built; 6 messages and 2 services inspected",
+  "target_contract_integration_pytest": {
+    "tests": 129,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "frontend": {
+    "npm_ci": "passed; 0 vulnerabilities reported",
+    "npm_test": "4 passed",
+    "npm_run_build": "passed; existing >500kB bundle warning"
+  },
+  "repository_check": "passed; includes nested handoff links",
+  "git_diff_check": "passed",
+  "not_run": [
+    "Gazebo Harmonic simulation/mission execution",
+    "combined real MissionManager/data/gateway/viewer E2E",
+    "scientific model equivalence and canonical georeferenced dataset acceptance",
+    "fresh execution of unmerged PR #3/#5 stacks"
+  ],
+  "limits": [
+    "Windows skips four ROS-only test modules; target runs their generated-interface, launch rejection and real PlanRoute cases.",
+    "Real planner substitution seam passes; positive real mission/executor replacement remains pending.",
+    "Earlier in-place rosidl/CMake build failed due checkout spaces/non-ASCII; successful target build copies the same source to a fresh ASCII temporary path.",
+    "Earlier temp-output setup errors were fixed before these final successful results; system WSL temporaries are not assumed persistent.",
+    "Source checksums bind software/config/test inputs; no NASA mission observations or full-system acceptance claimed."
+  ]
+}
