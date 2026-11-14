@@ -70,3 +70,8 @@ evidence/planner-p0-20261114. Their scenarios were AI-assisted illustrative test
 data; reported timings and costs are actual new executions of the recorded code
 commit. They are computational test measurements, not physical or NASA mission
 measurements. No generated image, video or audio asset was added.
+
+The reconciliation verification logs/JUnit and hashes under
+evidence/contract-baseline-20261114 are actual tool execution records on the
+reported source. Codex assisted their collection/documentation; they are not
+invented measurements or mission observations.

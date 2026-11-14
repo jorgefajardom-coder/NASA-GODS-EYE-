@@ -104,7 +104,8 @@
         ".gitignore",
         "docs",
         "scripts/check_repository.py",
-        ".github/workflows/ci.yml"
+        ".github/workflows/ci.yml",
+        "evidence/contract-baseline-20261114"
       ],
       "use": "Audit owner branches; reconcile contracts without replacing implementations; add offline adapters, fail-closed guards, source locks, schema, deterministic synthetic contract cases, handoffs and actual validation records. No scientific observations generated."
     }
