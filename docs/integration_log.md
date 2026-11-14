@@ -275,6 +275,8 @@ without rasters; full real-terrain browser playback remains a separate handoff.
 
 ## CI failures on main and PR #17, 2026-11-14
 
+Follow-up: the callback correction below supersedes the 5 s / 60 s mitigation.
+
 - `test_terrain_batch.py::test_planner_routes_inside_the_observed_block`
   timed out waiting for the PlanRoute answer on main (`7d9a3bf`, `70cd2e5`)
   and on PR #17; not caused by either change and not reproduced locally. The
@@ -287,3 +289,44 @@ without rasters; full real-terrain browser playback remains a separate handoff.
   rejected a MissionState that lagged the recorded map in arrival order
   (`STALE_STATE`). The oracle now accepts lag and rejects a state ahead of
   the map; REPLAY_CONTRACT documents it.
+
+## PR17 callback scheduling correction, 2026-11-14
+
+Source: failed head `17eb644bc8dc069a785066165904e3f7d691314f`, reconciled
+with the integration owner's `bec3873` and published main `70cd2e5`. ROS
+ICD-ROS2-V1/package 1.0.0, JSON/replay 1.0.0 and baseline 1.0.0-rc.1 remain
+unchanged. No open planner PR or pending local replay work was imported.
+
+- Original failure: no PlanRoute answer within 20 s, not a returned
+  SEARCH_LIMIT. The fixture runs data/mapping/planning without the executor.
+  Nineteen local runs at 1 Hz passed (six on one CPU); the original complete
+  integration suite passed 39 tests. CI discarded child logs, so its exact
+  thread schedule cannot be reconstructed retrospectively.
+- At 100 Hz, the failed source reproduced the same `req-observed` timeout
+  (5 passed, 1 failed). Thread dumps showed four ingestion workers competing
+  at SnapshotStore's lock; the second service callback never entered. This
+  confirms a starvation mechanism, not that CI produced at 100 Hz or suffered
+  a particular CPU fault. Reentrant ingestion can consume service capacity.
+- Map callbacks now share one mutually exclusive group, separate from a
+  mutually exclusive service group. Updates remain concurrent with search;
+  the snapshot-token guard still discards stale results. No search math,
+  resource model, observation policy or wire field changed.
+- A controlled delayed-ingestion regression fails the original node's 3 s
+  service deadline and passes the correction. A second test publishes a new
+  map during paused search and requires STALE_MAP with no route. Both use
+  actual ROS service/subscription/executor dispatch. Jezero now runs at both
+  1 and 100 Hz with the original 20 s wait and FEASIBLE/in-footprint checks;
+  all 14 focused cases passed in 13.04 s. Child logs use pytest files instead
+  of undrained pipes and are printed on failure.
+- The owner's already-pushed replay ordering/raster-wait changes remain.
+  MOCK execution, science agreement, continuous starts (PR12), M04/M05 and
+  organizer endorsement retain their existing pending status.
+- Final local validation on Ubuntu 24.04 / ROS 2 Jazzy, isolated domain 198:
+  `colcon build --symlink-install` built all 8 packages; `ros2 interface show`
+  inspected all six custom messages and both services; `python -m pytest -q`
+  passed 853 tests, with one skip for the unmaterialized independent planner
+  snapshot (78.26 s). `python scripts/check_repository.py` passed. On Windows
+  Python 3.12 the same suite passed 753 with 19 ROS/platform/snapshot skips;
+  Node 24.18.0 `npm test` passed 84 and `npm run build` passed. A FastAPI/httpx
+  deprecation warning is unrelated. CI of the final pushed head remains the
+  merge gate; these local checks do not establish LIVE mission acceptance.

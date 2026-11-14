@@ -1,5 +1,15 @@
 # Jesus - integrate providers through the canonical interfaces
 
+PR17 timeout follow-up: `docs/integration_log.md` records the failed source
+`17eb644`, reconciliation with `bec3873` / main `70cd2e5`, reproduced worker
+starvation, callback-group correction and before/after ROS regressions. Map
+ingestion and search retain concurrent stale-map invalidation. The terrain
+fixture tests 1 and 100 Hz under its original 20 s response deadline. No open
+PR12 or pending local replay/viewer work is included. Next delivery remains
+the real integrated execution/replan and same-run replay evidence; current
+MOCK tests do not satisfy M04/M05 or scientific acceptance. Organizer
+notification/endorsement (JES-07) remains undocumented.
+
 Active branch: **`feat/integration`**. Audited head: `45a4590f8e8330a3896c170ec2c9ee272ae0b423` at the final refresh; initial head
 was `d28f3e2`. PR #3 remains the integration review front. Main PR #2 merged
 externally and is included in this branch. Recorder increment: `74ed6f3`; replay documentation: `02f4155`. Existing handoffs: `src/mge_gateway/README.md`, `src/mge_sim/README.md`, `docs/ICD.md`, `docs/integration_log.md` and PR #3. The removed `dev/jesus` remote branch is not a new front; its work is preserved here.

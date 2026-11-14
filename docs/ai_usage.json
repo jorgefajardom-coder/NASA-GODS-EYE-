@@ -7,6 +7,19 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "code_tests_and_documentation",
+      "generation": "AI-assisted timeout diagnosis and correction requested by the repository owner",
+      "paths": [
+        "src/mge_planning/mge_planning/node.py",
+        "tests/integration/test_planner_concurrency.py",
+        "tests/integration/test_terrain_batch.py",
+        "docs/handoffs/jesus.md",
+        "docs/integration_log.md"
+      ],
+      "use": "Separate serialized map ingestion from serialized planning callbacks to prevent executor worker starvation; test bounded service availability and stale-search rejection over ROS, repeat Jezero batches at 1 and 100 Hz, and retain child logs. Delayed callbacks and flat grids are synthetic test fixtures, not scientific observations or mission results."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "code_and_configuration",
       "generation": "AI-assisted edit requested by the repository owner",
       "paths": [".github/workflows/ci.yml"],
