@@ -49,6 +49,8 @@ Selectable list of agents, tasks and routes (left), contextual details (right), 
 and route status (bottom left), replay timeline (bottom). Modes: Exploration and Mission
 replay; Tactical map and Atmos are disabled until they exist.
 
+The terrain is drawn smoothed between the 20 m cells, with contour lines every 10 m (bold every 50 m) at true elevation. Contours can be turned off in the view options.
+
 Keys: `F` follow camera, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 `?evaluator=1` shows the hidden reference layer; it is off by default.
 
@@ -62,6 +64,7 @@ Keys: `F` follow camera, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 | `src/lib/replay.ts` | State at time t, event ordering, replans, visual pose interpolation |
 | `src/lib/management.ts` | List, details and alert data built only from received objects |
 | `src/lib/astronautPose.ts` | Calmed copies of the idle and walk clips (less rocking, bounce and forward lean); the model file is not modified |
+| `src/lib/terrainSmooth.ts` | Bicubic display smoothing between source cells (adds no detail; cell centres stay exact) |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
 | `src/components/` | Terrain, routes, agents, sites, astronaut model, follow camera, interface panels |
 | `scripts/` | Terrain crop extraction and fixture generation |
@@ -98,6 +101,8 @@ The code, scripts, tests and the simulated fixture were written with AI assistan
 `../docs/AI_DISCLOSURE.md`.
 
 ## Known gaps
+
+Terrain detail is limited by the 20 m source: close-ups look smooth. The 1 m HiRISE DTM covers this area and could provide real detail, but it is the hidden evaluator reference and must not reveal unknown terrain in the normal view.
 
 No gateway, planner routes, mission profiles or processed terrain package from the other
 workstreams yet. Percentages are relative to the first received sample, not to a
