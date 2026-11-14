@@ -1,5 +1,15 @@
 # Required AI-use declaration
 
+## Estimated-terrain scope decision
+
+OpenAI Codex assisted recording the owner's accepted D-EST-01 decision to permit
+hypothetical planning over valid orbital estimates before local observation,
+with contradiction-driven invalidation/replanning, ownership and acceptance
+obligations. The documentation also preserves open integration steps 4/5 and
+labels varied-scene/larger-map work and H-DAN-01 as optional extensions. No
+planner/mapping behavior, generated terrain, experiment, media or mission result
+was introduced by this documentation change.
+
 Competition-required disclosure; not optional credit or AI authorship. Human
 owners remain responsible for reviewing the work.
 
