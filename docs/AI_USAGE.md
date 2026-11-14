@@ -86,6 +86,47 @@ Astrogeology archives (MRO/CTX DOI `10.5066/P906QQT8`, MRO/HiRISE DOI
 `data/sample/preview_ctx_prior.png` is a deterministic grayscale raster plot of
 the observational MRO/CTX elevation grid, not an AI-generated image.
 
+## Web mission viewer, 14 November 2026
+
+Claude (Anthropic), used through Claude Code as a coding assistant, helped write
+the web viewer that replaced the empty scaffold grid in `web/`. This declares the
+tool; it does not attribute authorship.
+
+| Area | Paths |
+|---|---|
+| Viewer source | `web/src/**` |
+| Data scripts | `web/scripts/extract-ctx-ortho.mjs`, `web/scripts/extract-ctx-crop.mjs`, `web/scripts/extract-hirise-crop.mjs`, `web/scripts/inspect-geotiff.mjs`, `web/scripts/make-demo-fixture.mjs` |
+| Tests | `web/tests/**` |
+| Build and configuration | `web/package.json`, `web/tsconfig.json`, `web/vite.config.ts`, `web/index.html` |
+| Documentation | `web/README.md`, `THIRD_PARTY_NOTICES.md`, this section |
+
+Generated data: `web/public/replay/demo/*` is a simulated replay from
+`make-demo-fixture.mjs` (agent poses, routes, events, budgets, sigma and a
+synthetic scarp in the hidden evaluator reference). It is labelled simulated or
+fictitious in its manifest and is not a NASA observation.
+`web/scripts/data/ctx_crop.json` holds real NASA/USGS CTX DTM heights; only the
+resampling script was AI-assisted.
+`web/public/replay/demo/ctx_ortho.png` holds real CTX orthomosaic pixels from JPL Mars
+Trek (NASA/JPL-Caltech/MSSS/USGS); only `extract-ctx-ortho.mjs`, which resamples and
+contrast-stretches it, was AI-assisted. Likewise `web/public/replay/demo/geology.json`
+holds USGS SIM 3464 unit text and polygons unchanged apart from reprojection and clipping;
+only `extract-geology.mjs` and the viewer code were AI-assisted.
+The rover and drone models (`web/public/assets/models/rover.glb`, `drone.glb`) are official
+NASA/JPL-Caltech models, not AI-generated; the Blender scripts that removed their branding,
+decimated and exported them (`web/scripts/blender/`) were AI-assisted.
+During integration review, Claude through Claude Code also wrote
+`web/scripts/strip-glb-branding.mjs` (with `web/scripts/glb.mjs` and `glb.d.mts`) and
+`web/tests/modelBranding.test.ts`. They remove the marks the Blender pass missed: the
+rover's blade sheet is replaced with the drone's already cleaned sheet, and two logos on the
+drone blade roughness map are filled with its plain background. This is a deterministic flat
+fill or copy, not generative inpainting, so the models still contain no AI-generated imagery.
+
+Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
+by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).
+No AI-generated image, video or audio is included. Machine-readable metadata:
+[ai_usage.json](ai_usage.json), the `aiDisclosure` field in `web/package.json` and
+the `ai_disclosure` object in `web/public/replay/demo/manifest.json`.
+
 ## Before delivery
 
 - Record actual tool uses and affected code/data/assets in text and metadata.
@@ -233,3 +274,12 @@ integration test for them and updating the related documentation. The test
 sends illustrative SIMULATED observations that repeat public prior heights; no
 terrain array, scientific dataset, mission result, image, video or audio was
 generated. The affected paths are listed in ai_usage.json.
+
+## Main synchronization after viewer merge
+
+OpenAI Codex assisted with the README and mandatory metadata conflict resolution
+when main7ec1a06 was incorporated into the mission handoff. Mission and viewer
+implementations, existing licence notices and both contributors' required
+AI-use declarations were retained. The provenance test declaration follows its
+move to web/tests. No new generated code, media or scientific data is introduced
+by this synchronization.

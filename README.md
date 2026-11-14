@@ -3,13 +3,15 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
-**Status: real planner and mission module available; full-system acceptance pending.**
-This integration candidate preserves the existing mission authority, resource
-models, recorder and tests from feat/mission. The ROS-backed gateway and
-planner come from main. The default vertical still uses explicitly MOCK
-terrain/agents/mission; select mission:=real to substitute the actual authority,
-never run both mission providers. Science-model agreement, actual execution,
-Gazebo and real-data integration remain pending. A build is not mission evidence.
+**Status: real planner, data/mapping and gateway available; mission integration candidate.**
+This branch preserves the existing real mission authority, resource models,
+recorder and tests from feat/mission. The default synthetic vertical keeps
+MOCK terrain/agents/mission; select mission:=real with explicit configuration
+and a clock to substitute one authority, never run both mission providers.
+The integrated web viewer plays saved runs offline in REPLAY mode: an
+illustrative demo on a provisional CTX crop and the gateway's recorded MOCK run.
+It is not connected to a live gateway. Science-model agreement, actual execution
+and Gazebo acceptance remain pending; software availability is not mission evidence.
 
 Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
 Confirm any earlier local judging cutoff separately.
@@ -36,7 +38,7 @@ Confirm any earlier local judging cutoff separately.
 | `src/mge_planning` | Diego | Pure planning core and ROS service adapter |
 | `src/mge_mission`, `config` | David; integration by Jesus | Mission authority, resources and tasks |
 | `src/mge_sim`, `src/mge_gateway`, `src/mge_bringup` | Jesus | Simulation adapter, API and launch |
-| `web` | Jorge | React / TypeScript / Three.js viewer and future replay |
+| `web` | Jorge | React / TypeScript / Three.js viewer with offline replay |
 | `tests`, `evidence`, `docs` | Everyone | Verification, immutable runs and contracts |
 
 The evaluator reference is isolated in `data/reference` and must never be
