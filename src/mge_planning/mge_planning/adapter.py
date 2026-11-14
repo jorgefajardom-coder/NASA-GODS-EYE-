@@ -60,6 +60,17 @@ class SnapshotStore:
             m = self.meta
             return None if m is None else (m.run_id, m.map_version, m.stamp, self.revision, self.error)
 
+    @property
+    def batch_key(self):
+        """Identity of the inputs a search used: one immutable batch, unless it was rejected.
+
+        Unlike `key`, the arrival of another agent kind's mask for the same batch does not
+        change it: layers are immutable within a stamp, and a changed layer sets `error`.
+        """
+        with self.lock:
+            m = self.meta
+            return None if m is None else (m.run_id, m.map_version, m.stamp, self.error)
+
     def invalidate(self, reason="INVALID_SNAPSHOT"):
         with self.lock:
             self.error = reason
