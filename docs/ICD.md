@@ -375,12 +375,68 @@ clear authorized route/path, emit the logical stop/replan reason and reject old
 responses. An empty Path is a logical stop, not proof the executor stopped;
 Jesus must validate acknowledgement with current agent state before execution.
 
-The existing planner requires XY cell centres with 1e-6 m tolerance. Continuous
+**Pre-extension consumer baseline, retained pending owner review:**
+The baseline requires XY cell centres with 1e-6 m tolerance. Continuous
 poses fail explicitly NON_CELL_CENTER; never silently round. A future connector
 must check the swept geometry/public uncertainty and charge its time, energy and
 oxygen before changing that policy. Surface z is belief elevation, not validated
 drone flight altitude. EFFICIENT is an enum but current planner returns
 ERROR/MODE_NOT_SUPPORTED. Search bounds and unverified terrain return UNKNOWN.
+
+### Proposed ground-start extension — review required, not approved or frozen
+
+The cell-centre-only wording above and in CONTRACT_BASELINE.md / handoffs/diego.md
+records the pre-extension consumer baseline. It does not require removing the
+newer working implementation on feat/planner. The following is a proposed shared
+consumer extension, implemented/tested in that branch at 2d9f416, not an approved
+operational contract. Existing baseline gates remain in force until owner review.
+The PR12 review corrections restore opt-in gating: Python
+allow_continuous_start=False and ROS startup allow_continuous_starts=false by
+default. An explicit experimental opt-in does not constitute contract approval.
+
+- Previous behavior: non-centred starts/goals/bases failed NON_CELL_CENTER (XY
+  tolerance 1e-6 m). Proposed behavior: human/rover START only may be continuous;
+  goals/bases stay centred. Required return from a continuous start needs an
+  explicit centred base; drone continuous starts remain unsupported.
+- Connect only to the containing cell centre. No nearest-free-cell escape or
+  uncosted snapping is permitted. The full segment stays in a convex known cell.
+  Swept footprint checks include forbidden/unknown/NoData/sigma cells, agent radius
+  plus localization allowance, map bounds, blocked corner contact and directed
+  slope/step limits. At least five distance samples (spacing <= resolution/4), minus half sample spacing and obstacle
+  square circumradius conservatively bound clearance BETWEEN samples, not only at
+  endpoints. See [MODEL.md](../src/mge_planning/MODEL.md) for proof boundaries.
+- Connector 3-D distance, time, energy and human oxygen use the existing profile
+  equations and initialize the first A* label BEFORE budget/reserve pruning.
+  Completed travel is not charged again. Two-dimensional input adopts belief z;
+  three-dimensional human/rover input must match the known containing-cell belief
+  z within 1e-6 m, for centred and continuous starts alike. Otherwise return
+  ERROR/INVALID_START_Z without a route; never silently project or infer NO_PATH.
+  Unknown or inadmissible terrain cannot establish a valid height. This strict
+  model-consistency tolerance is proposed, not a localization accuracy claim.
+  Single-cell attachment and conservative bounds can reject physically possible
+  starts; subcell relief, dynamics, physical safety and drone flight are unvalidated.
+- No fields, names, types, units or enums change. The first outbound Point may be
+  off-centre; the second is its attachment centre. Consumers must preserve both.
+  Existing cost fields include that segment. start_connector metadata is Python-only.
+- Affected consumers: MissionManager/current-pose request generation, executor/
+  supervisor path following, gateway/replay serializers and viewer route display.
+  ROS service checks do not establish combined continuous-pose mission/executor
+  acceptance. Exact current and prior execution results, including the independent
+  replay failure, are recorded in [PR12 review audit](pr12_review_corrections.md).
+- F03.4 is a ROS-independent recommendation policy, not MissionManager authority.
+  A contingency RETURN candidate uses goal=base, require_return=False, service=0
+  and outbound_path for that one leg. Contingency may abandon unfinished SERVICE
+  as well as OUTBOUND after a proven primary failure. Mission must explicitly adopt it and preserve
+  RETURN context. KEEP on an irrelevant map update never overrides the mandatory
+  MissionManager map-version invalidation gate above. Supervisor owns physical stop.
+
+**Jesus review required:** confirm current-pose and snapshot association, path
+consumers, RETURN-context transport, authorization/invalidation and stop feedback;
+run the combined real consumer tests before approving any baseline extension.
+**David review required:** approve terrain/profile assumptions, uncertainty margins,
+resource/service accounting and conservative treatment; numerical science/search
+model agreement remains pending. Neither unit tests nor this merge approve it.
+The current scientific-model blocks and all other main agreements below are retained.
 
 David's proposed science model `mge-science-1.0.0` governs scientific audit of
 complete outbound + service + optional work + return itineraries. Diego's

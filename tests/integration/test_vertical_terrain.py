@@ -18,6 +18,7 @@ import signal
 import struct
 import subprocess
 import time
+import yaml
 
 import httpx
 import pytest
@@ -32,6 +33,8 @@ from mge_gateway.contract_replay import (  # noqa: E402
 from mge_gateway.replay_check import check_package  # noqa: E402
 from mge_interfaces.msg import TerrainObservation  # noqa: E402
 from tests.integration.test_vertical_mock import wait_for  # noqa: E402
+from tests.integration.ground_fixture import (  # noqa: E402
+    initialize_ground_agents, observed_public_scene, simulated_ground_point)
 
 RUN_ID = 'it-terrain-vertical'
 PORT = 8768
@@ -80,10 +83,21 @@ class Stack:
     """The launched vertical plus a test-side node that plays the drone sensor."""
 
     def __init__(self, record_dir):
+        # Initialize the static MOCK scene, rather than projecting any live pose.
+        # These same explicit SIMULATED values will be published by this fixture;
+        # the production belief remains unobserved until then.
+        self.surface, self.vertical_datum = observed_public_scene(RUN_ID, BLOCK)
+        template = yaml.safe_load((ROOT / 'src/mge_bringup/config/agents_jezero.yaml').read_text())
+        agents_file = Path(record_dir) / 'simulated-ground-agents.yaml'
+        agents_file.write_text(yaml.safe_dump(initialize_ground_agents(template, self.surface)))
+        self.goal = {**GOAL,
+                     'base': dict(zip(('x', 'y', 'z'), simulated_ground_point(self.surface, HUMAN_START))),
+                     'goal': dict(zip(('x', 'y', 'z'), simulated_ground_point(self.surface, GOAL_CELL)))}
         self.package = os.path.join(record_dir, RUN_ID)
         self.proc = subprocess.Popen(
             ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',
              f'port:={PORT}', 'terrain:=real', 'planner:=real', f'profiles_file:={PROFILES}',
+             f'agents_file:={agents_file}',
              'record:=true', f'record_dir:={record_dir}'],
             cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
         rclpy.init()
@@ -107,6 +121,8 @@ class Stack:
         self.spin_until(lambda: self.observations.get_subscription_count() >= 1,
                         'mapping_node observation subscription')
         heights = struct.unpack(f'<{ROWS * COLS}f', bytes(self.belief.data))
+        # The initial scene and simulated sensor share one public vertical datum.
+        assert all(heights[i] == self.surface.elevation_m.flat[i] for i in BLOCK)
         msg = TerrainObservation()
         msg.header.frame_id = 'map'
         msg.header.stamp = self.node.get_clock().now().to_msg()
@@ -175,7 +191,7 @@ def test_jezero_batch_reaches_the_gateway_as_a_mock_run(stack):
 
 
 def test_unobserved_terrain_is_unknown_not_infeasible(stack):
-    r = httpx.post(f'{BASE}/api/mission/goal', json={**GOAL, 'request_id': 'req-unobserved'})
+    r = httpx.post(f'{BASE}/api/mission/goal', json={**stack.goal, 'request_id': 'req-unobserved'})
     assert r.json()['accepted'] is True, r.text
     ms = wait_for(lambda: (m := mission())['mission_state'] == 'BLOCKED' and m,
                   timeout_s=30.0, what='BLOCKED on unobserved terrain')
@@ -201,6 +217,7 @@ def test_simulated_observation_replans_on_the_new_map_version(stack):
     assert ms['route_id'] == route['route_id'] != ''
     out, back = route['outbound_path'], route['return_path']
     assert (out[0]['x'], out[0]['y']) == HUMAN_START
+    assert out[0]['z'] == simulated_ground_point(stack.surface, HUMAN_START)[2] != 0.0
     assert (out[-1]['x'], out[-1]['y']) == GOAL_CELL
     assert (back[-1]['x'], back[-1]['y']) == HUMAN_START
     # Only observed cells are admissible, so the route stays inside the block.

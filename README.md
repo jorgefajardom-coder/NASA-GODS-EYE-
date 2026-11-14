@@ -13,6 +13,14 @@ illustrative demo on a provisional CTX crop and the gateway's recorded MOCK run.
 It is not connected to a live gateway. Science-model agreement, actual execution
 and Gazebo acceptance remain pending; software availability is not mission evidence.
 
+The planner retains FAST/SAFE joint outbound/service/return A*, validated
+continuous human/rover starts behind an explicit opt-in (disabled by default in
+the ROS service), D-07 after 20 m and the ROS-independent F03.4 policy with bounded
+search retries and outbound/service contingency-return proposals. Its shared connector extension remains
+pending owner review; ReplanPolicy is not wired into MissionManager or the physical
+supervisor and never authorizes motion. Existing scientific model-agreement gates
+remain enforced by the integrated manager.
+
 Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
 Confirm any earlier local judging cutoff separately.
 

@@ -13,6 +13,15 @@ was introduced by this documentation change.
 Competition-required disclosure; not optional credit or AI authorship. Human
 owners remain responsible for reviewing the work.
 
+## PR12 final main reconciliation
+
+OpenAI Codex assisted reconciling planner `a959d25` with main `3a9032b` before
+the owner-authorized PR12 merge. Both sets of mandatory disclosures, planner
+review corrections and main's callback scheduling/replay/executor changes are
+preserved. No scientific model, physical execution or LIVE mission is approved.
+The new kinematic execution test also uses the existing test-only ground-scene
+initializer, with assertions for initial pose and observation datum consistency.
+
 ## CI workflow display name, 14 November 2026
 
 OpenAI Codex assisted renaming the GitHub Actions workflow from `Scaffold checks`
@@ -237,6 +246,46 @@ data; reported timings and costs are actual new executions of the recorded code
 commit. They are computational test measurements, not physical or NASA mission
 measurements. No generated image, video or audio asset was added.
 
+## Continuous ground-start extension
+
+OpenAI Codex assisted with the within-cell start connector, shared directed cost
+function, search/result integration, synthetic regression tests and associated
+model/interface documentation on feat/planner. Affected paths are recorded in
+ai_usage.json. Tests use illustrative grids and resource parameters, not new NASA
+observations or certified mobility limits. No ROS message/service definition or
+generated media was added. Human review remains pending.
+
+## D-07 explicit replanning after 20 metres
+
+OpenAI Codex assisted with tests/planning/test_d07_twenty_metres.py and its
+documentation. These newly generated synthetic flat-grid scenarios interpolate
+20 metres along the initial planned polyline, independently account for consumed
+resources, then request a new round trip after a map update. JSON/JUnit files
+are outputs of actual test executions; scenario geometry and rates are
+illustrative, not NASA observations, physiology or physical validation. No
+automatic replan policy, MissionManager change or ROS wire change is included.
+
+## F03.4 ROS-independent event policy
+
+OpenAI Codex assisted with replan.py, synthetic event-policy tests and policy/model
+documentation. The policy reuses the existing planner and movement model; it does
+not authorize routes, command physical stops or change ROS contracts/MissionManager.
+Test data and thresholds are illustrative, not approved scientific limits or NASA
+observations. Local JUnit outputs record actual computational executions, without
+claiming ROS integration, vehicle dynamics or physical safety. Affected paths are
+listed in ai_usage.json; human review remains pending.
+
+The subsequent contingency extension and English planner/root README updates were
+also assisted by OpenAI Codex. The policy now tests direct-base return after a
+proven primary-mission no-path/budget failure during OUTBOUND, preserving both
+attempts for audit. Human/rover test scenarios distinguish detour, base-only access,
+no escape, uncertainty and budgets; these remain synthetic computational examples.
+
+Codex also assisted the subsequent audit fixes: reject premature service debits
+during OUTBOUND, explicitly invalidate event/map version mismatches, and add
+human/rover regression tests plus English policy/README/handoff clarification.
+No A*, MissionManager or ROS contract change was made for these fixes.
+
 The reconciliation verification logs/JUnit and hashes under
 evidence/contract-baseline-20261114 are actual tool execution records on the
 reported source. Codex assisted their collection/documentation; they are not
@@ -319,6 +368,15 @@ sends illustrative SIMULATED observations that repeat public prior heights; no
 terrain array, scientific dataset, mission result, image, video or audio was
 generated. The affected paths are listed in ai_usage.json.
 
+## Planner branch synchronization proposal
+
+OpenAI Codex assisted the local origin/main merge review, combined planner and
+integration capability summaries and preserved the union of mandatory AI-use
+declarations. At the owner's instruction, the ICD conflict is resolved as an explicitly
+unapproved ground-start extension alongside the retained main consumer baseline.
+Jesus and David review gates remain pending; no shared ROS type, scientific model
+approval or operational authorization was changed by this review.
+
 ## Gateway typed serialization and source provenance
 
 Claude Code (Anthropic) assisted the integration owner with the typed JSON
@@ -370,6 +428,68 @@ OpenAI Codex assisted preserving the real mission selector while merging the
 terrain/provenance integration cut with main. Both launch preflights and all
 existing disclosures remain; no scientific approval or media was generated.
 
+## PR12 synchronization with mission and integration main
+
+OpenAI Codex assisted the local main4b72d309 merge review, README and mandatory
+AI metadata conflict reconciliation, and actual planner/mission consumer checks.
+Both contributions and all source/licence disclosures remain. No operational
+authorization, model agreement, new science data or ROS wire change is introduced.
+
+The PR12 synchronization also adjusts the planner test helper import to the
+package-qualified tests.planning path required by main's pytest importlib mode.
+All assertions and the production planner remain unchanged. Linux HTTP test
+dependencies were isolated under ignored tmp; no system Python or source
+requirements were changed.
+
+## PR12 planner technical-review corrections
+
+OpenAI Codex assisted reproducing the ten observations in PR12 comment
+6882884265 against the prior planner source, implementing the planner-only
+corrections and synthetic regression tests, and updating the English model,
+handoff and proposed ICD extension. Affected code: core.py, replan.py and node.py
+under src/mge_planning/mge_planning; tests/planning continuous-start, D-07, kernel,
+policy and test_pr12_review cases; tests/contract/test_planner_service.py opt-in
+checks. The extension remains disabled by default in the ROS service. Shared
+wire definitions and MissionManager were not modified or scientifically approved.
+
+The descriptive audit is docs/pr12_review_corrections.md; the machine-readable
+declaration is docs/ai_usage.json. evidence/planner-pr12-review-20261114 contains
+actual test outputs, source hashes and synthetic reproduction outcomes; it does
+not contain generated NASA observations, physical validation, images or audio.
+Existing licence notices and mandatory disclosures remain intact. Human owner
+review of these corrections, modelling choices and integration remains pending.
+
+## PR12 simulated ground-Z fixture follow-up
+
+OpenAI Codex assisted tracing ROS-default/omitted z values in two integration
+fixtures and preparing test-only simulated initial conditions and regressions.
+Affected paths: tests/integration/ground_fixture.py, test_terrain_batch.py and
+test_vertical_terrain.py; tests/planning/test_simulated_ground_initialization.py;
+docs/pr12_review_corrections.md and planner_handoff.md. Evidence is recorded under
+evidence/planner-pr12-ground-z-20261114 with actual test outcomes and hashes.
+
+The temporary MOCK agents configuration uses public prior values repeated in
+explicit SIMULATED scene observations, retaining the declared public vertical
+datum. It is not new scientific data, physical telemetry, evaluator reference or
+a measured Mars surface. No elevation values were invented; copied values are
+explicit SIMULATED inputs, not new NASA observations. No media was generated.
+The actual ROS belief stays unknown until observation.
+Planner safety guards, shared ROS definitions, runtime simulation/mission code and
+recorder remain unchanged from the preceding audited corrections. Integration
+fixture review by Jesus and scientific review by David are pending.
+
+OpenAI Codex also assisted the owner-authorized local merge commit audit and its
+included-file/validation metadata under the same evidence directory. Raw prior
+test reports remain historical; this does not generate scientific observations,
+approve models or add optional authorship/co-authorship credits.
+
+## PR12 review corrections
+
+OpenAI Codex assisted reconciling the planner branch with reviewed main, preserving
+both sets of mandatory declarations, and adding reserve/goal/route-context guards
+with regression tests. No scientific coefficients, ROS definitions, approval gates
+or execution authorization were changed. Test results describe software checks only.
+
 ## Mission reconciliation with published main
 
 OpenAI Codex assisted reconciling main `6ec9b84` into `feat/mission`, retaining
@@ -399,6 +519,9 @@ prior and of SIMULATED test observations, not new terrain. No scientific
 dataset, mission result, image, video or audio was generated. The affected
 paths are listed in ai_usage.json.
 
+## PR12 remote publication reconciliation
+
+OpenAI Codex assisted merging remote planner38ad692 and main7c16cd8 while preserving both histories, reserve/goal guards, prior corrections and mandatory disclosures. Documentation and software-test evidence are in planner_pr12_publication.md and evidence/planner-pr12-publish-20261114. Production mission, simulation, mapping, gateway and ROS definitions are retained from main unchanged; fixture/scientific integration review remains pending. No scientific observations or media generated.
 ## MOCK kinematic execution
 
 OpenAI Codex subsequently assisted the owner-requested PR17 timeout diagnosis,
