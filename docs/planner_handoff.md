@@ -137,7 +137,7 @@ planner code or ROS contracts changed for this acceptance extension.
 F03.4 consumers must pass authoritative phase/cursor/remaining resources, preserve
 candidate_phase=RETURN for single-leg base requests, and explicitly adopt new
 routes. The policy never changes MissionManager state or commands physical stops.
-During OUTBOUND, a failed primary mission (NO_PATH/INSUFFICIENT_BUDGET) now triggers
+During OUTBOUND or unfinished SERVICE, a failed primary mission (NO_PATH/INSUFFICIENT_BUDGET) now triggers
 an automatic direct-base contingency evaluation with zero service and unchanged
 remaining resources/reserves. primary_request/primary_candidate retain its cause.
 Mission must authorize the feasible fallback and enact RETURN; see the policy
@@ -145,6 +145,29 @@ documentation for no-escape, unknown and immediate-stop semantics.
 Audit guards: OUTBOUND cannot debit any original service; premature completion
 returns UNKNOWN/OUTBOUND_SERVICE_MISMATCH without a search. EVENT_MAP_MISMATCH
 always invalidates the active authorization, even on an otherwise unaffected path.
+
+PR12 review follow-up: continuous starts are opt-in, disabled by default in both
+the core and ROS service. Explicit ground z is checked uniformly against known
+cell height; incoherent telemetry invalidates until corrected rather than being
+projected. XY goal/base checks support 2-D and 3-D targets. RemainingResources
+represents depleted live telemetry without weakening ResourceBudget; reserve
+violations stop before search. SEARCH_LIMIT retries are delayed and bounded;
+recovered deviations do not leave stale deferred searches. The graph, connector
+and policy share clearance/contact rules and immutable-snapshot geometry caches.
+See [all ten findings and current evidence](pr12_review_corrections.md). These
+changes do not approve models or wire the policy into MissionManager.
+
+Ground-Z integration follow-up: only the two affected integration fixtures now
+prepare explicit static simulated ground positions in the public terrain's
+existing vertical datum. Known rover request points use the coherent batch;
+the vertical initializes a temporary agents_file from its declared SIMULATED
+scene, preserving explicit z, XY, drones and budgets. ROS belief remains unknown
+until observation. No runtime provider, mission, wire or INVALID_START_Z guard
+is changed. The new ground_fixture helper is test-only, requires known scene
+data and is not a telemetry projection or production missing-z convention.
+Jesus reviews the cross-module fixture proposal and replay closure separately;
+David retains scientific/datum/tolerance approval. See the audit's follow-up
+section and evidence/planner-pr12-ground-z-20261114 for exact execution results.
 
 1. Daniel supplies public belief/sigma/profile masks with unique batch stamps,
    approved CRS/datum and three matching control points. Do not expose reference.

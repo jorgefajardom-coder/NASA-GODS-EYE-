@@ -23,7 +23,7 @@ from mge_planning.node import make_node_class
 
 
 @pytest.fixture
-def ros_pair(tmp_path):
+def ros_pair(tmp_path, request):
     profiles = tmp_path / "profiles.json"
     profiles.write_text(json.dumps({"status": "illustrative", "profiles": {"rover_1": {
         "agent_kind": "rover", "speed_m_s": 1.0, "max_slope_deg": 30.0,
@@ -35,6 +35,7 @@ def ros_pair(tmp_path):
         Parameter("allow_illustrative_profiles", value=True),
         Parameter("snapshot_contract_confirmed", value=True),
         Parameter("search_timeout_s", value=5.0),
+        Parameter("allow_continuous_starts", value=getattr(request, "param", False)),
     ])
     producer = Node("planner_contract_test")
     executor = MultiThreadedExecutor(num_threads=4)
@@ -142,6 +143,24 @@ def test_ros_service_rejects_a_request_for_an_obsolete_map(ros_pair):
     result = call(client, request(version=1))
     assert result.status == "STALE_MAP"
     assert not result.route_id and not result.outbound_path
+    assert publishers
+
+
+@pytest.mark.parametrize("ros_pair", [False, True], indirect=True)
+def test_ros_continuous_start_extension_requires_explicit_opt_in(ros_pair):
+    planner, producer, client = ros_pair
+    publishers = publish_batch(planner, producer)
+    message = request()
+    message.start.x = 1.1
+    result = call(client, message)
+    if planner.allow_continuous:
+        assert result.status == "FEASIBLE", result.detail
+        assert result.outbound_path[0].x == message.start.x
+        assert result.outbound_path[1].x == 1.5
+        assert result.energy_est_wh > 0.4
+    else:
+        assert result.status == "ERROR" and result.reason_code == "NON_CELL_CENTER"
+        assert not result.route_id and not result.outbound_path
     assert publishers
 
 

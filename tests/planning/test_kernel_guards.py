@@ -24,7 +24,8 @@ def scenario(mask=None):
 def test_continuous_pose_is_not_teleported_to_a_free_cell_centre():
     grid, profile, request = scenario()
     result = plan_route(terrain=grid, profile=profile,
-                        request=replace(request, start=(1.1, 2.5), return_to=request.start))
+                        request=replace(request, start=(1.1, 2.5), return_to=request.start),
+                        allow_continuous_start=True)
     assert result.status == RouteStatus.FEASIBLE
     assert result.outbound_path[:2] == ((1.1, 2.5, 0.), (1.5, 2.5, 0.))
     assert result.start_connector.distance_m == pytest.approx(.4)

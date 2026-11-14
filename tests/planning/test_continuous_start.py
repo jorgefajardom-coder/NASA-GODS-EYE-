@@ -30,7 +30,7 @@ def scenario(kind="rover", *, mask=None, heights=None, sigma=None, version=1):
 @pytest.mark.parametrize("kind", ["rover", "human"])
 def test_clear_start_preserves_requested_pose_and_graph_waypoints(kind):
     grid, profile, request = scenario(kind)
-    result = plan_route(terrain=grid, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=request)
     assert result.status == RouteStatus.FEASIBLE
     assert result.outbound_path == (request.start, (2.5, 2.5, 0.),
                                     (3.5, 2.5, 0.), request.goal)
@@ -42,23 +42,23 @@ def test_clear_start_preserves_requested_pose_and_graph_waypoints(kind):
     assert result.oxygen_est_l == (pytest.approx(.24) if kind == "human" else None)
 
 
-def test_directed_connector_costs_service_return_and_reserves_are_charged_once():
+def test_ground_connector_costs_service_return_and_reserves_are_charged_once():
     grid, profile, request = scenario("human")
     profile = replace(profile, speed_m_s=2., energy_wh_per_m=3.,
                       downhill_time_factor=2., downhill_energy_factor=4.,
                       service_power_w=3600.)
-    request = replace(request, start=(2.1, 2.5, .3), require_return=True,
+    request = replace(request, start=(2.1, 2.5, 0.), require_return=True,
                       service_time_s=2., reserve_time_s=5.)
-    result = plan_route(terrain=grid, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=request)
     assert result.status == RouteStatus.FEASIBLE
     c = result.start_connector
-    assert c.distance_m == pytest.approx(.5)  # sqrt(.4**2 + .3**2)
-    assert c.travel_time_s == pytest.approx(.625)
-    assert c.energy_est_wh == pytest.approx(6.)
-    assert c.oxygen_est_l == pytest.approx(.0625)
-    # Two metres outbound, three back, plus service and the directed connector.
-    assert result.travel_time_s == pytest.approx(.625 + 5/2 + 2)
-    assert result.energy_est_wh == pytest.approx(6 + 5*3 + 2)
+    assert c.distance_m == pytest.approx(.4)  # A known ground start has no artificial vertical connector.
+    assert c.travel_time_s == pytest.approx(.2)
+    assert c.energy_est_wh == pytest.approx(1.2)
+    assert c.oxygen_est_l == pytest.approx(.02)
+    # Two metres outbound, three back, plus service and the initial connector.
+    assert result.travel_time_s == pytest.approx(.2 + 5/2 + 2)
+    assert result.energy_est_wh == pytest.approx(1.2 + 5*3 + 2)
     assert result.oxygen_est_l == pytest.approx(result.travel_time_s*.1)
     assert result.reserve_time_s == pytest.approx(100-result.travel_time_s)
     assert result.reserve_wh == pytest.approx(100-result.energy_est_wh)
@@ -86,7 +86,7 @@ def test_unsafe_containing_cell_cannot_be_snapped_to_another_free_cell(hazard):
     profile = replace(profile, max_sigma_m=1.)
     # Pose is only .01 m from a neighbouring FREE cell; escaping to it is forbidden.
     request = replace(request, start=(2.01, 2.5, 0.))
-    result = plan_route(terrain=grid, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=request)
     expected = RouteStatus.NO_PATH if hazard == "forbidden" else RouteStatus.UNKNOWN
     assert result.status == expected
     assert result.reason_code == ("NO_ADMISSIBLE_START_CONNECTOR" if hazard == "forbidden"
@@ -102,7 +102,7 @@ def test_connector_footprint_cannot_overlap_adjacent_obstacle_or_unknown(hazard,
     grid, profile, request = scenario(mask=mask)
     # Centre (2.5,2.5) is clear for radius .15; initial pose is only .1 from obstacle.
     profile = replace(profile, radius_m=.1, localization_error_m=.05)
-    result = plan_route(terrain=grid, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=request)
     assert result.status == expected
     assert not result.outbound_path
 
@@ -111,7 +111,7 @@ def test_point_start_on_blocked_corner_is_rejected_even_with_zero_radius():
     mask = np.zeros((7, 7), dtype=np.int8)
     mask[1, 2] = mask[2, 1] = 100
     grid, profile, request = scenario(mask=mask)
-    result = plan_route(terrain=grid, profile=profile,
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile,
                         request=replace(request, start=(2., 2., 0.)))
     assert result.status == RouteStatus.NO_PATH
     assert result.reason_code == "NO_ADMISSIBLE_START_CONNECTOR"
@@ -120,24 +120,24 @@ def test_point_start_on_blocked_corner_is_rejected_even_with_zero_radius():
 
 @pytest.mark.parametrize("change", [dict(max_slope_deg=20.), dict(max_step_m=.2),
                                   dict(max_downhill_slope_deg=20.)])
-def test_connector_rejects_slope_step_and_directed_downhill_limit(change):
+def test_inconsistent_ground_z_is_input_error_not_path_impossibility(change):
     grid, profile, request = scenario()
     request = replace(request, start=(2.1, 2.5, .3))  # 36.87 degrees downhill
-    result = plan_route(terrain=grid, profile=replace(profile, **change), request=request)
-    assert result.status == RouteStatus.NO_PATH
-    assert result.reason_code == "NO_ADMISSIBLE_START_CONNECTOR"
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=replace(profile, **change), request=request)
+    assert result.status == RouteStatus.ERROR
+    assert result.reason_code == "INVALID_START_Z"
 
 
 @pytest.mark.parametrize("point", [(-.01, 2.5, 0.), (7., 2.5, 0.)])
 def test_outside_start_is_not_clamped(point):
     grid, profile, request = scenario()
-    result = plan_route(terrain=grid, profile=profile, request=replace(request, start=point))
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=replace(request, start=point))
     assert result.status == RouteStatus.ERROR and result.reason_code == "INVALID_POSITION"
 
 
 def test_start_footprint_must_fit_inside_map_for_entire_connector():
     grid, profile, request = scenario()
-    result = plan_route(terrain=grid, profile=replace(profile, radius_m=.1),
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=replace(profile, radius_m=.1),
                         request=replace(request, start=(.05, 2.5, 0.)))
     assert result.status == RouteStatus.NO_PATH
     assert result.reason_code == "NO_ADMISSIBLE_START_CONNECTOR"
@@ -153,7 +153,7 @@ def test_connector_resources_are_in_search_budget_not_added_after_feasibility(re
         request = replace(request, budget=replace(request.budget, energy_wh=12.2))
     else:
         request = replace(request, budget=replace(request.budget, oxygen_l=10.22))
-    result = plan_route(terrain=grid, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=request)
     assert result.status == RouteStatus.INSUFFICIENT_BUDGET
     assert result.reason_code == "BUDGET_EXCEEDED"
     assert not result.outbound_path and result.start_connector is None
@@ -162,7 +162,7 @@ def test_connector_resources_are_in_search_budget_not_added_after_feasibility(re
 @pytest.mark.parametrize("mode", [RouteMode.FAST, RouteMode.SAFE])
 def test_start_at_cell_centre_keeps_graph_only_path_and_exact_costs(mode):
     grid, profile, request = scenario()
-    result = plan_route(terrain=grid, profile=profile,
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile,
                         request=replace(request, start=(2.5, 2.5, 0.), mode=mode))
     assert result.status == RouteStatus.FEASIBLE
     assert result.start_connector is None
@@ -172,7 +172,7 @@ def test_start_at_cell_centre_keeps_graph_only_path_and_exact_costs(mode):
 
 def test_safe_bottleneck_includes_the_connector_not_just_cell_centres():
     grid, profile, request = scenario()
-    result = plan_route(terrain=grid, profile=profile,
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile,
                         request=replace(request, start=(.1, 2.5, 0.), mode=RouteMode.SAFE))
     assert result.status == RouteStatus.FEASIBLE
     assert result.min_clearance_m == pytest.approx(.1)
@@ -181,14 +181,14 @@ def test_safe_bottleneck_includes_the_connector_not_just_cell_centres():
 
 def test_d07_replan_from_continuous_pose_after_obstacle_update():
     grid, profile, request = scenario()
-    first = plan_route(terrain=grid, profile=profile,
+    first = plan_route(allow_continuous_start=True, terrain=grid, profile=profile,
                        request=replace(request, start=(2.5, 2.5, 0.)))
     assert (3.5, 2.5, 0.) in first.outbound_path
     mask = np.zeros((7, 7), dtype=np.int8)
     mask[2, 3] = 100
     revised, _, _ = scenario(mask=mask, version=2)
     query = replace(request, start=(2.2, 2.4, 0.), map_version=2, request_id="r2")
-    second = plan_route(terrain=revised, profile=profile, request=query)
+    second = plan_route(allow_continuous_start=True, terrain=revised, profile=profile, request=query)
     assert first.status == second.status == RouteStatus.FEASIBLE
     assert second.outbound_path[:2] == (query.start, (2.5, 2.5, 0.))
     assert second.map_version_used == 2 and second.route_id != first.route_id
@@ -202,7 +202,7 @@ def test_every_point_of_accepted_connector_stays_in_known_cell_and_clear_of_squa
     grid, profile, request = scenario(mask=mask)
     profile = replace(profile, radius_m=.05, localization_error_m=.05)
     request = replace(request, start=(2.4, 2.1, 0.))
-    result = plan_route(terrain=grid, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=request)
     assert result.status == RouteStatus.FEASIBLE
     c = result.start_connector
     # Independent dense check against actual axis-aligned cell squares, not the
@@ -222,7 +222,7 @@ def test_two_dimensional_start_uses_belief_height_and_nonzero_origin_resolution(
     grid, profile, request = scenario(heights=np.full((7, 7), 3.))
     grid = replace(grid, origin_x_m=-10., origin_y_m=20., resolution_m=2.)
     request = replace(request, start=(-5.8, 25.), goal=(-1., 25.), require_return=False)
-    result = plan_route(terrain=grid, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=request)
     assert result.status == RouteStatus.FEASIBLE
     assert result.outbound_path[0] == (-5.8, 25., 3.)
     assert result.start_connector.end == (-5., 25., 3.)
@@ -234,12 +234,12 @@ def test_two_dimensional_start_uses_belief_height_and_nonzero_origin_resolution(
                                   dict(require_return=True, return_to=(1.1, 2.5, 0.))])
 def test_goal_and_return_target_remain_cell_centres(change):
     grid, profile, request = scenario()
-    result = plan_route(terrain=grid, profile=profile, request=replace(request, **change))
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=replace(request, **change))
     assert result.status == RouteStatus.ERROR and result.reason_code == "NON_CELL_CENTER"
 
 
 def test_continuous_start_does_not_claim_drone_flight_support():
     grid, profile, request = scenario("drone")
-    result = plan_route(terrain=grid, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=request)
     assert result.status == RouteStatus.ERROR
     assert result.reason_code == "CONTINUOUS_START_NOT_SUPPORTED"

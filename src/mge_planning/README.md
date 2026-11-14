@@ -36,13 +36,21 @@ resource. Never read evaluator reference or undiscovered POIs.
 
 ## Continuous initial positions
 
-Human/rover starts may be continuous ENU positions. The planner validates a straight
+Continuous human/rover starts are an experimental opt-in: Python
+`plan_route(..., allow_continuous_start=True)` or the ROS node startup parameter
+`allow_continuous_starts:=true`. Both defaults are false, retaining the current
+consumer NON_CELL_CENTER baseline until Jesus/David approve the extension.
+The planner validates a straight
 connector to the containing cell centre: the whole swept segment must satisfy
 known terrain, obstacle/uncertainty clearance, footprint plus localization allowance,
 map boundaries and directed slope/step restrictions. It never snaps an unsafe start
 to another free cell. Connector time, energy and human oxygen initialize A* before
 budget pruning. The output retains the exact initial 3-D pose and every graph
 waypoint, with Python-only start_connector metadata. A 2-D start uses belief height.
+An explicit human/rover z must match the known containing-cell height within
+1e-6 m for both centred and continuous starts; otherwise ERROR/INVALID_START_Z.
+It never projects an inconsistent pose silently. This is a grid-model guard,
+not validated localization accuracy. SERVICE/RETURN goal/base comparisons use XY.
 Goals/bases remain cell centres; a continuous start requiring return needs an
 explicit centred base. Continuous drone flight is unsupported.
 
@@ -72,11 +80,15 @@ trigger_reason and candidate results in a structured decision:
 | UNKNOWN | Insufficient data, stale/inconsistent context or work bound; never authorizes movement |
 
 Spatial enter/exit thresholds and a minimum search interval suppress soft-event
-storms. Pending reevaluations run on TICK with fresh state. Safety checks precede
+storms. Deferred deviations are discarded after corridor recovery; task
+notifications survive until reevaluation. UNKNOWN/SEARCH_LIMIT has at most two
+retries by default, separated by min_interval_s, then STOP_REQUIRED with
+SEARCH_RETRIES_EXHAUSTED. These remain proposals and never restore authorization.
+Safety checks precede
 deduplication/hysteresis and invalidation is never delayed by cooldown. Finding a
 feasible candidate does not clear invalidation or authorize its execution.
 
-During OUTBOUND, a primary mission result of NO_PATH or INSUFFICIENT_BUDGET triggers
+During OUTBOUND or SERVICE with unfinished activity, a primary mission result of NO_PATH or INSUFFICIENT_BUDGET triggers
 one automatic direct-base evaluation from the current pose, using the SAME remaining
 budget and reserves, service_time_s=0 and require_return=False. If feasible, the
 policy proposes candidate_phase=RETURN and reason CONTINGENCY_RETURN. The failed
@@ -92,6 +104,9 @@ unchanged ROS service has no phase field: the single-leg return appears in
 outbound_path with an empty return_path. Consumers must preserve the policy's
 phase context. Existing RETURN requests also charge zero service; SERVICE requests
 charge only service_remaining_s. The policy never debits historical consumption.
+RemainingResources accepts depleted live availability; the policy returns an
+explicit STOP_REQUIRED for violated time/energy/human-oxygen reserves before
+constructing a strict ResourceBudget. Planner admission invariants stay unchanged.
 During OUTBOUND, service_remaining_s must still equal the original service duration;
 a decrease is rejected as UNKNOWN/OUTBOUND_SERVICE_MISMATCH without launching A*.
 Service can decrease only in SERVICE at the goal. Event/map version mismatches
@@ -105,7 +120,7 @@ Full API/limits: [event policy](../../docs/replan_policy.md).
 From the repository root, using Python 3.12 and the existing development environment:
 
 ```sh
-python -m pytest tests/planning/test_replan_policy.py tests/planning/test_d07_twenty_metres.py -q
+python -m pytest tests/planning -q
 python -m pytest
 python scripts/check_repository.py
 git diff --check
@@ -122,3 +137,5 @@ stop/resume, dynamics, real pose/resource synchronization, restart recovery and
 full-terrain runtime remain unvalidated. All test profiles/thresholds are
 illustrative. Daniel's final map products and David's approved assumptions are
 pending. See [handoff](../../docs/planner_handoff.md) for producer/consumer dependencies.
+See the [PR12 review audit](../../docs/pr12_review_corrections.md) for executed
+results, regression evidence, cache/clearance rules and remaining integration gates.

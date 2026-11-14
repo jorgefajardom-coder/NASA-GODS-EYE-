@@ -2,11 +2,17 @@
 <package format="3">
   <name>mge_mission</name>
   <version>0.0.0</version>
-  <description>P0 scaffold; F04: mission authority, task precedence and acceptance</description>
+  <description>F04 mission authority with source-traced resource estimates</description>
   <maintainer email="team@example.invalid">MARS GODS EYE team</maintainer>
   <license>LicenseRef-UNSPECIFIED</license>
   <buildtool_depend>ament_python</buildtool_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>mge_interfaces</exec_depend>
+  <exec_depend>builtin_interfaces</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>rosgraph_msgs</exec_depend>
+  <exec_depend>rcl_interfaces</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
   <export><build_type>ament_python</build_type></export>
 </package>

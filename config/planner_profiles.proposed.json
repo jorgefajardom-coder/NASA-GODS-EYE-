@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "model_id": "mge-science-1.0.0",
+  "status": "pending_model_agreement",
+  "profiles": {
+    "human_1": {
+      "agent_kind": "human",
+      "speed_m_s": 0.8333,
+      "max_slope_deg": 10.0,
+      "max_step_m": 0.2,
+      "radius_m": 0.5,
+      "localization_error_m": 0.25,
+      "energy_wh_per_m": 0.1392389028894489,
+      "oxygen_l_per_s": 0.04204477938381649,
+      "uphill_time_factor": 2.0,
+      "downhill_time_factor": 2.0,
+      "uphill_energy_factor": 7.941802059851569,
+      "downhill_energy_factor": 0.0,
+      "service_power_w": 461.17,
+      "max_downhill_slope_deg": 10.0,
+      "max_sigma_m": 1.0
+    },
+    "rover_1": {
+      "agent_kind": "rover",
+      "speed_m_s": 0.036000000000000004,
+      "max_slope_deg": 20.0,
+      "max_step_m": 0.2,
+      "radius_m": 1.5,
+      "localization_error_m": 0.25,
+      "energy_wh_per_m": 0.9392746913580247,
+      "oxygen_l_per_s": null,
+      "uphill_time_factor": 0.0,
+      "downhill_time_factor": 0.0,
+      "uphill_energy_factor": 3.570196336153783,
+      "downhill_energy_factor": 0.0,
+      "service_power_w": 200.0,
+      "max_downhill_slope_deg": 20.0,
+      "max_sigma_m": 1.0
+    },
+    "drone_1": {
+      "agent_kind": "drone",
+      "speed_m_s": 2.0,
+      "max_slope_deg": 90.0,
+      "max_step_m": 1000000.0,
+      "radius_m": 0.6,
+      "localization_error_m": 0.25,
+      "energy_wh_per_m": 0.04861111111111111,
+      "oxygen_l_per_s": null,
+      "uphill_time_factor": 2.0,
+      "downhill_time_factor": 2.0,
+      "uphill_energy_factor": 2.07632,
+      "downhill_energy_factor": 0.0,
+      "service_power_w": 350.0,
+      "max_downhill_slope_deg": 90.0,
+      "max_sigma_m": 1.0
+    }
+  },
+  "approximation": {
+    "exact_science_model": false,
+    "reason": "Current planner has per-distance energy and constant human oxygen; mission audits full activity/grade costs independently.",
+    "human_oxygen": "Maximum admitted climb/activity rate, not a constant physiological measurement.",
+    "drone": "Ground-grid projection; it cannot verify flight clearance or 3D collision avoidance.",
+    "approval": "Scientific profile approval does not approve this projection."
+  }
+}

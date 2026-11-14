@@ -11,7 +11,7 @@ import pytest
 pytest.importorskip('rclpy', reason='Requires built ROS 2 workspace')
 
 from mge_gateway.replay_check import check_package
-from test_vertical_mock import GOAL, wait_for
+from tests.integration.test_vertical_mock import GOAL, wait_for
 
 RUN_ID = 'it-replay'
 PORT = 8766
@@ -60,6 +60,7 @@ def test_recorded_run_is_readable_without_backend(tmp_path):
     with open(os.path.join(package, 'manifest.json'), encoding='utf-8') as f:
         manifest = json.load(f)
     assert manifest['mode'] == 'REPLAY' and manifest['recorded_from'] == 'LIVE'
+    assert manifest['source_mode'] == 'MOCK'      # recorded off a running MOCK graph
     assert manifest['clock_source'] == 'system'
     assert len(manifest['agents']) == 3
     with open(os.path.join(package, 'snapshot.json'), encoding='utf-8') as f:

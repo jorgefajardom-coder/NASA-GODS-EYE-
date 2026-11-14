@@ -29,6 +29,8 @@ from sensor_msgs.msg import Image  # noqa: E402
 
 from mge_interfaces.msg import TerrainMeta, TerrainObservation  # noqa: E402
 from mge_interfaces.srv import PlanRoute  # noqa: E402
+from mge_planning.core import TerrainGrid  # noqa: E402
+from tests.integration.ground_fixture import simulated_ground_point  # noqa: E402
 
 RUN_ID = 'it-terrain'
 ROOT = Path(__file__).resolve().parents[2]
@@ -113,13 +115,26 @@ class Probe:
         msg.obstacle = [TerrainObservation.OBSTACLE_FREE] * len(cells)
         self.observations.publish(msg)
 
-    def plan(self, request_id, map_version, start, goal):
+    def plan(self, request_id, map_version, start, goal, *, supplied_z=None):
+        batch = self.batch(map_version)
+        meta = batch['meta']
+        heights = floats(batch['belief'])
+        surface = TerrainGrid(meta.run_id, meta.map_version,
+                              [heights[r*meta.cols:(r+1)*meta.cols]
+                               for r in range(meta.rows)],
+                              [batch['rover'].data[r*meta.cols:(r+1)*meta.cols]
+                               for r in range(meta.rows)], meta.resolution_m,
+                              meta.origin_x_m, meta.origin_y_m, meta.header.frame_id)
         req = PlanRoute.Request()
         req.run_id, req.request_id = RUN_ID, request_id
         req.agent_id, req.agent_kind = 'rover_1', 'ROVER'
         for name, (row, col) in (('start', start), ('goal', goal), ('return_to', start)):
             point = getattr(req, name)
             point.x, point.y = centre(row, col)
+            # This is a newly prepared synthetic request, not physical telemetry.
+            # Unknown-map cases must provide an explicit pose instead of inferring z.
+            point.z = (simulated_ground_point(surface, (point.x, point.y))[2]
+                       if supplied_z is None else supplied_z)
         req.require_return = True
         req.mode = 'FAST'
         req.map_version = map_version
@@ -143,8 +158,11 @@ def probe():
     processes = [
         run('mge_data', 'data_node'),
         run('mge_mapping', 'mapping_node', repeat_period_s=1.0),
+        # This checks coherent-batch routing, not the production latency limit.
+        # Keep search bounded while allowing shared CI runners scheduling slack.
         run('mge_planning', 'planning_node', profiles_file=PROFILES,
-            allow_illustrative_profiles='true', snapshot_contract_confirmed='true'),
+            allow_illustrative_profiles='true', snapshot_contract_confirmed='true',
+            search_timeout_s=10.0),
     ]
     rclpy.init()
     probe = Probe()
@@ -187,7 +205,7 @@ def test_batch_is_repeated_with_the_same_stamp(probe):
 
 def test_planner_accepts_the_batch_and_reports_unknown_terrain(probe):
     probe.batch(1)
-    decision = probe.plan('req-unobserved', 1, (10, 10), (20, 20))
+    decision = probe.plan('req-unobserved', 1, (10, 10), (20, 20), supplied_z=0.0)
     assert decision.map_version_used == 1
     assert decision.status != 'FEASIBLE'        # no observed cell, so no route
     assert decision.reason_code not in (
@@ -226,9 +244,14 @@ def test_planner_routes_inside_the_observed_block(probe):
     batch = probe.batch(2)
     free = [i for i, value in enumerate(batch['rover'].data) if value == 0]
     assert free, 'no admissible observed cell for the rover'
+    incompatible = probe.plan('req-observed-invalid-z', 2, (12, 12), (19, 19), supplied_z=0.0)
+    assert incompatible.status == 'ERROR' and incompatible.reason_code == 'INVALID_START_Z'
+    assert not incompatible.route_id and not incompatible.outbound_path
     decision = probe.plan('req-observed', 2, (12, 12), (19, 19))
     assert decision.map_version_used == 2
     assert decision.status == 'FEASIBLE', (decision.reason_code, decision.detail)
+    expected_z = floats(batch['belief'])[12*COLS+12]
+    assert expected_z != 0.0 and decision.outbound_path[0].z == expected_z
     inside = {(round(x), round(y)) for x, y in (centre(i // COLS, i % COLS) for i in BLOCK)}
     for point in [*decision.outbound_path, *decision.return_path]:
         assert (round(point.x), round(point.y)) in inside

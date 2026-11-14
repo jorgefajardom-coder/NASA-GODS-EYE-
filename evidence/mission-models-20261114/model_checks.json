@@ -1,0 +1,251 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "mission-models-20261114",
+  "recorded_at_utc": "2026-11-14T15:45:52.406860+00:00",
+  "mode": "MODEL_CHECK",
+  "implementation_revision": "f75c54e929576c6780d559c9daa24d06ccf0a0b8",
+  "working_tree_dirty": true,
+  "model_id": "mge-science-1.0.0",
+  "profile_sha256": "9d5ba515a3ca2054b74bcbe6c3e45821f3b45329ea1f90157039dd2ced8332d6",
+  "profile_states": {
+    "human_1": "proposed",
+    "rover_1": "proposed",
+    "drone_1": "proposed"
+  },
+  "scientific_acceptance": false,
+  "observational_nasa_data": false,
+  "integrated_mission_executed": false,
+  "datasets_used": [],
+  "seed": null,
+  "command": [
+    "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+    "scripts/check_mission_models.py",
+    "--run-id",
+    "mission-models-20261114",
+    "--output-dir",
+    "evidence/mission-models-20261114"
+  ],
+  "limitations": [
+    "Formula estimates on synthetic geometry and durations only.",
+    "No ROS, simulator, hidden reference, real traversal or task execution.",
+    "Proposed profiles remain proposed regardless of formula-check success."
+  ],
+  "results": [
+    {
+      "agent_id": "drone_1",
+      "case": "flat",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 5.0,
+      "energy_wh": 0.4861111111111111,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "drone_1",
+      "case": "uphill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "time_s": 5.0,
+      "energy_wh": 0.4898211111111111,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "drone_1",
+      "case": "downhill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "end_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 5.0,
+      "energy_wh": 0.4861111111111111,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "drone_1",
+      "case": "idle",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 0.041666666666666664,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "drone_1",
+      "case": "observe",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 1.9166666666666667,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "human_1",
+      "case": "flat",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 12.000480019200767,
+      "energy_wh": 1.392389028894489,
+      "oxygen_l": 0.2843296257303004
+    },
+    {
+      "agent_id": "human_1",
+      "case": "uphill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "time_s": 14.400576023040921,
+      "energy_wh": 2.498196834673387,
+      "oxygen_l": 0.510138586460473
+    },
+    {
+      "agent_id": "human_1",
+      "case": "downhill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "end_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 14.400576023040921,
+      "energy_wh": 1.6708668346733868,
+      "oxygen_l": 0.3411955508763605
+    },
+    {
+      "agent_id": "human_1",
+      "case": "idle",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 2.984,
+      "oxygen_l": 0.6093409137623338
+    },
+    {
+      "agent_id": "human_1",
+      "case": "sample",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 3.8430833333333334,
+      "oxygen_l": 0.7847680663532604
+    },
+    {
+      "agent_id": "rover_1",
+      "case": "flat",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 277.77777777777777,
+      "energy_wh": 9.392746913580247,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "rover_1",
+      "case": "uphill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "time_s": 279.16321169780247,
+      "energy_wh": 12.784626250864882,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "rover_1",
+      "case": "downhill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "end_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 279.16321169780247,
+      "energy_wh": 7.754533658272291,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "rover_1",
+      "case": "idle",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 0.6666666666666666,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "rover_1",
+      "case": "inspect",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 1.6666666666666667,
+      "oxygen_l": null
+    }
+  ]
+}

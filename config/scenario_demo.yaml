@@ -1,0 +1,132 @@
+# Illustrative only. Scientific profiles and operational mission approval remain pending.
+schema_version: "1.0.0"
+model_id: "mge-science-1.0.0"
+status: "illustrative"
+owner: "David"
+description: "Synthetic offline contract/test scenario. These positions, services, capacities and reserves are invented examples, not approved mission parameters."
+source_profiles: "science_profiles.proposed.json"
+run_id: "illustrative-mission"
+dataset_id: "synthetic-flat-grid"
+frame_id: "map"
+map_version: 1
+connectivity: "ideal_global_p0"
+profiles:
+  human_1:
+    kind: "human"
+    capabilities: ["reach","sample"]
+    parameters:
+      body_mass_kg: 80.7
+      suit_mass_kg: 120
+      speed_m_s: 0.8333
+      slope_slowdown: 2
+      climb_efficiency: 0.25
+      gravity_m_s2: 3.71
+      max_slope_deg: 10
+      max_step_m: 0.2
+      radius_m: 0.5
+      localization_error_m: 0.25
+      max_sigma_m: 1
+      oxygen_scale: 1
+    activity_power_w:
+      walk: 417.7
+      wait: 358.08
+      inspect: 358.08
+      sample: 461.17
+    agent_id: "human_1"
+    approval_status: "illustrative"
+    model_id: "mge-science-1.0.0"
+  rover_1:
+    kind: "rover"
+    capabilities: ["inspect"]
+    parameters:
+      mass_kg: 1025
+      speed_m_s: 0.04
+      rolling_resistance: 0.05
+      slip: 0.1
+      drive_efficiency: 0.35
+      auxiliary_power_w: 100
+      gravity_m_s2: 3.71
+      max_slope_deg: 20
+      max_step_m: 0.2
+      radius_m: 1.5
+      localization_error_m: 0.25
+      max_sigma_m: 1
+    activity_power_w:
+      wait: 80
+      inspect: 200
+    agent_id: "rover_1"
+    approval_status: "illustrative"
+    model_id: "mge-science-1.0.0"
+  drone_1:
+    kind: "drone"
+    capabilities: ["observe"]
+    parameters:
+      mass_kg: 1.8
+      speed_m_s: 2
+      vertical_speed_m_s: 1
+      climb_efficiency: 0.5
+      gravity_m_s2: 3.71
+      max_slope_deg: 90
+      max_step_m: 1000000
+      radius_m: 0.6
+      localization_error_m: 0.25
+      max_sigma_m: 1
+    activity_power_w:
+      ground_wait: 5
+      translate: 350
+      ascent: 350
+      descent: 230
+      hover: 230
+      observe: 230
+    agent_id: "drone_1"
+    approval_status: "illustrative"
+    model_id: "mge-science-1.0.0"
+mission:
+  primary_agent_id: "human_1"
+  base_enu_m: [0,0,0]
+  primary_goal_enu_m: [10,0,0]
+  mode: "FAST"
+  return_tolerance_m: 0.5
+  primary_service_time_s: 60
+  primary_activity: "sample"
+  budgets:
+    human_1:
+      time_s: 3600
+      energy_wh: 600
+      oxygen_l: 150
+      reserve_time_s: 360
+      reserve_wh: 60
+      reserve_oxygen_l: 15
+    rover_1:
+      time_s: 3600
+      energy_wh: 250
+      reserve_time_s: 360
+      reserve_wh: 25
+    drone_1:
+      time_s: 90
+      energy_wh: 10
+      reserve_time_s: 9
+      reserve_wh: 1
+  discovery_inputs: []
+  notes: ["Tasks must be created by public observations. No evaluator or hidden sites are included.","The 90 s drone budget is a synthetic scenario choice, not certified endurance.","Opening this file or planning a route is not evidence of mission execution or success."]
+
+# Synthetic directed paths for offline coefficient checks; no terrain dataset.
+sensitivity_cases:
+  - case_id: human-uphill-roundtrip
+    agent_id: human_1
+    outbound_enu_m: [[0,0,0], [10,0,1]]
+    return_enu_m: [[10,0,1], [0,0,0]]
+    services: [[sample,60]]
+    wait_s: 10
+  - case_id: rover-uphill-roundtrip
+    agent_id: rover_1
+    outbound_enu_m: [[0,0,0], [10,0,1]]
+    return_enu_m: [[10,0,1], [0,0,0]]
+    services: [[inspect,60]]
+    wait_s: 10
+  - case_id: drone-uphill-roundtrip
+    agent_id: drone_1
+    outbound_enu_m: [[0,0,0], [10,0,1]]
+    return_enu_m: [[10,0,1], [0,0,0]]
+    services: [[observe,60]]
+    wait_s: 10

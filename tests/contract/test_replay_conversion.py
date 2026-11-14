@@ -45,6 +45,33 @@ def test_recorded_mock_converts_without_fabricating_rasters(package):
     assert len(result["routes"]["routes"]) == 2
 
 
+def test_declared_source_is_kept_but_mock_terrain_wins(package):
+    manifest, records, snapshot = deepcopy(package)
+    assert "source_mode" not in manifest  # pinned recording predates the field
+    manifest["source_mode"] = "SIMULATION"
+    assert to_viewer(manifest, records, snapshot)["manifest"]["source_mode"] == "MOCK"
+
+    # Illustrative relabelling of the terrain text only, to reach the other branch.
+    for meta in [manifest["terrain_meta"], snapshot["terrain_meta"],
+                 *[r["terrain_meta"] for r in records if r["type"] == "terrain_meta"]]:
+        meta["dataset_id"], meta["sources"] = "illustrative-sim-grid", ["illustrative"]
+    result = to_viewer(manifest, records, snapshot)["manifest"]
+    assert result["source_mode"] == "SIMULATION" and result["illustrative"] is False
+    assert result["provenance"] == ["replay", "simulated"]
+    assert result["title"].startswith("REPLAY / SIMULATION")
+    del manifest["source_mode"]
+    result = to_viewer(manifest, records, snapshot)["manifest"]
+    assert result["source_mode"] == "UNKNOWN" and result["provenance"] == ["replay"]
+    assert result["title"].startswith("REPLAY: ")
+
+
+@pytest.mark.parametrize("value", ["LIVE", "REAL", None, 1])
+def test_recording_cannot_claim_a_live_or_unknown_vocabulary_source(package, value):
+    package[0]["source_mode"] = value
+    with pytest.raises(ReplayContractError, match="INVALID_SOURCE_MODE"):
+        validate_package(*package)
+
+
 def test_conversion_preserves_coordinates_costs_versions_and_ids(package):
     manifest, records, snapshot = package
     result = to_viewer(*package)
@@ -148,6 +175,7 @@ def test_late_writer_events_roundtrip_through_viewer_oracle(package, tmp_path):
         [r["event"] for r in arrivals], key=lambda event: event["seq"])
     converted = to_viewer(*replay)
     assert converted["reason_code"] == "PUBLIC_RASTERS_REQUIRED"
+    assert replay[0]["source_mode"] == converted["manifest"]["source_mode"] == "MOCK"
     events = converted["timeline"]["events"]
     assert [event["seq"] for event in events[:2]] == [2, 1]
     assert events[1]["timestamp_sim_s"] >= events[0]["timestamp_sim_s"]

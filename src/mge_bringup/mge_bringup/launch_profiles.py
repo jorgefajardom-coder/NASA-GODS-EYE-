@@ -29,6 +29,11 @@ def profile_providers(profile):
     return tuple(providers)
 
 
+def source_mode(providers):
+    """Provenance the gateway declares for a run of this provider inventory."""
+    return "MOCK" if any(p.kind == "MOCK" for p in providers) else "SIMULATION"
+
+
 def validate_provider_receipt(profile, receipt):
     """Explicit review/config gate; receipt alone is never mission acceptance.
 
@@ -61,9 +66,11 @@ def launch_parameters(profile, receipt, run_id):
     result = {}
     for p in providers:
         values = parameters.get(p.role, {})
-        if not isinstance(values, dict) or {"run_id", "use_sim_time"} & set(values):
+        if not isinstance(values, dict) or {"run_id", "use_sim_time", "source_mode"} & set(values):
             raise ValueError("PARAMETER_IDENTITY_OVERRIDE_FORBIDDEN")
         result[p.role] = {**values, "run_id": run_id, "use_sim_time": profile != "mock"}
+    # One MOCK provider makes the whole run MOCK; LIVE is never declared here.
+    result["gateway"]["source_mode"] = source_mode(providers)
     if profile != "mock":
         planner, mission = result["planner"], result["mission"]
         if not planner.get("profiles_file") or planner.get("snapshot_contract_confirmed") is not True:

@@ -11,7 +11,7 @@ from mge_planning.replan import (
     ReplanPolicy, ReplanState, _segment_issue,
 )
 from mge_planning.core import _Geometry
-from test_d07_twenty_metres import setup_case, costs, length, misses_box
+from tests.planning.test_d07_twenty_metres import setup_case, costs, length, misses_box
 
 
 def scene(kind="human"):
@@ -139,11 +139,13 @@ def test_deviation_has_enter_exit_hysteresis_and_deferred_task_runs_on_tick():
     deferred = evaluate(p, grid, profile, between, EventKind.POSE, "jitter", 11.)
     assert deferred.reason_code == "REPLAN_DEFERRED" and deferred.request is None
     settled = evaluate(p, grid, profile, moved, EventKind.TICK, "settle", 20.)
-    assert settled.request is not None  # Deferred reevaluation is not lost.
+    assert settled.request is None and settled.action == ReplanAction.KEEP  # Deviation cleared; no stale search.
     assert evaluate(p, grid, profile, moved, EventKind.TICK, "quiet", 21.).action == ReplanAction.KEEP
     task = evaluate(p, grid, profile, moved, EventKind.TASK, "task", 22.)
-    assert task.reason_code == "REPLAN_DEFERRED"
-    tick = evaluate(p, grid, profile, moved, EventKind.TICK, "flush", 30.)
+    assert task.request is not None and task.reason_code == "TASK_REEVALUATION"
+    queued = evaluate(p, grid, profile, moved, EventKind.TASK, "task-next", 23.)
+    assert queued.reason_code == "REPLAN_DEFERRED"
+    tick = evaluate(p, grid, profile, moved, EventKind.TICK, "flush", 32.)
     assert tick.request is not None and tick.trigger_reason == "TASK_REEVALUATION"
 
 
@@ -330,7 +332,7 @@ def test_foreign_run_and_stale_replacement_are_not_adopted():
     p = policy()
     evaluate(p, grid, profile, start)
     new = replace(start.active_request, request_id="other")
-    other = plan_route(terrain=grid, request=new, profile=profile)
+    other = plan_route(allow_continuous_start=True, terrain=grid, request=new, profile=profile)
     revised = block(grid, (0, 0))
     result = evaluate(p, revised, profile, replace(moved, active_request=new, active_route=other), now=1.)
     assert result.reason_code == "STALE_ROUTE_ADOPTION"
@@ -379,7 +381,7 @@ def test_centred_height_change_cannot_teleport_the_actor_vertically():
     revised = replace(grid, map_version=2, elevation_m=heights)
     result = evaluate(policy(), revised, profile, start, EventKind.TASK)
     assert result.action == ReplanAction.UNKNOWN
-    assert result.reason_code == "CANDIDATE_START_MISMATCH" and result.candidate is None
+    assert result.reason_code == "INVALID_START_Z" and result.candidate is None
 
 
 def test_feasible_soft_proposal_does_not_clear_a_previously_latched_stop():
@@ -517,7 +519,7 @@ def test_outbound_cannot_debit_ten_second_service_before_arrival(
         agent, remaining_service, seen_initial_state, monkeypatch):
     grid, profile, start, moved, *_ = scene(agent)
     mission = replace(start.mission, service_time_s=10.)
-    route = plan_route(terrain=grid, profile=profile, request=mission)
+    route = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=mission)
     assert route.status == RouteStatus.FEASIBLE
     start = replace(start, mission=mission, active_request=mission, active_route=route,
                     service_remaining_s=10.)
@@ -543,7 +545,7 @@ def test_outbound_cannot_debit_ten_second_service_before_arrival(
 def test_only_service_phase_at_goal_can_debit_the_original_ten_seconds(agent):
     grid, profile, start, *_ = scene(agent)
     mission = replace(start.mission, service_time_s=10.)
-    route = plan_route(terrain=grid, profile=profile, request=mission)
+    route = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=mission)
     start = replace(start, mission=mission, active_request=mission, active_route=route,
                     service_remaining_s=10.)
     p = policy()
@@ -572,6 +574,6 @@ def test_event_map_mismatch_invalidates_even_unaffected_route_and_stays_latched(
     # Only external adoption of a current-version route can clear invalidation.
     request = replace(moved.mission, request_id="reauthorized", start=moved.pose,
                       map_version=2, budget=moved.remaining)
-    candidate = plan_route(terrain=revised, request=request, profile=profile)
+    candidate = plan_route(allow_continuous_start=True, terrain=revised, request=request, profile=profile)
     adopted = replace(moved, active_request=request, active_route=candidate, next_waypoint=1)
     assert evaluate(p, revised, profile, adopted, EventKind.TICK, "adopted", 3.).action == ReplanAction.KEEP

@@ -24,6 +24,11 @@ not yet connected to the ROS node, MissionManager or supervisor.
   waypoint cursor, not the phase or service progress. Retired routes cannot reactivate.
 - `pose`: current finite 3-D ENU pose; `remaining`: current authoritative availability,
   with reserves still included. The policy NEVER subtracts historical consumption.
+  Use RemainingResources for live telemetry that may have fallen below reserves;
+  ResourceBudget intentionally rejects such planning inputs. The policy checks
+  TIME_RESERVE_DEPLETED / ENERGY_RESERVE_DEPLETED / OXYGEN_RESERVE_DEPLETED first
+  and returns STOP_REQUIRED without constructing a request. Reserves must still
+  equal the mission template; changing them returns RESERVE_STATE_MISMATCH.
   `service_remaining_s` is explicit and nonincreasing. It must equal the original
   service_time_s throughout OUTBOUND, including arrival until mission enters SERVICE;
   only SERVICE at the goal permits a decrease. RETURN requires zero (completed or
@@ -38,6 +43,12 @@ not yet connected to the ROS node, MissionManager or supervisor.
   geometry fail closed. An old active route may be checked against a newer map;
   a newly adopted route must match the current version. KEEP does not rewrite its ID
   or map version: mission must handle revalidation/authorization of an unaffected path.
+  Snapshot identity avoids repeated raster hashes on POSE/TICK; a distinct object
+  is hashed even at the same version. GeometryCache shares known/optimistic
+  geometry between validation and A*, holding one immutable snapshot and at most
+  eight profile/mode entries. Deliberately re-enabling NumPy writes is unsupported.
+  Every pending segment is still validated on every call; full-terrain real-time
+  performance is not established by this cache.
 
 ## Validation, decisions and hysteresis
 
@@ -49,7 +60,9 @@ return. All pending segments are checked, irrespective of event kind.
 
 The footprint bound uses nearest forbidden/unknown cell centres, minus the cell
 circumradius, agent radius, localization allowance and half the validation probe
-spacing. The 1-Lipschitz distance bound covers BETWEEN probes too. The map-boundary
+spacing, with at least five probes and spacing <= resolution/4. The core graph,
+connector and policy use the same bound and strict obstacle-contact rule,
+including zero-length paths. The 1-Lipschitz distance bound covers BETWEEN probes too. The map-boundary
 minimum is exact. Zero obstacle margin is rejected even for point agents. All
 crossed cells are enumerated by grid-line intersections (including arbitrarily
 short corner crossings), so directed slope/step restrictions cannot be skipped by
@@ -61,7 +74,8 @@ The pending route is costed with remaining service, return and reserves to detec
 resource loss even without a map event. Corridor deviation uses distance from the
 pose to the current cursor's segment, not to an unrelated future segment. Enter
 and exit thresholds implement spatial hysteresis; soft task/deviation searches
-respect min_interval_s. Deferred causes survive until a TICK with fresh state.
+respect min_interval_s. A deferred CORRIDOR_DEVIATION is removed after recovery
+below the exit threshold; task notifications persist until reevaluation.
 Each distinct task event can reevaluate the mission; duplicates do not repeat work.
 
 | Action | Meaning |
@@ -90,9 +104,24 @@ latch; mission must supply a different authorized route on the current version.
 
 `reason_code` records the decision/result cause; `trigger_reason` preserves the
 original search trigger if planning fails. `request` and `candidate` expose exactly
-what was computed. A source-z mismatch caused by the core's legacy centred-pose
-behavior or a candidate failing policy revalidation returns UNKNOWN without an
-executable candidate. Search/validation bounds also fail closed.
+what was computed. SERVICE and base comparisons use XY, regardless of whether
+targets have two or three coordinates. Current poses remain 3-D. Supplied ground
+z must match the known containing-cell belief within 1e-6 m for centred and
+continuous starts. UNKNOWN/INVALID_START_Z invalidates and requests coherent pose
+data; it never projects z or declares the route impossible. A coherent pose after
+a local surface-height change can trigger SURFACE_CHANGED and a fresh candidate
+with unchanged XY. Horizontal candidate identity is checked independently;
+candidate geometry is revalidated before returning it. No silent position jump
+is permitted. This strict model rule requires owner review for real telemetry.
+
+UNKNOWN/SEARCH_LIMIT retries the identical logical attempt after min_interval_s,
+up to max_search_retries (default two retries after the initial attempt).
+Earlier TICKs return UNKNOWN/SEARCH_RETRY_DEFERRED. Exhaustion returns latched
+STOP_REQUIRED/SEARCH_RETRIES_EXHAUSTED and does not launch another identical search.
+A new pose/map/resource/task context starts a new bounded attempt. Other UNKNOWN
+causes await changed inputs. Safety validation always precedes retry scheduling;
+new hazards invalidate immediately and DANGER stops without searching. Retries
+never restore authorization or convert an incomplete proof into infeasibility.
 
 ## Phase-aware requests, unchanged ROS wire
 
@@ -112,10 +141,11 @@ executable candidate. Search/validation bounds also fail closed.
 Candidate totals include only future connector, movement, remaining service and
 return. Consumed resources and completed service are never charged again.
 
-### Automatic contingency from OUTBOUND
+### Automatic contingency from OUTBOUND or unfinished SERVICE
 
 This is distinct from planning when the incoming phase is already RETURN.
-After a primary-mission result of NO_PATH or INSUFFICIENT_BUDGET, evaluate() now
+From OUTBOUND or SERVICE with service_remaining_s > 0, after a primary-mission
+result of NO_PATH or INSUFFICIENT_BUDGET, evaluate() now
 automatically requests ONE direct return to base from the same current pose/map
 and authoritative remaining budget. Service is set to zero; no primary estimate
 or historical consumption is debited. A feasible goal detour never invokes this
@@ -128,7 +158,8 @@ has reason_code=CONTINGENCY_RETURN and candidate_phase=RETURN, with invalidation
 still latched. Action is REPLAN unless an immediate danger requires STOP_REQUIRED.
 An infeasible return yields STOP_REQUIRED; an unresolved return yields UNKNOWN,
 with no executable route. Both attempts use existing plan_route() and independently
-apply its SearchLimits (at most two searches, not one shared wall-clock deadline).
+apply its SearchLimits (at most two searches per evaluation, not one shared
+wall-clock deadline; bounded SEARCH_LIMIT retries may repeat this logical attempt).
 Candidate pose/segment revalidation also applies to the fallback.
 
 MissionManager must explicitly authorize the candidate, switch to RETURN and set
@@ -138,6 +169,12 @@ tries another contingency. Tests cover human/rover goal detour, base-only access
 no escape, uncertain base access and separate contingency budget feasibility.
 
 ## Validation and pending integration
+
+The following counts are historical pre-main audit runs, not current validation.
+Current post-main review evidence, all ten reproduced findings and regressions
+are recorded in [PR12 review corrections](pr12_review_corrections.md).
+The ROS node and Python core default to NON_CELL_CENTER; the independent policy
+explicitly opts in to continuous starts and remains unwired to mission authority.
 
 Latest service/map audit on 14 November 2026 (Python 3.12.3): 74 policy cases plus
 9 D-07 cases passed (83 passed, 2.85 s). Full suite: 267 passed, 2 ROS modules
@@ -180,11 +217,13 @@ one-leg return adoption. All scenarios/rates are illustrative synthetic data.
 Jesus: wire coherent pose/budget/phase/cursor/map snapshots into this API, drive
 TICK for deferred work, serialize calls, discard stale asynchronous candidates,
 retain return-phase metadata, connect route authorization and supervisor feedback.
-No ROS/Gazebo or physical stop/resume validation has been executed here.
+Current ROS consumer results are recorded in the linked review audit. No Gazebo
+or physical stop/resume acceptance is established by those software checks.
 
 David: approve corridor thresholds, horizon, resource/service ledger semantics,
 profiles and acceptable uncertainty. Task allocation and multi-goal insertion
 remain outside this policy. Callers must authenticate the adopted route context;
 this Python API is not an authorization/security boundary. Restart recovery,
 persisted event IDs/request sequences and liveness under repeated uncertain maps
-still require integration design. Runtime performance on full terrain is unmeasured.
+still require integration design. Cache regression tests measure build/hash counts,
+not a validated full-terrain latency or memory bound.

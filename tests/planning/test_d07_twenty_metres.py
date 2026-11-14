@@ -58,7 +58,7 @@ def setup_case(kind, resource=None):
                           (4.5, 13.5, 0.), (43.5, 13.5, 0.), budget,
                           return_to=(4.5, 13.5, 0.), require_return=True,
                           service_time_s=4., reserve_time_s=5.)
-    first = plan_route(terrain=grid, profile=profile, request=request)
+    first = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=request)
     assert first.status == RouteStatus.FEASIBLE
     if resource:
         # Original complete mission fits EXACTLY with its reserve. The obstacle's
@@ -68,7 +68,7 @@ def setup_case(kind, resource=None):
                  "oxygen_l": (first.oxygen_est_l + budget.reserve_oxygen_l)
                  if kind == "human" else None}[resource]
         request = replace(request, budget=replace(budget, **{resource: value}))
-        first = plan_route(terrain=grid, profile=profile, request=request)
+        first = plan_route(allow_continuous_start=True, terrain=grid, profile=profile, request=request)
         assert first.status == RouteStatus.FEASIBLE
     travelled, pending = advance(first.outbound_path, 20.)
     assert length(travelled) == pytest.approx(20., abs=1e-10)
@@ -128,7 +128,7 @@ def test_d07_twenty_metres_then_explicit_replan_with_remaining_resources(kind, t
     mask = grid.traversability.copy()
     mask[obstacle] = 100
     revised = replace(grid, map_version=2, traversability=mask)
-    result = plan_route(terrain=revised, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=revised, profile=profile, request=request)
     assert result.status == RouteStatus.FEASIBLE, result.detail
     assert result.map_version_used == 2 and result.route_id != first.route_id
     assert result.run_id == first.run_id and result.request_id == "after-obstacle"
@@ -168,10 +168,10 @@ def test_d07_twenty_metres_then_explicit_replan_with_remaining_resources(kind, t
         assert left >= request.budget.reserve_oxygen_l
         assert result.reserve_oxygen_l == pytest.approx(left)
     # Identical input yields identical paths/costs and route identifier.
-    again = plan_route(terrain=revised, profile=profile, request=request)
+    again = plan_route(allow_continuous_start=True, terrain=revised, profile=profile, request=request)
     assert again.status == result.status and again.route_id == result.route_id
     assert again.outbound_path == result.outbound_path and again.return_path == result.return_path
-    stale = plan_route(terrain=revised, profile=profile, request=replace(request, map_version=1))
+    stale = plan_route(allow_continuous_start=True, terrain=revised, profile=profile, request=replace(request, map_version=1))
     assert stale.status == RouteStatus.STALE_MAP and not stale.outbound_path
     record(tmp_path, "alternative", original, first, travelled, consumed, request, obstacle, result, profile)
 
@@ -182,7 +182,7 @@ def test_d07_twenty_metres_then_obstacle_without_alternative(kind, tmp_path):
     mask = grid.traversability.copy()
     mask[:, obstacle[1]] = 100  # Fully known barrier contains the pending obstacle.
     revised = replace(grid, map_version=2, traversability=mask)
-    result = plan_route(terrain=revised, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=revised, profile=profile, request=request)
     assert result.status == RouteStatus.NO_PATH
     assert result.reason_code == "NO_ADMISSIBLE_PATH" and result.map_version_used == 2
     assert not result.outbound_path and not result.return_path and not result.route_id
@@ -197,7 +197,7 @@ def test_d07_twenty_metres_then_remaining_resource_cannot_fund_detour(kind, reso
     mask = grid.traversability.copy()
     mask[obstacle] = 100
     revised = replace(grid, map_version=2, traversability=mask)
-    result = plan_route(terrain=revised, profile=profile, request=request)
+    result = plan_route(allow_continuous_start=True, terrain=revised, profile=profile, request=request)
     assert result.status == RouteStatus.INSUFFICIENT_BUDGET
     assert result.reason_code == "BUDGET_EXCEEDED" and result.map_version_used == 2
     assert not result.outbound_path and not result.return_path and not result.route_id

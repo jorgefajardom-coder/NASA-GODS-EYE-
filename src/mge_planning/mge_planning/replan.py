@@ -14,7 +14,8 @@ import numpy as np
 
 from .core import (
     MotionProfile, PlanRequest, ResourceBudget, RouteResult, RouteStatus,
-    SearchLimits, TerrainGrid, _Geometry, _motion_costs, plan_route,
+    SearchLimits, TerrainGrid, GeometryCache, _motion_costs, _segment_clearance,
+    _start_z_mismatch, _number, plan_route,
 )
 
 
@@ -55,6 +56,36 @@ class ReplanEvent:
 
 
 @dataclass(frozen=True)
+class RemainingResources:
+    """Live availability can be below reserves; not a valid planning budget.
+
+    The policy must issue STOP before conversion to ResourceBudget. This keeps
+    ResourceBudget's stronger admission invariant intact for every A* request.
+    """
+    agent_kind: str
+    time_s: float
+    energy_wh: float
+    reserve_wh: float
+    oxygen_l: float | None = None
+    reserve_oxygen_l: float | None = None
+
+    def __post_init__(self):
+        if self.agent_kind not in {"human", "rover", "drone"}:
+            raise ValueError("Unsupported agent kind")
+        for name in ("time_s", "energy_wh", "reserve_wh"):
+            _number(getattr(self, name), name)
+        if self.agent_kind == "human":
+            for name in ("oxygen_l", "reserve_oxygen_l"):
+                _number(getattr(self, name), name)
+        elif self.oxygen_l is not None or self.reserve_oxygen_l is not None:
+            raise ValueError("Nonhuman oxygen is not applicable")
+
+    def planning_budget(self):
+        return ResourceBudget(self.agent_kind, self.time_s, self.energy_wh,
+                              self.reserve_wh, self.oxygen_l, self.reserve_oxygen_l)
+
+
+@dataclass(frozen=True)
 class ReplanState:
     mission: PlanRequest
     active_request: PlanRequest
@@ -62,7 +93,7 @@ class ReplanState:
     phase: MissionPhase
     pose: tuple
     next_waypoint: int  # Monotonic index in the current leg; never inferred by nearest point.
-    remaining: ResourceBudget
+    remaining: ResourceBudget | RemainingResources
     service_remaining_s: float
 
     def __post_init__(self):
@@ -85,8 +116,11 @@ class ReplanConfig:
     max_segment_samples: int = 10000
     max_route_segments: int = 10000
     event_history_size: int = 1024
+    max_search_retries: int = 2
 
     def __post_init__(self):
+        if type(self.max_search_retries) is not int or self.max_search_retries < 0:
+            raise ValueError("max_search_retries must be a nonnegative integer")
         values = (self.deviation_enter_m, self.deviation_exit_m,
                   self.min_interval_s, self.immediate_horizon_m)
         if not all(math.isfinite(x) and x >= 0 for x in values):
@@ -129,16 +163,11 @@ def _segment_issue(geometry, a, b, max_samples):
     """
     g = geometry.grid
     h = math.dist(a[:2], b[:2])
-    count = max(2, math.ceil(h/(g.resolution_m/4))+1)
-    if count > max_samples:
+    margin = _segment_clearance(geometry, a, b, max_samples)
+    if margin is None:
         return "VALIDATION_LIMIT"
-    points = np.linspace(a[:2], b[:2], count)
-    if float(np.min(geometry._boundary(points))) < geometry.radius:
-        return "MARGIN_VIOLATION"
-    if geometry.tree is not None:
-        bound = float(np.min(geometry.tree.query(points)[0]))-g.resolution_m/math.sqrt(2)-h/(2*(count-1))
-        if bound <= geometry.radius:
-            return "CORRIDOR_BLOCKED"
+    if margin < 0:
+        return "CORRIDOR_BLOCKED"
     # Exact grid-line split: uniform probes alone can miss a tiny crossed cell
     # near a corner and thus miss a directed step/slope restriction there.
     cuts = {0., 1.}
@@ -198,6 +227,9 @@ class ReplanPolicy:
         self._service_remaining = math.inf
         self._mission = None
         self._phase_index = -1
+        self._geometry_cache = GeometryCache()
+        self._map_snapshot = None
+        self._retry_key, self._retry_count = None, 0
 
     def evaluate(self, *, terrain: TerrainGrid, profile: MotionProfile, state: ReplanState,
                  event: ReplanEvent, now_s: float) -> ReplanDecision:
@@ -237,15 +269,21 @@ class ReplanPolicy:
                         terrain.origin_x_m, terrain.origin_y_m, terrain.frame_id)
         if self._map_geometry is not None and geometry_key != self._map_geometry:
             return decision(ReplanAction.UNKNOWN, "GRID_GEOMETRY_CHANGED", True)
-        digest = hashlib.sha256()
-        for array in (terrain.elevation_m, terrain.traversability, terrain.sigma_m):
-            digest.update(b"absent" if array is None else array.tobytes())
-        fingerprint = digest.digest()
+        # Immutable snapshot identity is the fast path for POSE/TICK. A distinct
+        # object at the same version is still hashed to detect illegal mutation.
+        if terrain is self._map_snapshot:
+            fingerprint = self._map_digest
+        else:
+            digest = hashlib.sha256()
+            for array in (terrain.elevation_m, terrain.traversability, terrain.sigma_m):
+                digest.update(b"absent" if array is None else array.tobytes())
+            fingerprint = digest.digest()
         if terrain.map_version == self._version and fingerprint != self._map_digest:
             return decision(ReplanAction.UNKNOWN, "IMMUTABLE_MAP_CHANGED", True)
         self._identity, self._version = identity, terrain.map_version
         self._mission = m
         self._map_geometry, self._map_digest = geometry_key, fingerprint
+        self._map_snapshot = terrain
         phase_index = list(MissionPhase).index(state.phase)
         if phase_index < self._phase_index:
             return decision(ReplanAction.UNKNOWN, "PHASE_ROLLBACK", True)
@@ -260,6 +298,7 @@ class ReplanPolicy:
             self._route_id = active.route_id
             self._progress = (-1, 0)
             self._pending, self._deviated = None, False
+            self._retry_key, self._retry_count = None, 0
         if (phase_index, state.next_waypoint) < self._progress:
             return decision(ReplanAction.UNKNOWN, "PROGRESS_ROLLBACK", True)
         self._progress = (phase_index, state.next_waypoint)
@@ -273,9 +312,22 @@ class ReplanPolicy:
             return decision(ReplanAction.UNKNOWN, "SERVICE_PROGRESS_ROLLBACK", True)
         self._service_remaining = state.service_remaining_s
         base = m.return_to if m.return_to is not None else m.start
-        if state.remaining.time_s < m.reserve_time_s:
-            return decision(ReplanAction.STOP_REQUIRED, "TIME_RESERVE_DEPLETED", True)
-        if state.phase == MissionPhase.SERVICE and math.dist(state.pose, m.goal) > 1e-6:
+        remaining = state.remaining
+        if (remaining.reserve_wh != m.budget.reserve_wh
+                or remaining.reserve_oxygen_l != m.budget.reserve_oxygen_l):
+            return decision(ReplanAction.UNKNOWN, "RESERVE_STATE_MISMATCH", True)
+        for actual, reserve, reason in (
+                (remaining.time_s, m.reserve_time_s, "TIME_RESERVE_DEPLETED"),
+                (remaining.energy_wh, remaining.reserve_wh, "ENERGY_RESERVE_DEPLETED"),
+                (remaining.oxygen_l, remaining.reserve_oxygen_l, "OXYGEN_RESERVE_DEPLETED")):
+            if actual is not None and actual < reserve:
+                return decision(ReplanAction.STOP_REQUIRED, reason, True)
+        try:
+            if _start_z_mismatch(terrain, state.pose, m.agent_kind, profile):
+                return decision(ReplanAction.UNKNOWN, "INVALID_START_Z", True)
+        except ValueError:
+            return decision(ReplanAction.UNKNOWN, "INVALID_POSITION", True)
+        if state.phase == MissionPhase.SERVICE and math.dist(state.pose[:2], m.goal[:2]) > 1e-6:
             return decision(ReplanAction.UNKNOWN, "SERVICE_POSE_MISMATCH", True)
         if state.phase == MissionPhase.OUTBOUND:
             leg, future = active.outbound_path, active.return_path
@@ -286,7 +338,7 @@ class ReplanPolicy:
             # Stationary goal/base paths still need safety/resource checks.
             if len(leg) != 1 or state.next_waypoint != 1:
                 return decision(ReplanAction.UNKNOWN, "INVALID_PROGRESS_CURSOR", True)
-        if state.phase != MissionPhase.OUTBOUND and (not leg or math.dist(leg[-1], base) > 1e-6):
+        if state.phase != MissionPhase.OUTBOUND and (not leg or math.dist(leg[-1][:2], base[:2]) > 1e-6):
             return decision(ReplanAction.UNKNOWN, "RETURN_CONTEXT_MISMATCH", True)
         if state.phase == MissionPhase.OUTBOUND and m.require_return and not future:
             return decision(ReplanAction.UNKNOWN, "RETURN_CONTEXT_MISSING", True)
@@ -296,8 +348,16 @@ class ReplanPolicy:
         paths = (pending,) + ((future,) if future else ())
         if sum(len(path)-1 for path in paths) > self.config.max_route_segments:
             return decision(ReplanAction.UNKNOWN, "VALIDATION_LIMIT", True)
-        known = _Geometry(terrain, profile)
+        known = self._geometry_cache.get(terrain, profile)
         issue, immediate = None, False
+        reference = leg[max(0, state.next_waypoint-1)]
+        try:
+            cell = terrain.cell(state.pose)
+            if (cell == terrain.cell(reference) and known.known[cell]
+                    and abs(reference[2]-terrain.point(cell)[2]) > 1e-6):
+                issue, immediate = "SURFACE_CHANGED", True
+        except ValueError:
+            issue, immediate = "OUTSIDE_MAP", True
         distance = 0.
         for path_index, path in enumerate(paths):
             for a, b in zip(path, path[1:]):
@@ -334,6 +394,9 @@ class ReplanPolicy:
             self._deviated = True
         elif corridor <= self.config.deviation_exit_m:
             self._deviated = False
+        if self._pending == "CORRIDOR_DEVIATION" and not self._deviated:
+            self._pending = None
+            self._retry_key, self._retry_count = None, 0
         # Safety precedes stale-event checks and deduplication.
         if issue:
             self._invalidated = True
@@ -361,10 +424,18 @@ class ReplanPolicy:
         attempt = (active.route_id, terrain.map_version, fingerprint, state.phase, state.pose,
                    state.next_waypoint, state.remaining, state.service_remaining_s, profile,
                    m, trigger, self._task_generation)
-        if attempt == self._attempt:
+        retrying = self._retry_key == attempt
+        if retrying:
+            if self._retry_count > self.config.max_search_retries:
+                return decision(ReplanAction.STOP_REQUIRED, "SEARCH_RETRIES_EXHAUSTED", True)
+            if now_s-self._last_plan_s < self.config.min_interval_s:
+                return decision(ReplanAction.UNKNOWN, "SEARCH_RETRY_DEFERRED", True)
+        else:
+            self._retry_key, self._retry_count = None, 0
+        if not retrying and attempt == self._attempt:
             return decision(ReplanAction.STOP_REQUIRED if self._invalidated else ReplanAction.KEEP,
                             "ALREADY_EVALUATED", self._invalidated)
-        if issue is None and now_s-self._last_plan_s < self.config.min_interval_s:
+        if not retrying and issue is None and now_s-self._last_plan_s < self.config.min_interval_s:
             self._pending = trigger
             return decision(ReplanAction.STOP_REQUIRED if self._invalidated else ReplanAction.KEEP,
                             "REPLAN_DEFERRED", self._invalidated)
@@ -376,12 +447,15 @@ class ReplanPolicy:
         request = replace(m, request_id=f"{m.request_id}-replan-{self._sequence}",
                           start=state.pose, goal=base if returning else m.goal,
                           require_return=False if returning else m.require_return,
-                          return_to=base, budget=state.remaining, map_version=terrain.map_version,
+                          return_to=base, budget=(state.remaining.planning_budget()
+                          if isinstance(state.remaining, RemainingResources) else state.remaining), map_version=terrain.map_version,
                           service_time_s=0. if returning else state.service_remaining_s)
-        candidate = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits)
+        candidate = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
+                               allow_continuous_start=True, geometry_cache=self._geometry_cache)
         self._pending = None
         primary = {}
-        contingency = (state.phase == MissionPhase.OUTBOUND
+        contingency = ((state.phase == MissionPhase.OUTBOUND or
+                        (state.phase == MissionPhase.SERVICE and state.service_remaining_s > 0))
                        and candidate.status in (RouteStatus.NO_PATH, RouteStatus.INSUFFICIENT_BUDGET))
         if contingency:
             # Failure of the complete primary mission does NOT imply that direct
@@ -390,12 +464,13 @@ class ReplanPolicy:
             primary = dict(primary_request=request, primary_candidate=candidate)
             request = replace(request, request_id=request.request_id+"-contingency-return",
                               goal=base, require_return=False, service_time_s=0.)
-            candidate = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits)
+            candidate = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
+                               allow_continuous_start=True, geometry_cache=self._geometry_cache)
             returning = True
-        if candidate.status == RouteStatus.FEASIBLE and math.dist(candidate.outbound_path[0], state.pose) > 1e-6:
-            # Legacy centred core requests use belief z. Do not let that behavior
-            # silently teleport a current 3-D pose after a surface-height update.
-            return decision(ReplanAction.UNKNOWN, "CANDIDATE_START_MISMATCH", True,
+        if candidate.status == RouteStatus.FEASIBLE and math.dist(candidate.outbound_path[0][:2], state.pose[:2]) > 1e-6:
+            # Start z was already checked uniformly against the ground snapshot.
+            # This guard protects horizontal identity without mixing 2-D/3-D data.
+            return decision(ReplanAction.UNKNOWN, "CANDIDATE_HORIZONTAL_START_MISMATCH", True,
                             request=request, trigger_reason=trigger, **primary)
         if candidate.status == RouteStatus.FEASIBLE:
             legs = (candidate.outbound_path, candidate.return_path)
@@ -406,6 +481,18 @@ class ReplanPolicy:
                                 request=request, trigger_reason=trigger, **primary)
         if candidate.status != RouteStatus.FEASIBLE:
             action = ReplanAction.UNKNOWN if candidate.status in (RouteStatus.UNKNOWN, RouteStatus.STALE_MAP, RouteStatus.ERROR) else ReplanAction.STOP_REQUIRED
+        if candidate.status == RouteStatus.UNKNOWN and candidate.reason_code == "SEARCH_LIMIT":
+            self._retry_key = attempt
+            self._retry_count += 1
+            self._pending = trigger
+            self._attempt = None
+            action = (ReplanAction.STOP_REQUIRED if self._retry_count > self.config.max_search_retries
+                      else ReplanAction.UNKNOWN)
+            return decision(action, "SEARCH_RETRIES_EXHAUSTED" if action == ReplanAction.STOP_REQUIRED else "SEARCH_LIMIT",
+                            True, request=request, candidate=candidate,
+                            candidate_phase=MissionPhase.RETURN if returning else state.phase,
+                            trigger_reason=trigger, **primary)
+        self._retry_key, self._retry_count = None, 0
         # Even a feasible candidate never clears invalidation or grants authorization.
         reason = ("CONTINGENCY_RETURN" if contingency else trigger) if candidate.status == RouteStatus.FEASIBLE else candidate.reason_code
         return decision(action, reason,

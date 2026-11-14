@@ -44,6 +44,7 @@ def make_node_class():
             path = self.declare_parameter("profiles_file", "").value
             allow = self.declare_parameter("allow_illustrative_profiles", False).value
             self.contract_confirmed = self.declare_parameter("snapshot_contract_confirmed", False).value
+            self.allow_continuous = self.declare_parameter("allow_continuous_starts", False).value
             self.limits = SearchLimits(
                 max_labels=self.declare_parameter("max_labels", 200000).value,
                 timeout_s=self.declare_parameter("search_timeout_s", 2.0).value,
@@ -111,7 +112,8 @@ def make_node_class():
                 if terrain is None:
                     return _failure(message, response, RouteStatus.UNKNOWN, reason,
                                     "Waiting for matching public belief, sigma and traversability")
-                result = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits)
+                result = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
+                                    allow_continuous_start=self.allow_continuous)
             except (ValueError, TypeError, OverflowError) as error:
                 return _failure(message, response, RouteStatus.ERROR, "INVALID_INPUT", str(error))
             if key != self.store.key:
