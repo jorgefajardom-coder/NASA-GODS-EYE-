@@ -29,6 +29,8 @@ rclpy = pytest.importorskip('rclpy', reason='Requires built ROS 2 workspace')
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy  # noqa: E402
 from sensor_msgs.msg import Image  # noqa: E402
 
+from mge_gateway.contract_replay import (  # noqa: E402
+    read_package, read_public_rasters, to_viewer)
 from mge_gateway.replay_check import check_package  # noqa: E402
 from mge_interfaces.msg import AgentState, TerrainObservation  # noqa: E402
 from tests.integration.test_vertical_mock import wait_for  # noqa: E402
@@ -109,7 +111,8 @@ class Stack:
             ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',
              f'port:={PORT}', 'terrain:=real', 'planner:=real', f'profiles_file:={PROFILES}',
              f'agents_file:={agents_file}',
-             'agents:=kinematic', 'record:=true', f'record_dir:={record_dir}'],
+             'agents:=kinematic', 'allow_continuous_starts:=true',
+             'record:=true', f'record_dir:={record_dir}'],
             cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
         rclpy.init()
         self.node = rclpy.create_node('execution_probe')
@@ -176,6 +179,35 @@ def speed(state):
     return math.hypot(v.x, v.y, v.z)
 
 
+def stamp_seconds(header):
+    stamp = header['stamp'] if isinstance(header, dict) else header.stamp
+    sec, ns = (stamp['sec'], stamp['nanosec']) if isinstance(stamp, dict) else (stamp.sec, stamp.nanosec)
+    return sec + ns * 1e-9
+
+
+def movement_costs(route):
+    """Independent ledger for this service-free illustrative human request."""
+    profile = json.loads(PROFILES.read_text())['profiles']['human_1']
+    seconds = energy = 0.0
+    for name in ('outbound_path', 'return_path'):
+        points = [tuple(p[k] for k in ('x', 'y', 'z')) for p in route[name]]
+        for a, b in zip(points, points[1:]):
+            horizontal = math.dist(a[:2], b[:2])
+            if not horizontal:
+                assert a == b
+                continue
+            dz = b[2] - a[2]
+            length = math.dist(a, b)
+            uphill, downhill = max(dz, 0.0) / horizontal, max(-dz, 0.0) / horizontal
+            seconds += length / profile['speed_m_s'] * (
+                1 + profile.get('uphill_time_factor', 0) * uphill
+                + profile.get('downhill_time_factor', 0) * downhill)
+            energy += length * profile['energy_wh_per_m'] * (
+                1 + profile.get('uphill_energy_factor', 0) * uphill
+                + profile.get('downhill_energy_factor', 0) * downhill)
+    return seconds, energy, seconds * profile['oxygen_l_per_s']
+
+
 @pytest.fixture(scope='module')
 def stack(tmp_path_factory):
     stack = Stack(str(tmp_path_factory.mktemp('replay')))
@@ -228,7 +260,7 @@ def test_agent_follows_the_authorized_route_and_returns(stack):
         route['oxygen_est_l'], rel=1e-3)
 
 
-def test_new_map_version_halts_the_agent_in_place(stack):
+def test_new_map_version_halts_then_replans_from_the_acknowledged_pose(stack):
     ms = submit('req-long', centre(19, 19))
     assert ms['mission_state'] == 'READY', ms['active_route']
     path, route_id = polyline(ms['active_route']), ms['route_id']
@@ -242,28 +274,69 @@ def test_new_map_version_halts_the_agent_in_place(stack):
     assert speed(halted) == 0.0
     assert on_polyline(position(halted), path)          # stopped on the old route
     assert position(halted) != pytest.approx(path[-1])
-    stack.spin(2.0)
-    after = stack.human[next(i for i, s in enumerate(stack.human) if s is halted):]
-    assert len(after) > 5
-    assert all(position(s) == position(halted) and speed(s) == 0.0 for s in after)
-    assert stack.human[-1].mode == AgentState.MODE_HALTED
-
     m = wait_for(lambda: (x := mission())['map_version'] == 3
                  and x['mission_state'] in ('READY', 'BLOCKED') and x,
                  timeout_s=30.0, what='mission settled on map version 3')
-    assert m['route_id'] != route_id
+    assert m['mission_state'] == 'READY', m['active_route']
+    assert m['route_id'] and m['route_id'] != route_id
+    route = m['active_route']
+    assert (route['status'], route['map_version_used']) == ('FEASIBLE', 3)
+    resumed_path = polyline(route)
+    assert resumed_path[0] == position(halted)  # all XYZ preserved, no pose projection
+    containing_centre = stack.surface.point(stack.surface.cell(position(halted)))
+    assert math.dist(position(halted)[:2], containing_centre[:2]) > 1e-3
+    assert abs(position(halted)[2] - containing_centre[2]) > 1e-6
+    assert resumed_path[1] == containing_centre
+    costs = movement_costs(route)  # Includes the explicit first connector.
+    for key, value in zip(('travel_time_s', 'energy_est_wh', 'oxygen_est_l'), costs):
+        assert route[key] == pytest.approx(value, rel=1e-5)
+    for budget, field, reserve, cost in zip(
+            ('time_budget_s', 'energy_budget_wh', 'oxygen_budget_l'),
+            ('time_remaining_s', 'energy_remaining_wh', 'oxygen_remaining_l'),
+            ('reserve_time_s', 'reserve_wh', 'reserve_oxygen_l'), costs):
+        available = min(REQUEST[budget], getattr(halted, field))
+        assert cost + REQUEST[reserve] <= available + 1e-4
+        assert route[reserve] == pytest.approx(available - cost, rel=1e-5)
     events = get(f'/api/run/{RUN_ID}/events')['events']
-    assert any(e['event_type'] == 'ROUTE_INVALIDATED' and e['route_id'] == route_id
-               for e in events)
-    x, y, _ = position(halted)
-    on_centre = all(abs((c - ORIGIN_M) / CELL_M - round((c - ORIGIN_M) / CELL_M - 0.5) - 0.5)
-                    < 1e-6 for c in (x, y))
-    if not on_centre:
-        # The baseline planner only starts from cell centres (PR #12 proposes
-        # continuous ground starts); the refusal must stay explicit.
-        assert m['mission_state'] == 'BLOCKED'
-        assert (m['active_route']['status'], m['active_route']['reason_code']) == (
-            'ERROR', 'NON_CELL_CENTER')
+    invalidated = next(e for e in events if e['event_type'] == 'ROUTE_INVALIDATED'
+                       and e['route_id'] == route_id)
+    published = next(e for e in events if e['event_type'] == 'ROUTE_PUBLISHED'
+                     and e['route_id'] == m['route_id'])
+    assert invalidated['seq'] < published['seq']
+    invalidated_s, halted_s, published_s = (
+        stamp_seconds(invalidated['header']), stamp_seconds(halted.header),
+        stamp_seconds(published['header']))
+    assert invalidated_s <= halted_s <= published_s
+    stack.until(lambda: any(s.mode == AgentState.MODE_MOVING
+                            and stamp_seconds(s.header) >= published_s for s in stack.human[start:]),
+                'movement after the new route authorization')
+    stopped = [s for s in stack.human[start:]
+               if halted_s <= stamp_seconds(s.header) < published_s]
+    assert stopped and all(position(s) == position(halted) and speed(s) == 0.0 for s in stopped)
+    # Await the actual resumed trip/return rather than treating FEASIBLE as motion.
+    stack.until(lambda: stack.human[-1].mode == AgentState.MODE_IDLE
+                and speed(stack.human[-1]) == 0.0
+                and position(stack.human[-1]) == pytest.approx(resumed_path[-1]),
+                'resumed route back at base', timeout_s=120.0)
+    assert position(stack.human[-1])[:2] == pytest.approx(HOME)
+    after = stack.human[next(i for i, s in enumerate(stack.human) if s is halted):]
+    assert any(s.mode == AgentState.MODE_MOVING for s in after)
+    assert all(on_polyline(position(s), resumed_path) for s in after)
+    for a, b in zip(after, after[1:]):
+        assert b.time_remaining_s <= a.time_remaining_s
+        assert b.energy_remaining_wh <= a.energy_remaining_wh
+        assert b.oxygen_remaining_l <= a.oxygen_remaining_l
+        assert b.time_remaining_s >= REQUEST['reserve_time_s']
+        assert b.energy_remaining_wh >= REQUEST['reserve_wh']
+        assert b.oxygen_remaining_l >= REQUEST['reserve_oxygen_l']
+    for field, cost in zip(('time_remaining_s', 'energy_remaining_wh', 'oxygen_remaining_l'), costs):
+        assert getattr(halted, field) - getattr(after[-1], field) == pytest.approx(cost, rel=1e-3)
+    wait_for(lambda: any(a['agent_id'] == 'human_1' and a['mode'] == 'IDLE'
+                        and tuple(a['pose']['position'][k] for k in ('x', 'y')) == pytest.approx(HOME)
+                        for a in mission()['agents']),
+             timeout_s=10.0, what='recordable final agent state at base')
+    stack.replanned_route = route
+    stack.halted_pose = position(halted)
 
 
 def test_recorded_package_shows_the_motion(stack):
@@ -274,3 +347,17 @@ def test_recorded_package_shows_the_motion(stack):
     poses = {(a['pose']['position']['x'], a['pose']['position']['y'])
              for s in states for a in s['agents'] if a['agent_id'] == 'human_1'}
     assert len(poses) > 2                               # recorded while moving
+    manifest, records, snapshot = read_package(stack.package)
+    rasters = read_public_rasters(stack.package, manifest)
+    assert set(rasters['versions']) == {'1', '2', '3'}
+    converted = to_viewer(manifest, records, snapshot, rasters)
+    assert converted['status'] == 'READY'
+    assert all(value is None for value in converted['rasters']['reference'])
+    revised = [s for s in states if s['map_version'] == 3
+               and s['route_id'] == stack.replanned_route['route_id']]
+    assert revised and revised[-1]['active_route']['outbound_path'][0] == dict(zip(
+        ('x', 'y', 'z'), stack.halted_pose))
+    active_humans = [a for s in revised for a in s['agents'] if a['agent_id'] == 'human_1']
+    assert any(a['mode'] == 'MOVING' for a in active_humans)
+    assert active_humans[-1]['mode'] == 'IDLE'
+    assert tuple(active_humans[-1]['pose']['position'][k] for k in ('x', 'y')) == pytest.approx(HOME)

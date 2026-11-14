@@ -1,5 +1,14 @@
 # Required AI-use declaration
 
+## Experimental continuous recovery
+
+OpenAI Codex assisted the owner-requested NON_CELL_CENTER recovery. The opted-in
+connector preserves supplied XYZ and charges profile-bounded 3-D movement. The
+MOCK mission waits for fresh stop feedback, rejects stale results and retains
+spent allocations and required reserves. Tests use synthetic inputs and a MOCK
+software execution/recorder package. This does not approve a scientific model,
+physical traversal or LIVE mission. Affected paths are in ai_usage.json.
+
 ## Strict recorded replay
 
 OpenAI Codex assisted the owner-requested replay validation corrections. The web

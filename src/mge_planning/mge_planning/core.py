@@ -248,7 +248,8 @@ class StartConnector:
     """Validated directed segment to the containing cell centre (Python metadata).
 
     Costs are included in route totals, not additional charges. A 2-D input uses
-    belief elevation; a supplied 3-D ground z must agree with that elevation.
+    belief elevation; a supplied 3-D pose is preserved and must admit the
+    directed, profile-bounded segment to that centre. It is never projected.
     """
     start: tuple
     end: tuple
@@ -340,8 +341,15 @@ def _segment_clearance(geometry, a, b, max_samples=10000):
     return margin
 
 
-def _start_z_mismatch(grid, point, kind, profile=None):
-    """A supplied ground z is a consistency check, never an altitude command."""
+def _start_z_mismatch(grid, point, kind, profile=None, *, allow_continuous_start=False):
+    """Validate supplied ground z without changing a current 3-D position.
+
+    Centred starts retain the baseline belief-height consistency check. With
+    explicit continuous-start opt-in, a non-centred pose may be on a previously
+    executed segment between grid waypoints, rather than at its cell's height.
+    Its directed connector must obey the same profile step/slope bounds as the
+    graph; geometry and all connector costs are checked by connect_start.
+    """
     if kind in {"human", "rover"} and len(point) == 3:
         cell = grid.cell(point)
         if grid.traversability[cell] != 0:
@@ -353,8 +361,14 @@ def _start_z_mismatch(grid, point, kind, profile=None):
                 return False
         elif profile is not None and profile.max_sigma_m is not None:
             return False
-        z = grid.point(cell)[2]
-        return math.isfinite(z) and abs(point[2]-z) > 1e-6
+        centre = grid.point(cell)
+        if not math.isfinite(centre[2]):
+            return False
+        continuous = any(abs(point[i]-centre[i]) > 1e-6 for i in (0, 1))
+        if allow_continuous_start and continuous and profile is not None:
+            return _motion_costs(profile, math.dist(point[:2], centre[:2]),
+                                 centre[2]-point[2]) is None
+        return abs(point[2]-centre[2]) > 1e-6
     return False
 
 
@@ -674,9 +688,10 @@ def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
     if continuous_start and not allow_continuous_start:
         return result(RouteStatus.ERROR, "NON_CELL_CENTER",
                       "Continuous starts require an explicit experimental opt-in.")
-    if _start_z_mismatch(terrain, request.start, request.agent_kind, profile):
+    if _start_z_mismatch(terrain, request.start, request.agent_kind, profile,
+                         allow_continuous_start=allow_continuous_start):
         return result(RouteStatus.ERROR, "INVALID_START_Z",
-                      "Supplied ground start z must match belief height within 1e-6 m; no vertical snapping is performed.")
+                      "Centred ground start z must match belief height within 1e-6 m; an opted-in continuous start must admit a profile-bounded directed connector. No position is projected.")
     if continuous_start and request.agent_kind == "drone":
         return result(RouteStatus.ERROR, "CONTINUOUS_START_NOT_SUPPORTED",
                       "Continuous start connectors currently support ground agents only.")
