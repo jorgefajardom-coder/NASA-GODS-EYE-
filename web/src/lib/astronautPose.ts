@@ -110,6 +110,67 @@ function straightenTorso(root: THREE.Object3D, clip: THREE.AnimationClip, residu
   }
 }
 
+/** Applies a world-space rotation to every key of a bone's quaternion track: Q = P^-1 * delta * P * q. */
+function rotateTrackInWorld(track: THREE.KeyframeTrack, parentWorld: THREE.Quaternion, delta: THREE.Quaternion) {
+  const local = parentWorld.clone().invert().multiply(delta).multiply(parentWorld);
+  const q = new THREE.Quaternion();
+  for (let i = 0; i < track.times.length; i++) {
+    q.fromArray(track.values, i * 4);
+    local.clone().multiply(q).normalize().toArray(track.values, i * 4);
+  }
+}
+
+/**
+ * The held clavicle pose leaves one shoulder about 4.5 degrees higher than the other
+ * (the side flips between idle and moon_walk). Each clavicle is turned about its own
+ * pivot so both shoulder joints sit at their mean height; the spine, neck and head
+ * are untouched, so the torso stays vertical.
+ */
+function levelShoulders(root: THREE.Object3D, clip: THREE.AnimationClip) {
+  const sides = (['L', 'R'] as const).map((s) => {
+    const clav = findNode(root, new RegExp(`^${s}_Clevicle\\d`));
+    const arm = findNode(root, new RegExp(`^${s}_Arm\\d`));
+    const track = clav && clip.tracks.find((t) => t.name === `${clav.name}.quaternion`);
+    return clav && arm && track && clav.parent ? { clav, arm, track, parent: clav.parent } : null;
+  });
+  if (sides.some((s) => !s)) return;
+  const [l, r] = sides as NonNullable<(typeof sides)[number]>[];
+
+  const mixer = new THREE.AnimationMixer(root);
+  const action = mixer.clipAction(clip);
+  action.play();
+  const samples = 24;
+  const mean = { lArm: new THREE.Vector3(), rArm: new THREE.Vector3(), lClav: new THREE.Vector3(), rClav: new THREE.Vector3() };
+  const lParent = new THREE.Quaternion();
+  const rParent = new THREE.Quaternion();
+  const v = new THREE.Vector3();
+  for (let i = 0; i < samples; i++) {
+    mixer.setTime((clip.duration * i) / samples);
+    root.updateMatrixWorld(true);
+    if (i === 0) {
+      l.parent.getWorldQuaternion(lParent);
+      r.parent.getWorldQuaternion(rParent);
+    }
+    mean.lArm.add(l.arm.getWorldPosition(v));
+    mean.rArm.add(r.arm.getWorldPosition(v));
+    mean.lClav.add(l.clav.getWorldPosition(v));
+    mean.rClav.add(r.clav.getWorldPosition(v));
+  }
+  action.stop();
+  mixer.uncacheClip(clip);
+  mixer.uncacheRoot(root);
+  for (const p of Object.values(mean)) p.divideScalar(samples);
+
+  const level = (mean.lArm.y + mean.rArm.y) / 2;
+  const turn = (arm: THREE.Vector3, clav: THREE.Vector3) => {
+    const from = arm.clone().sub(clav);
+    const to = new THREE.Vector3(arm.x, level, arm.z).sub(clav);
+    return new THREE.Quaternion().setFromUnitVectors(from.normalize(), to.normalize());
+  };
+  rotateTrackInWorld(l.track, lParent, turn(mean.lArm, mean.lClav));
+  rotateTrackInWorld(r.track, rParent, turn(mean.rArm, mean.rClav));
+}
+
 /** Returns a calmer copy of a clip. `root` must be the model the clip animates. */
 export function calmClip(root: THREE.Object3D, clip: THREE.AnimationClip, opts: CalmOptions = CALM): THREE.AnimationClip {
   const out = clip.clone();
@@ -118,5 +179,6 @@ export function calmClip(root: THREE.Object3D, clip: THREE.AnimationClip, opts: 
     else if (HIPS_POSITION_TRACK.test(t.name)) dampPosition(t, opts.bounce);
   }
   straightenTorso(root, out, opts.residualLeanDeg);
+  if (opts.sway === 0) levelShoulders(root, out); // only meaningful when the clavicles are held still
   return out;
 }

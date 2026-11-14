@@ -88,7 +88,7 @@ function measure(root: THREE.Object3D, clip: THREE.AnimationClip) {
   }
   action.stop();
   mixer.uncacheRoot(root);
-  return { lean: r.lean, pelvisSwing: r.pelvis[1] - r.pelvis[0], shoulderSwing: r.shoulders[1] - r.shoulders[0], hipSwing: r.hipY[1] - r.hipY[0], netDrift: r.netDrift, sway: r.sway };
+  return { lean: r.lean, pelvisRoll: r.pelvis, shoulderRoll: r.shoulders, pelvisSwing: r.pelvis[1] - r.pelvis[0], shoulderSwing: r.shoulders[1] - r.shoulders[0], hipSwing: r.hipY[1] - r.hipY[0], netDrift: r.netDrift, sway: r.sway };
 }
 
 let model: Awaited<ReturnType<typeof loadModel>>;
@@ -145,5 +145,15 @@ describe('calmed walk and idle', () => {
     const calm = measure(model.scene, calmClip(model.scene, original('idle')));
     expect(calm.lean[1]).toBeLessThan(1);
     expect(calm.pelvisSwing).toBeLessThan(0.5);
+  });
+
+  it('keeps the shoulders level in walk and idle (no fixed side tilt)', () => {
+    for (const name of ['moon_walk', 'idle']) {
+      const calm = measure(model.scene, calmClip(model.scene, original(name)));
+      expect(Math.abs(calm.shoulderRoll[0])).toBeLessThan(1);
+      expect(Math.abs(calm.shoulderRoll[1])).toBeLessThan(1);
+      expect(Math.abs(calm.pelvisRoll[0])).toBeLessThan(1);
+      expect(Math.abs(calm.pelvisRoll[1])).toBeLessThan(1);
+    }
   });
 });
