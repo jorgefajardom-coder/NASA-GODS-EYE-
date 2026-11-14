@@ -29,7 +29,7 @@ field names and types; this document records the conventions around them.
 - Oxygen fields are `NaN` for agents that are not `HUMAN` in the canonical ROS
   wire definitions. Adapters must map non-applicable NaN to JSON `null`, never a JSON NaN token.
   This baseline tests that conversion; PR #3 implements its own ROS bridge.
-  The main HTTP startup boundary remains unavailable until that producer is integrated.
+  The ROS-backed HTTP boundary stays NOT_READY until a configured mission state arrives.
 - ROS wire kinds are uppercase `HUMAN`/`DRONE`/`ROVER`; pure Python/configuration
   may use lowercase. Adapters must map these intentionally and reject unknown
   values. Do not assume Python models are already the ROS wire representation.
@@ -47,7 +47,9 @@ field names and types; this document records the conventions around them.
   unique, applying one twice has no effect.
 - `route_id`: unique per route version. One route is in force at a time; an
   answer computed on an older `map_version` returns `STALE_MAP` or is dropped.
-- `MissionEvent.seq`: strictly increasing within a run.
+- `MissionEvent.seq`: allocated strictly increasing within a run; positive uint64,
+  unique independently of event ID. Transport delivery may arrive out of order.
+  Retain late events and sort by sequence only when reconstructing logical history.
 
 ## 3. Channels
 
@@ -159,19 +161,10 @@ Jorge's `mge-web-0.1-draft` manifest/timeline.json/routes.json/rasters.json form
 is an adapter target, not a second canonical producer contract. Preserve his
 scene/assets/timeline and fixtures until consumer acceptance proves conversion.
 
-Availability of implementations must be stated separately:
-
-| Surface | Baseline on this cut | Existing branch work |
-| --- | --- | --- |
-| GET health | 200, inactive envelope, ROS disconnected | PR #3 ROS-backed health/store |
-| GET manifest/snapshot | 503 NOT_READY | PR #3 active envelope, unknown run 404 |
-| POST goal | 503, no accepted command | PR #3 forwarding, idempotency, 422 malformed input |
-| WS events | inactive envelope then 1013 | PR #3 ordered store/event stream |
-| Offline replay | validator and deterministic adapter | PR #3 recorder; Jorge legacy viewer |
-
-Inactive identifiers, mode, map version and timestamp are null, status is
-NOT_READY or ERROR, and reason_code explains the boundary. Main currently emits
-ROS_NOT_CONNECTED; PR #3 uses NO_ACTIVE_RUN. Neither means a running mission.
+The ROS-backed gateway and recorder below are implemented in PR #3. Until a
+mission state arrives, inactive identifiers, mode, map version and timestamp
+are null with status NOT_READY and reason NO_ACTIVE_RUN. No running process
+alone establishes a mission.
 Preserve canonical ROS names and kind casing. A transport `mode=LIVE` in the
 existing gateway is not proof of validated live provenance: its MOCK sample
 reports recorded_from LIVE. Display REPLAY for every recorded package and MOCK
@@ -186,6 +179,126 @@ map version, geometry, frame, stamp and public-layer role. Current PR #3 recordi
 lack raster arrays; the adapter must not borrow the different web dataset or
 fabricate missing terrain. Full 3D replay is NOT_READY until aligned public
 attachments exist. See [dataset delivery](DATASET_CONTRACT.md).
+
+### 6.1 HTTP gateway
+
+
+Served by `mge_gateway`. It binds to `127.0.0.1` by default and holds no
+planning or mission logic. Every JSON response and WebSocket message is an
+envelope with `schema_version` (`"1.0.0"`; it applies to JSON, not to the ROS
+wire messages), `run_id`, `mode` (`LIVE` | `REPLAY`), `map_version` and
+`timestamp_sim_s`, plus the payload. Payloads use the ROS
+field names unchanged. The typed non-finite conversion requirements in
+section 5 remain the target; the broad existing output serializer still needs
+the hardening identified in REPLAY_CONTRACT.md. The input checks below do not
+claim that output-side gate is resolved.
+
+| Route | Payload |
+|---|---|
+| `GET /api/health` | `status` (`READY`), `ros_connected`, `terrain_meta_received` |
+| `GET /api/manifest` | `terrain_meta`, `agents` (`agent_id`, `agent_kind`), `endpoints` |
+| `GET /api/run/{run_id}/snapshot` | `mission_state`, `terrain_meta`, `events` (all so far) |
+| `GET /api/run/{run_id}/events?after_seq=N` | `events` with `seq > N`; polling fallback |
+| `POST /api/mission/goal` | Body: `request_id` (optional), `primary_agent_id`, `base`, `goal`, `mode`, budgets and reserves. Answer: the `SetMissionGoal` response fields |
+| `WS /api/events?after_seq=N` | Backlog of events with `seq > N`, then the current state, then live messages |
+
+- WebSocket messages carry `type`: `"event"` with an `event` object
+  (`MissionEvent`) or `"state"` with a `state` object (`MissionState`).
+- **No active run.** Until a mission state of the configured run has been
+  received, the gateway invents no run, map, clock or mode. It answers with
+  the inactive envelope below: `GET /api/health` with HTTP 200 plus
+  `ros_connected: false`; manifest, snapshot, events and `POST` with HTTP 503
+  (snapshot and events echo the requested run ID without claiming it exists);
+  the WebSocket sends it once and closes with code 1013. A running process
+  alone is never `LIVE`. `web/src/lib/contracts.ts` types this as
+  `UnavailableResponse`.
+
+  ```json
+  {
+    "schema_version": "1.0.0",
+    "run_id": null,
+    "mode": null,
+    "map_version": null,
+    "timestamp_sim_s": null,
+    "status": "NOT_READY",
+    "reason_code": "NO_ACTIVE_RUN"
+  }
+  ```
+
+- An unknown `run_id` answers `404`. A malformed body answers `422`. A goal
+  the mission refuses answers `200` with `accepted: false` and a
+  `reason_code`. If the mission service does not answer, the reply is `503`
+  with the inactive envelope, `status: "ERROR"` and
+  `reason_code: "MISSION_SERVICE_UNAVAILABLE"`.
+- Base/goal coordinates must be finite. Explicit resource budgets/reserves must
+  be finite, nonnegative and fit the ROS float32 fields. Invalid values answer
+  `422` before any ROS request is sent. Omitted oxygen retains the existing
+  internal NaN sentinel; mission still checks applicability to the selected agent.
+  Validation-error details are JSON-safe: a non-finite rejected input is rendered
+  as `null` in the error payload, retaining the field location and error type.
+- Repeating a `request_id` returns the first answer and creates no events.
+- A planning failure is not an HTTP error: the goal is accepted, the mission
+  goes to `BLOCKED`, and `mission_state.active_route` carries the `status`,
+  `reason_code` and `detail`, with empty paths and an empty `route_id`.
+- If the environment variable `MGE_CONTROL_TOKEN` is set, `POST` requires
+  `Authorization: Bearer <token>`. Set it before binding to anything other
+  than localhost.
+- Allowed browser origins come from the `cors_origins` parameter
+  (default `http://localhost:5173`).
+
+`tests/contracts/test_gateway.py` checks this contract without ROS;
+`tests/integration` checks the ROS-to-HTTP flow against MOCK producers.
+
+### 6.2 Recorded packages
+
+A recorded run is a directory of static files that a web client reads with
+plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
+`replay_recorder` node (`record:=true` on the launch file).
+
+| File | Content |
+|---|---|
+| `<run_id>/manifest.json` | Envelope plus `recorded_from`, `clock_source`, `time_start_sim_s`, `record_count`, `event_count`, `terrain_meta`, `agents`, `files` |
+| `<run_id>/timeline.jsonl` | One record per line, in arrival order |
+| `<run_id>/snapshot.json` | Final state, same shape as `GET /api/run/{run_id}/snapshot` |
+
+- Every file and every record says `mode: "REPLAY"`. A client must show
+  `REPLAY` for this data and must not present it as a live computation.
+- A timeline record has the shape of a WebSocket message: the envelope,
+  `type` (`event` | `state` | `terrain_meta`) and an object of that name, so
+  live messages and replay records can share one handler.
+- `timestamp_sim_s` is the running maximum of accepted message stamps, so it
+  never decreases along the arrival-ordered file. Each payload retains its
+  original `header.stamp`, including for late messages. Replay time is
+  `timestamp_sim_s - time_start_sim_s`.
+- `clock_source` is `sim` when the run used `/clock` and `system` when no
+  simulator was running; in that case the stamps are wall-clock seconds.
+- Events and states travel on different topics, so a state may be recorded
+  slightly before the event that caused it. Late events are retained in arrival
+  order; reconstruct the logical history by `seq`, as in `snapshot.events`.
+  Event IDs and positive uint64 sequences must both be unique within a run.
+  The store rejects conflicting/reused sequences, and the offline validator
+  detects them in altered packages without rejecting valid late deliveries.
+- A mission state identical to the previous one, apart from stamps, is not
+  recorded again. Duplicates, older states and data of another run are
+  dropped, as in the gateway.
+- An existing run directory is never overwritten.
+- `ros2 run mge_gateway check_replay <dir>` validates a package offline.
+
+`data/sample/replay/mock-vertical-001` is a sample package recorded from the
+mock vertical (goal, route, simulated observation, replan). It contains mock
+data only.
+
+The advanced viewer consumer remains on Jorge's separate branch; this PR
+adds no viewer implementation or public raster recording. GitHub Pages serves
+static web/replay only; ROS and FastAPI require a separate host. Transport
+availability never establishes validated LIVE mission provenance.
+
+Build all eight ROS definitions on Jazzy, run the imported ROS contract checks,
+and then verify grid/frame alignment, stale responses, duplicate observations,
+clock consistency, service-to-route flow and replay without backend. Writing
+these types and passing static checks is not evidence of an E2E mission or
+physical safety. Preserve commands, run IDs and outcomes in evidence records.
+Interface changes update this ICD, consumers, tests and versions together.
 
 ## 7. Mission, resources, positions and return
 

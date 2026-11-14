@@ -77,7 +77,14 @@ this sample; the LIVE link remains unavailable. Relative replay time does not
 alter path costs, resource estimates, geometry or source timestamps. A wall
 clock recording is not evidence of simulated dynamics. Mission state snapshots
 may arrive before their matching events; event sequence and arrival time remain
-separate concepts. The oracle invents no future tasks/POIs/control points and
+separate concepts. Late events also remain in receipt order in `timeline.jsonl`
+and the converted viewer timeline, with monotonic envelope timestamps and their
+original source stamps intact. `snapshot.events` is the logical history sorted
+by `seq`, so validators compare it against that sorted history rather than
+requiring sequence-ordered arrival. Event IDs and positive uint64 sequences must
+both be unique; duplicates and invalid sequences remain errors. This clarifies
+existing JSON 1.0.0 behavior without changing fields or the ROS wire schema.
+The oracle invents no future tasks/POIs/control points and
 does not modify the scene/assets/layers/agents/timeline.
 
 ## Public raster attachment
@@ -166,7 +173,10 @@ geometry changes fail closed instead of resampling.
 pinned recording, deterministic conversion, exact coordinate/resource/ID
 preservation, offline encoding/readback, no-overwrite, malformed tokens,
 duplicates, stale routes, cross-run data, raster/version/geometry mixing and
-reference isolation. The generated flat attachment exists only inside a test
+reference isolation. A recorder-to-oracle round trip additionally exercises a
+late event, preserving source/arrival time and logical snapshot order; duplicate
+sequences under distinct IDs and invalid uint64 values fail closed.
+The generated flat attachment exists only inside a test
 as an explicitly MOCK fixture.
 
 The advanced web branch has existing `web/tests/gatewayReplay.test.ts` cases

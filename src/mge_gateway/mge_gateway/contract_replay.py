@@ -75,6 +75,7 @@ def validate_package(manifest, records, snapshot):
 
     Saved duplicate events are rejected; deduplication belongs at ingestion.
     State snapshots may precede their corresponding events in arrival order.
+    Late events retain arrival order; the snapshot history is ordered by seq.
     This check validates serialization/identity, not scientific feasibility.
     """
     run = manifest.get("run_id")
@@ -107,8 +108,8 @@ def validate_package(manifest, records, snapshot):
         elif kind == "event":
             eid, seq = body.get("event_id"), body.get("seq")
             _need(bool(eid) and eid not in seen_ids, "DUPLICATE_EVENT_ID")
-            _need(_integer(seq) and seq > 0 and seq not in seen_seqs, "DUPLICATE_EVENT_SEQ")
-            _need(not events or seq > events[-1]["seq"], "EVENT_SEQ_REGRESSION")
+            _need(_integer(seq) and 0 < seq < 2**64, "INVALID_EVENT_SEQ")
+            _need(seq not in seen_seqs, "DUPLICATE_EVENT_SEQ")
             seen_ids.add(eid)
             seen_seqs.add(seq)
             events.append(body)
@@ -138,7 +139,8 @@ def validate_package(manifest, records, snapshot):
                 _need(previous is None or previous == normalized, "ROUTE_ID_REUSED")
                 routes[route_id] = normalized
     _need(snapshot.get("mission_state") == state, "SNAPSHOT_STATE_MISMATCH")
-    _need(snapshot.get("events") == events, "SNAPSHOT_EVENTS_MISMATCH")
+    _need(snapshot.get("events") == sorted(events, key=lambda event: event["seq"]),
+          "SNAPSHOT_EVENTS_MISMATCH")
     _need(snapshot.get("terrain_meta") == meta and manifest.get("terrain_meta") == meta,
           "SNAPSHOT_META_MISMATCH")
     _need(manifest.get("event_count") == len(events), "EVENT_COUNT_MISMATCH")
