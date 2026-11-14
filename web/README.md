@@ -65,7 +65,7 @@ Keys: `F` follow camera, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 | `src/lib/coords.ts` | ENU to Three.js conversion and grid sampling |
 | `src/lib/replay.ts` | State at time t, event ordering, replans, visual pose interpolation |
 | `src/lib/management.ts` | List, details and alert data built only from received objects |
-| `src/lib/astronautPose.ts` | Calmed copies of the idle and walk clips (less rocking, bounce and forward lean); the model file is not modified |
+| `src/lib/astronautPose.ts` | Upright copies of the idle and walk clips (torso vertical, no pelvis or shoulder tilt, reduced bounce); the model file is not modified |
 | `src/lib/terrainSmooth.ts` | Bicubic display smoothing between source cells (adds no detail; cell centres stay exact) |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
 | `src/components/` | Terrain, routes, agents, sites, astronaut model, follow camera, interface panels |

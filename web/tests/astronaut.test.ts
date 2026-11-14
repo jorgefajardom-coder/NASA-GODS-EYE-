@@ -124,24 +124,26 @@ describe('calmed walk and idle', () => {
     expect(Array.from(original('moon_walk').tracks[0].values.slice(0, 8))).toEqual(before);
   });
 
-  it('keeps the torso close to upright while walking', () => {
+  it('keeps the torso vertical while walking (no tilt)', () => {
     const raw = measure(model.scene, original('moon_walk'));
     const calm = measure(model.scene, calmClip(model.scene, original('moon_walk')));
     expect(raw.lean[1]).toBeGreaterThan(15); // the original leans a lot
-    expect(calm.lean[1]).toBeLessThan(9);
+    expect(calm.lean[1]).toBeLessThan(1);
     expect(calm.lean[0]).toBeGreaterThanOrEqual(0);
   });
 
-  it('reduces the side-to-side rocking and the hip bounce', () => {
+  it('removes the side-to-side rocking and reduces the hip bounce', () => {
     const raw = measure(model.scene, original('moon_walk'));
     const calm = measure(model.scene, calmClip(model.scene, original('moon_walk')));
-    expect(calm.pelvisSwing).toBeLessThan(raw.pelvisSwing * 0.7);
-    expect(calm.shoulderSwing).toBeLessThan(raw.shoulderSwing * 0.7);
+    expect(raw.pelvisSwing).toBeGreaterThan(5);
+    expect(calm.pelvisSwing).toBeLessThan(0.5);
+    expect(calm.shoulderSwing).toBeLessThan(0.5);
     expect(calm.hipSwing).toBeLessThan(raw.hipSwing * 0.6);
   });
 
   it('stands upright when idle', () => {
     const calm = measure(model.scene, calmClip(model.scene, original('idle')));
-    expect(calm.lean[1]).toBeLessThan(8);
+    expect(calm.lean[1]).toBeLessThan(1);
+    expect(calm.pelvisSwing).toBeLessThan(0.5);
   });
 });

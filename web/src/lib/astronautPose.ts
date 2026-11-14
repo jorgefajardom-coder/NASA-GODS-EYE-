@@ -5,8 +5,10 @@ import * as THREE from 'three';
  *
  * The original `moon_walk` clip rocks the pelvis (about -6 to +8 degrees), sways the
  * shoulders, leans the torso 9 to 18 degrees forward and bounces the hips by 0.2 m.
- * That reads as shaking on a map viewer, especially when the replay runs fast. The
- * clip is damped here, in a copy: the file and the original clips are not modified.
+ * That reads as shaking and tilting on a map viewer. In a copy (the file and the original
+ * clips are not modified) the pelvis, spine and clavicles are held at their mean rotation
+ * and the torso is set vertical, so the astronaut walks upright with no tilt; only the
+ * legs, arms, head and a reduced hip bounce stay animated.
  */
 export interface CalmOptions {
   /** Fraction of the pelvis, spine and clavicle rotation swing that is kept (0 = fixed, 1 = original). */
@@ -17,7 +19,7 @@ export interface CalmOptions {
   residualLeanDeg: number;
 }
 
-export const CALM: CalmOptions = { sway: 0.5, bounce: 0.5, residualLeanDeg: 4 };
+export const CALM: CalmOptions = { sway: 0, bounce: 0.5, residualLeanDeg: 0 };
 
 const ROTATION_TRACK = /^(Center|Hip|Spine_[123]|[LR]_Clevicle)\d+_\d+\.quaternion$/;
 const HIPS_POSITION_TRACK = /^Center\d+_\d+\.position$/;
@@ -94,6 +96,7 @@ function straightenTorso(root: THREE.Object3D, clip: THREE.AnimationClip, residu
   const lean = new THREE.Vector3(mean.x, 0, mean.z);
   if (lean.lengthSq() < 1e-9) return;
   lean.normalize();
+  // residualLeanDeg = 0 gives a fully vertical torso.
   const r = THREE.MathUtils.degToRad(residualLeanDeg);
   const target = new THREE.Vector3(0, Math.cos(r), 0).addScaledVector(lean, Math.sin(r));
   const delta = new THREE.Quaternion().setFromUnitVectors(mean, target);
