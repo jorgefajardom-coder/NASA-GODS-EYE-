@@ -1,6 +1,7 @@
 """Minimal end-to-end vertical with MOCK producers.
 
 agents -> terrain meta -> mission -> planner -> gateway (REST / WebSocket).
+`record:=true` also writes a replay package to <record_dir>/<run_id>.
 Every node except the gateway is a labelled stand-in to be replaced by the
 owning module (mge_data / mge_mapping, mge_planning, mge_mission, mge_sim).
 """
@@ -9,6 +10,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -28,6 +30,8 @@ def generate_launch_description():
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('host', default_value='127.0.0.1'),
         DeclareLaunchArgument('port', default_value='8000'),
+        DeclareLaunchArgument('record', default_value='false'),
+        DeclareLaunchArgument('record_dir', default_value='evidence'),
         Node(package='mge_sim', executable='mock_agents', output='screen',
              parameters=[with_agents]),
         Node(package='mge_sim', executable='mock_terrain', output='screen',
@@ -42,4 +46,7 @@ def generate_launch_description():
                  'host': LaunchConfiguration('host'),
                  'port': ParameterValue(LaunchConfiguration('port'), value_type=int),
              }]),
+        Node(package='mge_gateway', executable='replay_recorder', output='screen',
+             condition=IfCondition(LaunchConfiguration('record')),
+             parameters=[{**common, 'record_dir': LaunchConfiguration('record_dir')}]),
     ])
