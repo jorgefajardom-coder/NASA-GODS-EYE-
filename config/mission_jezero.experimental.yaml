@@ -1,6 +1,10 @@
 # Approved JZ-P01..07 values only. Runtime remains blocked: pending_integration.
 schema_version: 1.0.0
 status: pending_integration
+cost_contract_path: config/cost_agreement.experimental.json
+success_criteria_path: config/mission_success.experimental.json
+activity_duration_pilot_path: config/activity_duration.pilot.json
+activity_duration_pilot_status: pending_review_not_runtime_override
 owner: David
 recorded_on: '2026-11-14'
 proposal_id: jezero-primary-review-01

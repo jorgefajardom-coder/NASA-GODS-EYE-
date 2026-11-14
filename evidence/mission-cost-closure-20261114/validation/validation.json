@@ -1,0 +1,159 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "mission-cost-closure-validation-20261114",
+  "kind": "SOFTWARE_VALIDATION_AND_MODEL_DIAGNOSTICS",
+  "recorded_at_utc": "2026-11-14T23:11:29.733328+00:00",
+  "source_revision": "09d7d6a29abd4501bb4d2491037985f073fb39e3",
+  "working_tree_dirty": true,
+  "source_identity": "Revision plus retained source hashes; new files are uncommitted in this validation snapshot",
+  "main_reviewed": "2f50ae697b34fe82e575b386936d0d5e4d74db64",
+  "main_publication_recheck": "9614816081acc7779e6a565f5f4ebad8b0bd5287",
+  "main_recheck_delta": "Viewer PR19 only; planner/data/simulation/interfaces and D-EST-01 unchanged; no merge",
+  "planner_reviewed": "69101e983c9a9668ba852460c484b5db8f12a1a5",
+  "integration_reviewed": "c42ca246018e677bfb68cf4ace29a6c5be2c223e",
+  "versions": {
+    "windows_python": "3.12.14",
+    "node": "24.18.0",
+    "npm": "12.0.1",
+    "vitest": "3.2.4",
+    "vite": "7.0.4",
+    "ubuntu": "24.04.4 LTS",
+    "linux_python": "3.12.3",
+    "ros": "Jazzy",
+    "colcon_core": "0.21.0+upstream-1",
+    "rclpy": "7.1.11-1noble.20260615.133206",
+    "jazzy_test_environment": {
+      "numpy": "1.26.4",
+      "jsonschema": "4.26.0",
+      "pytest": "8.4.2",
+      "httpx": "0.28.1",
+      "fastapi": "0.162.7",
+      "uvicorn": "0.54.0",
+      "websockets": "17.4"
+    }
+  },
+  "commands_and_results": [
+    {
+      "command": "python -m pytest --basetemp=tmp/pytest-cost-closure-final --junitxml=tmp/cost-closure-python.junit.xml -q",
+      "platform": "Windows",
+      "exit_code": 0,
+      "tests": 756,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 16,
+      "passed": 740,
+      "limitations": "ROS imports unavailable and symlink privileges absent; detailed reasons in python.log. One existing Starlette/httpx deprecation warning."
+    },
+    {
+      "command": "python scripts/check_repository.py",
+      "attempt": 1,
+      "exit_code": 1,
+      "reason": "Started before the linked final pilot artifact finished exporting; sequencing error; retained repository-initial.log"
+    },
+    {
+      "command": "python scripts/check_repository.py",
+      "attempt": 2,
+      "exit_code": 0,
+      "result": "Static scaffold checks passed (8 ROS package manifests)"
+    },
+    {
+      "command": "npm test",
+      "cwd": "web",
+      "exit_code": 0,
+      "passed": 84
+    },
+    {
+      "command": "npm run build",
+      "cwd": "web",
+      "exit_code": 0
+    },
+    {
+      "command": "wsl -d Ubuntu-24.04 --cd <mission-worktree> --exec bash tmp/validate_mission_ros_env.sh",
+      "underlying_command": "bash scripts/validate_mission_ros.sh",
+      "exit_code": 0,
+      "build_command": "colcon build --symlink-install --cmake-args -DPython3_EXECUTABLE=<active-environment-python>",
+      "packages_built": 8,
+      "messages_inspected": 6,
+      "services_inspected": 2,
+      "test_command": "ROS_DOMAIN_ID=83 python -m pytest tests/mission tests/contract tests/integration -q --tb=short --junitxml=<retained-report>",
+      "tests": 551,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 550,
+      "source_hashes": "jazzy.source.json",
+      "skip_reason": "Optional explicit published planner snapshot not materialized; separate exact-source conformance retained",
+      "limitations": "Public source snapshot; existing controlled ROS test providers are software harnesses, not verified execution with agreed Diego costs"
+    },
+    {
+      "command": "python scripts/export_cost_agreement_vectors.py --activity-pilot config/activity_duration.pilot.json --run-id activity-duration-vectors-final-20261114 --output-dir evidence/mission-cost-closure-20261114/vectors-final",
+      "exit_code": 0,
+      "vectors": 45
+    },
+    {
+      "command": "python scripts/evaluate_activity_duration_pilot.py --vectors evidence/mission-cost-closure-20261114/vectors-final/cost_vectors.json --run-id activity-duration-impact-final-20261114 --output-dir evidence/mission-cost-closure-20261114/pilot-final",
+      "exit_code": 0,
+      "cases": 7,
+      "status": "PENDING_DURATION_REVIEW"
+    },
+    {
+      "command": "python scripts/check_mission_scenario.py --mission config/mission_jezero.experimental.yaml --run-id cost-closure-readiness-20261114 --output-dir evidence/mission-cost-closure-20261114/readiness",
+      "status": "NOT_READY",
+      "dataset_status": "PUBLIC_PACKAGE_VALIDATED",
+      "missing_inputs": 6,
+      "findings": 0,
+      "scenario_approval": "APPROVED_EXPERIMENTAL_VALUES"
+    },
+    {
+      "command": "python scripts/check_planner_conformance.py --planner-ref 69101e983c9a9668ba852460c484b5db8f12a1a5 --run-id cost-agreement-review-20261114 --output-dir evidence/mission-cost-closure-20261114/conformance",
+      "result": "1 AGREE / 6 DISAGREE; 7 FEASIBLE; authorization BLOCKED",
+      "report": "../conformance/conformance.json"
+    }
+  ],
+  "source_inputs_sha256": {
+    "config/mission_jezero.experimental.yaml": "b4f424dbd0c96fd7190502a0c5dc88d556de285d171568de12cce1e73b9324d1",
+    "config/mission_jezero.proposed.yaml": "e9cb9144a6861de71fbe0f633b9b3bc9f58c322666c1717c6523a948c5603a42",
+    "config/science_profiles.proposed.json": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "config/cost_agreement.experimental.json": "d1f5ff02b8381c3e3e8cb44c63f103ac333d0c6f252d55276a1b45c24e5a2148",
+    "config/activity_duration.pilot.json": "e28933881a4bce1ce01bf65b18f10733b63b3a3ed98f33e89d24c2f9303afbfa",
+    "config/mission_success.experimental.json": "b2128d4cd5b1b2d798de5761180edba929d5453d6d8e01e9fb8ee99245b69a90",
+    "docs/science_approvals/jezero_scenario_20261114.json": "c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518",
+    "scripts/export_cost_agreement_vectors.py": "928e777677b4ec35c1874552fdb6b7ea61d116dc86d2acb8fe35778dc3c4a6e9",
+    "scripts/evaluate_activity_duration_pilot.py": "b9fd2e96a7cc9dc1f52568d547b2c3990565e68b4c13d33bee991baf179631c7",
+    "scripts/size_jezero_proposal.py": "40788bb17a6d436aba8aefe94ea05bedef0e23411191c14bd0e6ec57b503f768",
+    "scripts/check_mission_scenario.py": "dbdd6c4050c7790f946dab96bbe7c025c959322cb02c729a1eacd04c60278156",
+    "scripts/validate_mission_ros.sh": "ea9e8beedbd889ed0ead20ea2abec7fc5b879a12028d285352aaae2fe4e4656b",
+    "src/mge_mission/mge_mission/models.py": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "src/mge_mission/mge_mission/scenario.py": "430e8db97cc7a56d45afee956a0e2d742eb271739adc854f67b46f2ab22810db",
+    "src/mge_data/mge_data/core.py": "ede74196550787e3e8018638b4d1dae721df5eb72aa0513f2c5ea602ed3ab5f3",
+    "tests/mission/test_cost_agreement_vectors.py": "b608a4179749d4757f9a32d49b8f35a572e3313b28b53da443a1423a8bb4cb1e",
+    "tests/mission/test_experimental_acceptance_contract.py": "23d0803ef5fbad369e901f2c337583952735c96c89afdcc8cf6385341e42b06f"
+  },
+  "artifacts_sha256": {
+    "conformance/conformance.json": "c72e85de8208751896a9cb4242415ae7964a0658646a609bfa70af73e52614f0",
+    "pilot/activity_pilot_impact.json": "4826e6429ad63abb875fa8e9fe02b6aab8bc5ff7782c57886437ca53efb33360",
+    "pilot-final/activity_pilot_impact.json": "ae3d41f0c10da26c243ab9f7203237c7f017e932d1ebfef8e725ad91fdebef4b",
+    "readiness/mission_candidate.json": "cc40c826f547b76ba8e1998f14e5db9b56aadb0b2daad206eda7e43647c52681",
+    "readiness/scenario_diagnostic.json": "14dd40b4b04a5febecff3dd560d50b7e77725b427b2a33762a4921e2268c79a3",
+    "README.md": "7c9d67a8e04839b2ba70a1cd54ea0660d7d3c4b65b5900e138e50f9b74744980",
+    "validation/jazzy-platform.log": "0b76c6f1c98ded28545c6183ec4fedc815f6a9a87fcfe9cba7c3e31e78c8419f",
+    "validation/jazzy.junit.xml": "dd2e9cf713792cb7419f213461ac21fccebbc0abe32b70c8b3ed1774c5bca077",
+    "validation/jazzy.log": "cf45a8463701ea3cb263db9e8c382464fd6fcea6087350c0bbcdeaeff5b5ba93",
+    "validation/jazzy.source.json": "9c24158d5ecf3562b132157eb7ac01d88919ce11b7a0dc330df71671659dd20e",
+    "validation/python.junit.xml": "c58b9122e42ec1cdc4161e5d55f48def7c3d5c8c06010450fabe10603eb09913",
+    "validation/python.log": "e48b66fc28234284361ccdaa9de8c8807de94c423e09d828a0c5fee364584054",
+    "validation/repository-initial.log": "ed826ed528ba8b413564000a0ab494cf31b1c02869311b48bb429aedbade220e",
+    "validation/repository.log": "b9bcb2ddade0cb2e0bc348ce5136bc030862ca986c6c9522f1db03043e1aba2d",
+    "validation/web-build.log": "5baba52fd5fd67eb0c46421de20875d791c12c47eb3a1b2370f5e19fc1379ff3",
+    "validation/web-tests.log": "e2e3d7deb9637d442c6343e347755cbbf2bb302b579d75554dd05eda084cb867",
+    "vectors/cost_vectors.json": "f0832889201b597861c3d85cb25b6538c6f531b9ac82fb14fd0d254348629707",
+    "vectors-final/cost_vectors.json": "ef49effa9a332ab81babc30959465e225f8c0ebfc5ec62d348bb9166b7ecd782"
+  },
+  "classification": "Software validation and analytical diagnostics only; no integrated mission or A/B/C result",
+  "new_mocks_created": false,
+  "profiles_approved": false,
+  "cost_agreement_approved": false,
+  "execution_evidence_approved": false,
+  "mission_execution_authorized": false,
+  "log_normalization": "Retained console logs normalized to UTF-8 and LF; trailing blank lines removed before Git publication, with hashes recomputed"
+}

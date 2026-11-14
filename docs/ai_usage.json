@@ -7,6 +7,57 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "mission_cost_duration_and_success_contract_packet",
+      "generation": "AI-assisted code, configuration, source synthesis and analytical diagnostics, pending review",
+      "paths": [
+        "config/cost_agreement.experimental.json",
+        "config/activity_duration.pilot.json",
+        "config/mission_success.experimental.json",
+        "config/mission_jezero.experimental.yaml",
+        "src/mge_mission/mge_mission/scenario.py",
+        "scripts/export_cost_agreement_vectors.py",
+        "scripts/evaluate_activity_duration_pilot.py",
+        "tests/mission/test_cost_agreement_vectors.py",
+        "tests/mission/test_experimental_acceptance_contract.py",
+        "docs/cost_agreement_handoff.md",
+        "docs/activity_duration_research.md",
+        "docs/mission_success_contract.md",
+        "docs/science_decisions.md",
+        "docs/handoffs/david.md",
+        "docs/mission_scenario.md",
+        "docs/jezero_mission_proposal.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/mission-cost-closure-20261114"
+      ],
+      "use": "Prepare a hash-bound scientific cost agreement packet and 38 baseline plus seven duration vectors; distinguish published lunar model primitives, D-RATS reported complete sample durations and prescribed ARGOS blocks from our pending inspection/phase-allocation assumptions; evaluate the existing public-prior probe with unchanged experimental budgets/reserves; document strict success criteria and known missing runtime evidence/progress bindings. Preserve all JZ-P01..07 approved values and original receipt. Read main2f50ae6 and planner69101e9 without merging or modifying their owner implementations. Retain model mismatch and operational gates. No terrain, mock, task, observation, integrated mission result, media or new approval is generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "mission_main_conflict_reconciliation",
+      "generation": "AI-assisted merge reconciliation, documentation and software validation",
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "docs/handoffs/david.md",
+        "docs/cost_agreement_handoff.md",
+        "evidence/mission-reconciliation-20261114"
+      ],
+      "use": "Reconcile mission ec819e5 with published main5898e7d, preserving both histories, all contributor disclosures and generated-media declarations. Retain scenario-value approval, cost mismatch and execution gates. Keep owner implementations and existing contracts unchanged; record fresh software checks and model diagnostics, not a scientific or LIVE mission result."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "mission_documentation_publication_refresh",
+      "generation": "AI-assisted documentation-only merge reconciliation and provenance",
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/mission-reconciliation-20261114"
+      ],
+      "use": "Reconcile published main b0acc1c (README PR22), which arrived while PR25 checks ran. Preserve all main and mission declarations and media records; place mission records before the main records to avoid competing append conflicts. Runtime, configuration, tests and web remain byte-identical to validated mission 5c66178; repeat repository checks and retain original checks and evidence. No scientific or execution approval."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "experimental_continuous_recovery",
       "generation": "AI-assisted code, tests and documentation requested by the repository owner",
       "paths": [
