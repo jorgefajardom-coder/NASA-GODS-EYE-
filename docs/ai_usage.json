@@ -560,6 +560,23 @@
         "web/tests/gatewayReplay.test.ts"
       ],
       "use": "Viewer consumption of source_mode (ICD section 6.1 proposed in PR #11): REPLAY · MOCK / SIMULATION / UNKNOWN status, LIVE refused, MOCK terrain evidence wins. Drone drawn at its true height above the drawn ground and a true-size agents option."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_tests_and_derived_data",
+      "generation": "AI-assisted code; values derived from or resampled out of the CTX DTM and orthomosaic, none generated",
+      "paths": [
+        "web/src/lib/slope.ts",
+        "web/tests/slope.test.ts",
+        "web/scripts/extract-ctx-context.mjs",
+        "web/scripts/extract-ctx-ortho.mjs",
+        "web/public/replay/demo/context.json",
+        "web/public/replay/demo/context_ortho.png",
+        "web/src/components/ContextTerrain.tsx",
+        "web/src/components/CutawayBlock.tsx",
+        "web/tests/contextTerrain.test.ts"
+      ],
+      "use": "Slope layer (Horn 3x3 on the orbital CTX DTM), the mission area drawn as a solid block with plain walls, and optional 20 km surroundings from the same CTX DTM (100 m box average) and orthomosaic (40 m). Context only; never read by the planner or mission."
     }
   ],
   "generated_media": [],

@@ -132,7 +132,8 @@ grouped (medians per 15° of solar longitude) from the public NASA Mars weather 
 (Perseverance MEDA at Jezero, Curiosity REMS at Gale; CAB outreach summaries) and the MSL
 RAD surface dose rates published by Hassler et al. (2014); only
 `web/scripts/extract-atmosphere.mjs` and the Atmos tab code were AI-assisted, and no value
-is generated. The viewer's `source_mode` handling (status chip, gateway package adapter)
+is generated. The slope layer (`web/src/lib/slope.ts`), the solid-block display and the optional surroundings (`web/scripts/extract-ctx-context.mjs`, `web/src/components/ContextTerrain.tsx`) were written with Claude through Claude Code; their values are computed from or copied out of the CTX DTM and orthomosaic, none generated.
+The viewer's `source_mode` handling (status chip, gateway package adapter)
 was also written with Claude through Claude Code.
 
 Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model

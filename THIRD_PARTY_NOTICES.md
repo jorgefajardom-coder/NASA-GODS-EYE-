@@ -25,6 +25,7 @@ Mars 2020 Terrain Relative Navigation CTX DTM mosaic, USGS Astrogeology Science 
   (9,662,387 bytes, SHA-256 `16a1aa66c3f48c1bca252795827db7b417876217aff0f5e1aff18027fab2327b`).
 - Product page: https://astrogeology.usgs.gov/search/map/mars_2020_terrain_relative_navigation_ctx_dtm_mosaic
 - DOI of the CTX DTM product family: https://doi.org/10.5066/P906QQT8
+- `web/public/replay/demo/context.json`: the same file over a 20 km square centred on the crop, each 100 m cell the mean of 5 × 5 bilinear samples (box average), made by `web/scripts/extract-ctx-context.mjs` after checking the file's SHA-256. Context surroundings only.
 - The full file is not stored in this repository. `web/scripts/data/ctx_crop.json` holds a
   2 km × 2 km crop (100 × 100 cells of 20 m) resampled by `web/scripts/extract-ctx-crop.mjs`
   onto a local tangent ENU grid. The resampling adds no resolution.
@@ -47,6 +48,7 @@ MRO CTX Jezero orthomosaic, controlled (Mars 2020 Terrain Relative Navigation), 
 
 - WMTS layer: `JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0` (https://trek.nasa.gov/mars/), native 6 m, same `soc_008` production as the CTX DTM above.
 - `web/public/replay/demo/ctx_ortho.png`: 400 × 400 px over the 2 km crop (5 m/px), made by `web/scripts/extract-ctx-ortho.mjs` from nine level-13 tiles (tiles SHA-256 `f2ad4cdaf747f36b508cb063ee904d60204c5f3c5dcb77284ab201812369e527`). Bilinear resampling onto the crop's ENU grid and a 1st–99th percentile contrast stretch; no detail is added. The viewer tints the panchromatic image for display.
+- `web/public/replay/demo/context_ortho.png`: 500 × 500 px over a 20 km square centred on the crop (40 m/px), made by the same script from nine level-10 tiles (tiles SHA-256 `cd464000d6050216cf1638f836ea5e0523124e87c05735d7f7cd56c3e5a09f5e`), same resampling and contrast stretch. Context surroundings only.
 - Usage terms not verified here: NASA planetary data, see the Mars Trek and USGS product pages.
 
 ## Geologic units

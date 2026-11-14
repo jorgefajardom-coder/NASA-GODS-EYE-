@@ -40,6 +40,9 @@ illustrative, synthetic or AI-generated.
 | --- | --- | --- |
 | Elevation (Orbital map) | MRO/CTX DTM, Mars 2020 TRN mosaic, USGS Astrogeology ([DOI 10.5066/P906QQT8](https://doi.org/10.5066/P906QQT8)), 2 km crop at 20 m | Real, provisional crop |
 | Contour lines | Derived from that elevation every 10 m | Derived from real data |
+| Slope | Horn 3x3 on that elevation (as `gdaldem slope`), 20 m grid, about 60 m window | Derived from real data; lower bound, not a hazard map |
+| Surroundings (optional) | Same CTX DTM over 20 km, box-averaged to 100 m, and the CTX orthomosaic at 40 m | Real, context only; not part of the mission map |
+| Block walls | Display of the crop as a solid block | Plain rock tone, no subsurface claim |
 | Surface image | MRO/CTX orthomosaic `JEZ_ctx_B_soc_008`, via [JPL Mars Trek](https://trek.nasa.gov/mars/), 6 m resampled to 5 m | Real, contrast-stretched for display |
 | Ground layers (geology) | USGS SIM 3464, Sun and Stack (2020), [doi:10.3133/sim3464](https://doi.org/10.3133/sim3464) | Real map; boundaries 100-200 m approximate |
 | Cut-away strata | Unit order from the SIM 3464 interpretations | Schematic: thicknesses and tones not measured |
