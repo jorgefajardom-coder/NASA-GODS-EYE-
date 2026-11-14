@@ -30,6 +30,8 @@ interface Props {
   selectedId: string | null;
   /** Terrain height under (x, y) in the layer on screen, for the drone altitude line. */
   groundHeight: (x: number, y: number) => number | null;
+  /** True size at every zoom; when false, agents are enlarged with camera distance (visual only). */
+  trueScale: boolean;
 }
 
 /**
@@ -38,17 +40,22 @@ interface Props {
  * Models are enlarged with camera distance so they stay readable on a 2 km map; the
  * enlargement is visual only and does not change any position.
  */
-export function AgentLayer({ agents, verticalExaggeration, showLabels, playing, replaySpeed, speeds, selectedId, groundHeight }: Props) {
+export function AgentLayer({ agents, verticalExaggeration, showLabels, playing, replaySpeed, speeds, selectedId, groundHeight, trueScale }: Props) {
   return (
     <group name="agents">
       {agents.map((a) => {
         // Ground agents are snapped to the surface on screen (visual only; x and y are as received).
-        const ground = a.agent_kind === 'DRONE' ? null : groundHeight(a.pose.position.x, a.pose.position.y);
-        const [x, y, z] = enuToThree(ground == null ? a.pose.position : { ...a.pose.position, z: ground }, verticalExaggeration);
+        // The drone keeps its true height above the drawn ground: exaggerating its absolute z with the
+        // relief would bury it when it is parked (pose z below the drawn, smoothed surface).
+        const p = a.pose.position;
+        const ground = groundHeight(p.x, p.y);
+        const agl = a.agent_kind === 'DRONE' && ground != null ? droneAgl(p.z, ground) : 0;
+        const [x, gy, z] = enuToThree(ground == null ? p : { ...p, z: ground }, verticalExaggeration);
+        const y = gy + agl;
         const yaw = yawFromQuaternion(a.pose.orientation);
         return (
           <SmoothedPose key={a.agent_id} position={[x, y, z]} yaw={yaw} name={`agent-${a.agent_id}`}>
-            <ScaleWithDistance perMetre={1 / 80} max={14}>
+            <ScaleWithDistance perMetre={1 / 80} max={trueScale ? 1 : 14}>
               {a.agent_id === selectedId && (
                 <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.25, 0]}>
                   <ringGeometry args={[3.4, 4, 40]} />
@@ -79,9 +86,7 @@ export function AgentLayer({ agents, verticalExaggeration, showLabels, playing, 
               )}
             </ScaleWithDistance>
             {a.agent_kind === 'DRONE' && (
-              <DroneTether
-                heightAboveGround={(a.pose.position.z - (groundHeight(a.pose.position.x, a.pose.position.y) ?? a.pose.position.z)) * verticalExaggeration}
-              />
+              <DroneTether heightAboveGround={agl} />
             )}
           </SmoothedPose>
         );
@@ -185,6 +190,11 @@ function AgentMesh({ kind }: { kind: AgentState['agent_kind'] }) {
       </mesh>
     </group>
   );
+}
+
+/** Drone height above ground (m): never below the surface, never scaled by the relief exaggeration. */
+export function droneAgl(poseZ: number, groundZ: number): number {
+  return Math.max(0, poseZ - groundZ);
 }
 
 /** Vertical line from the drone to the ground so its altitude is readable. */

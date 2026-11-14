@@ -38,11 +38,13 @@ interface Props {
   geology: { data: GeologyData; selected: string | null } | null;
   /** Cosmetic close-range ground grain. */
   surfaceDetail: boolean;
+  /** Agents at true size at every zoom (no distance enlargement). */
+  trueScale: boolean;
   /** Schematic cut-away strata block around the terrain (Ground layers tab). */
   cutaway: GeologyData | null;
 }
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
@@ -100,6 +102,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         speeds={view.speeds}
         selectedId={selectedAgentId}
         groundHeight={groundHeight}
+        trueScale={trueScale}
       />
       <FollowCamera agentId={followed} smoothingS={smoothing.followTauS} />
       <OrbitControls makeDefault enableDamping dampingFactor={smoothing.orbitDamping} maxPolarAngle={Math.PI / 2.05} minDistance={30} maxDistance={extent * 2.5} />

@@ -60,6 +60,8 @@ interface OptionsProps {
   onShowImagery: (v: boolean) => void;
   surfaceDetail: boolean;
   onSurfaceDetail: (v: boolean) => void;
+  trueScale: boolean;
+  onTrueScale: (v: boolean) => void;
 }
 
 /** View options and legend, collapsed by default so they do not cover the terrain. */
@@ -102,6 +104,10 @@ export function ViewOptions(p: OptionsProps) {
       )}
       <label className="check">
         <input type="checkbox" checked={p.surfaceDetail} onChange={(e) => p.onSurfaceDetail(e.target.checked)} /> Ground grain <Info text="Cosmetic close-range detail (ripples, grit, stones). Not measured: the terrain data stops at 5-20 m." />
+      </label>
+      <label className="check">
+        <input type="checkbox" checked={p.trueScale} onChange={(e) => p.onTrueScale(e.target.checked)} /> True-size agents{' '}
+        <Info text="Astronaut 1.9 m, rover 4.1 m, drone 1.2 m rotor span, base at real size. Off: agents are enlarged with camera distance (up to 14x) so they stay visible on the 2 km map; visual only." />
       </label>
       <label className="check">
         <input type="checkbox" checked={p.contours} onChange={(e) => p.onContours(e.target.checked)} /> Contours <Info text="Every 10 m, bold every 50 m, at true elevation." />

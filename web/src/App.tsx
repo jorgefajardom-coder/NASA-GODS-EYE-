@@ -84,6 +84,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [contours, setContours] = useState(true);
   const [showImagery, setShowImagery] = useState(true);
   const [surfaceDetail, setSurfaceDetail] = useState(true);
+  const [trueScale, setTrueScale] = useState(true);
   const imageryUrl = m.imagery && showImagery ? assetUrl(`${RUN_DIR}/${m.imagery.file}`) : null;
   const [cameraSmoothing, setCameraSmoothingState] = useState<CameraSmoothing>(() => {
     try {
@@ -184,6 +185,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         cameraSmoothing={cameraSmoothing}
         imageryUrl={imageryUrl}
         surfaceDetail={surfaceDetail}
+        trueScale={trueScale}
         geology={mode === 'geology' && showGeoMap && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
         cutaway={mode === 'geology' && showCut && bundle.geology ? bundle.geology : null}
       />
@@ -229,6 +231,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             onShowImagery={setShowImagery}
             surfaceDetail={surfaceDetail}
             onSurfaceDetail={setSurfaceDetail}
+            trueScale={trueScale}
+            onTrueScale={setTrueScale}
           />
         </div>
 
@@ -275,7 +279,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         />
 
         <footer className="disclaimer">
-          {m.disclaimer} Agents are drawn larger than life (visual only).{' '}
+          {m.disclaimer} {trueScale ? 'Agents and base at true size.' : 'Agents are enlarged with distance (visual only).'}{' '}
           <details className="credits">
             <summary>Credits</summary>
             Terrain: NASA/USGS Mars 2020 TRN CTX DTM mosaic, USGS Astrogeology Science Center (provisional 2 km crop).
