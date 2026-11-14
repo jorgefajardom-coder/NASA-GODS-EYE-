@@ -21,7 +21,8 @@ on `feat/integration` is not connected to the viewer yet. Two saved runs can be 
 | Uncertainty, budgets, consumption | Illustrative assumptions, not certified limits |
 | Atmos tab | NASA weather summaries and published radiation averages (other sites/periods); not the conditions of the simulated run |
 | Rover, drone, base models | NASA/JPL models with branding removed; the base is the team's own Blender model |
-| Work in progress, not wired into the viewer | `public/replay/demo/context.json` (20 km surroundings of the crop, `scripts/extract-ctx-context.mjs`) and `src/lib/slope.ts` (Horn slope with `tests/slope.test.ts`) exist as uncommitted files; no component imports them yet |
+| Slope layer | Derived from the orbital CTX DTM (Horn 3x3, about 60 m window); a lower bound for local slope, not a hazard map |
+| Surroundings (option, off by default) | Same CTX DTM over 20 km (100 m box average, `scripts/extract-ctx-context.mjs`) and CTX orthomosaic at 40 m; context only |
 
 The terrain crop is provisional: the data owner's processed package replaces it.
 
@@ -114,7 +115,7 @@ are NoData, and a MOCK grid shows no latitude or longitude.
 | `src/lib/astronautPose.ts` | Upright copies of the idle and walk clips (torso vertical, shoulders and pelvis level, reduced bounce); the model file is not modified |
 | `src/lib/smoothing.ts` | Frame-rate independent easing for drawn agent poses and the camera |
 | `src/lib/terrainSmooth.ts` | Bicubic display smoothing between source cells (adds no detail; cell centres stay exact) |
-| `src/lib/slope.ts` | Terrain slope from an elevation grid (Horn 3x3); not yet used by a component |
+| `src/lib/slope.ts` | Terrain slope from an elevation grid (Horn 3x3), used by the Slope layer |
 | `src/lib/atmos.ts`, `geology.ts`, `strata.ts`, `tacticalMap.ts`, `provenance.ts` | Atmos context, geologic units, schematic strata, minimap base image, REPLAY/source_mode display semantics |
 | `src/data/referenceSources.ts` | Status of the mandatory NASA reference resources |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
@@ -130,11 +131,11 @@ visual only and labelled. The viewer never plans routes.
 
 ICD-ROS2-V1 types mirrored in `src/types/icd.ts`: `RunEnvelope`, `UnavailableResponse`, `Pose`, `AgentState`, `RouteDecision`, `MissionState`, `MissionEvent`, `TerrainMeta` (plus mode, route and task enums).
 
-Replay fixture layout (`public/replay/<run_id>/`, demo run `demo-sim-002`, `mode: REPLAY`, `source_mode: SIMULATION`, `illustrative: true`): `manifest.json`, `timeline.json`, `routes.json`, `rasters.json`, `geology.json`, `atmosphere.json`, `ctx_ortho.png`, plus the uncommitted `context.json`. Gateway packages (`manifest.json` + `timeline.jsonl`) are read from `../data/sample/replay/<run_id>/`.
+Replay fixture layout (`public/replay/<run_id>/`, demo run `demo-sim-002`, `mode: REPLAY`, `source_mode: SIMULATION`, `illustrative: true`): `manifest.json`, `timeline.json`, `routes.json`, `rasters.json`, `geology.json`, `atmosphere.json`, `ctx_ortho.png`, `context.json`, `context_ortho.png`. Gateway packages (`manifest.json` + `timeline.jsonl`) are read from `../data/sample/replay/<run_id>/`.
 
 ## Acceptance tests
 
-Automated suite on 2026-11-14 14:10: 18 files, 101 tests passed (`npm test`).
+Automated suite on 2026-11-14 14:25: 19 files, 104 tests passed (`npm test`).
 
 | Test | Status |
 |---|---|
@@ -169,8 +170,7 @@ Percentages are relative to the first received sample, not to a certified budget
 
 Astronaut posture (vertical torso, level shoulders and pelvis) is covered by tests on the
 real model and was checked by eye in the follow view at 20×, but only in the dev server on
-one machine. No browser automation tests. Candidate NASA layers found in the reference
-review (Mars Trek CTX orthomosaic, USGS SIM 3464 geology, Perseverance raw images) are
-documented in `../docs/data_sources.md` and not yet shown. The
-tactical map tab was removed (a minimap remains in the agent HUD); scanner not started.
-`context.json` and `slope.ts` are not yet shown in the viewer.
+one machine. No browser automation tests. Of the candidate NASA layers in
+`../docs/data_sources.md`, the Mars Trek CTX orthomosaic and USGS SIM 3464 geology are
+shown; Perseverance raw images are not yet. The tactical map tab was removed (a minimap
+remains in the agent HUD); scanner not started.
