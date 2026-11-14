@@ -283,3 +283,13 @@ implementations, existing licence notices and both contributors' required
 AI-use declarations were retained. The provenance test declaration follows its
 move to web/tests. No new generated code, media or scientific data is introduced
 by this synchronization.
+
+## ROS CI fixture readiness after main synchronization
+
+OpenAI Codex assisted with two test-harness corrections after ROS CI exhausted
+its search limit and the mission fixture timed out. The terrain functional test
+now has an explicit finite 10-second search budget; production defaults and all
+feasibility assertions remain unchanged. The mission fixture probes the actual
+canonical planner for a complete loaded map before submitting its one mission
+goal, and retains diagnostic state on failure. No runtime policy, scientific
+approval, observation or resource model is changed.

@@ -143,3 +143,27 @@ four inherited development-tool dependency alerts (one moderate, one high and
 two critical); dependency versions were preserved from main for this sync.
 The existing mission-service source evidence remains attached to its original
 commit; this paragraph records the subsequent web/main synchronization.
+
+### CI follow-up for the main synchronization
+
+CI run43626302116 initially failed the inherited observed-terrain route case
+with UNKNOWN/SEARCH_LIMIT. One failed-job rerun repeated it and also timed out
+waiting for the mission model gate. ROS source/profiles were unchanged by the
+web merge. Preserve these failed attempts as evidence; do not weaken FEASIBLE
+or MODEL_NOT_AGREED assertions.
+
+The coherent-terrain functional fixture now explicitly permits ten seconds of
+search, with the same label cap and unchanged production two-second default.
+The mission fixture waits for a canonical zero-distance planner candidate to
+prove that the matching public batch/profile is loaded before sending a single
+mission request. This candidate is never authorized as a mission route. The
+actual mission must still reject non-agreed models and conflicting IDs, with no
+active route. This separates functional plumbing from CPU-load timing and
+cross-topic DDS startup ordering; it makes no latency or mission acceptance claim.
+
+After those fixture corrections, fresh local validation again built eight Jazzy
+packages/inspected eight definitions and passed556selected ROS/mission/contract/
+HTTP cases (one optional published-snapshot skip). Ten focused launch/consumer
+cases passed; native Python636passed/15platform-or-optional skips. Repository
+and whitespace checks passed. Frontend84tests/build remain passed from the
+unchanged merged viewer. Production planner and mission sources are unchanged.

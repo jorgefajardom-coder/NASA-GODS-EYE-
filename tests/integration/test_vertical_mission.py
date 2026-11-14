@@ -20,6 +20,7 @@ from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy
 from rosgraph_msgs.msg import Clock
+from mge_interfaces.srv import PlanRoute
 
 ROOT = Path(__file__).resolve().parents[2]
 RUN_ID = 'synthetic-real-mission-handoff'
@@ -88,11 +89,44 @@ def stack(tmp_path_factory):
             ], env={**os.environ, 'ROS_DOMAIN_ID': str(DOMAIN_ID)},
                 stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
             wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest', timeout=5).json().get('agents', [])) == 3)
+            # Mission/HTTP readiness does not imply receipt of all planner layers
+            # across DDS topics. Probe the canonical producer before sending the
+            # single mission goal; never turn UNKNOWN into an approved route.
+            planner = clock_node.create_client(PlanRoute, '/mge/planner/plan_route')
+            wait_for(planner.service_is_ready)
+            attempts = [0]
+            def planner_ready():
+                attempts[0] += 1
+                request = PlanRoute.Request()
+                request.run_id = RUN_ID
+                request.request_id = f'fixture-planner-ready-{attempts[0]}'
+                request.agent_id, request.agent_kind = 'human_1', 'HUMAN'
+                request.mode, request.map_version = 'FAST', 1
+                request.require_return = True
+                for name in ('start', 'goal', 'return_to'):
+                    point = getattr(request, name)
+                    point.x, point.y, point.z = 2.5, 2.5, 0.0
+                request.time_budget_s, request.energy_budget_wh = 3600.0, 600.0
+                request.oxygen_budget_l = 150.0
+                future = planner.call_async(request)
+                wait_for(future.done, timeout=10)
+                decision = future.result().decision
+                assert decision.run_id == RUN_ID and decision.map_version_used == 1
+                if decision.status == 'FEASIBLE':
+                    return True
+                assert decision.status == 'UNKNOWN', (decision.status, decision.reason_code)
+                return False
+            wait_for(planner_ready)
+            clock_node.destroy_client(planner)
             answer = httpx.post(f'{BASE}/api/mission/goal', json=GOAL, timeout=10)
             assert answer.status_code == 200 and answer.json()['accepted'] is True, answer.text
             wait_for(lambda: snapshot()['mission_state']['reason_code'] == 'MODEL_NOT_AGREED')
             yield clock_node
     except Exception:
+        try:
+            print('Last mission snapshot:', snapshot())
+        except httpx.HTTPError:
+            pass
         if log_path.exists():
             print(log_path.read_text(encoding='utf-8'))
         raise

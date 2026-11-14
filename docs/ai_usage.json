@@ -448,6 +448,18 @@
         "docs/integration_log.md"
       ],
       "use": "Reconcile mission and merged viewer descriptions/disclosures when incorporating main7ec1a06; retain implementations and existing licences. No scientific or media generation."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "ros_ci_fixture_readiness",
+      "generation": "AI-assisted deterministic test-harness correction",
+      "paths": [
+        "tests/integration/test_terrain_batch.py",
+        "tests/integration/test_vertical_mission.py",
+        "docs/AI_USAGE.md",
+        "docs/integration_log.md"
+      ],
+      "use": "Set an explicit bounded functional-test search budget and establish real planner readiness before the mission request; preserve production limits, scientific rejection and test assertions."
     }
   ],
   "generated_media": [],
