@@ -1,4 +1,4 @@
-import { ELEVATION_CSS_GRADIENT, LAYER_INFO, SIGMA_CSS_GRADIENT, SIGMA_SCALE_MAX_M, type TerrainLayer } from '../lib/layers';
+import { ELEVATION_CSS_GRADIENT, LAYER_INFO, SIGMA_CSS_GRADIENT, SIGMA_SCALE_MAX_M, SLOPE_CSS_GRADIENT, SLOPE_SCALE_MAX_DEG, type TerrainLayer } from '../lib/layers';
 import { ROUTE_STATUS_STYLE } from '../lib/format';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { Info } from './Info';
@@ -11,8 +11,9 @@ interface StripProps {
 
 /** Map layer switch with its colour scale. Always visible: the scale is part of the legend. */
 export function LayerStrip({ layer, onLayer, evaluator }: StripProps) {
-  const layers: TerrainLayer[] = evaluator ? ['prior', 'belief', 'sigma', 'reference'] : ['prior', 'belief', 'sigma'];
+  const layers: TerrainLayer[] = evaluator ? ['prior', 'belief', 'slope', 'sigma', 'reference'] : ['prior', 'belief', 'slope', 'sigma'];
   const sigma = layer === 'sigma';
+  const slope = layer === 'slope';
   return (
     <div className="strip">
       <div className="strip__row" role="radiogroup" aria-label="Map layer">
@@ -31,10 +32,10 @@ export function LayerStrip({ layer, onLayer, evaluator }: StripProps) {
         ))}
       </div>
       <div className="strip__scale">
-        <div className="strip__bar" style={{ background: sigma ? SIGMA_CSS_GRADIENT : ELEVATION_CSS_GRADIENT }} />
+        <div className="strip__bar" style={{ background: sigma ? SIGMA_CSS_GRADIENT : slope ? SLOPE_CSS_GRADIENT : ELEVATION_CSS_GRADIENT }} />
         <div className="strip__labels mono">
-          <span>{sigma ? '0 m · certain' : 'low'}</span>
-          <span>{sigma ? `≥ ${SIGMA_SCALE_MAX_M} m · uncertain` : 'high (relative height)'}</span>
+          <span>{sigma ? '0 m · certain' : slope ? '0° · flat' : 'low'}</span>
+          <span>{sigma ? `≥ ${SIGMA_SCALE_MAX_M} m · uncertain` : slope ? `≥ ${SLOPE_SCALE_MAX_DEG}° · steep (CTX, 60 m window)` : 'high (relative height)'}</span>
         </div>
       </div>
     </div>

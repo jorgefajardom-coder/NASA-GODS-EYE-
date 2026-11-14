@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import type { TerrainMeta } from '../types/icd';
 import type { RasterSet } from '../types/replay';
-import { elevationColor, finiteRange, heightGrid, sigmaColor, versionKey, type TerrainLayer } from '../lib/layers';
+import { elevationColor, finiteRange, heightGrid, sigmaColor, slopeColor, versionKey, type TerrainLayer } from '../lib/layers';
+import { slopeDegrees } from '../lib/slope';
 import { bilinear, upsampleGrid } from '../lib/terrainSmooth';
 
 /** Mesh vertices per source cell interval. Source cell centres are always vertices (J-01). */
@@ -130,7 +131,9 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
   const imageTexture = useImageryTexture(imagery?.url ?? null);
   const texture = overlay?.texture ?? imageTexture;
   // Drape only once the image has loaded, so a missing image leaves the height colours.
-  const draped = !!texture && (layer !== 'sigma' || !!overlay);
+  const draped = !!texture && ((layer !== 'sigma' && layer !== 'slope') || !!overlay);
+  // Slope of the measured orbital DTM, computed once per run.
+  const slope = useMemo(() => slopeDegrees(rasters.prior, meta.rows, meta.cols, meta.resolution_m), [rasters.prior, meta]);
   const ext = overlay?.extent ?? imagery?.extent;
 
   const geometry = useMemo(() => {
@@ -165,6 +168,10 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
         if (h == null) rgb = [0, 0, 0];
         else if (draped) rgb = [1, 1, 1]; // the image gives the colour; observed cells are still tinted below
         else if (layer === 'sigma') rgb = sigmaColor(bilinear(version.sigma, rows, cols, c / f, r / f));
+        else if (layer === 'slope') {
+          const s = slope[Math.min(rows - 1, Math.round(r / f)) * cols + Math.min(cols - 1, Math.round(c / f))];
+          rgb = s == null ? [0.25, 0.25, 0.25] : slopeColor(s); // grey = border cells without a full 3x3 window
+        }
         else rgb = elevationColor(h, lo, hi);
         if (observed.has(Math.round(r / f) * cols + Math.round(c / f))) rgb = [rgb[0] * 0.7 + 0.04, rgb[1] * 0.7 + 0.2, rgb[2] * 0.7 + 0.24];
         colors.set(rgb, i * 3);
@@ -191,7 +198,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     g.setIndex(index);
     g.computeVertexNormals();
     return g;
-  }, [meta, rasters, heights, version, layer, highlightObserved, draped, ext]);
+  }, [meta, rasters, heights, version, layer, highlightObserved, draped, ext, slope]);
 
   const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 }, uTint: { value: 1 }, uDetail: { value: 1 } }), []);
   useEffect(() => {
@@ -199,7 +206,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     uniforms.uOffset.value = zOffsetM;
     uniforms.uTint.value = overlay ? 0 : 1; // only the panchromatic image is tinted
     // Cosmetic grain only on the real-surface views, never on the geologic map or uncertainty colours.
-    uniforms.uDetail.value = surfaceDetail && !overlay && layer !== 'sigma' ? 1 : 0;
+    uniforms.uDetail.value = surfaceDetail && !overlay && layer !== 'sigma' && layer !== 'slope' ? 1 : 0;
   }, [uniforms, contours, zOffsetM, overlay, surfaceDetail, layer]);
 
   const material = useMemo(() => {
