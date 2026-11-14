@@ -1,5 +1,13 @@
 # Team branches and ownership
 
+Follow accepted owner decision [D-EST-01](decisions/2026-11-14-estimated-terrain-planning.md):
+plan hypothetical routes over valid orbital estimates before local observation;
+revise on contradictory evidence. The old blanket observation prerequisite is
+superseded in scope, not yet declared removed from the integrated implementation.
+Keep step 4 (integrated execution/roles/stop/replan) and step 5 (same-run offline
+replay and web video) open while independent module work continues. Varied scenes,
+larger maps and H-DAN-01 remain optional and must protect these P0 milestones.
+
 The owner-selected working baseline is the [probable minimum mission
 checklist](mission_checklist.md), with priorities, dependencies, acceptance cases
 and desired coordination cuts. Follow its [NASA traceability

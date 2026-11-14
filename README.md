@@ -3,7 +3,7 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
-**Status: real planner, data/mapping and gateway available; mission integration candidate.**
+**Status: mission authority, planner, data/mapping and gateway implemented; integrated mission acceptance pending.**
 This branch preserves the existing real mission authority, resource models,
 recorder and tests from feat/mission. The default synthetic vertical keeps
 MOCK terrain/agents/mission; select mission:=real with explicit configuration
@@ -16,6 +16,14 @@ present, shows live Earth and Mars clocks, and offers agent and base cameras and
 an agent HUD with oxygen, energy, time, route, atmosphere and dose gauges.
 It is not connected to a live gateway. Science-model agreement, actual execution
 and Gazebo acceptance remain pending; software availability is not mission evidence.
+
+The planner retains FAST/SAFE joint outbound/service/return A*, validated
+continuous human/rover starts behind an explicit opt-in (disabled by default in
+the ROS service), D-07 after 20 m and the ROS-independent F03.4 policy with bounded
+search retries and outbound/service contingency-return proposals. Its shared connector extension remains
+pending owner review; ReplanPolicy is not wired into MissionManager or the physical
+supervisor and never authorizes motion. Existing scientific model-agreement gates
+remain enforced by the integrated manager.
 
 Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
 Confirm any earlier local judging cutoff separately.
@@ -201,6 +209,13 @@ Agents then default to `src/mge_bringup/config/agents_jezero.yaml`. Every cell
 starts unobserved, so a first route request is `UNKNOWN`; a SIMULATED
 observation creates the next map version and the mission replans. Mission and
 agents stay MOCK and the run is declared MOCK.
+
+Add `agents:=kinematic` to replace the static agents by the MOCK kinematic
+executor: the primary agent follows the authorized active path at the speed
+the route's estimates imply and halts in place, reporting `HALTED` with zero
+velocity, when the route is invalidated. With the current planner a halted
+agent off a cell centre cannot be replanned (`NON_CELL_CENTER`); continuous
+ground starts are proposed in PR #12.
 
 `smoke.launch.py` starts only the static MOCK agent publisher, and
 `demo.launch.py` starts the scaffold processes of every package; with the

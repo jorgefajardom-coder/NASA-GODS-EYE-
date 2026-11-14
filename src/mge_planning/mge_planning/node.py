@@ -32,7 +32,7 @@ def make_node_class():
     from mge_interfaces.msg import TerrainMeta
     from mge_interfaces.srv import PlanRoute
     from nav_msgs.msg import OccupancyGrid
-    from rclpy.callback_groups import ReentrantCallbackGroup
+    from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
     from rclpy.node import Node
     from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
     from sensor_msgs.msg import Image
@@ -44,6 +44,7 @@ def make_node_class():
             path = self.declare_parameter("profiles_file", "").value
             allow = self.declare_parameter("allow_illustrative_profiles", False).value
             self.contract_confirmed = self.declare_parameter("snapshot_contract_confirmed", False).value
+            self.allow_continuous = self.declare_parameter("allow_continuous_starts", False).value
             self.limits = SearchLimits(
                 max_labels=self.declare_parameter("max_labels", 200000).value,
                 timeout_s=self.declare_parameter("search_timeout_s", 2.0).value,
@@ -55,25 +56,29 @@ def make_node_class():
                 self.profiles = {}
                 self.profile_error = str(error)
                 self.get_logger().error(f"Profiles unavailable: {error}")
-            self.group = ReentrantCallbackGroup()
+            # Ingestion already serializes on SnapshotStore.lock. Do not let
+            # repeated layers occupy every executor worker waiting on that lock.
+            # Search has its own group so new map versions can invalidate it.
+            self.map_group = MutuallyExclusiveCallbackGroup()
+            self.plan_group = MutuallyExclusiveCallbackGroup()
             qos = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
                              durability=DurabilityPolicy.TRANSIENT_LOCAL)
             self.subscriptions_owned = [
                 self.create_subscription(TerrainMeta, "/mge/terrain/meta",
-                                         self._meta, qos, callback_group=self.group),
+                                         self._meta, qos, callback_group=self.map_group),
             ]
             for layer in ("belief", "sigma"):
                 self.subscriptions_owned.append(self.create_subscription(
                     Image, f"/mge/terrain/{layer}",
                     lambda message, name=layer: self._layer(name, message),
-                    qos, callback_group=self.group))
+                    qos, callback_group=self.map_group))
             for kind in ("human", "rover", "drone"):
                 self.subscriptions_owned.append(self.create_subscription(
                     OccupancyGrid, f"/mge/terrain/traversability/{kind}",
                     lambda message, name=kind: self._mask(name, message),
-                    qos, callback_group=self.group))
+                    qos, callback_group=self.map_group))
             self.service = self.create_service(PlanRoute, "/mge/planner/plan_route",
-                                               self._plan, callback_group=self.group)
+                                               self._plan, callback_group=self.plan_group)
             self.get_logger().info("PlanRoute ready; waits for explicit profiles and coherent public map batches")
 
         def _ingest(self, function, *args):
@@ -111,7 +116,8 @@ def make_node_class():
                 if terrain is None:
                     return _failure(message, response, RouteStatus.UNKNOWN, reason,
                                     "Waiting for matching public belief, sigma and traversability")
-                result = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits)
+                result = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
+                                    allow_continuous_start=self.allow_continuous)
             except (ValueError, TypeError, OverflowError) as error:
                 return _failure(message, response, RouteStatus.ERROR, "INVALID_INPUT", str(error))
             if key != self.store.key:

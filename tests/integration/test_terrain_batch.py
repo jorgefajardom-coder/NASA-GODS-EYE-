@@ -29,6 +29,8 @@ from sensor_msgs.msg import Image  # noqa: E402
 
 from mge_interfaces.msg import TerrainMeta, TerrainObservation  # noqa: E402
 from mge_interfaces.srv import PlanRoute  # noqa: E402
+from mge_planning.core import TerrainGrid  # noqa: E402
+from tests.integration.ground_fixture import simulated_ground_point  # noqa: E402
 
 RUN_ID = 'it-terrain'
 ROOT = Path(__file__).resolve().parents[2]
@@ -37,7 +39,7 @@ LATCHED = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
                      durability=DurabilityPolicy.TRANSIENT_LOCAL)
 RELIABLE = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
 KINDS = ('human', 'rover', 'drone')
-LAYERS = ('meta', 'belief', 'sigma', *KINDS)
+LAYERS = ('meta', 'belief', 'sigma', 'observed', *KINDS)
 ROWS = COLS = 32
 CELL_M, ORIGIN_M = 4.0, -64.0
 BLOCK = [row * COLS + col for row in range(8, 24) for col in range(8, 24)]
@@ -65,7 +67,7 @@ class Probe:
         sub = self.node.create_subscription
         sub(TerrainMeta, '/mge/terrain/meta', lambda m: self.latest.update(meta=m), LATCHED)
         sub(Image, '/mge/terrain/prior', lambda m: setattr(self, 'prior', m), LATCHED)
-        for name in ('belief', 'sigma'):
+        for name in ('belief', 'sigma', 'observed'):
             sub(Image, f'/mge/terrain/{name}',
                 lambda m, name=name: self.latest.update({name: m}), LATCHED)
         for kind in KINDS:
@@ -113,13 +115,26 @@ class Probe:
         msg.obstacle = [TerrainObservation.OBSTACLE_FREE] * len(cells)
         self.observations.publish(msg)
 
-    def plan(self, request_id, map_version, start, goal):
+    def plan(self, request_id, map_version, start, goal, *, supplied_z=None):
+        batch = self.batch(map_version)
+        meta = batch['meta']
+        heights = floats(batch['belief'])
+        surface = TerrainGrid(meta.run_id, meta.map_version,
+                              [heights[r*meta.cols:(r+1)*meta.cols]
+                               for r in range(meta.rows)],
+                              [batch['rover'].data[r*meta.cols:(r+1)*meta.cols]
+                               for r in range(meta.rows)], meta.resolution_m,
+                              meta.origin_x_m, meta.origin_y_m, meta.header.frame_id)
         req = PlanRoute.Request()
         req.run_id, req.request_id = RUN_ID, request_id
         req.agent_id, req.agent_kind = 'rover_1', 'ROVER'
         for name, (row, col) in (('start', start), ('goal', goal), ('return_to', start)):
             point = getattr(req, name)
             point.x, point.y = centre(row, col)
+            # This is a newly prepared synthetic request, not physical telemetry.
+            # Unknown-map cases must provide an explicit pose instead of inferring z.
+            point.z = (simulated_ground_point(surface, (point.x, point.y))[2]
+                       if supplied_z is None else supplied_z)
         req.require_return = True
         req.mode = 'FAST'
         req.map_version = map_version
@@ -131,18 +146,24 @@ class Probe:
         return future.result().decision
 
 
-@pytest.fixture(scope='module')
-def probe():
+@pytest.fixture(scope='module', params=[1.0, 0.01], ids=['1Hz', '100Hz'])
+def probe(request, tmp_path_factory):
+    logs = tmp_path_factory.mktemp('terrain-nodes')
+    handles = []
     def run(package, executable, **parameters):
         args = [item for key, value in {'run_id': RUN_ID, **parameters}.items()
                 for item in ('-p', f'{key}:={value}')]
+        output = (logs / f'{executable}.log').open('w')
+        handles.append(output)
         return subprocess.Popen(
             ['ros2', 'run', package, executable, '--ros-args', *args],
-            cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
+            cwd=ROOT, stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
 
     processes = [
         run('mge_data', 'data_node'),
-        run('mge_mapping', 'mapping_node', repeat_period_s=1.0),
+        # Keep the original case and reproduce callback pressure without
+        # increasing the service deadline or relaxing FEASIBLE assertions.
+        run('mge_mapping', 'mapping_node', repeat_period_s=request.param),
         # This checks coherent-batch routing, not the production latency limit.
         # Keep search bounded while allowing shared CI runners scheduling slack.
         run('mge_planning', 'planning_node', profiles_file=PROFILES,
@@ -157,12 +178,18 @@ def probe():
         probe.node.destroy_node()
         rclpy.shutdown()
         for proc in processes:
-            os.killpg(proc.pid, signal.SIGINT)
+            if proc.poll() is None:
+                os.killpg(proc.pid, signal.SIGINT)
         for proc in processes:
             try:
                 proc.wait(timeout=10)
             except subprocess.TimeoutExpired:
                 os.killpg(proc.pid, signal.SIGKILL)
+                proc.wait(timeout=10)
+        for handle in handles:
+            handle.close()
+        for path in logs.iterdir():
+            print(f'--- {path.name} ---\n{path.read_text()}')
 
 
 def test_one_metadata_publisher_and_one_stamp_per_batch(probe):
@@ -177,6 +204,10 @@ def test_one_metadata_publisher_and_one_stamp_per_batch(probe):
         assert (batch[name].encoding, batch[name].height, batch[name].width) == ('32FC1', ROWS, COLS)
     # The orbital prior is not a local observation: nothing is admissible yet.
     assert all(set(batch[kind].data) == {-1} for kind in KINDS)
+    observed = batch['observed']
+    assert (observed.encoding, observed.height, observed.width, observed.step) == (
+        'mono8', ROWS, COLS, COLS)
+    assert set(bytes(observed.data)) == {0}
     probe.wait(lambda: probe.prior, 'the immutable prior layer')
     assert floats(probe.prior) == floats(batch['belief'])
 
@@ -190,7 +221,7 @@ def test_batch_is_repeated_with_the_same_stamp(probe):
 
 def test_planner_accepts_the_batch_and_reports_unknown_terrain(probe):
     probe.batch(1)
-    decision = probe.plan('req-unobserved', 1, (10, 10), (20, 20))
+    decision = probe.plan('req-unobserved', 1, (10, 10), (20, 20), supplied_z=0.0)
     assert decision.map_version_used == 1
     assert decision.status != 'FEASIBLE'        # no observed cell, so no route
     assert decision.reason_code not in (
@@ -208,6 +239,8 @@ def test_observation_makes_one_new_version_with_a_new_stamp(probe):
     assert floats(second['sigma'])[BLOCK[0]] == pytest.approx(0.25)
     observed = {i for i, value in enumerate(second['rover'].data) if value != -1}
     assert observed and observed <= set(BLOCK)  # nothing outside the footprint changed
+    # The observed mask is exactly the footprint, under the same batch stamp.
+    assert [i for i, v in enumerate(bytes(second['observed'].data)) if v] == sorted(BLOCK)
 
     probe.observe('obs-1', BLOCK, [heights[i] for i in BLOCK], base_version=1)     # duplicate
     probe.spin(1.5)
@@ -229,9 +262,14 @@ def test_planner_routes_inside_the_observed_block(probe):
     batch = probe.batch(2)
     free = [i for i, value in enumerate(batch['rover'].data) if value == 0]
     assert free, 'no admissible observed cell for the rover'
+    incompatible = probe.plan('req-observed-invalid-z', 2, (12, 12), (19, 19), supplied_z=0.0)
+    assert incompatible.status == 'ERROR' and incompatible.reason_code == 'INVALID_START_Z'
+    assert not incompatible.route_id and not incompatible.outbound_path
     decision = probe.plan('req-observed', 2, (12, 12), (19, 19))
     assert decision.map_version_used == 2
     assert decision.status == 'FEASIBLE', (decision.reason_code, decision.detail)
+    expected_z = floats(batch['belief'])[12*COLS+12]
+    assert expected_z != 0.0 and decision.outbound_path[0].z == expected_z
     inside = {(round(x), round(y)) for x, y in (centre(i // COLS, i % COLS) for i in BLOCK)}
     for point in [*decision.outbound_path, *decision.return_path]:
         assert (round(point.x), round(point.y)) in inside

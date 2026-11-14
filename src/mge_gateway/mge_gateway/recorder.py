@@ -1,13 +1,48 @@
-"""ROS node that records a run into a replay package (see mge_gateway.replay)."""
+"""ROS node that records a run into a replay package (see mge_gateway.replay).
+
+Besides mission state, events and terrain metadata, it records the public
+raster layers: the immutable prior and, per map version, the belief, sigma and
+observed mask of the batch published under that version's stamp
+(mge_gateway.public_rasters). Only public topics are subscribed.
+"""
+import struct
 import sys
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+from sensor_msgs.msg import Image
 
+from mge_gateway.public_rasters import PublicRasterAssembler, RasterInputError
 from mge_gateway.replay import ReplayWriter
 from mge_gateway.ros_bridge import LATCHED, msg_json, RELIABLE
 from mge_gateway.store import NonFiniteValue
 from mge_interfaces.msg import MissionEvent, MissionState, TerrainMeta
+
+# Latched like the publishers, but deep enough that two map versions published
+# in quick succession are both delivered before the batch is repeated.
+LAYER_QOS = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE,
+                       durability=DurabilityPolicy.TRANSIENT_LOCAL)
+ENCODINGS = {'prior': '32FC1', 'belief': '32FC1', 'sigma': '32FC1', 'observed': 'mono8'}
+
+
+def image_values(name, msg):
+    """Row-major cell values of a public layer, checked against its encoding."""
+    rows, cols, data = msg.height, msg.width, bytes(msg.data)
+    if msg.encoding != ENCODINGS[name]:
+        raise RasterInputError(f'{name}: encoding {msg.encoding!r}, expected {ENCODINGS[name]}')
+    if ENCODINGS[name] == 'mono8':
+        if msg.step != cols or len(data) != rows * cols:
+            raise RasterInputError(f'{name}: {len(data)} bytes for {rows} x {cols} mono8')
+        return rows, cols, list(data)
+    if msg.is_bigendian or msg.step != cols * 4 or len(data) != rows * cols * 4:
+        raise RasterInputError(f'{name}: not a little-endian {rows} x {cols} 32FC1 image')
+    return rows, cols, list(struct.unpack(f'<{rows * cols}f', data))
+
+
+def header_json(msg):
+    return {'frame_id': msg.header.frame_id,
+            'stamp': {'sec': msg.header.stamp.sec, 'nanosec': msg.header.stamp.nanosec}}
 
 
 class ReplayRecorder(Node):
@@ -20,6 +55,7 @@ class ReplayRecorder(Node):
         source_mode = self.declare_parameter('source_mode', 'UNKNOWN').value
         self.writer = ReplayWriter(
             root, run_id, 'sim' if sim_time else 'system', source_mode)
+        self.rasters = PublicRasterAssembler(run_id)
         self.create_subscription(
             MissionState, '/mge/mission/state',
             lambda m: self.record('state', m), LATCHED)
@@ -27,16 +63,51 @@ class ReplayRecorder(Node):
             MissionEvent, '/mge/mission/events',
             lambda m: self.record('event', m), RELIABLE)
         self.create_subscription(
-            TerrainMeta, '/mge/terrain/meta',
-            lambda m: self.record('terrain_meta', m), LATCHED)
+            TerrainMeta, '/mge/terrain/meta', self.on_meta, LAYER_QOS)
+        for name in ENCODINGS:
+            self.create_subscription(
+                Image, f'/mge/terrain/{name}',
+                lambda m, name=name: self.on_layer(name, m), LAYER_QOS)
         self.get_logger().info(f'recording run {run_id} to {self.writer.dir}')
 
     def record(self, kind, msg):
         """An invalid message is left out of the package and reported."""
         try:
-            self.writer.record(kind, msg_json(kind, msg))
+            payload = msg_json(kind, msg)
         except NonFiniteValue as e:
             self.get_logger().error(f'not recorded, {kind} message: {e}')
+            return None
+        self.writer.record(kind, payload)
+        return payload
+
+    def on_meta(self, msg):
+        payload = self.record('terrain_meta', msg)
+        if payload is not None:
+            self.update_rasters(self.rasters.on_meta, payload)
+
+    def on_layer(self, name, msg):
+        if msg.header.frame_id != 'map':
+            self.get_logger().error(f'not recorded, {name} layer in frame {msg.header.frame_id!r}')
+            return
+        try:
+            rows, cols, values = image_values(name, msg)
+        except RasterInputError as e:
+            self.get_logger().error(f'not recorded, {e}')
+            return
+        if name == 'prior':
+            self.update_rasters(self.rasters.on_prior, rows, cols, values)
+        else:
+            self.update_rasters(self.rasters.on_layer, name, header_json(msg), rows, cols, values)
+
+    def update_rasters(self, method, *args):
+        """A rejected layer is reported and left out; nothing is filled in."""
+        try:
+            changed = method(*args)
+        except RasterInputError as e:
+            self.get_logger().error(f'public raster not recorded: {e}')
+            return
+        if changed:
+            self.writer.write_public_rasters(self.rasters.attachment())
 
 
 def main():

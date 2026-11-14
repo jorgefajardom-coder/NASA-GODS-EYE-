@@ -1,0 +1,33 @@
+VALIDATION_LOG=/mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.dTZ74Y.log
+VALIDATION_ROOT=/tmp/mge-mission-jazzy.JGJB2u
+Starting >>> mge_interfaces
+Finished <<< mge_interfaces [17.9s]
+Starting >>> mge_data
+Starting >>> mge_gateway
+Starting >>> mge_mission
+Starting >>> mge_planning
+Starting >>> mge_sim
+Finished <<< mge_gateway [2.39s]
+Finished <<< mge_data [2.41s]
+Starting >>> mge_mapping
+Finished <<< mge_planning [2.43s]
+Finished <<< mge_mission [2.46s]
+Finished <<< mge_sim [2.56s]
+Finished <<< mge_mapping [2.70s]
+Starting >>> mge_bringup
+Finished <<< mge_bringup [5.96s]
+
+Summary: 8 packages finished [29.1s]
+Inspected six messages and two services.
+........................................................................ [ 13%]
+........................................................................ [ 27%]
+......s................................................................. [ 41%]
+........................................................................ [ 54%]
+........................................................................ [ 68%]
+........................................................................ [ 82%]
+........................................................................ [ 96%]
+....................                                                     [100%]
+- generated xml file: /mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.dTZ74Y.log.junit.xml -
+=========================== short test summary info ============================
+SKIPPED [1] tests/mission/test_conformance.py:227: Explicit published planner snapshot is not materialized
+523 passed, 1 skipped in 36.92s

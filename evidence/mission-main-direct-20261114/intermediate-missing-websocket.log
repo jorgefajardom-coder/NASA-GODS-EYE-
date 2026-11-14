@@ -1,0 +1,33 @@
+VALIDATION_LOG=/mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.Hqh2qR.log
+VALIDATION_ROOT=/tmp/mge-mission-jazzy.854DRP
+Starting >>> mge_interfaces
+Finished <<< mge_interfaces [14.7s]
+Starting >>> mge_data
+Starting >>> mge_gateway
+Starting >>> mge_mission
+Starting >>> mge_planning
+Starting >>> mge_sim
+Finished <<< mge_gateway [2.38s]
+Finished <<< mge_sim [2.38s]
+Finished <<< mge_mission [2.39s]
+Finished <<< mge_data [2.40s]
+Starting >>> mge_mapping
+Finished <<< mge_planning [2.47s]
+Finished <<< mge_mapping [2.39s]
+Starting >>> mge_bringup
+Finished <<< mge_bringup [4.56s]
+
+Summary: 8 packages finished [24.2s]
+Inspected six messages and two services.
+........................................................................ [ 14%]
+........................................................................ [ 29%]
+......s................................................................. [ 44%]
+........................................................................ [ 59%]
+........................................................................ [ 74%]
+........................................................................ [ 89%]
+.....................................................                    [100%]
+- generated xml file: /mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.Hqh2qR.log.junit.xml -
+=========================== short test summary info ============================
+SKIPPED [1] C:\Users\User\.codex\worktrees\david-mission\Hacktón NASA\tests\integration\test_vertical_mock.py:19: could not import 'websockets': No module named 'websockets'
+SKIPPED [1] C:\Users\User\.codex\worktrees\david-mission\Hacktón NASA\tests\mission\test_conformance.py:227: Explicit published planner snapshot is not materialized
+484 passed, 2 skipped in 3.69s

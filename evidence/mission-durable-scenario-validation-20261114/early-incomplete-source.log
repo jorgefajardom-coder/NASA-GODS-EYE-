@@ -1,0 +1,51 @@
+VALIDATION_LOG=/mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.mdqb05.log
+VALIDATION_ROOT=/tmp/mge-mission-jazzy.jv0s9t
+Starting >>> mge_interfaces
+Finished <<< mge_interfaces [15.5s]
+Starting >>> mge_data
+Starting >>> mge_gateway
+Starting >>> mge_mission
+Starting >>> mge_planning
+Starting >>> mge_sim
+Finished <<< mge_data [1.95s]
+Starting >>> mge_mapping
+Finished <<< mge_sim [1.96s]
+Finished <<< mge_planning [1.97s]
+Finished <<< mge_gateway [2.09s]
+Finished <<< mge_mission [2.18s]
+Finished <<< mge_mapping [1.81s]
+Starting >>> mge_bringup
+Finished <<< mge_bringup [3.98s]
+
+Summary: 8 packages finished [23.4s]
+Inspected six messages and two services.
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting tests/mission/test_recorder.py ________________
+/usr/lib/python3/dist-packages/_pytest/python.py:617: in _importtestmodule
+    mod = import_path(self.path, mode=importmode, root=self.config.rootpath)
+/usr/lib/python3/dist-packages/_pytest/pathlib.py:567: in import_path
+    importlib.import_module(module_name)
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+/usr/lib/python3/dist-packages/_pytest/assertion/rewrite.py:186: in exec_module
+    exec(co, module.__dict__)
+tests/mission/test_recorder.py:12: in <module>
+    from mge_mission.recorder import EvidenceRecorder, ExecutedCost, TraversalClosure, TraversalRecord
+E     File "/tmp/mge-mission-jazzy.jv0s9t/src/mge_mission/mge_mission/recorder.py", line 92
+E       if (not isinstance(run_id, str) or not run_id.strip()
+E          ^
+E   SyntaxError: '(' was never closed
+- generated xml file: /mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.mdqb05.log.junit.xml -
+=========================== short test summary info ============================
+ERROR tests/mission/test_recorder.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 0.86s

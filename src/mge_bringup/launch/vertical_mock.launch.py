@@ -4,6 +4,8 @@ agents -> terrain meta -> mission -> planner -> gateway (REST / WebSocket).
 `record:=true` also writes a replay package to <record_dir>/<run_id>.
 `planner:=real` and `terrain:=real` select their real providers.
 `mission:=real` selects the real authority with explicit configuration and /clock.
+`agents:=kinematic` replaces the static agents by the MOCK kinematic executor:
+the primary agent follows the authorized active path and halts when it clears.
 Agents remain MOCK, so this vertical always declares source_mode=MOCK.
 """
 import os
@@ -106,6 +108,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('run_id', default_value='mock-run'),
         DeclareLaunchArgument('terrain', default_value='mock', choices=['mock', 'real']),
+        DeclareLaunchArgument('agents', default_value='static', choices=['static', 'kinematic']),
         DeclareLaunchArgument('agents_file', default_value=default_agents),
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('host', default_value='127.0.0.1'),
@@ -124,8 +127,11 @@ def generate_launch_description():
         OpaqueFunction(function=_check_terrain_selection),
 
         OpaqueFunction(function=_real_mission_preflight),
+        # Exactly one publisher per agent state topic.
         Node(package='mge_sim', executable='mock_agents', output='screen',
-             parameters=[with_agents]),
+             condition=_when('agents', 'static'), parameters=[with_agents]),
+        Node(package='mge_sim', executable='kinematic_executor', output='screen',
+             condition=_when('agents', 'kinematic'), parameters=[with_agents]),
         Node(package='mge_sim', executable='mock_terrain', output='screen',
              condition=_when('terrain', 'mock'), parameters=[common]),
         # Exactly one terrain provider set: mapping_node alone publishes the

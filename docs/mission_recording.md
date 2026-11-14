@@ -44,10 +44,38 @@ execution. Synthetic pytest fixtures remain software tests, not mission results.
 
 The exporter creates `timeline.jsonl`, `records.json`, `execution.json`, optional
 `traversal.json`, and `outcome.json` with artifact SHA-256 hashes. It refuses an
-existing directory and seals the recorder after export. Inputs are retained in
-memory until export: this version is **not a durable crash-recovery journal**.
-Failed filesystem writes may leave a partial directory; use a fresh directory
-for retry, and never submit a directory without its completed outcome.
+existing directory and seals the recorder after export. Without `journal_path`,
+inputs remain in memory until export. Never submit a partial export directory.
+
+## Optional durable journal
+
+Pass `journal_path=".../recorder.jsonl"` to the existing constructor. The new
+file begins with run/model/execution-kind identity, then canonical hash-chained
+accepted events and typed evidence. Each append flushes and calls `fsync` before
+the in-memory state changes; duplicate deliveries append nothing. An exclusive
+OS writer lock prevents concurrent cooperating writers. Use the context manager
+or `close()` to release it before reopening with `EvidenceRecorder.recover(path)`.
+Recovery preserves the same run and original execution kind: it is neither a
+new mission nor permission to relabel replay/software fixtures as execution.
+
+Recovery validates the entire chain, sequence and typed causal inputs before
+resuming writes. Truncated, malformed, conflicting or corrupt input fails
+without truncating or repairing the source. Hash chaining detects corruption;
+it is not an authenticated signature. A write/flush failure leaves the current
+writer unusable because some bytes may already be present. Close it and recover
+explicitly; a valid persisted delivery can then be retried idempotently.
+
+For journal-backed export, a durable terminal seal is written before artifacts.
+The export includes an exact `recorder_journal.jsonl` copy and SHA-256 with role
+`diagnostic`, plus `recovered_from_journal`. A failure after sealing may leave a
+partial output; recovery retains the seal and refuses a second outcome. Preserve
+that failed export for inspection rather than silently restarting the same run.
+Even a sealed recovered recorder must be closed to release its file handle.
+
+Journal guarantees depend on the filesystem/OS honoring file `fsync`; they do
+not establish physical execution, scientific validity or operational approval.
+
+## Recorded metric coverage
 
 Mission duration is the last minus first recorded simulation timestamp, only
 when all event times exist. Consumption requires complete interval coverage

@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "jezero-scenario-approved-values-20261114",
+  "kind": "SCENARIO_DIAGNOSTIC",
+  "status": "NOT_READY",
+  "dataset_status": "PUBLIC_PACKAGE_VALIDATED",
+  "scientific_approval": false,
+  "mission_execution_authorized": false,
+  "integrated_mission_executed": false,
+  "model_id": "mge-science-1.0.0",
+  "findings": [],
+  "missing_inputs": [
+    "approval_evidence.dataset",
+    "approval_evidence.science",
+    "approval_evidence.resource_model_agreement",
+    "approval_evidence.snapshot_contract",
+    "mission.status=approved",
+    "approved_agent_profiles"
+  ],
+  "inputs_sha256": {
+    "manifest": "f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1",
+    "terrain.npz": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+    "provenance_details.json": "8e9d506230f101c02c8f1ee319aad18cce47215d1d3eb79dfdeb1dd37d826911",
+    "mola_regional_context.npz": "b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6",
+    "profiles": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "mission": "01cacf9731324baf9316e3527cc3cf5f32597cc3fa9c48294b269964f7028fde",
+    "model_source": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52"
+  },
+  "limitations": [
+    "Public-package/configuration consistency only; no operational or scientific approval.",
+    "No reference files, hidden tasks, planner or executor inputs are consumed.",
+    "NoData/unobserved cells remain unknown; no traversability is invented.",
+    "Grid resampling does not improve the native resolution of the orbital source."
+  ],
+  "terrain": {
+    "dataset_id": "jezero_mvp",
+    "manifest_schema_version": 1,
+    "delivery_form": "data_owner_public_loader_provenance_package",
+    "frame_id": "map",
+    "rows": 32,
+    "cols": 32,
+    "map_version": 1,
+    "grid_resolution_m": 4.0,
+    "prior_native_resolution_m": 20.0,
+    "row_orientation": "south_to_north",
+    "origin_enu_m": [
+      -64.0,
+      -64.0
+    ],
+    "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+    "control_point_count": 4,
+    "valid_cells": 1024,
+    "nodata_cells": 0,
+    "observed_cells": 0,
+    "unobserved_cells": 1024,
+    "sigma_range_m": [
+      2.5,
+      2.5
+    ],
+    "execution_traversability_assumed": false
+  },
+  "profile_approval_states": {
+    "human_1": "proposed",
+    "rover_1": "proposed",
+    "drone_1": "proposed"
+  },
+  "scenario_approval": {
+    "status": "APPROVED_EXPERIMENTAL_VALUES",
+    "approval_id": "JZ-APP-20261114-01",
+    "approved_by": "David",
+    "approved_on": "2026-11-14",
+    "decision_ids": [
+      "JZ-P01",
+      "JZ-P02",
+      "JZ-P03",
+      "JZ-P04",
+      "JZ-P05",
+      "JZ-P06",
+      "JZ-P07"
+    ],
+    "scope": "experimental_scenario_values_only",
+    "receipt_sha256": "c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518",
+    "profiles_approved": false,
+    "cost_agreement_approved": false,
+    "execution_evidence_approved": false,
+    "operational_authorization": false
+  },
+  "candidate_configuration": {
+    "schema_version": "1.0.0",
+    "status": "pending_review",
+    "run_id": "jezero-scenario-approved-values-20261114",
+    "model_id": "mge-science-1.0.0",
+    "bindings_sha256": {
+      "manifest": "f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1",
+      "terrain.npz": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+      "provenance_details.json": "8e9d506230f101c02c8f1ee319aad18cce47215d1d3eb79dfdeb1dd37d826911",
+      "mola_regional_context.npz": "b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6",
+      "profiles": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "mission": "01cacf9731324baf9316e3527cc3cf5f32597cc3fa9c48294b269964f7028fde",
+      "model_source": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52"
+    },
+    "dataset_id": "jezero_mvp",
+    "mission_inputs": {
+      "dataset_id": "jezero_mvp",
+      "base_enu_m": [
+        -14.0,
+        -14.0,
+        -2571.199462890625
+      ],
+      "primary_goal_enu_m": [
+        30.0,
+        30.0,
+        -2573.264892578125
+      ],
+      "primary_agent_id": "human_1",
+      "return_tolerance_m": 1.0,
+      "primary_service_time_s": 120.0,
+      "primary_activity": "inspect",
+      "budgets": {
+        "human_1": {
+          "time_s": 1200.0,
+          "energy_wh": 100.0,
+          "oxygen_l": 25.0,
+          "reserve_time_s": 240.0,
+          "reserve_wh": 20.0,
+          "reserve_oxygen_l": 5.0
+        },
+        "rover_1": {
+          "time_s": 1200.0,
+          "energy_wh": 60.0,
+          "reserve_time_s": 240.0,
+          "reserve_wh": 12.0
+        },
+        "drone_1": {
+          "time_s": 180.0,
+          "energy_wh": 15.0,
+          "reserve_time_s": 36.0,
+          "reserve_wh": 3.0
+        }
+      }
+    },
+    "approval_evidence": {},
+    "scenario_approval": {
+      "status": "APPROVED_EXPERIMENTAL_VALUES",
+      "approval_id": "JZ-APP-20261114-01",
+      "approved_by": "David",
+      "approved_on": "2026-11-14",
+      "decision_ids": [
+        "JZ-P01",
+        "JZ-P02",
+        "JZ-P03",
+        "JZ-P04",
+        "JZ-P05",
+        "JZ-P06",
+        "JZ-P07"
+      ],
+      "scope": "experimental_scenario_values_only",
+      "receipt_sha256": "c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518",
+      "profiles_approved": false,
+      "cost_agreement_approved": false,
+      "execution_evidence_approved": false,
+      "operational_authorization": false
+    }
+  },
+  "recorded_at_utc": "2026-11-14T20:19:19.210399+00:00",
+  "command": [
+    "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+    "scripts/check_mission_scenario.py",
+    "--mission",
+    "config/mission_jezero.experimental.yaml",
+    "--run-id",
+    "jezero-scenario-approved-values-20261114",
+    "--output-dir",
+    "evidence/jezero-scenario-approval-20261114/readiness"
+  ],
+  "implementation_revision": "2477aa4b644161e8ae429d1f64d81ca2245ffd5d",
+  "working_tree_dirty": true,
+  "implementation_sha256": {
+    "scripts\\check_mission_scenario.py": "dbdd6c4050c7790f946dab96bbe7c025c959322cb02c729a1eacd04c60278156",
+    "src\\mge_mission\\mge_mission\\scenario.py": "f1814b019e4c8db6df9d59051bef6d715a4c0b06df62b07e564fb60a08b0e82b",
+    "src\\mge_data\\mge_data\\core.py": "ede74196550787e3e8018638b4d1dae721df5eb72aa0513f2c5ea602ed3ab5f3"
+  }
+}

@@ -224,8 +224,116 @@ published-snapshot skip. Repository and whitespace checks passed. The viewer
 accepts additive manifest fields and fails closed for non-flat recorded terrain
 without rasters; full real-terrain browser playback remains a separate handoff.
 
+## Public raster recording, 2026-11-14
+
+- Base: main `059f8ef` (PRs #10 and #11 merged). Owner: Jesus, on
+  `feat/integration`; JES-04.
+- Gap found: the raster attachment needs the observed cells of each map
+  version, and no ROS topic carried them. Deriving them from sigma or the
+  traversability masks would be inference (an observed cell stays unknown when
+  NoData or uncertain), so the owner chose an additive topic.
+- Change: `/mge/terrain/observed` (`mono8`) joins the stamped batch of
+  `mapping_node` and `mock_terrain`; `mock_terrain` also publishes its flat
+  prior. The recorder assembles prior plus belief/sigma/observed per version
+  by stamp and writes `public_rasters.json`; `check_replay` and the oracle read
+  it. No message or field changed; the planner does not subscribe to the topic.
+- Evidence in the `mge-dev` Jazzy container: the Jezero vertical package holds
+  versions 1 (nothing observed, belief equal to the prior) and 2 (exactly the
+  observed 16 x 16 block) and the oracle converts it READY with an all-null
+  reference; the MOCK vertical package also converts READY. Full suite: 805
+  passed, 1 skipped; non-ROS suite on Python 3.12: 730 passed, 13 skipped;
+  repository check passed.
+- Open: Daniel reviews the `mapping_node` change and Jorge the consumer; the
+  viewer must read `public_rasters.json` instead of rejecting non-flat terrain.
+  `test_terrain_batch.py::test_planner_routes_inside_the_observed_block` fails
+  intermittently with `UNKNOWN/SEARCH_LIMIT` after its 10 s search budget while
+  the batch repeats at 1 Hz (planner finding 1, now on a 32 x 32 grid); passes
+  in other runs. For Diego.
+
+## MOCK kinematic execution and stop acknowledgement, 2026-11-14
+
+- Base: main `7d9a3bf` (PR #14 merged, no conflict). Owner: Jesus, on
+  `feat/integration`; JES-02, first part.
+- `kinematic_executor` (`agents:=kinematic`) replaces `mock_agents`. The primary
+  agent follows the active path only when it matches the authorized route of
+  MissionState and starts at the agent's XY; height comes from the path (belief
+  z, as in David's approved Jezero base value). Speed and consumption are the
+  constant rates of the route's own estimates. On a cleared or changed route
+  or path it halts in place and publishes `HALTED` with zero velocity: the stop
+  acknowledgement uses existing AgentState fields, no contract change.
+- Evidence (`mge-dev` Jazzy, `test_vertical_execution.py`, Jezero terrain, real
+  planner, MOCK mission): a 2-cell route is driven there and back on the
+  polyline; energy and oxygen fall by the route estimates (rel 1e-3); a second
+  route is invalidated by map version 3, the human halts at (-9.64, -9.64),
+  off the cell centres, and stays put; the replan is `ERROR/NON_CELL_CENTER`.
+  The launch contract test now also checks agent-provider exclusivity. Full
+  suite: 844 passed, 1 skipped; non-ROS Python 3.12: 756 passed, 14 skipped.
+- Open: replan from a halted off-centre pose needs PR #12 (continuous ground
+  starts); the real mission needs model agreement before it publishes a path;
+  robots, survey observations and Gazebo remain pending. ICD section 7 wording
+  for the acknowledgement waits for PR #12, which edits the same section.
+
+## CI failures on main and PR #17, 2026-11-14
+
+Follow-up: the callback correction below supersedes the 5 s / 60 s mitigation.
+
+- `test_terrain_batch.py::test_planner_routes_inside_the_observed_block`
+  timed out waiting for the PlanRoute answer on main (`7d9a3bf`, `70cd2e5`)
+  and on PR #17; not caused by either change and not reproduced locally. The
+  test repeated the map batch at 1 Hz while the planner searched (finding 1);
+  it now uses the node default of 5 s and waits up to 60 s for an answer with
+  a 10 s search budget. The FEASIBLE assertion is unchanged. For Diego.
+- Reproducing the CI order locally exposed two flakes of PR #13 in
+  `test_replay_package.py`: the run could stop before the 200 x 200 raster
+  attachment was written (the test now waits for it), and the strict oracle
+  rejected a MissionState that lagged the recorded map in arrival order
+  (`STALE_STATE`). The oracle now accepts lag and rejects a state ahead of
+  the map; REPLAY_CONTRACT documents it.
+
+## PR17 callback scheduling correction, 2026-11-14
+
+Source: failed head `17eb644bc8dc069a785066165904e3f7d691314f`, reconciled
+with the integration owner's `bec3873` and published main `70cd2e5`. ROS
+ICD-ROS2-V1/package 1.0.0, JSON/replay 1.0.0 and baseline 1.0.0-rc.1 remain
+unchanged. No open planner PR or pending local replay work was imported.
+
+- Original failure: no PlanRoute answer within 20 s, not a returned
+  SEARCH_LIMIT. The fixture runs data/mapping/planning without the executor.
+  Nineteen local runs at 1 Hz passed (six on one CPU); the original complete
+  integration suite passed 39 tests. CI discarded child logs, so its exact
+  thread schedule cannot be reconstructed retrospectively.
+- At 100 Hz, the failed source reproduced the same `req-observed` timeout
+  (5 passed, 1 failed). Thread dumps showed four ingestion workers competing
+  at SnapshotStore's lock; the second service callback never entered. This
+  confirms a starvation mechanism, not that CI produced at 100 Hz or suffered
+  a particular CPU fault. Reentrant ingestion can consume service capacity.
+- Map callbacks now share one mutually exclusive group, separate from a
+  mutually exclusive service group. Updates remain concurrent with search;
+  the snapshot-token guard still discards stale results. No search math,
+  resource model, observation policy or wire field changed.
+- A controlled delayed-ingestion regression fails the original node's 3 s
+  service deadline and passes the correction. A second test publishes a new
+  map during paused search and requires STALE_MAP with no route. Both use
+  actual ROS service/subscription/executor dispatch. Jezero now runs at both
+  1 and 100 Hz with the original 20 s wait and FEASIBLE/in-footprint checks;
+  all 14 focused cases passed in 13.04 s. Child logs use pytest files instead
+  of undrained pipes and are printed on failure.
+- The owner's already-pushed replay ordering/raster-wait changes remain.
+  MOCK execution, science agreement, continuous starts (PR12), M04/M05 and
+  organizer endorsement retain their existing pending status.
+- Final local validation on Ubuntu 24.04 / ROS 2 Jazzy, isolated domain 198:
+  `colcon build --symlink-install` built all 8 packages; `ros2 interface show`
+  inspected all six custom messages and both services; `python -m pytest -q`
+  passed 853 tests, with one skip for the unmaterialized independent planner
+  snapshot (78.26 s). `python scripts/check_repository.py` passed. On Windows
+  Python 3.12 the same suite passed 753 with 19 ROS/platform/snapshot skips;
+  Node 24.18.0 `npm test` passed 84 and `npm run build` passed. A FastAPI/httpx
+  deprecation warning is unrelated. CI of the final pushed head remains the
+  merge gate; these local checks do not establish LIVE mission acceptance.
+
 ## Frontend progress log (Jorge)
 
 | Date | Version | Owner | Evidence | Blockers | Next dependency |
 |---|---|---|---|---|---|
 | 2026-11-14 14:12 | `feat/ux` `7a7a1d3`, web viewer, docs | Jorge | Commits in window: `7a7a1d3` docs(readme) layer sources, `489647a` uncertainty layer labelled as assumed, `0e7f00e` merge main, `ebbe25e` AI docs, `8a886c9` Atmos tab, `a5eff6f` base model, `078981d` drone/agents true size, `3086f63` source_mode in status. Uncommitted: `web/scripts/extract-ctx-ortho.mjs` (extent/level args), new `web/scripts/extract-ctx-context.mjs`, `web/public/replay/demo/context.json`, `web/src/lib/slope.ts`, `web/tests/slope.test.ts`. `npm test --prefix web`: 18 files, 101 tests passed. | Context terrain and slope not wired into the viewer; demo mission and scarp are simulated; no real planner/live gateway link | Jesús: live gateway and raster recording; Daniel: processed terrain package; Diego: planner routes |
+| 2026-11-14 18:30 | `feat/ux` `82f9108`, web viewer, demo fixture, docs | Jorge | Public raster attachment read and validated (`files.public_rasters`, JOR-03); live Earth/Mars clocks (Mars24); radial agent HUD with gauges; agent/base cameras, view rotation, terrain clamp; astronaut planted feet (slip 35 cm to 5 mm/step) and shadow; rover pivot turns, corner steering, wheel suspension; drone spin-up, vertical climb/descent, wall clearance, downwash; demo regenerated (rover turns, drone 4 m/s profile); AI-generated portrait with visible watermark. `npm test`: 22 files, 123 tests passed; `npm run build` passed; `check_repository.py` passed. | No bundled package carries the raster attachment yet; AC-08 private-browser replay not recorded; vehicle motion checked in the dev server on one machine | Jesús: a recorded package with `public_rasters.json`; integration review of this PR |

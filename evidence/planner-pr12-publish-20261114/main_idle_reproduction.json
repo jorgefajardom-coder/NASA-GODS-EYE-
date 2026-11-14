@@ -1,0 +1,7 @@
+{
+  "source_module": "C:\\Users\\Admin\\Desktop\\NASA-GODS-EYE-\\tmp\\pr12-main-baseline\\src\\mge_gateway\\mge_gateway\\replay.py",
+  "baseline": "7c16cd8",
+  "error": "STALE_STATE",
+  "inputs": "Actual initial meta1 and IDLE state0, before planning; no payload edited",
+  "production_sources": "Exact detached main gateway; no planner imports or route execution"
+}

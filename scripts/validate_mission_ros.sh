@@ -10,10 +10,14 @@ exec > >(tee "$mission_validation_log") 2>&1
 printf 'VALIDATION_LOG=%s\n' "$mission_validation_log"
 mission_validation_root=$(mktemp -d /tmp/mge-mission-jazzy.XXXXXX)
 printf 'VALIDATION_ROOT=%s\n' "$mission_validation_root"
-cp -a -- "$mission_repository_root/src" "$mission_repository_root/config" \
-  "$mission_repository_root/tests" "$mission_repository_root/docs" \
-  "$mission_repository_root/data" "$mission_repository_root/pyproject.toml" \
-  "$mission_validation_root/"
+tar -C "$mission_repository_root" --exclude=__pycache__ --exclude=.pytest_cache \
+  -cf - src config tests docs scripts pyproject.toml | tar -C "$mission_validation_root" -xf -
+# Copy explicit public inputs only; never mount/copy evaluator reference assets.
+mkdir -p -- "$mission_validation_root/data"
+cp -a -- "$mission_repository_root/data/dataset.schema.json" \
+  "$mission_repository_root/data/manifest.schema.json" \
+  "$mission_repository_root/data/sample" "$mission_repository_root/data/planner_provisional" \
+  "$mission_validation_root/data/"
 cd -- "$mission_validation_root"
 python3 - "$mission_validation_log.source.json" <<'PY'
 import hashlib
@@ -23,7 +27,7 @@ import sys
 
 root = Path.cwd()
 paths = [root / "pyproject.toml"]
-for directory in ("src", "config", "tests", "data", "docs"):
+for directory in ("src", "config", "tests", "docs", "scripts", "data"):
     paths.extend(path for path in (root / directory).rglob("*")
                  if path.is_file() and "__pycache__" not in path.parts
                  and path.suffix != ".pyc")

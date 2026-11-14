@@ -1,0 +1,69 @@
+VALIDATION_LOG=/mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.04jeC1.log
+VALIDATION_ROOT=/tmp/mge-mission-jazzy.zS904A
+Starting >>> mge_interfaces
+Finished <<< mge_interfaces [15.9s]
+Starting >>> mge_data
+Starting >>> mge_gateway
+Starting >>> mge_mission
+Starting >>> mge_planning
+Starting >>> mge_sim
+Finished <<< mge_data [1.95s]
+Starting >>> mge_mapping
+Finished <<< mge_gateway [1.97s]
+Finished <<< mge_planning [1.97s]
+Finished <<< mge_mission [1.97s]
+Finished <<< mge_sim [2.01s]
+Finished <<< mge_mapping [1.72s]
+Starting >>> mge_bringup
+Finished <<< mge_bringup [4.07s]
+
+Summary: 8 packages finished [23.8s]
+Inspected six messages and two services.
+........................................................................ [ 15%]
+........................................................................ [ 30%]
+......s................................................................. [ 46%]
+......................................................................FF [ 61%]
+......FF.F..F........................................................... [ 77%]
+........................................................................ [ 92%]
+...................................                                      [100%]
+=================================== FAILURES ===================================
+__ test_main_public_loader_consumer_preserves_native_resolution_and_unknowns ___
+tests/mission/test_scenario.py:52: in test_main_public_loader_consumer_preserves_native_resolution_and_unknowns
+    assert report["dataset_status"] == "PUBLIC_PACKAGE_VALIDATED"
+E   AssertionError: assert 'NOT_READY' == 'PUBLIC_PACKAGE_VALIDATED'
+E     - PUBLIC_PACKAGE_VALIDATED
+E     + NOT_READY
+________________ test_tampered_hash_is_not_repaired_or_accepted ________________
+tests/mission/test_scenario.py:78: in test_tampered_hash_is_not_repaired_or_accepted
+    assert "SHA-256 mismatch" in report["findings"][0]["detail"]
+E   assert 'SHA-256 mismatch' in "[Errno 2] No such file or directory: '/tmp/mge-mission-jazzy.zS904A/data/manifest.schema.json'"
+___________ test_controls_are_required_even_if_loader_can_omit_them ____________
+tests/mission/test_scenario.py:109: in test_controls_are_required_even_if_loader_can_omit_them
+    assert "three verified public control points" in report["findings"][0]["detail"]
+E   assert 'three verified public control points' in "[Errno 2] No such file or directory: '/tmp/mge-mission-jazzy.zS904A/data/manifest.schema.json'"
+_______ test_continuous_goal_is_not_snapped_and_bad_service_is_rejected ________
+tests/mission/test_scenario.py:119: in test_continuous_goal_is_not_snapped_and_bad_service_is_rejected
+    assert {"NON_CELL_CENTER", "INVALID_SERVICE_DURATION", "INVALID_SERVICE_ACTIVITY"} <= codes(report)
+E   AssertionError: assert {'INVALID_SERVICE_ACTIVITY', 'INVALID_SERVICE_DURATION', 'NON_CELL_CENTER'} <= {'INVALID_SERVICE_ACTIVITY', 'INVALID_SERVICE_DURATION', 'PUBLIC_PACKAGE_INVALID'}
+E    +  where {'INVALID_SERVICE_ACTIVITY', 'INVALID_SERVICE_DURATION', 'PUBLIC_PACKAGE_INVALID'} = codes({'candidate_configuration': {'approval_evidence': {}, 'bindings_sha256': {'manifest': 'f45bec0f543dc419fe92398c73fe418...04fe2be52', 'mola_regional_context.npz': 'b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6', ...}, ...})
+____________ test_candidate_invalid_values_do_not_create_authority _____________
+tests/mission/test_scenario.py:146: in test_candidate_invalid_values_do_not_create_authority
+    assert {"DATASET_ID_MISMATCH", "COORDINATE_OUTSIDE_PUBLIC_TERRAIN", "INVALID_TOLERANCE",
+E   AssertionError: assert {'COORDINATE_OUTSIDE_PUBLIC_TERRAIN', 'DATASET_ID_MISMATCH', 'INVALID_TOLERANCE', 'RESERVE_EXCEEDS_CAPACITY'} <= {'INVALID_TOLERANCE', 'PUBLIC_PACKAGE_INVALID', 'RESERVE_EXCEEDS_CAPACITY'}
+E    +  where {'INVALID_TOLERANCE', 'PUBLIC_PACKAGE_INVALID', 'RESERVE_EXCEEDS_CAPACITY'} = codes({'candidate_configuration': {'approval_evidence': {}, 'bindings_sha256': {'manifest': 'f45bec0f543dc419fe92398c73fe418...04fe2be52', 'mola_regional_context.npz': 'b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6', ...}, ...})
+______________ test_cli_exports_exclusively_and_reports_not_ready ______________
+tests/mission/test_scenario.py:176: in test_cli_exports_exclusively_and_reports_not_ready
+    assert report["dataset_status"] == "PUBLIC_PACKAGE_VALIDATED"
+E   AssertionError: assert 'NOT_READY' == 'PUBLIC_PACKAGE_VALIDATED'
+E     - PUBLIC_PACKAGE_VALIDATED
+E     + NOT_READY
+- generated xml file: /mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.04jeC1.log.junit.xml -
+=========================== short test summary info ============================
+SKIPPED [1] tests/mission/test_conformance.py:227: Explicit published planner snapshot is not materialized
+FAILED tests/mission/test_scenario.py::test_main_public_loader_consumer_preserves_native_resolution_and_unknowns
+FAILED tests/mission/test_scenario.py::test_tampered_hash_is_not_repaired_or_accepted
+FAILED tests/mission/test_scenario.py::test_controls_are_required_even_if_loader_can_omit_them
+FAILED tests/mission/test_scenario.py::test_continuous_goal_is_not_snapped_and_bad_service_is_rejected
+FAILED tests/mission/test_scenario.py::test_candidate_invalid_values_do_not_create_authority
+FAILED tests/mission/test_scenario.py::test_cli_exports_exclusively_and_reports_not_ready
+6 failed, 460 passed, 1 skipped in 3.72s

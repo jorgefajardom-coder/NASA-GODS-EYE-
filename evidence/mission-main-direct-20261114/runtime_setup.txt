@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Local environment bootstrap only; this helper is intentionally Git-ignored.
+set -eo pipefail
+
+mission_env_repository=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+mission_env_root=${MGE_VALIDATION_VENV_DIR:-/tmp/mge-mission-http-env}
+if [[ ! -x "$mission_env_root/bin/python" ]]; then
+  python3 -m venv --system-site-packages "$mission_env_root"
+fi
+source /opt/ros/jazzy/setup.bash
+if ! "$mission_env_root/bin/python" -c 'import fastapi, httpx, uvicorn, websockets; from importlib.metadata import version; from packaging.version import Version; assert Version(version("pytest")) >= Version("8"); assert Version(version("jsonschema")) >= Version("4.23")' 2>/dev/null; then
+  "$mission_env_root/bin/python" -m pip install \
+    -c "$mission_env_repository/requirements-dev.lock.txt" \
+    -r "$mission_env_repository/src/mge_gateway/requirements.txt" \
+    'fastapi>=0.115,<1' 'httpx>=0.27,<1' 'uvicorn>=0.30,<1' \
+    'pytest>=8,<9' 'jsonschema>=4.23,<5'
+fi
+"$mission_env_root/bin/python" - <<'PY'
+import importlib
+from importlib.metadata import version
+import sys
+for name in ("rclpy", "numpy", "jsonschema", "httpx", "fastapi", "uvicorn", "websockets", "pytest"):
+    module = importlib.import_module(name)
+    print(f"READY {name}: {version(name) if name != 'rclpy' else 'available'}")
+print(f"VALIDATION_PYTHON={sys.executable}")
+PY
+if [[ "${1:-}" == "--check-only" ]]; then
+  exit 0
+fi
+export MGE_PYTHON_EXECUTABLE="$mission_env_root/bin/python"
+exec bash "$mission_env_repository/scripts/validate_mission_ros.sh"
