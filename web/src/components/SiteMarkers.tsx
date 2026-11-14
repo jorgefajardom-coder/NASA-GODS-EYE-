@@ -2,6 +2,7 @@ import { Html } from '@react-three/drei';
 import type { ControlPoint, PointOfInterest } from '../types/replay';
 import type { TaskView } from '../lib/replay';
 import { enuToThree } from '../lib/coords';
+import { ScaleWithDistance } from './ScaleWithDistance';
 
 interface Props {
   pois: PointOfInterest[];
@@ -27,6 +28,7 @@ export function SiteMarkers({ pois, controlPoints, showControlPoints, tasks, t, 
           const color = state === 'REJECTED' ? '#D95045' : state === 'DONE' ? '#65CBE8' : KIND_COLOR[p.kind];
           return (
             <group key={p.id} position={[x, y, z]}>
+              <ScaleWithDistance perMetre={1 / 110} max={10}>
               <mesh position={[0, 4, 0]}>
                 <cylinderGeometry args={[0.25, 0.25, 8, 8]} />
                 <meshStandardMaterial color="#e5e7eb" />
@@ -43,6 +45,7 @@ export function SiteMarkers({ pois, controlPoints, showControlPoints, tasks, t, 
                 {p.label}
                 {state ? <em> · {state.toLowerCase()}</em> : null}
               </Html>
+              </ScaleWithDistance>
             </group>
           );
         })}

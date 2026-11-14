@@ -5,6 +5,20 @@ import { fmtSimTime } from '../lib/format';
 
 export type UiMode = 'exploration' | 'replay';
 
+const PROVENANCE_LABEL: Record<string, string> = {
+  nasa: 'NASA/USGS terrain',
+  simulated: 'simulated mission',
+  fictitious: 'fictitious POIs',
+  replay: 'replay',
+};
+
+function terrainLabel(m: ReplayManifest): string {
+  const t = m.terrain_meta;
+  const where = t.origin_lat_deg == null || t.origin_lon_deg == null ? '' : ` · ${t.origin_lat_deg.toFixed(2)}°N ${t.origin_lon_deg.toFixed(2)}°E`;
+  const name = /ctx-dtm/.test(t.dataset_id) ? 'CTX DTM' : t.dataset_id;
+  return `${name} ${t.resolution_m} m${where}`;
+}
+
 /** Mission identity, top left. */
 export function TitleBlock({ manifest }: { manifest: ReplayManifest }) {
   return (
@@ -12,7 +26,7 @@ export function TitleBlock({ manifest }: { manifest: ReplayManifest }) {
       <div className="title__meta mono">MARS GODS EYE · {manifest.run_id}</div>
       <h1 className="title__main">Mission Management</h1>
       <div className="title__sub">
-        {manifest.title} · Terrain: {manifest.terrain_meta.dataset_id}
+        {manifest.title} · {terrainLabel(manifest)}
       </div>
     </header>
   );
@@ -25,10 +39,11 @@ interface StatusProps {
   t: number;
   agent: AgentState | null;
   evaluator: boolean;
+  exaggeration: number;
 }
 
 /** Link, replay and position status, top right. The live link is shown as offline: no gateway exists yet. */
-export function StatusBlock({ manifest, missionState, mapVersion, t, agent, evaluator }: StatusProps) {
+export function StatusBlock({ manifest, missionState, mapVersion, t, agent, evaluator, exaggeration }: StatusProps) {
   const p = agent?.pose.position;
   return (
     <section className="status" aria-label="Connection and mission status">
@@ -48,10 +63,12 @@ export function StatusBlock({ manifest, missionState, mapVersion, t, agent, eval
         <dd>{p ? `E ${p.x.toFixed(0)}  N ${p.y.toFixed(0)}  U ${p.z.toFixed(0)} m` : 'Not available'}</dd>
         <dt>Mars time</dt>
         <dd>Not available</dd>
+        <dt>Relief</dt>
+        <dd>{exaggeration === 1 ? 'true scale' : `${exaggeration}× (visual only)`}</dd>
       </dl>
       <div className="status__prov">
         {manifest.provenance.map((x) => (
-          <span key={x}>{x}</span>
+          <span key={x}>{PROVENANCE_LABEL[x] ?? x}</span>
         ))}
         {manifest.illustrative && <span>illustrative</span>}
         {evaluator && <span className="status__eval">evaluator view</span>}

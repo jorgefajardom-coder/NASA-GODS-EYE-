@@ -37,14 +37,14 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   return (
     <Canvas
       className="scene"
-      camera={{ position: [-0.55 * extent, 0.95 * extent, 1.25 * extent], fov: 40, near: 1, far: extent * 10 }}
+      camera={{ position: [-0.75 * extent, 1.25 * extent, 1.7 * extent], fov: 38, near: 1, far: extent * 10 }}
       dpr={[1, 2]}
       aria-label="3D view of the mission area"
     >
       <color attach="background" args={['#090D11']} />
       <fog attach="fog" args={['#090D11', extent * 2.5, extent * 6]} />
-      <hemisphereLight args={['#ffe2c8', '#2a1a12', 0.55]} />
-      <directionalLight position={[-extent, extent * 1.2, extent * 0.4]} intensity={1.6} color="#fff1e0" />
+      <hemisphereLight args={['#ffe2c8', '#2a1a12', 0.4]} />
+      <directionalLight position={[-extent * 1.2, extent * 0.55, extent * 0.35]} intensity={2.6} color="#fff1e0" />
       <TerrainView
         meta={meta}
         rasters={bundle.rasters}

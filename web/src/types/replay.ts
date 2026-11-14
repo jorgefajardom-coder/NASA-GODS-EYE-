@@ -32,6 +32,8 @@ export interface ReplayManifest {
   mode: 'REPLAY';
   provenance: Provenance[];
   illustrative: boolean;
+  /** Where AI assistance was used in this fixture (competition transparency rule). */
+  ai_disclosure?: { ai_assisted: boolean; scope: string; tool: string; observational_data: string };
   title: string;
   summary: string;
   disclaimer: string;

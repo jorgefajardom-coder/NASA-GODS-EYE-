@@ -62,7 +62,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const duration = m.duration_s;
   const [t, setT] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(10);
+  const [speed, setSpeed] = useState(20);
   const [layer, setLayer] = useState<TerrainLayer>('belief');
   const [exaggeration, setExaggeration] = useState(m.vertical_exaggeration_default);
   const [showControlPoints, setShowControlPoints] = useState(false);
@@ -185,6 +185,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             t={t}
             agent={agent}
             evaluator={EVALUATOR}
+            exaggeration={exaggeration}
           />
           {mode === 'replay' ? <EventInspector view={view} onSeek={seek} /> : details && <DetailsPanel data={details} />}
         </aside>
@@ -214,7 +215,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           {m.disclaimer} Agents are drawn larger than life (visual only).{' '}
           <details className="credits">
             <summary>Credits</summary>
-            "Animated Astronaut Character in Space Suit Loop" (
+            Terrain: NASA/USGS Mars 2020 TRN CTX DTM mosaic, USGS Astrogeology Science Center (provisional 2 km crop). "Animated Astronaut Character in Space Suit Loop" (
             <a href="https://skfb.ly/o9nHu" target="_blank" rel="noreferrer">
               https://skfb.ly/o9nHu
             </a>

@@ -2,7 +2,7 @@ import type { MissionEvent } from '../types/icd';
 import { fmtSimTime } from '../lib/format';
 import { PlayIcon, RestartIcon } from './icons';
 
-export const SPEEDS = [1, 5, 10, 20, 40] as const;
+export const SPEEDS = [1, 5, 10, 20, 40, 80] as const;
 
 interface Props {
   t: number;

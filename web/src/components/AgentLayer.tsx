@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import type { AgentState } from '../types/icd';
 import { enuToThree, yawFromQuaternion } from '../lib/coords';
 import { AstronautModel, ModelBoundary } from './AstronautModel';
+import { ScaleWithDistance } from './ScaleWithDistance';
 
 const KIND_COLOR = { HUMAN: '#C9D7DD', DRONE: '#65CBE8', ROVER: '#D8AD66' } as const;
 const KIND_LABEL = { HUMAN: 'Astronaut', DRONE: 'Drone', ROVER: 'Rover' } as const;
@@ -23,8 +24,10 @@ interface Props {
 }
 
 /**
- * Each agent is drawn at the received pose only (position and yaw from AgentState).
- * No interpolation or prediction: a missing state is never filled in.
+ * Each agent is drawn at the pose it is given (position and yaw from AgentState, visually
+ * interpolated between two received samples by the replay state, never extrapolated).
+ * Models are enlarged with camera distance so they stay readable on a 2 km map; the
+ * enlargement is visual only and does not change any position.
  */
 export function AgentLayer({ agents, verticalExaggeration, showLabels, playing, replaySpeed, speeds, selectedId, groundHeight }: Props) {
   return (
@@ -36,30 +39,32 @@ export function AgentLayer({ agents, verticalExaggeration, showLabels, playing, 
         const yaw = yawFromQuaternion(a.pose.orientation);
         return (
           <group key={a.agent_id} position={[x, y, z]} rotation={[0, yaw, 0]} name={`agent-${a.agent_id}`}>
-            {a.agent_id === selectedId && (
-              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.25, 0]}>
-                <ringGeometry args={[3.4, 4, 40]} />
-                <meshBasicMaterial color="#65CBE8" transparent opacity={0.9} depthWrite={false} />
-              </mesh>
-            )}
-            {a.agent_kind === 'HUMAN' ? (
-              <ModelBoundary fallback={<AgentMesh kind="HUMAN" />}>
-                <Suspense fallback={<AgentMesh kind="HUMAN" />}>
-                  <AstronautModel mode={a.mode} playing={playing} screenSpeedMps={(speeds[a.agent_id] ?? 0) * replaySpeed} />
-                </Suspense>
-              </ModelBoundary>
-            ) : (
-              <AgentMesh kind={a.agent_kind} />
-            )}
+            <ScaleWithDistance perMetre={1 / 80} max={14}>
+              {a.agent_id === selectedId && (
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.25, 0]}>
+                  <ringGeometry args={[3.4, 4, 40]} />
+                  <meshBasicMaterial color="#65CBE8" transparent opacity={0.9} depthWrite={false} />
+                </mesh>
+              )}
+              {a.agent_kind === 'HUMAN' ? (
+                <ModelBoundary fallback={<AgentMesh kind="HUMAN" />}>
+                  <Suspense fallback={<AgentMesh kind="HUMAN" />}>
+                    <AstronautModel mode={a.mode} playing={playing} screenSpeedMps={(speeds[a.agent_id] ?? 0) * replaySpeed} />
+                  </Suspense>
+                </ModelBoundary>
+              ) : (
+                <AgentMesh kind={a.agent_kind} />
+              )}
+              {showLabels && (
+                <Html position={[0, 9, 0]} center zIndexRange={[30, 0]} className={`agent-label agent-label--${a.agent_kind.toLowerCase()}`}>
+                  <strong>{KIND_LABEL[a.agent_kind]}</strong> <span>{a.mode.toLowerCase()}</span>
+                </Html>
+              )}
+            </ScaleWithDistance>
             {a.agent_kind === 'DRONE' && (
               <DroneTether
                 heightAboveGround={(a.pose.position.z - (groundHeight(a.pose.position.x, a.pose.position.y) ?? a.pose.position.z)) * verticalExaggeration}
               />
-            )}
-            {showLabels && (
-              <Html position={[0, 9, 0]} center zIndexRange={[30, 0]} className={`agent-label agent-label--${a.agent_kind.toLowerCase()}`}>
-                <strong>{KIND_LABEL[a.agent_kind]}</strong> <span>{a.mode.toLowerCase()}</span>
-              </Html>
             )}
           </group>
         );
