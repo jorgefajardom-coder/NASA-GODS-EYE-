@@ -17,6 +17,9 @@ setup(
     entry_points={
         'console_scripts': [
             'mock_agents = mge_sim.mock_agents:main',
+            'mock_terrain = mge_sim.mock_terrain:main',
+            'mock_planner = mge_sim.mock_planner:main',
+            'mock_mission = mge_sim.mock_mission:main',
         ],
     },
 )
