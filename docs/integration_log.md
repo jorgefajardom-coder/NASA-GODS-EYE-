@@ -249,3 +249,26 @@ without rasters; full real-terrain browser playback remains a separate handoff.
   intermittently with `UNKNOWN/SEARCH_LIMIT` after its 10 s search budget while
   the batch repeats at 1 Hz (planner finding 1, now on a 32 x 32 grid); passes
   in other runs. For Diego.
+
+## MOCK kinematic execution and stop acknowledgement, 2026-11-14
+
+- Base: main `7d9a3bf` (PR #14 merged, no conflict). Owner: Jesus, on
+  `feat/integration`; JES-02, first part.
+- `kinematic_executor` (`agents:=kinematic`) replaces `mock_agents`. The primary
+  agent follows the active path only when it matches the authorized route of
+  MissionState and starts at the agent's XY; height comes from the path (belief
+  z, as in David's approved Jezero base value). Speed and consumption are the
+  constant rates of the route's own estimates. On a cleared or changed route
+  or path it halts in place and publishes `HALTED` with zero velocity: the stop
+  acknowledgement uses existing AgentState fields, no contract change.
+- Evidence (`mge-dev` Jazzy, `test_vertical_execution.py`, Jezero terrain, real
+  planner, MOCK mission): a 2-cell route is driven there and back on the
+  polyline; energy and oxygen fall by the route estimates (rel 1e-3); a second
+  route is invalidated by map version 3, the human halts at (-9.64, -9.64),
+  off the cell centres, and stays put; the replan is `ERROR/NON_CELL_CENTER`.
+  The launch contract test now also checks agent-provider exclusivity. Full
+  suite: 844 passed, 1 skipped; non-ROS Python 3.12: 756 passed, 14 skipped.
+- Open: replan from a halted off-centre pose needs PR #12 (continuous ground
+  starts); the real mission needs model agreement before it publishes a path;
+  robots, survey observations and Gazebo remain pending. ICD section 7 wording
+  for the acknowledgement waits for PR #12, which edits the same section.

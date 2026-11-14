@@ -369,6 +369,26 @@
       "use": "Publish the observed mask in the stamped map batch and record the public prior and per-version belief, sigma and observed cells as the replay raster attachment, validated offline. Recorded rasters copy public layers and SIMULATED test observations; no terrain, scientific observation or mission result is generated."
     },
     {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "mock_kinematic_execution",
+      "generation": "AI-assisted code, tests and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_sim/mge_sim/kinematics.py",
+        "src/mge_sim/mge_sim/executor.py",
+        "src/mge_sim/setup.py",
+        "src/mge_sim/README.md",
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "tests/unit/test_kinematics.py",
+        "tests/integration/test_vertical_execution.py",
+        "tests/integration/README.md",
+        "tests/contract/test_mission_launch.py",
+        "README.md",
+        "docs/integration_log.md",
+        "docs/handoffs/jesus.md"
+      ],
+      "use": "MOCK executor that moves the primary agent along the authorized active path at the rates implied by the route's own estimates and halts in place, reported through AgentState, when the route is invalidated. No dynamics, resource model, scientific observation or mission result is generated."
+    },
+    {
       "tool": "OpenAI Codex",
       "kind": "code_configuration_and_synthetic_model_checks",
       "generation": "AI-assisted generation, pending human review",

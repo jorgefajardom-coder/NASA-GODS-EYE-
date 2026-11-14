@@ -383,3 +383,13 @@ layers are illustrative values; recorded rasters are copies of the public
 prior and of SIMULATED test observations, not new terrain. No scientific
 dataset, mission result, image, video or audio was generated. The affected
 paths are listed in ai_usage.json.
+
+## MOCK kinematic execution
+
+Claude Code (Anthropic) assisted the integration owner with the kinematic
+execution core and executor node in `mge_sim`, its launch selection, the
+unit, contract and integration tests and the related documentation. Paths,
+estimates and observations in the tests are illustrative inputs; motion and
+consumption derive from planner estimates and are not a model. No scientific
+dataset, mission result, image, video or audio was generated. The affected
+paths are listed in ai_usage.json.

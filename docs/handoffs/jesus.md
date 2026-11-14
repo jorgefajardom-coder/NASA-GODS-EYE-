@@ -181,3 +181,24 @@ optional file, raster attachment `mge-public-rasters-1.0.0`, baseline review
   `test_terrain_batch.py` goes to Diego. Next for Jesus: JES-02 kinematic
   execution and stop acknowledgement. Organizer endorsement (JES-07) remains
   undocumented.
+
+## MOCK kinematic execution cut (JES-02, first part)
+
+Source: `feat/integration` on main `7d9a3bf`. Baselines unchanged: ROS
+ICD-ROS2-V1 / package 1.0.0, JSON/replay 1.0.0, baseline review 1.0.0-rc.1.
+
+- **Input/output.** Input: MissionState (route ID, primary agent, active
+  route and estimates) and `/mge/planner/active_path`. Output: AgentState for
+  every agent; the primary one `MOVING` along the path, `IDLE` on arrival,
+  `HALTED` with zero velocity after an invalidation (stop acknowledgement).
+  Selected by `agents:=kinematic`; exclusive with `mock_agents`.
+- **Commands.** In `mge-dev`: `colcon build --symlink-install`,
+  `python3 -m pytest` (844 passed, 1 skipped), `python3 scripts/check_repository.py`
+  (passed). Python 3.12 without ROS: 756 passed, 14 skipped.
+- **MOCK and gaps.** Executor, mission and agents MOCK; motion is constant
+  speed from route estimates. Not run: real mission path (needs model
+  agreement), Gazebo, robots, survey observations from a simulated sensor.
+- **Blockers / next.** PR #12 for replanning from a halted off-centre pose and
+  for the ICD section 7 acknowledgement wording; real mission once David and
+  Diego agree the model; M04/M05 runs with David. JES-07 organizer endorsement
+  remains undocumented.
