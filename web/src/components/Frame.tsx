@@ -23,7 +23,6 @@ function terrainLabel(m: ReplayManifest): string {
 export function TitleBlock({ manifest }: { manifest: ReplayManifest }) {
   return (
     <header className="title">
-      <div className="title__meta mono">MARS GODS EYE · {manifest.run_id}</div>
       <h1 className="title__main">Mission Management</h1>
       <div className="title__sub">
         {manifest.title} · {terrainLabel(manifest)}
