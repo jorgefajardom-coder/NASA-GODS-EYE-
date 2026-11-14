@@ -996,6 +996,17 @@
         "web/tests/smoothing.test.ts"
       ],
       "use": "Viewer display only: walk cycle re-timed and pelvis motion kept for the legs so the planted foot does not slide; distance pins shown only when a model is a few pixels tall; grab-to-drag map camera; cameras for each agent and the base; camera kept above the drawn terrain; replay restart skips the idle lead-in; running crew dose estimate from the published RAD surface rate (not a dosimeter reading); monotone cubic interpolation between received samples; drone drawn with gentle take-off and landing; rover tilted to the terrain with spinning wheels; boot-shaped footprints; radial agent HUD with per-element gauges (use rates derived from the received samples, route figures as published, latest MEDA summary, pressure map estimated barometrically from it); astronaut projected shadow; files.public_rasters attachment read and validated; live Earth and Mars clocks (Mars24 algorithm, NASA GISS); drone rotor spin-up, blur and downwash dust; demo regenerated with rover turns in place and a drone spin-up/climb/descent profile (simulated values). No data or values generated."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "readme_overview",
+      "generation": "AI-assisted documentation from a review of the repository, branches, pull requests and web viewer, directed and reviewed by the integration owner",
+      "paths": [
+        "README.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Describe the system overview, branch and pull request state, web viewer features, launch arguments, gateway API, CI jobs and open milestones in the root README, keeping the existing data provenance table and AI declarations. No code, data, mission result, image, video or audio was generated."
     }
   ],
   "generated_media": [
