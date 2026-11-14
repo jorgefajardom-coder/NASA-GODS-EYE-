@@ -131,7 +131,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         trueScale={trueScale}
       />
       <FollowCamera agentId={followed} smoothingS={smoothing.followTauS} />
-      <OrbitControls makeDefault enableDamping dampingFactor={smoothing.orbitDamping} maxPolarAngle={Math.PI / 2.05} minDistance={30} maxDistance={extent * 2.5} />
+      <OrbitControls makeDefault enableDamping dampingFactor={smoothing.orbitDamping} maxPolarAngle={Math.PI / 2.05} minDistance={4} maxDistance={extent * 2.5} zoomToCursor />
     </Canvas>
   );
 }

@@ -11,8 +11,8 @@ interface Props {
   smoothingS: number;
 }
 
-const DISTANCE_M = 8;
-const HEIGHT_M = 3.4;
+const DISTANCE_M = 6;
+const HEIGHT_M = 2.6;
 const LOOK_AT_HEIGHT_M = 1.25;
 /** Minimum easing of the camera's vertical follow (s). */
 const VERTICAL_TAU_S = 0.45;
@@ -38,7 +38,7 @@ export function FollowCamera({ agentId, smoothingS }: Props) {
     if (!agentId && following.current && home.current) {
       camera.position.copy(home.current.pos);
       controls.target.copy(home.current.target);
-      controls.minDistance = 30;
+      controls.minDistance = 4;
       controls.update();
       following.current = null;
     }
