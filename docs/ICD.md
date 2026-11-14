@@ -26,8 +26,8 @@ field names and types; this document records the conventions around them.
   ROS field names are lower case, so the guide's `energy_est_Wh` is
   `energy_est_wh`.
 - Oxygen fields are `NaN` for agents that are not `HUMAN` in the canonical ROS
-  wire definitions. The future gateway adapter must map non-applicable NaN to JSON
-  `null` (never a JSON NaN token). This explicit conversion is not implemented yet.
+  wire definitions. The gateway maps non-applicable NaN to JSON `null` (never a
+  JSON NaN token).
 - ROS wire kinds are uppercase `HUMAN`/`DRONE`/`ROVER`; pure Python/configuration
   may use lowercase. Adapters must map these intentionally and reject unknown
   values. Do not assume Python models are already the ROS wire representation.
@@ -121,7 +121,8 @@ Service positions and RouteDecision paths are `geometry_msgs/Point` values in
 `map`, not Pose or nav_msgs/Path. The active-path topic remains `nav_msgs/Path`.
 SetMissionGoal permits an empty run ID to mean the current run; the eventual
 adapter must resolve that before crossing into stored events or replay. Current
-ROS planning/mission services are not implemented by the scaffold.
+ROS planning/mission services are implemented only by the labelled MOCK nodes in
+`mge_sim`; the `mge_planning` and `mge_mission` packages are still scaffolds.
 
 MissionManager alone authorizes and publishes the active route. Only FEASIBLE
 candidates may be considered after current-run/map and return-budget checks.
@@ -131,61 +132,112 @@ Native Image/OccupancyGrid/Path lack custom run/version fields: consumers need a
 unambiguous association with metadata/state by frame, timestamp and run context.
 That association is pending integration and cannot be assumed from a topic name.
 
-## 6. Web contract and current availability behavior
+## 6. Web contract
 
-The implemented gateway surface and `web/src/lib/contracts.ts` share the following
-inactive envelope (`schema_version` applies to JSON, not the ROS wire messages):
+Served by `mge_gateway`. It binds to `127.0.0.1` by default and holds no
+planning or mission logic. Every JSON response and WebSocket message is an
+envelope with `schema_version` (`"1.0.0"`; it applies to JSON, not to the ROS
+wire messages), `run_id`, `mode` (`LIVE` | `REPLAY`), `map_version` and
+`timestamp_sim_s`, plus the payload. Payloads use the ROS
+field names unchanged. `NaN` is sent as `null` (for example oxygen fields of
+a rover).
 
-```json
-{
-  "schema_version": "1.0.0",
-  "run_id": null,
-  "mode": null,
-  "map_version": null,
-  "timestamp_sim_s": null,
-  "status": "NOT_READY",
-  "reason_code": "ROS_NOT_CONNECTED"
-}
-```
+| Route | Payload |
+|---|---|
+| `GET /api/health` | `status` (`READY`), `ros_connected`, `terrain_meta_received` |
+| `GET /api/manifest` | `terrain_meta`, `agents` (`agent_id`, `agent_kind`), `endpoints` |
+| `GET /api/run/{run_id}/snapshot` | `mission_state`, `terrain_meta`, `events` (all so far) |
+| `GET /api/run/{run_id}/events?after_seq=N` | `events` with `seq > N`; polling fallback |
+| `POST /api/mission/goal` | Body: `request_id` (optional), `primary_agent_id`, `base`, `goal`, `mode`, budgets and reserves. Answer: the `SetMissionGoal` response fields |
+| `WS /api/events?after_seq=N` | Backlog of events with `seq > N`, then the current state, then live messages |
 
-Null means that no active run/map/clock is loaded. Only a real loaded run may
-show `mode=LIVE|REPLAY`; process availability alone does not establish either.
-A snapshot error may echo a requested run ID without claiming that run exists.
-`UnavailableResponse` permits `NOT_READY|ERROR`; the scaffold emits NOT_READY.
+- WebSocket messages carry `type`: `"event"` with an `event` object
+  (`MissionEvent`) or `"state"` with a `state` object (`MissionState`).
+- **No active run.** Until a mission state of the configured run has been
+  received, the gateway invents no run, map, clock or mode. It answers with
+  the inactive envelope below: `GET /api/health` with HTTP 200 plus
+  `ros_connected: false`; manifest, snapshot, events and `POST` with HTTP 503
+  (snapshot and events echo the requested run ID without claiming it exists);
+  the WebSocket sends it once and closes with code 1013. A running process
+  alone is never `LIVE`. `web/src/lib/contracts.ts` types this as
+  `UnavailableResponse`.
 
-| Endpoint | Current behavior |
-| --- | --- |
-| `GET /api/health` | HTTP 200, inactive envelope, `ros_connected=false`, `implementation_status=scaffold` |
-| `GET /api/manifest` | HTTP 503, inactive envelope |
-| `GET /api/run/{run_id}/snapshot` | HTTP 503, inactive envelope with requested run ID |
-| `POST /api/mission/goal` | Accepts a JSON object at the draft surface; always HTTP 503, no command accepted or forwarded |
-| `WS /api/events` | Accepts, sends inactive envelope, closes with 1013 |
+  ```json
+  {
+    "schema_version": "1.0.0",
+    "run_id": null,
+    "mode": null,
+    "map_version": null,
+    "timestamp_sim_s": null,
+    "status": "NOT_READY",
+    "reason_code": "NO_ACTIVE_RUN"
+  }
+  ```
 
-The web scaffold sends no API requests and renders no fabricated terrain, route
-or results. Operational manifest/snapshot/goal models, ROS executor, serializer,
-event recorder and polling/reconnect logic are pending. Do not infer operational
-goal fields from the permissive starter JSON body. Typed adapters must preserve
-ROS field names, convert non-human oxygen NaN to JSON null, and map kind casing.
-Before enabling control, validate request IDs, active run/map, resource assumptions
-and supported cost modes. Bind control locally until a secured remote deployment
-with authentication, origin restrictions and HTTPS/WSS is explicitly designed.
+- An unknown `run_id` answers `404`. A malformed body answers `422`. A goal
+  the mission refuses answers `200` with `accepted: false` and a
+  `reason_code`. If the mission service does not answer, the reply is `503`
+  with the inactive envelope, `status: "ERROR"` and
+  `reason_code: "MISSION_SERVICE_UNAVAILABLE"`.
+- Repeating a `request_id` returns the first answer and creates no events.
+- A planning failure is not an HTTP error: the goal is accepted, the mission
+  goes to `BLOCKED`, and `mission_state.active_route` carries the `status`,
+  `reason_code` and `detail`, with empty paths and an empty `route_id`.
+- If the environment variable `MGE_CONTROL_TOKEN` is set, `POST` requires
+  `Authorization: Bearer <token>`. Set it before binding to anything other
+  than localhost.
+- Allowed browser origins come from the `cors_origins` parameter
+  (default `http://localhost:5173`).
 
-The gateway remains unavailable even if the independent static MOCK publisher is
-running; there is no ROS-to-HTTP state flow yet. Tests in
-`tests/contracts/test_gateway.py` verify this truthful unavailable boundary only.
+The web scaffold in `web/` sends no API requests yet and renders no terrain,
+route or results. The gateway converts non-human oxygen `NaN` to JSON `null`
+and passes agent kinds through in the upper-case ROS wire form.
+`tests/contracts/test_gateway.py` checks this contract without ROS;
+`tests/integration` checks the ROS-to-HTTP flow against MOCK producers.
 
 ## 7. Reference separation, replay and verification gates
 
 Only prior/belief/observed layers reach Planner and the normal web map; the hidden
 evaluator reference and future tasks never enter these contracts. Prior is
 immutable within a run. Simulated observations use source SIMULATED, not a claim
-of real perception. No real Mars data, mission benchmark or complete replay is
-included by this scaffold.
+of real perception. No real Mars data or mission benchmark is included; the
+only recorded run is a MOCK sample.
 
-Target replay layout is `run_id/manifest.json`, `timeline.jsonl`, `snapshot.json`
-and referenced rasters. Offline playback must consume recorded events without
-new ROS state and display REPLAY. GitHub Pages serves static web/replay only;
-ROS and FastAPI require a separate host for remote LIVE operation.
+A recorded run is a directory of static files that a web client reads with
+plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
+`replay_recorder` node (`record:=true` on the launch file).
+
+| File | Content |
+|---|---|
+| `<run_id>/manifest.json` | Envelope plus `recorded_from`, `clock_source`, `time_start_sim_s`, `record_count`, `event_count`, `terrain_meta`, `agents`, `files` |
+| `<run_id>/timeline.jsonl` | One record per line, in arrival order |
+| `<run_id>/snapshot.json` | Final state, same shape as `GET /api/run/{run_id}/snapshot` |
+
+- Every file and every record says `mode: "REPLAY"`. A client must show
+  `REPLAY` for this data and must not present it as a live computation.
+- A timeline record has the shape of a WebSocket message: the envelope,
+  `type` (`event` | `state` | `terrain_meta`) and an object of that name, so
+  live messages and replay records can share one handler.
+- `timestamp_sim_s` of a record is the `header.stamp` of its message and
+  never decreases along the file. Replay time is
+  `timestamp_sim_s - time_start_sim_s`.
+- `clock_source` is `sim` when the run used `/clock` and `system` when no
+  simulator was running; in that case the stamps are wall-clock seconds.
+- Events and states travel on different topics, so a state may be recorded
+  slightly before the event that caused it. Order events by `seq`.
+- A mission state identical to the previous one, apart from stamps, is not
+  recorded again. Duplicates, older states and data of another run are
+  dropped, as in the gateway.
+- An existing run directory is never overwritten.
+- `ros2 run mge_gateway check_replay <dir>` validates a package offline.
+
+`data/sample/replay/mock-vertical-001` is a sample package recorded from the
+mock vertical (goal, route, simulated observation, replan). It contains mock
+data only.
+
+Not implemented yet: the web client that plays a package, and rasters inside
+the package. GitHub Pages serves static web/replay only; ROS and FastAPI
+require a separate host for remote LIVE operation.
 
 Build all eight ROS definitions on Jazzy, run the imported ROS contract checks,
 and then verify grid/frame alignment, stale responses, duplicate observations,

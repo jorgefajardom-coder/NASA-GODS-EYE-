@@ -28,10 +28,20 @@ grid is a code-rendered placeholder, not a terrain product or mission run.
 
 [Official GO Team policy](https://github.com/nasa/spaceapps/discussions/1849).
 
-## Existing integration contribution
+## Integration work (Jesus), 14 November 2026
 
-The canonical ROS definitions, mock_agents publisher, smoke launch and ROS-only
-contract checks were retained from dev/jesus at 00c8e44 with their history and
-license metadata. Codex assisted with merging and adapting the shared scaffold.
-The scope above does not assert that all retained contributor code was generated
-by this tool; the contributor must confirm its own tool-use history for delivery.
+Claude Code (Anthropic) assisted the integration owner with the canonical ROS
+message and service definitions, the mock nodes in `src/mge_sim`, the launch
+files in `src/mge_bringup`, the ROS-backed gateway, replay recorder and replay
+validator in `src/mge_gateway`, their tests, the development image and script,
+and the related sections of the README, ICD and integration log. The work was
+directed and reviewed by the integration owner; the requirements and
+architecture came from the team guides. This confirms the tool-use history of
+the contribution retained from `dev/jesus`.
+
+The mock nodes produce synthetic placeholder values at run time (a flat grid,
+static agent states, straight-line routes). They are labelled `MOCK` and are not
+NASA observational data. `data/sample/replay` is a recording of those mock
+nodes, produced by `scripts/record_sample_replay.py`; it is not a mission
+result. OpenAI Codex assisted with the earlier merge of that contribution into
+the shared scaffold.

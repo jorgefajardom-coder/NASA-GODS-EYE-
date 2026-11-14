@@ -2,11 +2,11 @@
 # Run a command inside the ROS 2 Jazzy container with the repository mounted.
 #   scripts/dev.sh                      -> interactive shell
 #   scripts/dev.sh colcon build ...     -> one command
-# MGE_IMAGE selects the image; it must provide ROS 2 Jazzy (and Gazebo Harmonic
-# for simulation work).
+# Build the image once: docker build -t mge-dev docker/   (see docker/Dockerfile)
+# MGE_IMAGE selects another image.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-IMAGE="${MGE_IMAGE:-osrf/ros:jazzy-desktop-full}"
+IMAGE="${MGE_IMAGE:-mge-dev}"
 TTY=(); [ -t 0 ] && TTY=(-it)
 if [ $# -eq 0 ]; then set -- bash; fi
 exec docker run --rm "${TTY[@]}" \

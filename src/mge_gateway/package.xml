@@ -1,14 +1,21 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>mge_gateway</name>
-  <version>0.0.0</version>
-  <description>ROS to web gateway scaffold</description>
+  <version>0.2.0</version>
+  <description>Mars Gods Eye ROS to web gateway (REST and WebSocket) and replay recorder.</description>
   <maintainer email="team@example.invalid">MARS GODS EYE team</maintainer>
   <license>LicenseRef-UNSPECIFIED</license>
+
   <buildtool_depend>ament_python</buildtool_depend>
-  <depend>rclpy</depend>
-  <depend>mge_interfaces</depend>
-  <depend>python3-fastapi</depend>
-  <depend>python3-uvicorn</depend>
-  <export><build_type>ament_python</build_type></export>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>mge_interfaces</exec_depend>
+  <exec_depend>rosidl_runtime_py</exec_depend>
+  <exec_depend>python3-fastapi</exec_depend>
+  <exec_depend>python3-uvicorn</exec_depend>
+  <exec_depend>python3-websockets</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
 </package>

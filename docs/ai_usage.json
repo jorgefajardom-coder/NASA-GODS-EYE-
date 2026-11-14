@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "recorded_on": "2026-11-14",
-  "status": "initial_scaffold",
+  "status": "scaffold_and_mock_vertical",
   "policy_url": "https://github.com/nasa/spaceapps/discussions/1849",
   "human_review": "pending module owners",
   "uses": [
@@ -38,6 +38,29 @@
         "evidence/README.md"
       ],
       "use": "Document team-supplied specification, competition requirements, source manifest templates and required disclosures; no scientific results or NASA datasets generated."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "code_configuration_and_documentation",
+      "generation": "AI-assisted generation, directed and reviewed by the integration owner",
+      "paths": [
+        "src/mge_interfaces",
+        "src/mge_sim",
+        "src/mge_bringup",
+        "src/mge_gateway",
+        "tests/contract",
+        "tests/unit",
+        "tests/integration",
+        "tests/contracts/test_gateway.py",
+        "scripts/dev.sh",
+        "scripts/record_sample_replay.py",
+        "docker",
+        "data/sample/replay",
+        "docs/ICD.md",
+        "docs/integration_log.md",
+        "README.md"
+      ],
+      "use": "Canonical ROS interfaces, mock agents/terrain/planner/mission, launch files, ROS-backed gateway, replay recorder and validator, tests, development image, and related documentation. The sample replay is a recording of mock nodes, not a mission result."
     }
   ],
   "generated_media": [],
@@ -59,7 +82,7 @@
         "tests/contract",
         "scripts/dev.sh"
       ],
-      "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
+      "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use confirmed: Claude Code (Anthropic), see uses."
     }
   ]
 }
