@@ -82,6 +82,21 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showControlPoints, setShowControlPoints] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
   const [follow, setFollow] = useState(false);
+  // The follow view plays at 1x so the walk is drawn at its natural pace (legs synced to the
+  // ground); leaving it restores the speed chosen before. The speed can still be changed while following.
+  const speedBeforeFollow = useRef<number | null>(null);
+  useEffect(() => {
+    if (follow) {
+      setSpeed((prev) => {
+        speedBeforeFollow.current = prev;
+        return 1;
+      });
+    } else if (speedBeforeFollow.current != null) {
+      const restore = speedBeforeFollow.current;
+      speedBeforeFollow.current = null;
+      setSpeed(restore);
+    }
+  }, [follow]);
   const [contours, setContours] = useState(true);
   const [showImagery, setShowImagery] = useState(true);
   const [surfaceDetail, setSurfaceDetail] = useState(true);
