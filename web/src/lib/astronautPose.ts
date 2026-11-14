@@ -231,3 +231,53 @@ export function calmClip(root: THREE.Object3D, clip: THREE.AnimationClip, opts: 
   if (opts.plantFeet) plantFeet(root, out);
   return out;
 }
+
+/**
+ * Ground speed the walk clip represents, in model units per second at time scale 1: the median
+ * horizontal speed of the stance (lower) ankle relative to the hips. Playing the clip at
+ * `groundSpeed / clipWalkSpeed` keeps the planted foot still on the ground (no skating).
+ */
+export function clipWalkSpeed(root: THREE.Object3D, clip: THREE.AnimationClip, samples = 200): number {
+  const hips = findNode(root, /^Center\d/);
+  const lAnkle = findNode(root, /^L_Ankle\d/);
+  const rAnkle = findNode(root, /^R_Ankle\d/);
+  if (!hips || !lAnkle || !rAnkle) return 0;
+  const mixer = new THREE.AnimationMixer(root);
+  const action = mixer.clipAction(clip);
+  action.play();
+  const dt = clip.duration / samples;
+  const a = new THREE.Vector3();
+  const b = new THREE.Vector3();
+  const h = new THREE.Vector3();
+  const speeds: number[] = [];
+  let prev: { left: boolean; x: number; z: number } | null = null;
+  for (let i = 0; i <= samples; i++) {
+    mixer.setTime(Math.min(i * dt, clip.duration - 1e-6));
+    root.updateMatrixWorld(true);
+    lAnkle.getWorldPosition(a);
+    rAnkle.getWorldPosition(b);
+    hips.getWorldPosition(h);
+    const left = a.y < b.y;
+    const foot = left ? a : b;
+    const cur = { left, x: foot.x - h.x, z: foot.z - h.z };
+    if (prev && prev.left === left) speeds.push(Math.hypot(cur.x - prev.x, cur.z - prev.z) / dt);
+    prev = cur;
+  }
+  action.stop();
+  mixer.uncacheClip(clip);
+  mixer.uncacheRoot(root);
+  speeds.sort((x, y) => x - y);
+  return speeds.length ? speeds[speeds.length >> 1] : 0;
+}
+
+/**
+ * Time scale for the walk clip so the stance foot does not slide: ground speed over the clip's
+ * own speed, capped at `max` (beyond it the legs would flicker; some sliding is then unavoidable).
+ */
+export function walkTimeScale(groundSpeedMps: number, clipSpeedMps: number, max = WALK_MAX_TIME_SCALE): number {
+  if (!(clipSpeedMps > 0) || !(groundSpeedMps > 0)) return 1;
+  return Math.min(max, groundSpeedMps / clipSpeedMps);
+}
+
+/** Highest walk-cycle rate drawn: about 3.5 strides per second, a fast-forward look without strobing. */
+export const WALK_MAX_TIME_SCALE = 8;

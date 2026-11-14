@@ -82,7 +82,7 @@ The terrain is drawn smoothed between the 20 m cells, with contour lines every 1
 
 Agents are drawn at an eased copy of their pose (about 0.1 s, display only) so they do not tremble when the camera is close; the follow camera reads that drawn pose in the same frame. **Camera smoothing** in the view options sets the follow and orbit easing: Off (rigid), Soft (default) or Cinematic; the choice is remembered in this browser.
 
-The walk clip is a lunar bounding gait; the viewer plants the lower foot on the ground at every keyframe (the hips move down instead), so the astronaut walks instead of hopping. In the follow view the route overlay is hidden so no line is painted on the ground next to the astronaut; it shows again in the free view.
+The walk clip is a lunar bounding gait; the viewer plants the lower foot on the ground at every keyframe (the hips move down instead), so the astronaut walks instead of hopping. The leg rhythm follows the ground speed on screen divided by the clip's own walking speed, measured from the clip (about 0.31 m/s at 1.9 m), so the planted foot does not skate; above about 2.5 m/s on screen (roughly 2.5× replay) the rhythm is capped to avoid flicker and the feet slide. In the follow view the route overlay is hidden so no line is painted on the ground next to the astronaut; it shows again in the free view.
 
 Keys: `F` follow camera, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 `?evaluator=1` shows the hidden reference layer, **in the dev server only** (R05). `npm run fixture`

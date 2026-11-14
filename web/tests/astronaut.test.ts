@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { calmClip } from '../src/lib/astronautPose';
+import { calmClip, clipWalkSpeed, walkTimeScale, WALK_MAX_TIME_SCALE } from '../src/lib/astronautPose';
 
 const GLB = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'assets', 'models', 'astronaut.glb');
 
@@ -169,6 +169,19 @@ describe('calmed walk and idle', () => {
     const calm = lowFoot(calmClip(model.scene, original('moon_walk')));
     expect(raw).toBeGreaterThan(0.15); // the source clip has a long both-feet-off-the-ground phase
     expect(calm).toBeLessThan(0.02); // planted: the lower foot stays on the ground
+  });
+
+  it('measures the walk speed of the clip so the legs can be synced to the ground', () => {
+    model.scene.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(model.scene);
+    const toMetres = 1.9 / (box.max.y - box.min.y); // drawn at 1.9 m, as AstronautModel does
+    const v = clipWalkSpeed(model.scene, calmClip(model.scene, original('moon_walk'))) * toMetres;
+    expect(v).toBeGreaterThan(0.2); // a slow suited gait, well below the old 1.05 m/s assumption
+    expect(v).toBeLessThan(0.6);
+    // Exact sync below the cap: the stance foot moves backwards as fast as the body moves forwards.
+    expect(walkTimeScale(1.0, v)).toBeCloseTo(1.0 / v, 9);
+    expect(walkTimeScale(100, v)).toBe(WALK_MAX_TIME_SCALE); // fast replay: capped
+    expect(walkTimeScale(0, v)).toBe(1);
   });
 
   it('stands upright when idle', () => {

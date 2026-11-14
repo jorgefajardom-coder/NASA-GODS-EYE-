@@ -6,7 +6,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import type { AgentMode } from '../types/icd';
 import { assetUrl } from '../data/replayAdapter';
-import { calmClip } from '../lib/astronautPose';
+import { calmClip, clipWalkSpeed, walkTimeScale } from '../lib/astronautPose';
 import { FootDust } from './FootDust';
 
 /**
@@ -25,14 +25,12 @@ export const ASTRONAUT_VISUAL_HEIGHT_M = 1.9; // real EVA-suit height, next to r
 
 const WALKING: ReadonlySet<AgentMode> = new Set(['MOVING', 'RETURNING']);
 const FADE_S = 0.35;
-/** Screen speed at which moon_walk plays at its authored rate for the enlarged model (visual tuning). */
-const CLIP_SPEED_MPS = 1.05; // authored walk rate for a real-size (1.9 m) astronaut
 /**
- * The walk cycle stays near its natural pace. Replay speed makes the astronaut cross the map
- * faster, but playing the cycle faster too looks like shaking, so foot sliding is accepted.
+ * The walk cycle is played so the stance foot stays put: its rate follows the ground speed on
+ * screen (simulated speed x replay speed) divided by the clip's own walking speed, measured from
+ * the clip (lib/astronautPose.ts, about 0.31 m/s at 1.9 m). Above WALK_MAX_TIME_SCALE (fast
+ * replay) the rate is capped and the feet slide.
  */
-const MIN_TIME_SCALE = 0.8;
-const MAX_TIME_SCALE = 1.3;
 const TEXTURE_SLOTS = ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap', 'specularColorMap', 'specularIntensityMap'] as const;
 
 interface Props {
@@ -66,6 +64,11 @@ export function AstronautModel({ mode, playing, screenSpeedMps }: Props) {
     [model, gltf.animations],
   );
   const { actions, mixer } = useAnimations(clips, root);
+  // Walking speed of the calmed clip at the drawn size (m/s at time scale 1).
+  const clipSpeedMps = useMemo(() => {
+    const walk = clips.find((c) => c.name === 'moon_walk');
+    return walk ? clipWalkSpeed(model, walk) * fit.scale : 0;
+  }, [clips, model, fit.scale]);
 
   // Local image-based light (no network) so the metallic parts are not rendered dark and muddy.
   const envMap = useMemo(() => {
@@ -119,7 +122,7 @@ export function AstronautModel({ mode, playing, screenSpeedMps }: Props) {
     const idle = actions['idle'];
     const walk = actions['moon_walk'];
     if (idle) idle.timeScale = playing ? 1 : 0;
-    if (walk) walk.timeScale = playing ? Math.min(MAX_TIME_SCALE, Math.max(MIN_TIME_SCALE, screenSpeedMps / CLIP_SPEED_MPS)) : 0;
+    if (walk) walk.timeScale = playing ? walkTimeScale(screenSpeedMps, clipSpeedMps) : 0;
   });
 
   useEffect(() => () => void mixer.stopAllAction(), [mixer]);
