@@ -64,7 +64,7 @@ def assert_connected(path):
 
 
 @pytest.fixture(scope='module')
-def stack():
+def stack(planner_ready):
     proc = subprocess.Popen(
         ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',
          f'port:={PORT}', 'planner:=real', f'profiles_file:={PROFILES}'],
@@ -72,6 +72,7 @@ def stack():
     try:
         wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,
                  what='gateway and 3 agents')
+        planner_ready()
         yield
     finally:
         os.killpg(proc.pid, signal.SIGINT)
