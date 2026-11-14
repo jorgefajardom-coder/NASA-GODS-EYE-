@@ -15,6 +15,25 @@ No NASA scientific dataset, measured result or benchmark was generated or
 claimed. No generated image/video/audio asset is included. The empty Three.js
 grid is a code-rendered placeholder, not a terrain product or mission run.
 
+## Terrain data and incremental mapping implementation (`feat/data`), 14 November 2026
+
+Google Antigravity assisted Daniel with the bounded HTTP 206 ingestion script
+(`scripts/prepare_jezero_terrain.py`), the public terrain validation and ENU
+georeferencing module (`src/mge_data`), the incremental belief fusion and
+traversability module (`src/mge_mapping`), the terrain configuration and
+provenance documentation (`config/terrain.yml`, `docs/data_sources.md`,
+`data/sample/README.md`), and the contract/mapping test suites
+(`tests/contracts/test_data_manifest.py`, `tests/mapping/test_observation.py`).
+
+All elevation arrays in `data/sample/terrain.npz`,
+`data/sample/mola_regional_context.npz`, and `data/reference/` are real
+observational planetary products retrieved from official NASA PDS / USGS
+Astrogeology archives (MRO/CTX DOI `10.5066/P906QQT8`, MRO/HiRISE DOI
+`10.5066/P9REJ9JN`, and Mars Global Surveyor/MOLA PDS bundle
+`urn:nasa:pds:mgs_mola_topography_derived::1.0`), not AI-generated terrain.
+`data/sample/preview_ctx_prior.png` is a deterministic grayscale raster plot of
+the observational MRO/CTX elevation grid, not an AI-generated image.
+
 ## Before delivery
 
 - Record actual tool uses and affected code/data/assets in text and metadata.
