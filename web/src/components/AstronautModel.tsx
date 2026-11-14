@@ -1,10 +1,12 @@
 import { useAnimations, useGLTF } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Component, useEffect, useMemo, useRef, type ReactNode } from 'react';
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import type { AgentMode } from '../types/icd';
 import { assetUrl } from '../data/replayAdapter';
+import { calmClip } from '../lib/astronautPose';
 
 /**
  * Astronaut GLB ("Animated Astronaut Character in Space Suit Loop" by LasquetiSpice,
@@ -24,7 +26,13 @@ const WALKING: ReadonlySet<AgentMode> = new Set(['MOVING', 'RETURNING']);
 const FADE_S = 0.35;
 /** Screen speed at which moon_walk plays at its authored rate for the enlarged model (visual tuning). */
 const CLIP_SPEED_MPS = 2.2;
-const MAX_TIME_SCALE = 3;
+/**
+ * The walk cycle stays near its natural pace. Replay speed makes the astronaut cross the map
+ * faster, but playing the cycle faster too looks like shaking, so foot sliding is accepted.
+ */
+const MIN_TIME_SCALE = 0.8;
+const MAX_TIME_SCALE = 1.3;
+const TEXTURE_SLOTS = ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap', 'specularColorMap', 'specularIntensityMap'] as const;
 
 interface Props {
   mode: AgentMode;
@@ -38,8 +46,8 @@ export function AstronautModel({ mode, playing, screenSpeedMps }: Props) {
   // Draco/Meshopt decoders disabled: the file uses neither and nothing may load from a CDN.
   const gltf = useGLTF(ASTRONAUT_URL, false, false);
   const root = useRef<THREE.Group>(null);
+  const gl = useThree((s) => s.gl);
   const model = useMemo(() => cloneSkinned(gltf.scene), [gltf.scene]);
-  const { actions, mixer } = useAnimations(gltf.animations, root);
 
   // Normalise size and put the feet on the agent position, measured from the file itself.
   const fit = useMemo(() => {
@@ -51,14 +59,45 @@ export function AstronautModel({ mode, playing, screenSpeedMps }: Props) {
     return { scale, offset: [-centre.x * scale, -box.min.y * scale, -centre.z * scale] as [number, number, number] };
   }, [model]);
 
+  // Calmer copies of idle and moon_walk (see lib/astronautPose.ts); the other clips are not used.
+  const clips = useMemo(
+    () => gltf.animations.map((c) => (c.name === 'idle' || c.name === 'moon_walk' ? calmClip(model, c) : c)),
+    [model, gltf.animations],
+  );
+  const { actions, mixer } = useAnimations(clips, root);
+
+  // Local image-based light (no network) so the metallic parts are not rendered dark and muddy.
+  const envMap = useMemo(() => {
+    const pmrem = new THREE.PMREMGenerator(gl);
+    const tex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    pmrem.dispose();
+    return tex;
+  }, [gl]);
+
   useEffect(() => {
+    const aniso = gl.capabilities.getMaxAnisotropy();
     model.traverse((o) => {
-      if ((o as THREE.Mesh).isMesh) {
-        o.castShadow = true;
-        o.frustumCulled = false; // skinned bounds are bind-pose only
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh) return;
+      mesh.castShadow = true;
+      mesh.frustumCulled = false; // skinned bounds are bind-pose only
+      const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      for (const m of mats as THREE.MeshStandardMaterial[]) {
+        m.envMap = envMap;
+        m.envMapIntensity = 0.7;
+        // Sharper textures at grazing angles (default anisotropy of 1 blurs them).
+        for (const slot of TEXTURE_SLOTS) {
+          const tex = (m as unknown as Record<string, THREE.Texture | null | undefined>)[slot];
+          if (tex && tex.anisotropy !== aniso) {
+            tex.anisotropy = aniso;
+            tex.needsUpdate = true;
+          }
+        }
+        m.needsUpdate = true;
       }
     });
-  }, [model]);
+    return () => envMap.dispose();
+  }, [model, gl, envMap]);
 
   const walking = WALKING.has(mode);
   useEffect(() => {
@@ -73,8 +112,9 @@ export function AstronautModel({ mode, playing, screenSpeedMps }: Props) {
   }, [actions, walking]);
 
   useFrame(() => {
+    mixer.timeScale = playing ? 1 : 0; // freeze idle breathing too while the replay is paused
     const walk = actions['moon_walk'];
-    if (walk) walk.timeScale = playing ? Math.min(MAX_TIME_SCALE, Math.max(0.5, screenSpeedMps / CLIP_SPEED_MPS)) : 0;
+    if (walk) walk.timeScale = Math.min(MAX_TIME_SCALE, Math.max(MIN_TIME_SCALE, screenSpeedMps / CLIP_SPEED_MPS));
   });
 
   useEffect(() => () => void mixer.stopAllAction(), [mixer]);
