@@ -60,6 +60,7 @@ def test_recorded_run_is_readable_without_backend(tmp_path):
     with open(os.path.join(package, 'manifest.json'), encoding='utf-8') as f:
         manifest = json.load(f)
     assert manifest['mode'] == 'REPLAY' and manifest['recorded_from'] == 'LIVE'
+    assert manifest['source_mode'] == 'MOCK'      # recorded off a running MOCK graph
     assert manifest['clock_source'] == 'system'
     assert len(manifest['agents']) == 3
     with open(os.path.join(package, 'snapshot.json'), encoding='utf-8') as f:

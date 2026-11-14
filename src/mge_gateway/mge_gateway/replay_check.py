@@ -9,7 +9,8 @@ import os
 import sys
 
 from mge_gateway.replay import MANIFEST, SNAPSHOT
-from mge_gateway.store import SCHEMA_VERSION, valid_event_sequence
+from mge_gateway.store import (
+    DECLARABLE_SOURCE_MODES, mock_evidence, SCHEMA_VERSION, valid_event_sequence)
 
 ENVELOPE = ('schema_version', 'run_id', 'mode', 'map_version', 'timestamp_sim_s')
 KINDS = ('event', 'state', 'terrain_meta')
@@ -46,6 +47,13 @@ def check_package(path):
 
     check_envelope(MANIFEST, manifest)
     check_envelope(SNAPSHOT, snapshot)
+    # Optional field: packages recorded before it existed do not have it.
+    source_mode = manifest.get('source_mode', 'UNKNOWN')
+    if source_mode not in DECLARABLE_SOURCE_MODES:
+        problems.append(f'{MANIFEST}: source_mode is {source_mode!r}, a recording '
+                        f'may only say one of {", ".join(DECLARABLE_SOURCE_MODES)}')
+    elif mock_evidence(manifest.get('terrain_meta')) and manifest.get('source_mode', 'MOCK') != 'MOCK':
+        problems.append(f'{MANIFEST}: source_mode is {source_mode!r} but the terrain says MOCK')
     if os.path.basename(os.path.normpath(path)) != run_id:
         problems.append(f'directory name differs from run_id {run_id!r}')
 

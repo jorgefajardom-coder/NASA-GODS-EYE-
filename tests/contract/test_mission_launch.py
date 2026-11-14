@@ -25,7 +25,7 @@ def context(mission='real', planner='real', **changes):
     value = LaunchContext()
     value.launch_configurations.update({
         'run_id': 'mission-launch-contract', 'use_sim_time': 'true',
-        'mission': mission, 'planner': planner, 'host': '127.0.0.1', 'port': '8769',
+        'mission': mission, 'planner': planner, 'terrain': 'mock', 'host': '127.0.0.1', 'port': '8769',
         'agents_file': str(ROOT / 'src/mge_bringup/config/agents.yaml'),
         'profiles_file': str(ROOT / 'config/planner_profiles.illustrative.json'),
         'mission_profiles_path': str(ROOT / 'config/scenario_demo.yaml'),
@@ -37,9 +37,10 @@ def context(mission='real', planner='real', **changes):
     return value
 
 
+@pytest.mark.parametrize('terrain', ['mock', 'real'])
 @pytest.mark.parametrize('mission', ['mock', 'real'])
 @pytest.mark.parametrize('planner', ['mock', 'real'])
-def test_selected_mission_and_planner_are_exclusive(monkeypatch, mission, planner):
+def test_selected_mission_and_planner_are_exclusive(monkeypatch, mission, planner, terrain):
     module = load_launch()
     original = module.Node
     nodes = []
@@ -50,11 +51,13 @@ def test_selected_mission_and_planner_are_exclusive(monkeypatch, mission, planne
     monkeypatch.setattr(module, 'Node', capture)
     module.generate_launch_description()
     selected = [kwargs['executable'] for node, kwargs in nodes
-                if node.condition is None or node.condition.evaluate(context(mission, planner))]
+                if node.condition is None or node.condition.evaluate(context(mission, planner, terrain=terrain))]
     assert set(selected) & {'mock_mission', 'mission_node'} == {
         'mock_mission' if mission == 'mock' else 'mission_node'}
     assert set(selected) & {'mock_planner', 'planning_node'} == {
         'mock_planner' if planner == 'mock' else 'planning_node'}
+    assert set(selected) & {'mock_terrain', 'data_node', 'mapping_node'} == (
+        {'mock_terrain'} if terrain == 'mock' else {'data_node', 'mapping_node'})
 
 
 def test_real_owner_parameters_forward_without_autoagreement(monkeypatch):
@@ -102,3 +105,10 @@ def test_real_selection_cannot_skip_external_clock_preflight(monkeypatch):
     with pytest.raises(RuntimeError, match='EXTERNAL_SIMULATION_CLOCK_REQUIRED'):
         module._real_mission_preflight(context())
     assert module._real_mission_preflight(context(mission='mock')) == []
+
+
+def test_real_terrain_rejects_mock_planner_before_startup():
+    module=load_launch()
+    with pytest.raises(RuntimeError,match='REAL_TERRAIN_REQUIRES_REAL_PLANNER'):
+        module._check_terrain_selection(context(terrain='real',planner='mock'))
+    assert module._check_terrain_selection(context(terrain='real',planner='real')) == []

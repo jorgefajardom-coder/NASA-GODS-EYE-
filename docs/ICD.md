@@ -210,20 +210,32 @@ planning or mission logic. Every JSON response and WebSocket message is an
 envelope with `schema_version` (`"1.0.0"`; it applies to JSON, not to the ROS
 wire messages), `run_id`, `mode` (`LIVE` | `REPLAY`), `map_version` and
 `timestamp_sim_s`, plus the payload. Payloads use the ROS
-field names unchanged. The typed non-finite conversion requirements in
-section 5 remain the target; the broad existing output serializer still needs
-the hardening identified in REPLAY_CONTRACT.md. The input checks below do not
-claim that output-side gate is resolved.
+field names unchanged. Output follows the typed non-finite rules of section 5:
+NaN becomes `null` only for `TerrainMeta.nodata_value`, oxygen of an agent that
+is not `HUMAN` (`AgentState.oxygen_remaining_l`, and `oxygen_est_l` /
+`reserve_oxygen_l` of its route) and the seven metrics of a `RouteDecision`
+whose status is not `FEASIBLE`. Any other NaN, and every infinity, rejects the
+whole message: the gateway and the recorder drop it, log the field path and keep
+the last valid state. A `FEASIBLE` route with a NaN metric is therefore never
+shown. The route's agent kind is read from `MissionState.agents`.
 
 | Route | Payload |
 |---|---|
 | `GET /api/health` | `status` (`READY`), `ros_connected`, `terrain_meta_received` |
-| `GET /api/manifest` | `terrain_meta`, `agents` (`agent_id`, `agent_kind`), `endpoints` |
+| `GET /api/manifest` | `source_mode`, `terrain_meta`, `agents` (`agent_id`, `agent_kind`), `endpoints` |
 | `GET /api/run/{run_id}/snapshot` | `mission_state`, `terrain_meta`, `events` (all so far) |
 | `GET /api/run/{run_id}/events?after_seq=N` | `events` with `seq > N`; polling fallback |
 | `POST /api/mission/goal` | Body: `request_id` (optional), `primary_agent_id`, `base`, `goal`, `mode`, budgets and reserves. Answer: the `SetMissionGoal` response fields |
 | `WS /api/events?after_seq=N` | Backlog of events with `seq > N`, then the current state, then live messages |
 
+- `source_mode` (`MOCK` | `SIMULATION` | `UNKNOWN`) says who produces the data
+  of the run. It is separate from `mode`, which only says whether the data is
+  arriving now (`LIVE`) or was recorded (`REPLAY`). The launcher declares it
+  through the `source_mode` parameter (default `UNKNOWN`); terrain metadata
+  that says MOCK (dataset ID or a source entry) always yields `MOCK`. `LIVE` is
+  reserved for a validated real source and cannot be declared: the node refuses
+  to start with `NOT_READY: LIVE_BACKEND_UNAVAILABLE`. The field is an optional
+  addition to JSON `1.0.0`; a client that does not find it must show `UNKNOWN`.
 - WebSocket messages carry `type`: `"event"` with an `event` object
   (`MissionEvent`) or `"state"` with a `state` object (`MissionState`).
 - **No active run.** Until a mission state of the configured run has been
@@ -279,12 +291,18 @@ plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
 
 | File | Content |
 |---|---|
-| `<run_id>/manifest.json` | Envelope plus `recorded_from`, `clock_source`, `time_start_sim_s`, `record_count`, `event_count`, `terrain_meta`, `agents`, `files` |
+| `<run_id>/manifest.json` | Envelope plus `recorded_from`, `source_mode`, `clock_source`, `time_start_sim_s`, `record_count`, `event_count`, `terrain_meta`, `agents`, `files` |
 | `<run_id>/timeline.jsonl` | One record per line, in arrival order |
 | `<run_id>/snapshot.json` | Final state, same shape as `GET /api/run/{run_id}/snapshot` |
 
 - Every file and every record says `mode: "REPLAY"`. A client must show
   `REPLAY` for this data and must not present it as a live computation.
+- `recorded_from: "LIVE"` only says the records came off a running graph.
+  `source_mode` says who produced them, with the rules of section 6.1; show
+  `REPLAY · MOCK` or `REPLAY · SIMULATION` accordingly. Packages recorded
+  before the field existed (the pinned sample included) lack it; their source
+  is then read from the terrain metadata, or is `UNKNOWN`. `check_replay`
+  rejects a package that says `LIVE`, or anything but `MOCK` over MOCK terrain.
 - A timeline record has the shape of a WebSocket message: the envelope,
   `type` (`event` | `state` | `terrain_meta`) and an object of that name, so
   live messages and replay records can share one handler.

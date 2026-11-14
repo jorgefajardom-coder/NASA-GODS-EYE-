@@ -142,6 +142,14 @@ to route through `mge_planning` instead of the mock planner. Terrain and mission
 stay MOCK, positions must be cell centres of the 5 m grid (for example
 `2.5, 2.5`), and the profiles are illustrative.
 
+Add `terrain:=real` as well (it requires `planner:=real`) to replace the mock
+terrain by `mge_data` and `mge_mapping` on the public Jezero package: a 32 x 32
+grid of 4 m cells centred on the map origin, so cell centres are `-62 + 4 k`.
+Agents then default to `src/mge_bringup/config/agents_jezero.yaml`. Every cell
+starts unobserved, so a first route request is `UNKNOWN`; a SIMULATED
+observation creates the next map version and the mission replans. Mission and
+agents stay MOCK and the run is declared MOCK.
+
 `smoke.launch.py` starts only the static MOCK agent publisher, and
 `demo.launch.py` starts the scaffold processes of every package; with the
 latter the gateway reports `NOT_READY`, because no mission state is published.

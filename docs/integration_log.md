@@ -112,6 +112,39 @@ computational acceptance evidence, not mission safety or scientific validation.
   product is resampled to a 4 m grid. Next: a vertical launch on this terrain
   needs agent positions on its cell centres and the real mission provider.
 
+## Typed serialization and source provenance, 2026-11-14
+
+- Base: main `8afc7bf` (PR #3 merged). Owner: Jesus, on `feat/integration`.
+- Gateway and recorder reject non-finite values outside the typed NaN cases of
+  ICD section 5 instead of nulling them; `mock_planner` no longer emits NaN
+  clearance on FEASIBLE routes. Manifests carry `source_mode`
+  (MOCK/SIMULATION/UNKNOWN, never LIVE). Wire versions unchanged.
+- Jazzy container `mge-dev`: 8 packages built; 426 tests passed, 20 of them ROS
+  integration; repository check passed. Web suite not run (no web change).
+- Next dependency: Jorge reads `source_mode` in the viewer; public raster
+  recording; real mission provider. No mission run or scientific result here.
+
+## Vertical on the public Jezero terrain, 2026-11-14
+
+- Base: `feat/integration` with main `7ec1a06` merged in (`0d1a27a`). Owner:
+  Jesus.
+- `vertical_mock.launch.py terrain:=real` replaces `mock_terrain` by
+  `mge_data` + `mge_mapping`; it refuses to start without `planner:=real`, since
+  a straight-line mock planner would hide unknown cells. Agents default to the
+  placeholder `agents_jezero.yaml` on cell centres of the 4 m grid. Mission and
+  agents stay MOCK and the gateway still declares `source_mode: MOCK`.
+- Evidence: `tests/integration/test_vertical_terrain.py` in the `mge-dev` Jazzy
+  container. One metadata publisher; a human goal on unobserved terrain ends
+  `BLOCKED` with `UNKNOWN/UNVERIFIED_CORRIDOR` and no route; a SIMULATED
+  observation that repeats the prior heights of a 16 x 16 block yields map
+  version 2 and the MOCK mission replans to a `FEASIBLE` route inside the block
+  (illustrative profiles); the recorded package passes `check_package`. Full
+  suite: 447 passed (three consecutive runs); repository check passed.
+- This is the map -> route -> view plumbing on public Jezero data, not a
+  validated route or mission run. Next: the real `mge_mission` provider (PR #10)
+  in this path, public raster recording, and survey observations from a
+  simulated sensor instead of a test publisher.
+
 ## Real MissionManager handoff, 2026-11-14
 
 OwnerDavid; integration/reviewJesus. Source255be89 preserves mission8f69f62 and
@@ -176,3 +209,17 @@ loading the actual production LaunchDescription and actual providers. The
 manifest dimensions are asserted. Production providers/defaults remain unchanged.
 Fresh Jazzy validation again passed10focused cases and556selected cases (one
 optional snapshot skip), with eight packages built/eight definitions inspected.
+
+## PR11 reconciliation against the integrated mission
+
+Review incorporated main73a06b2, preserving mission:=real and terrain:=real,
+source_mode=MOCK while agents remain mocks, both preflight gates and all
+mandatory disclosures. Fixed the new terrain test import for main's importlib
+mode. Added combination/guard coverage; no science approval is inferred.
+
+Validation: native Python675passed/16platform-or-optional skips; eight Jazzy
+packages built/eight interfaces inspected;15focused launch/mission cases passed;
+605selected ROS/mission/unit/HTTP/integration cases passed with one optional
+published-snapshot skip. Repository and whitespace checks passed. The viewer
+accepts additive manifest fields and fails closed for non-flat recorded terrain
+without rasters; full real-terrain browser playback remains a separate handoff.

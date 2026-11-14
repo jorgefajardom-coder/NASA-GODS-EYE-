@@ -275,6 +275,26 @@ sends illustrative SIMULATED observations that repeat public prior heights; no
 terrain array, scientific dataset, mission result, image, video or audio was
 generated. The affected paths are listed in ai_usage.json.
 
+## Gateway typed serialization and source provenance
+
+Claude Code (Anthropic) assisted the integration owner with the typed JSON
+converters in the gateway store, their adoption by the ROS bridge and replay
+recorder, the `source_mode` field in the gateway manifest, recorded manifests,
+launch files and offline validators, the mock planner clearance correction,
+the new unit/contract/integration test cases and the related documentation.
+Test inputs are illustrative values and relabelled copies of the MOCK fixture;
+no scientific dataset, mission result, image, video or audio was generated.
+The affected paths are listed in ai_usage.json.
+
+## Vertical on the public Jezero terrain
+
+Claude Code (Anthropic) assisted the integration owner with the `terrain:=real`
+selection in `vertical_mock.launch.py`, the placeholder Jezero agents file, the
+end-to-end integration test and the related documentation. The test sends an
+illustrative SIMULATED observation that repeats public prior heights; no
+terrain array, scientific dataset, mission result, image, video or audio was
+generated. The affected paths are listed in ai_usage.json.
+
 ## Main synchronization after viewer merge
 
 OpenAI Codex assisted with the README and mandatory metadata conflict resolution
@@ -299,3 +319,9 @@ five-metre resolution through a test-only LaunchService wrapper around the
 unchanged production LaunchDescription. Actual service providers, positions,
 readiness/model checks and the default production200x200 grid are preserved.
 This fixture is not a large-map throughput benchmark or a scientific dataset.
+
+## PR11 reconciliation review
+
+OpenAI Codex assisted preserving the real mission selector while merging the
+terrain/provenance integration cut with main. Both launch preflights and all
+existing disclosures remain; no scientific approval or media was generated.
