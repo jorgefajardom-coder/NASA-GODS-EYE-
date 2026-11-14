@@ -62,9 +62,8 @@ interface StatusProps {
   exaggeration: number;
 }
 
-/** Link, replay and position status, top right. The live link is shown as offline: no gateway exists yet. */
-export function StatusBlock({ manifest, missionState, mapVersion, t, agent, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
-  const p = agent?.pose.position;
+/** Link and replay status, top right (the agent position is in the details panel). The live link is shown as offline: no gateway exists yet. */
+export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
   return (
     <section className="status" aria-label="Connection and mission status">
       <div className="status__link">Offline</div>
@@ -79,8 +78,6 @@ export function StatusBlock({ manifest, missionState, mapVersion, t, agent, eval
         <dd>v{mapVersion}</dd>
         <dt>Sim time</dt>
         <dd>{fmtSimTime(t)}</dd>
-        <dt>Position</dt>
-        <dd>{p ? `E ${p.x.toFixed(0)}  N ${p.y.toFixed(0)}  U ${p.z.toFixed(0)} m` : 'Not available'}</dd>
         <dt>Mars time</dt>
         <dd>Not available</dd>
         <dt>Relief</dt>

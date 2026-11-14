@@ -1,5 +1,4 @@
 import type { DetailData, Stat } from '../lib/management';
-import { GlyphIcon } from './icons';
 
 /** Contextual details of the selected agent, task or route. */
 export function DetailsPanel({ data }: { data: DetailData }) {
@@ -9,9 +8,6 @@ export function DetailsPanel({ data }: { data: DetailData }) {
         <span>Details</span>
       </div>
 
-      <div className="portrait">
-        <GlyphIcon glyph={data.glyph} size={92} />
-      </div>
       <h2 className="details__title">{data.title}</h2>
       <p className="details__sub mono">{data.subtitle}</p>
 

@@ -48,7 +48,7 @@ export interface ListGroup {
 }
 
 export const AGENT_NAME: Record<AgentKind, string> = { HUMAN: 'Astronaut', DRONE: 'Drone', ROVER: 'Rover' };
-const AGENT_GLYPH: Record<AgentKind, Glyph> = { HUMAN: 'human', DRONE: 'drone', ROVER: 'rover' };
+export const AGENT_GLYPH: Record<AgentKind, Glyph> = { HUMAN: 'human', DRONE: 'drone', ROVER: 'rover' };
 
 function agentTone(a: AgentState): Tone {
   if (a.mode === 'HALTED') return 'warn';
@@ -76,7 +76,7 @@ export function managementGroups(view: ReplayView): ListGroup[] {
     glyph: AGENT_GLYPH[a.agent_kind],
     name: AGENT_NAME[a.agent_kind],
     state: a.mode.toLowerCase(),
-    value: fmtNumber(a.energy_remaining_wh, 'Wh'),
+    value: a.agent_id,
     tone: agentTone(a),
   }));
 
@@ -105,7 +105,7 @@ export function managementGroups(view: ReplayView): ListGroup[] {
   }));
 
   return [
-    { key: 'agents', title: 'Agents', valueLabel: 'Energy', glyph: 'human', rows: agentRows, emptyText: 'No agent state received' },
+    { key: 'agents', title: 'Agents', valueLabel: 'ID', glyph: 'human', rows: agentRows, emptyText: 'No agent state received' },
     { key: 'tasks', title: 'Tasks', valueLabel: 'Agent', glyph: 'task', rows: taskRows, emptyText: 'No task discovered yet' },
     { key: 'routes', title: 'Routes', valueLabel: 'Planned on', glyph: 'route', rows: routeRows, emptyText: 'No route received yet' },
   ];
@@ -196,7 +196,7 @@ export function detailsFor(
   sel: Selection,
   view: ReplayView,
   bundle: ReplayBundle,
-  budgets: Record<string, Budget>,
+  _budgets: Record<string, Budget>, // kept for callers; vitals now live only in the HUD
 ): DetailData | null {
   const source = sourceLines(view, bundle);
 
@@ -217,7 +217,8 @@ export function detailsFor(
       glyph: AGENT_GLYPH[a.agent_kind],
       title: AGENT_NAME[a.agent_kind],
       subtitle: a.agent_id,
-      stats: agentStats(a, budgets[a.agent_id]),
+      // Oxygen, energy and time are shown once, in the circular HUD; not repeated here.
+      stats: [],
       facts: [
         ['Position', `E ${p.x.toFixed(1)}  N ${p.y.toFixed(1)}  U ${p.z.toFixed(1)} m`],
         ['Heading', `${headingFromNorth(yawFromQuaternion(a.pose.orientation)).toFixed(0).padStart(3, '0')}° from north`],

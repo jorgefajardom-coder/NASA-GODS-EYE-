@@ -49,6 +49,8 @@ node scripts/extract-ctx-crop.mjs <ctx.tif> 550 780   # centre pixel row, col
 
 ## Interface
 
+The selected agent's oxygen, energy and time are shown once, in a circular HUD at the bottom right (agent icon in the centre, one ring per quantity, values beside it); the list, details and status blocks do not repeat them.
+
 Selectable list of agents, tasks and routes (left), contextual details (right), telemetry
 and route status (bottom left), replay timeline (bottom). Modes: Exploration, Ground layers, Tactical map and Mission
 replay; Atmos is disabled until weather data exists.

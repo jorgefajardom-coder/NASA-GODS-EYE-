@@ -7,6 +7,7 @@ import { viewAt } from './lib/replay';
 import type { TerrainLayer } from './lib/layers';
 import {
   agentStats,
+  AGENT_GLYPH,
   AGENT_NAME,
   detailsFor,
   initialBudgets,
@@ -257,6 +258,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
 
         <Vitals
           who={agent ? `${AGENT_NAME[agent.agent_kind]} · ${agent.agent_id}` : 'No agent'}
+          glyph={agent ? AGENT_GLYPH[agent.agent_kind] : null}
           stats={agent ? agentStats(agent, budgets[agent.agent_id]) : []}
           route={view.activeRoute}
           replanning={view.state?.mission_state === 'REPLAN'}

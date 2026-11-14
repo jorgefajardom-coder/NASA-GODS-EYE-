@@ -131,7 +131,7 @@ ul {
   position: absolute;
   right: var(--gutter);
   top: var(--gutter);
-  bottom: 214px;
+  bottom: 236px; /* room for the circular agent HUD below */
   width: var(--col-right);
   display: flex;
   flex-direction: column;
@@ -908,9 +908,9 @@ input[type='checkbox'] {
 /* ---------------------------------------------------------------- vitals */
 .vitals {
   position: absolute;
-  left: var(--gutter);
+  right: var(--gutter); /* circular HUD on the right, under the details panel */
   bottom: var(--bottom);
-  width: var(--col-left);
+  width: var(--col-right);
   display: grid;
   gap: 4px;
 }
@@ -1006,8 +1006,8 @@ input[type='checkbox'] {
 /* ---------------------------------------------------------------- timeline */
 .timeline {
   position: absolute;
-  left: calc(var(--col-left) + 2 * var(--gutter));
-  right: var(--gutter);
+  left: var(--gutter);
+  right: calc(var(--col-right) + 2 * var(--gutter)); /* the agent HUD sits bottom right */
   bottom: var(--bottom);
   display: grid;
   gap: 8px;
@@ -1448,3 +1448,51 @@ input[type='checkbox'] {
 .strata__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13px; }
 .strata__list li { display: grid; grid-template-columns: 14px 1fr; gap: 8px; align-items: start; }
 .strata__list .geo__swatch { margin-top: 3px; }
+
+/* ---------------------------------------------------------------- circular agent HUD */
+.hud {
+  position: relative;
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud__dial { grid-row: 1; grid-column: 1; }
+
+.hud__icon {
+  grid-row: 1;
+  grid-column: 1;
+  justify-self: center;
+  align-self: center;
+  color: #e8f4ff;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.hud__readout { display: grid; gap: 3px; min-width: 0; }
+
+.hud__who {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 2px;
+}
+
+.hud__row {
+  display: grid;
+  grid-template-columns: 8px 1fr auto;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hud__row--na { opacity: 0.45; }
+.hud__dot { width: 8px; height: 8px; border-radius: 50%; }
+.hud__pct { display: none; }
+.hud__value { font-size: 12px; justify-self: end; }
