@@ -112,9 +112,13 @@ export function AstronautModel({ mode, playing, screenSpeedMps }: Props) {
   }, [actions, walking]);
 
   useFrame(() => {
-    mixer.timeScale = playing ? 1 : 0; // freeze idle breathing too while the replay is paused
+    // Pause each clip, not the mixer: a frozen mixer also freezes the cross-fade, and a clip
+    // still fading in at weight 0 leaves the model in its rest (T) pose while paused.
+    mixer.timeScale = 1;
+    const idle = actions['idle'];
     const walk = actions['moon_walk'];
-    if (walk) walk.timeScale = Math.min(MAX_TIME_SCALE, Math.max(MIN_TIME_SCALE, screenSpeedMps / CLIP_SPEED_MPS));
+    if (idle) idle.timeScale = playing ? 1 : 0;
+    if (walk) walk.timeScale = playing ? Math.min(MAX_TIME_SCALE, Math.max(MIN_TIME_SCALE, screenSpeedMps / CLIP_SPEED_MPS)) : 0;
   });
 
   useEffect(() => () => void mixer.stopAllAction(), [mixer]);
