@@ -7,6 +7,25 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "documentation_and_planning",
+      "generation": "AI-assisted continuation plan requested by the repository owner",
+      "paths": [
+        "AGENTS.md",
+        "docs/team_continuation_plan.md",
+        "docs/team.md",
+        "docs/mission_checklist.md",
+        "docs/handoffs/david.md",
+        "docs/handoffs/daniel.md",
+        "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md",
+        "docs/handoffs/jorge.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Record the five owners' next assignments, dependencies and acceptance from the Conciliación plan. Continue Daniel's larger-map feasibility and assign Fajardo NASA scientific-patch criteria research plus shared deployment with Jesus, assuming his publication usable as requested. Preserve existing mission/replay, science, provenance, optional-extension and organizer gates. Documentation only; no criteria research findings, source data, runtime code, scientific results or media generated."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "integration_reconciliation",
       "generation": "AI-assisted reconciliation requested by the repository owner",
       "paths": ["docs/AI_USAGE.md", "docs/ai_usage.json", "docs/planner_pr12_publication.md", "tests/integration/test_vertical_execution.py"],

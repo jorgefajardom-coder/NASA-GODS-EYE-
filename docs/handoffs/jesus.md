@@ -1,5 +1,14 @@
 # Jesus - integrate providers through the canonical interfaces
 
+## Current continuation — 14 November 2026, main 5ab1387
+
+Follow [CONT-JES-01..05](../team_continuation_plan.md#jesús--three-role-execution-recording-and-deployment-integration):
+bind three executed roles and typed evidence with David; connect confirmed
+stop/replan/reauthorization with Diego; close linked scientific/gateway packages
+for one run. Co-own reproducible site deployment with Fajardo. Coordinate
+organizer notification/explicit endorsement under JES-07; David is backup.
+Historical inventories below retain their original revision and limitations.
+
 PR17 timeout follow-up: `docs/integration_log.md` records the failed source
 `17eb644`, reconciliation with `bec3873` / main `70cd2e5`, reproduced worker
 starvation, callback-group correction and before/after ROS regressions. Map

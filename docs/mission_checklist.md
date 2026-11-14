@@ -1,5 +1,11 @@
 # Probable roadmap: minimum mission checklist
 
+Next-work allocation after PR12/17: [team continuation plan](team_continuation_plan.md).
+It records the five Conciliación cuts, current tasks for all five owners,
+Daniel's ongoing map-size study, and Fajardo's new NASA-criteria/deployment
+assignments. It adds no acceptance checkmarks or completed mission claim;
+the existing AC identifiers and steps 4/5 remain the closure criteria.
+
 Baseline selected by the project owner on 14 November 2026. This is the team's
 working plan, not acceptance evidence, approval of scientific coefficients, or
 confirmation that the draft ICD is frozen. Follow [ownership](team.md),
