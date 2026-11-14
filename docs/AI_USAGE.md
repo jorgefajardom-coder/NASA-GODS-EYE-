@@ -15,6 +15,33 @@ No NASA scientific dataset, measured result or benchmark was generated or
 claimed. No generated image/video/audio asset is included. The empty Three.js
 grid is a code-rendered placeholder, not a terrain product or mission run.
 
+## Web mission viewer, 14 November 2026
+
+Claude (Anthropic), used through Claude Code as a coding assistant, helped write
+the web viewer that replaced the empty scaffold grid in `web/`. This declares the
+tool; it does not attribute authorship.
+
+| Area | Paths |
+|---|---|
+| Viewer source | `web/src/**` |
+| Data scripts | `web/scripts/extract-ctx-crop.mjs`, `web/scripts/extract-hirise-crop.mjs`, `web/scripts/inspect-geotiff.mjs`, `web/scripts/make-demo-fixture.mjs` |
+| Tests | `web/tests/**` |
+| Build and configuration | `web/package.json`, `web/tsconfig.json`, `web/vite.config.ts`, `web/index.html` |
+| Documentation | `web/README.md`, `THIRD_PARTY_NOTICES.md`, this section |
+
+Generated data: `web/public/replay/demo/*` is a simulated replay from
+`make-demo-fixture.mjs` (agent poses, routes, events, budgets, sigma and a
+synthetic scarp in the hidden evaluator reference). It is labelled simulated or
+fictitious in its manifest and is not a NASA observation.
+`web/scripts/data/ctx_crop.json` holds real NASA/USGS CTX DTM heights; only the
+resampling script was AI-assisted.
+
+Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
+by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).
+No AI-generated image, video or audio is included. Machine-readable metadata:
+[ai_usage.json](ai_usage.json), the `aiDisclosure` field in `web/package.json` and
+the `ai_disclosure` object in `web/public/replay/demo/manifest.json`.
+
 ## Before delivery
 
 - Record actual tool uses and affected code/data/assets in text and metadata.

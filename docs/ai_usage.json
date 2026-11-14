@@ -38,6 +38,24 @@
         "evidence/README.md"
       ],
       "use": "Document team-supplied specification, competition requirements, source manifest templates and required disclosures; no scientific results or NASA datasets generated."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_and_data",
+      "generation": "AI-assisted generation, reviewed and directed by the module owner",
+      "paths": [
+        "web/src",
+        "web/scripts",
+        "web/tests",
+        "web/package.json",
+        "web/tsconfig.json",
+        "web/vite.config.ts",
+        "web/index.html",
+        "web/README.md",
+        "web/public/replay/demo",
+        "THIRD_PARTY_NOTICES.md"
+      ],
+      "use": "Web mission viewer that replaced the scaffold grid, terrain crop scripts, tests and the simulated replay fixture. The demo replay is simulated data; terrain heights come from NASA/USGS and are not generated."
     }
   ],
   "generated_media": [],
@@ -46,7 +64,8 @@
   "notes": [
     "Project idea and science specifications supplied by the human team.",
     "Update this register and descriptive disclosure when generated artifacts change.",
-    "No generated bitmap, video or audio asset is included at scaffold time."
+    "No generated bitmap, video or audio asset is included at scaffold time.",
+    "The Codex frontend scaffold in web/ was replaced by the mission viewer; its stale-route guard and ICD-WEB-V1 envelope types were moved into web/src/lib/format.ts and web/src/types/icd.ts."
   ],
   "retained_contributions": [
     {
