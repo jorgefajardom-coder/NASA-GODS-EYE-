@@ -16,3 +16,14 @@ agent states. Those results are contributor-reported and were not rerun on this
 native Windows host. The current combined workspace requires its own CI build.
 The original commits and interface definitions are retained; no contract freeze
 or physical mission validation is implied.
+
+## Planner P0 takeover
+
+| Commit / run | Owner / review | Observed result | Next dependency |
+| --- | --- | --- | --- |
+| a6204dd | Diego front; Jesus integration review | FAST/SAFE kernel, resource-constrained joint return and acceptance cases published | Guarded ROS adapter |
+| 6e4984d | Diego front; David science review | PlanRoute server, immutable public batches, fresh CTX prior and isolated local HiRISE reference | Jazzy CI, producer batch protocol, approved profiles |
+| planner-p0-20261114 | Team takeover | Nine new illustrative benchmark queries match independent Dijkstra; real unverified CTX yields UNKNOWN; 154 local tests pass, two ROS modules skip | Full mission/consumer acceptance on Daniel and David inputs |
+
+Continue on feat/planner; see planner_handoff.md. The generated benchmark is
+computational acceptance evidence, not mission safety or scientific validation.

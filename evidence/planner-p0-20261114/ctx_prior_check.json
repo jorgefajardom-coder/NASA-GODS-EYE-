@@ -1,0 +1,28 @@
+{
+  "created_utc": "2026-11-14T15:35:02.517852+00:00",
+  "commit": "6e4984d38dd0083c014c353673b49781c5f1185b",
+  "source_manifest": "data\\planner_provisional\\manifest.json",
+  "provenance": "Real CTX orbital prior; illustrative budget/profile; no local observations",
+  "result": {
+    "status": "UNKNOWN",
+    "reason_code": "UNVERIFIED_CORRIDOR",
+    "detail": "A possible corridor depends on unknown or unverified terrain.",
+    "run_id": "provisional-ctx-prior-check",
+    "request_id": "prior-is-not-observation",
+    "agent_id": "human_1",
+    "mode": "FAST",
+    "map_version_used": 0,
+    "route_id": "",
+    "outbound_path": [],
+    "return_path": [],
+    "travel_time_s": null,
+    "energy_est_wh": null,
+    "oxygen_est_l": null,
+    "min_clearance_m": null,
+    "reserve_time_s": null,
+    "reserve_wh": null,
+    "reserve_oxygen_l": null,
+    "expanded_labels": 562,
+    "elapsed_s": 0.06199999999989814
+  }
+}

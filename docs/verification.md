@@ -7,7 +7,7 @@ guards only. These results are not evidence of a Mars mission or EVA safety.
 
 - Python 3.12: `python -m pytest` (93 local test cases across contracts, mapping,
   mission and planning). The HTTP TestClient requires an unrestricted local
-  execution environment on this Windows host; the sandbox attempt stalled.
+  execution environment on this Windows host; the restricted attempt stalled.
 - `python scripts/check_repository.py`: package XML, Python syntax, JSON,
   declared AI paths and local documentation links.
 - Frontend: `npm test` (2 tests); `npm run build` (TypeScript + Vite).
@@ -50,3 +50,18 @@ compiled all eight packages, inspected the eight definitions and passed all ten
 ROS contract tests. Python/web jobs passed. Its final empty package-local test
 discovery step exited with code 5; CI now explicitly uses the actual root
 pytest suites and ROS contract tests rather than claiming package-local tests.
+
+## Planner branch verification
+
+The P0 planner at code commit `6e4984d` passes 154 local Python cases, including
+new D-01..D-10 scenarios, batch/provenance guards and a fresh-prior check. Two
+ROS-only test modules skip on native Windows; Jazzy CI runs them with generated
+messages and a real request/publisher/service/client flow. The tests include
+missing data, stale map and invalidation during search.
+
+New measured artifacts are in evidence/planner-p0-20261114. Nine illustrative
+FAST round-trip queries across three seeds matched independent Dijkstra. The
+fresh CTX check correctly returned UNKNOWN rather than inventing local corridor
+verification. These checks replace the initial planner placeholder only; the
+full mission, final science products, approved rates and public live demo remain
+unvalidated. This branch leaves the existing ROS message/service schema intact.
