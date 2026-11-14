@@ -1,5 +1,6 @@
 import { ELEVATION_CSS_GRADIENT, LAYER_INFO, SIGMA_CSS_GRADIENT, SIGMA_SCALE_MAX_M, type TerrainLayer } from '../lib/layers';
 import { ROUTE_STATUS_STYLE } from '../lib/format';
+import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 
 interface StripProps {
   layer: TerrainLayer;
@@ -50,6 +51,8 @@ interface OptionsProps {
   onFollow: (v: boolean) => void;
   contours: boolean;
   onContours: (v: boolean) => void;
+  cameraSmoothing: CameraSmoothing;
+  onCameraSmoothing: (v: CameraSmoothing) => void;
 }
 
 /** View options and legend, collapsed by default so they do not cover the terrain. */
@@ -91,6 +94,16 @@ export function ViewOptions(p: OptionsProps) {
       <p className="note">The surface is smoothed between the 20 m source cells for display. This adds no detail: heights at cell centres are the source values.</p>
       <label className="check">
         <input type="checkbox" checked={p.follow} onChange={(e) => p.onFollow(e.target.checked)} /> Follow selected agent (F)
+      </label>
+      <label className="row-opt">
+        Camera smoothing
+        <select value={p.cameraSmoothing} onChange={(e) => p.onCameraSmoothing(e.target.value as CameraSmoothing)}>
+          {(Object.keys(CAMERA_SMOOTHING) as CameraSmoothing[]).map((k) => (
+            <option key={k} value={k}>
+              {CAMERA_SMOOTHING[k].label}
+            </option>
+          ))}
+        </select>
       </label>
       <label className="check">
         <input type="checkbox" checked={p.showLabels} onChange={(e) => p.onShowLabels(e.target.checked)} /> Labels in the scene

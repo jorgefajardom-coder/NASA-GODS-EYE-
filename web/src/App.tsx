@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from './types/replay';
 import { loadReplay } from './data/replayAdapter';
 import { REFERENCE_SOURCES } from './data/referenceSources';
+import { CAMERA_SMOOTHING, type CameraSmoothing } from './lib/smoothing';
 import { viewAt } from './lib/replay';
 import type { TerrainLayer } from './lib/layers';
 import {
@@ -72,6 +73,22 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showLabels, setShowLabels] = useState(true);
   const [follow, setFollow] = useState(false);
   const [contours, setContours] = useState(true);
+  const [cameraSmoothing, setCameraSmoothingState] = useState<CameraSmoothing>(() => {
+    try {
+      const v = localStorage.getItem('mge.cameraSmoothing');
+      return v && v in CAMERA_SMOOTHING ? (v as CameraSmoothing) : 'soft';
+    } catch {
+      return 'soft';
+    }
+  });
+  const setCameraSmoothing = useCallback((v: CameraSmoothing) => {
+    setCameraSmoothingState(v);
+    try {
+      localStorage.setItem('mge.cameraSmoothing', v);
+    } catch {
+      /* per-viewer convenience only */
+    }
+  }, []);
   const [mode, setMode] = useState<UiMode>('exploration');
   const [selection, setSelection] = useState<Selection>({ kind: 'agent', id: '' });
 
@@ -149,6 +166,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         followAgentId={follow ? agentId : null}
         selectedAgentId={agentId}
         contours={contours}
+        cameraSmoothing={cameraSmoothing}
       />
       <div className="vignette" aria-hidden />
 
@@ -181,6 +199,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             onFollow={setFollow}
             contours={contours}
             onContours={setContours}
+            cameraSmoothing={cameraSmoothing}
+            onCameraSmoothing={setCameraSmoothing}
           />
         </div>
 

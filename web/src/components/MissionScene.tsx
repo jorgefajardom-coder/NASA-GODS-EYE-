@@ -5,8 +5,8 @@ import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { TerrainLayer } from '../lib/layers';
 import { heightGrid } from '../lib/layers';
-import { enuToThree, yawFromQuaternion } from '../lib/coords';
 import { smoothHeightAt } from '../lib/terrainSmooth';
+import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { FollowCamera } from './FollowCamera';
 import { TerrainView } from './TerrainView';
 import { RouteOverlay } from './RouteOverlay';
@@ -26,21 +26,18 @@ interface Props {
   followAgentId: string | null;
   selectedAgentId: string | null;
   contours: boolean;
+  /** Camera easing for the follow view and the orbit controls. */
+  cameraSmoothing: CameraSmoothing;
 }
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing }: Props) {
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
   const grid = heightGrid(bundle.rasters, layer, mapVersion);
   // Same interpolation as the mesh, so agents stand on the surface that is drawn.
   const groundHeight = useCallback((x: number, y: number) => smoothHeightAt(meta, grid, x, y), [meta, grid]);
-  const followed = view.state?.agents.find((a) => a.agent_id === followAgentId) ?? null;
-  const followTarget = followed
-    ? enuToThree(
-        { ...followed.pose.position, z: followed.agent_kind === 'DRONE' ? followed.pose.position.z : (groundHeight(followed.pose.position.x, followed.pose.position.y) ?? followed.pose.position.z) },
-        exaggeration,
-      )
-    : null;
+  const followed = view.state?.agents.some((a) => a.agent_id === followAgentId) ? followAgentId : null;
+  const smoothing = CAMERA_SMOOTHING[cameraSmoothing];
   const extent = Math.max(meta.rows, meta.cols) * meta.resolution_m;
 
   return (
@@ -84,11 +81,8 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         selectedId={selectedAgentId}
         groundHeight={groundHeight}
       />
-      <FollowCamera
-        target={followTarget}
-        yaw={followed ? yawFromQuaternion(followed.pose.orientation) : 0}
-      />
-      <OrbitControls makeDefault enableDamping maxPolarAngle={Math.PI / 2.05} minDistance={30} maxDistance={extent * 2.5} />
+      <FollowCamera agentId={followed} smoothingS={smoothing.followTauS} />
+      <OrbitControls makeDefault enableDamping dampingFactor={smoothing.orbitDamping} maxPolarAngle={Math.PI / 2.05} minDistance={30} maxDistance={extent * 2.5} />
     </Canvas>
   );
 }

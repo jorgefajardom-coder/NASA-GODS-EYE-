@@ -53,6 +53,8 @@ replay; Tactical map and Atmos are disabled until they exist.
 
 The terrain is drawn smoothed between the 20 m cells, with contour lines every 10 m (bold every 50 m) at true elevation. Contours can be turned off in the view options.
 
+Agents are drawn at an eased copy of their pose (about 0.1 s, display only) so they do not tremble when the camera is close; the follow camera reads that drawn pose in the same frame. **Camera smoothing** in the view options sets the follow and orbit easing: Off (rigid), Soft (default) or Cinematic; the choice is remembered in this browser.
+
 Keys: `F` follow camera, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 `?evaluator=1` shows the hidden reference layer; it is off by default.
 
@@ -79,7 +81,8 @@ are NoData, and a MOCK grid shows no latitude or longitude.
 | `src/lib/coords.ts` | ENU to Three.js conversion and grid sampling |
 | `src/lib/replay.ts` | State at time t, event ordering, replans, visual pose interpolation |
 | `src/lib/management.ts` | List, details and alert data built only from received objects |
-| `src/lib/astronautPose.ts` | Upright copies of the idle and walk clips (torso vertical, no pelvis or shoulder tilt, reduced bounce); the model file is not modified |
+| `src/lib/astronautPose.ts` | Upright copies of the idle and walk clips (torso vertical, shoulders and pelvis level, reduced bounce); the model file is not modified |
+| `src/lib/smoothing.ts` | Frame-rate independent easing for drawn agent poses and the camera |
 | `src/lib/terrainSmooth.ts` | Bicubic display smoothing between source cells (adds no detail; cell centres stay exact) |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
 | `src/components/` | Terrain, routes, agents, sites, astronaut model, follow camera, interface panels |

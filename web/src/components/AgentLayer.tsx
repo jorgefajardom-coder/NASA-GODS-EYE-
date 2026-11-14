@@ -1,5 +1,8 @@
 import { Html } from '@react-three/drei';
-import { Suspense } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { Suspense, useRef, type ReactNode } from 'react';
+import * as THREE from 'three';
+import { AGENT_POSE_TAU_S, dampAngle, dampFactor, SNAP_DISTANCE_M } from '../lib/smoothing';
 import type { AgentState } from '../types/icd';
 import { enuToThree, yawFromQuaternion } from '../lib/coords';
 import { AstronautModel, ModelBoundary } from './AstronautModel';
@@ -38,7 +41,7 @@ export function AgentLayer({ agents, verticalExaggeration, showLabels, playing, 
         const [x, y, z] = enuToThree(ground == null ? a.pose.position : { ...a.pose.position, z: ground }, verticalExaggeration);
         const yaw = yawFromQuaternion(a.pose.orientation);
         return (
-          <group key={a.agent_id} position={[x, y, z]} rotation={[0, yaw, 0]} name={`agent-${a.agent_id}`}>
+          <SmoothedPose key={a.agent_id} position={[x, y, z]} yaw={yaw} name={`agent-${a.agent_id}`}>
             <ScaleWithDistance perMetre={1 / 80} max={14}>
               {a.agent_id === selectedId && (
                 <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.25, 0]}>
@@ -66,9 +69,40 @@ export function AgentLayer({ agents, verticalExaggeration, showLabels, playing, 
                 heightAboveGround={(a.pose.position.z - (groundHeight(a.pose.position.x, a.pose.position.y) ?? a.pose.position.z)) * verticalExaggeration}
               />
             )}
-          </group>
+          </SmoothedPose>
         );
       })}
+    </group>
+  );
+}
+
+/**
+ * Draws an agent at an eased copy of its pose (display only). Poses come from React at
+ * the replay clock's pace, in uneven steps relative to rendering; easing them over
+ * ~0.1 s removes the trembling that is visible when the camera is close. Large jumps
+ * (seek, restart) are shown at once.
+ */
+function SmoothedPose({ position, yaw, name, children }: { position: [number, number, number]; yaw: number; name: string; children: ReactNode }) {
+  const group = useRef<THREE.Group>(null);
+  const target = useRef(new THREE.Vector3());
+  const placed = useRef(false);
+  target.current.set(position[0], position[1], position[2]);
+  // Priority -2: eased before the follow camera and the distance scaling read this group.
+  useFrame((_, dt) => {
+    const g = group.current;
+    if (!g) return;
+    if (!placed.current || g.position.distanceTo(target.current) > SNAP_DISTANCE_M) {
+      g.position.copy(target.current);
+      g.rotation.y = yaw;
+      placed.current = true;
+      return;
+    }
+    g.position.lerp(target.current, dampFactor(dt, AGENT_POSE_TAU_S));
+    g.rotation.y = dampAngle(g.rotation.y, yaw, dt, AGENT_POSE_TAU_S);
+  }, -2);
+  return (
+    <group ref={group} name={name}>
+      {children}
     </group>
   );
 }
