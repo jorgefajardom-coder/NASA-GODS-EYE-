@@ -372,3 +372,23 @@ checks consume Daniel's existing observational public arrays unchanged; no
 terrain, observation or scientific dataset was generated. Journal tests use
 software fixtures, not submitted execution outcomes. Model conformance and
 readiness outputs are diagnostics; proposed assumptions remain unapproved.
+
+## Mission cost agreement and activity-duration research
+
+OpenAI Codex assisted with the mission-owned cost-contract proposal, analytical
+vector exporter, primary-source activity-duration review, duration-impact pilot,
+contract-consistency tests and explicit success-evidence criteria. The work
+also updates mission scenario references, the estimated-prior limitation text,
+scientific decisions, handoff and retained diagnostic/validation records.
+Affected files and evidence are enumerated in ai_usage.json.
+
+NASA publications supply cited model assumptions and analog task observations;
+the 300 s inspection alternative and mixed 600 s workflow phase allocation are
+explicit engineering assumptions pending review. Pilot costs are generated
+model diagnostics, not astronaut measurements, completed tasks or mission
+results. Daniel's public terrain arrays and the original approved scenario
+values/receipt remain unchanged. Published main/planner are inspected without
+copying their implementations or changing shared messages. No mock, discovery,
+execution observation, image, video, audio, scientific dataset, external message
+or new scientific approval is produced. Existing profile/cost/execution gates
+remain pending; criteria documentation does not close runtime acceptance.

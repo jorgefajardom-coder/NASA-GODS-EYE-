@@ -58,6 +58,66 @@ or infer joint robustness from one-at-a-time sensitivity.
 
 ## Decisions and implementation boundaries
 
+### Cost and activity-duration review, 14 November 2026
+
+This continuation reviews published main
+`2f50ae697b34fe82e575b386936d0d5e4d74db64` and planner
+`69101e983c9a9668ba852460c484b5db8f12a1a5` without merging or modifying
+their implementations. Mission's source baseline remains `09d7d6a`; the
+following packet is a proposal and model diagnostic, not a new execution.
+
+The [cost agreement packet](cost_agreement_handoff.md) binds the scientific
+API, phase schedule, model/profile/configuration hashes and existing audit
+tolerances. The exact published planner comparison retains one agreeing and
+six disagreeing cases, with authorization **BLOCKED**. All seven returned
+feasible candidates, which does not establish numerical agreement. The
+planner's fixed service power and oxygen/time rate cannot represent every
+activity. `PlanRoute` carries service duration but no activity/wait identity;
+Diego and Jesús must agree its run/request-bound configuration context before
+integration. No shared message field or tolerance is changed here.
+
+David requested evidence-based activity timings before sharing the packet with
+Diego and Jesús. The [source review and analytical pilot](activity_duration_research.md)
+separate lunar model primitives (30 s pickup, 60 s hammering, 180 s trenching),
+reported D-RATS approximately 600 s documented samples, prescribed ARGOS
+sampling blocks and whole-station planning context. These are different task
+scopes, not interchangeable measurements or validated Mars durations.
+
+| ID | Proposed interpretation | State and sensitivity |
+|---|---|---|
+| JZ-D01 | Retain the approved 120 s B check-in as a brief stationary visual task; the 300 s light-work alternative is an engineering sensitivity because no universal isolated Mars inspection duration was established | Existing 120 s unchanged; 300 s pending review, never a runtime override |
+| JZ-D02 | Treat 30/60/180 s lunar model values as acquisition primitives, not a complete documented sample cycle | Source classification recorded; no added duration approval |
+| JZ-D03 | Pilot a 600 s documented sample with 420 s light and 180 s heavy work, charged once | Total informed by D-RATS; phase split is our assumption and pending review; all-heavy 600 s is a separate power bound |
+| JZ-D04 | Keep full cycles, primary service and waits distinct; do not add an acquisition primitive inside a cycle that already includes it | Cost accounting requirement; interrupted work still needs agreed progress evidence |
+
+The mixed 600 s additional workflow produces a combined public-prior cost probe
+of 1001.12 s / 110.10 Wh / 22.48 L, exceeding usable resources of
+960 s / 80 Wh / 20 L after the approved reserve. This rejection excludes
+additional optional travel; it must not be concealed by removing the reserve
+or widening tolerances. The existing approved 180 s sampling example remains
+unchanged and must not be presented as a complete documented sample cycle.
+Pilot durations do not establish rover or drone timing.
+
+The [success criteria](mission_success_contract.md) retain the four existing
+conjunctive predicates, the approved 120 s service and 1 m model tolerance.
+They explicitly record missing runtime duration/progress enforcement and
+execution inputs. They are a reviewable contract, not completed execution
+acceptance. CONT-DAV-01/02 remain prepared for joint review, not closed.
+Profiles, cost agreement, execution evidence and operational authorization
+remain pending; no new approval receipt or operational flag is issued.
+
+The accepted [D-EST-01 scope decision on main](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/2f50ae697b34fe82e575b386936d0d5e4d74db64/docs/decisions/2026-11-14-estimated-terrain-planning.md)
+allows hypothetical planning over valid unobserved estimates while preserving
+uncertainty and NoData distinctions. Thus unobserved prior cells are not
+automatically NoData; planning permission does not prove executed traversal.
+Coordinated producer/planner implementation remains with Daniel and Diego.
+No local observation flag, sigma threshold or shared occupancy code is changed.
+
+Validation and retained hashes for this packet are recorded separately under
+`evidence/mission-cost-closure-20261114/`; initial diagnostics and final
+configuration-bound vectors/pilot remain distinguishable. Software checks and
+model diagnostics do not constitute an integrated mission or A/B/C result.
+
 David selected primary technical sources before quantitative assumptions, an
 activity/terrain-dependent model rather than constant rates, a pure mission core
 plus ROS adapter, and explicit proposals for coefficients without transferable

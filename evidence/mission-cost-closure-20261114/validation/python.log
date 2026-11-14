@@ -1,0 +1,36 @@
+........................................................................ [  9%]
+........................................................................ [ 19%]
+........................................................................ [ 29%]
+........................................................................ [ 38%]
+..................ss.................................................... [ 48%]
+..............................s......................................... [ 58%]
+........................................................................ [ 67%]
+...................................................................s.... [ 77%]
+........................................................................ [ 87%]
+........................................................................ [ 96%]
+........................                                                 [100%]
+============================== warnings summary ===============================
+..\..\..\..\Documents\ChatGPT\Hackt�n NASA\.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\User\Documents\ChatGPT\Hackt�n NASA\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: C:\Users\User\.codex\worktrees\david-mission\Hackt�n NASA\tmp\cost-closure-python.junit.xml -
+=========================== short test summary info ===========================
+SKIPPED [1] tests\contract\test_generated_conversion.py:8: Requires built ROS 2 Jazzy interfaces
+SKIPPED [1] tests\contract\test_interfaces.py:4: Requires built ROS 2 workspace
+SKIPPED [1] tests\contract\test_mission_launch.py:7: Requires ROS 2 Jazzy launch packages
+SKIPPED [1] tests\contract\test_mission_service.py:12: Requires ROS 2 Jazzy
+SKIPPED [1] tests\contract\test_planner_service.py:10: Requires ROS 2 Jazzy and a sourced workspace
+SKIPPED [1] tests\contract\test_profile_launch.py:8: Requires ROS 2 Jazzy launch runtime
+SKIPPED [1] tests\integration\test_replay_package.py:11: Requires built ROS 2 workspace
+SKIPPED [1] tests\integration\test_terrain_batch.py:24: Requires built ROS 2 workspace
+SKIPPED [1] tests\integration\test_vertical_mission.py:17: Requires built ROS 2 Jazzy workspace
+SKIPPED [1] tests\integration\test_vertical_mock.py:18: Requires built ROS 2 workspace
+SKIPPED [1] tests\integration\test_vertical_planner.py:18: Requires built ROS 2 workspace
+SKIPPED [1] tests\integration\test_vertical_terrain.py:25: Requires built ROS 2 workspace
+SKIPPED [1] tests\mission\test_audit.py:155: This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-cost-closure-final\\test_symlinks_cannot_open_exte0\\outside.json' -> 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-cost-closure-final\\test_symlinks_cannot_open_exte0\\run\\public.json'
+SKIPPED [1] tests\mission\test_audit.py:155: This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-cost-closure-final\\test_symlinks_cannot_open_exte1\\run\\reference\\hidden.json' -> 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-cost-closure-final\\test_symlinks_cannot_open_exte1\\run\\public.json'
+SKIPPED [1] tests\mission\test_conformance.py:93: Host does not permit creating symlink fixtures
+SKIPPED [1] tests\mission\test_scenario.py:131: Host does not allow symlink fixture: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-cost-closure-final\\test_symlinked_public_archive_0\\outside.npz' -> 'C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt�n NASA\\tmp\\pytest-cost-closure-final\\test_symlinked_public_archive_0\\public\\terrain.npz'
+740 passed, 16 skipped, 1 warning in 8.87s

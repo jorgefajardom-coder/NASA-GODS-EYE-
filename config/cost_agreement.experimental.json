@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0.0",
+  "contract_id": "mission-cost-agreement-experimental-01",
+  "status": "awaiting_consumer_agreement",
+  "owner": "David",
+  "consumers": ["Diego", "Jesus"],
+  "model_id": "mge-science-1.0.0",
+  "scenario_path": "config/mission_jezero.experimental.yaml",
+  "profiles_path": "config/science_profiles.proposed.json",
+  "units": {
+    "position": "local ENU metres, public map vertical datum",
+    "duration": "seconds",
+    "human_energy": "estimated metabolic Wh",
+    "robot_energy": "estimated electrical Wh",
+    "human_oxygen": "equivalent ideal dry O2 litres at 273.15 K and 101.325 kPa",
+    "robot_oxygen": "absent internally, ROS NaN, JSON null"
+  },
+  "comparison_tolerances": {"relative": 0.00001, "absolute": 0.001},
+  "tolerance_scope": "Existing finite cost comparison/transport bounds only; no scientific model equivalence, resource slack, geometry clearance or localization claim",
+  "schedule_binding": {
+    "status": "pending_Diego_and_Jesus_confirmation",
+    "key": ["run_id", "request_id", "agent_id", "map_version"],
+    "required_context": ["model_id", "profile_registry_sha256", "scenario_sha256", "directed_itinerary", "activity_kind", "remaining_service_time_s", "waiting_kind", "waiting_time_s", "current_remaining_resources", "required_reserves"],
+    "primary_human_activity": "inspect",
+    "primary_service_time_s": 120.0,
+    "primary_meaning": "stationary visual observation/check-in; no optional inspection task completion",
+    "wire_policy": "Keep existing ROS fields. Agree config/request context binding with consumers before runtime adoption; no field or context is invented by this kit."
+  },
+  "accounting": {
+    "movement": "Sum directed estimate_segment costs on the exact returned path, including any approved connector once",
+    "stationary": "Use estimate_activity separately for every explicit service/wait interval; do not merge different activities",
+    "return": "Evaluate actual directed return independently",
+    "remaining": "Consumed travel/completed work is not charged again; replanning uses current remaining resources and unfinished service",
+    "reserves": "Initial allocation minus consumed and candidate remaining costs must retain each separate reserve; boundary uses strict nonnegative margin without tolerance credit",
+    "robots": "No oxygen allocation or consumption"
+  },
+  "approval": {
+    "experimental_scenario_values": "JZ-APP-20261114-01",
+    "profiles_approved": false,
+    "cost_agreement_approved": false,
+    "execution_evidence_approved": false,
+    "operational_authorization": false
+  },
+  "closure_requires": [
+    "Diego-owned executable backend reproduces the scientific API or an explicitly reviewed alternative with justified error bounds",
+    "Same supplied path and activity schedule yield matching time, energy and applicable oxygen, with model/profile/config/source hashes",
+    "Flat, ascent, descent, zero, invalid ground vertical, activities, waiting, connectors, full return, partial service, resource boundaries and sensitivity cases checked",
+    "Actual mission/service consumer preserves request identity, remaining resources and schedule binding",
+    "David reviews numeric evidence and profiles separately; Jesus reviews wiring; no flag substitutes for missing evidence"
+  ]
+}

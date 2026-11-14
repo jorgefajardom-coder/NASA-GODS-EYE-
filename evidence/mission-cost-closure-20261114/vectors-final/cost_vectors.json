@@ -1,0 +1,3095 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "activity-duration-vectors-final-20261114",
+  "kind": "COST_AGREEMENT_VECTORS",
+  "contract_id": "mission-cost-agreement-experimental-01",
+  "status": "AWAITING_CONSUMER_AGREEMENT",
+  "model_id": "mge-science-1.0.0",
+  "scientific_approval": false,
+  "cost_agreement_approved": false,
+  "mission_execution_authorized": false,
+  "integrated_mission_executed": false,
+  "tolerances": {
+    "relative": 1e-05,
+    "absolute": 0.001
+  },
+  "profile_approval_states": {
+    "human_1": "proposed",
+    "rover_1": "proposed",
+    "drone_1": "proposed"
+  },
+  "profile_inputs": {
+    "human_1": {
+      "kind": "human",
+      "parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "activity_power_w": {
+        "walk": 417.7,
+        "wait": 358.08,
+        "inspect": 358.08,
+        "sample": 461.17
+      }
+    },
+    "rover_1": {
+      "kind": "rover",
+      "parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "activity_power_w": {
+        "wait": 80.0,
+        "inspect": 200.0
+      }
+    },
+    "drone_1": {
+      "kind": "drone",
+      "parameters": {
+        "mass_kg": 1.8,
+        "speed_m_s": 2.0,
+        "vertical_speed_m_s": 1.0,
+        "climb_efficiency": 0.5,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 90.0,
+        "max_step_m": 1000000.0,
+        "radius_m": 0.6,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "activity_power_w": {
+        "ground_wait": 5.0,
+        "translate": 350.0,
+        "ascent": 350.0,
+        "descent": 230.0,
+        "hover": 230.0,
+        "observe": 230.0
+      }
+    }
+  },
+  "inputs_sha256": {
+    "contract": "d1f5ff02b8381c3e3e8cb44c63f103ac333d0c6f252d55276a1b45c24e5a2148",
+    "scenario": "b4f424dbd0c96fd7190502a0c5dc88d556de285d171568de12cce1e73b9324d1",
+    "profiles": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "model_source": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "exporter_source": "928e777677b4ec35c1874552fdb6b7ea61d116dc86d2acb8fe35778dc3c4a6e9",
+    "activity_pilot": "e28933881a4bce1ce01bf65b18f10733b63b3a3ed98f33e89d24c2f9303afbfa"
+  },
+  "scenario_readiness": {
+    "schema_version": "1.0.0",
+    "run_id": "activity-duration-vectors-final-20261114",
+    "kind": "SCENARIO_DIAGNOSTIC",
+    "status": "NOT_READY",
+    "dataset_status": "PUBLIC_PACKAGE_VALIDATED",
+    "scientific_approval": false,
+    "mission_execution_authorized": false,
+    "integrated_mission_executed": false,
+    "model_id": "mge-science-1.0.0",
+    "findings": [],
+    "missing_inputs": [
+      "approval_evidence.dataset",
+      "approval_evidence.science",
+      "approval_evidence.resource_model_agreement",
+      "approval_evidence.snapshot_contract",
+      "mission.status=approved",
+      "approved_agent_profiles"
+    ],
+    "inputs_sha256": {
+      "manifest": "f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1",
+      "terrain.npz": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+      "provenance_details.json": "8e9d506230f101c02c8f1ee319aad18cce47215d1d3eb79dfdeb1dd37d826911",
+      "mola_regional_context.npz": "b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6",
+      "profiles": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "mission": "b4f424dbd0c96fd7190502a0c5dc88d556de285d171568de12cce1e73b9324d1",
+      "model_source": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52"
+    },
+    "limitations": [
+      "Public-package/configuration consistency only; no operational or scientific approval.",
+      "No reference files, hidden tasks, planner or executor inputs are consumed.",
+      "Valid unobserved prior remains estimated, distinct from NoData; observation flags and uncertainty are preserved, not promoted to verification.",
+      "Grid resampling does not improve the native resolution of the orbital source."
+    ],
+    "terrain": {
+      "dataset_id": "jezero_mvp",
+      "manifest_schema_version": 1,
+      "delivery_form": "data_owner_public_loader_provenance_package",
+      "frame_id": "map",
+      "rows": 32,
+      "cols": 32,
+      "map_version": 1,
+      "grid_resolution_m": 4.0,
+      "prior_native_resolution_m": 20.0,
+      "row_orientation": "south_to_north",
+      "origin_enu_m": [
+        -64.0,
+        -64.0
+      ],
+      "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+      "control_point_count": 4,
+      "valid_cells": 1024,
+      "nodata_cells": 0,
+      "observed_cells": 0,
+      "unobserved_cells": 1024,
+      "sigma_range_m": [
+        2.5,
+        2.5
+      ],
+      "execution_traversability_assumed": false
+    },
+    "profile_approval_states": {
+      "human_1": "proposed",
+      "rover_1": "proposed",
+      "drone_1": "proposed"
+    },
+    "scenario_approval": {
+      "status": "APPROVED_EXPERIMENTAL_VALUES",
+      "approval_id": "JZ-APP-20261114-01",
+      "approved_by": "David",
+      "approved_on": "2026-11-14",
+      "decision_ids": [
+        "JZ-P01",
+        "JZ-P02",
+        "JZ-P03",
+        "JZ-P04",
+        "JZ-P05",
+        "JZ-P06",
+        "JZ-P07"
+      ],
+      "scope": "experimental_scenario_values_only",
+      "receipt_sha256": "c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518",
+      "profiles_approved": false,
+      "cost_agreement_approved": false,
+      "execution_evidence_approved": false,
+      "operational_authorization": false
+    },
+    "candidate_configuration": {
+      "schema_version": "1.0.0",
+      "status": "pending_review",
+      "run_id": "activity-duration-vectors-final-20261114",
+      "model_id": "mge-science-1.0.0",
+      "bindings_sha256": {
+        "manifest": "f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1",
+        "terrain.npz": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+        "provenance_details.json": "8e9d506230f101c02c8f1ee319aad18cce47215d1d3eb79dfdeb1dd37d826911",
+        "mola_regional_context.npz": "b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6",
+        "profiles": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+        "mission": "b4f424dbd0c96fd7190502a0c5dc88d556de285d171568de12cce1e73b9324d1",
+        "model_source": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52"
+      },
+      "dataset_id": "jezero_mvp",
+      "mission_inputs": {
+        "dataset_id": "jezero_mvp",
+        "base_enu_m": [
+          -14.0,
+          -14.0,
+          -2571.199462890625
+        ],
+        "primary_goal_enu_m": [
+          30.0,
+          30.0,
+          -2573.264892578125
+        ],
+        "primary_agent_id": "human_1",
+        "return_tolerance_m": 1.0,
+        "primary_service_time_s": 120.0,
+        "primary_activity": "inspect",
+        "budgets": {
+          "human_1": {
+            "time_s": 1200.0,
+            "energy_wh": 100.0,
+            "oxygen_l": 25.0,
+            "reserve_time_s": 240.0,
+            "reserve_wh": 20.0,
+            "reserve_oxygen_l": 5.0
+          },
+          "rover_1": {
+            "time_s": 1200.0,
+            "energy_wh": 60.0,
+            "reserve_time_s": 240.0,
+            "reserve_wh": 12.0
+          },
+          "drone_1": {
+            "time_s": 180.0,
+            "energy_wh": 15.0,
+            "reserve_time_s": 36.0,
+            "reserve_wh": 3.0
+          }
+        }
+      },
+      "approval_evidence": {},
+      "scenario_approval": {
+        "status": "APPROVED_EXPERIMENTAL_VALUES",
+        "approval_id": "JZ-APP-20261114-01",
+        "approved_by": "David",
+        "approved_on": "2026-11-14",
+        "decision_ids": [
+          "JZ-P01",
+          "JZ-P02",
+          "JZ-P03",
+          "JZ-P04",
+          "JZ-P05",
+          "JZ-P06",
+          "JZ-P07"
+        ],
+        "scope": "experimental_scenario_values_only",
+        "receipt_sha256": "c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518",
+        "profiles_approved": false,
+        "cost_agreement_approved": false,
+        "execution_evidence_approved": false,
+        "operational_authorization": false
+      }
+    }
+  },
+  "limitations": [
+    "Analytic vectors only; no planner, executor, terrain observation, task or mission runs.",
+    "Geometry/sigma/clearance are not established by a cost estimate.",
+    "Partial-service states are accounting examples, not invented execution evidence.",
+    "Passing finite comparisons alone approves neither profiles nor scientific error bounds.",
+    "No ROS field or activity/context binding is changed; consumer agreement remains required."
+  ],
+  "vectors": [
+    {
+      "vector_id": "drone_1-flat",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                2,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 1.0,
+              "energy_wh": 0.09722222222222222,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 1.0,
+          "energy_wh": 0.09722222222222222,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-ascent",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                2,
+                0,
+                0.1
+              ]
+            },
+            "cost": {
+              "time_s": 1.0,
+              "energy_wh": 0.09759322222222222,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 1.0,
+          "energy_wh": 0.09759322222222222,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-descent",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                2,
+                0,
+                0.1
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 1.0,
+              "energy_wh": 0.09722222222222222,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 1.0,
+          "energy_wh": 0.09722222222222222,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-zero",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 0.0,
+              "energy_wh": 0.0,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 0.0,
+          "energy_wh": 0.0,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-ground_vertical_or_drone_climb",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            1
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                1
+              ]
+            },
+            "cost": {
+              "time_s": 1.0,
+              "energy_wh": 0.10093222222222221,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 1.0,
+          "energy_wh": 0.10093222222222221,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-wait",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 10.0
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "idle",
+              "duration_s": 10.0
+            },
+            "cost": {
+              "time_s": 10.0,
+              "energy_wh": 0.013888888888888888,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 10.0,
+          "energy_wh": 0.013888888888888888,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-service",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "observe",
+          "duration_s": 30.0
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "observe",
+              "duration_s": 30.0
+            },
+            "cost": {
+              "time_s": 30.0,
+              "energy_wh": 1.9166666666666667,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 30.0,
+          "energy_wh": 1.9166666666666667,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-invalid_duration",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "observe",
+          "duration_s": -1
+        }
+      ],
+      "expected": {
+        "status": "MODEL_INPUT_REJECTED",
+        "exception": "ValueError",
+        "detail": "duration_s must be finite and nonnegative"
+      }
+    },
+    {
+      "vector_id": "drone_1-hover",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "hover",
+          "duration_s": 30
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "hover",
+              "duration_s": 30
+            },
+            "cost": {
+              "time_s": 30.0,
+              "energy_wh": 1.9166666666666667,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 30.0,
+          "energy_wh": 1.9166666666666667,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-ground_wait",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "ground_wait",
+          "duration_s": 10
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "ground_wait",
+              "duration_s": 10
+            },
+            "cost": {
+              "time_s": 10.0,
+              "energy_wh": 0.013888888888888888,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 10.0,
+          "energy_wh": 0.013888888888888888,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-vertical_descent",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                1
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 1.0,
+              "energy_wh": 0.06388888888888888,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 1.0,
+          "energy_wh": 0.06388888888888888,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-directed_itinerary",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        },
+        {
+          "kind": "activity",
+          "activity": "observe",
+          "duration_s": 30.0
+        },
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 10.0
+        },
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                2,
+                0,
+                0.1
+              ]
+            },
+            "cost": {
+              "time_s": 1.0,
+              "energy_wh": 0.09759322222222222,
+              "oxygen_l": null
+            }
+          },
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "observe",
+              "duration_s": 30.0
+            },
+            "cost": {
+              "time_s": 30.0,
+              "energy_wh": 1.9166666666666667,
+              "oxygen_l": null
+            }
+          },
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "idle",
+              "duration_s": 10.0
+            },
+            "cost": {
+              "time_s": 10.0,
+              "energy_wh": 0.013888888888888888,
+              "oxygen_l": null
+            }
+          },
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                2,
+                0,
+                0.1
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 1.0,
+              "energy_wh": 0.09722222222222222,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 42.0,
+          "energy_wh": 2.125371,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "drone_1-resource_boundaries",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        },
+        {
+          "kind": "activity",
+          "activity": "observe",
+          "duration_s": 30.0
+        },
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 10.0
+        },
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "cost": {
+          "time_s": 42.0,
+          "energy_wh": 2.125371,
+          "oxygen_l": null
+        },
+        "budget_cases": [
+          {
+            "case": "approved_scenario_allocation",
+            "budget": {
+              "time_s": 180.0,
+              "energy_wh": 15.0,
+              "reserve_time_s": 36.0,
+              "reserve_wh": 3.0
+            },
+            "reserve_margins": {
+              "time_s": 102.0,
+              "energy_wh": 9.874629
+            },
+            "resource_feasible": true
+          },
+          {
+            "case": "representable_feasible_boundary",
+            "budget": {
+              "time_s": 78.0,
+              "energy_wh": 5.125371,
+              "reserve_time_s": 36.0,
+              "reserve_wh": 3.0
+            },
+            "construction": "Cost plus reserve, moved to the next representable upper capacity only if subtraction rounds below the cost; no comparison tolerance credit",
+            "reserve_margins": {
+              "time_s": 0.0,
+              "energy_wh": 4.440892098500626e-16
+            },
+            "resource_feasible": true
+          },
+          {
+            "case": "below_boundary_time_s",
+            "budget": {
+              "time_s": 77.998,
+              "energy_wh": 5.125371,
+              "reserve_time_s": 36.0,
+              "reserve_wh": 3.0
+            },
+            "reserve_margins": {
+              "time_s": -0.001999999999995339,
+              "energy_wh": 4.440892098500626e-16
+            },
+            "resource_feasible": false
+          },
+          {
+            "case": "below_boundary_energy_wh",
+            "budget": {
+              "time_s": 78.0,
+              "energy_wh": 5.123371000000001,
+              "reserve_time_s": 36.0,
+              "reserve_wh": 3.0
+            },
+            "reserve_margins": {
+              "time_s": 0.0,
+              "energy_wh": -0.0019999999999993356
+            },
+            "resource_feasible": false
+          },
+          {
+            "case": "reserve_exceeds_capacity",
+            "budget": {
+              "time_s": 78.0,
+              "energy_wh": 2.998,
+              "reserve_time_s": 36.0,
+              "reserve_wh": 3.0
+            },
+            "reserve_margins": {
+              "time_s": 0.0,
+              "energy_wh": -2.1273709999999997
+            },
+            "resource_feasible": false
+          }
+        ]
+      }
+    },
+    {
+      "vector_id": "drone_1-partial_service_remaining",
+      "agent_id": "drone_1",
+      "agent_kind": "drone",
+      "input_kind": "analytic_accounting_example_not_execution",
+      "already_completed_schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        },
+        {
+          "kind": "activity",
+          "activity": "observe",
+          "duration_s": 11.25
+        }
+      ],
+      "already_consumed_cost": {
+        "time_s": 12.25,
+        "energy_wh": 0.8163432222222222,
+        "oxygen_l": null
+      },
+      "initial_budget": {
+        "time_s": 180.0,
+        "energy_wh": 15.0,
+        "reserve_time_s": 36.0,
+        "reserve_wh": 3.0
+      },
+      "current_remaining_budget": {
+        "time_s": 167.75,
+        "energy_wh": 14.183656777777777,
+        "reserve_time_s": 36.0,
+        "reserve_wh": 3.0
+      },
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "observe",
+          "duration_s": 18.75
+        },
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 10.0
+        },
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "observe",
+              "duration_s": 18.75
+            },
+            "cost": {
+              "time_s": 18.75,
+              "energy_wh": 1.1979166666666667,
+              "oxygen_l": null
+            }
+          },
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "idle",
+              "duration_s": 10.0
+            },
+            "cost": {
+              "time_s": 10.0,
+              "energy_wh": 0.013888888888888888,
+              "oxygen_l": null
+            }
+          },
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                2,
+                0,
+                0.1
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 1.0,
+              "energy_wh": 0.09722222222222222,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 29.75,
+          "energy_wh": 1.309027777777778,
+          "oxygen_l": null
+        },
+        "reserve_margins": {
+          "time_s": 102.0,
+          "energy_wh": 9.874628999999999
+        },
+        "resource_feasible": true,
+        "completed_plus_remaining_cost": {
+          "time_s": 42.0,
+          "energy_wh": 2.1253710000000003,
+          "oxygen_l": null
+        },
+        "original_complete_cost": {
+          "time_s": 42.0,
+          "energy_wh": 2.125371,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "human_1-flat",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                2,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 2.4000960038401535,
+              "energy_wh": 0.2784778057788978,
+              "oxygen_l": 0.056865925146060085
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 2.4000960038401535,
+          "energy_wh": 0.2784778057788978,
+          "oxygen_l": 0.056865925146060085
+        }
+      }
+    },
+    {
+      "vector_id": "human_1-ascent",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                2,
+                0,
+                0.1
+              ]
+            },
+            "cost": {
+              "time_s": 2.640105604224169,
+              "energy_wh": 0.3890585863567876,
+              "oxygen_l": 0.07944682121907734
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 2.640105604224169,
+          "energy_wh": 0.3890585863567876,
+          "oxygen_l": 0.07944682121907734
+        }
+      }
+    },
+    {
+      "vector_id": "human_1-descent",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                2,
+                0,
+                0.1
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 2.640105604224169,
+              "energy_wh": 0.3063255863567876,
+              "oxygen_l": 0.0625525176606661
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 2.640105604224169,
+          "energy_wh": 0.3063255863567876,
+          "oxygen_l": 0.0625525176606661
+        }
+      }
+    },
+    {
+      "vector_id": "human_1-zero",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 0.0,
+              "energy_wh": 0.0,
+              "oxygen_l": 0.0
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 0.0,
+          "energy_wh": 0.0,
+          "oxygen_l": 0.0
+        }
+      }
+    },
+    {
+      "vector_id": "human_1-ground_vertical_or_drone_climb",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            1
+          ]
+        }
+      ],
+      "expected": {
+        "status": "MODEL_INPUT_REJECTED",
+        "exception": "ValueError",
+        "detail": "ground agents cannot traverse a vertical-only segment"
+      }
+    },
+    {
+      "vector_id": "human_1-wait",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 60.0
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "idle",
+              "duration_s": 60.0
+            },
+            "cost": {
+              "time_s": 60.0,
+              "energy_wh": 5.968,
+              "oxygen_l": 1.2186818275246676
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 60.0,
+          "energy_wh": 5.968,
+          "oxygen_l": 1.2186818275246676
+        }
+      }
+    },
+    {
+      "vector_id": "human_1-service",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 120.0
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 120.0
+            },
+            "cost": {
+              "time_s": 120.0,
+              "energy_wh": 11.936,
+              "oxygen_l": 2.437363655049335
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 120.0,
+          "energy_wh": 11.936,
+          "oxygen_l": 2.437363655049335
+        }
+      }
+    },
+    {
+      "vector_id": "human_1-invalid_duration",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": -1
+        }
+      ],
+      "expected": {
+        "status": "MODEL_INPUT_REJECTED",
+        "exception": "ValueError",
+        "detail": "duration_s must be finite and nonnegative"
+      }
+    },
+    {
+      "vector_id": "human_1-sampling",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "sample",
+          "duration_s": 180
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "sample",
+              "duration_s": 180
+            },
+            "cost": {
+              "time_s": 180.0,
+              "energy_wh": 23.058500000000002,
+              "oxygen_l": 4.708608398119562
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 180.0,
+          "energy_wh": 23.058500000000002,
+          "oxygen_l": 4.708608398119562
+        }
+      }
+    },
+    {
+      "vector_id": "human_1-light_work",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 120
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 120
+            },
+            "cost": {
+              "time_s": 120.0,
+              "energy_wh": 11.936,
+              "oxygen_l": 2.437363655049335
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 120.0,
+          "energy_wh": 11.936,
+          "oxygen_l": 2.437363655049335
+        }
+      }
+    },
+    {
+      "vector_id": "human_1-directed_itinerary",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        },
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 120.0
+        },
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 60.0
+        },
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                2,
+                0,
+                0.1
+              ]
+            },
+            "cost": {
+              "time_s": 2.640105604224169,
+              "energy_wh": 0.3890585863567876,
+              "oxygen_l": 0.07944682121907734
+            }
+          },
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 120.0
+            },
+            "cost": {
+              "time_s": 120.0,
+              "energy_wh": 11.936,
+              "oxygen_l": 2.437363655049335
+            }
+          },
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "idle",
+              "duration_s": 60.0
+            },
+            "cost": {
+              "time_s": 60.0,
+              "energy_wh": 5.968,
+              "oxygen_l": 1.2186818275246676
+            }
+          },
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                2,
+                0,
+                0.1
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 2.640105604224169,
+              "energy_wh": 0.3063255863567876,
+              "oxygen_l": 0.0625525176606661
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 185.28021120844835,
+          "energy_wh": 18.599384172713574,
+          "oxygen_l": 3.7980448214537463
+        }
+      }
+    },
+    {
+      "vector_id": "human_1-resource_boundaries",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        },
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 120.0
+        },
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 60.0
+        },
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "cost": {
+          "time_s": 185.28021120844835,
+          "energy_wh": 18.599384172713574,
+          "oxygen_l": 3.7980448214537463
+        },
+        "budget_cases": [
+          {
+            "case": "approved_scenario_allocation",
+            "budget": {
+              "time_s": 1200.0,
+              "energy_wh": 100.0,
+              "oxygen_l": 25.0,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 20.0,
+              "reserve_oxygen_l": 5.0
+            },
+            "reserve_margins": {
+              "time_s": 774.7197887915517,
+              "energy_wh": 61.40061582728643,
+              "oxygen_l": 16.201955178546253
+            },
+            "resource_feasible": true
+          },
+          {
+            "case": "representable_feasible_boundary",
+            "budget": {
+              "time_s": 425.28021120844835,
+              "energy_wh": 38.59938417271358,
+              "oxygen_l": 8.798044821453747,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 20.0,
+              "reserve_oxygen_l": 5.0
+            },
+            "construction": "Cost plus reserve, moved to the next representable upper capacity only if subtraction rounds below the cost; no comparison tolerance credit",
+            "reserve_margins": {
+              "time_s": 0.0,
+              "energy_wh": 3.552713678800501e-15,
+              "oxygen_l": 4.440892098500626e-16
+            },
+            "resource_feasible": true
+          },
+          {
+            "case": "below_boundary_time_s",
+            "budget": {
+              "time_s": 425.27821120844834,
+              "energy_wh": 38.59938417271358,
+              "oxygen_l": 8.798044821453747,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 20.0,
+              "reserve_oxygen_l": 5.0
+            },
+            "reserve_margins": {
+              "time_s": -0.0020000000000095497,
+              "energy_wh": 3.552713678800501e-15,
+              "oxygen_l": 4.440892098500626e-16
+            },
+            "resource_feasible": false
+          },
+          {
+            "case": "below_boundary_energy_wh",
+            "budget": {
+              "time_s": 425.28021120844835,
+              "energy_wh": 38.597384172713575,
+              "oxygen_l": 8.798044821453747,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 20.0,
+              "reserve_oxygen_l": 5.0
+            },
+            "reserve_margins": {
+              "time_s": 0.0,
+              "energy_wh": -0.0019999999999988916,
+              "oxygen_l": 4.440892098500626e-16
+            },
+            "resource_feasible": false
+          },
+          {
+            "case": "below_boundary_oxygen_l",
+            "budget": {
+              "time_s": 425.28021120844835,
+              "energy_wh": 38.59938417271358,
+              "oxygen_l": 8.796044821453746,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 20.0,
+              "reserve_oxygen_l": 5.0
+            },
+            "reserve_margins": {
+              "time_s": 0.0,
+              "energy_wh": 3.552713678800501e-15,
+              "oxygen_l": -0.002000000000000224
+            },
+            "resource_feasible": false
+          },
+          {
+            "case": "reserve_exceeds_capacity",
+            "budget": {
+              "time_s": 425.28021120844835,
+              "energy_wh": 19.998,
+              "oxygen_l": 8.798044821453747,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 20.0,
+              "reserve_oxygen_l": 5.0
+            },
+            "reserve_margins": {
+              "time_s": 0.0,
+              "energy_wh": -18.601384172713573,
+              "oxygen_l": 4.440892098500626e-16
+            },
+            "resource_feasible": false
+          }
+        ]
+      }
+    },
+    {
+      "vector_id": "human_1-partial_service_remaining",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_accounting_example_not_execution",
+      "already_completed_schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        },
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 45.0
+        }
+      ],
+      "already_consumed_cost": {
+        "time_s": 47.64010560422417,
+        "energy_wh": 4.8650585863567875,
+        "oxygen_l": 0.993458191862578
+      },
+      "initial_budget": {
+        "time_s": 1200.0,
+        "energy_wh": 100.0,
+        "oxygen_l": 25.0,
+        "reserve_time_s": 240.0,
+        "reserve_wh": 20.0,
+        "reserve_oxygen_l": 5.0
+      },
+      "current_remaining_budget": {
+        "time_s": 1152.3598943957759,
+        "energy_wh": 95.13494141364322,
+        "oxygen_l": 24.00654180813742,
+        "reserve_time_s": 240.0,
+        "reserve_wh": 20.0,
+        "reserve_oxygen_l": 5.0
+      },
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 75.0
+        },
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 60.0
+        },
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 75.0
+            },
+            "cost": {
+              "time_s": 75.0,
+              "energy_wh": 7.46,
+              "oxygen_l": 1.5233522844058345
+            }
+          },
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "idle",
+              "duration_s": 60.0
+            },
+            "cost": {
+              "time_s": 60.0,
+              "energy_wh": 5.968,
+              "oxygen_l": 1.2186818275246676
+            }
+          },
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                2,
+                0,
+                0.1
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 2.640105604224169,
+              "energy_wh": 0.3063255863567876,
+              "oxygen_l": 0.0625525176606661
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 137.64010560422417,
+          "energy_wh": 13.734325586356787,
+          "oxygen_l": 2.804586629591168
+        },
+        "reserve_margins": {
+          "time_s": 774.7197887915518,
+          "energy_wh": 61.40061582728643,
+          "oxygen_l": 16.201955178546253
+        },
+        "resource_feasible": true,
+        "completed_plus_remaining_cost": {
+          "time_s": 185.28021120844835,
+          "energy_wh": 18.599384172713574,
+          "oxygen_l": 3.798044821453746
+        },
+        "original_complete_cost": {
+          "time_s": 185.28021120844835,
+          "energy_wh": 18.599384172713574,
+          "oxygen_l": 3.7980448214537463
+        }
+      }
+    },
+    {
+      "vector_id": "rover_1-flat",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                2,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 55.55555555555555,
+              "energy_wh": 1.8785493827160493,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 55.55555555555555,
+          "energy_wh": 1.8785493827160493,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "rover_1-ascent",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                2,
+                0,
+                0.1
+              ]
+            },
+            "cost": {
+              "time_s": 55.62495665139107,
+              "energy_wh": 2.215816697106542,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 55.62495665139107,
+          "energy_wh": 2.215816697106542,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "rover_1-descent",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                2,
+                0,
+                0.1
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 55.62495665139107,
+              "energy_wh": 1.5451376847608629,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 55.62495665139107,
+          "energy_wh": 1.5451376847608629,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "rover_1-zero",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 0.0,
+              "energy_wh": 0.0,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 0.0,
+          "energy_wh": 0.0,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "rover_1-ground_vertical_or_drone_climb",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            1
+          ]
+        }
+      ],
+      "expected": {
+        "status": "MODEL_INPUT_REJECTED",
+        "exception": "ValueError",
+        "detail": "ground agents cannot traverse a vertical-only segment"
+      }
+    },
+    {
+      "vector_id": "rover_1-wait",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 60.0
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "idle",
+              "duration_s": 60.0
+            },
+            "cost": {
+              "time_s": 60.0,
+              "energy_wh": 1.3333333333333333,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 60.0,
+          "energy_wh": 1.3333333333333333,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "rover_1-service",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 120.0
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 120.0
+            },
+            "cost": {
+              "time_s": 120.0,
+              "energy_wh": 6.666666666666667,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 120.0,
+          "energy_wh": 6.666666666666667,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "rover_1-invalid_duration",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": -1
+        }
+      ],
+      "expected": {
+        "status": "MODEL_INPUT_REJECTED",
+        "exception": "ValueError",
+        "detail": "duration_s must be finite and nonnegative"
+      }
+    },
+    {
+      "vector_id": "rover_1-directed_itinerary",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        },
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 120.0
+        },
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 60.0
+        },
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_enu_m": [
+                2,
+                0,
+                0.1
+              ]
+            },
+            "cost": {
+              "time_s": 55.62495665139107,
+              "energy_wh": 2.215816697106542,
+              "oxygen_l": null
+            }
+          },
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 120.0
+            },
+            "cost": {
+              "time_s": 120.0,
+              "energy_wh": 6.666666666666667,
+              "oxygen_l": null
+            }
+          },
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "idle",
+              "duration_s": 60.0
+            },
+            "cost": {
+              "time_s": 60.0,
+              "energy_wh": 1.3333333333333333,
+              "oxygen_l": null
+            }
+          },
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                2,
+                0,
+                0.1
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 55.62495665139107,
+              "energy_wh": 1.5451376847608629,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 291.24991330278215,
+          "energy_wh": 11.760954381867405,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "rover_1-resource_boundaries",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_geometry_and_duration",
+      "schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        },
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 120.0
+        },
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 60.0
+        },
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "cost": {
+          "time_s": 291.24991330278215,
+          "energy_wh": 11.760954381867405,
+          "oxygen_l": null
+        },
+        "budget_cases": [
+          {
+            "case": "approved_scenario_allocation",
+            "budget": {
+              "time_s": 1200.0,
+              "energy_wh": 60.0,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 12.0
+            },
+            "reserve_margins": {
+              "time_s": 668.7500866972179,
+              "energy_wh": 36.23904561813259
+            },
+            "resource_feasible": true
+          },
+          {
+            "case": "representable_feasible_boundary",
+            "budget": {
+              "time_s": 531.2499133027821,
+              "energy_wh": 23.760954381867407,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 12.0
+            },
+            "construction": "Cost plus reserve, moved to the next representable upper capacity only if subtraction rounds below the cost; no comparison tolerance credit",
+            "reserve_margins": {
+              "time_s": 0.0,
+              "energy_wh": 1.7763568394002505e-15
+            },
+            "resource_feasible": true
+          },
+          {
+            "case": "below_boundary_time_s",
+            "budget": {
+              "time_s": 531.2479133027822,
+              "energy_wh": 23.760954381867407,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 12.0
+            },
+            "reserve_margins": {
+              "time_s": -0.0019999999999527063,
+              "energy_wh": 1.7763568394002505e-15
+            },
+            "resource_feasible": false
+          },
+          {
+            "case": "below_boundary_energy_wh",
+            "budget": {
+              "time_s": 531.2499133027821,
+              "energy_wh": 23.758954381867408,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 12.0
+            },
+            "reserve_margins": {
+              "time_s": 0.0,
+              "energy_wh": -0.001999999999997115
+            },
+            "resource_feasible": false
+          },
+          {
+            "case": "reserve_exceeds_capacity",
+            "budget": {
+              "time_s": 531.2499133027821,
+              "energy_wh": 11.998,
+              "reserve_time_s": 240.0,
+              "reserve_wh": 12.0
+            },
+            "reserve_margins": {
+              "time_s": 0.0,
+              "energy_wh": -11.762954381867406
+            },
+            "resource_feasible": false
+          }
+        ]
+      }
+    },
+    {
+      "vector_id": "rover_1-partial_service_remaining",
+      "agent_id": "rover_1",
+      "agent_kind": "rover",
+      "input_kind": "analytic_accounting_example_not_execution",
+      "already_completed_schedule": [
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            0,
+            0,
+            0
+          ],
+          "end_enu_m": [
+            2,
+            0,
+            0.1
+          ]
+        },
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 45.0
+        }
+      ],
+      "already_consumed_cost": {
+        "time_s": 100.62495665139107,
+        "energy_wh": 4.715816697106542,
+        "oxygen_l": null
+      },
+      "initial_budget": {
+        "time_s": 1200.0,
+        "energy_wh": 60.0,
+        "reserve_time_s": 240.0,
+        "reserve_wh": 12.0
+      },
+      "current_remaining_budget": {
+        "time_s": 1099.3750433486089,
+        "energy_wh": 55.28418330289346,
+        "reserve_time_s": 240.0,
+        "reserve_wh": 12.0
+      },
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 75.0
+        },
+        {
+          "kind": "activity",
+          "activity": "idle",
+          "duration_s": 60.0
+        },
+        {
+          "kind": "segment",
+          "start_enu_m": [
+            2,
+            0,
+            0.1
+          ],
+          "end_enu_m": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 75.0
+            },
+            "cost": {
+              "time_s": 75.0,
+              "energy_wh": 4.166666666666667,
+              "oxygen_l": null
+            }
+          },
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "idle",
+              "duration_s": 60.0
+            },
+            "cost": {
+              "time_s": 60.0,
+              "energy_wh": 1.3333333333333333,
+              "oxygen_l": null
+            }
+          },
+          {
+            "input": {
+              "kind": "segment",
+              "start_enu_m": [
+                2,
+                0,
+                0.1
+              ],
+              "end_enu_m": [
+                0,
+                0,
+                0
+              ]
+            },
+            "cost": {
+              "time_s": 55.62495665139107,
+              "energy_wh": 1.5451376847608629,
+              "oxygen_l": null
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 190.62495665139107,
+          "energy_wh": 7.0451376847608636,
+          "oxygen_l": null
+        },
+        "reserve_margins": {
+          "time_s": 668.7500866972177,
+          "energy_wh": 36.23904561813259
+        },
+        "resource_feasible": true,
+        "completed_plus_remaining_cost": {
+          "time_s": 291.24991330278215,
+          "energy_wh": 11.760954381867405,
+          "oxygen_l": null
+        },
+        "original_complete_cost": {
+          "time_s": 291.24991330278215,
+          "energy_wh": 11.760954381867405,
+          "oxygen_l": null
+        }
+      }
+    },
+    {
+      "vector_id": "activity-pilot-approved_check_in_120s",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_activity_pilot_not_execution",
+      "pilot_input": {
+        "case_id": "approved_check_in_120s",
+        "agent_id": "human_1",
+        "activity": "inspect",
+        "duration_s": 120,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=21",
+        "source_locator": "Table 4 supports light-work classification only; duration is approved JZ-P03",
+        "evidence_kind": "approved_experimental_assumption",
+        "task_scope": "brief stationary visual check-in",
+        "note": "No source establishes 120 s as a complete geological inspection. This preserves the approved baseline.",
+        "application": "comparison_only"
+      },
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 120
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 120
+            },
+            "cost": {
+              "time_s": 120.0,
+              "energy_wh": 11.936,
+              "oxygen_l": 2.437363655049335
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 120.0,
+          "energy_wh": 11.936,
+          "oxygen_l": 2.437363655049335
+        }
+      }
+    },
+    {
+      "vector_id": "activity-pilot-inspection_300s_sensitivity",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_activity_pilot_not_execution",
+      "pilot_input": {
+        "case_id": "inspection_300s_sensitivity",
+        "agent_id": "human_1",
+        "activity": "inspect",
+        "duration_s": 300,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf",
+        "source_locator": "pp.1-2 contextual documentation and approximately 10 min complete-sample experience, not isolated inspection timing",
+        "evidence_kind": "engineering_assumption_pending_review",
+        "task_scope": "stationary contextual observation only",
+        "note": "Five minutes is an explicit analytical alternative below the reported full-workflow duration, not a measured inspection mean.",
+        "application": "replace_primary_service"
+      },
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 300
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 300
+            },
+            "cost": {
+              "time_s": 300.0,
+              "energy_wh": 29.84,
+              "oxygen_l": 6.093409137623338
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 300.0,
+          "energy_wh": 29.84,
+          "oxygen_l": 6.093409137623338
+        }
+      }
+    },
+    {
+      "vector_id": "activity-pilot-hand_pickup_30s",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_activity_pilot_not_execution",
+      "pilot_input": {
+        "case_id": "hand_pickup_30s",
+        "agent_id": "human_1",
+        "activity": "inspect",
+        "duration_s": 30,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20",
+        "source_locator": "Section 3.1, Table 3, printed p.12 / PDF p.20",
+        "evidence_kind": "published_lunar_model_assumption",
+        "task_scope": "collection without tools only",
+        "note": "Light-work costing alias; no complete sample documentation or inspection task completion is implied.",
+        "application": "additional_after_primary"
+      },
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 30
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 30
+            },
+            "cost": {
+              "time_s": 30.0,
+              "energy_wh": 2.984,
+              "oxygen_l": 0.6093409137623338
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 30.0,
+          "energy_wh": 2.984,
+          "oxygen_l": 0.6093409137623338
+        }
+      }
+    },
+    {
+      "vector_id": "activity-pilot-hammering_60s",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_activity_pilot_not_execution",
+      "pilot_input": {
+        "case_id": "hammering_60s",
+        "agent_id": "human_1",
+        "activity": "sample",
+        "duration_s": 60,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20",
+        "source_locator": "Section 3.1, Table 3, printed p.12 / PDF p.20",
+        "evidence_kind": "published_lunar_model_assumption",
+        "task_scope": "hammering acquisition only",
+        "note": "Not a measured full sample cycle; heavy-work mapping reuses the proposed profile.",
+        "application": "additional_after_primary"
+      },
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "sample",
+          "duration_s": 60
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "sample",
+              "duration_s": 60
+            },
+            "cost": {
+              "time_s": 60.0,
+              "energy_wh": 7.686166666666667,
+              "oxygen_l": 1.5695361327065207
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 60.0,
+          "energy_wh": 7.686166666666667,
+          "oxygen_l": 1.5695361327065207
+        }
+      }
+    },
+    {
+      "vector_id": "activity-pilot-trenching_180s",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_activity_pilot_not_execution",
+      "pilot_input": {
+        "case_id": "trenching_180s",
+        "agent_id": "human_1",
+        "activity": "sample",
+        "duration_s": 180,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20",
+        "source_locator": "Section 3.1, Table 3, printed p.12 / PDF p.20",
+        "evidence_kind": "published_lunar_model_assumption",
+        "task_scope": "trenching acquisition only",
+        "note": "Matches the approved JZ-P07 numerical example, but does not make three minutes a complete documented sample.",
+        "application": "additional_after_primary"
+      },
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "sample",
+          "duration_s": 180
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "sample",
+              "duration_s": 180
+            },
+            "cost": {
+              "time_s": 180.0,
+              "energy_wh": 23.058500000000002,
+              "oxygen_l": 4.708608398119562
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 180.0,
+          "energy_wh": 23.058500000000002,
+          "oxygen_l": 4.708608398119562
+        }
+      }
+    },
+    {
+      "vector_id": "activity-pilot-documented_sample_600s_mixed",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_activity_pilot_not_execution",
+      "pilot_input": {
+        "case_id": "documented_sample_600s_mixed",
+        "agent_id": "human_1",
+        "schedule": [
+          {
+            "activity": "inspect",
+            "duration_s": 420
+          },
+          {
+            "activity": "sample",
+            "duration_s": 180
+          }
+        ],
+        "source_url": "https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf",
+        "source_locator": "pp.1-2, Geologic Field Protocols and Time and Task Management",
+        "evidence_kind": "reported_analog_total_with_engineering_phase_allocation",
+        "task_scope": "one complete documented-sample workflow",
+        "note": "Approximately 600 s total is reported D-RATS experience. The 420 s light / 180 s heavy split is OUR assumption, not measured by that source. Documentation is inside the 600 s, never added again.",
+        "application": "additional_after_primary"
+      },
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "inspect",
+          "duration_s": 420
+        },
+        {
+          "kind": "activity",
+          "activity": "sample",
+          "duration_s": 180
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "inspect",
+              "duration_s": 420
+            },
+            "cost": {
+              "time_s": 420.0,
+              "energy_wh": 41.776,
+              "oxygen_l": 8.530772792672673
+            }
+          },
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "sample",
+              "duration_s": 180
+            },
+            "cost": {
+              "time_s": 180.0,
+              "energy_wh": 23.058500000000002,
+              "oxygen_l": 4.708608398119562
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 600.0,
+          "energy_wh": 64.8345,
+          "oxygen_l": 13.239381190792235
+        }
+      }
+    },
+    {
+      "vector_id": "activity-pilot-sampling_block_600s_heavy_bound",
+      "agent_id": "human_1",
+      "agent_kind": "human",
+      "input_kind": "analytic_activity_pilot_not_execution",
+      "pilot_input": {
+        "case_id": "sampling_block_600s_heavy_bound",
+        "agent_id": "human_1",
+        "activity": "sample",
+        "duration_s": 600,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20205003610/downloads/ARGOS%20ICES%202020%20-Final%20for%20Export%20Control.pdf",
+        "source_locator": "Section II.C.1, PDF pp.6-7; 10 min sampling block per subsite after contextual work",
+        "evidence_kind": "prescribed_analog_block_with_engineering_power_bound",
+        "task_scope": "sampling block, not time per sample or entire station",
+        "note": "Ten minutes was prescribed. Applying heavy power throughout is our conservative analytical bound; context before this block is not included.",
+        "application": "comparison_only"
+      },
+      "schedule": [
+        {
+          "kind": "activity",
+          "activity": "sample",
+          "duration_s": 600
+        }
+      ],
+      "expected": {
+        "status": "ESTIMATED",
+        "components": [
+          {
+            "input": {
+              "kind": "activity",
+              "activity": "sample",
+              "duration_s": 600
+            },
+            "cost": {
+              "time_s": 600.0,
+              "energy_wh": 76.86166666666666,
+              "oxygen_l": 15.695361327065207
+            }
+          }
+        ],
+        "cost": {
+          "time_s": 600.0,
+          "energy_wh": 76.86166666666666,
+          "oxygen_l": 15.695361327065207
+        }
+      }
+    }
+  ],
+  "activity_pilot": {
+    "schema_version": "1.0.0",
+    "pilot_id": "human-activity-duration-review-01",
+    "status": "pending_review",
+    "owner": "David",
+    "recorded_on": "2026-11-14",
+    "scope": "Analytic duration/cost pilot only; no astronaut, executor, observation or mission run",
+    "approved_scenario_unchanged": "JZ-APP-20261114-01",
+    "cases": [
+      {
+        "case_id": "approved_check_in_120s",
+        "agent_id": "human_1",
+        "activity": "inspect",
+        "duration_s": 120,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=21",
+        "source_locator": "Table 4 supports light-work classification only; duration is approved JZ-P03",
+        "evidence_kind": "approved_experimental_assumption",
+        "task_scope": "brief stationary visual check-in",
+        "note": "No source establishes 120 s as a complete geological inspection. This preserves the approved baseline.",
+        "application": "comparison_only"
+      },
+      {
+        "case_id": "inspection_300s_sensitivity",
+        "agent_id": "human_1",
+        "activity": "inspect",
+        "duration_s": 300,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf",
+        "source_locator": "pp.1-2 contextual documentation and approximately 10 min complete-sample experience, not isolated inspection timing",
+        "evidence_kind": "engineering_assumption_pending_review",
+        "task_scope": "stationary contextual observation only",
+        "note": "Five minutes is an explicit analytical alternative below the reported full-workflow duration, not a measured inspection mean.",
+        "application": "replace_primary_service"
+      },
+      {
+        "case_id": "hand_pickup_30s",
+        "agent_id": "human_1",
+        "activity": "inspect",
+        "duration_s": 30,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20",
+        "source_locator": "Section 3.1, Table 3, printed p.12 / PDF p.20",
+        "evidence_kind": "published_lunar_model_assumption",
+        "task_scope": "collection without tools only",
+        "note": "Light-work costing alias; no complete sample documentation or inspection task completion is implied.",
+        "application": "additional_after_primary"
+      },
+      {
+        "case_id": "hammering_60s",
+        "agent_id": "human_1",
+        "activity": "sample",
+        "duration_s": 60,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20",
+        "source_locator": "Section 3.1, Table 3, printed p.12 / PDF p.20",
+        "evidence_kind": "published_lunar_model_assumption",
+        "task_scope": "hammering acquisition only",
+        "note": "Not a measured full sample cycle; heavy-work mapping reuses the proposed profile.",
+        "application": "additional_after_primary"
+      },
+      {
+        "case_id": "trenching_180s",
+        "agent_id": "human_1",
+        "activity": "sample",
+        "duration_s": 180,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20",
+        "source_locator": "Section 3.1, Table 3, printed p.12 / PDF p.20",
+        "evidence_kind": "published_lunar_model_assumption",
+        "task_scope": "trenching acquisition only",
+        "note": "Matches the approved JZ-P07 numerical example, but does not make three minutes a complete documented sample.",
+        "application": "additional_after_primary"
+      },
+      {
+        "case_id": "documented_sample_600s_mixed",
+        "agent_id": "human_1",
+        "schedule": [
+          {
+            "activity": "inspect",
+            "duration_s": 420
+          },
+          {
+            "activity": "sample",
+            "duration_s": 180
+          }
+        ],
+        "source_url": "https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf",
+        "source_locator": "pp.1-2, Geologic Field Protocols and Time and Task Management",
+        "evidence_kind": "reported_analog_total_with_engineering_phase_allocation",
+        "task_scope": "one complete documented-sample workflow",
+        "note": "Approximately 600 s total is reported D-RATS experience. The 420 s light / 180 s heavy split is OUR assumption, not measured by that source. Documentation is inside the 600 s, never added again.",
+        "application": "additional_after_primary"
+      },
+      {
+        "case_id": "sampling_block_600s_heavy_bound",
+        "agent_id": "human_1",
+        "activity": "sample",
+        "duration_s": 600,
+        "source_url": "https://ntrs.nasa.gov/api/citations/20205003610/downloads/ARGOS%20ICES%202020%20-Final%20for%20Export%20Control.pdf",
+        "source_locator": "Section II.C.1, PDF pp.6-7; 10 min sampling block per subsite after contextual work",
+        "evidence_kind": "prescribed_analog_block_with_engineering_power_bound",
+        "task_scope": "sampling block, not time per sample or entire station",
+        "note": "Ten minutes was prescribed. Applying heavy power throughout is our conservative analytical bound; context before this block is not included.",
+        "application": "comparison_only"
+      }
+    ],
+    "limitations": [
+      "No universal Mars inspection duration was established by the reviewed sources.",
+      "30/60/180 s describe different acquisition primitives, not a statistical interval for one activity.",
+      "No gravity-only conversion from lunar/terrestrial durations to Mars is justified.",
+      "Profiles, durations outside the approved baseline, cost agreement and execution bindings remain unapproved."
+    ]
+  },
+  "recorded_at_utc": "2026-11-14T23:06:36.512202+00:00",
+  "command": [
+    "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+    "scripts/export_cost_agreement_vectors.py",
+    "--activity-pilot",
+    "config/activity_duration.pilot.json",
+    "--run-id",
+    "activity-duration-vectors-final-20261114",
+    "--output-dir",
+    "evidence/mission-cost-closure-20261114/vectors-final"
+  ],
+  "source_revision": "09d7d6a29abd4501bb4d2491037985f073fb39e3",
+  "working_tree_dirty": true
+}

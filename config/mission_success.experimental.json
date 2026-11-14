@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0.0",
+  "criteria_id": "jezero-success-evidence-01",
+  "status": "defined_pending_execution_binding",
+  "owner": "David",
+  "scenario_path": "config/mission_jezero.experimental.yaml",
+  "scenario_approval": "JZ-APP-20261114-01",
+  "combination": "ALL_FOUR_TRUE",
+  "predicates": {
+    "primary_goal_completed": {
+      "agent_id": "human_1", "position": "primary_goal_enu_m", "activity": "inspect", "required_service_s": 120,
+      "evidence": "Explicit public work completion at B plus observed disjoint stationary service intervals totaling the required duration",
+      "not_evidence": ["planned service", "arrival at B alone", "telemetry elapsed time alone", "animation"],
+      "partial_service": "Retain evidenced completed intervals once; request and charge only remaining work after interruption. Pose/datum and source context must remain valid."
+    },
+    "returned_to_base_within_tolerance": {
+      "target": "base_enu_m", "tolerance_m_3d": 1.0,
+      "evidence": "Observed human pose after primary completion in the same run, within the approved model tolerance; not a claim of physical localization accuracy"
+    },
+    "verified_ground_traversal_under_model": {
+      "evidence": "Executor closure covers every executed ground step with public model/map/source references; no omissions, no unsafe unchecked step, positive executed distance",
+      "estimated_route_is_verification": false,
+      "next_segment_policy": "PROPOSED with Jesus: human/rover hold before an unjustified upcoming segment/footprint; request local inspection/survey, retain NoData and uncertainty guards. Ground rules do not certify drone flight.",
+      "stop_policy": "Map contradiction invalidates route immediately; clear route/path, require observed HALTED/zero-speed/stable pose acknowledgement, then plan from that pose/resources. Empty Path alone is not acknowledgement."
+    },
+    "no_budget_violation": {
+      "evidence": "Complete per-agent movement/service/wait interval ledger, no overlap or duplicate debit, current remaining resources and unchanged separate reserves satisfied throughout execution and at return",
+      "robot_oxygen": null,
+      "no_regeneration": true,
+      "tolerance_is_budget_credit": false
+    }
+  },
+  "evidence_context": ["run_id", "agent_id", "task_id", "route_id", "map_version", "model_id", "profile_registry_sha256", "source_event_ids", "simulation_interval"],
+  "outcomes": {
+    "missing_or_partial_evidence": "UNKNOWN_NOT_VERIFIED",
+    "correct_rejection_or_abort": "NOT_MISSION_SUCCESS",
+    "planning_only": "NOT_MISSION_SUCCESS",
+    "all_four_supported": "REVIEW_FOR_COMPLETE_NOT_AUTOMATIC_AUTHORIZATION"
+  },
+  "runtime_gaps": [
+    "Manager primary and optional completion evidence does not yet prove the full service interval; bind typed progress with Jesus before success acceptance.",
+    "Manager request scheduling currently charges full service; partial-service resume requires reviewed progress integration.",
+    "Published executor distributes planned costs during movement; stationary service/wait and their resource debits need separate execution phases.",
+    "Discovery, completion and traversal inputs are not yet wired to MissionNode; three executed roles are not demonstrated."
+  ],
+  "estimated_terrain_policy": {
+    "decision_id": "D-EST-01", "published_main": "2f50ae697b34fe82e575b386936d0d5e4d74db64",
+    "valid_unobserved_prior": "ESTIMATED; hypothetical planning permitted by accepted scope, implementation coordinated with Daniel/Diego",
+    "NoData_or_invalid": "Distinct from valid estimate; never fabricate a height or turn invalid data free",
+    "wire_codes_changed": false
+  },
+  "profiles_approved": false,
+  "cost_agreement_approved": false,
+  "execution_evidence_approved": false,
+  "operational_authorization": false
+}

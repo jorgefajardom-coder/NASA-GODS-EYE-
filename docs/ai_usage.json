@@ -638,6 +638,33 @@
         "docs/mission_scenario.md"
       ],
       "use": "Record David explicit JZ-P01..07 approval of nominal experimental scenario values only, bind receipt to unchanged reviewed proposal and current values, and verify runtime stays blocked. Profiles, cost-model agreement, snapshot/execution evidence and operational authorization remain unapproved. No terrain, observations, tasks, mock or execution was generated; original proposal and evidence retained unchanged."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "mission_cost_duration_and_success_contract_packet",
+      "generation": "AI-assisted code, configuration, source synthesis and analytical diagnostics, pending review",
+      "paths": [
+        "config/cost_agreement.experimental.json",
+        "config/activity_duration.pilot.json",
+        "config/mission_success.experimental.json",
+        "config/mission_jezero.experimental.yaml",
+        "src/mge_mission/mge_mission/scenario.py",
+        "scripts/export_cost_agreement_vectors.py",
+        "scripts/evaluate_activity_duration_pilot.py",
+        "tests/mission/test_cost_agreement_vectors.py",
+        "tests/mission/test_experimental_acceptance_contract.py",
+        "docs/cost_agreement_handoff.md",
+        "docs/activity_duration_research.md",
+        "docs/mission_success_contract.md",
+        "docs/science_decisions.md",
+        "docs/handoffs/david.md",
+        "docs/mission_scenario.md",
+        "docs/jezero_mission_proposal.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/mission-cost-closure-20261114"
+      ],
+      "use": "Prepare a hash-bound scientific cost agreement packet and 38 baseline plus seven duration vectors; distinguish published lunar model primitives, D-RATS reported complete sample durations and prescribed ARGOS blocks from our pending inspection/phase-allocation assumptions; evaluate the existing public-prior probe with unchanged experimental budgets/reserves; document strict success criteria and known missing runtime evidence/progress bindings. Preserve all JZ-P01..07 approved values and original receipt. Read main2f50ae6 and planner69101e9 without merging or modifying their owner implementations. Retain model mismatch and operational gates. No terrain, mock, task, observation, integrated mission result, media or new approval is generated."
     }
   ],
   "generated_media": [],

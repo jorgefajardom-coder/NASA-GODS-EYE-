@@ -1,0 +1,223 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "activity-duration-impact-20261114",
+  "kind": "ANALYTIC_ACTIVITY_DURATION_PILOT",
+  "status": "PENDING_DURATION_REVIEW",
+  "approved_values_changed": false,
+  "cost_agreement_approved": false,
+  "scientific_approval": false,
+  "integrated_mission_executed": false,
+  "mission_execution_authorized": false,
+  "baseline_primary_probe": {
+    "total": {
+      "time_s": 401.12290741629664,
+      "energy_wh": 45.26919150663357,
+      "oxygen_l": 9.244091996626736
+    },
+    "outbound": {
+      "time_s": 110.56145370814832,
+      "energy_wh": 12.828199781637098,
+      "oxygen_l": 2.619553276430469
+    },
+    "return": {
+      "time_s": 110.56145370814832,
+      "energy_wh": 14.536991724996472,
+      "oxygen_l": 2.9684932376222637
+    },
+    "service": {
+      "time_s": 120.0,
+      "energy_wh": 11.936,
+      "oxygen_l": 2.437363655049335
+    },
+    "wait": {
+      "time_s": 60.0,
+      "energy_wh": 5.968,
+      "oxygen_l": 1.2186818275246676
+    },
+    "reserve_margins": {
+      "time_s": 558.8770925837034,
+      "energy_wh": 34.73080849336643,
+      "oxygen_l": 10.755908003373264
+    },
+    "resource_envelope_fits": true,
+    "max_height_change_per_probe_edge_m": 0.130126953125,
+    "step_proxy_exceeded": false,
+    "horizontal_one_way_m": 88.0
+  },
+  "cases": [
+    {
+      "case_id": "approved_check_in_120s",
+      "evidence_kind": "approved_experimental_assumption",
+      "task_scope": "brief stationary visual check-in",
+      "application": "comparison_only",
+      "activity_cost": {
+        "time_s": 120.0,
+        "energy_wh": 11.936,
+        "oxygen_l": 2.437363655049335
+      },
+      "task_assigned": false,
+      "operational_authorization": false,
+      "combined_mission_cost": null
+    },
+    {
+      "case_id": "inspection_300s_sensitivity",
+      "evidence_kind": "engineering_assumption_pending_review",
+      "task_scope": "stationary contextual observation only",
+      "application": "replace_primary_service",
+      "activity_cost": {
+        "time_s": 300.0,
+        "energy_wh": 29.84,
+        "oxygen_l": 6.093409137623338
+      },
+      "task_assigned": false,
+      "operational_authorization": false,
+      "combined_mission_cost": {
+        "time_s": 581.1229074162966,
+        "energy_wh": 63.173191506633565,
+        "oxygen_l": 12.900137479200739
+      },
+      "reserve_margins": {
+        "time_s": 378.8770925837034,
+        "energy_wh": 16.826808493366435,
+        "oxygen_l": 7.099862520799261
+      },
+      "resource_envelope_fits": true
+    },
+    {
+      "case_id": "hand_pickup_30s",
+      "evidence_kind": "published_lunar_model_assumption",
+      "task_scope": "collection without tools only",
+      "application": "additional_after_primary",
+      "activity_cost": {
+        "time_s": 30.0,
+        "energy_wh": 2.984,
+        "oxygen_l": 0.6093409137623338
+      },
+      "task_assigned": false,
+      "operational_authorization": false,
+      "combined_mission_cost": {
+        "time_s": 431.12290741629664,
+        "energy_wh": 48.25319150663357,
+        "oxygen_l": 9.85343291038907
+      },
+      "reserve_margins": {
+        "time_s": 528.8770925837034,
+        "energy_wh": 31.74680849336643,
+        "oxygen_l": 10.14656708961093
+      },
+      "resource_envelope_fits": true
+    },
+    {
+      "case_id": "hammering_60s",
+      "evidence_kind": "published_lunar_model_assumption",
+      "task_scope": "hammering acquisition only",
+      "application": "additional_after_primary",
+      "activity_cost": {
+        "time_s": 60.0,
+        "energy_wh": 7.686166666666667,
+        "oxygen_l": 1.5695361327065207
+      },
+      "task_assigned": false,
+      "operational_authorization": false,
+      "combined_mission_cost": {
+        "time_s": 461.12290741629664,
+        "energy_wh": 52.95535817330023,
+        "oxygen_l": 10.813628129333257
+      },
+      "reserve_margins": {
+        "time_s": 498.87709258370336,
+        "energy_wh": 27.044641826699767,
+        "oxygen_l": 9.186371870666743
+      },
+      "resource_envelope_fits": true
+    },
+    {
+      "case_id": "trenching_180s",
+      "evidence_kind": "published_lunar_model_assumption",
+      "task_scope": "trenching acquisition only",
+      "application": "additional_after_primary",
+      "activity_cost": {
+        "time_s": 180.0,
+        "energy_wh": 23.058500000000002,
+        "oxygen_l": 4.708608398119562
+      },
+      "task_assigned": false,
+      "operational_authorization": false,
+      "combined_mission_cost": {
+        "time_s": 581.1229074162966,
+        "energy_wh": 68.32769150663357,
+        "oxygen_l": 13.952700394746298
+      },
+      "reserve_margins": {
+        "time_s": 378.8770925837034,
+        "energy_wh": 11.67230849336643,
+        "oxygen_l": 6.047299605253702
+      },
+      "resource_envelope_fits": true
+    },
+    {
+      "case_id": "documented_sample_600s_mixed",
+      "evidence_kind": "reported_analog_total_with_engineering_phase_allocation",
+      "task_scope": "one complete documented-sample workflow",
+      "application": "additional_after_primary",
+      "activity_cost": {
+        "time_s": 600.0,
+        "energy_wh": 64.8345,
+        "oxygen_l": 13.239381190792235
+      },
+      "task_assigned": false,
+      "operational_authorization": false,
+      "combined_mission_cost": {
+        "time_s": 1001.1229074162966,
+        "energy_wh": 110.10369150663357,
+        "oxygen_l": 22.483473187418973
+      },
+      "reserve_margins": {
+        "time_s": -41.122907416296584,
+        "energy_wh": -30.103691506633567,
+        "oxygen_l": -2.483473187418973
+      },
+      "resource_envelope_fits": false
+    },
+    {
+      "case_id": "sampling_block_600s_heavy_bound",
+      "evidence_kind": "prescribed_analog_block_with_engineering_power_bound",
+      "task_scope": "sampling block, not time per sample or entire station",
+      "application": "comparison_only",
+      "activity_cost": {
+        "time_s": 600.0,
+        "energy_wh": 76.86166666666666,
+        "oxygen_l": 15.695361327065207
+      },
+      "task_assigned": false,
+      "operational_authorization": false,
+      "combined_mission_cost": null
+    }
+  ],
+  "inputs_sha256": {
+    "vectors": "f0832889201b597861c3d85cb25b6538c6f531b9ac82fb14fd0d254348629707",
+    "original_proposal": "e9cb9144a6861de71fbe0f633b9b3bc9f58c322666c1717c6523a948c5603a42",
+    "approved_scenario": "01cacf9731324baf9316e3527cc3cf5f32597cc3fa9c48294b269964f7028fde",
+    "model": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "profiles": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "analysis_source": "e89b77da586635b4131ec7b234d3c6d8844e7b11f9ee50d025ef5c75a18e2677"
+  },
+  "limitations": [
+    "Public-prior cost probes only, no route or execution evidence.",
+    "Additional sample cases add a separate workflow after the approved primary check-in; do not add primitive collection time again inside a complete workflow.",
+    "No optional travel, extra coordination delay or suit losses are included; actual assignments may cost more.",
+    "Replacing primary service is a proposed sensitivity, not a modification of JZ-P03.",
+    "Reported analog totals are not measured Mars task durations; mixed power allocation is an engineering assumption."
+  ],
+  "recorded_at_utc": "2026-11-14T22:55:55.063862+00:00",
+  "command": [
+    "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+    "scripts/evaluate_activity_duration_pilot.py",
+    "--vectors",
+    "evidence/mission-cost-closure-20261114/vectors/cost_vectors.json",
+    "--run-id",
+    "activity-duration-impact-20261114",
+    "--output-dir",
+    "evidence/mission-cost-closure-20261114/pilot"
+  ]
+}
