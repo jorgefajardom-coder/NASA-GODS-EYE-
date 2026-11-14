@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from './types/replay';
 import { loadReplay } from './data/replayAdapter';
+import { REFERENCE_SOURCES } from './data/referenceSources';
 import { viewAt } from './lib/replay';
 import type { TerrainLayer } from './lib/layers';
 import {
@@ -230,6 +231,19 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
               http://creativecommons.org/licenses/by/4.0/
             </a>
             ). Materials converted to metallic-roughness for this viewer. Fonts: Rajdhani, Barlow Condensed and IBM Plex Mono (SIL OFL 1.1).
+            <div className="credits__refs">
+              <strong>NASA reference resources</strong>
+              <ul>
+                {REFERENCE_SOURCES.map((r) => (
+                  <li key={r.url}>
+                    <a href={r.url} target="_blank" rel="noreferrer">
+                      {r.name}
+                    </a>{' '}
+                    <span className="credits__status">{r.status}</span> {r.use}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </details>
         </footer>
       </div>

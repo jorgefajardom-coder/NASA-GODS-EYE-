@@ -1143,6 +1143,26 @@ input[type='checkbox'] {
   color: var(--blue);
 }
 
+.credits__refs {
+  margin-top: 6px;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.credits__refs ul {
+  margin: 2px 0 0;
+  padding-left: 16px;
+}
+
+.credits__status {
+  font-family: var(--f-mono, monospace);
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--gray);
+  border: 1px solid var(--line);
+  padding: 0 4px;
+}
+
 /* ---------------------------------------------------------------- 3D labels */
 .agent-label,
 .site-label,
