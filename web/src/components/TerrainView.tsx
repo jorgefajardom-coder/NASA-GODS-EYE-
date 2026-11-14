@@ -14,7 +14,7 @@ export const CONTOUR_MAJOR_M = 50;
 
 /**
  * Cosmetic regolith grain for close views. The terrain data stops at 5-20 m, so walking views
- * look flat; this adds procedural sand ripples, grit and pebble speckle from the ground
+ * look flat; this adds procedural grit and pebble speckle from the ground
  * position. It is NOT measured detail: it is labelled in the view options, can be turned off,
  * and vanishes beyond ~220 m of camera distance, so it never changes the map at mission scale.
  */
@@ -49,17 +49,6 @@ vec2 gStones(vec2 p, float sizeMin, float sizeMax, float presence) {
   }
   return vec2(cover, tone);
 }
-// Ripple field whose direction, spacing and strength wander across the ground (domain warping),
-// so no two patches repeat.
-float gRipples(vec2 g) {
-  vec2 warp = vec2(gFbm(g * 0.05), gFbm(g * 0.05 + 9.2)) * 6.2831;
-  float ang = warp.x * 0.35 + 0.6;
-  vec2 dir = vec2(cos(ang), sin(ang));
-  float spacing = mix(2.5, 4.2, gNoise(g * 0.03)); // 1.5-2.5 m wavelength
-  float phase = dot(g, dir) * spacing + gFbm(g * 0.35) * 1.6 + warp.y;
-  float crest = pow(0.5 + 0.5 * sin(phase), 2.0);
-  return crest * smoothstep(0.5, 0.78, gFbm(g * 0.03 + 3.1)); // ripples only in patches
-}
 // Stones at three independent scales, clustered by a low-frequency density field and sampled
 // through a warped domain so neither spacing nor shape repeats. Returns (coverage, tone).
 vec2 gPebbles(vec2 g) {
@@ -73,21 +62,20 @@ vec2 gPebbles(vec2 g) {
   if (c.x * 0.5 > best.x) best = vec2(c.x * 0.5, c.y);
   return best;
 }
-// Relief in metres-like units: metre-scale undulation, irregular ripples, grit, pebbles.
+// Relief in metres-like units: metre-scale undulation, grit, pebbles. No ripples: their
+// parallel crests read as lines on the ground and alias into moire at grazing angles.
 float groundHeight(vec2 g) {
   float undulation = gFbm(g * 0.3 + gFbm(g * 0.07) * 2.0) * 0.4;
-  float ripples = gRipples(g) * 0.02 * gKeep(0.2, 0.6);
   float grit = gFbm(g * 7.0) * 0.035 * gKeep(0.015, 0.05);
-  return undulation + ripples + grit + gPebbles(g).x * 0.07;
+  return undulation + grit + gPebbles(g).x * 0.07;
 }
-// Brightness modulation: dust patches, darker grit, ripple crests catching dust, pebble speckle.
+// Brightness modulation: dust patches, darker grit, pebble speckle.
 float groundAlbedo(vec2 g) {
   float patches = gFbm(g * 0.06 + gFbm(g * 0.02) * 3.0) * 0.3 + 0.86;
   float grit = mix(1.0, 0.9 + gFbm(g * 9.0) * 0.18, gKeep(0.012, 0.04));
-  float crests = 1.0 + gRipples(g) * 0.05 * gKeep(0.2, 0.6);
   vec2 st = gPebbles(g);
   float pebbles = 1.0 + st.x * (st.y * 0.35 - 0.12); // some stones darker, some lighter than the dust
-  return patches * grit * crests * pebbles;
+  return patches * grit * pebbles;
 }
 // Bump mapping from screen-space derivatives (same method as three.js bumpmap_pars).
 vec3 groundNormal(vec3 surfPos, vec3 surfNorm, float h, float faceDir) {

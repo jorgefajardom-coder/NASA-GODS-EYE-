@@ -107,7 +107,7 @@ export function ViewOptions(p: OptionsProps) {
         </label>
       )}
       <label className="check">
-        <input type="checkbox" checked={p.surfaceDetail} onChange={(e) => p.onSurfaceDetail(e.target.checked)} /> Ground grain <Info text="Cosmetic close-range detail (ripples, grit, stones). Not measured: the terrain data stops at 5-20 m." />
+        <input type="checkbox" checked={p.surfaceDetail} onChange={(e) => p.onSurfaceDetail(e.target.checked)} /> Ground grain <Info text="Cosmetic close-range detail (grit, stones). Not measured: the terrain data stops at 5-20 m." />
       </label>
       {p.surroundings != null && (
         <label className="check">

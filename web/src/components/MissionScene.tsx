@@ -106,7 +106,8 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       )}
       {/* Always a solid block; schematic strata only in the Ground layers tab. Hidden under the surroundings. */}
       {!ctx && <CutawayBlock meta={meta} heights={grid} geology={cutaway} verticalExaggeration={exaggeration} />}
-      <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />
+      {/* The route is a map overlay: hidden in the follow view, where it reads as a line painted on the ground. */}
+      {!followed && <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />}
       {bundle.manifest.pois.filter((p) => p.kind === 'base').map((p) => (
         <BaseModel key={p.id} site={p.position} verticalExaggeration={exaggeration} groundHeight={groundHeight} />
       ))}

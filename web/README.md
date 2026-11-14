@@ -76,11 +76,13 @@ The **Ground layers** tab drapes the USGS SIM 3464 geologic map (Sun and Stack, 
 
 A circular, game-style **minimap** (north up, 450 m around the selected agent, with heading arrow, coverage, route, sites and other agents) sits inside the agent HUD at the bottom right. The rover and drone are the official NASA/JPL models with all branding removed, drawn at real size with the astronaut at 1.9 m; the drone's rotors spin while it flies.
 
-Up close (under about 200 m of camera distance) the ground gets procedural grain: sand ripples, grit, pebble speckle and metre-scale undulation computed in the shader from the ground position. It is **cosmetic, not measured** (the data stops at 5–20 m), fades out at mission scale, is not drawn on the uncertainty layer or the geologic map, and can be turned off in the view options.
+Up close (under about 200 m of camera distance) the ground gets procedural grain: grit, pebble speckle and metre-scale undulation (no ripples: their crests read as lines and alias into moiré) computed in the shader from the ground position. It is **cosmetic, not measured** (the data stops at 5–20 m), fades out at mission scale, is not drawn on the uncertainty layer or the geologic map, and can be turned off in the view options.
 
 The terrain is drawn smoothed between the 20 m cells, with contour lines every 10 m (bold every 50 m) at true elevation. Contours can be turned off in the view options.
 
 Agents are drawn at an eased copy of their pose (about 0.1 s, display only) so they do not tremble when the camera is close; the follow camera reads that drawn pose in the same frame. **Camera smoothing** in the view options sets the follow and orbit easing: Off (rigid), Soft (default) or Cinematic; the choice is remembered in this browser.
+
+The walk clip is a lunar bounding gait; the viewer plants the lower foot on the ground at every keyframe (the hips move down instead), so the astronaut walks instead of hopping. In the follow view the route overlay is hidden so no line is painted on the ground next to the astronaut; it shows again in the free view.
 
 Keys: `F` follow camera, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 `?evaluator=1` shows the hidden reference layer, **in the dev server only** (R05). `npm run fixture`
