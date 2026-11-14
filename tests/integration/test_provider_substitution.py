@@ -58,7 +58,7 @@ def test_consumer_rejects_provider_that_changes_contract(provider):
 
 def test_real_planner_provider_uses_same_consumer_when_owner_module_available():
     if importlib.util.find_spec("mge_planning.adapter") is None:
-        pytest.skip("REAL producer substitution pending PR #2; canonical mock seam only is tested")
+        pytest.skip("REAL producer module is unavailable in this checkout; canonical mock seam only is tested")
     core = pytest.importorskip("mge_planning.core")
     if not hasattr(core, "TerrainGrid"):
         pytest.skip("Advanced planner has not been integrated")

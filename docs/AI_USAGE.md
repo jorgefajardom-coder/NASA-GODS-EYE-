@@ -53,3 +53,20 @@ test arrays/metadata are explicitly MOCK and never NASA observational products.
 No generated image, video or audio was created in this reconciliation. Existing
 licences/attributions and mandatory declarations are preserved; human owner
 review and competition submission disclosure remain required.
+
+## Planner P0 implementation
+
+Codex assisted the new bounded FAST/SAFE solver, input adapters, ROS service,
+acceptance tests, benchmark generator and handoff documentation. Synthetic maps,
+obstacles and resource assumptions in tests are newly generated illustrative
+inputs; benchmark timings are measured from new executions.
+Motion/resource profiles require human scientific review. NASA source data remain
+observations from cited upstream products; new processing does not make those
+observations newly acquired by the team. See [data provenance](planner_provenance.md)
+for the crop workflow and source references.
+
+Fresh computational benchmark measurements are now recorded under
+evidence/planner-p0-20261114. Their scenarios were AI-assisted illustrative test
+data; reported timings and costs are actual new executions of the recorded code
+commit. They are computational test measurements, not physical or NASA mission
+measurements. No generated image, video or audio asset was added.

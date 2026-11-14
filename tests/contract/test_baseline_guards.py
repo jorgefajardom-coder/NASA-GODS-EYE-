@@ -301,3 +301,27 @@ def test_nodata_nan_requires_explicit_terrainmeta_context_and_never_allows_infin
             ({"nested": {"nodata_value": nan}}, "mge_interfaces/msg/TerrainMeta")]:
         with pytest.raises(ValueError, match="NONFINITE_JSON_VALUE"):
             ros_json(payload, message_type=context)
+
+
+@pytest.mark.parametrize("status", sorted(ROUTE_STATUSES - {"FEASIBLE"}))
+def test_unavailable_decision_metrics_require_typed_valid_nonfeasible_status(status):
+    value = {"status": status, "energy_est_wh": nan, "travel_time_s": nan,
+             "oxygen_est_l": nan, "reserve_oxygen_l": nan, "reserve_wh": nan}
+    payload = ros_json(value, agent_kind="HUMAN", message_type="mge_interfaces/msg/RouteDecision")
+    assert payload == {key: (item if key == "status" else None) for key, item in value.items()}
+    json.dumps(payload, allow_nan=False)
+    for change, context in [({"status": "FEASIBLE"}, "mge_interfaces/msg/RouteDecision"),
+                            ({"status": "UNKNOWN"}, None),
+                            ({"status": "invented"}, "mge_interfaces/msg/RouteDecision"),
+                            ({"energy_est_wh": float("inf")}, "mge_interfaces/msg/RouteDecision")]:
+        with pytest.raises(ValueError, match="NONFINITE_JSON_VALUE"):
+            ros_json({**value, **change}, agent_kind="HUMAN", message_type=context)
+
+
+def test_nonfeasible_context_does_not_permit_agentstate_oxygen_or_nested_nan():
+    with pytest.raises(ValueError, match="HUMAN_OXYGEN_REQUIRED"):
+        ros_json({"status": "UNKNOWN", "oxygen_remaining_l": nan}, agent_kind="HUMAN",
+                 message_type="mge_interfaces/msg/RouteDecision")
+    with pytest.raises(ValueError, match="NONFINITE_JSON_VALUE"):
+        ros_json({"status": "UNKNOWN", "nested": {"energy_est_wh": nan}},
+                 message_type="mge_interfaces/msg/RouteDecision")

@@ -1,6 +1,8 @@
 # Daniel - deliver the canonical public dataset and coherent belief
 
-Active branch: **`feat/data`**. Audited head: `f75c54e929576c6780d559c9daa24d06ccf0a0b8`, equal to audited main; there are no data-front commits beyond it. Existing handoff material is `docs/data_sources.md`, `config/terrain.yml`, `src/mge_data/README.md` and `src/mge_mapping/README.md`. Manifest examples and Python input guards are scaffolds; `fuse_observation` is not implemented.
+Active branch: **`feat/data`**. Audited head: `f75c54e929576c6780d559c9daa24d06ccf0a0b8`, equal to initial main; there are no data-front commits beyond it. It is now
+behind refreshed main `004b3b2`, which includes the planner. No new Daniel
+data/fusion delivery was found in the final refresh. Existing handoff material is `docs/data_sources.md`, `config/terrain.yml`, `src/mge_data/README.md` and `src/mge_mapping/README.md`. Manifest examples and Python input guards are scaffolds; `fuse_observation` is not implemented.
 
 Read [AGENTS.md](../../AGENTS.md), [ICD](../ICD.md), [contract baseline](../CONTRACT_BASELINE.md) and [integration matrix](../INTEGRATION_MATRIX.md) before editing. Canonical ROS fields/types live in `src/mge_interfaces/msg` and `srv`; preserve them and adapt representations explicitly.
 
@@ -9,6 +11,12 @@ Read [AGENTS.md](../../AGENTS.md), [ICD](../ICD.md), [contract baseline](../CONT
 Own `src/mge_data/`, `src/mge_mapping/`, `config/terrain.yml`, data manifests, provenance/licenses/hashes, public layers, masks, NoData and three control points. Use the baseline `data/dataset.schema.json` and ICD; do not invent a parallel raster format. Preserve source NASA/USGS provenance and applicable licenses. Deliver one explicit dataset_id/run_id/map_version with Mars CRS, planetary origin/local ENU, southwest grid origin, resolution, rows/cols, vertical datum and any local elevation offset. Supply immutable orbital prior, current estimated elevation/belief, sigma, NoData mask and per-kind traversability (-1 unknown, 0 admissible, 100 forbidden). Invalid/NoData/unknown is never free. Provide hashes of all distributed files, source product/version identifiers, processing parameters and three georeferenced control points with ENU/metres and declared tolerances. A provisional package is labelled provisional. Planner's ~128 m / 4 m near 18.45N,77.45E and web's ~2 km / 20 m near 18.53545N,77.42382E are different products. Select and document the canonical extent/resolution, then arrange both consumers against it; no implicit merge, resample, shift or equivalence claim is permitted.
 
 Publish canonical TerrainMeta/prior, and coherent versioned belief/sigma/ traversability batches: same frame/stamp across a complete run/version batch, unique stamp per run/version, metadata association and repeated complete publishing to survive cross-topic DDS reordering. A changed geometry/layer needs a new version/stamp. Accept only valid current-base TerrainObservation footprints; deduplicate observation_id, increment once, update only footprint, and publish an atomic complete snapshot. Prior is immutable within a run.
+
+The refreshed integration branch already publishes coherent synthetic batches
+for the real planner; preserve this MOCK plumbing but deliver the actual public
+data publisher in your owned packages. The refreshed `feat/ux` viewer consumes
+gateway MOCK-flat replay; its flat reconstruction is not a substitute for your
+recorded public rasters or georeferenced controls.
 
 ## Evaluator isolation and authorized test doubles
 

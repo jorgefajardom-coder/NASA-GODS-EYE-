@@ -110,8 +110,10 @@ resolution are `float64`; resource estimates are `float32`. Exact generated type
 and constants remain in the ROS definitions. Parallel observation arrays must
 have equal length; indices are row-major grid cells. Reject invalid bounds,
 non-finite elevations, invalid sigma, stale runs and duplicate observation IDs
-before changing belief. Non-human oxygen NaN is the explicit exception to finite
-resource values. An accepted observation changes its footprint and increments the
+before changing belief. Non-human oxygen NaN is the explicit non-applicable sentinel. The integrated
+planner also emits NaN unavailable metrics on non-FEASIBLE RouteDecision; typed
+status-conditioned serialization maps only those unavailable fields to null.
+Never replace invalid FEASIBLE metrics or infinities with null silently. An accepted observation changes its footprint and increments the
 map version once. Defining fields does not implement these checks.
 
 | Service | Request fields | Response fields |
@@ -122,10 +124,9 @@ map version once. Defining fields does not implement these checks.
 Service positions and RouteDecision paths are `geometry_msgs/Point` values in
 `map`, not Pose or nav_msgs/Path. The active-path topic remains `nav_msgs/Path`.
 SetMissionGoal permits an empty run ID to mean the current run; adapters must
-resolve it before recording or replay. Main still has startup placeholders; real
-planning and mission services exist on the audited owner branches, respectively
-PR #2 and `feat/mission`. Their code is preserved there, not replaced or merged
-by this baseline. See the [implementation inventory](INTEGRATION_MATRIX.md).
+resolve it before recording or replay. Main advanced concurrently to `004b3b2` when Jesus merged PR #2; the real
+planner is now integrated unchanged. Mission service remains on `feat/mission`.
+This reconciliation incorporates reviewed main without merging other owner PRs. See the [implementation inventory](INTEGRATION_MATRIX.md).
 
 MissionManager alone authorizes and publishes the active route. Only FEASIBLE
 candidates may be considered after current-run/map and return-budget checks.
@@ -140,7 +141,10 @@ versions/runs, mutated duplicates and reactivation of retired runs are rejected.
 Layers arriving before metadata are discarded by the planner; producers must
 repeat complete batches because DDS cross-topic ordering is not guaranteed.
 Changing geometry, CRS, datum, mask or raster requires a new version/stamp.
-The planner's `snapshot_contract_confirmed` defaults false. Daniel/Jesus must
+The planner's Missing profiles keep planner results UNKNOWN/PROFILE_NOT_READY; illustrative
+profiles require explicit allow_illustrative_profiles. Changes during search
+invalidate the snapshot token and discard stale candidates. Rejected immutable
+batches require a fresh version/stamp. `snapshot_contract_confirmed` defaults false. Daniel/Jesus must
 confirm the producer protocol before enabling it. Contract harness checks do
 not implement native topic association or the real mapping publisher.
 
@@ -256,3 +260,29 @@ Gazebo Harmonic execution and actual producer replacement are separate pending
 acceptances. No successful build, contract harness, MOCK or replay is a complete
 mission demonstration. Freeze remains pending Daniel/Diego/Jorge/David/Jesus
 review of units, snapshots, resources, event/reason vocabulary and consumer evidence.
+
+## Latest concurrent integration observations
+
+Final audit incorporates main `004b3b2` (PR #2 merged by Jesus), integration
+`45a4590` and the advanced web continuation `feat/ux` at `d649e2e`.
+`feature/web-replay-viewer` at `73f22db` is its verified ancestor; the newer UX
+branch is no longer the old scaffold. Preserve both histories and latest work.
+Jesus already has a real-planner/MOCK-mission vertical with coherent synthetic
+batches; Jorge already has a gateway replay adapter/run selector. Harden those
+existing consumers against these contracts, rather than reimplementing them.
+
+The new web adapter synthesizes flat 0m arrays from a name/source containing
+"flat". Such a display may only be an explicit illustrative MOCK fallback,
+never recorded terrain or scientific observation. Canonical strict replay still
+returns NOT_READY without actual matching public raster attachments. The new
+web consumer must validate snapshot/counts/identities/versions and duplicate
+route content. The demo still publishes 10,000 evaluator reference values;
+that final-bundle isolation blocker remains unresolved.
+
+Integration-owner observations report callback starvation with 1Hz repeated
+batches on grids >=60x60, default2s SEARCH_LIMIT on long queries, and short-budget
+searches returning UNKNOWN/SEARCH_LIMIT before proving insufficiency. Preserve
+UNKNOWN semantics and validate latency/load before asserting resource proof.
+The current mock mission/terrain do not implement full scientific audit,
+conflicting-request payload checks or real footprint fusion. Their tests are
+integration harness evidence only. Latest source/evidence is in the matrix.

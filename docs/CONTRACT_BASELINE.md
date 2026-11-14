@@ -2,7 +2,8 @@
 
 Status: **review candidate on `codex/contract-reconciliation`; not published in
 main, not frozen, no release**. Main reference at audit:
-`f75c54e929576c6780d559c9daa24d06ccf0a0b8` (2026-11-14, America/Bogota).
+`004b3b2c59a27794a1e49a61f48d0569bad020b2` (2026-11-14, America/Bogota).
+Initial audit main was f75c54e; main advanced concurrently when Jesus merged PR #2.
 The exact reconciliation commit is the head of its PR, not the reference-main
 SHA. [Machine-readable source lock](contract_baseline.json) records all eight
 remote heads and SHA-256 fingerprints of the six messages/two services.
@@ -12,7 +13,8 @@ bump existing package, ROS, gateway or viewer releases.
 GitHub reported main unprotected and no rulesets at audit. Concurrent owner
 branches, unresolved science and review gates justify a PR instead of direct
 main updates. A merged PR is needed before describing this as the baseline in
-main. No PR #2/#3/#4 or web implementation is merged by this cut. Main must be
+main. PR #2 was merged externally into main; this branch incorporates that main
+without merging PR #3/#4/#5 or any other owner branch. Main must be
 fetched/rechecked immediately before publication; see the integration log.
 
 ## Authority and versions
@@ -20,11 +22,11 @@ fetched/rechecked immediately before publication; see the integration log.
 | Contract | Version/source | Owner and compatibility |
 | --- | --- | --- |
 | ROS wire | ICD-ROS2-V1, mge_interfaces package 1.0.0; unchanged .msg/.srv | Jesus; producers and consumers retain main fields/types/constants |
-| JSON/replay | 1.0.0; manifest.json/timeline.jsonl/snapshot.json | Jesus; canonical recorder/bridge on audited integration branch |
-| Viewer adapter target | mge-web-0.1-draft; four legacy JSON objects | Jorge; existing scene/assets/timeline retained; actual hookup pending |
+| JSON/replay | 1.0.0; manifest.json/timeline.jsonl/snapshot.json | Jesus; canonical recorder/bridge on latest audited integration branch |
+| Viewer adapter target | mge-web-0.1-draft; four legacy JSON objects | Jorge; actual TS gateway consumer on advanced feat/ux retained; strict conformance pending |
 | Public dataset delivery | dataset.schema.json 1.0.0, new candidate | Daniel; legacy provenance template retained, no approved dataset yet |
 | Science costs | proposed mge-science-1.0.0 | David; search projection pending_model_agreement |
-| Planner search | audited FAST/SAFE MotionProfile implementation | Diego; EFFICIENT unsupported; not science-equivalent |
+| Planner search | FAST/SAFE MotionProfile implementation now in main | Diego; EFFICIENT unsupported; not science-equivalent |
 | Platform | Ubuntu 24.04, ROS 2 Jazzy, Gazebo Harmonic; Node web/.nvmrc | Jesus platform, Jorge browser; Gazebo execution pending |
 
 ROS is the sole field/type authority. JSON is an adapter representation; no ROS
@@ -33,15 +35,18 @@ north, columns east, index row*cols+col. Three.js is (east, up, -north).
 Canonical statuses remain FEASIBLE/UNKNOWN/NO_PATH/INSUFFICIENT_BUDGET/STALE_MAP/ERROR.
 Identifiers bind run/request/event/observation/route and map version. Nonhuman
 oxygen ROS NaN explicitly becomes JSON null. TerrainMeta NoData NaN separately
-becomes null by message context; arbitrary non-finite values are rejected.
+becomes null by message context; typed non-FEASIBLE RouteDecision unavailable NaNs become null; arbitrary
+non-finite values and all infinities are rejected.
 
 ## Reconciled decisions and dependencies
 
-1. Preserve owner modules on their branches. Adapt contracts without importing
-   replacement planners, mission managers, viewers or whole branch merges.
-2. Use gateway replay 1.0.0. The deterministic offline adapter preserves source
+1. Preserve owner modules. Incorporate the externally updated main planner
+   unchanged; do not import replacement modules or merge unreviewed owner PRs.
+2. Use gateway replay 1.0.0. The strict offline oracle/export adapter preserves source
    stamps, relative replay offsets, IDs, ENU geometry and costs. Existing recorder
-   lacks rasters, so its sample remains NOT_READY for full terrain playback.
+   lacks rasters, so strict playback remains NOT_READY. Jorge now has a TS
+   gateway consumer; harden it rather than replacing it. Its flat reconstruction
+   is an explicit illustrative MOCK fallback, never recorded terrain.
 3. Keep the planner/web crops distinct. Daniel must deliver one public dataset
    with masks/uncertainty/kind traversability, provenance/hashes and three controls.
 4. Keep science audit and search models separately identified. Scientific
@@ -81,7 +86,7 @@ while David's system/science acceptance validates intended mission outcomes.
 | 8 | Return/reserves/infeasibility | test_baseline_guards.py | Full independent science audit and real route/reserve run |
 | 9 | Invalidation/logical stop | test_baseline_guards.py | Mission ROS empty Path plus executor acknowledgement |
 | 10 | Offline record/replay | test_replay_conversion.py, immutable source fixture | Jorge browser consumption with public same-grid rasters |
-| 11 | Replace MOCK producer | tests/integration/test_provider_substitution.py | Real planner hook skips until owner module integrated; full ROS replacement required |
+| 11 | Replace MOCK producer | tests/integration/test_provider_substitution.py | Real planner seam now runs in baseline; real MissionManager/provider replacement remains pending |
 | 12 | Evaluator isolation | test_dataset.py, test_baseline_guards.py, test_replay_conversion.py | Audit final web build/filesystem mounts, fix branch public reference |
 
 All file names in the table without a prefix are under tests/contract. Tests
@@ -99,9 +104,9 @@ Jorge confirms actual viewer conversion/labels. Event/reason vocabulary and
 snapshot producer agreement still require recorded team confirmation before freeze.
 
 Recommended order: review/merge this contract PR; reconcile #3 gateway against
-it; preserve #2 advanced planner and mission branch with coordinated numerical
-model audit; deliver Daniel's coherent provisional public dataset; adapt Jorge's
-actual viewer and remove public evaluator arrays; then run one real map ->
+it and preserve the already merged #2 planner; integrate mission only after numerical
+model audit; deliver Daniel's coherent provisional public dataset; harden Jorge's existing
+feat/ux gateway adapter and remove public evaluator arrays; then run one real map ->
 planner -> MissionManager -> gateway -> replay consumer cut. Reconcile #4 docs
 in a small reviewed change, not an automatic bulk merge. This order describes
 dependencies; it authorizes no automatic merges.
@@ -110,3 +115,13 @@ Handoffs: [Jorge](handoffs/jorge.md), [Jesus](handoffs/jesus.md),
 [Diego](handoffs/diego.md), [Daniel](handoffs/daniel.md), [David](handoffs/david.md).
 Each begins by fetching and merging reviewed origin/main on the owner's own
 branch, with a clean tree; never overwrite concurrent work or force-push.
+
+## Final refreshed branch state
+
+The original feature/web-replay-viewer head73f22db is an ancestor of the actual
+advanced continuation feat/ux at d649e2e (PR #5). It is no longer the old scaffold.
+Record both histories and have Jorge align the PR source without discarding
+that continuation; this task changes neither owner branch. Integration45a4590
+already offers planner:=real with a MOCK mission/terrain and coherent batches.
+Their performance/search-limit findings and still-public evaluator fixture are
+listed in the updated matrix. No R01-R18 acceptance is inferred from those advances.

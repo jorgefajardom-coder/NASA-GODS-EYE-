@@ -74,3 +74,27 @@ def test_generated_terrainmeta_nan_nodata_has_explicit_json_sentinel():
     meta.nodata_value = float("inf")
     with pytest.raises(ValueError, match="NONFINITE_JSON_VALUE"):
         ros_json(meta)
+
+
+def test_actual_planner_failure_serializes_unavailable_metrics_explicitly():
+    # Use the integrated producer's failure builder rather than recreating its
+    # NaN convention in a test double. This still tests serialization, not ROS
+    # service transport or physical feasibility.
+    from mge_planning.node import _failure
+    from mge_planning.core import RouteStatus
+    PlanRoute = rosidl.get_service("mge_interfaces/srv/PlanRoute")
+    request, response = PlanRoute.Request(), PlanRoute.Response()
+    request.run_id, request.request_id = "generated-run", "generated-request"
+    request.agent_id, request.agent_kind, request.mode = "human-1", "HUMAN", "FAST"
+    response = _failure(request, response, RouteStatus.UNKNOWN, "PROFILE_NOT_READY", "Profile missing.")
+    payload = ros_json(response.decision, agent_kind=request.agent_kind)
+    assert payload["status"] == "UNKNOWN"
+    assert payload["reason_code"] == "PROFILE_NOT_READY"
+    assert payload["route_id"] == ""
+    for key in ("travel_time_s", "energy_est_wh", "oxygen_est_l", "min_clearance_m",
+                "reserve_time_s", "reserve_wh", "reserve_oxygen_l"):
+        assert payload[key] is None
+    json.dumps(payload, allow_nan=False)
+    response.decision.energy_est_wh = float("inf")
+    with pytest.raises(ValueError, match="NONFINITE_JSON_VALUE"):
+        ros_json(response.decision, agent_kind=request.agent_kind)

@@ -16,6 +16,8 @@ ROUTE_STATUSES = frozenset({"FEASIBLE", "UNKNOWN", "NO_PATH", "INSUFFICIENT_BUDG
 ROUTE_MODES = frozenset({"FAST", "EFFICIENT", "SAFE"})
 AGENT_KINDS = frozenset({"HUMAN", "ROVER", "DRONE"})
 OXYGEN_FIELDS = frozenset({"oxygen_remaining_l", "oxygen_est_l", "oxygen_budget_l", "reserve_oxygen_l"})
+DECISION_METRICS = frozenset({"travel_time_s", "energy_est_wh", "oxygen_est_l", "min_clearance_m",
+                              "reserve_time_s", "reserve_wh", "reserve_oxygen_l"})
 
 
 def _finite(value):
@@ -27,23 +29,33 @@ def _nonnegative(value):
 
 
 def ros_json(value, *, agent_kind=None, message_type=None):
-    """Convert ROS-shaped trees with explicit non-human oxygen/NoData sentinels.
+    """Convert ROS-shaped trees using typed availability and NoData sentinels.
 
     Callers supply the owning agent kind for RouteDecision and service trees,
     which do not contain agent_kind. Generated TerrainMeta identifies its own
-    NoData field; a ROS-shaped mapping requires its explicit canonical type ID.
+    NoData field; typed non-FEASIBLE RouteDecision permits unavailable metrics.
+    ROS-shaped mappings require an explicit canonical type ID for these cases.
     ROS objects use their generated field list; arbitrary attributes are omitted.
     """
     if hasattr(value, "get_fields_and_field_types"):
         if type(value).__module__ == "mge_interfaces.msg._terrain_meta" and type(value).__name__ == "TerrainMeta":
             message_type = "mge_interfaces/msg/TerrainMeta"
+        elif type(value).__module__ == "mge_interfaces.msg._route_decision" and type(value).__name__ == "RouteDecision":
+            message_type = "mge_interfaces/msg/RouteDecision"
         value = {key: getattr(value, key) for key in value.get_fields_and_field_types()}
     if isinstance(value, Mapping):
         kind = value.get("agent_kind", agent_kind)
         if kind is not None and kind not in AGENT_KINDS:
             raise ValueError("UNKNOWN_AGENT_KIND")
         result = {}
+        status = value.get("status")
+        unavailable_decision = (message_type == "mge_interfaces/msg/RouteDecision"
+                                and isinstance(status, str) and status in ROUTE_STATUSES
+                                and status != "FEASIBLE")
         for key, item in value.items():
+            if unavailable_decision and key in DECISION_METRICS and type(item) is float and math.isnan(item):
+                result[key] = None
+                continue
             if key == "nodata_value" and message_type == "mge_interfaces/msg/TerrainMeta":
                 if type(item) is float and math.isnan(item):
                     result[key] = None
@@ -315,7 +327,7 @@ def logical_stop_on_map_change(route, *, current_run, current_map_version):
 
 
 def request_candidate(provider, request):
-    """An injection seam shared by contractual mocks and future real adapters."""
+    """An injection seam shared by contractual mocks and owner-module adapters."""
     result = provider(request)
     if not isinstance(result, Mapping) or set(result) != {"decision"}:
         raise ValueError("PLAN_ROUTE_RESPONSE_REQUIRED")

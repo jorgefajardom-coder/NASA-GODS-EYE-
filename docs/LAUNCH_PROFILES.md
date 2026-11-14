@@ -41,6 +41,7 @@ from mock defaults or invent approvals to activate a profile.
 
 Synthetic receipt dictionaries in test_configuration.py only test selection and
 parameter forwarding. A launch with no receipt fails NOT_READY before creating
-providers. Main still has placeholder data/mapping/planner/mission/sim nodes;
+providers. Main now has the real planner from externally merged PR #2, but still has
+placeholder data/mapping/mission/sim nodes;
 a build or executable's presence is not producer readiness. Keep approvals false
 until those actual modules are integrated and tested with one unchanged consumer.

@@ -1,6 +1,8 @@
 # Diego - preserve the advanced planner and reconcile resource costs
 
-Active branch: **`feat/planner`**. Audited head: `34c515b6b86f73336844e8b3614c70b144574ec3`; PR #2 is open, not merged. Algorithm commit `a6204dd`, ROS/snapshot/provisional crop commit `6e4984d` and handoff `40c252d` contain the substantive increment. Read the existing `docs/planner_handoff.md`, `src/mge_planning/MODEL.md` and `docs/planner_provenance.md` on this branch; keep their evidence intact.
+Active branch: **`feat/planner`**. Audited head: `34c515b6b86f73336844e8b3614c70b144574ec3`. PR #2 was open at the initial
+audit, then merged externally into main `004b3b2`; this reconciliation preserves
+that advance. Continue incremental fixes on the owned planner front. Algorithm commit `a6204dd`, ROS/snapshot/provisional crop commit `6e4984d` and handoff `40c252d` contain the substantive increment. Read the existing `docs/planner_handoff.md`, `src/mge_planning/MODEL.md` and `docs/planner_provenance.md` on this branch; keep their evidence intact.
 
 Read [AGENTS.md](../../AGENTS.md), [ICD](../ICD.md), [contract baseline](../CONTRACT_BASELINE.md) and [integration matrix](../INTEGRATION_MATRIX.md) before editing. Canonical ROS fields/types live in `src/mge_interfaces/msg` and `srv`; preserve them and adapt representations explicitly.
 
@@ -44,6 +46,18 @@ First run `python -m pytest tests/planning tests/contracts/test_planner_provenan
 On Jazzy, build/source the workspace and run `python3 -m pytest tests/contract/test_planner_service.py`. Test with the existing explicitly illustrative flags only in a labelled test scenario; production must require confirmed batch protocol and reviewed profiles.
 
 With Jesus/David, run actual MissionManager -> PlanRoute -> MissionManager, including one accepted cost-agreed full return/reserve candidate, one MODEL_MISMATCH, one insufficient budget and NON_CELL_CENTER. Record exact source/configuration IDs; a controlled planner mock does not prove this real consumer integration. Re-run seeded search benchmarks in a new evidence directory without overwriting old runs; search results are not mission A/B/C.
+
+## Reported integration findings
+
+Final `feat/integration` at `45a4590` now has a real PlanRoute option behind
+MOCK terrain/mission and `tests/integration/test_vertical_planner.py`.
+Its log reports callback backlog/stalls at repeated 1 Hz batches on 60 x 60+
+grids, a clearly short-budget example returning UNKNOWN/SEARCH_LIMIT, and a
+500 m request reaching the default 2 s bound. These are owner-reported,
+not reproduced by this reconciliation. Investigate immutable-layer callback
+work and bounded search with Jesus. Preserve UNKNOWN for an incomplete proof;
+do not weaken guards or call SEARCH_LIMIT a proven insufficient-budget result.
+Keep the current 5 s mock batch repeat workaround explicitly provisional.
 
 ## Acceptance and next delivery
 

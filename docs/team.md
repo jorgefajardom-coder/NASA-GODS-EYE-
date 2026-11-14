@@ -1,21 +1,33 @@
 # Team branches and ownership
 
 The active branch inventory was inspected against remote main
-`f75c54e929576c6780d559c9daa24d06ccf0a0b8` on 2026-11-14. See [contract baseline](CONTRACT_BASELINE.md) and [integration matrix](INTEGRATION_MATRIX.md) for publication state, exact revisions, contracts and unresolved acceptance.
+`004b3b2c59a27794a1e49a61f48d0569bad020b2` at the final refresh on
+2026-11-14; initial audit main was `f75c54e`. PR #2 merged externally during
+this task, and that main is incorporated into the reconciliation. See [contract baseline](CONTRACT_BASELINE.md) and [integration matrix](INTEGRATION_MATRIX.md) for publication state, exact revisions, contracts and unresolved acceptance.
 
 | Person | Actual active branch | Owned scope | Individual handoff |
 | --- | --- | --- | --- |
-| Jorge | `feature/web-replay-viewer` | Existing 3D viewer, scene, assets, layers, agents, timeline, display adapters | [Jorge](handoffs/jorge.md) |
+| Jorge | `feat/ux` (verified latest continuation; PR source alignment pending) | Existing 3D viewer, scene, assets, layers, agents, timeline, display adapters | [Jorge](handoffs/jorge.md) |
 | Jesus | `feat/integration` | ROS interfaces, ICD, gateway, recorder, bringup, sim/CI and integration adapters | [Jesus](handoffs/jesus.md) |
 | Diego | `feat/planner` | Advanced planning engine, snapshot adapter, PlanRoute service and planner tests | [Diego](handoffs/diego.md) |
 | Daniel | `feat/data` | Canonical public data, mapping, terrain configuration, provenance and control points | [Daniel](handoffs/daniel.md) |
 | David | `feat/mission` | Scientific authority, mission/task manager, resource profiles, acceptance and benchmark protocol | [David](handoffs/david.md) |
 
-`feat/ux` has no changes beyond audited main and is not Jorge's implementation front. Preserve it; do not replace the real viewer with its scaffold. `dev/jesus` was pruned remotely; its prior work survives on `feat/integration`. `codex/docs-probable-mission-plan` remains the separate PR #4 documentation proposal. No GitHub usernames or reviewer permissions are guessed.
+The initial audit found `feat/ux` at the scaffold; concurrent work has since
+advanced it to `d649e2e` with the complete viewer, gateway replay adapter and
+main merge. `feature/web-replay-viewer` at `73f22db` is a verified ancestor and
+remains preserved. The objective requested that historical branch as PR source;
+Jorge/Jesus must confirm alignment with the latest `feat/ux`/PR #5. Do not force
+branch changes or substitute an older scaffold for either implementation.
+
+`dev/jesus` was pruned remotely; its prior work survives on `feat/integration`
+(now `45a4590`). `codex/docs-probable-mission-plan` remains PR #4's separate
+proposal, now at `5bb6566`. No GitHub usernames or reviewer permissions are
+guessed. The matrix retains both initial and final inventories.
 
 ## Begin or resume work
 
-Read AGENTS.md, ICD.md, CONTRACT_BASELINE.md and your handoff first. Keep local changes safe before switching. For an existing local branch, replacing BRANCH with the exact active branch above:
+Read AGENTS.md, ICD.md, CONTRACT_BASELINE.md and your handoff first. Keep local changes safe before switching. For an existing local branch, replacing BRANCH with your confirmed active branch above (Jorge confirms PR-source alignment first):
 
 ```sh
 git status --short

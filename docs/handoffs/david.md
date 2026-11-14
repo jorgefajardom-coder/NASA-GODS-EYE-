@@ -1,6 +1,8 @@
 # David - retain scientific mission authority and approve the model
 
-Active branch: **`feat/mission`**. Audited head: `cf292107277e1aaf130d6c0ecd33904a22638f4f` (scientific mission authority). Existing handoff is `docs/mission_handoff.md`; also read `docs/science_models.md`, `docs/science_benchmark.md`, `docs/science_decisions.md` and the retained mission validation/model-check evidence on that branch. Continue its actual manager, models, adapters and tests rather than the main scaffold.
+Active branch: **`feat/mission`**. Audited head: `cf292107277e1aaf130d6c0ecd33904a22638f4f` (scientific mission authority). This head is unchanged at the final refresh. Main `004b3b2` now includes
+Diego's real planner externally via PR #2; Jesus's latest integration branch
+already tests it behind MOCK mission/terrain. Existing handoff is `docs/mission_handoff.md`; also read `docs/science_models.md`, `docs/science_benchmark.md`, `docs/science_decisions.md` and the retained mission validation/model-check evidence on that branch. Continue its actual manager, models, adapters and tests rather than the main scaffold.
 
 Read [AGENTS.md](../../AGENTS.md), [ICD](../ICD.md), [contract baseline](../CONTRACT_BASELINE.md) and [integration matrix](../INTEGRATION_MATRIX.md) before editing. Canonical ROS fields/types live in `src/mge_interfaces/msg` and `srv`; preserve them and adapt representations explicitly.
 
@@ -44,6 +46,11 @@ First run `python -m pytest tests/mission`. Keep model formula/input checks, mis
 On Jazzy use the branch's `scripts/validate_mission_ros.sh`/documented ASCII-path workspace when the Windows path prevents ROSIDL generation, then run `python3 -m pytest tests/contract/test_mission_service.py`. Existing reports verify a controlled planner, not Diego's actual numerical model.
 
 With Jesus/Diego, replace that controlled provider by the real PlanRoute server without changing the MissionManager consumer. Demonstrate accepted agreed full itinerary, MODEL_MISMATCH, NON_CELL_CENTER, stale result, return-reserve rejection, map-change invalidation and separate execution acknowledgement. Retain exact sources/configs/data hashes and rejected runs.
+
+The final integration log's callback/search-limit findings belong to Diego and
+Jesus; numerical model approval does not resolve them. Existing feat/ux now
+plays the recorded MOCK gateway package, but neither that replay nor the MOCK
+mission proves that your real manager and planner model agree.
 
 ## Acceptance and next delivery
 
