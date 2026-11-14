@@ -12,8 +12,9 @@ is not a simulated mission, a perception result or resource validation.
 
 Three more labelled MOCK executables let the gateway be integrated before the
 owning modules exist; `vertical_mock.launch.py` starts them together.
-`mock_terrain` publishes metadata of a synthetic flat grid and bumps the map
-version once per new observation ID; it carries no Mars data and no rasters.
+`mock_terrain` publishes the coherent map batch of a synthetic flat grid
+(metadata, belief, sigma and one mask per agent kind, one stamp per map version)
+and bumps the version once per new observation ID; it carries no Mars data.
 `mock_planner` answers PlanRoute with a straight line and placeholder rates; it
 does not read terrain, so its FEASIBLE is not a verified route. `mock_mission`
 covers goal, route and replan only, up to READY. They are to be replaced by
