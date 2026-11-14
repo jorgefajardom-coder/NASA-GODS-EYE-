@@ -6,6 +6,8 @@ pose when the map version changes. It covers IDLE / PLANNING / READY / REPLAN
 / BLOCKED only. It has no tasks, precedences or execution; those belong to
 the real mge_mission package.
 """
+import math
+
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
 import rclpy
@@ -22,6 +24,16 @@ from mge_sim.mock_agents import load_agents
 S = MissionState
 E = MissionEvent
 
+# Planner answers that only mean "the new map batch has not arrived yet".
+TRANSIENT = {'MAP_NOT_READY', 'SNAPSHOT_INCOMPLETE', 'MAP_VERSION_MISMATCH',
+             'SNAPSHOT_CHANGED_DURING_SEARCH'}
+MAX_RETRIES = 20
+# The planner search is time-limited, so SEARCH_LIMIT can be an effect of load
+# (for instance while it ingests a new map batch). A few more tries tell that
+# apart from a search that really does not fit in the limit.
+MAX_LIMIT_RETRIES = 2
+RETRY_PERIOD_S = 0.25
+
 
 class MockMission(Node):
 
@@ -37,6 +49,8 @@ class MockMission(Node):
         self.agents = {}
         self.goal = None            # SetMissionGoal.Request in force
         self.pending = None         # request_id of the plan we are waiting for
+        self.attempt = 0            # plan requests sent for the current goal and map
+        self.retry_timer = None
         self.route = RouteDecision()
         self.answers = {}           # request_id -> SetMissionGoal.Response
 
@@ -76,6 +90,8 @@ class MockMission(Node):
                 self.publish_path()
             self.set_state(S.STATE_REPLAN, cause=f'map-v{meta.map_version}',
                            reason='MAP_UPDATED')
+            self.attempt = 0
+            self.limit_retries = 0
             self.request_plan()
 
     def on_set_goal(self, req, res):
@@ -113,6 +129,8 @@ class MockMission(Node):
                       agent_id=req.primary_agent_id, reason=res.reason_code,
                       detail=res.detail)
             self.set_state(S.STATE_PLANNING, cause=req.request_id)
+            self.attempt = 0
+            self.limit_retries = 0
             self.request_plan()
         res.mission_state = self.state
         if req.request_id:
@@ -121,11 +139,15 @@ class MockMission(Node):
 
     # ---- planning ---------------------------------------------------------
     def request_plan(self):
+        if self.retry_timer is not None:
+            self.retry_timer.cancel()
+            self.retry_timer = None
         g = self.goal
         agent = self.agents[g.primary_agent_id]
+        self.attempt += 1
         req = PlanRoute.Request()
         req.run_id = self.run_id
-        req.request_id = f'{g.request_id}#v{self.map_version}'
+        req.request_id = f'{g.request_id}#v{self.map_version}.{self.attempt}'
         req.agent_id = agent.agent_id
         req.agent_kind = agent.agent_kind
         req.start = agent.pose.position      # current pose, not the original start
@@ -136,10 +158,12 @@ class MockMission(Node):
         req.map_version = self.map_version
         req.time_budget_s = g.time_budget_s
         req.energy_budget_wh = g.energy_budget_wh
-        req.oxygen_budget_l = g.oxygen_budget_l
         req.reserve_time_s = g.reserve_time_s
         req.reserve_wh = g.reserve_wh
-        req.reserve_oxygen_l = g.reserve_oxygen_l
+        # Only a human has oxygen; the contract carries NaN for everyone else.
+        human = agent.agent_kind == AgentState.KIND_HUMAN
+        req.oxygen_budget_l = g.oxygen_budget_l if human else math.nan
+        req.reserve_oxygen_l = g.reserve_oxygen_l if human else math.nan
         self.pending = req.request_id
         if not self.planner.service_is_ready():
             self.pending = None
@@ -154,9 +178,19 @@ class MockMission(Node):
             self.get_logger().info(f'stale plan answer {d.request_id} ignored')
             return
         self.pending = None
-        if d.map_version_used != self.map_version or d.status == RouteDecision.STATUS_STALE_MAP:
-            self.get_logger().info('plan answer for an older map, replanning')
-            self.request_plan()
+        behind = (d.map_version_used != self.map_version
+                  or d.status == RouteDecision.STATUS_STALE_MAP
+                  or d.reason_code in TRANSIENT)
+        if behind and self.attempt < MAX_RETRIES:
+            # The planner has not assembled the batch of this map version yet.
+            self.get_logger().info(f'planner not on map v{self.map_version} yet '
+                                   f'({d.status}/{d.reason_code}), retrying')
+            self.retry_timer = self.create_timer(RETRY_PERIOD_S, self.request_plan)
+            return
+        if d.reason_code == 'SEARCH_LIMIT' and self.limit_retries < MAX_LIMIT_RETRIES:
+            self.limit_retries += 1
+            self.get_logger().info('planner hit its search limit, trying again')
+            self.retry_timer = self.create_timer(RETRY_PERIOD_S, self.request_plan)
             return
         if d.status == RouteDecision.STATUS_FEASIBLE:
             self.route = d
