@@ -367,7 +367,9 @@
         "docs/mission_integration_handoff.md",
         "README.md",
         "docs/ICD.md",
-        "docs/verification.md"
+        "docs/verification.md",
+        "evidence/mission-service-handoff-20261114",
+        "docs/integration_log.md"
       ],
       "use": "Preserve actual MissionManager; select mutually exclusive mock/real service provider with explicit configuration and clock gates; add real-consumer smoke and fix combined test discovery/validation snapshots. Existing science model disagreement remains blocked; no physical measurement generated."
     }

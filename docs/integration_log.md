@@ -99,3 +99,20 @@ computational acceptance evidence, not mission safety or scientific validation.
 - Open for David: slope limits in `mapping_node` are placeholders; the 20 m CTX
   product is resampled to a 4 m grid. Next: a vertical launch on this terrain
   needs agent positions on its cell centres and the real mission provider.
+
+## Real MissionManager handoff, 2026-11-14
+
+OwnerDavid; integration/reviewJesus. Source255be89 preserves mission8f69f62 and
+refreshes through main6ec9b84 after the externally merged data/endorsement cuts.
+No original owner branch is overwritten. The PR supplies the existing real
+mission module and exclusive mission:=mock|real selection, configuration/clock
+preflight and real-consumer regressions. It does not remove the contractual mock
+or redefine messages/services, approve models or synthesize completed missions.
+
+Actual checks: Python636passed/15native skips; Jazzy8packages/8definitions,
+556selected tests passed/one optional snapshot skip; ten focused selector/HTTP
+consumer tests passed; web4tests/build and repository/diff checks passed.
+Evidence: evidence/mission-service-handoff-20261114. Use the
+[handoff](mission_integration_handoff.md) to replace mock_mission, never run it
+alongside mission_node. Current test outcome remains MODEL_NOT_AGREED/BLOCKED;
+science-model reconciliation and actual execution remain separate owner gates.

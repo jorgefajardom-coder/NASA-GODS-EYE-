@@ -173,3 +173,13 @@ rover 628.326 s / 24.095 Wh, drone 80 s / 4.823 Wh. Low drone horizontal
 speed changes model budget feasibility because the illustrative time reserve
 leaves only one second nominal margin. These are synthetic calculations,
 not observed endurance, mission success, scientific approval or A/B/C results.
+
+## Real mission-provider integration cut
+
+Combined source255be89 (mission8f69f62, refreshed main6ec9b84): full native
+Python636passed/15skipped; Jazzy selected mission/contract/integration/unit/HTTP
+suites556passed/one optional published-snapshot skip. Ten focused launch/consumer
+checks passed. All eight ROS packages built and all eight custom definitions
+were inspected. The real mission service is unique; model disagreement remains
+BLOCKED with no active route. Web4tests/build, repository and whitespace checks
+passed. [Logs, JUnit, source hashes and limits](../evidence/mission-service-handoff-20261114/README.md).
