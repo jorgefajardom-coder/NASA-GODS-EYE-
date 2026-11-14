@@ -52,10 +52,16 @@ node scripts/extract-ctx-crop.mjs <ctx.tif> 550 780   # centre pixel row, col
 The selected agent's oxygen, energy and time are shown once, in a circular HUD at the bottom right (agent icon in the centre, one ring per quantity, values beside it); the list, details and status blocks do not repeat them.
 
 Selectable list of agents, tasks and routes (left), contextual details (right), telemetry
-and route status (bottom left), replay timeline (bottom). Modes: Exploration, Ground layers and Mission
-replay; Atmos is disabled until weather data exists.
+and route status (bottom left), replay timeline (bottom). Modes: Exploration, Ground layers, Atmos and Mission
+replay.
 
 The demo terrain is draped with the real CTX orthomosaic of Jezero from JPL Mars Trek (6 m source, 5 m image, same production as the DTM; regenerate with `node scripts/extract-ctx-ortho.mjs`). The panchromatic image is contrast-stretched and tinted for display only; it can be turned off in the view options and is not used on the uncertainty layer. Site marker masts hide when the camera is closer than 70 m so they do not cut through agents standing on a site.
+
+The **Atmos** tab shows the latest Perseverance MEDA daily summaries at Jezero (temperature, pressure, sunrise and sunset), the annual cycle of Curiosity REMS at Gale crater as a reference (medians per 15° of solar longitude, another site, with the Jezero sols on top) and a surface radiation estimate for the run from the MSL RAD averages (Hassler et al. 2014), without suit or habitat shielding. The weather feeds are CAB outreach summaries, not the PDS archive; the replay has no Mars date, so none of it is presented as the conditions of the simulated run. Regenerate with `node scripts/extract-atmosphere.mjs`.
+
+The status block shows `REPLAY` with the run's `source_mode` (`MOCK`, `SIMULATION` or `UNKNOWN`, ICD §6.1). A package that says `LIVE` or another value is refused; MOCK terrain metadata always shows `MOCK`; a package without the field shows `UNKNOWN`.
+
+Agents and the base are drawn at true size by default (astronaut 1.9 m, rover 4.1 m, drone 1.2 m rotor span); the view option *True-size agents* can be turned off to enlarge agents with camera distance on the 2 km map. The base is `public/assets/models/base.glb`, the team's Blender base (`scripts/blender/source/base-marciana-v2.blend`) prepared by `scripts/blender/prepare_base.py` (own ground and rocks removed, dust film, sandbag berms, radiators, comms mast, power cables). It is placed whole at the median ground height under its footprint; a simple procedural cluster is drawn while it loads or if it fails.
 
 The **Ground layers** tab drapes the USGS SIM 3464 geologic map (Sun and Stack, 2020) on the terrain and lists the units of the area with their share, description, composition (the map's mineral associations, such as Fe/Mg clay and carbonate in the fan) and interpretation. Selecting a unit highlights it. The geologic map can be turned off (the CTX image shows again), and a **cut-away block** shows the terrain as a cut piece of ground: each wall column starts with the unit mapped at the surface there and continues with older strata in the order given by the SIM 3464 unit interpretations (Aeb, NHjf2, Njf, Nue, older crust). Thicknesses, rock tones and the Nue/Njf order are schematic, as the panel states. Boundaries are approximate: the map has a 100–200 m registration offset against the CTX terrain. Regenerate with `node scripts/extract-geology.mjs`.
 

@@ -299,6 +299,48 @@
         "web/public/assets/models/drone.glb"
       ],
       "use": "Remove agency marks the Blender cleanup missed: the rover's blade sheet is replaced by the drone's already cleaned sheet and two logos on the drone blade roughness map are filled with its plain background. The models stay NASA/JPL-Caltech's and are not AI-generated; a regression test checks the cleaned regions."
+    },
+    {
+      "tool": "OpenAI Codex (source model, owner-confirmed); Claude (Anthropic) through Claude Code (preparation script, realism pass, viewer code and tests)",
+      "kind": "ai_generated_3d_model_and_preparation_code",
+      "generation": "Source 3D model generated with OpenAI Codex by the owner; edited by a deterministic AI-assisted Blender script",
+      "paths": [
+        "web/scripts/blender/source/base-marciana-v2.blend",
+        "web/scripts/blender/prepare_base.py",
+        "web/public/assets/models/base.glb",
+        "web/src/components/BaseModel.tsx",
+        "web/tests/baseModel.test.ts"
+      ],
+      "use": "Team Mars base (hub, three modules, corridors, hangar, geodesic dome, solar field). The script removes its own ground and rocks and adds a deterministic realism pass: dust vertex colours, regolith sandbag berms, thermal radiators, a comms mast and power cables. Untextured, no agency logos, flags or mission marks. Visual context only; it does not affect routes or data.",
+      "source_sha256": "1599ec1bea327ead66e000a667e3791aa004c91502ab0bf1664febad93f646ee"
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_and_derived_data",
+      "generation": "AI-assisted extraction script and viewer code; the values are copied or grouped from public NASA feeds and a published paper, none generated",
+      "paths": [
+        "web/scripts/extract-atmosphere.mjs",
+        "web/public/replay/demo/atmosphere.json",
+        "web/src/lib/atmos.ts",
+        "web/src/components/AtmosPanel.tsx",
+        "web/tests/atmos.test.ts"
+      ],
+      "use": "Atmos tab: latest Perseverance MEDA daily summaries at Jezero, Curiosity REMS daily summaries at Gale grouped by solar longitude (medians), and MSL RAD surface dose rates from Hassler et al. (2014). Outreach summaries, not the PDS science archive; Gale and RAD values are another site's reference, not Jezero measurements. Display only."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_and_tests",
+      "generation": "AI-assisted generation",
+      "paths": [
+        "web/src/lib/provenance.ts",
+        "web/src/data/gatewayReplay.ts",
+        "web/src/data/replayAdapter.ts",
+        "web/src/components/Frame.tsx",
+        "web/src/components/AgentLayer.tsx",
+        "web/tests/provenance.test.ts",
+        "web/tests/gatewayReplay.test.ts"
+      ],
+      "use": "Viewer consumption of source_mode (ICD section 6.1 proposed in PR #11): REPLAY · MOCK / SIMULATION / UNKNOWN status, LIVE refused, MOCK terrain evidence wins. Drone drawn at its true height above the drawn ground and a true-size agents option."
     }
   ],
   "generated_media": [],
@@ -350,5 +392,6 @@
       "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
     }
   ],
-  "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements"
+  "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements",
+  "uses_note_base_model": "base-marciana-v2: AI-generated 3D geometry (no images or video). Renders or captures that show it in the delivery should follow the AI-generated image/video watermark rule."
 }

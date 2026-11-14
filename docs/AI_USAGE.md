@@ -69,6 +69,20 @@ rover's blade sheet is replaced with the drone's already cleaned sheet, and two 
 drone blade roughness map are filled with its plain background. This is a deterministic flat
 fill or copy, not generative inpainting, so the models still contain no AI-generated imagery.
 
+The surface base model starts from the Blender file
+`web/scripts/blender/source/base-marciana-v2.blend`, an AI-generated 3D model created by the
+owner with OpenAI Codex outside this repository (owner-confirmed, 14 November 2026). `web/scripts/blender/prepare_base.py`, written with Claude through Claude
+Code, removes its ground and rocks and adds a deterministic realism pass (dust vertex
+colours, sandbag berms, radiators, comms mast, cables) to produce
+`web/public/assets/models/base.glb`: flat colours, no textures, no AI image generator, no
+agency marks. `web/public/replay/demo/atmosphere.json` holds values copied or
+grouped (medians per 15° of solar longitude) from the public NASA Mars weather feed
+(Perseverance MEDA at Jezero, Curiosity REMS at Gale; CAB outreach summaries) and the MSL
+RAD surface dose rates published by Hassler et al. (2014); only
+`web/scripts/extract-atmosphere.mjs` and the Atmos tab code were AI-assisted, and no value
+is generated. The viewer's `source_mode` handling (status chip, gateway package adapter)
+was also written with Claude through Claude Code.
+
 Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
 by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).
 No AI-generated image, video or audio is included. Machine-readable metadata:
