@@ -1,3 +1,4 @@
+import { LABEL_Z } from '../lib/labels';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useRef, type ReactNode } from 'react';
@@ -46,7 +47,7 @@ export function SiteMarkers({ pois, controlPoints, showControlPoints, tasks, t, 
                 <ringGeometry args={[3.2, 4, 32]} />
                 <meshBasicMaterial color={color} transparent opacity={0.8} />
               </mesh>
-              <Html position={[0, 13, 0]} center zIndexRange={[25, 0]} className={`site-label site-label--${p.kind}`}>
+              <Html position={[0, 13, 0]} center zIndexRange={LABEL_Z} className={`site-label site-label--${p.kind}`}>
                 {p.label}
                 {state ? <em> · {state.toLowerCase()}</em> : null}
               </Html>
@@ -63,7 +64,7 @@ export function SiteMarkers({ pois, controlPoints, showControlPoints, tasks, t, 
                 <sphereGeometry args={[0.9, 12, 8]} />
                 <meshBasicMaterial color="#00e5ff" />
               </mesh>
-              <Html position={[0, 4, 0]} center className="site-label site-label--cp">
+              <Html position={[0, 4, 0]} center zIndexRange={LABEL_Z} className="site-label site-label--cp">
                 {cp.id}
               </Html>
             </group>

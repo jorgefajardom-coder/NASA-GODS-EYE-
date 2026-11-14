@@ -17,3 +17,9 @@ vertical with `terrain:=real planner:=real`: unobserved Jezero terrain answers
 version 2 and a FEASIBLE route through the gateway, and the recorded package
 validates offline. Mission and agents are still MOCK in all of them, so none is
 mission evidence.
+
+`test_vertical_execution.py` adds `agents:=kinematic`: the human follows the
+authorized route there and back on the polyline with resources only falling,
+then a new map version invalidates a second route and the human halts in place
+(`HALTED`, zero velocity, no further motion); the off-centre replan is refused
+explicitly with `NON_CELL_CENTER`.

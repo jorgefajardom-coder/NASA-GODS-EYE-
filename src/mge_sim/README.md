@@ -20,6 +20,20 @@ does not read terrain, so its FEASIBLE is not a verified route. `mock_mission`
 covers goal, route and replan only, up to READY. They are to be replaced by
 `mge_data`/`mge_mapping`, `mge_planning` and `mge_mission`.
 
+`kinematic_executor` (`agents:=kinematic` in `vertical_mock.launch.py`) replaces
+`mock_agents`; only one of them publishes the agent states. It is a labelled
+MOCK stand-in for the simulation backend. The mission's primary agent follows
+`/mge/planner/active_path` once the path matches the authorized route of the
+current MissionState and starts at the agent's horizontal position (height
+comes from the path, the public belief surface). It moves at the constant
+speed and spends time, energy and oxygen at the constant rates implied by that
+route's own planner estimates; nothing is replenished. When the route ID
+changes or clears, or the path empties or changes, the agent halts where it is
+and keeps publishing mode `HALTED` with zero velocity: that AgentState is the
+stop acknowledgement. It never continues to the next waypoint, never plans and
+never moves robots that only have assignments. Not dynamics, terrain contact,
+a resource model or Gazebo.
+
 No Gazebo world, physical dynamics or real perception is supplied. First implement
 a clearly labelled SIMULATED adapter with agent IDs matching shared configuration.
 Then validate observation footprints, simulated clock and one map update per event.

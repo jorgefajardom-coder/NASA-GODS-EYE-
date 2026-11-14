@@ -1,11 +1,20 @@
 import type { RasterSet } from '../types/replay';
 
-export type TerrainLayer = 'prior' | 'belief' | 'sigma' | 'reference';
+export type TerrainLayer = 'prior' | 'belief' | 'slope' | 'sigma' | 'reference';
 
 export const LAYER_INFO: Record<TerrainLayer, { label: string; description: string }> = {
   prior: { label: 'Orbital map', description: 'Prior from orbit. Fixed for the whole run.' },
   belief: { label: 'Updated map', description: 'Prior plus agent observations up to the current map version.' },
-  sigma: { label: 'Uncertainty', description: 'One-sigma height uncertainty of the updated map.' },
+  slope: {
+    label: 'Slope',
+    description:
+      'Slope of the orbital CTX DTM (Horn 3x3 on the 20 m grid, as gdaldem slope). Computed from measured heights only, never from the updated map. Each value averages about 60 m of ground, so shorter steps are smoothed out: a lower bound for local slope, not a hazard map.',
+  },
+  sigma: {
+    label: 'Uncertainty',
+    description:
+      'One-sigma height uncertainty of the updated map. Assumed, not measured: the demo sets it by hand (1 m, 3 m on the surveyed crossing, 0.2 m once observed) and no source product supplies a per-cell error yet.',
+  },
   reference: { label: 'Reference (evaluator)', description: 'Hidden ground truth used only to evaluate. The planner never sees it.' },
 };
 
@@ -20,7 +29,7 @@ export function versionKey(rasters: RasterSet, version: number): string {
 
 /** Heights that shape the mesh for a layer. Sigma is drawn on the updated map. */
 export function heightGrid(rasters: RasterSet, layer: TerrainLayer, version: number): (number | null)[] {
-  if (layer === 'prior') return rasters.prior;
+  if (layer === 'prior' || layer === 'slope') return rasters.prior; // slope is computed on the orbital map
   if (layer === 'reference' && rasters.reference) return rasters.reference;
   if (layer === 'reference') return rasters.prior; // not loaded: the layer is not offered
   return rasters.versions[versionKey(rasters, version)].belief;
@@ -64,6 +73,20 @@ const SIGMA: Rgb[] = [
 
 export const SIGMA_SCALE_MAX_M = 3;
 
+/** Sequential, one hue: pale sand (gentle) to dark red-brown (steep). */
+const SLOPE: Rgb[] = [
+  [0.93, 0.88, 0.78],
+  [0.93, 0.72, 0.48],
+  [0.85, 0.48, 0.26],
+  [0.66, 0.24, 0.13],
+  [0.4, 0.08, 0.06],
+];
+export const SLOPE_SCALE_MAX_DEG = 30;
+
+export function slopeColor(deg: number): Rgb {
+  return ramp(SLOPE, deg / SLOPE_SCALE_MAX_DEG);
+}
+
 export function elevationColor(h: number, lo: number, hi: number): Rgb {
   return ramp(ELEVATION, hi > lo ? (h - lo) / (hi - lo) : 0.5);
 }
@@ -74,3 +97,4 @@ export function sigmaColor(s: number): Rgb {
 
 export const ELEVATION_CSS_GRADIENT = `linear-gradient(90deg, ${ELEVATION.map((c) => `rgb(${c.map((v) => Math.round(v * 255)).join(',')})`).join(',')})`;
 export const SIGMA_CSS_GRADIENT = `linear-gradient(90deg, ${SIGMA.map((c) => `rgb(${c.map((v) => Math.round(v * 255)).join(',')})`).join(',')})`;
+export const SLOPE_CSS_GRADIENT = `linear-gradient(90deg, ${SLOPE.map((c) => `rgb(${c.map((v) => Math.round(v * 255)).join(',')})`).join(',')})`;

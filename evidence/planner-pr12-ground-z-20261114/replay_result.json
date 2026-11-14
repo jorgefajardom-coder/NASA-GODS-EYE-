@@ -1,0 +1,17 @@
+{
+  "owner": "Jesus / integration",
+  "status": "failed; unchanged existing replay closure mismatch",
+  "test": "tests/integration/test_replay_package.py::test_recorded_run_is_readable_without_backend",
+  "source_unchanged_from_origin_main": true,
+  "notified_externally": false,
+  "notification": "Prepared audit/handoff for owner; no PR comment or external message posted",
+  "failure": [
+    {
+      "classname": "tests.integration.test_replay_package",
+      "name": "test_recorded_run_is_readable_without_backend",
+      "message": "AssertionError: assert ['timeline.js...the timeline'] == []\n  Left contains 2 more items, first extra item: 'timeline.jsonl: 6 records, manifest says 5'\n  Use -v to get more diff",
+      "details": "tmp_path = PosixPath('/mnt/c/Users/Admin/Desktop/NASA-GODS-EYE-/tmp/pr12-ground-ros-ci/test_recorded_run_is_readable_0')\n\n    def test_recorded_run_is_readable_without_backend(tmp_path):\n        proc = subprocess.Popen(\n            ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',\n             f'port:={PORT}', 'record:=true', f'record_dir:={tmp_path}'],\n            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)\n        try:\n            wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,\n                     what='gateway and 3 agents')\n            r = httpx.post(f'{BASE}/api/mission/goal', json={**GOAL, 'request_id': 'req-1'})\n            assert r.json()['accepted'] is True\n    \n            def ready():\n                ms = httpx.get(f'{BASE}/api/run/{RUN_ID}/snapshot').json()['mission_state']\n                return ms if ms['mission_state'] == 'READY' else None\n    \n            live = wait_for(ready, what='READY')\n            package = os.path.join(tmp_path, RUN_ID)\n    \n            def recorded():\n                with open(os.path.join(package, 'snapshot.json'), encoding='utf-8') as f:\n                    ms = json.load(f)['mission_state']\n                return ms and ms['route_id'] == live['route_id']\n    \n            wait_for(recorded, what='route in the recorded snapshot')\n        finally:\n            os.killpg(proc.pid, signal.SIGINT)\n            try:\n                proc.wait(timeout=10)\n            except subprocess.TimeoutExpired:\n                os.killpg(proc.pid, signal.SIGKILL)\n    \n        # Everything is stopped: the gateway no longer answers.\n        try:\n            httpx.get(f'{BASE}/api/health', timeout=1.0)\n            raise AssertionError('gateway still running')\n        except httpx.HTTPError:\n            pass\n    \n>       assert check_package(package) == []\nE       AssertionError: assert ['timeline.js...the timeline'] == []\nE         Left contains 2 more items, first extra item: 'timeline.jsonl: 6 records, manifest says 5'\nE         Use -v to get more diff\n\ntests/integration/test_replay_package.py:59: AssertionError"
+    }
+  ],
+  "additional_failed_cases": []
+}

@@ -33,9 +33,9 @@ export const SNAP_DISTANCE_M = 40;
 
 export type CameraSmoothing = 'off' | 'soft' | 'cinematic';
 
-/** Follow-camera time constant and orbit damping for each setting. */
-export const CAMERA_SMOOTHING: Record<CameraSmoothing, { label: string; followTauS: number; orbitDamping: number }> = {
-  off: { label: 'Off (rigid)', followTauS: 0, orbitDamping: 0.25 },
-  soft: { label: 'Soft', followTauS: 0.18, orbitDamping: 0.08 },
-  cinematic: { label: 'Cinematic', followTauS: 0.6, orbitDamping: 0.04 },
+/** Orbit damping for each setting. The follow cameras are always locked on their target. */
+export const CAMERA_SMOOTHING: Record<CameraSmoothing, { label: string; orbitDamping: number }> = {
+  off: { label: 'Off (rigid)', orbitDamping: 0.25 },
+  soft: { label: 'Soft', orbitDamping: 0.08 },
+  cinematic: { label: 'Cinematic', orbitDamping: 0.04 },
 };

@@ -126,7 +126,10 @@ def validate_package(manifest, records, snapshot):
             seq, version = body.get("last_event_seq"), body.get("map_version")
             _need(_integer(seq) and seq >= 0 and seq >= state_seq, "STATE_SEQ_REGRESSION")
             _need(_integer(version) and version >= 0 and version >= state_map, "STATE_MAP_REGRESSION")
-            _need(version == rec["map_version"], "STALE_STATE")
+            # Topics arrive in any order, so a state may lag the newest map the
+            # package recorded (version 0 before the mission has a map). It
+            # never runs ahead of it, and its route must match its own version.
+            _need(version <= rec["map_version"], "STATE_AHEAD_OF_MAP")
             state_seq, state_map, state = seq, version, body
             _need(body.get("header", {}).get("frame_id") == "map", "INVALID_FRAME")
             for agent in body.get("agents", []):

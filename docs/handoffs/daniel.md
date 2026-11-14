@@ -1,5 +1,14 @@
 # Daniel - deliver the canonical public dataset and coherent belief
 
+## Current continuation — 14 November 2026, main 5ab1387
+
+Follow [CONT-DAN-01..04](../team_continuation_plan.md#daniel--public-terrain-observations-and-larger-map-feasibility):
+continue the larger-map import/analysis study already underway; reconcile
+D-EST-01 and executed observation footprints with Diego/Jesús; validate current
+baseline controls now and the new patch's controls after David/Fajardo's selection.
+H-DAN-01 remains optional and seed-traced. Preserve the 128 m control and
+organizer gate. Historical inventories below are not a fresh dependency audit.
+
 Active branch: **`feat/data`**. Audited head: `f75c54e929576c6780d559c9daa24d06ccf0a0b8`, equal to initial main; there are no data-front commits beyond it. It is now
 behind refreshed main `004b3b2`, which includes the planner. No new Daniel
 data/fusion delivery was found in the final refresh. Existing handoff material is `docs/data_sources.md`, `config/terrain.yml`, `src/mge_data/README.md` and `src/mge_mapping/README.md`. Manifest examples and Python input guards are scaffolds; `fuse_observation` is not implemented.

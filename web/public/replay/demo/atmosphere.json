@@ -1,0 +1,359 @@
+{
+ "schema": "mge-atmosphere/1",
+ "site": {
+  "name": "Jezero crater",
+  "lat_deg": 18.44,
+  "lon_e_deg": 77.45
+ },
+ "sources": [
+  {
+   "id": "meda",
+   "title": "Mars 2020 Perseverance MEDA daily weather summary, Jezero crater",
+   "url": "https://mars.nasa.gov/rss/api/?feed=weather&feedtype=json&category=mars2020",
+   "credit": "NASA/JPL-Caltech/CAB(CSIC-INTA)",
+   "retrieved": "2026-11-14",
+   "sha256": "9ff9db7675b5165e6d0547f9b86b75cea2cd1badfd27ea5aec4fe6956a47ac35",
+   "bytes": 1368,
+   "note": "Daily outreach summary from Centro de Astrobiologia (CAB); for outreach purposes, not calibrated science data (see PDS for the science archive)."
+  },
+  {
+   "id": "rems",
+   "title": "MSL Curiosity REMS daily weather summary, Gale crater",
+   "url": "https://mars.nasa.gov/rss/api/?feed=weather&feedtype=json&category=msl",
+   "credit": "NASA/JPL-Caltech/CAB(CSIC-INTA)",
+   "retrieved": "2026-11-14",
+   "sha256": "1c3f64aa69ab00e8b90905734fb9b2d0838979b74f97446075d74b77d0fc4749",
+   "bytes": 1730689,
+   "note": "Daily outreach summary from Centro de Astrobiologia (CAB); for outreach purposes, not calibrated science data (see PDS for the science archive). Gale is another site (about 4.6 S, roughly 1.9 km lower than Jezero, seasons opposite in latitude); used only as an annual-cycle reference."
+  },
+  {
+   "id": "rad",
+   "title": "Hassler et al. (2014), Mars’ surface radiation environment measured with the Mars Science Laboratory’s Curiosity rover, Science 343, 1244797",
+   "url": "https://doi.org/10.1126/science.1244797",
+   "credit": "MSL RAD team; NASA/JPL-Caltech/SwRI",
+   "note": "Galactic cosmic ray averages over roughly the first 300 sols at Gale crater (August 2012 to June 2013, near solar maximum); solar particle events are reported separately in the paper."
+  }
+ ],
+ "jezero_sols": [
+  {
+   "sol": 1127,
+   "earth_date": "2024-04-21",
+   "ls_deg": 240.202,
+   "season": "late autumn",
+   "min_temp_c": null,
+   "max_temp_c": null,
+   "pressure_pa": null,
+   "sunrise": "06:13:15",
+   "sunset": "17:11:36"
+  },
+  {
+   "sol": 1128,
+   "earth_date": "2024-04-22",
+   "ls_deg": 240.852,
+   "season": "late autumn",
+   "min_temp_c": null,
+   "max_temp_c": null,
+   "pressure_pa": null,
+   "sunrise": "06:14:03",
+   "sunset": "17:11:57"
+  },
+  {
+   "sol": 1129,
+   "earth_date": "2024-04-23",
+   "ls_deg": 241.503,
+   "season": "late autumn",
+   "min_temp_c": null,
+   "max_temp_c": null,
+   "pressure_pa": 774,
+   "sunrise": "06:14:52",
+   "sunset": "17:12:18"
+  },
+  {
+   "sol": 1130,
+   "earth_date": "2024-04-24",
+   "ls_deg": 242.153,
+   "season": "late autumn",
+   "min_temp_c": -77.3,
+   "max_temp_c": -23.2,
+   "pressure_pa": 777.1,
+   "sunrise": "06:15:41",
+   "sunset": "17:12:41"
+  },
+  {
+   "sol": 1131,
+   "earth_date": "2024-04-25",
+   "ls_deg": 242.804,
+   "season": "late autumn",
+   "min_temp_c": -79.2,
+   "max_temp_c": -17,
+   "pressure_pa": 774.9,
+   "sunrise": "06:16:29",
+   "sunset": "17:13:03"
+  },
+  {
+   "sol": 1132,
+   "earth_date": "2024-04-26",
+   "ls_deg": 243.455,
+   "season": "late autumn",
+   "min_temp_c": -77.9,
+   "max_temp_c": -23.4,
+   "pressure_pa": 774.1,
+   "sunrise": "06:17:18",
+   "sunset": "17:13:27"
+  },
+  {
+   "sol": 1133,
+   "earth_date": "2024-04-27",
+   "ls_deg": 244.106,
+   "season": "late autumn",
+   "min_temp_c": -79.3,
+   "max_temp_c": -24.7,
+   "pressure_pa": 778.9,
+   "sunrise": "06:18:07",
+   "sunset": "17:13:51"
+  }
+ ],
+ "gale_seasonal": {
+  "bin_deg": 15,
+  "sols_used": 4745,
+  "first_sol": {
+   "sol": 1,
+   "date": "2012-08-07"
+  },
+  "last_sol": {
+   "sol": 4995,
+   "date": "2026-08-25"
+  },
+  "bins": [
+   {
+    "ls_from": 0,
+    "ls_to": 15,
+    "n": 199,
+    "min_temp_c": -75,
+    "max_temp_c": -14,
+    "pressure_pa": 830,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 15,
+    "ls_to": 30,
+    "n": 204,
+    "min_temp_c": -77,
+    "max_temp_c": -18,
+    "pressure_pa": 852,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 30,
+    "ls_to": 45,
+    "n": 224,
+    "min_temp_c": -78,
+    "max_temp_c": -22,
+    "pressure_pa": 865,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 45,
+    "ls_to": 60,
+    "n": 204,
+    "min_temp_c": -79,
+    "max_temp_c": -24,
+    "pressure_pa": 873,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 60,
+    "ls_to": 75,
+    "n": 225,
+    "min_temp_c": -80,
+    "max_temp_c": -28,
+    "pressure_pa": 870,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 75,
+    "ls_to": 90,
+    "n": 233,
+    "min_temp_c": -81,
+    "max_temp_c": -28,
+    "pressure_pa": 847,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 90,
+    "ls_to": 105,
+    "n": 229,
+    "min_temp_c": -80,
+    "max_temp_c": -26,
+    "pressure_pa": 806,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 105,
+    "ls_to": 120,
+    "n": 213,
+    "min_temp_c": -79,
+    "max_temp_c": -23,
+    "pressure_pa": 767,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 120,
+    "ls_to": 135,
+    "n": 209,
+    "min_temp_c": -78,
+    "max_temp_c": -17,
+    "pressure_pa": 735,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 135,
+    "ls_to": 150,
+    "n": 179,
+    "min_temp_c": -77,
+    "max_temp_c": -12,
+    "pressure_pa": 717,
+    "uv_index": "High"
+   },
+   {
+    "ls_from": 150,
+    "ls_to": 165,
+    "n": 199,
+    "min_temp_c": -74,
+    "max_temp_c": -8,
+    "pressure_pa": 715,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 165,
+    "ls_to": 180,
+    "n": 206,
+    "min_temp_c": -73,
+    "max_temp_c": -4,
+    "pressure_pa": 729,
+    "uv_index": "High"
+   },
+   {
+    "ls_from": 180,
+    "ls_to": 195,
+    "n": 191,
+    "min_temp_c": -72,
+    "max_temp_c": -1,
+    "pressure_pa": 755,
+    "uv_index": "High"
+   },
+   {
+    "ls_from": 195,
+    "ls_to": 210,
+    "n": 189,
+    "min_temp_c": -70,
+    "max_temp_c": 0,
+    "pressure_pa": 793,
+    "uv_index": "High"
+   },
+   {
+    "ls_from": 210,
+    "ls_to": 225,
+    "n": 191,
+    "min_temp_c": -68,
+    "max_temp_c": 1,
+    "pressure_pa": 830,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 225,
+    "ls_to": 240,
+    "n": 182,
+    "min_temp_c": -67,
+    "max_temp_c": -1,
+    "pressure_pa": 868,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 240,
+    "ls_to": 255,
+    "n": 173,
+    "min_temp_c": -68,
+    "max_temp_c": -2,
+    "pressure_pa": 888,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 255,
+    "ls_to": 270,
+    "n": 157,
+    "min_temp_c": -69,
+    "max_temp_c": -2,
+    "pressure_pa": 887,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 270,
+    "ls_to": 285,
+    "n": 158,
+    "min_temp_c": -71,
+    "max_temp_c": -2,
+    "pressure_pa": 868,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 285,
+    "ls_to": 300,
+    "n": 184,
+    "min_temp_c": -70,
+    "max_temp_c": -2,
+    "pressure_pa": 855,
+    "uv_index": "High"
+   },
+   {
+    "ls_from": 300,
+    "ls_to": 315,
+    "n": 188,
+    "min_temp_c": -71,
+    "max_temp_c": -4,
+    "pressure_pa": 837,
+    "uv_index": "High"
+   },
+   {
+    "ls_from": 315,
+    "ls_to": 330,
+    "n": 199,
+    "min_temp_c": -71,
+    "max_temp_c": -7,
+    "pressure_pa": 821,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 330,
+    "ls_to": 345,
+    "n": 201,
+    "min_temp_c": -72,
+    "max_temp_c": -7,
+    "pressure_pa": 814,
+    "uv_index": "Moderate"
+   },
+   {
+    "ls_from": 345,
+    "ls_to": 360,
+    "n": 181,
+    "min_temp_c": -74,
+    "max_temp_c": -11,
+    "pressure_pa": 819,
+    "uv_index": "Moderate"
+   }
+  ]
+ },
+ "radiation": {
+  "source": "rad",
+  "site": "Gale crater surface",
+  "absorbed_mgy_per_day": 0.21,
+  "absorbed_sigma_mgy_per_day": 0.04,
+  "dose_equivalent_msv_per_day": 0.64,
+  "dose_equivalent_sigma_msv_per_day": 0.12,
+  "caveats": [
+   "Galactic cosmic ray average measured at Gale; not a Jezero measurement or a local dose map.",
+   "Jezero is about 1.9 km higher, with less air overhead, so its surface rate is expected to be somewhat higher; this is not quantified here.",
+   "Suit, vehicle and habitat shielding and solar particle events are not modelled."
+  ]
+ }
+}

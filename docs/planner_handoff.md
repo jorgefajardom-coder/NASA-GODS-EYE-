@@ -62,6 +62,21 @@ There is a resource-feasible alternative-path case so an expensive fastest route
 cannot trigger a false global rejection. Tests also cover snapshot invalidation
 and bounds. Whole mission R01-R18 acceptance is still pending.
 
+Continuous human/rover starts now have a checked and costed connector to their
+containing cell centre; see MODEL.md and tests/planning/test_continuous_start.py.
+The first outbound point is the actual start, followed by the graph centre.
+Goals/bases remain centred, and return from a continuous start requires an explicit
+centred base. Replanning still needs an external request: no automatic event,
+corridor or hysteresis policy was added. The historical 154-test evidence above
+predates this extension; it must not be cited as verification of the new code.
+
+Local verification of the continuous-start working tree on 14 November 2026
+(Python 3.12.3): full pytest suite 184 passed, 2 ROS modules skipped, 0 failures;
+114 planning cases include 30 new connector cases. Repository static checks passed.
+The existing Starlette/httpx deprecation warning remains. Web tests: 2 passed;
+web build unavailable because frontend dependencies (tsc) are not installed.
+ROS compilation/service execution and mission E2E remain unverified here.
+
 Profiles in config/planner_profiles.illustrative.json are not approved scientific
 parameters. Speed/slope are tentative references recorded in
 [data provenance](planner_provenance.md); energy, oxygen, footprint and other
@@ -70,6 +85,89 @@ fresh CTX crop remains unverified orbital prior: loading it alone returns UNKNOW
 Neither these tests nor its finite pixels prove EVA, flight or vehicle safety.
 
 ## Next dependency and takeover checklist
+
+### D-07: explicit request after 20 metres
+
+`tests/planning/test_d07_twenty_metres.py` closes the literal D-07 scenario at the
+pure Python integration level for human and rover profiles. Its deterministic
+9x18 flat grid has 3 m cells; the initial route runs from (4.5,13.5,0) to
+(43.5,13.5,0), with return to the explicit original base. The test walks the
+initial polyline for exactly 20 m and interpolates the last segment, yielding
+(24.5,13.5,0), not a cell centre. It then blocks pending cell (row 4, col 10),
+increments map_version from 1 to 2 and explicitly requests a new route.
+
+Illustrative speed 2 m/s and energy rate 0.5 Wh/m consume 10 s and 10 Wh during
+the prefix; the human oxygen rate 0.2 L/s consumes 2 L. These are test assumptions,
+not approved scientific rates. Remaining availability subtracts ONLY this prefix;
+reserves are unchanged and service is still pending. The new result includes
+the 1 m connector, outbound detour, 4 s service and full return. Independent
+polyline costing verifies totals and conservation across both planning requests.
+An independent whole-segment intersection check against the inflated obstacle
+square covers connector, outbound and return. The outbound cannot visit the old
+origin or reduce x below the current pose in this scenario; only the return ends
+at the base. Repeated requests preserve paths/route IDs, and old map versions
+are rejected. Negative tests cover a full barrier and separate remaining time,
+energy and human oxygen shortages, despite the original mission being feasible.
+
+Reproduce locally (use fresh output paths to preserve previous evidence):
+
+```sh
+python -m pytest tests/planning/test_d07_twenty_metres.py -q -p no:cacheprovider --basetemp=tmp/d07-20m-focused-NEW --junitxml=tmp/d07-20m-focused-NEW.xml
+python -m pytest -q -p no:cacheprovider --basetemp=tmp/d07-20m-full-NEW --junitxml=tmp/d07-20m-full-NEW.xml
+python scripts/check_repository.py
+```
+
+Create the ignored `tmp` parent first on a fresh checkout. Each focused-test
+temporary directory contains d07.json with the grid definition, both requests,
+initial route, travelled prefix, consumed resources and final result. JUnit
+records executed assertions. These are synthetic computational acceptance cases;
+movement is polyline interpolation, not dynamics, perception, ROS/Gazebo or a
+LIVE mission. D-07 alone does not establish F03.4. A ROS-independent event policy
+is now implemented in replan.py; see [policy documentation](replan_policy.md).
+MissionManager authorization and integration with actual pose/resources,
+supervisor feedback and coherent published map snapshots remain pending.
+
+Local execution on 14 November 2026, Python 3.12.3: focused D-07 tests 9 passed;
+full Python suite 193 passed, 2 ROS modules skipped, 0 failures, with the existing
+Starlette/httpx deprecation warning. Static repository checks passed. No production
+planner code or ROS contracts changed for this acceptance extension.
+
+### Team handoffs
+
+F03.4 consumers must pass authoritative phase/cursor/remaining resources, preserve
+candidate_phase=RETURN for single-leg base requests, and explicitly adopt new
+routes. The policy never changes MissionManager state or commands physical stops.
+During OUTBOUND or unfinished SERVICE, a failed primary mission (NO_PATH/INSUFFICIENT_BUDGET) now triggers
+an automatic direct-base contingency evaluation with zero service and unchanged
+remaining resources/reserves. primary_request/primary_candidate retain its cause.
+Mission must authorize the feasible fallback and enact RETURN; see the policy
+documentation for no-escape, unknown and immediate-stop semantics.
+Audit guards: OUTBOUND cannot debit any original service; premature completion
+returns UNKNOWN/OUTBOUND_SERVICE_MISMATCH without a search. EVENT_MAP_MISMATCH
+always invalidates the active authorization, even on an otherwise unaffected path.
+
+PR12 review follow-up: continuous starts are opt-in, disabled by default in both
+the core and ROS service. Explicit ground z is checked uniformly against known
+cell height; incoherent telemetry invalidates until corrected rather than being
+projected. XY goal/base checks support 2-D and 3-D targets. RemainingResources
+represents depleted live telemetry without weakening ResourceBudget; reserve
+violations stop before search. SEARCH_LIMIT retries are delayed and bounded;
+recovered deviations do not leave stale deferred searches. The graph, connector
+and policy share clearance/contact rules and immutable-snapshot geometry caches.
+See [all ten findings and current evidence](pr12_review_corrections.md). These
+changes do not approve models or wire the policy into MissionManager.
+
+Ground-Z integration follow-up: only the two affected integration fixtures now
+prepare explicit static simulated ground positions in the public terrain's
+existing vertical datum. Known rover request points use the coherent batch;
+the vertical initializes a temporary agents_file from its declared SIMULATED
+scene, preserving explicit z, XY, drones and budgets. ROS belief remains unknown
+until observation. No runtime provider, mission, wire or INVALID_START_Z guard
+is changed. The new ground_fixture helper is test-only, requires known scene
+data and is not a telemetry projection or production missing-z convention.
+Jesus reviews the cross-module fixture proposal and replay closure separately;
+David retains scientific/datum/tolerance approval. See the audit's follow-up
+section and evidence/planner-pr12-ground-z-20261114 for exact execution results.
 
 1. Daniel supplies public belief/sigma/profile masks with unique batch stamps,
    approved CRS/datum and three matching control points. Do not expose reference.

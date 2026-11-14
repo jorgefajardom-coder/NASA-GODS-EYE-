@@ -1,0 +1,51 @@
+{
+  "source": "0215b724e375e1256aaf689573e52fda04ebacae",
+  "scenarios": "synthetic only",
+  "R1": {
+    "exception": "ValueError",
+    "message": "both points must have the same number of dimensions"
+  },
+  "R2": {
+    "4.5": "FEASIBLE",
+    "4.7": "NO_PATH"
+  },
+  "R3": {
+    "action": "UNKNOWN",
+    "reason": "CANDIDATE_START_MISMATCH",
+    "request": true,
+    "candidate_phase": "None"
+  },
+  "R4": {
+    "first": "SEARCH_LIMIT",
+    "after_interval": "AWAITING_ROUTE_AUTHORIZATION",
+    "planner_calls": 1
+  },
+  "R5": {
+    "default_continuous_status": "FEASIBLE"
+  },
+  "R6": {
+    "action": "STOP_REQUIRED",
+    "reason": "BUDGET_EXCEEDED",
+    "request": true,
+    "candidate_phase": "MissionPhase.SERVICE"
+  },
+  "R7": {
+    "exception": "ValueError",
+    "message": "energy reserve exceeds available energy"
+  },
+  "R8": {
+    "evaluations": 6,
+    "geometry_builds": 7,
+    "raster_hashes": 6
+  },
+  "R9": {
+    "edge_accepted": true,
+    "policy_issue": "CORRIDOR_BLOCKED"
+  },
+  "R10": {
+    "action": "REPLAN",
+    "reason": "CORRIDOR_DEVIATION",
+    "request": true,
+    "candidate_phase": "MissionPhase.OUTBOUND"
+  }
+}

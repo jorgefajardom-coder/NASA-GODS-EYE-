@@ -199,6 +199,25 @@ def test_invalid_event_sequence_rejected(package, seq):
         validate_package(*package)
 
 
+def test_state_may_lag_the_newest_map_but_not_lead_it(package):
+    # Arrival order: terrain metadata v2 recorded before the mission's state
+    # catches up. The lagging v1 state is kept; a state ahead is refused.
+    records = package[1]
+    meta2 = next(i for i, r in enumerate(records)
+                 if r["type"] == "terrain_meta" and r["terrain_meta"]["map_version"] == 2)
+    lagging = deepcopy([r for r in records[:meta2] if r["type"] == "state"][-1])
+    lagging["map_version"] = 2
+    lagging["timestamp_sim_s"] = records[meta2]["timestamp_sim_s"]
+    records.insert(meta2 + 1, lagging)
+    package[0]["record_count"] += 1
+    validate_package(*package)
+    ahead = deepcopy(lagging)
+    ahead["state"]["map_version"] = 3
+    records[meta2 + 1] = ahead
+    with pytest.raises(ReplayContractError, match="STATE_AHEAD_OF_MAP"):
+        validate_package(*package)
+
+
 def test_stale_active_route_rejected(package):
     state = next(r["state"] for r in package[1] if r["type"] == "state" and r["state"]["route_id"])
     state["active_route"]["map_version_used"] = 0

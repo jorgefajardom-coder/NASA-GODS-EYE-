@@ -7,6 +7,7 @@ pose when the map version changes. It covers IDLE / PLANNING / READY / REPLAN
 the real mge_mission package.
 """
 import math
+from copy import deepcopy
 
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
@@ -20,6 +21,7 @@ from mge_sim.common import (
     agent_state_topic, LATCHED, RELIABLE, SRV_PLAN_ROUTE, SRV_SET_GOAL,
     TOPIC_ACTIVE_PATH, TOPIC_MISSION_EVENTS, TOPIC_MISSION_STATE, TOPIC_TERRAIN_META)
 from mge_sim.mock_agents import load_agents
+from mge_sim.recovery import remaining_allocation, stamp_key, stopped_after
 
 S = MissionState
 E = MissionEvent
@@ -41,6 +43,10 @@ class MockMission(Node):
         super().__init__('mock_mission')
         self.run_id = self.declare_parameter('run_id', 'mock-run').value
         agents_file = self.declare_parameter('agents_file', '').value
+        self.require_stop_ack = self.declare_parameter('require_stop_ack', False).value
+        self.stop_ack_timeout_s = self.declare_parameter('stop_ack_timeout_s', 5.0).value
+        if not math.isfinite(self.stop_ack_timeout_s) or self.stop_ack_timeout_s <= 0:
+            raise ValueError('stop_ack_timeout_s must be positive and finite')
 
         self.state = S.STATE_IDLE
         self.reason = ''
@@ -53,6 +59,10 @@ class MockMission(Node):
         self.retry_timer = None
         self.route = RouteDecision()
         self.answers = {}           # request_id -> SetMissionGoal.Response
+        self.stop_barrier = None
+        self.stop_deadline = None
+        self.goal_resources = None
+        self.dispatched = None
 
         self.pub_event = self.create_publisher(E, TOPIC_MISSION_EVENTS, RELIABLE)
         self.pub_state = self.create_publisher(S, TOPIC_MISSION_STATE, LATCHED)
@@ -64,12 +74,44 @@ class MockMission(Node):
                 AgentState, agent_state_topic(a['id']), self.on_agent, RELIABLE)
         self.create_service(SetMissionGoal, SRV_SET_GOAL, self.on_set_goal)
         self.create_timer(1.0, self.publish_state)
+        self.create_timer(0.1, self.check_stop_timeout)
         self.get_logger().warn('MOCK mission manager: goal -> route -> replan only')
 
     # ---- inputs -----------------------------------------------------------
     def on_agent(self, msg):
-        if msg.run_id == self.run_id:
-            self.agents[msg.agent_id] = msg
+        if msg.run_id != self.run_id or msg.header.frame_id != 'map':
+            return
+        previous = self.agents.get(msg.agent_id)
+        if previous is not None and stamp_key(msg.header) < stamp_key(previous.header):
+            return
+        self.agents[msg.agent_id] = msg
+        if (self.stop_barrier is not None and self.goal is not None
+                and msg.agent_id == self.goal.primary_agent_id
+                and stopped_after(msg, self.stop_barrier)):
+            self.stop_barrier = self.stop_deadline = None
+            self.request_plan()
+
+    def check_stop_timeout(self):
+        if self.stop_deadline is not None and self.get_clock().now().nanoseconds >= self.stop_deadline:
+            self.stop_barrier = self.stop_deadline = None
+            self.pending = None
+            self.set_state(S.STATE_BLOCKED, reason='STOP_ACK_TIMEOUT')
+
+    def invalidate_planning(self):
+        self.pending = self.dispatched = None
+        self.stop_barrier = self.stop_deadline = None
+        if self.retry_timer is not None:
+            self.retry_timer.cancel()
+            self.retry_timer = None
+
+    def plan_after_stop(self):
+        if self.require_stop_ack:
+            now = self.get_clock().now()
+            stamp = now.to_msg()
+            self.stop_barrier = (stamp.sec, stamp.nanosec)
+            self.stop_deadline = now.nanoseconds + int(self.stop_ack_timeout_s * 1e9)
+        else:
+            self.request_plan()
 
     def on_meta(self, meta):
         if meta.run_id != self.run_id or meta.map_version <= self.map_version:
@@ -82,6 +124,7 @@ class MockMission(Node):
                   detail=f'Map updated to version {meta.map_version}.')
         if self.goal is not None and self.state in (
                 S.STATE_PLANNING, S.STATE_READY, S.STATE_REPLAN, S.STATE_BLOCKED):
+            self.invalidate_planning()
             if self.route.route_id:
                 self.emit(E.TYPE_ROUTE_INVALIDATED, cause=f'map-v{meta.map_version}',
                           route_id=self.route.route_id, reason='MAP_UPDATED',
@@ -92,7 +135,7 @@ class MockMission(Node):
                            reason='MAP_UPDATED')
             self.attempt = 0
             self.limit_retries = 0
-            self.request_plan()
+            self.plan_after_stop()
 
     def on_set_goal(self, req, res):
         if req.request_id in self.answers:
@@ -108,6 +151,10 @@ class MockMission(Node):
             reject = ('UNKNOWN_AGENT', f'No state received for agent {req.primary_agent_id!r}.')
         elif self.map_version == 0:
             reject = ('NO_MAP', 'No terrain metadata received yet.')
+        elif (self.require_stop_ack and self.goal is not None
+              and req.primary_agent_id != self.goal.primary_agent_id
+              and self.agents[self.goal.primary_agent_id].mode == AgentState.MODE_MOVING):
+            reject = ('PRIMARY_SWITCH_REQUIRES_STOP', 'Stop the current primary before switching agents.')
         if reject:
             res.accepted = False
             res.reason_code, res.detail = reject
@@ -115,7 +162,12 @@ class MockMission(Node):
                       agent_id=req.primary_agent_id, reason=res.reason_code,
                       detail=res.detail)
         else:
+            moving = self.agents[req.primary_agent_id].mode == AgentState.MODE_MOVING
+            self.invalidate_planning()
             self.goal = req
+            agent = self.agents[req.primary_agent_id]
+            self.goal_resources = (agent.time_remaining_s, agent.energy_remaining_wh,
+                                   agent.oxygen_remaining_l)
             if self.route.route_id:
                 self.emit(E.TYPE_ROUTE_INVALIDATED, cause=req.request_id,
                           route_id=self.route.route_id, reason='NEW_GOAL',
@@ -131,7 +183,10 @@ class MockMission(Node):
             self.set_state(S.STATE_PLANNING, cause=req.request_id)
             self.attempt = 0
             self.limit_retries = 0
-            self.request_plan()
+            if self.require_stop_ack and moving:
+                self.plan_after_stop()
+            else:
+                self.request_plan()
         res.mission_state = self.state
         if req.request_id:
             self.answers[req.request_id] = res
@@ -139,6 +194,8 @@ class MockMission(Node):
 
     # ---- planning ---------------------------------------------------------
     def request_plan(self):
+        if self.stop_barrier is not None:
+            return
         if self.retry_timer is not None:
             self.retry_timer.cancel()
             self.retry_timer = None
@@ -150,21 +207,52 @@ class MockMission(Node):
         req.request_id = f'{g.request_id}#v{self.map_version}.{self.attempt}'
         req.agent_id = agent.agent_id
         req.agent_kind = agent.agent_kind
-        req.start = agent.pose.position      # current pose, not the original start
+        req.start = deepcopy(agent.pose.position)  # frozen current pose, not the original start
         req.goal = g.goal
         req.return_to = g.base
         req.require_return = True
         req.mode = g.mode or RouteDecision.MODE_FAST
         req.map_version = self.map_version
-        req.time_budget_s = g.time_budget_s
-        req.energy_budget_wh = g.energy_budget_wh
+        initial = self.goal_resources
+        human = agent.agent_kind == AgentState.KIND_HUMAN
+        try:
+            req.time_budget_s = remaining_allocation(g.time_budget_s, initial[0], agent.time_remaining_s)
+            req.energy_budget_wh = remaining_allocation(g.energy_budget_wh, initial[1], agent.energy_remaining_wh)
+            req.oxygen_budget_l = (remaining_allocation(g.oxygen_budget_l, initial[2], agent.oxygen_remaining_l)
+                                   if human else math.nan)
+        except ValueError:
+            self.pending = None
+            self.set_state(S.STATE_BLOCKED, cause=req.request_id, reason='INVALID_RESOURCE_STATE')
+            return
         req.reserve_time_s = g.reserve_time_s
         req.reserve_wh = g.reserve_wh
         # Only a human has oxygen; the contract carries NaN for everyone else.
-        human = agent.agent_kind == AgentState.KIND_HUMAN
-        req.oxygen_budget_l = g.oxygen_budget_l if human else math.nan
         req.reserve_oxygen_l = g.reserve_oxygen_l if human else math.nan
+        short = [name for name, available, reserve in (
+            ('TIME', req.time_budget_s, req.reserve_time_s),
+            ('ENERGY', req.energy_budget_wh, req.reserve_wh),
+            ('OXYGEN', req.oxygen_budget_l, req.reserve_oxygen_l))
+            if (name != 'OXYGEN' or human) and available < reserve]
+        if short:
+            self.pending = None
+            d = RouteDecision()
+            d.header.frame_id = 'map'
+            d.header.stamp = self.get_clock().now().to_msg()
+            d.run_id, d.request_id, d.agent_id = req.run_id, req.request_id, req.agent_id
+            d.mode, d.map_version_used = req.mode, req.map_version
+            d.status = RouteDecision.STATUS_INSUFFICIENT_BUDGET
+            d.reason_code = 'RESERVE_NOT_MET_' + '_'.join(short)
+            d.detail = 'Remaining allocation is below the required reserve; no route requested.'
+            for name in ('travel_time_s', 'energy_est_wh', 'oxygen_est_l', 'min_clearance_m',
+                         'reserve_time_s', 'reserve_wh', 'reserve_oxygen_l'):
+                setattr(d, name, math.nan)
+            self.route = d
+            self.emit(E.TYPE_ERROR, cause=req.request_id, agent_id=req.agent_id,
+                      reason=d.reason_code, detail=d.detail)
+            self.set_state(S.STATE_BLOCKED, cause=req.request_id, reason=d.status)
+            return
         self.pending = req.request_id
+        self.dispatched = req
         if not self.planner.service_is_ready():
             self.pending = None
             self.set_state(S.STATE_BLOCKED, cause=req.request_id,
@@ -187,12 +275,49 @@ class MockMission(Node):
                                    f'({d.status}/{d.reason_code}), retrying')
             self.retry_timer = self.create_timer(RETRY_PERIOD_S, self.request_plan)
             return
+        if behind:
+            # Exhausting retries never makes an obsolete result executable.
+            self.set_state(S.STATE_BLOCKED, cause=d.request_id, reason='STALE_MAP')
+            return
         if d.reason_code == 'SEARCH_LIMIT' and self.limit_retries < MAX_LIMIT_RETRIES:
             self.limit_retries += 1
             self.get_logger().info('planner hit its search limit, trying again')
             self.retry_timer = self.create_timer(RETRY_PERIOD_S, self.request_plan)
             return
         if d.status == RouteDecision.STATUS_FEASIBLE:
+            agent = self.agents[self.goal.primary_agent_id]
+            if d.run_id != self.run_id or d.agent_id != agent.agent_id:
+                self.set_state(S.STATE_BLOCKED, cause=d.request_id, reason='PLAN_CONTEXT_MISMATCH')
+                return
+            try:
+                checks = [(d.travel_time_s, self.goal.time_budget_s, self.goal_resources[0],
+                           agent.time_remaining_s, self.goal.reserve_time_s),
+                          (d.energy_est_wh, self.goal.energy_budget_wh, self.goal_resources[1],
+                           agent.energy_remaining_wh, self.goal.reserve_wh)]
+                if agent.agent_kind == AgentState.KIND_HUMAN:
+                    checks.append((d.oxygen_est_l, self.goal.oxygen_budget_l, self.goal_resources[2],
+                                   agent.oxygen_remaining_l, self.goal.reserve_oxygen_l))
+                fits = all(math.isfinite(cost) and cost >= 0
+                           and cost + reserve <= remaining_allocation(limit, initial, current) + 1e-5
+                           for cost, limit, initial, current, reserve in checks)
+            except ValueError:
+                fits = False
+            if not fits:
+                self.set_state(S.STATE_BLOCKED, cause=d.request_id, reason='INSUFFICIENT_BUDGET')
+                return
+            expected = self.dispatched.start
+            actual = agent.pose.position
+            if (self.require_stop_ack and (not stopped_after(agent, (0, 0))
+                    or math.dist((expected.x, expected.y, expected.z),
+                                 (actual.x, actual.y, actual.z)) > 1e-6)):
+                self.set_state(S.STATE_BLOCKED, cause=d.request_id, reason='POSE_CHANGED_DURING_SEARCH')
+                return
+            if (self.require_stop_ack and (not d.outbound_path
+                    or math.dist((expected.x, expected.y, expected.z),
+                                 (d.outbound_path[0].x, d.outbound_path[0].y,
+                                  d.outbound_path[0].z)) > 1e-6)):
+                self.set_state(S.STATE_BLOCKED, cause=d.request_id, reason='CANDIDATE_START_MISMATCH')
+                return
             self.route = d
             self.publish_path()
             self.emit(E.TYPE_ROUTE_PUBLISHED, cause=d.request_id, agent_id=d.agent_id,

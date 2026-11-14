@@ -244,6 +244,23 @@ class SearchLimits:
 
 
 @dataclass(frozen=True)
+class StartConnector:
+    """Validated directed segment to the containing cell centre (Python metadata).
+
+    Costs are included in route totals, not additional charges. A 2-D input uses
+    belief elevation; a supplied 3-D pose is preserved and must admit the
+    directed, profile-bounded segment to that centre. It is never projected.
+    """
+    start: tuple
+    end: tuple
+    distance_m: float
+    travel_time_s: float
+    energy_est_wh: float
+    oxygen_est_l: float | None
+    min_clearance_m: float
+
+
+@dataclass(frozen=True)
 class RouteResult:
     status: RouteStatus
     reason_code: str
@@ -265,6 +282,7 @@ class RouteResult:
     reserve_oxygen_l: float | None = None
     expanded_labels: int = 0
     elapsed_s: float = 0.0
+    start_connector: StartConnector | None = None
 
 
 class _LimitReached(Exception):
@@ -283,6 +301,97 @@ class _Work:
 
 
 _DIRECTIONS = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
+
+
+def _motion_costs(profile, horizontal, dz):
+    """Shared directed transition limits and nonnegative movement costs."""
+    p = profile
+    slope = math.degrees(math.atan2(abs(dz), horizontal))
+    limit = p.max_slope_deg if dz >= 0 or p.max_downhill_slope_deg is None else p.max_downhill_slope_deg
+    if abs(dz) > p.max_step_m or slope > limit:
+        return None
+    length = math.hypot(horizontal, dz)
+    up, down = max(dz, 0)/horizontal, max(-dz, 0)/horizontal
+    duration = length/p.speed_m_s*(1+p.uphill_time_factor*up+p.downhill_time_factor*down)
+    energy = length*p.energy_wh_per_m*(1+p.uphill_energy_factor*up+p.downhill_energy_factor*down)
+    return duration, energy, duration*(p.oxygen_l_per_s or 0.)
+
+
+def _segment_clearance(geometry, a, b, max_samples=10000):
+    """One conservative swept-footprint bound for search, connector and policy.
+
+    Uniform spacing <= resolution/4, minus half that spacing, covers the whole
+    segment by 1-Lipschitz continuity. Zero obstacle contact is inadmissible;
+    boundary tangency is allowed when the entire footprint stays within the map.
+    None indicates a validation work limit, never collision-free geometry.
+    """
+    h = math.dist(a[:2], b[:2])
+    count = max(5, math.ceil(h/(geometry.grid.resolution_m/4))+1)
+    if count > max_samples:
+        return None
+    points = np.linspace(a[:2], b[:2], count)
+    margin = float(np.min(geometry._boundary(points)))-geometry.radius
+    if geometry.tree is not None:
+        obstacle = (float(np.min(geometry.tree.query(points)[0]))
+                    - geometry.grid.resolution_m/math.sqrt(2)
+                    - h/(2*(count-1))-geometry.radius)
+        if obstacle <= 0:
+            return min(margin, obstacle, -np.finfo(float).eps)
+        margin = min(margin, obstacle)
+    return margin
+
+
+def _start_z_mismatch(grid, point, kind, profile=None, *, allow_continuous_start=False):
+    """Validate supplied ground z without changing a current 3-D position.
+
+    Centred starts retain the baseline belief-height consistency check. With
+    explicit continuous-start opt-in, a non-centred pose may be on a previously
+    executed segment between grid waypoints, rather than at its cell's height.
+    Its directed connector must obey the same profile step/slope bounds as the
+    graph; geometry and all connector costs are checked by connect_start.
+    """
+    if kind in {"human", "rover"} and len(point) == 3:
+        cell = grid.cell(point)
+        if grid.traversability[cell] != 0:
+            return False  # Unresolved terrain is UNKNOWN, not an asserted z error.
+        if grid.sigma_m is not None:
+            sigma = grid.sigma_m[cell]
+            if (not math.isfinite(sigma) or sigma < 0
+                    or (profile is not None and profile.max_sigma_m is not None and sigma > profile.max_sigma_m)):
+                return False
+        elif profile is not None and profile.max_sigma_m is not None:
+            return False
+        centre = grid.point(cell)
+        if not math.isfinite(centre[2]):
+            return False
+        continuous = any(abs(point[i]-centre[i]) > 1e-6 for i in (0, 1))
+        if allow_continuous_start and continuous and profile is not None:
+            return _motion_costs(profile, math.dist(point[:2], centre[:2]),
+                                 centre[2]-point[2]) is None
+        return abs(point[2]-centre[2]) > 1e-6
+    return False
+
+
+class GeometryCache:
+    """Bounded geometry reuse for one immutable snapshot and up to four profiles.
+
+    Arrays must retain TerrainGrid's read-only contract. A different snapshot
+    object clears the cache, even if its run/version strings were reused.
+    Call serially; never use as an asynchronous snapshot/authorization store.
+    """
+    def __init__(self):
+        self.grid = None
+        self.entries = {}
+
+    def get(self, grid, profile, *, optimistic=False):
+        if self.grid is not grid:
+            self.grid, self.entries = grid, {}
+        key = profile, optimistic
+        if key not in self.entries:
+            if len(self.entries) >= 8:
+                self.entries.clear()
+            self.entries[key] = _Geometry(grid, profile, optimistic=optimistic)
+        return self.entries[key]
 
 
 class _Geometry:
@@ -307,7 +416,7 @@ class _Geometry:
         rr, cc = np.indices(grid.elevation_m.shape)
         points = np.column_stack((grid.origin_x_m + (cc.ravel() + .5) * grid.resolution_m,
                                   grid.origin_y_m + (rr.ravel() + .5) * grid.resolution_m))
-        self.clearance = self._point_clearance(points).reshape(grid.elevation_m.shape) - self.radius
+        self.clearance = self._point_clearance(points).reshape(grid.elevation_m.shape)
         self.allowed = self.allowed & (self.clearance >= 0)
         self.cache = {}
 
@@ -319,17 +428,53 @@ class _Geometry:
                                   g.origin_y_m + g.rows*g.resolution_m - points[:, 1]))
 
     def _point_clearance(self, points):
-        bound = self._boundary(points)
+        """Vectorized zero-length form of the shared swept-footprint bound."""
+        bound = self._boundary(points) - self.radius
         if self.tree is not None:
-            distance = self.tree.query(points)[0] - self.grid.resolution_m / math.sqrt(2)
-            bound = np.minimum(bound, np.maximum(distance, 0))
+            distance = self.tree.query(points)[0] - self.grid.resolution_m / math.sqrt(2) - self.radius
+            distance = np.where(distance <= 0, np.minimum(distance, -np.finfo(float).eps), distance)
+            bound = np.minimum(bound, distance)
         return bound
+
+    def connect_start(self, position, cell):
+        """Conservative within-cell connector; never jump to another free cell.
+
+        The containing cell is convex, so the centre segment cannot cross any
+        other cell interior. The swept footprint is checked against ALL blocked
+        (including unknown) cell squares via the shared lower distance bound:
+        at least five samples minus half spacing and the square circumradius.
+        Graph edges and policy validation reject the same nonpositive obstacle
+        bound, so contact/corner crossings cannot be accepted.
+        Optimistic use is diagnostic only and never yields an executable segment.
+        """
+        if not self.allowed[cell]:
+            return None
+        g, p = self.grid, self.profile
+        end = g.point(cell)
+        # Unknown elevations are flattened only for optimistic diagnosis.
+        z = position[2] if len(position) == 3 else end[2]
+        if self.optimistic and not self.known[cell]:
+            z = z if math.isfinite(z) else 0.
+            end = (*end[:2], z)
+        start = (position[0], position[1], z)
+        a, b = np.array(start[:2]), np.array(end[:2])
+        horizontal = float(np.linalg.norm(b-a))
+        costs = _motion_costs(p, horizontal, end[2]-start[2])
+        if costs is None:
+            return None
+        margin = _segment_clearance(self, start, end)
+        if margin is None or margin < 0:
+            return None
+        duration, energy, oxygen = costs
+        return StartConnector(start, end, math.hypot(horizontal, end[2]-start[2]),
+                              duration, energy, oxygen if p.agent_kind == "human" else None,
+                              min(margin, float(self.clearance[cell])))
 
     def edge(self, a, b):
         """Return conservative continuous-segment clearance and directed costs.
 
         Obstacle centre distance minus its square's circumradius bounds distance
-        to the entire occupied cell. Five segment samples minus half their spacing
+        to the entire occupied cell. Segment samples minus half their spacing
         extend the bound between samples (distance is 1-Lipschitz). The boundary
         is handled exactly for the straight segment. Conservative rejection is
         intentional and part of the declared grid/footprint model.
@@ -343,28 +488,16 @@ class _Geometry:
         horizontal = math.hypot(dr, dc)*g.resolution_m
         unknown = not self.known[a] or not self.known[b]
         dz = 0.0 if self.optimistic and unknown else float(g.elevation_m[b]-g.elevation_m[a])
-        slope = math.degrees(math.atan2(abs(dz), horizontal))
-        limit = p.max_slope_deg if dz >= 0 or p.max_downhill_slope_deg is None else p.max_downhill_slope_deg
-        if abs(dz) > p.max_step_m or slope > limit:
+        costs = _motion_costs(p, horizontal, dz)
+        if costs is None:
             return None
         key = tuple(sorted((a, b)))
         if key not in self.cache:
-            start = np.array(g.point(a)[:2]); end = np.array(g.point(b)[:2])
-            points = start[None, :] + np.linspace(0, 1, 5)[:, None]*(end-start)[None, :]
-            margin = float(np.min(self._boundary(points)))
-            if self.tree is not None:
-                distance = float(np.min(self.tree.query(points)[0]))
-                margin = min(margin, max(0., distance-g.resolution_m/math.sqrt(2)-horizontal/8))
-            self.cache[key] = margin-self.radius
+            self.cache[key] = _segment_clearance(self, g.point(a), g.point(b))
         clearance = self.cache[key]
-        if clearance < 0:
+        if clearance is None or clearance < 0:
             return None
-        length = math.hypot(horizontal, dz)
-        up, down = max(dz, 0)/horizontal, max(-dz, 0)/horizontal
-        duration = length/p.speed_m_s*(1+p.uphill_time_factor*up+p.downhill_time_factor*down)
-        energy = length*p.energy_wh_per_m*(1+p.uphill_energy_factor*up+p.downhill_energy_factor*down)
-        oxygen = duration*(p.oxygen_l_per_s or 0.)
-        return clearance, duration, energy, oxygen
+        return (clearance, *costs)
 
     def neighbours(self, cell, threshold=0.):
         for dr, dc in _DIRECTIONS:
@@ -391,12 +524,15 @@ class _Label:
 class _Found:
     labels: list
     terminal: int
+    connector: StartConnector | None = None
 
 
-def _search(geometry, request, start, goal, back, threshold, work):
+def _search(geometry, request, start, goal, back, threshold, work, connector=None):
     """Joint outbound/service/return A*; no independent-leg greedy selection."""
     g, p = geometry.grid, geometry.profile
     if any(not geometry.allowed[c] or geometry.clearance[c] < threshold for c in (start, goal, back)):
+        return None
+    if connector is not None and connector.min_clearance_m < threshold:
         return None
     budget = request.budget
     cap = (budget.time_s-request.reserve_time_s, budget.energy_wh-budget.reserve_wh,
@@ -434,7 +570,10 @@ def _search(geometry, request, start, goal, back, threshold, work):
         if len(labels) > work.limits.max_labels:
             raise _LimitReached
 
-    add(_Label(start, 0, 0., 0., 0., None, float(geometry.clearance[start])))
+    add(_Label(start, 0, connector.travel_time_s if connector else 0.,
+               connector.energy_est_wh if connector else 0.,
+               (connector.oxygen_est_l or 0.) if connector else 0., None,
+               connector.min_clearance_m if connector else float(geometry.clearance[start])))
     while heap:
         work.check(expand=True)
         _, _, identifier = heapq.heappop(heap)
@@ -442,7 +581,7 @@ def _search(geometry, request, start, goal, back, threshold, work):
         if not label.active:
             continue
         if label.phase and (not request.require_return or label.cell == back):
-            return _Found(labels, identifier)
+            return _Found(labels, identifier, connector)
         if label.phase == 0 and label.cell == goal:
             dt = request.service_time_s
             add(_Label(label.cell, 1, label.time+dt, label.energy+p.service_power_w*dt/3600.,
@@ -491,6 +630,8 @@ def _result(request, grid, work, status, reason, detail, found=None):
         identifier = label.parent
     trail.reverse()
     outbound = tuple(grid.point(x.cell) for x in trail if x.phase == 0)
+    if found.connector is not None:
+        outbound = (found.connector.start,) + outbound
     inbound = tuple(grid.point(x.cell) for x in trail if x.phase == 1) if request.require_return else ()
     digest = hashlib.sha256(repr((request.run_id, request.request_id, request.agent_id,
                                  grid.map_version, mode, outbound, inbound, final.time,
@@ -501,11 +642,13 @@ def _result(request, grid, work, status, reason, detail, found=None):
                        oxygen_est_l=final.oxygen if human else None, min_clearance_m=final.clearance,
                        reserve_time_s=request.budget.time_s-final.time,
                        reserve_wh=request.budget.energy_wh-final.energy,
-                       reserve_oxygen_l=request.budget.oxygen_l-final.oxygen if human else None)
+                       reserve_oxygen_l=request.budget.oxygen_l-final.oxygen if human else None,
+                       start_connector=found.connector)
 
 
 def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
-               profile: MotionProfile | None = None, limits: SearchLimits | None = None) -> RouteResult:
+               profile: MotionProfile | None = None, limits: SearchLimits | None = None,
+               allow_continuous_start: bool = False, geometry_cache: GeometryCache | None = None) -> RouteResult:
     """Return a candidate under the supplied model, never an execution command.
 
     A missing profile, unresolved corridor or exhausted work bound yields UNKNOWN.
@@ -534,24 +677,45 @@ def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
         back = terrain.cell(request.return_to if request.return_to is not None else request.start) if request.require_return else goal
     except (ValueError, TypeError):
         return result(RouteStatus.ERROR, "INVALID_POSITION", "Positions must be finite and inside the ENU grid.")
-    positions = [(request.start, start), (request.goal, goal)]
+    positions = [(request.goal, goal)]
     if request.require_return:
         positions.append((request.return_to if request.return_to is not None else request.start, back))
     if any(not all(abs(point[i]-terrain.point(cell)[i]) <= 1e-6 for i in (0, 1))
            for point, cell in positions):
         return result(RouteStatus.ERROR, "NON_CELL_CENTER",
-                      "P0 requires exact ENU cell-centre XY positions; uncosted pose snapping is not permitted.")
+                      "Goal and return target must be ENU cell centres; a continuous start requires an explicit centred return target.")
+    continuous_start = any(abs(request.start[i]-terrain.point(start)[i]) > 1e-6 for i in (0, 1))
+    if continuous_start and not allow_continuous_start:
+        return result(RouteStatus.ERROR, "NON_CELL_CENTER",
+                      "Continuous starts require an explicit experimental opt-in.")
+    if _start_z_mismatch(terrain, request.start, request.agent_kind, profile,
+                         allow_continuous_start=allow_continuous_start):
+        return result(RouteStatus.ERROR, "INVALID_START_Z",
+                      "Centred ground start z must match belief height within 1e-6 m; an opted-in continuous start must admit a profile-bounded directed connector. No position is projected.")
+    if continuous_start and request.agent_kind == "drone":
+        return result(RouteStatus.ERROR, "CONTINUOUS_START_NOT_SUPPORTED",
+                      "Continuous start connectors currently support ground agents only.")
     try:
-        known = _Geometry(terrain, profile)
+        cache = geometry_cache if geometry_cache is not None else GeometryCache()
+        known = cache.get(terrain, profile)
         work.check()
-        best = _search(known, request, start, goal, back, 0., work)
+        connector = known.connect_start(request.start, start) if continuous_start else None
+        if continuous_start and connector is None:
+            optimistic = cache.get(terrain, profile, optimistic=True)
+            work.check()
+            if optimistic.connect_start(request.start, start) is not None:
+                return result(RouteStatus.UNKNOWN, "UNVERIFIED_START_CONNECTOR",
+                              "The start connector or its footprint depends on unresolved terrain.")
+            return result(RouteStatus.NO_PATH, "NO_ADMISSIBLE_START_CONNECTOR",
+                          "No admissible connection to the containing cell centre under the declared model; no other connector is attempted.")
+        best = _search(known, request, start, goal, back, 0., work, connector)
         if best is None:
             if _connected(known, start, goal, back, request, work):
                 if np.any(~known.known & (terrain.traversability != 100)):
                     return result(RouteStatus.UNKNOWN, "UNVERIFIED_BUDGET_CORRIDOR",
                                   "Known routes exceed resources, but unresolved terrain prevents a global budget impossibility claim.")
                 return result(RouteStatus.INSUFFICIENT_BUDGET, "BUDGET_EXCEEDED", "No known-grid route fits outbound, service, return and reserves.")
-            optimistic = _Geometry(terrain, profile, optimistic=True)
+            optimistic = cache.get(terrain, profile, optimistic=True)
             work.check()
             if _connected(optimistic, start, goal, back, request, work):
                 return result(RouteStatus.UNKNOWN, "UNVERIFIED_CORRIDOR", "A possible corridor depends on unknown or unverified terrain.")
@@ -559,7 +723,7 @@ def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
         if mode == RouteMode.SAFE:
             while True:
                 threshold = float(np.nextafter(best.labels[best.terminal].clearance, math.inf))
-                candidate = _search(known, request, start, goal, back, threshold, work)
+                candidate = _search(known, request, start, goal, back, threshold, work, connector)
                 if candidate is None:
                     break
                 best = candidate

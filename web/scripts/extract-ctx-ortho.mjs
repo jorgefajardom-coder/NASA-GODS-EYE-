@@ -10,8 +10,10 @@
  * level to the native 6 m. Each output pixel is a bilinear sample at its centre. Resampling
  * adds no resolution.
  *
- * Usage: node scripts/extract-ctx-ortho.mjs [out.png] [pixels]
- *   default: public/replay/demo/ctx_ortho.png, 400 px over the 2 km crop (5 m/px)
+ * Usage: node scripts/extract-ctx-ortho.mjs [out.png] [pixels] [extent_m] [level]
+ *   default: public/replay/demo/ctx_ortho.png, 400 px over the 2 km crop (5 m/px), level 13.
+ *   Context image: extent_m sets a square centred on the crop (e.g. 20000 m) and level a
+ *   coarser tile level close to the output pixel size (e.g. 10, about 41 m/px).
  */
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -21,7 +23,7 @@ import { PNG } from 'pngjs';
 
 const LAYER = 'JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0';
 const BASE = `https://trek.nasa.gov/tiles/Mars/EQ/${LAYER}/1.0.0`;
-const LEVEL = 13;
+const LEVEL = Number(process.argv[5] ?? 13);
 const TILE = 256;
 const R = 3396190;
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -31,6 +33,14 @@ const N = Number(process.argv[3] ?? 400);
 const crop = JSON.parse(readFileSync(join(HERE, 'data', 'ctx_crop.json'), 'utf8')).crop;
 const lat0 = (crop.centre_lat_deg * Math.PI) / 180;
 const lon0 = (crop.centre_lon_deg * Math.PI) / 180;
+const EXTENT_ARG = process.argv[4] == null ? null : Number(process.argv[4]);
+if (EXTENT_ARG != null) {
+  // Square centred on the crop centre (ENU origin).
+  crop.origin_x_m = -EXTENT_ARG / 2;
+  crop.origin_y_m = -EXTENT_ARG / 2;
+  crop.cols = crop.rows = 1;
+  crop.resolution_m = EXTENT_ARG;
+}
 const extentX = crop.cols * crop.resolution_m;
 const extentY = crop.rows * crop.resolution_m;
 

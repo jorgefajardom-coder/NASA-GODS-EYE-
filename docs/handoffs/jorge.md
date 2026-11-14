@@ -1,5 +1,15 @@
 # Jorge - preserve and adapt the existing 3D viewer
 
+## Current continuation — 14 November 2026, main 5ab1387
+
+The owner assumes Fajardo's latest publication is usable; its verification is
+handled in Conciliación. Follow [CONT-JOR-01..04](../team_continuation_plan.md#jorge-fajardo--science-patch-dossier-and-shared-site-access):
+research primary NASA criteria for scientific POIs/patch selection with David
+and Daniel; deliver shared reproducible site deployment with Jesús; then replay
+and film the future integrated run on the accepted viewer. Do not redo the
+published loader/demo as a new assignment. Preserve organizer reminders and
+source labels. The inventories below are historical, not the current task list.
+
 Latest verified implementation: **`feat/ux`**, head
 `d649e2e5632dddcf242f403abe0013be29d2f907`, with existing viewer plus gateway
 replay adapter (`89216fc`), pose/camera updates and main merge (`1e37fd3`).

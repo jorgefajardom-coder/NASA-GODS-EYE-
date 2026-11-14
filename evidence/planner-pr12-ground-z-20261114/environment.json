@@ -1,0 +1,11 @@
+{
+  "authorization": "Owner approved temporary .wslconfig on this turn, RAM 3 GiB and swap 4 GiB on D:, remove config after tests",
+  "previous_config_existed": false,
+  "config_sha256": "cbf23d607d9155e83e92869233517e366348eefdffa4bd1020e12278f1bf26e4",
+  "swap_path": "D:/Temp/mge-pr12-wsl-swap.vhdx",
+  "startup_result": "Succeeded; free -m reports 2908 MiB RAM and 4096 MiB swap",
+  "repo_and_distros_moved": false,
+  "restoration": "Temporary .wslconfig hash verified and file removed; original absence restored; no distribution stop requested",
+  "temporary_swap_cleanup": "Removed after WSL distributions were stopped and exclusive file access verified; both temporary paths confirmed absent",
+  "cleanup_note": "Final PowerShell status-object formatting used True instead of literal; cleanup itself completed and was verified with a separate read-only command."
+}
