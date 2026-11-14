@@ -21,7 +21,6 @@ import { DetailsPanel } from './components/DetailsPanel';
 import { HUD_MAP_PX, Vitals } from './components/Vitals';
 import { EventInspector } from './components/EventInspector';
 import { GeologyDetails, GeologyList } from './components/GeologyPanel';
-import { TacticalMap } from './components/TacticalMap';
 import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
@@ -169,14 +168,14 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   }, [playPause, seek, restart, t]);
 
   return (
-    <div className={`app${mode === 'tactical' ? ' is-tactical' : ''}`}>
+    <div className="app">
       <MissionScene
         bundle={bundle}
         view={view}
         layer={layer}
         exaggeration={exaggeration}
         showControlPoints={showControlPoints}
-        showLabels={showLabels && mode !== 'tactical'}
+        showLabels={showLabels}
         playing={playing}
         replaySpeed={speed}
         followAgentId={follow ? agentId : null}
@@ -189,7 +188,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         cutaway={mode === 'geology' && showCut && bundle.geology ? bundle.geology : null}
       />
       <div className="vignette" aria-hidden />
-      {mode === 'tactical' && <TacticalMap bundle={bundle} view={view} />}
 
       <div className="overlay">
         <div className="left">
@@ -258,7 +256,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
 
         <Vitals
           who={agent ? `${AGENT_NAME[agent.agent_kind]} · ${agent.agent_id}` : 'No agent'}
-          map={<Minimap bundle={bundle} view={view} agentId={agentId} onOpen={() => setMode('tactical')} size={HUD_MAP_PX} />}
+          map={<Minimap bundle={bundle} view={view} agentId={agentId} size={HUD_MAP_PX} />}
           stats={agent ? agentStats(agent, budgets[agent.agent_id]) : []}
           route={view.activeRoute}
           replanning={view.state?.mission_state === 'REPLAN'}

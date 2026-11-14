@@ -13,10 +13,9 @@ const KIND_COLOR = { HUMAN: '#E8F4FF', DRONE: '#65CBE8', ROVER: '#D8AD66' } as c
 
 /**
  * Game-style circular minimap, north up, centred on the selected agent: elevation bands,
- * coverage, the route in force, other agents and sites. Clicking it opens the full tactical
- * map. Display only.
+ * coverage, the route in force, other agents and sites. Display only.
  */
-export function Minimap({ bundle, view, agentId, onOpen, size = DEFAULT_SIZE }: { bundle: ReplayBundle; view: ReplayView; agentId: string; onOpen: () => void; size?: number }) {
+export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle: ReplayBundle; view: ReplayView; agentId: string; size?: number }) {
   const SIZE = size;
   const canvas = useRef<HTMLCanvasElement>(null);
   const meta = bundle.manifest.terrain_meta;
@@ -128,8 +127,8 @@ export function Minimap({ bundle, view, agentId, onOpen, size = DEFAULT_SIZE }: 
   }, [baseCanvas, view, agent, bundle.manifest.pois, meta, SIZE]);
 
   return (
-    <button type="button" className="minimap" onClick={onOpen} title="Open the tactical map" aria-label="Minimap, north up, centred on the selected agent. Opens the tactical map.">
+    <div className="minimap" role="img" aria-label="">
       <canvas ref={canvas} style={{ width: SIZE, height: SIZE }} />
-    </button>
+    </div>
   );
 }

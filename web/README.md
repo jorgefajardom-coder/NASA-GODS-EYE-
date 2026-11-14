@@ -52,16 +52,14 @@ node scripts/extract-ctx-crop.mjs <ctx.tif> 550 780   # centre pixel row, col
 The selected agent's oxygen, energy and time are shown once, in a circular HUD at the bottom right (agent icon in the centre, one ring per quantity, values beside it); the list, details and status blocks do not repeat them.
 
 Selectable list of agents, tasks and routes (left), contextual details (right), telemetry
-and route status (bottom left), replay timeline (bottom). Modes: Exploration, Ground layers, Tactical map and Mission
+and route status (bottom left), replay timeline (bottom). Modes: Exploration, Ground layers and Mission
 replay; Atmos is disabled until weather data exists.
 
 The demo terrain is draped with the real CTX orthomosaic of Jezero from JPL Mars Trek (6 m source, 5 m image, same production as the DTM; regenerate with `node scripts/extract-ctx-ortho.mjs`). The panchromatic image is contrast-stretched and tinted for display only; it can be turned off in the view options and is not used on the uncertainty layer. Site marker masts hide when the camera is closer than 70 m so they do not cut through agents standing on a site.
 
 The **Ground layers** tab drapes the USGS SIM 3464 geologic map (Sun and Stack, 2020) on the terrain and lists the units of the area with their share, description, composition (the map's mineral associations, such as Fe/Mg clay and carbonate in the fan) and interpretation. Selecting a unit highlights it. The geologic map can be turned off (the CTX image shows again), and a **cut-away block** shows the terrain as a cut piece of ground: each wall column starts with the unit mapped at the surface there and continues with older strata in the order given by the SIM 3464 unit interpretations (Aeb, NHjf2, Njf, Nue, older crust). Thicknesses, rock tones and the Nue/Njf order are schematic, as the panel states. Boundaries are approximate: the map has a 100–200 m registration offset against the CTX terrain. Regenerate with `node scripts/extract-geology.mjs`.
 
-A circular, game-style **minimap** (north up, 450 m around the selected agent, with heading arrow, coverage, route, sites and other agents) sits at the bottom left of the scene; clicking it opens the Tactical map tab.
-
-The **Tactical map** tab shows a 2D map of the updated terrain: hypsometric blue bands with relief shading, one block per 20 m cell, cells observed by agents drawn brighter as coverage (with the observed count), the route in force and invalidated routes, sites and agents, and a 500 m scale bar. It is display only and draws the same data as the 3D view.
+A circular, game-style **minimap** (north up, 450 m around the selected agent, with heading arrow, coverage, route, sites and other agents) sits inside the agent HUD at the bottom right. The rover and drone are the official NASA/JPL models with all branding removed, drawn at real size with the astronaut at 1.9 m; the drone's rotors spin while it flies.
 
 Up close (under about 200 m of camera distance) the ground gets procedural grain: sand ripples, grit, pebble speckle and metre-scale undulation computed in the shader from the ground position. It is **cosmetic, not measured** (the data stops at 5–20 m), fades out at mission scale, is not drawn on the uncertainty layer or the geologic map, and can be turned off in the view options.
 
