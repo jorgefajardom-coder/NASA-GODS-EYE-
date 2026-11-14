@@ -346,6 +346,29 @@
       "use": "Select the real public terrain providers in the vertical behind the MOCK mission, with agents on Jezero cell centres, and test unknown terrain, replan on a new map version and the recorded package end to end. Agent positions and budgets are placeholders; no terrain array, scientific observation or mission result is generated."
     },
     {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "public_raster_recording",
+      "generation": "AI-assisted code, tests and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_gateway/mge_gateway/public_rasters.py",
+        "src/mge_gateway/mge_gateway/recorder.py",
+        "src/mge_gateway/mge_gateway/replay.py",
+        "src/mge_gateway/mge_gateway/replay_check.py",
+        "src/mge_gateway/mge_gateway/contract_replay.py",
+        "src/mge_mapping/mge_mapping/node.py",
+        "src/mge_sim/mge_sim/mock_terrain.py",
+        "tests/unit/test_public_rasters.py",
+        "tests/integration/test_vertical_terrain.py",
+        "tests/integration/test_replay_package.py",
+        "tests/integration/test_terrain_batch.py",
+        "docs/ICD.md",
+        "docs/REPLAY_CONTRACT.md",
+        "docs/integration_log.md",
+        "docs/handoffs/jesus.md"
+      ],
+      "use": "Publish the observed mask in the stamped map batch and record the public prior and per-version belief, sigma and observed cells as the replay raster attachment, validated offline. Recorded rasters copy public layers and SIMULATED test observations; no terrain, scientific observation or mission result is generated."
+    },
+    {
       "tool": "OpenAI Codex",
       "kind": "code_configuration_and_synthetic_model_checks",
       "generation": "AI-assisted generation, pending human review",

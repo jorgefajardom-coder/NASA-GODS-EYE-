@@ -352,3 +352,14 @@ checks consume Daniel's existing observational public arrays unchanged; no
 terrain, observation or scientific dataset was generated. Journal tests use
 software fixtures, not submitted execution outcomes. Model conformance and
 readiness outputs are diagnostics; proposed assumptions remain unapproved.
+
+## Public raster recording
+
+Claude Code (Anthropic) assisted the integration owner with the public raster
+assembler and its use by the replay recorder, writer, offline validator and
+contract oracle, the observed-mask layer in `mapping_node` and `mock_terrain`,
+the unit and integration tests and the related contract documentation. Test
+layers are illustrative values; recorded rasters are copies of the public
+prior and of SIMULATED test observations, not new terrain. No scientific
+dataset, mission result, image, video or audio was generated. The affected
+paths are listed in ai_usage.json.
