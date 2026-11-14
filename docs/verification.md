@@ -30,7 +30,9 @@ All R01-R18 acceptance criteria remain pending.
 
 After dependencies are installed, use README commands. For ROS: colcon build,
 source install/setup.bash, inspect all six messages and two services, and run
-colcon test. An HTTP 200 health response only means the process is available;
+`python3 -m pytest tests/contract`. Other tests run from the repository root
+with requirements-dev.txt installed. Package-local colcon test suites do not
+exist yet. An HTTP 200 health response only means the process is available;
 it explicitly says ROS is disconnected. An API command receives 503, not an
 acceptance. Record actual consumer/run evidence separately under evidence/.
 
@@ -40,3 +42,11 @@ The ten interface checks from dev/jesus require rosidl_runtime_py and a sourced
 built workspace. They skip as one module locally and run explicitly in ROS CI.
 Contributor-reported checks are retained in integration_log.md; the combined
 workspace must pass a fresh ROS CI build before it is called compiled.
+
+## Combined workspace build evidence
+
+[CI run for 0294f19](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/actions/runs/43608206824)
+compiled all eight packages, inspected the eight definitions and passed all ten
+ROS contract tests. Python/web jobs passed. Its final empty package-local test
+discovery step exited with code 5; CI now explicitly uses the actual root
+pytest suites and ROS contract tests rather than claiming package-local tests.

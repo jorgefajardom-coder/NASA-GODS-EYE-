@@ -60,5 +60,5 @@ jobs:
           ros2 interface show mge_interfaces/srv/PlanRoute
           ros2 interface show mge_interfaces/srv/SetMissionGoal
           python3 -m pytest tests/contract -q
-          colcon test
-          colcon test-result --verbose
+          # Other unit/HTTP tests live in root tests/ and run in the Python job.
+          # No package-local test suites exist yet; colcon test would run none.
