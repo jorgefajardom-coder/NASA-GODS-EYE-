@@ -40,6 +40,9 @@ Trek (NASA/JPL-Caltech/MSSS/USGS); only `extract-ctx-ortho.mjs`, which resamples
 contrast-stretches it, was AI-assisted. Likewise `web/public/replay/demo/geology.json`
 holds USGS SIM 3464 unit text and polygons unchanged apart from reprojection and clipping;
 only `extract-geology.mjs` and the viewer code were AI-assisted.
+The rover and drone models (`web/public/assets/models/rover.glb`, `drone.glb`) are official
+NASA/JPL-Caltech models, not AI-generated; the Blender scripts that removed their branding,
+decimated and exported them (`web/scripts/blender/`) were AI-assisted.
 
 Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
 by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).
