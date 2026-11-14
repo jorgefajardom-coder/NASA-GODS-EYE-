@@ -18,6 +18,14 @@ Profiles, datum/tolerance, physical stop feedback and F03.4 mission wiring retai
 their existing owner-review gates. The final PR description records the tested
 head, CI run and consumer outcomes. Next deliverable: the reviewed merge to main.
 
+Combined CI run 43643590231 passed Python/web and ROS build/contracts, then
+reported three dependent execution-test failures: the new PR17 fixture still
+started agents at implicit z=0 on nonzero Jezero ground. Apply the existing
+test-only `ground_fixture` initializer to that fixture, and verify exact initial
+3-D pose, route start and observation heights. All motion, resource, invalidation
+and replay assertions remain enabled. Runtime guards and providers are unchanged.
+The following CI run must validate this fixture adaptation before merge.
+
 2026-11-14. Branch: feat/planner. Owner-authorized normal merges and publication
 to existing PR12; no force-push, history rewrite or merge to main.
 

@@ -19,6 +19,8 @@ OpenAI Codex assisted reconciling planner `a959d25` with main `3a9032b` before
 the owner-authorized PR12 merge. Both sets of mandatory disclosures, planner
 review corrections and main's callback scheduling/replay/executor changes are
 preserved. No scientific model, physical execution or LIVE mission is approved.
+The new kinematic execution test also uses the existing test-only ground-scene
+initializer, with assertions for initial pose and observation datum consistency.
 
 ## CI workflow display name, 14 November 2026
 

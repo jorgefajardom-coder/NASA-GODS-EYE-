@@ -19,6 +19,7 @@ import signal
 import struct
 import subprocess
 import time
+import yaml
 
 import httpx
 import pytest
@@ -31,6 +32,8 @@ from sensor_msgs.msg import Image  # noqa: E402
 from mge_gateway.replay_check import check_package  # noqa: E402
 from mge_interfaces.msg import AgentState, TerrainObservation  # noqa: E402
 from tests.integration.test_vertical_mock import wait_for  # noqa: E402
+from tests.integration.ground_fixture import (  # noqa: E402
+    initialize_ground_agents, observed_public_scene, simulated_ground_point)
 
 RUN_ID = 'it-execution'
 PORT = 8769
@@ -95,10 +98,17 @@ def on_polyline(p, points, tol=1e-5):
 class Stack:
 
     def __init__(self, record_dir):
+        # Declare initial conditions for this SIMULATED scene in the public
+        # terrain datum, using the same observations the fixture publishes below.
+        self.surface, self.vertical_datum = observed_public_scene(RUN_ID, BLOCK)
+        template = yaml.safe_load((ROOT / 'src/mge_bringup/config/agents_jezero.yaml').read_text())
+        agents_file = Path(record_dir) / 'simulated-ground-agents.yaml'
+        agents_file.write_text(yaml.safe_dump(initialize_ground_agents(template, self.surface)))
         self.package = os.path.join(record_dir, RUN_ID)
         self.proc = subprocess.Popen(
             ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',
              f'port:={PORT}', 'terrain:=real', 'planner:=real', f'profiles_file:={PROFILES}',
+             f'agents_file:={agents_file}',
              'agents:=kinematic', 'record:=true', f'record_dir:={record_dir}'],
             cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
         rclpy.init()
@@ -131,6 +141,7 @@ class Stack:
         self.until(lambda: self.belief is not None, 'belief layer')
         self.until(lambda: self.observations.get_subscription_count() >= 1, 'mapping subscriber')
         heights = struct.unpack(f'<{ROWS * COLS}f', bytes(self.belief.data))
+        assert all(heights[i] == self.surface.elevation_m.flat[i] for i in BLOCK)
         msg = TerrainObservation()
         msg.header.frame_id = 'map'
         msg.header.stamp = self.node.get_clock().now().to_msg()
@@ -183,6 +194,7 @@ def test_agents_wait_idle_until_a_route_is_authorized(stack):
     first = stack.human[-1]
     assert first.mode == AgentState.MODE_IDLE and speed(first) == 0.0
     assert position(first)[:2] == HOME
+    assert position(first) == simulated_ground_point(stack.surface, HOME)
     assert stack.node.count_publishers('/mge/agents/human_1/state') == 1
 
 
@@ -191,6 +203,7 @@ def test_agent_follows_the_authorized_route_and_returns(stack):
     ms = submit('req-short', centre(14, 12))
     assert ms['mission_state'] == 'READY', ms['active_route']
     path = polyline(ms['active_route'])
+    assert path[0] == position(initial)
     start = len(stack.human)
     stack.until(lambda: any(s.mode == AgentState.MODE_MOVING for s in stack.human[start:]),
                 'human moving')

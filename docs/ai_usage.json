@@ -9,8 +9,8 @@
       "tool": "OpenAI Codex",
       "kind": "integration_reconciliation",
       "generation": "AI-assisted reconciliation requested by the repository owner",
-      "paths": ["docs/AI_USAGE.md", "docs/ai_usage.json", "docs/planner_pr12_publication.md"],
-      "use": "Reconcile planner a959d25 with main 3a9032b, preserving both histories, disclosures, planner corrections and callback scheduling/replay/executor changes. No scientific or operational approval."
+      "paths": ["docs/AI_USAGE.md", "docs/ai_usage.json", "docs/planner_pr12_publication.md", "tests/integration/test_vertical_execution.py"],
+      "use": "Reconcile planner a959d25 with main 3a9032b, preserving both histories, disclosures, planner corrections and callback scheduling/replay/executor changes. Initialize the new kinematic test's simulated ground scene with the existing fixture helper and check pose/observation consistency. No scientific or operational approval."
     },
     {
       "tool": "OpenAI Codex",
