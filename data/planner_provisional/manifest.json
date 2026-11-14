@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "status": "provisional",
+  "dataset_type": "NEW_DERIVATIVE_OF_OFFICIAL_MRO_PRODUCT",
+  "role": "prior",
+  "knowledge_state": "orbital_prior_not_locally_verified",
+  "dataset_id": "jezero_planner_ctx_32",
+  "frame_id": "map",
+  "rows": 32,
+  "cols": 32,
+  "resolution_m": 4.0,
+  "origin_x_m": -64.0,
+  "origin_y_m": -64.0,
+  "row_orientation": "south_to_north",
+  "vertical_units": "m",
+  "vertical_datum": "MOLA topography / DeltaGeoid from source product; no Earth datum conversion",
+  "local_origin": {
+    "lat_planetocentric_deg": 18.45,
+    "lon_east_deg": 77.45
+  },
+  "mars_sphere_radius_m": 3396190,
+  "retrieved_utc": "2026-11-14T15:22:49.311380+00:00",
+  "processed_utc": "2026-11-14T15:22:52.429075+00:00",
+  "artifact": "terrain.npz",
+  "sha256": "5a424c9e4a03ba60b890b90e60b347135d7f4016ff6e860abfd091fecad1ce72",
+  "valid_fraction": 1.0,
+  "source": {
+    "mission": "MRO",
+    "instrument": "CTX",
+    "product_id": "JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0",
+    "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/CTX/JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0.tif",
+    "native_resolution_m": 20.0,
+    "doi": "https://doi.org/10.5066/P906QQT8",
+    "citation": "Fergason et al. (2020), Mars 2020 Terrain Relative Navigation CTX DTM Mosaic, USGS.",
+    "license_or_terms_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+    "source_window_col_row_width_height": [
+      852,
+      798,
+      12,
+      11
+    ],
+    "source_window_values_sha256": "477ebe4a62367445bebc58d72be8dc8455836c4dd5996b756e3ee9c83726dbb4",
+    "source_shape": [
+      1512,
+      1596
+    ],
+    "source_crs_wkt": "PROJCS[\"Equirectangular Mars 2000 Sphere IAU\",GEOGCS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",SPHEROID[\"Mars_2000_Sphere_IAU\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",0],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+    "source_nodata": "-3.4028226550889045e+38",
+    "target_crs_wkt": "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"unknown\",SPHEROID[\"unknown\",3396190,0]],PRIMEM[\"Reference meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",18.45],PARAMETER[\"latitude_of_origin\",18.45],PARAMETER[\"central_meridian\",77.45],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+    "resampling": "bilinear, GDAL NoData-aware; no synthetic replacement",
+    "native_valid_fraction": 1.0,
+    "upstream_etag": "\"8f6693aae0b562f7db2dfdec89282955-2\"",
+    "upstream_last_modified": "Thu, 10 Nov 2022 20:43:51 GMT",
+    "upstream_content_length": 9662387,
+    "read_method": "fresh HTTP 206 ranges via bounded urllib reader"
+  },
+  "processing_versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.4",
+    "rasterio": "1.5.2",
+    "gdal": "3.12.2"
+  },
+  "limitations": [
+    "A valid DEM sample is not a locally observed or verified corridor.",
+    "No mobility, soil mechanics, EVA or drone flight certification.",
+    "Computational resampling creates no additional native spatial information.",
+    "CTX and HiRISE are both MRO instruments; no multi-mission claim."
+  ],
+  "control_points": [
+    {
+      "row": 0,
+      "col": 0,
+      "x_m": -62.0,
+      "y_m": -62.0,
+      "elevation_m": -2570.634765625,
+      "lat_planetocentric_deg": 18.448954022498796,
+      "lon_east_deg": 77.44889734631394
+    },
+    {
+      "row": 16,
+      "col": 16,
+      "x_m": 2.0,
+      "y_m": 2.0,
+      "elevation_m": -2571.99755859375,
+      "lat_planetocentric_deg": 18.450033741209715,
+      "lon_east_deg": 77.45003556947376
+    },
+    {
+      "row": 31,
+      "col": 31,
+      "x_m": 62.0,
+      "y_m": 62.0,
+      "elevation_m": -2573.8408203125,
+      "lat_planetocentric_deg": 18.451045977501202,
+      "lon_east_deg": 77.45110265368606
+    }
+  ]
+}

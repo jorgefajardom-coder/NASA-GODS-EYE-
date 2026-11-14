@@ -3,9 +3,11 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
-**Status: base scaffold.** No validated mission, NASA terrain, working planner,
-Gazebo world, live ROS-to-web flow or published demo is included yet. The empty
-viewer and unavailable API responses are intentional, not mission evidence.
+**Status: P0 planner implemented; full mission integration pending.** The planner
+supports bounded FAST/SAFE search, return/resources and a guarded PlanRoute ROS
+service. A newly processed provisional CTX prior is included; it is not a locally
+verified corridor. The viewer, other science modules and gateway remain scaffold
+components. No validated mission, Gazebo world or published demo is claimed.
 
 Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
 Confirm any earlier local judging cutoff separately.
@@ -21,6 +23,7 @@ Confirm any earlier local judging cutoff separately.
 - [Competition checklist](docs/competition.md)
 - [Required AI declaration](docs/AI_USAGE.md) and [metadata](docs/ai_usage.json)
 - [Integration status](docs/integration_log.md) and [verification](docs/verification.md)
+- [Planner handoff for Diego](docs/planner_handoff.md) and [temporary data provenance](docs/planner_provenance.md)
 
 ## Layout and owners
 
