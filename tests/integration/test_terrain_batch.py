@@ -37,7 +37,7 @@ LATCHED = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
                      durability=DurabilityPolicy.TRANSIENT_LOCAL)
 RELIABLE = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
 KINDS = ('human', 'rover', 'drone')
-LAYERS = ('meta', 'belief', 'sigma', *KINDS)
+LAYERS = ('meta', 'belief', 'sigma', 'observed', *KINDS)
 ROWS = COLS = 32
 CELL_M, ORIGIN_M = 4.0, -64.0
 BLOCK = [row * COLS + col for row in range(8, 24) for col in range(8, 24)]
@@ -65,7 +65,7 @@ class Probe:
         sub = self.node.create_subscription
         sub(TerrainMeta, '/mge/terrain/meta', lambda m: self.latest.update(meta=m), LATCHED)
         sub(Image, '/mge/terrain/prior', lambda m: setattr(self, 'prior', m), LATCHED)
-        for name in ('belief', 'sigma'):
+        for name in ('belief', 'sigma', 'observed'):
             sub(Image, f'/mge/terrain/{name}',
                 lambda m, name=name: self.latest.update({name: m}), LATCHED)
         for kind in KINDS:
@@ -177,6 +177,10 @@ def test_one_metadata_publisher_and_one_stamp_per_batch(probe):
         assert (batch[name].encoding, batch[name].height, batch[name].width) == ('32FC1', ROWS, COLS)
     # The orbital prior is not a local observation: nothing is admissible yet.
     assert all(set(batch[kind].data) == {-1} for kind in KINDS)
+    observed = batch['observed']
+    assert (observed.encoding, observed.height, observed.width, observed.step) == (
+        'mono8', ROWS, COLS, COLS)
+    assert set(bytes(observed.data)) == {0}
     probe.wait(lambda: probe.prior, 'the immutable prior layer')
     assert floats(probe.prior) == floats(batch['belief'])
 
@@ -208,6 +212,8 @@ def test_observation_makes_one_new_version_with_a_new_stamp(probe):
     assert floats(second['sigma'])[BLOCK[0]] == pytest.approx(0.25)
     observed = {i for i, value in enumerate(second['rover'].data) if value != -1}
     assert observed and observed <= set(BLOCK)  # nothing outside the footprint changed
+    # The observed mask is exactly the footprint, under the same batch stamp.
+    assert [i for i, v in enumerate(bytes(second['observed'].data)) if v] == sorted(BLOCK)
 
     probe.observe('obs-1', BLOCK, [heights[i] for i in BLOCK], base_version=1)     # duplicate
     probe.spin(1.5)

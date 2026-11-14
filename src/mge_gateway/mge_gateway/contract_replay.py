@@ -1,8 +1,9 @@
 """Additive, offline reconciliation of the 1.0.0 recorder and legacy viewer.
 
 This module does not replace either implementation or authorize mission routes.
-All input paths are local; public rasters are an explicit, separately supplied
-attachment because the existing recorder never records elevation arrays.
+All input paths are local. Public rasters are an explicit attachment: the
+recorder writes it as public_rasters.json when the run published the observed
+mask (read_public_rasters), and older packages simply lack it.
 """
 from copy import deepcopy
 import json
@@ -15,6 +16,8 @@ SCHEMA = "1.0.0"
 VIEWER_SCHEMA = "mge-web-0.1-draft"
 PUBLIC_RASTER_SCHEMA = "mge-public-rasters-1.0.0"
 KINDS = {"state", "event", "terrain_meta"}
+FILES = {"timeline": "timeline.jsonl", "snapshot": "snapshot.json"}
+RASTER_FILE = "public_rasters.json"
 ROUTE_STATES = {"FEASIBLE", "UNKNOWN", "NO_PATH", "INSUFFICIENT_BUDGET", "STALE_MAP", "ERROR"}
 GEOMETRY = ("dataset_id", "rows", "cols", "origin_x_m", "origin_y_m",
             "resolution_m", "crs", "origin_lat_deg", "origin_lon_deg", "vertical_datum")
@@ -84,7 +87,8 @@ def validate_package(manifest, records, snapshot):
     _public([manifest, records, snapshot])
     _envelope(manifest, run)
     _envelope(snapshot, run)
-    _need(manifest.get("files") == {"timeline": "timeline.jsonl", "snapshot": "snapshot.json"},
+    # public_rasters is optional: packages without the observed mask lack it.
+    _need(manifest.get("files") in (FILES, {**FILES, "public_rasters": RASTER_FILE}),
           "UNSUPPORTED_FILE_LAYOUT")
     _need(manifest.get("record_count") == len(records), "RECORD_COUNT_MISMATCH")
     # Optional: absent in packages recorded before the field existed. A
@@ -168,6 +172,17 @@ def read_package(directory):
     return manifest, records, snapshot
 
 
+def read_public_rasters(directory, manifest):
+    """The recorded attachment named by the manifest, or None if it has none."""
+    name = manifest.get("files", {}).get("public_rasters")
+    if name is None:
+        return None
+    _need(name == RASTER_FILE, "UNSUPPORTED_FILE_LAYOUT")
+    attachment = _read(Path(directory) / RASTER_FILE)
+    _public(attachment)
+    return attachment
+
+
 def write_package(directory, manifest, records, snapshot):
     """Encode a validated offline fixture; never overwrite an existing run.
 
@@ -194,7 +209,13 @@ def _flatten(body, origin, fallback):
     return out
 
 
-def _rasters(attachment, manifest, versions):
+def _rasters(attachment, manifest, versions, recorded):
+    """versions: map versions the mission used; recorded: terrain versions seen.
+
+    Version 0 means no map has been received, so it needs no raster. Every
+    other used version must be present (no nearest-version fallback), and the
+    attachment may only add versions whose metadata the package recorded.
+    """
     _public(attachment)
     meta = manifest["terrain_meta"]
     _need(isinstance(attachment, dict), "RASTER_OBJECT_REQUIRED")
@@ -212,7 +233,9 @@ def _rasters(attachment, manifest, versions):
               "INVALID_RASTER_VALUE")
     grid(attachment.get("prior"))
     layers = attachment.get("versions", {})
-    _need(set(layers) == {str(v) for v in versions}, "RASTER_VERSION_MISMATCH")
+    _need(isinstance(layers, dict)
+          and {str(v) for v in versions if v != 0} <= set(layers) <= {str(v) for v in recorded},
+          "RASTER_VERSION_MISMATCH")
     for layer in layers.values():
         grid(layer.get("belief"))
         grid(layer.get("sigma"), True)
@@ -227,6 +250,14 @@ def _rasters(attachment, manifest, versions):
             "reference": [None] * count}
 
 
+def check_public_rasters(manifest, records, attachment):
+    """Validate a raster attachment against a package's recorded versions."""
+    versions = {r["state"]["map_version"] for r in records if r.get("type") == "state"}
+    recorded = {r["terrain_meta"]["map_version"] for r in records if r.get("type") == "terrain_meta"}
+    _need(manifest.get("terrain_meta") is not None, "NO_TERRAIN_META")
+    _rasters(attachment, manifest, versions, recorded)
+
+
 def to_viewer(manifest, records, snapshot, public_rasters=None):
     """Convert to Jorge's four-file shape; fail closed without public rasters.
 
@@ -238,10 +269,12 @@ def to_viewer(manifest, records, snapshot, public_rasters=None):
     _need(_finite(origin), "INVALID_START_TIME")
     run, meta = manifest["run_id"], manifest["terrain_meta"]
     _need(meta is not None, "NO_TERRAIN_META")
-    frames, events, routes, versions = [], [], {}, set()
+    frames, events, routes, versions, recorded = [], [], {}, set(), set()
     for rec in records:
         kind, t = rec["type"], rec["timestamp_sim_s"] - origin
         body = rec[kind]
+        if kind == "terrain_meta":
+            recorded.add(body["map_version"])
         if kind == "event":
             event = _flatten(body, origin, t)
             event["timestamp_sim_s"] = t  # recorded arrival, not earlier source stamp
@@ -285,5 +318,6 @@ def to_viewer(manifest, records, snapshot, public_rasters=None):
         "manifest": viewer_manifest,
         "timeline": {"schema_version": VIEWER_SCHEMA, "run_id": run, "frames": frames, "events": events},
         "routes": {"run_id": run, "routes": list(routes.values())},
-        "rasters": _rasters(public_rasters, manifest, versions) if public_rasters is not None else None,
+        "rasters": (_rasters(public_rasters, manifest, versions, recorded)
+                    if public_rasters is not None else None),
     }

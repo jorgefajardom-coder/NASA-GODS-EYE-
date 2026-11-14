@@ -1,8 +1,10 @@
 """MOCK terrain provider.
 
 Publishes a coherent public map batch for a synthetic flat grid: metadata,
-belief, sigma and one traversability mask per agent kind, all with the same
-snapshot stamp (planner batch protocol, docs/ICD.md). Every new
+belief, sigma, the observed mask and one traversability mask per agent kind,
+all with the same snapshot stamp (planner batch protocol, docs/ICD.md), plus a
+flat prior once. Every mask marks every cell admissible, so the observed mask
+marks every cell observed: a known cell is an observed one. Every new
 TerrainObservation bumps map_version and yields a new batch with a new stamp;
 the layers themselves do not change. It carries no Mars data: it only lets
 consumers exercise map versioning before the real data provider and belief
@@ -38,7 +40,7 @@ class MockTerrain(Node):
         self.pub_meta = self.create_publisher(TerrainMeta, TOPIC_TERRAIN_META, LATCHED)
         self.pub_image = {
             name: self.create_publisher(Image, f'/mge/terrain/{name}', LATCHED)
-            for name in ('belief', 'sigma')}
+            for name in ('prior', 'belief', 'sigma', 'observed')}
         self.pub_mask = {
             kind: self.create_publisher(
                 OccupancyGrid, f'/mge/terrain/traversability/{kind}', LATCHED)
@@ -51,7 +53,24 @@ class MockTerrain(Node):
         if repeat_s > 0:
             self.create_timer(repeat_s, self.publish)
         self.get_logger().warn('MOCK data: synthetic flat grid, no Mars products')
+        prior = self.float_image(0.0)
+        prior.header.stamp = self.stamp
+        self.pub_image['prior'].publish(prior)
         self.publish()
+
+    def float_image(self, value):
+        image = Image()
+        image.header.frame_id = 'map'
+        image.height = self.rows
+        image.width = self.cols
+        image.encoding = '32FC1'
+        image.is_bigendian = 0
+        image.step = self.cols * 4
+        layer = array.array('f', [value]) * (self.rows * self.cols)
+        if layer.itemsize != 4:
+            raise RuntimeError('float32 layout expected')
+        image.data = array.array('B', layer.tobytes())
+        return image
 
     def new_stamp(self, previous):
         """One stamp identifies one map version and is never reused."""
@@ -96,18 +115,19 @@ class MockTerrain(Node):
         self.pub_meta.publish(meta)
 
         for name, value in (('belief', 0.0), ('sigma', SIGMA_M)):
-            image = Image()
+            image = self.float_image(value)
             image.header = meta.header
-            image.height = self.rows
-            image.width = self.cols
-            image.encoding = '32FC1'
-            image.is_bigendian = 0
-            image.step = self.cols * 4
-            layer = array.array('f', [value]) * cells
-            if layer.itemsize != 4:
-                raise RuntimeError('float32 layout expected')
-            image.data = array.array('B', layer.tobytes())
             self.pub_image[name].publish(image)
+
+        observed = Image()
+        observed.header = meta.header
+        observed.height = self.rows
+        observed.width = self.cols
+        observed.encoding = 'mono8'
+        observed.is_bigendian = 0
+        observed.step = self.cols
+        observed.data = array.array('B', [1]) * cells
+        self.pub_image['observed'].publish(observed)
 
         for kind in KINDS:
             grid = OccupancyGrid()

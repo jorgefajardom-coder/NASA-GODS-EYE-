@@ -89,18 +89,25 @@ does not modify the scene/assets/layers/agents/timeline.
 
 ## Public raster attachment
 
-The existing recorder records no rasters. In the strict oracle, missing arrays
-produce NOT_READY while state/routes/events remain convertible; no flat terrain
-is synthesized. Daniel supplies one public attachment with:
+The recorder writes the attachment as `public_rasters.json`, named by the
+optional manifest entry `files.public_rasters`, from the public topics only:
+the prior and, per map version, belief, sigma and the observed mask published
+under that version's stamp (`mge_gateway.public_rasters`). `read_public_rasters`
+loads it for the oracle; `check_replay` validates it. Packages without the
+observed mask (the pinned fixture, older runs) have no attachment. In the strict
+oracle, missing arrays produce NOT_READY while state/routes/events remain
+convertible; no flat terrain is synthesized. The attachment holds:
 
 - `schema_version: mge-public-rasters-1.0.0`;
 - `run_id`, `dataset_id`, `rows`, `cols`;
 - `terrain_geometry`: exact `dataset_id`, rows, cols, ENU origins, resolution,
   CRS, planetary origin latitude/longitude and vertical datum from TerrainMeta;
 - `prior`: immutable row-major public heights, number or null per cell;
-- `versions`: exact string keys for every recorded MissionState map version,
-  each containing `belief`, nonnegative `sigma` and distinct in-bounds
-  `observed` linear cell indices.
+- `versions`: string keys for every map version a recorded MissionState used,
+  except 0 (no map received yet, so no raster can exist); further keys are
+  allowed only for versions whose TerrainMeta the package recorded. Each holds
+  `belief`, nonnegative `sigma` and distinct in-bounds `observed` linear cell
+  indices.
 
 This is the compatibility export attachment representation, not a new ROS
 raster format or replacement dataset manifest. Dataset provenance, hashes,
@@ -152,7 +159,8 @@ The recorder now writes explicit source provenance: manifest `source_mode`
 transport terminology. `LIVE` cannot be declared or accepted from a package:
 a live connected process is insufficient evidence of a valid LIVE mission.
 The pinned fixture and `data/sample/replay` predate the field and are not
-rewritten. Public raster recording without evaluator data is still missing.
+rewritten. Public raster recording now exists (above); the viewer still has to
+read `public_rasters.json` instead of rejecting non-flat terrain packages.
 
 The gateway and recorder no longer map every NaN and infinity to null. The
 typed converters in `mge_gateway.store` (`state_json`, `event_json`,

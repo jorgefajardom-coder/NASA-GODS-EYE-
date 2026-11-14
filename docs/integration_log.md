@@ -223,3 +223,29 @@ packages built/eight interfaces inspected;15focused launch/mission cases passed;
 published-snapshot skip. Repository and whitespace checks passed. The viewer
 accepts additive manifest fields and fails closed for non-flat recorded terrain
 without rasters; full real-terrain browser playback remains a separate handoff.
+
+## Public raster recording, 2026-11-14
+
+- Base: main `059f8ef` (PRs #10 and #11 merged). Owner: Jesus, on
+  `feat/integration`; JES-04.
+- Gap found: the raster attachment needs the observed cells of each map
+  version, and no ROS topic carried them. Deriving them from sigma or the
+  traversability masks would be inference (an observed cell stays unknown when
+  NoData or uncertain), so the owner chose an additive topic.
+- Change: `/mge/terrain/observed` (`mono8`) joins the stamped batch of
+  `mapping_node` and `mock_terrain`; `mock_terrain` also publishes its flat
+  prior. The recorder assembles prior plus belief/sigma/observed per version
+  by stamp and writes `public_rasters.json`; `check_replay` and the oracle read
+  it. No message or field changed; the planner does not subscribe to the topic.
+- Evidence in the `mge-dev` Jazzy container: the Jezero vertical package holds
+  versions 1 (nothing observed, belief equal to the prior) and 2 (exactly the
+  observed 16 x 16 block) and the oracle converts it READY with an all-null
+  reference; the MOCK vertical package also converts READY. Full suite: 805
+  passed, 1 skipped; non-ROS suite on Python 3.12: 730 passed, 13 skipped;
+  repository check passed.
+- Open: Daniel reviews the `mapping_node` change and Jorge the consumer; the
+  viewer must read `public_rasters.json` instead of rejecting non-flat terrain.
+  `test_terrain_batch.py::test_planner_routes_inside_the_observed_block` fails
+  intermittently with `UNKNOWN/SEARCH_LIMIT` after its 10 s search budget while
+  the batch repeats at 1 Hz (planner finding 1, now on a 32 x 32 grid); passes
+  in other runs. For Diego.
