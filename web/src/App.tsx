@@ -82,6 +82,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [follow, setFollow] = useState(false);
   const [contours, setContours] = useState(true);
   const [showImagery, setShowImagery] = useState(true);
+  const [surfaceDetail, setSurfaceDetail] = useState(true);
   const imageryUrl = m.imagery && showImagery ? assetUrl(`${RUN_DIR}/${m.imagery.file}`) : null;
   const [cameraSmoothing, setCameraSmoothingState] = useState<CameraSmoothing>(() => {
     try {
@@ -179,6 +180,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         contours={contours}
         cameraSmoothing={cameraSmoothing}
         imageryUrl={imageryUrl}
+        surfaceDetail={surfaceDetail}
         geology={mode === 'geology' && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
       />
       <div className="vignette" aria-hidden />
@@ -221,6 +223,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             imagery={m.imagery ? { title: m.imagery.title, resolutionM: m.imagery.resolution_m } : null}
             showImagery={showImagery}
             onShowImagery={setShowImagery}
+            surfaceDetail={surfaceDetail}
+            onSurfaceDetail={setSurfaceDetail}
           />
         </div>
 

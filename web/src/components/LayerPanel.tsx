@@ -57,6 +57,8 @@ interface OptionsProps {
   imagery: { title: string; resolutionM: number } | null;
   showImagery: boolean;
   onShowImagery: (v: boolean) => void;
+  surfaceDetail: boolean;
+  onSurfaceDetail: (v: boolean) => void;
 }
 
 /** View options and legend, collapsed by default so they do not cover the terrain. */
@@ -97,6 +99,9 @@ export function ViewOptions(p: OptionsProps) {
           <input type="checkbox" checked={p.showImagery} onChange={(e) => p.onShowImagery(e.target.checked)} /> CTX image on terrain ({p.imagery.resolutionM} m; not on the uncertainty layer)
         </label>
       )}
+      <label className="check">
+        <input type="checkbox" checked={p.surfaceDetail} onChange={(e) => p.onSurfaceDetail(e.target.checked)} /> Close-up ground grain (cosmetic, not measured)
+      </label>
       <label className="check">
         <input type="checkbox" checked={p.contours} onChange={(e) => p.onContours(e.target.checked)} /> Contour lines (10 m, bold every 50 m)
       </label>

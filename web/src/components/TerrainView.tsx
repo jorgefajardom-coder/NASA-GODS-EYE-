@@ -11,6 +11,45 @@ export const MESH_SUBDIVISION = 3;
 export const CONTOUR_MINOR_M = 10;
 export const CONTOUR_MAJOR_M = 50;
 
+/**
+ * Cosmetic regolith grain for close views. The terrain data stops at 5-20 m, so walking views
+ * look flat; this adds procedural sand ripples, grit and pebble speckle from the ground
+ * position. It is NOT measured detail: it is labelled in the view options, can be turned off,
+ * and vanishes beyond ~220 m of camera distance, so it never changes the map at mission scale.
+ */
+export const SURFACE_DETAIL_GLSL = /* glsl */ `
+float gHash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+float gNoise(vec2 p) {
+  vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(gHash(i), gHash(i + vec2(1.0, 0.0)), u.x), mix(gHash(i + vec2(0.0, 1.0)), gHash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+float gFbm(vec2 p) { float a = 0.5, s = 0.0; for (int k = 0; k < 5; k++) { s += a * gNoise(p); p = p * 2.03 + 17.1; a *= 0.5; } return s; }
+// Relief in metres-like units: metre-scale undulation, decimetre ripples, centimetre grit.
+float groundHeight(vec2 g) {
+  float undulation = gFbm(g * 0.35) * 0.35;
+  float ripples = sin(dot(g, vec2(0.83, 0.56)) * 9.0 + gFbm(g * 1.3) * 6.0) * 0.025;
+  float grit = gFbm(g * 7.0) * 0.04;
+  float pebbles = smoothstep(0.78, 0.86, gNoise(g * 3.1)) * 0.05;
+  return undulation + ripples + grit + pebbles;
+}
+// Brightness modulation: dust patches, darker grit and pebble speckle (multiplies the map colour).
+float groundAlbedo(vec2 g) {
+  float patches = gFbm(g * 0.08) * 0.25 + 0.88;
+  float grit = 0.92 + gFbm(g * 9.0) * 0.16;
+  float pebbles = 1.0 - smoothstep(0.78, 0.86, gNoise(g * 3.1)) * 0.35;
+  return patches * grit * pebbles;
+}
+// Bump mapping from screen-space derivatives (same method as three.js bumpmap_pars).
+vec3 groundNormal(vec3 surfPos, vec3 surfNorm, float h, float faceDir) {
+  vec3 sx = dFdx(surfPos); vec3 sy = dFdy(surfPos);
+  vec2 dh = vec2(dFdx(h), dFdy(h)) * 1.6;
+  vec3 r1 = cross(sy, surfNorm); vec3 r2 = cross(surfNorm, sx);
+  float det = dot(sx, r1) * faceDir;
+  vec3 grad = sign(det) * (dh.x * r1 + dh.y * r2);
+  return normalize(abs(det) * surfNorm - grad);
+}
+`;
+
 interface Props {
   meta: TerrainMeta;
   rasters: RasterSet;
@@ -23,6 +62,8 @@ interface Props {
   zOffsetM: number;
   /** Orbital image to drape on the terrain (null = height colours only). Not used on the sigma layer. */
   imagery: { url: string; extent: { origin_x_m: number; origin_y_m: number; width_m: number; height_m: number } } | null;
+  /** Cosmetic, unmeasured surface grain at close range (default on in the viewer). */
+  surfaceDetail?: boolean;
   /** A texture shown instead of the image (e.g. the geologic map), not tinted. Wins over `imagery`. */
   overlay?: { texture: THREE.Texture; extent: { origin_x_m: number; origin_y_m: number; width_m: number; height_m: number } } | null;
 }
@@ -34,7 +75,7 @@ interface Props {
  * same ENU point coincide. Triangles touching NoData are not drawn. Contour lines are drawn
  * in the shader from the true height of each fragment.
  */
-export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery, overlay }: Props) {
+export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery, overlay, surfaceDetail = true }: Props) {
   const heights = heightGrid(rasters, layer, mapVersion);
   const version = rasters.versions[versionKey(rasters, mapVersion)];
   const imageTexture = useImageryTexture(imagery?.url ?? null);
@@ -103,12 +144,14 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     return g;
   }, [meta, rasters, heights, version, layer, highlightObserved, draped, ext]);
 
-  const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 }, uTint: { value: 1 } }), []);
+  const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 }, uTint: { value: 1 }, uDetail: { value: 1 } }), []);
   useEffect(() => {
     uniforms.uContour.value = contours ? 1 : 0;
     uniforms.uOffset.value = zOffsetM;
     uniforms.uTint.value = overlay ? 0 : 1; // only the panchromatic image is tinted
-  }, [uniforms, contours, zOffsetM, overlay]);
+    // Cosmetic grain only on the real-surface views, never on the geologic map or uncertainty colours.
+    uniforms.uDetail.value = surfaceDetail && !overlay && layer !== 'sigma' ? 1 : 0;
+  }, [uniforms, contours, zOffsetM, overlay, surfaceDetail, layer]);
 
   const material = useMemo(() => {
     const m = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, metalness: 0, side: THREE.DoubleSide });
@@ -116,11 +159,24 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
       shader.uniforms.uContour = uniforms.uContour;
       shader.uniforms.uOffset = uniforms.uOffset;
       shader.uniforms.uTint = uniforms.uTint;
+      shader.uniforms.uDetail = uniforms.uDetail;
       shader.vertexShader = shader.vertexShader
-        .replace('#include <common>', '#include <common>\nvarying float vRealH;')
-        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvRealH = position.y;');
+        .replace('#include <common>', '#include <common>\nvarying float vRealH;\nvarying vec2 vGround;')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvRealH = position.y;\nvGround = position.xz;');
       shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', '#include <common>\nvarying float vRealH;\nuniform float uContour;\nuniform float uOffset;\nuniform float uTint;')
+        .replace('#include <common>', `#include <common>\nvarying float vRealH;\nvarying vec2 vGround;\nuniform float uContour;\nuniform float uOffset;\nuniform float uTint;\nuniform float uDetail;\n${SURFACE_DETAIL_GLSL}`)
+        // Cosmetic surface grain (not measured): fades in below ~200 m of camera distance.
+        .replace(
+          '#include <color_fragment>',
+          `#include <color_fragment>
+          float detailFade = uDetail * (1.0 - smoothstep(60.0, 220.0, length(vViewPosition)));
+          if (detailFade > 0.0) diffuseColor.rgb *= mix(1.0, groundAlbedo(vGround), detailFade);`,
+        )
+        .replace(
+          '#include <normal_fragment_maps>',
+          `#include <normal_fragment_maps>
+          if (detailFade > 0.0) normal = groundNormal(-vViewPosition, normal, groundHeight(vGround) * detailFade, faceDirection);`,
+        )
         // The draped CTX image is panchromatic: map its grey level onto a basalt-to-dust ramp
         // (display only). The vertex colour (observed-cell tint) is applied next by color_fragment.
         .replace(
@@ -147,7 +203,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
           }`,
         );
     };
-    m.customProgramCacheKey = () => 'terrain-contours-v3';
+    m.customProgramCacheKey = () => 'terrain-contours-v4';
     return m;
   }, [uniforms]);
 

@@ -34,9 +34,11 @@ interface Props {
   imageryUrl: string | null;
   /** Geologic map draped instead of the image (Ground layers tab), with the selected unit. */
   geology: { data: GeologyData; selected: string | null } | null;
+  /** Cosmetic close-range ground grain. */
+  surfaceDetail: boolean;
 }
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
@@ -70,6 +72,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         zOffsetM={bundle.manifest.local_z_offset_m ?? 0}
         imagery={imageryUrl && bundle.manifest.imagery ? { url: imageryUrl, extent: bundle.manifest.imagery.extent } : null}
         overlay={geoTexture && geology ? { texture: geoTexture, extent: geology.data.frame } : null}
+        surfaceDetail={surfaceDetail}
       />
       <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />
       <SiteMarkers
