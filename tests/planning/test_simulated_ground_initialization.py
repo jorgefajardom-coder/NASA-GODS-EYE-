@@ -85,19 +85,37 @@ def test_no_ground_height_is_inferred_for_unknown_or_forbidden_scene(hazard, con
 
 @pytest.mark.parametrize('kind', ['human', 'rover'])
 @pytest.mark.parametrize('continuous', [False, True])
-def test_map_height_change_does_not_rewrite_existing_pose_and_needs_new_coherent_pose(kind, continuous):
+def test_map_height_change_preserves_pose_and_requires_strict_z_or_bounded_opt_in_connector(kind, continuous):
     grid, profile, request = scenario(kind, continuous)
     newer = replace(grid, map_version=2, elevation_m=grid.elevation_m+.2)
     stale_pose = replace(request, map_version=2)
-    rejected = plan_route(terrain=newer, profile=profile, request=stale_pose,
-                          allow_continuous_start=continuous)
-    assert rejected.reason_code == 'INVALID_START_Z' and not rejected.outbound_path
+    result = plan_route(terrain=newer, profile=profile, request=stale_pose,
+                        allow_continuous_start=continuous)
+    if continuous:
+        # The experimental connector moves from the unchanged supplied XYZ to
+        # the containing centre. This is not a new measured/projected pose.
+        assert result.status == RouteStatus.FEASIBLE
+        connector = result.start_connector
+        assert result.outbound_path[0] == connector.start == request.start
+        assert connector.end == newer.point(newer.cell(request.start))
+        distance = ((connector.end[0]-request.start[0])**2 + .2**2)**.5
+        assert connector.distance_m == pytest.approx(distance)
+        assert connector.travel_time_s == pytest.approx(distance/profile.speed_m_s)
+        assert connector.energy_est_wh == pytest.approx(distance*profile.energy_wh_per_m)
+        assert connector.oxygen_est_l == (pytest.approx(distance*.1) if kind == 'human' else None)
+    else:
+        assert result.reason_code == 'INVALID_START_Z' and not result.outbound_path
     current = replace(stale_pose, start=simulated_ground_point(newer, request.start[:2]))
     accepted = plan_route(terrain=newer, profile=profile, request=current,
                           allow_continuous_start=continuous)
     assert request.start[2] == -12.5 and current.start[2] == pytest.approx(-12.3)
     assert accepted.status == RouteStatus.FEASIBLE
     assert accepted.map_version_used == 2 and accepted.outbound_path[0] == current.start
+    excessive = replace(grid, map_version=3, elevation_m=grid.elevation_m+.6)
+    refused = plan_route(terrain=excessive, profile=profile,
+                         request=replace(request, map_version=3),
+                         allow_continuous_start=continuous)
+    assert refused.reason_code == 'INVALID_START_Z' and not refused.outbound_path
 
 
 def test_initialization_fills_only_absent_ground_z_and_never_projects_existing_pose():

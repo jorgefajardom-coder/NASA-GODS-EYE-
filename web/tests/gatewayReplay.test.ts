@@ -35,6 +35,14 @@ function attachmentFor(m: GatewayManifest, versions: number[]): PublicRasters {
   };
 }
 
+/** Source-mode scenarios change the terrain consistently in every recorded meta. */
+function recordsWithTerrain(m: GatewayManifest) {
+  return records.map((record) => record.type === 'terrain_meta' ? {
+    ...record,
+    terrain_meta: { ...m.terrain_meta, header: record.terrain_meta.header, map_version: record.terrain_meta.map_version },
+  } : record);
+}
+
 describe('gateway replay package', () => {
   it('is recognised as a gateway package, not as the demo fixture', () => {
     expect(isGatewayManifest(manifest)).toBe(true);
@@ -74,20 +82,20 @@ describe('gateway replay package', () => {
     expect(bundle.manifest.pois.find((p) => p.kind === 'primary_goal')!.position).toEqual({ x: 300, y: 400, z: 0 });
   });
 
-  it('drops records of another run', () => {
+  it('rejects records of another run instead of hiding them', () => {
     const foreign = records.map((r) => ({ ...r, run_id: 'other' }));
-    expect(() => fromGatewayPackage(manifest, foreign)).toThrow(/no mission state/);
+    expect(() => fromGatewayPackage(manifest, foreign)).toThrow(/RUN_MISMATCH/);
   });
 
   it('follows the declared source_mode and refuses LIVE (ICD §6.1)', () => {
     const real = { ...manifest.terrain_meta, dataset_id: 'flat-test-grid', sources: ['flat grid for tests'] };
     const simManifest = { ...manifest, source_mode: 'SIMULATION', terrain_meta: real };
-    const sim = fromGatewayPackage(simManifest, records, attachmentFor(simManifest, [1, 2]));
+    const sim = fromGatewayPackage(simManifest, recordsWithTerrain(simManifest), attachmentFor(simManifest, [1, 2]));
     expect(sim.manifest.source_mode).toBe('SIMULATION');
     expect(sim.manifest.illustrative).toBe(false);
     expect(sim.manifest.disclaimer).not.toMatch(/MOCK/);
     const unknownManifest = { ...manifest, terrain_meta: real };
-    const unknown = fromGatewayPackage(unknownManifest, records, attachmentFor(unknownManifest, [1, 2]));
+    const unknown = fromGatewayPackage(unknownManifest, recordsWithTerrain(unknownManifest), attachmentFor(unknownManifest, [1, 2]));
     expect(unknown.manifest.source_mode).toBe('UNKNOWN');
     expect(unknown.manifest.provenance).toEqual(['replay']);
     // A MOCK terrain stays MOCK whatever the package declares.
@@ -130,7 +138,8 @@ describe('public raster attachment (files.public_rasters, JOR-03)', () => {
 
   it('refuses a non-MOCK package without an attachment and keeps the flat MOCK grid as an explicit illustration', () => {
     const real = { ...manifest.terrain_meta, dataset_id: 'ctx-crop', crs: 'IAU_2015:49900', sources: ['CTX DTM'] };
-    expect(() => fromGatewayPackage({ ...manifest, source_mode: 'SIMULATION', terrain_meta: real }, records)).toThrow(/PUBLIC_RASTERS_REQUIRED/);
+    const realManifest = { ...manifest, source_mode: 'SIMULATION', terrain_meta: real };
+    expect(() => fromGatewayPackage(realManifest, recordsWithTerrain(realManifest))).toThrow(/PUBLIC_RASTERS_REQUIRED/);
     const mock = fromGatewayPackage(manifest, records);
     expect(mock.manifest.disclaimer).toMatch(/illustrative flat MOCK grid/);
   });

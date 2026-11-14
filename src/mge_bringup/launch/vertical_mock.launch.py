@@ -115,6 +115,7 @@ def generate_launch_description():
         DeclareLaunchArgument('port', default_value='8000'),
         DeclareLaunchArgument('planner', default_value='mock', choices=['mock', 'real']),
         DeclareLaunchArgument('profiles_file', default_value=''),
+        DeclareLaunchArgument('allow_continuous_starts', default_value='false'),
         DeclareLaunchArgument('mission', default_value='mock', choices=['mock', 'real']),
         DeclareLaunchArgument('mission_profiles_path', default_value=''),
         DeclareLaunchArgument('mission_path', default_value=''),
@@ -154,10 +155,13 @@ def generate_launch_description():
                  'profiles_file': LaunchConfiguration('profiles_file'),
                  'allow_illustrative_profiles': True,
                  'snapshot_contract_confirmed': True,
+                 'allow_continuous_starts': ParameterValue(
+                     LaunchConfiguration('allow_continuous_starts'), value_type=bool),
              }]),
         Node(package='mge_sim', executable='mock_mission', output='screen',
              condition=IfCondition(EqualsSubstitution(LaunchConfiguration('mission'), 'mock')),
-             parameters=[with_agents]),
+             parameters=[{**with_agents, 'require_stop_ack': ParameterValue(
+                 EqualsSubstitution(LaunchConfiguration('agents'), 'kinematic'), value_type=bool)}]),
         Node(package='mge_mission', executable='mission_node', output='screen',
              condition=IfCondition(EqualsSubstitution(LaunchConfiguration('mission'), 'real')),
              parameters=[{

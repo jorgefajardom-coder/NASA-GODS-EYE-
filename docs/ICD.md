@@ -407,10 +407,13 @@ default. An explicit experimental opt-in does not constitute contract approval.
   endpoints. See [MODEL.md](../src/mge_planning/MODEL.md) for proof boundaries.
 - Connector 3-D distance, time, energy and human oxygen use the existing profile
   equations and initialize the first A* label BEFORE budget/reserve pruning.
-  Completed travel is not charged again. Two-dimensional input adopts belief z;
-  three-dimensional human/rover input must match the known containing-cell belief
-  z within 1e-6 m, for centred and continuous starts alike. Otherwise return
-  ERROR/INVALID_START_Z without a route; never silently project or infer NO_PATH.
+  Completed travel is not charged again. Two-dimensional input adopts belief z.
+  Centred three-dimensional human/rover starts must match belief z within 1e-6 m.
+  An explicitly opted-in continuous start retains its supplied XYZ, including the
+  interpolated height of an executed route. Its directed connection to the
+  containing cell centre must satisfy the profile's step/slope bounds, swept
+  footprint and uncertainty checks; all 3-D costs are charged. An impossible
+  supplied height returns ERROR/INVALID_START_Z, without projecting telemetry.
   Unknown or inadmissible terrain cannot establish a valid height. This strict
   model-consistency tolerance is proposed, not a localization accuracy claim.
   Single-cell attachment and conservative bounds can reject physically possible
