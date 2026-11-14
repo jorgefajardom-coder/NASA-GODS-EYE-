@@ -64,6 +64,7 @@ field names and types; this document records the conventions around them.
 | `/mge/terrain/prior` | `sensor_msgs/msg/Image` `32FC1`, m | DataProvider → Mapping | reliable, transient_local |
 | `/mge/terrain/belief` | `sensor_msgs/msg/Image` `32FC1`, m | Mapping → Planner/UI | reliable, transient_local |
 | `/mge/terrain/sigma` | `sensor_msgs/msg/Image` `32FC1`, m | Mapping → Planner/UI | reliable, transient_local |
+| `/mge/terrain/observed` | `sensor_msgs/msg/Image` `mono8`, 1 observed / 0 not | Mapping → Recorder/UI | reliable, transient_local |
 | `/mge/terrain/traversability/{kind}` | `nav_msgs/msg/OccupancyGrid` | Mapping → Planner | reliable, transient_local |
 | `/mge/observations` | `mge_interfaces/msg/TerrainObservation` | SimAdapter → Mapping | reliable |
 | `/mge/agents/{id}/state` | `mge_interfaces/msg/AgentState` | SimAdapter → Mission | reliable |
@@ -78,7 +79,12 @@ Metadata has exactly one publisher per run: the node that owns `map_version`
 (`mapping_node`, or `mock_terrain` in the mock vertical), because metadata is
 part of the stamped batch of section 5. `data_node` publishes the prior only.
 OccupancyGrid values: `-1` unknown, `0` admissible, `100` forbidden. Unknown is
-not free. The prior is immutable within a run; the belief is never the hidden
+not free. `observed` marks the cells an applied local observation covered; it
+is coverage, not knowledge: an observed cell stays unknown (`-1`) when it is
+NoData or its sigma is too high. It travels in the stamped batch of section 5,
+after sigma, so the recorder can associate it with its map version; the planner
+does not subscribe to it. This topic is a proposed additive change (no message
+or field changes) pending Daniel's producer review and Jorge's consumer review. The prior is immutable within a run; the belief is never the hidden
 reference DEM. Publisher and subscriber declare the same QoS explicitly.
 `mge_interfaces` types stay inside ROS; `ros_gz_bridge` is only used for types
 it supports.
