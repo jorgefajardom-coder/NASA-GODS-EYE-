@@ -1,5 +1,14 @@
 # Required AI-use declaration
 
+## Strict recorded replay
+
+OpenAI Codex assisted the owner-requested replay validation corrections. The web
+loader validates counts, immutable routes, recorded raster versions and closing
+snapshots. Regression tests use synthetic inputs and an actual MOCK software
+recorder package; they do not approve a scientific model, physical traversal or
+LIVE mission. Existing contributor work and disclosures remain intact. Affected
+paths are in ai_usage.json.
+
 ## Estimated-terrain scope decision
 
 OpenAI Codex assisted recording the owner's accepted D-EST-01 decision to permit

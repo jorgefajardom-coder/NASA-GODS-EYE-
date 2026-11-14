@@ -7,6 +7,16 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "strict_replay_validation",
+      "generation": "AI-assisted code, tests and documentation requested by the repository owner",
+      "paths": [
+        "web/src/data/gatewayReplay.ts", "web/src/data/replayAdapter.ts",
+        "web/tests/gatewayReplay.test.ts", "web/tests/gatewayIntegrity.test.ts"
+      ],
+      "use": "Validate replay counts, route identity, recorded raster versions and snapshot closure, and test the same MOCK recorder package in the existing web consumer. No scientific or LIVE approval."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "integration_reconciliation",
       "generation": "AI-assisted reconciliation requested by the repository owner",
       "paths": [

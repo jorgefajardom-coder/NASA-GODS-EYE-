@@ -5,7 +5,7 @@ import { parseAtmosphere } from '../lib/atmos';
 import type { ContextTerrainData, RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
 import { normalizeEvents } from '../lib/replay';
 import { resolveSourceMode } from '../lib/provenance';
-import { fromGatewayPackage, isGatewayManifest, parseJsonLines, type PublicRasters } from './gatewayReplay';
+import { fromGatewayPackage, isGatewayManifest, parseJsonLines, validateGatewayManifest, type GatewaySnapshot, type PublicRasters } from './gatewayReplay';
 
 /** Runs offered in the viewer. `dir` is relative to the site under replay/. */
 export const RUNS: ReadonlyArray<{ id: string; label: string }> = [
@@ -94,13 +94,15 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
   const dir = runDir.replace(/\/+$/, '');
   const raw = await getJson<unknown>(assetUrl(`${dir}/manifest.json`));
   if (isGatewayManifest(raw)) {
+    validateGatewayManifest(raw);
     const url = assetUrl(`${dir}/${raw.files.timeline}`);
     const res = await fetch(url);
     if (!res.ok) throw new ReplayLoadError(`Could not load ${url} (HTTP ${res.status}).`);
     // The public raster attachment is read whenever the manifest names it (files.public_rasters).
     const named = raw.files.public_rasters;
     const rasters = named ? await getJson<PublicRasters>(assetUrl(`${dir}/${named}`)) : undefined;
-    return fromGatewayPackage(raw, parseJsonLines(await res.text()), rasters);
+    const snapshot = await getJson<GatewaySnapshot>(assetUrl(`${dir}/${raw.files.snapshot}`));
+    return fromGatewayPackage(raw, parseJsonLines(await res.text()), rasters, snapshot);
   }
   const manifest = raw as ReplayManifest;
   const [rasters, timeline, routes] = await Promise.all([

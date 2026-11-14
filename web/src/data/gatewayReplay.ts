@@ -31,11 +31,15 @@ interface Header {
 
 type WithHeader<T> = Omit<T, 'timestamp_sim_s'> & { header?: Header };
 
-export interface GatewayManifest {
+interface GatewayEnvelope {
   schema_version: string;
   run_id: string;
   mode: 'REPLAY';
   map_version: number;
+  timestamp_sim_s: number;
+}
+
+export interface GatewayManifest extends GatewayEnvelope {
   /** `recorded_from: LIVE` only says the records came off a running graph; this says who produced them (ICD §6.1). Absent in older packages. */
   recorded_from: string;
   source_mode?: string;
@@ -46,6 +50,17 @@ export interface GatewayManifest {
   terrain_meta: WithHeader<TerrainMeta> & { nodata_value: number | null };
   agents: Array<{ agent_id: string; agent_kind: string }>;
   files: { timeline: string; snapshot?: string; public_rasters?: string };
+}
+
+type WireMissionState = Omit<WithHeader<MissionState>, 'agents' | 'active_route'> & {
+  active_route?: WithHeader<RouteDecision> | null;
+  agents: WithHeader<AgentState>[];
+};
+
+export interface GatewaySnapshot extends GatewayEnvelope {
+  mission_state: WireMissionState | null;
+  events: WithHeader<MissionEvent>[];
+  terrain_meta: GatewayManifest['terrain_meta'] | null;
 }
 
 /** Public raster attachment of a recorded run (docs/REPLAY_CONTRACT.md, `mge-public-rasters-1.0.0`). */
@@ -64,12 +79,13 @@ export const PUBLIC_RASTERS_SCHEMA = 'mge-public-rasters-1.0.0';
 /** TerrainMeta fields the attachment's geometry must repeat exactly. */
 const GEOMETRY_FIELDS = ['dataset_id', 'rows', 'cols', 'origin_x_m', 'origin_y_m', 'resolution_m', 'crs', 'origin_lat_deg', 'origin_lon_deg', 'vertical_datum'] as const;
 
-type GatewayRecord =
-  | { type: 'terrain_meta'; timestamp_sim_s: number; run_id: string; terrain_meta: GatewayManifest['terrain_meta'] }
-  | { type: 'state'; timestamp_sim_s: number; run_id: string; state: Omit<WithHeader<MissionState>, 'agents' | 'active_route'> & { active_route?: WithHeader<RouteDecision> | null; agents: WithHeader<AgentState>[] } }
-  | { type: 'event'; timestamp_sim_s: number; run_id: string; event: WithHeader<MissionEvent> };
+export type GatewayRecord = GatewayEnvelope & (
+  | { type: 'terrain_meta'; terrain_meta: GatewayManifest['terrain_meta'] }
+  | { type: 'state'; state: WireMissionState }
+  | { type: 'event'; event: WithHeader<MissionEvent> }
+);
 
-/** A gateway package has a JSON Lines timeline and no raster file. */
+/** A gateway package has a JSON Lines timeline and an optional public attachment. */
 export function isGatewayManifest(m: unknown): m is GatewayManifest {
   const x = m as Partial<GatewayManifest> & { files?: Record<string, string> };
   return !!x && typeof x.time_start_sim_s === 'number' && typeof x.files?.timeline === 'string' && x.files.timeline.endsWith('.jsonl');
@@ -111,7 +127,7 @@ function route(r: WithHeader<RouteDecision> | null | undefined, t0: number, fall
 
 /** What the viewer may say about a recording, by who produced it. None of them is a live mission. */
 const SOURCE_DISCLAIMER: Record<SourceMode, string> = {
-  MOCK: 'Recorded replay of MOCK producers: flat synthetic grid, straight-line MOCK planner, no Mars data.',
+  MOCK: 'Recorded replay with MOCK providers; agent execution or mission authority may be simulated. Not a validated live mission.',
   SIMULATION: 'Recorded replay of a simulation run: simulated producers, not a validated live mission.',
   UNKNOWN: 'Recorded replay; the package does not say who produced the data (source UNKNOWN). Not a validated live mission.',
 };
@@ -119,17 +135,156 @@ const SOURCE_DISCLAIMER: Record<SourceMode, string> = {
 /** True when any key, at any depth, names an evaluator or reference layer. */
 function hasReferenceKey(x: unknown): boolean {
   if (!x || typeof x !== 'object') return false;
-  if (Array.isArray(x)) return false; // raster arrays hold numbers only
+  if (Array.isArray(x)) return x.some(hasReferenceKey);
   return Object.entries(x as Record<string, unknown>).some(([k, v]) => /reference|evaluator/i.test(k) || hasReferenceKey(v));
 }
 
 const isCell = (v: unknown) => v === null || (typeof v === 'number' && Number.isFinite(v));
 
+function need(condition: unknown, code: string): asserts condition {
+  if (!condition) throw new ReplayLoadError(code);
+}
+
+const isObject = (x: unknown): x is Record<string, unknown> => !!x && typeof x === 'object' && !Array.isArray(x);
+const finite = (x: unknown): x is number => typeof x === 'number' && Number.isFinite(x);
+const uint = (x: unknown): x is number => typeof x === 'number' && Number.isSafeInteger(x) && x >= 0;
+
+/** Equality ignores object-key order, never array order or missing fields. */
+function equal(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (Array.isArray(a) || Array.isArray(b)) {
+    return Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((v, i) => equal(v, b[i]));
+  }
+  if (!isObject(a) || !isObject(b)) return false;
+  const keys = Object.keys(a);
+  return keys.length === Object.keys(b).length && keys.every((key) => Object.hasOwn(b, key) && equal(a[key], b[key]));
+}
+
+function publicJson(value: unknown): void {
+  need(!hasReferenceKey(value), 'EVALUATOR_REFERENCE_FORBIDDEN');
+  const visit = (x: unknown): void => {
+    if (typeof x === 'number') need(Number.isFinite(x), 'NON_JSON_NUMBER');
+    else if (Array.isArray(x)) x.forEach(visit);
+    else if (isObject(x)) Object.values(x).forEach(visit);
+  };
+  visit(value);
+}
+
+function envelope(value: unknown, run: string): asserts value is GatewayEnvelope {
+  need(isObject(value), 'ENVELOPE_OBJECT_REQUIRED');
+  need(value.schema_version === '1.0.0', 'UNSUPPORTED_SCHEMA');
+  need(typeof run === 'string' && run.length > 0 && value.run_id === run, 'RUN_MISMATCH');
+  need(value.mode === 'REPLAY', 'REPLAY_MODE_REQUIRED');
+  need(finite(value.timestamp_sim_s), 'INVALID_CLOCK');
+  need(uint(value.map_version), 'INVALID_MAP_VERSION');
+}
+
+/** Fixed recorder filenames prevent a manifest from fetching outside its package. */
+export function validateGatewayManifest(manifest: GatewayManifest): void {
+  need(isObject(manifest), 'ENVELOPE_OBJECT_REQUIRED');
+  publicJson(manifest);
+  envelope(manifest, manifest.run_id);
+  const files = manifest.files;
+  need(isObject(files) && files.timeline === 'timeline.jsonl' && files.snapshot === 'snapshot.json'
+    && (files.public_rasters === undefined || files.public_rasters === 'public_rasters.json')
+    && Object.keys(files).every((key) => ['timeline', 'snapshot', 'public_rasters'].includes(key)), 'UNSUPPORTED_FILE_LAYOUT');
+  need(finite(manifest.time_start_sim_s), 'INVALID_START_TIME');
+  need(uint(manifest.record_count) && uint(manifest.event_count), 'INVALID_RECORD_COUNT');
+  need(manifest.source_mode === undefined || ['MOCK', 'SIMULATION', 'UNKNOWN'].includes(manifest.source_mode),
+    `INVALID_SOURCE_MODE: source_mode "${String(manifest.source_mode)}"`);
+}
+
+/** Mirrors the Python recorder oracle. Snapshot is mandatory in the file loader;
+ * callers converting in-memory records can omit it, without bypassing timeline checks.
+ * Late events and states lagging a newer map are valid; corrupt records are rejected.
+ */
+export function validateGatewayPackage(manifest: GatewayManifest, records: GatewayRecord[], snapshot?: GatewaySnapshot): void {
+  validateGatewayManifest(manifest);
+  need(Array.isArray(records), 'INVALID_RECORD_TYPE');
+  publicJson(records);
+  const run = manifest.run_id;
+  need(manifest.record_count === records.length, 'RECORD_COUNT_MISMATCH');
+  const events: WithHeader<MissionEvent>[] = [];
+  const ids = new Set<string>();
+  const seqs = new Set<number>();
+  const routes = new Map<string, unknown>();
+  let lastTime = -Infinity, stateSeq = -1, stateMap = -1, mapVersion = -1;
+  let state: WireMissionState | null = null;
+  let meta: GatewayManifest['terrain_meta'] | null = null;
+  let geometry: unknown = null;
+  for (const record of records) {
+    envelope(record, run);
+    need(record.timestamp_sim_s >= lastTime, 'CLOCK_REGRESSION');
+    need(record.map_version >= mapVersion, 'ENVELOPE_MAP_REGRESSION');
+    lastTime = record.timestamp_sim_s;
+    mapVersion = record.map_version;
+    need(['state', 'event', 'terrain_meta'].includes(record.type), 'INVALID_RECORD_TYPE');
+    const body = record.type === 'terrain_meta' ? record.terrain_meta : record.type === 'event' ? record.event : record.state;
+    need(isObject(body), 'INVALID_RECORD_TYPE');
+    need(body.run_id === run, 'PAYLOAD_RUN_MISMATCH');
+    if (record.type === 'terrain_meta') {
+      const current = record.terrain_meta;
+      need(current.header?.frame_id === 'map', 'INVALID_FRAME');
+      need(current.map_version === record.map_version, 'META_MAP_MISMATCH');
+      const key = GEOMETRY_FIELDS.map((field) => current[field]);
+      need(geometry === null || equal(key, geometry), 'GEOMETRY_CHANGE_REQUIRES_NEW_DATASET');
+      geometry = key;
+      meta = current;
+    } else if (record.type === 'event') {
+      const event = record.event;
+      need(typeof event.event_id === 'string' && event.event_id.length > 0 && !ids.has(event.event_id), 'DUPLICATE_EVENT_ID');
+      need(uint(event.seq) && event.seq > 0, 'INVALID_EVENT_SEQ');
+      need(!seqs.has(event.seq), 'DUPLICATE_EVENT_SEQ');
+      ids.add(event.event_id);
+      seqs.add(event.seq);
+      events.push(event);
+    } else {
+      const current = record.state;
+      need(uint(current.last_event_seq) && current.last_event_seq >= stateSeq, 'STATE_SEQ_REGRESSION');
+      need(uint(current.map_version) && current.map_version >= stateMap, 'STATE_MAP_REGRESSION');
+      need(current.map_version <= record.map_version, 'STATE_AHEAD_OF_MAP');
+      need(current.header?.frame_id === 'map', 'INVALID_FRAME');
+      need(Array.isArray(current.agents), 'INVALID_AGENT_STATE');
+      for (const agent of current.agents) {
+        need(agent.run_id === run, 'AGENT_RUN_MISMATCH');
+        need(['HUMAN', 'ROVER', 'DRONE'].includes(agent.agent_kind), 'INVALID_AGENT_KIND');
+        need(agent.agent_kind === 'HUMAN' || agent.oxygen_remaining_l === null, 'NON_HUMAN_OXYGEN_MUST_BE_NULL');
+      }
+      if (current.route_id) {
+        const route = current.active_route;
+        need(isObject(route) && route.run_id === run, 'ROUTE_RUN_MISMATCH');
+        need(route.route_id === current.route_id, 'ROUTE_ID_MISMATCH');
+        need(route.map_version_used === current.map_version, 'STALE_ROUTE');
+        need(route.status === 'FEASIBLE', 'ACTIVE_ROUTE_NOT_FEASIBLE');
+        const { header: _header, ...content } = route;
+        need(!routes.has(current.route_id) || equal(routes.get(current.route_id), content), 'ROUTE_ID_REUSED');
+        routes.set(current.route_id, content);
+      }
+      stateSeq = current.last_event_seq;
+      stateMap = current.map_version;
+      state = current;
+    }
+  }
+  need(manifest.event_count === events.length, 'EVENT_COUNT_MISMATCH');
+  need(equal(manifest.terrain_meta, meta), 'SNAPSHOT_META_MISMATCH');
+  need(manifest.map_version === mapVersion, 'FINAL_MAP_MISMATCH');
+  need(manifest.timestamp_sim_s === lastTime, 'FINAL_CLOCK_MISMATCH');
+  if (snapshot !== undefined) {
+    publicJson(snapshot);
+    envelope(snapshot, run);
+    need(equal(snapshot.mission_state, state), 'SNAPSHOT_STATE_MISMATCH');
+    need(equal(snapshot.events, [...events].sort((a, b) => a.seq - b.seq)), 'SNAPSHOT_EVENTS_MISMATCH');
+    need(equal(snapshot.terrain_meta, meta), 'SNAPSHOT_META_MISMATCH');
+    need(snapshot.map_version === mapVersion, 'FINAL_MAP_MISMATCH');
+    need(snapshot.timestamp_sim_s === lastTime, 'FINAL_CLOCK_MISMATCH');
+  }
+}
+
 /**
  * Checks the public raster attachment against its package and returns the versions to draw.
  * Throws ReplayLoadError (code PUBLIC_RASTERS_INVALID) on any mismatch; nothing is repaired.
  */
-export function checkPublicRasters(att: PublicRasters, manifest: GatewayManifest, usedVersions: Iterable<number>): RasterSet['versions'] {
+export function checkPublicRasters(att: PublicRasters, manifest: GatewayManifest, usedVersions: Iterable<number>, recordedVersions: Iterable<number>): RasterSet['versions'] {
   const fail = (why: string): never => {
     throw new ReplayLoadError(`PUBLIC_RASTERS_INVALID: ${why}`);
   };
@@ -155,8 +310,10 @@ export function checkPublicRasters(att: PublicRasters, manifest: GatewayManifest
   grid('prior', att.prior);
   const versions: RasterSet['versions'] = {};
   const recorded = att.versions ?? {};
+  const recordedKeys = new Set([...recordedVersions].map(String));
+  if (!isObject(recorded)) fail('versions must be a JSON object.');
   for (const [key, layer] of Object.entries(recorded)) {
-    if (!/^\d+$/.test(key)) fail(`version key "${key}" is not a map version number.`);
+    if (!recordedKeys.has(key)) fail(`map version ${key} has no recorded TerrainMeta.`);
     grid(`versions.${key}.belief`, layer?.belief);
     grid(`versions.${key}.sigma`, layer?.sigma, true);
     const obs = layer?.observed;
@@ -176,11 +333,11 @@ export function checkPublicRasters(att: PublicRasters, manifest: GatewayManifest
   return versions;
 }
 
-export function fromGatewayPackage(manifest: GatewayManifest, records: GatewayRecord[], publicRasters?: PublicRasters): ReplayBundle {
-  if (manifest.mode !== 'REPLAY') throw new ReplayLoadError('A recorded package must say mode "REPLAY".');
+export function fromGatewayPackage(manifest: GatewayManifest, records: GatewayRecord[], publicRasters?: PublicRasters, snapshot?: GatewaySnapshot): ReplayBundle {
+  validateGatewayPackage(manifest, records, snapshot);
   const runId = manifest.run_id;
   const t0 = manifest.time_start_sim_s;
-  const mine = records.filter((r) => r.run_id === runId);
+  const mine = records;
 
   const frames: Array<{ timestamp_sim_s: number; mission_state: MissionState }> = [];
   const events: MissionEvent[] = [];
@@ -221,7 +378,7 @@ export function fromGatewayPackage(manifest: GatewayManifest, records: GatewayRe
   let rasters: RasterSet;
   let illustrativeFlat = false;
   if (publicRasters) {
-    const versions = checkPublicRasters(publicRasters, manifest, used);
+    const versions = checkPublicRasters(publicRasters, manifest, used, metas.map((m) => m.map_version));
     // Version 0 has no raster by contract; the public prior is drawn until the first map arrives.
     if (used.has(0) && !versions['0']) versions['0'] = { belief: publicRasters.prior, sigma: noData, observed: [] };
     rasters = { run_id: runId, rows: meta.rows, cols: meta.cols, prior: publicRasters.prior, versions };
