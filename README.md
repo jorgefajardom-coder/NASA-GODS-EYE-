@@ -150,6 +150,13 @@ starts unobserved, so a first route request is `UNKNOWN`; a SIMULATED
 observation creates the next map version and the mission replans. Mission and
 agents stay MOCK and the run is declared MOCK.
 
+Add `agents:=kinematic` to replace the static agents by the MOCK kinematic
+executor: the primary agent follows the authorized active path at the speed
+the route's estimates imply and halts in place, reporting `HALTED` with zero
+velocity, when the route is invalidated. With the current planner a halted
+agent off a cell centre cannot be replanned (`NON_CELL_CENTER`); continuous
+ground starts are proposed in PR #12.
+
 `smoke.launch.py` starts only the static MOCK agent publisher, and
 `demo.launch.py` starts the scaffold processes of every package; with the
 latter the gateway reports `NOT_READY`, because no mission state is published.

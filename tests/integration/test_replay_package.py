@@ -43,6 +43,14 @@ def test_recorded_run_is_readable_without_backend(tmp_path):
             return ms and ms['route_id'] == live['route_id']
 
         wait_for(recorded, what='route in the recorded snapshot')
+
+        def rasters_recorded():
+            with open(os.path.join(package, 'manifest.json'), encoding='utf-8') as f:
+                return json.load(f)['files'].get('public_rasters')
+
+        # The 200 x 200 attachment is written after the batch completes; wait
+        # for it rather than stopping the run first.
+        wait_for(rasters_recorded, what='public rasters in the package')
     finally:
         os.killpg(proc.pid, signal.SIGINT)
         try:
