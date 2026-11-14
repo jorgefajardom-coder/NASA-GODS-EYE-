@@ -606,3 +606,14 @@ Claude Code (Anthropic) assisted the integration owner with per-module ROS
 domain isolation and readiness waits in the integration test fixtures and the
 related log entry. No data, mission result, image, video or audio was
 generated. The affected paths are listed in ai_usage.json.
+
+## Viewer first-person view, drone scan and Pages publishing
+
+Claude Code (Anthropic) assisted the viewer owner with the terrain reveal that
+expands from the map centre, the first-person camera and its HUD, the drone
+camera scan, their tests, and the workflow that publishes the public viewer to
+GitHub Pages. The scan only redraws the slope already computed from the orbital
+CTX DTM prior around the drone in display bands; it is not an observation, it
+does not change the map version, and its bands are display thresholds pending
+science approval. No data, measurement, image, video or audio was generated.
+The affected paths are listed in ai_usage.json.
