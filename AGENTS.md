@@ -147,7 +147,19 @@ Antes de realizar un commit:
 - Mantén actualizado el changelog cuando corresponda.
 - No incluyas publicidad ni atribuciones opcionales a herramientas de inteligencia artificial.
 
-### 10. Directriz final
+### 10. Fuentes de datos de referencia obligatorias
+
+Estas fuentes oficiales deben usarse siempre como referencia principal para datos, imágenes, mapas y visualizaciones del proyecto. Prioriza estos recursos frente a fuentes no oficiales y cita la fuente correspondiente cuando se utilicen sus datos.
+
+| Recurso | Descripción |
+|---------|-------------|
+| [JPL Mars Trek](https://trek.nasa.gov/mars/) | Portal web de NASA para explorar Marte; muestra los datos recopilados por NASA en distintos sitios de aterrizaje. |
+| [USGS-NASA Planetary Geologic Mapping Program](https://astrogeology-usgs.hub.arcgis.com/pages/interactive-maps-mars) | Mapa geológico estandarizado y de alta calidad de Marte. |
+| [Curiosity's Proposed Path up Mount Sharp](https://science.nasa.gov/resource/curiositys-proposed-path-up-mount-sharp/) | Ejemplo de visualización de ruta: ruta propuesta de Curiosity en la parte baja del monte Sharp, con regiones anotadas. |
+| [NASA Worldview](https://worldview.earthdata.nasa.gov/) | Exploración visual del pasado y presente de la Tierra mediante imágenes satelitales (NASA Earthdata). |
+| [Mars Perseverance Raw Images](https://mars.nasa.gov/mars2020/multimedia/raw-images/) | Más de un millón de imágenes sin procesar capturadas por el rover Perseverance. |
+
+### 11. Directriz final
 
 Estas instrucciones son obligatorias y permanentes para todas las operaciones realizadas dentro del repositorio.
 
