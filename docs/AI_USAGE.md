@@ -75,3 +75,23 @@ The reconciliation verification logs/JUnit and hashes under
 evidence/contract-baseline-20261114 are actual tool execution records on the
 reported source. Codex assisted their collection/documentation; they are not
 invented measurements or mission observations.
+
+## Probable mission planning and traceability
+
+OpenAI Codex assisted the owner-selected probable-roadmap checklist, dependency
+and acceptance definitions, NASA resource-to-result register, navigation updates
+and correction of the provisional data-register status. Internal desired/expected
+milestone estimates and compact observations from parallel planner/mission work are
+maintained locally under Git-ignored .local/planning, with their own metadata.
+Estimates are planning assumptions, not measured human effort, scientific results
+or newly completed mission acceptance. No media or NASA observation was generated
+by this documentation work. Human owners approve science and integration closure.
+
+## Optional terrain-randomization hypothesis
+
+OpenAI Codex assisted documenting the owner's H-DAN-01 proposal, Daniel's P1
+checklist entry and source/assumption/seed traceability requirements. The proposed
+experiment remains unimplemented and untested. No rover image was imported and
+no terrain generator, synthetic map, image/video/audio or experiment result was
+created by this documentation change. Future generated artifacts require their
+own actual tool-use records and applicable visible watermarks.

@@ -108,6 +108,31 @@
         "evidence/contract-baseline-20261114"
       ],
       "use": "Audit owner branches; reconcile contracts without replacing implementations; add offline adapters, fail-closed guards, source locks, schema, deterministic synthetic contract cases, handoffs and actual validation records. No scientific observations generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "documentation_and_internal_planning",
+      "generation": "AI-assisted planning; forecasts are assumptions pending owner review",
+      "paths": [
+        "docs/mission_checklist.md",
+        "docs/nasa_traceability.md",
+        "docs/data_sources.md",
+        "docs/team.md",
+        "README.md",
+        ".gitignore"
+      ],
+      "use": "Document the owner-selected probable mission, per-owner checklists, dependencies, acceptance cases and NASA source-to-result lineage. Keep detailed hours and compact thread observations in a locally ignored planning register with separate metadata. No new mission execution or scientific observation is claimed."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "research_hypothesis_documentation",
+      "generation": "AI-assisted documentation of the project owner's proposed experiment; unimplemented and untested",
+      "paths": [
+        "docs/research_hypotheses.md",
+        "docs/mission_checklist.md",
+        "docs/nasa_traceability.md"
+      ],
+      "use": "Record optional H-DAN-01 for Daniel: orbital-prior-anchored informed synthetic terrain, rover-image reference limits, reproducible scenario/seed diversity, held-out world isolation and planner-adaptation pilot criteria. No image import, generator, synthetic terrain or experiment result was produced."
     }
   ],
   "generated_media": [],

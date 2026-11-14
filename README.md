@@ -15,6 +15,8 @@ Confirm any earlier local judging cutoff separately.
 ## Start here
 
 - [Team branches and first tasks](docs/team.md)
+- [Probable roadmap and owner checklists](docs/mission_checklist.md)
+- [NASA resource-to-result traceability](docs/nasa_traceability.md)
 - [Proposed shared interface contract](docs/ICD.md), pending team confirmation
 - [Requirements and acceptance](docs/requirements.md)
 - [Scientific decisions](docs/science_decisions.md)
