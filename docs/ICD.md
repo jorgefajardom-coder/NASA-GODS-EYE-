@@ -114,9 +114,43 @@ a rover).
 - Allowed browser origins come from the `cors_origins` parameter
   (default `http://localhost:5173`).
 
-Not implemented yet: `mode = REPLAY` and the static replay package.
+## 6. Replay package
 
-## 6. Open points for the freeze meeting
+A recorded run is a directory of static files that a web client reads with
+plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
+`replay_recorder` node (`record:=true` on the launch file).
+
+| File | Content |
+|---|---|
+| `<run_id>/manifest.json` | Envelope plus `recorded_from`, `clock_source`, `time_start_sim_s`, `record_count`, `event_count`, `terrain_meta`, `agents`, `files` |
+| `<run_id>/timeline.jsonl` | One record per line, in arrival order |
+| `<run_id>/snapshot.json` | Final state, same shape as `GET /api/run/{run_id}/snapshot` |
+
+- Every file and every record says `mode: "REPLAY"`. A client must show
+  `REPLAY` for this data and must not present it as a live computation.
+- A timeline record has the shape of a WebSocket message: the envelope,
+  `type` (`event` | `state` | `terrain_meta`) and an object of that name, so
+  live messages and replay records can share one handler.
+- `timestamp_sim_s` of a record is the `header.stamp` of its message and
+  never decreases along the file. Replay time is
+  `timestamp_sim_s - time_start_sim_s`.
+- `clock_source` is `sim` when the run used `/clock` and `system` when no
+  simulator was running; in that case the stamps are wall-clock seconds.
+- Events and states travel on different topics, so a state may be recorded
+  slightly before the event that caused it. Order events by `seq`.
+- A mission state identical to the previous one, apart from stamps, is not
+  recorded again. Duplicates, older states and data of another run are
+  dropped, as in the gateway.
+- An existing run directory is never overwritten.
+- `ros2 run mge_gateway check_replay <dir>` validates a package offline.
+
+`data/sample/replay/mock-vertical-001` is a sample package recorded from the
+mock vertical (goal, route, simulated observation, replan). It contains mock
+data only.
+
+Not implemented yet: the web client that plays a package.
+
+## 7. Open points for the freeze meeting
 
 1. Row order of the `32FC1` rasters: this draft uses row 0 = south so that
    rasters and `OccupancyGrid` share one index. GeoTIFF sources are usually

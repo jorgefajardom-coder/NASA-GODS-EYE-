@@ -20,6 +20,7 @@ are simulated and labelled as such.
 | `src/mge_gateway` | FastAPI gateway: REST and WebSocket over the ROS graph |
 | `src/mge_bringup` | Launch files and agent configuration |
 | `tests` | Unit, contract and end-to-end tests |
+| `data/sample/replay` | Sample replay package recorded from the mock vertical |
 | `docker/Dockerfile` | Development image (ROS 2 Jazzy plus web dependencies) |
 | `docs/ICD.md` | Frames, units, channels, enumerations, open points |
 | `docs/integration_log.md` | Integration evidence and blockers |
@@ -67,6 +68,20 @@ curl http://127.0.0.1:8000/api/run/demo-001/snapshot
 
 Interactive API documentation is at `http://127.0.0.1:8000/docs`. The web
 contract is described in `docs/ICD.md`, section 5.
+
+## Record and check a replay
+
+Add `record:=true` to write a replay package to `evidence/<run_id>` (or to
+`record_dir:=<dir>`). A package is a set of static files that can be read
+without ROS or the gateway; see `docs/ICD.md`, section 6.
+
+```bash
+scripts/dev.sh ros2 launch mge_bringup vertical_mock.launch.py run_id:=demo-002 record:=true
+scripts/dev.sh ros2 run mge_gateway check_replay evidence/demo-002
+```
+
+`scripts/dev.sh python3 scripts/record_sample_replay.py <run_id>` records the
+scripted sample run found in `data/sample/replay`.
 
 With a native install, drop `scripts/dev.sh` and source
 `/opt/ros/jazzy/setup.bash` and `install/setup.bash` first.
