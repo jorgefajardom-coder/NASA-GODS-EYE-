@@ -300,6 +300,7 @@ plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
 | `<run_id>/manifest.json` | Envelope plus `recorded_from`, `source_mode`, `clock_source`, `time_start_sim_s`, `record_count`, `event_count`, `terrain_meta`, `agents`, `files` |
 | `<run_id>/timeline.jsonl` | One record per line, in arrival order |
 | `<run_id>/snapshot.json` | Final state, same shape as `GET /api/run/{run_id}/snapshot` |
+| `<run_id>/public_rasters.json` | Optional. Public prior and, per recorded map version, belief, sigma and observed cells (`mge-public-rasters-1.0.0`, docs/REPLAY_CONTRACT.md) |
 
 - Every file and every record says `mode: "REPLAY"`. A client must show
   `REPLAY` for this data and must not present it as a live computation.
@@ -328,14 +329,20 @@ plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
   recorded again. Duplicates, older states and data of another run are
   dropped, as in the gateway.
 - An existing run directory is never overwritten.
-- `ros2 run mge_gateway check_replay <dir>` validates a package offline.
+- `public_rasters.json` appears, and `files.public_rasters` names it, once the
+  run has published the prior and one complete batch (metadata, belief, sigma,
+  observed under one stamp). A version whose batch never completes is absent,
+  never interpolated; the offline oracle then refuses the package. Only public
+  topics are recorded; NoData cells are `null`.
+- `ros2 run mge_gateway check_replay <dir>` validates a package offline,
+  including the raster attachment when the manifest names it.
 
 `data/sample/replay/mock-vertical-001` is a sample package recorded from the
 mock vertical (goal, route, simulated observation, replan). It contains mock
 data only.
 
-The advanced viewer consumer remains on Jorge's separate branch; this PR
-adds no viewer implementation or public raster recording. GitHub Pages serves
+The recorder writes the public raster attachment; the viewer does not read it
+yet (it still rejects non-flat terrain packages), which is Jorge's next step. GitHub Pages serves
 static web/replay only; ROS and FastAPI require a separate host. Transport
 availability never establishes validated LIVE mission provenance.
 
