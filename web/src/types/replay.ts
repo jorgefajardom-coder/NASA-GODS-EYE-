@@ -1,4 +1,5 @@
 import type { MissionEvent, MissionState, Point, RouteDecision, TerrainMeta } from './icd';
+import type { GeologyData } from '../lib/geology';
 
 /**
  * Replay fixture layout (proposal for Jesús; the gateway snapshot format is not frozen).
@@ -54,6 +55,8 @@ export interface ReplayManifest {
     /** How the stored image was derived from the source, shown in the credits. */
     processing: string;
   };
+  /** Geologic units of the run area (USGS SIM 3464), drawn in the Ground layers tab. */
+  geology?: { file: string };
   vertical_exaggeration_default: number;
   control_points: ControlPoint[];
   pois: PointOfInterest[];
@@ -101,4 +104,6 @@ export interface ReplayBundle {
   rasters: RasterSet;
   timeline: ReplayTimeline;
   routes: Map<string, RouteDecision>;
+  /** Present when the manifest declares a geology file and it loaded. */
+  geology?: GeologyData;
 }

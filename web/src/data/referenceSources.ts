@@ -21,8 +21,8 @@ export const REFERENCE_SOURCES: ReadonlyArray<ReferenceSource> = [
   {
     name: 'USGS-NASA Planetary Geologic Mapping Program',
     url: 'https://astrogeology-usgs.hub.arcgis.com/pages/interactive-maps-mars',
-    use: 'SIM 3464, geologic map of Jezero crater and Nili Planum (1:75,000, GIS) for a geology layer; SIM 3292 global map for context.',
-    status: 'candidate',
+    use: 'SIM 3464, geologic map of Jezero crater and Nili Planum (1:75,000): units, composition and interpretation shown in the Ground layers tab. SIM 3292 global map for context.',
+    status: 'used',
   },
   {
     name: "Curiosity's Proposed Path up Mount Sharp",

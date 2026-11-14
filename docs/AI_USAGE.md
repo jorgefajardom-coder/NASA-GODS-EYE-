@@ -37,7 +37,9 @@ fictitious in its manifest and is not a NASA observation.
 resampling script was AI-assisted.
 `web/public/replay/demo/ctx_ortho.png` holds real CTX orthomosaic pixels from JPL Mars
 Trek (NASA/JPL-Caltech/MSSS/USGS); only `extract-ctx-ortho.mjs`, which resamples and
-contrast-stretches it, was AI-assisted.
+contrast-stretches it, was AI-assisted. Likewise `web/public/replay/demo/geology.json`
+holds USGS SIM 3464 unit text and polygons unchanged apart from reprojection and clipping;
+only `extract-geology.mjs` and the viewer code were AI-assisted.
 
 Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
 by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).

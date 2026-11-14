@@ -20,6 +20,7 @@ import { ManagementList } from './components/ManagementList';
 import { DetailsPanel } from './components/DetailsPanel';
 import { Vitals } from './components/Vitals';
 import { EventInspector } from './components/EventInspector';
+import { GeologyDetails, GeologyList } from './components/GeologyPanel';
 import { Timeline } from './components/Timeline';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
 import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './components/Frame';
@@ -99,6 +100,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     }
   }, []);
   const [mode, setMode] = useState<UiMode>('exploration');
+  const [geoUnit, setGeoUnit] = useState<string | null>(null);
   const [selection, setSelection] = useState<Selection>({ kind: 'agent', id: '' });
 
   const view = useMemo(() => viewAt(bundle, t), [bundle, t]);
@@ -177,6 +179,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         contours={contours}
         cameraSmoothing={cameraSmoothing}
         imageryUrl={imageryUrl}
+        geology={mode === 'geology' && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
       />
       <div className="vignette" aria-hidden />
 
@@ -185,7 +188,11 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           <TitleBlock manifest={m} runId={RUN_ID} />
           <ModeTabs mode={mode} onMode={setMode} />
           <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR && !!bundle.rasters.reference} />
-          <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
+          {mode === 'geology' ? (
+            <GeologyList data={bundle.geology} selected={geoUnit} onSelect={setGeoUnit} />
+          ) : (
+            <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
+          )}
           <div className="prompts">
             <button type="button" className="chip" aria-pressed={follow} onClick={() => setFollow((f) => !f)}>
               <kbd>F</kbd> Follow camera
@@ -228,7 +235,13 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             evaluatorMissing={EVALUATOR && !bundle.rasters.reference}
             exaggeration={exaggeration}
           />
-          {mode === 'replay' ? <EventInspector view={view} onSeek={seek} /> : details && <DetailsPanel data={details} />}
+          {mode === 'replay' ? (
+            <EventInspector view={view} onSeek={seek} />
+          ) : mode === 'geology' ? (
+            <GeologyDetails data={bundle.geology} unitId={geoUnit} />
+          ) : (
+            details && <DetailsPanel data={details} />
+          )}
         </aside>
 
         <AlertBanner alert={alert} />

@@ -49,3 +49,10 @@ MRO CTX Jezero orthomosaic, controlled (Mars 2020 Terrain Relative Navigation), 
 - `web/public/replay/demo/ctx_ortho.png`: 400 × 400 px over the 2 km crop (5 m/px), made by `web/scripts/extract-ctx-ortho.mjs` from nine level-13 tiles (tiles SHA-256 `f2ad4cdaf747f36b508cb063ee904d60204c5f3c5dcb77284ab201812369e527`). Bilinear resampling onto the crop's ENU grid and a 1st–99th percentile contrast stretch; no detail is added. The viewer tints the panchromatic image for display.
 - Usage terms not verified here: NASA planetary data, see the Mars Trek and USGS product pages.
 
+## Geologic units
+
+Sun, V., and Stack, K., 2020, Geologic map of Jezero crater and the Nili Planum region, Mars: U.S. Geological Survey Scientific Investigations Map 3464, scale 1:75,000, https://doi.org/10.3133/sim3464 (data release https://doi.org/10.5066/P9CZYIO7). USGS publication, public domain.
+
+- `web/public/replay/demo/geology.json`: unit attributes (name, symbol, description, additional characteristics, interpretation) and polygons of the four units that intersect the demo crop, read from the USGS ArcGIS feature service `Jezero_FeatureServiceFromPro/FeatureServer/8` by `web/scripts/extract-geology.mjs`, reprojected from Mars Transverse Mercator (77.5°E) to the crop's ENU frame and clipped to it. Text is unchanged; display colours are the viewer's own.
+- The map was drawn on a semi-controlled CTX mosaic and has offsets of about 100–200 m against the controlled Mars 2020 CTX terrain. It is not re-registered, and the viewer labels boundaries as approximate.
+

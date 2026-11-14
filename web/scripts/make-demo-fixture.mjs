@@ -599,6 +599,8 @@ const manifest = {
     row0: 'north',
     processing: 'Bilinear resampling onto the crop ENU grid; display contrast stretched linearly between the 1st and 99th percentile. Panchromatic; the viewer tints it for display only.',
   },
+  // Geologic units of the crop (scripts/extract-geology.mjs, USGS SIM 3464). Approximate boundaries.
+  geology: { file: 'geology.json' },
   terrain_meta: {
     run_id: RUN_ID, dataset_id: 'mars2020-trn-ctx-dtm-20m', frame_id: 'map', map_version: 1,
     origin_x_m: OX, origin_y_m: OY, resolution_m: RES, rows: ROWS, cols: COLS,

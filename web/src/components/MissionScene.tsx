@@ -1,12 +1,14 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { TerrainLayer } from '../lib/layers';
 import { heightGrid } from '../lib/layers';
 import { smoothHeightAt } from '../lib/terrainSmooth';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
+import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
+import * as THREE from 'three';
 import { FollowCamera } from './FollowCamera';
 import { TerrainView } from './TerrainView';
 import { RouteOverlay } from './RouteOverlay';
@@ -30,9 +32,12 @@ interface Props {
   cameraSmoothing: CameraSmoothing;
   /** URL of the run's orbital image to drape on the terrain, or null for height colours. */
   imageryUrl: string | null;
+  /** Geologic map draped instead of the image (Ground layers tab), with the selected unit. */
+  geology: { data: GeologyData; selected: string | null } | null;
 }
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology }: Props) {
+  const geoTexture = useGeologyTexture(geology);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
   const grid = heightGrid(bundle.rasters, layer, mapVersion);
@@ -64,6 +69,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         contours={contours}
         zOffsetM={bundle.manifest.local_z_offset_m ?? 0}
         imagery={imageryUrl && bundle.manifest.imagery ? { url: imageryUrl, extent: bundle.manifest.imagery.extent } : null}
+        overlay={geoTexture && geology ? { texture: geoTexture, extent: geology.data.frame } : null}
       />
       <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />
       <SiteMarkers
@@ -88,4 +94,23 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       <OrbitControls makeDefault enableDamping dampingFactor={smoothing.orbitDamping} maxPolarAngle={Math.PI / 2.05} minDistance={30} maxDistance={extent * 2.5} />
     </Canvas>
   );
+}
+
+/** Grid of the draped geologic map (2.5 m cells over the 2 km crop; boundaries are only ~100-200 m accurate). */
+const GEOLOGY_TEXTURE_PX = 800;
+
+/** Rasterized geologic units as a texture; rebuilt when the selected unit changes. */
+function useGeologyTexture(geology: { data: GeologyData; selected: string | null } | null): THREE.DataTexture | null {
+  const data = geology?.data ?? null;
+  const grid = useMemo(() => (data ? rasterizeUnits(data, GEOLOGY_TEXTURE_PX) : null), [data]);
+  const texture = useMemo(() => {
+    if (!data || !grid) return null;
+    const t = new THREE.DataTexture(unitPixels(data, grid, geology?.selected ?? null), GEOLOGY_TEXTURE_PX, GEOLOGY_TEXTURE_PX, THREE.RGBAFormat);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.magFilter = THREE.NearestFilter;
+    t.needsUpdate = true;
+    return t;
+  }, [data, grid, geology?.selected]);
+  useEffect(() => () => texture?.dispose(), [texture]);
+  return texture;
 }

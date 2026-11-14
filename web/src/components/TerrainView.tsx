@@ -23,6 +23,8 @@ interface Props {
   zOffsetM: number;
   /** Orbital image to drape on the terrain (null = height colours only). Not used on the sigma layer. */
   imagery: { url: string; extent: { origin_x_m: number; origin_y_m: number; width_m: number; height_m: number } } | null;
+  /** A texture shown instead of the image (e.g. the geologic map), not tinted. Wins over `imagery`. */
+  overlay?: { texture: THREE.Texture; extent: { origin_x_m: number; origin_y_m: number; width_m: number; height_m: number } } | null;
 }
 
 /**
@@ -32,13 +34,14 @@ interface Props {
  * same ENU point coincide. Triangles touching NoData are not drawn. Contour lines are drawn
  * in the shader from the true height of each fragment.
  */
-export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery }: Props) {
+export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery, overlay }: Props) {
   const heights = heightGrid(rasters, layer, mapVersion);
   const version = rasters.versions[versionKey(rasters, mapVersion)];
-  const texture = useImageryTexture(imagery?.url ?? null);
+  const imageTexture = useImageryTexture(imagery?.url ?? null);
+  const texture = overlay?.texture ?? imageTexture;
   // Drape only once the image has loaded, so a missing image leaves the height colours.
-  const draped = !!texture && layer !== 'sigma';
-  const ext = imagery?.extent;
+  const draped = !!texture && (layer !== 'sigma' || !!overlay);
+  const ext = overlay?.extent ?? imagery?.extent;
 
   const geometry = useMemo(() => {
     const { rows, cols } = meta;
@@ -100,22 +103,24 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     return g;
   }, [meta, rasters, heights, version, layer, highlightObserved, draped, ext]);
 
-  const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 } }), []);
+  const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 }, uTint: { value: 1 } }), []);
   useEffect(() => {
     uniforms.uContour.value = contours ? 1 : 0;
     uniforms.uOffset.value = zOffsetM;
-  }, [uniforms, contours, zOffsetM]);
+    uniforms.uTint.value = overlay ? 0 : 1; // only the panchromatic image is tinted
+  }, [uniforms, contours, zOffsetM, overlay]);
 
   const material = useMemo(() => {
     const m = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, metalness: 0, side: THREE.DoubleSide });
     m.onBeforeCompile = (shader) => {
       shader.uniforms.uContour = uniforms.uContour;
       shader.uniforms.uOffset = uniforms.uOffset;
+      shader.uniforms.uTint = uniforms.uTint;
       shader.vertexShader = shader.vertexShader
         .replace('#include <common>', '#include <common>\nvarying float vRealH;')
         .replace('#include <begin_vertex>', '#include <begin_vertex>\nvRealH = position.y;');
       shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', '#include <common>\nvarying float vRealH;\nuniform float uContour;\nuniform float uOffset;')
+        .replace('#include <common>', '#include <common>\nvarying float vRealH;\nuniform float uContour;\nuniform float uOffset;\nuniform float uTint;')
         // The draped CTX image is panchromatic: map its grey level onto a basalt-to-dust ramp
         // (display only). The vertex colour (observed-cell tint) is applied next by color_fragment.
         .replace(
@@ -123,7 +128,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
           `#include <map_fragment>
           #ifdef USE_MAP
             float lum = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
-            diffuseColor.rgb = mix(vec3(0.05, 0.025, 0.015), vec3(0.72, 0.42, 0.24), pow(lum, 0.85));
+            diffuseColor.rgb = mix(diffuseColor.rgb, mix(vec3(0.05, 0.025, 0.015), vec3(0.72, 0.42, 0.24), pow(lum, 0.85)), uTint);
           #endif`,
         )
         .replace(
@@ -142,7 +147,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
           }`,
         );
     };
-    m.customProgramCacheKey = () => 'terrain-contours-v2';
+    m.customProgramCacheKey = () => 'terrain-contours-v3';
     return m;
   }, [uniforms]);
 
