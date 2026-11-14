@@ -162,5 +162,7 @@
     "failed": 1,
     "failure": "replay missing final MISSION_STATE_CHANGED event; raster test passed in this timing-dependent baseline run"
   },
-  "publication_gate": "Planner 266 passed; both ROS failures isolated to unchanged main replay code, baseline proof recorded; not a green overall ROS claim."
+  "publication_gate": "Planner 266 passed; both ROS failures isolated to unchanged main replay code, baseline proof recorded; not a green overall ROS claim.",
+  "final_main": "70cd2e5611032e76ed211afcd52cf29065ed940f",
+  "final_main_change": "Documentation-only D-EST-01; tested source hashes unchanged; coordinated implementation pending"
 }

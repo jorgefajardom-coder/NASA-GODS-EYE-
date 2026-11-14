@@ -775,6 +775,22 @@
         "evidence/planner-pr12-publish-20261114"
       ],
       "use": "Preserve local0726082 and remote38ad692 histories and main7c16cd8 contributions; retain all planner guards and source-owner implementations, reconcile disclosures and record real tests without claiming physical or scientific mission acceptance."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "estimated_terrain_scope_decision_documentation",
+      "generation": "AI-assisted documentation of the project owner accepted scope decision; implementation and acceptance pending",
+      "paths": [
+        "docs/decisions/2026-11-14-estimated-terrain-planning.md",
+        "AGENTS.md",
+        "docs/ICD.md",
+        "docs/mission_checklist.md",
+        "docs/team.md",
+        "docs/research_hypotheses.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Record D-EST-01 superseding the blanket observation prerequisite for hypothetical planning over valid orbital estimates. Preserve NoData/obstacle distinctions, provenance/uncertainty, contradiction-driven invalidation/stop/replan and ownership. Keep integration steps 4/5 open and scene/size/domain-randomization extensions optional. No implementation, generated terrain, media, experiment or mission result claimed."
     }
   ],
   "generated_media": [],

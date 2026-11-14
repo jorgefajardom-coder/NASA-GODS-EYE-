@@ -86,6 +86,15 @@ after sigma, so the recorder can associate it with its map version; the planner
 does not subscribe to it. This topic is a proposed additive change (no message
 or field changes) pending Daniel's producer review and Jorge's consumer review. The prior is immutable within a run; the belief is never the hidden
 reference DEM. Publisher and subscriber declare the same QoS explicitly.
+
+**Accepted owner scope update, implementation pending:**
+[D-EST-01](decisions/2026-11-14-estimated-terrain-planning.md) removes prior local
+observation as a blanket prerequisite for proposing routes over valid orbital
+estimates. Do not equate estimated with verified/observed, redefine these numeric
+wire codes silently or close this decision by changing a display label alone.
+Daniel/Diego/Jesus must reconcile masks, exploration policy, consumers and tests;
+David reviews illustrative inspection/stop/resource assumptions. NoData and
+confirmed obstacles retain separate treatment; planner UNKNOWN remains valid.
 `mge_interfaces` types stay inside ROS; `ros_gz_bridge` is only used for types
 it supports.
 

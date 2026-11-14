@@ -8,6 +8,13 @@ confirmation that the draft ICD is frozen. Follow [ownership](team.md),
 
 ## Scope and definition of success
 
+**Owner decision D-EST-01 (14 November 2026):** valid orbital-prior cells start
+estimated and may be used to propose hypothetical routes before local
+observation. Contradicting observations invalidate the route and trigger the
+agreed hold/stop/replan behavior. This supersedes the blanket observation
+prerequisite for planning; implementation and integrated acceptance remain open.
+See [decision, owners and regression obligations](decisions/2026-11-14-estimated-terrain-planning.md).
+
 Demonstrate one simulated Jezero mission: human_1 leaves base A, reaches primary
 goal B, performs the primary work and returns to A. drone_1 surveys and rover_1
 inspects through explicit simulated execution/evidence inputs. A later footprint
@@ -35,6 +42,12 @@ promoted to a verified corridor. Human optional sampling follows primary B;
 survey/discovery precedes inspection, which precedes sampling.
 
 ## Priorities and evidence states
+
+- **Open integration step 4:** one combined run with continuous execution,
+  differentiated human/drone/rover contributions, observation and stop/replan.
+- **Open integration step 5:** backend-off replay and actual web-viewer video
+  of that same run. Independent module work and P1 scene/map extensions do not
+  close or replace either step; retain the earlier acceptance cases below.
 
 - P0: necessary to demonstrate, explain or submit the minimum mission honestly.
 - P1: comparison or extension attempted only when the P0 path remains on time.

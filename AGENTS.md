@@ -234,3 +234,18 @@ Prioriza siempre la mantenibilidad, trazabilidad, calidad, seguridad e integrida
   required corrections in delivery evidence. Keep contact details private.
   Agents provide contextual reminders during work; these instructions do not
   create a scheduled notification or authorize sending external messages.
+
+### 16. Accepted estimated-terrain exploration scope
+
+- Follow docs/decisions/2026-11-14-estimated-terrain-planning.md (D-EST-01).
+  Valid orbital-prior cells start estimated; prior local observation is not a
+  blanket prerequisite for proposing routes. Contradictory observations require
+  route invalidation and the agreed hold/stop/replan behavior.
+- Preserve NoData/obstacles, uncertainty/provenance, mission authority, resource
+  and return constraints. Do not label estimates as observations or certified
+  passage. Planner UNKNOWN remains a legitimate result.
+- Reconcile implementation/contracts/tests across owners; this accepted scope
+  decision does not assert implementation, scientific approval or ICD freeze.
+- Keep integrated execution/three-agent/stop/replan (step 4) and same-run
+  offline replay/web video (step 5) open until evidenced. Varied scenes, larger
+  maps and H-DAN-01 are optional extensions, not substitutes for those milestones.
