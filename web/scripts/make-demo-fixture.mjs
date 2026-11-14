@@ -213,8 +213,11 @@ function nearestFree(grid, limitDeg, x, y) {
 
 // ------------------------------------------------------------------ illustrative profiles
 const HUMAN = { id: 'human_1', speed: 1.0, slope: 20, time_budget_s: 14400, energy_budget_wh: 2500, oxygen_budget_l: 1000, wh_moving: 0.3, wh_idle: 0.12, l_per_s: 0.05 };
-const DRONE = { id: 'drone_1', speed: 8.0, altitude_m: 40, time_budget_s: 600, energy_budget_wh: 100, wh_per_s: 0.45 };
-const ROVER = { id: 'rover_1', speed: 1.0, slope: 15, time_budget_s: 14400, energy_budget_wh: 2000, wh_moving: 1.0, wh_idle: 0.05, reserve_fraction: 0.2 };
+// Drone: 4 m/s (half the earlier 8 m/s).
+// Flight profile: rotors spin up on the pad, vertical climb, cruise at altitude, vertical descent
+// onto the pad; the budget covers it with ~10 % left.
+const DRONE = { id: 'drone_1', speed: 4.0, altitude_m: 40, spinup_s: 4, climb_mps: 2, time_budget_s: 650, energy_budget_wh: 280, wh_per_s: 0.45 };
+const ROVER = { id: 'rover_1', speed: 1.0, turn_deg_s: 6, slope: 15, time_budget_s: 14400, energy_budget_wh: 2000, wh_moving: 1.0, wh_idle: 0.05, reserve_fraction: 0.2 };
 const SERVICE_B_S = 120;
 const SERVICE_C_S = 60;
 const FOOTPRINT_M = 70;
@@ -309,9 +312,12 @@ const ROVER_HOME = nearestFree(prior, ROVER.slope, A.x + 40, A.y + 70);
 const droneOut = [DRONE_HOME, S0];
 const strip = [S0, S1];
 const droneBack = [S1, DRONE_HOME];
-const T_AT_S0 = even(T_START + len(droneOut) / DRONE.speed);
+const T_LIFT = T_START + DRONE.spinup_s; // rotors at speed: the drone may leave the pad
+const T_CRUISE = even(T_LIFT + DRONE.altitude_m / DRONE.climb_mps); // at cruise altitude
+const T_AT_S0 = even(T_CRUISE + len(droneOut) / DRONE.speed);
 const T_OBS = even(T_AT_S0 + len(strip) / DRONE.speed);
-const T_DRONE_HOME = even(T_OBS + DT + len(droneBack) / DRONE.speed);
+const T_OVER_HOME = even(T_OBS + DT + len(droneBack) / DRONE.speed); // above the pad, descending
+const T_DRONE_HOME = even(T_OVER_HOME + DRONE.altitude_m / DRONE.climb_mps); // on the pad
 const T_MAP = T_OBS + DT;
 const T_INVALID = T_MAP + DT;
 const T_R2 = T_INVALID + 6;
@@ -365,9 +371,40 @@ if (!(roverRoundTrip(C.l) < usable && roverRoundTrip(D.l) > usable)) throw new E
 const T_ROVER_GO = T_R2 + DT;
 const roverOut = C.path;
 const roverBack = roverOut.slice().reverse();
-const T_ROVER_AT_C = even(T_ROVER_GO + len(roverOut) / ROVER.speed);
+const ROVER_HEADING0 = 0.7;
+
+/**
+ * Rover drive plan along a path: like a rocker-bogie rover, it stops and turns on the spot (at
+ * ROVER.turn_deg_s) wherever the heading changes by more than a few degrees, then drives the
+ * next straight leg. Returns the segments and the end time and heading.
+ */
+const wrapPi = (a) => Math.atan2(Math.sin(a), Math.cos(a));
+const TURN_MIN_RAD = (5 * Math.PI) / 180;
+function drivePlan(pts, t0, heading, mode) {
+  const segs = [];
+  let t = t0;
+  let h = heading;
+  for (let k = 1; k < pts.length; k++) {
+    const leg = dist(pts[k], pts[k - 1]);
+    if (leg < 1e-6) continue;
+    const want = Math.atan2(pts[k].y - pts[k - 1].y, pts[k].x - pts[k - 1].x);
+    const dh = wrapPi(want - h);
+    if (Math.abs(dh) > TURN_MIN_RAD) {
+      const dur = Math.abs(dh) / ((ROVER.turn_deg_s * Math.PI) / 180);
+      segs.push({ t0: t, t1: t + dur, mode, turn: { at: pts[k - 1], from: h, by: dh } });
+      t += dur;
+    }
+    segs.push({ t0: t, t1: t + leg / ROVER.speed, mode, pts: [pts[k - 1], pts[k]] });
+    t += leg / ROVER.speed;
+    h = want;
+  }
+  return { segs, end: t, heading: h };
+}
+const roverOutPlan = drivePlan(roverOut, T_ROVER_GO, ROVER_HEADING0, 'MOVING');
+const T_ROVER_AT_C = even(roverOutPlan.end);
 const T_ROVER_DONE = T_ROVER_AT_C + SERVICE_C_S;
-const T_ROVER_HOME = even(T_ROVER_DONE + len(roverBack) / ROVER.speed);
+const roverBackPlan = drivePlan(roverBack, T_ROVER_DONE, roverOutPlan.heading, 'RETURNING');
+const T_ROVER_HOME = even(roverBackPlan.end);
 
 // ------------------------------------------------------------------ routes
 function routeBudget(out, back, startT) {
@@ -422,6 +459,10 @@ function evalSegs(segs, t, speed, startPose) {
     if (s.pts) {
       const d = Math.min((Math.min(t, s.t1) - s.t0) * speed, len(s.pts));
       pose = pointAlong(s.pts, d);
+    } else if (s.turn) {
+      // Turn on the spot: position held, heading swept at a constant rate.
+      const k = Math.min(1, (Math.min(t, s.t1) - s.t0) / (s.t1 - s.t0 || 1));
+      pose = { x: s.turn.at.x, y: s.turn.at.y, heading: s.turn.from + s.turn.by * k };
     }
   }
   return { pose, mode };
@@ -442,19 +483,32 @@ const humanSegs = [
   { t0: T_B_DONE, t1: T_HOME, mode: 'RETURNING', pts: r2Ret },
   { t0: T_HOME, t1: Infinity, mode: 'IDLE' },
 ];
+// alt: share of the cruise altitude (a number, or [from, to] swept over the segment).
 const droneSegs = [
-  { t0: 0, t1: T_START, mode: 'IDLE' },
-  { t0: T_START, t1: T_AT_S0, mode: 'MOVING', pts: droneOut },
-  { t0: T_AT_S0, t1: T_OBS, mode: 'OBSERVING', pts: strip },
-  { t0: T_OBS, t1: T_OBS + DT, mode: 'OBSERVING' },
-  { t0: T_OBS + DT, t1: T_DRONE_HOME, mode: 'RETURNING', pts: droneBack },
-  { t0: T_DRONE_HOME, t1: Infinity, mode: 'IDLE' },
+  { t0: 0, t1: T_START, mode: 'IDLE', alt: 0 },
+  { t0: T_START, t1: T_LIFT, mode: 'MOVING', alt: 0 }, // rotor spin-up on the pad
+  { t0: T_LIFT, t1: T_CRUISE, mode: 'MOVING', alt: [0, 1] }, // vertical climb
+  { t0: T_CRUISE, t1: T_AT_S0, mode: 'MOVING', pts: droneOut, alt: 1 },
+  { t0: T_AT_S0, t1: T_OBS, mode: 'OBSERVING', pts: strip, alt: 1 },
+  { t0: T_OBS, t1: T_OBS + DT, mode: 'OBSERVING', alt: 1 },
+  { t0: T_OBS + DT, t1: T_OVER_HOME, mode: 'RETURNING', pts: droneBack, alt: 1 },
+  { t0: T_OVER_HOME, t1: T_DRONE_HOME, mode: 'RETURNING', alt: [1, 0] }, // vertical descent
+  { t0: T_DRONE_HOME, t1: Infinity, mode: 'IDLE', alt: 0 },
 ];
+function altShare(segs, t) {
+  let seg = segs[0];
+  for (const s of segs) if (t >= s.t0) seg = s;
+  if (!Array.isArray(seg.alt)) return seg.alt ?? 0;
+  const k = Math.min(1, Math.max(0, (t - seg.t0) / (seg.t1 - seg.t0 || 1)));
+  return seg.alt[0] + (seg.alt[1] - seg.alt[0]) * k;
+}
 const roverSegs = [
   { t0: 0, t1: T_ROVER_GO, mode: 'IDLE' },
-  { t0: T_ROVER_GO, t1: T_ROVER_AT_C, mode: 'MOVING', pts: roverOut },
+  ...roverOutPlan.segs,
+  { t0: roverOutPlan.end, t1: T_ROVER_AT_C, mode: 'MOVING' },
   { t0: T_ROVER_AT_C, t1: T_ROVER_DONE, mode: 'WORKING' },
-  { t0: T_ROVER_DONE, t1: T_ROVER_HOME, mode: 'RETURNING', pts: roverBack },
+  ...roverBackPlan.segs,
+  { t0: roverBackPlan.end, t1: T_ROVER_HOME, mode: 'RETURNING' },
   { t0: T_ROVER_HOME, t1: Infinity, mode: 'IDLE' },
 ];
 const heading0 = (to) => Math.atan2(to.y - A.y, to.x - A.x);
@@ -475,12 +529,12 @@ function droneAt(t) {
   const { pose, mode } = evalSegs(droneSegs, t, DRONE.speed, { ...DRONE_HOME, heading: 0.7 });
   const flying = timeIn(droneSegs, t, new Set(['MOVING', 'OBSERVING', 'RETURNING']));
   return {
-    id: DRONE.id, kind: 'DRONE', mode, pose, z: heightAt(reference, pose.x, pose.y) + (mode === 'IDLE' ? 0 : DRONE.altitude_m),
+    id: DRONE.id, kind: 'DRONE', mode, pose, z: heightAt(reference, pose.x, pose.y) + altShare(droneSegs, t) * DRONE.altitude_m,
     time: DRONE.time_budget_s - flying, energy: DRONE.energy_budget_wh - flying * DRONE.wh_per_s, oxygen: null,
   };
 }
 function roverAt(t) {
-  const { pose, mode } = evalSegs(roverSegs, t, ROVER.speed, { ...ROVER_HOME, heading: 0.7 });
+  const { pose, mode } = evalSegs(roverSegs, t, ROVER.speed, { ...ROVER_HOME, heading: ROVER_HEADING0 });
   const moving = timeIn(roverSegs, t, MOVING);
   const working = timeIn(roverSegs, t, new Set(['WORKING']));
   return {
@@ -579,7 +633,7 @@ const manifest = {
   illustrative: true,
   title: 'Demo run: corridor survey and replanning',
   summary: 'The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.',
-  disclaimer: 'Terrain: NASA/USGS CTX DTM crop (real, provisional). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Not EVA-certified limits, not a planner output.',
+  disclaimer: 'Terrain: NASA/USGS CTX DTM crop (real, provisional). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.',
   ai_disclosure: {
     ai_assisted: true,
     scope: 'Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.',
