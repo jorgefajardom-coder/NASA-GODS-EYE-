@@ -58,3 +58,10 @@ def test_nan_becomes_null():
     data = to_json({'a': math.nan, 'b': [1.0, math.inf], 'c': 'x'})
     assert data == {'a': None, 'b': [1.0, None], 'c': 'x'}
     json.dumps(data, allow_nan=False)
+
+
+def test_map_version_is_the_newest_seen():
+    store = RunStore('run-a')
+    store.apply_state(state(1, 'r', map_version=1))
+    store.apply_meta({'run_id': 'run-a', 'map_version': 2})
+    assert store.map_version() == 2

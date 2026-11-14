@@ -35,7 +35,7 @@ class GoalIn(BaseModel):
 def create_app(bridge):
     """`bridge` provides: store, now_s(), set_goal(fields), on_update,
     cors_origins."""
-    app = FastAPI(title='Mars Gods Eye gateway', version='0.1.0')
+    app = FastAPI(title='Mars Gods Eye gateway', version='0.2.0')
     app.add_middleware(
         CORSMiddleware, allow_origins=list(bridge.cors_origins),
         allow_methods=['GET', 'POST'], allow_headers=['*'])

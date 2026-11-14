@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>mge_gateway</name>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <description>Mars Gods Eye ROS to web gateway (REST and WebSocket).</description>
   <maintainer email="noreply@example.com">Houston, We Have a Bug!</maintainer>
   <license>MIT</license>

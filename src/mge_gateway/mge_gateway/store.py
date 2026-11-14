@@ -77,17 +77,17 @@ class RunStore:
             return [e for e in self._events if e['seq'] > after_seq]
 
     def map_version(self):
+        """Newest map version seen, from either the mission state or the terrain."""
         with self._lock:
-            if self._state:
-                return self._state['map_version']
-            return self._meta['map_version'] if self._meta else 0
+            return max(self._state['map_version'] if self._state else 0,
+                       self._meta['map_version'] if self._meta else 0)
 
-    def envelope(self, timestamp_sim_s, **payload):
+    def envelope(self, timestamp_sim_s, mode='LIVE', **payload):
         """Fields every web response declares, plus the payload."""
         return {
             'schema_version': SCHEMA_VERSION,
             'run_id': self.run_id,
-            'mode': 'LIVE',
+            'mode': mode,
             'map_version': self.map_version(),
             'timestamp_sim_s': timestamp_sim_s,
             **payload,
