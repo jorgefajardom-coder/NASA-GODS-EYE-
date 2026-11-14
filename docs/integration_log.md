@@ -123,3 +123,24 @@ computational acceptance evidence, not mission safety or scientific validation.
   integration; repository check passed. Web suite not run (no web change).
 - Next dependency: Jorge reads `source_mode` in the viewer; public raster
   recording; real mission provider. No mission run or scientific result here.
+
+## Vertical on the public Jezero terrain, 2026-11-14
+
+- Base: `feat/integration` with main `7ec1a06` merged in (`0d1a27a`). Owner:
+  Jesus.
+- `vertical_mock.launch.py terrain:=real` replaces `mock_terrain` by
+  `mge_data` + `mge_mapping`; it refuses to start without `planner:=real`, since
+  a straight-line mock planner would hide unknown cells. Agents default to the
+  placeholder `agents_jezero.yaml` on cell centres of the 4 m grid. Mission and
+  agents stay MOCK and the gateway still declares `source_mode: MOCK`.
+- Evidence: `tests/integration/test_vertical_terrain.py` in the `mge-dev` Jazzy
+  container. One metadata publisher; a human goal on unobserved terrain ends
+  `BLOCKED` with `UNKNOWN/UNVERIFIED_CORRIDOR` and no route; a SIMULATED
+  observation that repeats the prior heights of a 16 x 16 block yields map
+  version 2 and the MOCK mission replans to a `FEASIBLE` route inside the block
+  (illustrative profiles); the recorded package passes `check_package`. Full
+  suite: 447 passed (three consecutive runs); repository check passed.
+- This is the map -> route -> view plumbing on public Jezero data, not a
+  validated route or mission run. Next: the real `mge_mission` provider (PR #10)
+  in this path, public raster recording, and survey observations from a
+  simulated sensor instead of a test publisher.

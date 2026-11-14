@@ -223,3 +223,12 @@ the new unit/contract/integration test cases and the related documentation.
 Test inputs are illustrative values and relabelled copies of the MOCK fixture;
 no scientific dataset, mission result, image, video or audio was generated.
 The affected paths are listed in ai_usage.json.
+
+## Vertical on the public Jezero terrain
+
+Claude Code (Anthropic) assisted the integration owner with the `terrain:=real`
+selection in `vertical_mock.launch.py`, the placeholder Jezero agents file, the
+end-to-end integration test and the related documentation. The test sends an
+illustrative SIMULATED observation that repeats public prior heights; no
+terrain array, scientific dataset, mission result, image, video or audio was
+generated. The affected paths are listed in ai_usage.json.

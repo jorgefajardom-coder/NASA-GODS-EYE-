@@ -329,6 +329,21 @@
         "docs/integration_log.md"
       ],
       "use": "Reject non-finite values outside the typed NaN cases of the ICD instead of converting them to null, and record who produced a run (MOCK, SIMULATION or UNKNOWN, never LIVE) in the gateway manifest and replay packages. ROS and JSON schema versions are unchanged; no scientific observation or mission result is generated."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "jezero_terrain_vertical",
+      "generation": "AI-assisted launch configuration, placeholder agent configuration, test and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "src/mge_bringup/config/agents_jezero.yaml",
+        "tests/integration/test_vertical_terrain.py",
+        "tests/integration/README.md",
+        "README.md",
+        "docs/integration_log.md",
+        "docs/handoffs/jesus.md"
+      ],
+      "use": "Select the real public terrain providers in the vertical behind the MOCK mission, with agents on Jezero cell centres, and test unknown terrain, replan on a new map version and the recorded package end to end. Agent positions and budgets are placeholders; no terrain array, scientific observation or mission result is generated."
     }
   ],
   "generated_media": [],

@@ -124,3 +124,33 @@ Still open: public raster recording, the real `mge_mission` provider behind
 the unchanged gateway consumer, stop acknowledgement, and viewer adoption of
 `source_mode` (PR #5 prints `recorded_from` and a fixed MOCK disclaimer). These fixes are
 serialization and labelling behavior, not scientific or LIVE acceptance.
+
+## Jezero terrain vertical cut
+
+Source: `feat/integration` after merging main `7ec1a06` (`0d1a27a`). Baselines
+unchanged: ROS ICD-ROS2-V1/package 1.0.0, JSON/replay 1.0.0, baseline review
+1.0.0-rc.1 (not frozen). Dataset `jezero_mvp` from `data/sample/manifest.json`.
+
+- **Input/output.** `vertical_mock.launch.py terrain:=real planner:=real
+  profiles_file:=<json>` runs `data_node` (prior) and `mapping_node` (the only
+  TerrainMeta publisher) instead of `mock_terrain`, with the real planner, the
+  MOCK mission/agents, the gateway and optionally the recorder. `terrain:=real`
+  with the mock planner fails `NOT_READY: REAL_TERRAIN_REQUIRES_REAL_PLANNER`.
+  Agents default to `src/mge_bringup/config/agents_jezero.yaml` (placeholders).
+- **Outcome.** Unobserved terrain answers `UNKNOWN/UNVERIFIED_CORRIDOR` and the
+  mission is `BLOCKED` without a route; a SIMULATED observation over a 16 x 16
+  block yields map version 2 and a `FEASIBLE` route inside it through REST; the
+  recorded package passes `check_package` with `source_mode: MOCK`.
+  `terrain:=real planner:=mock` is refused before any node starts.
+- **Commands.** In `mge-dev`: `colcon build --symlink-install`, then
+  `python3 -m pytest` (447 passed in three consecutive runs, including
+  `test_vertical_terrain.py`) and
+  `python3 scripts/check_repository.py` (passed). Web on Node 24.18.0 after the
+  main merge: `npm ci`, `npm test` (84 passed), `npm run build` (passed).
+- **MOCK and gaps.** Mission and agents are MOCK; the observation comes from
+  the test, not from a simulated sensor; profiles and slope limits are
+  illustrative/placeholder pending David. Not run: Gazebo, real mission.
+- **Blockers / next.** PR #10 (real `mge_mission`) also edits
+  `vertical_mock.launch.py`; reconcile both selections when it is reviewed.
+  Then public raster recording (JES-04) and survey observations from the
+  simulated drone (JES-02). No mission or scientific acceptance is claimed.
