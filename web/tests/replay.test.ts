@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import type { MissionEvent, RouteDecision } from '../src/types/icd';
 import type { RasterSet, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../src/types/replay';
 import { assembleBundle, ReplayLoadError } from '../src/data/replayAdapter';
-import { frameIndexAt, normalizeEvents, viewAt } from '../src/lib/replay';
+import { frameIndexAt, normalizeEvents, pchip, viewAt } from '../src/lib/replay';
 import { isCurrentRoute, isTrustedRoute, NOT_ESTIMATED, fmtNumber, fractionRemaining, routeEta } from '../src/lib/format';
 import { sampleHeight } from '../src/lib/coords';
 
@@ -172,6 +172,36 @@ describe('visual interpolation of agent poses', () => {
 
   it('never extrapolates past the last sample', () => {
     expect(human(manifest.duration_s + 50)).toEqual(human(manifest.duration_s));
+  });
+
+  it('keeps the drone between its samples (no overshoot) and its speed continuous across a sample', () => {
+    const drone = (t: number) => viewAt(bundle, t).state!.agents.find((a) => a.agent_kind === 'DRONE')!.pose.position;
+    // Take-off sample pair 8 -> 10 s: the drawn altitude stays inside the received range.
+    for (let t = 8; t <= 10; t += 0.25) {
+      expect(drone(t).z).toBeGreaterThanOrEqual(-35.4 - 1e-6);
+      expect(drone(t).z).toBeLessThanOrEqual(4.6 + 1e-6);
+    }
+    // Climb during the observation leg: vertical speed just before and after the 114 s sample match.
+    const h = 1e-3;
+    const before = (drone(114).z - drone(114 - h).z) / h;
+    const after = (drone(114 + h).z - drone(114).z) / h;
+    expect(Math.abs(after - before)).toBeLessThan(0.05);
+  });
+
+  it('interpolates monotonically and passes through the samples', () => {
+    const a = { t: 0, v: 0 };
+    const b = { t: 2, v: 0 };
+    const c = { t: 4, v: 40 };
+    const d = { t: 6, v: 40 };
+    expect(pchip(a, b, c, d, 2)).toBe(0);
+    expect(pchip(a, b, c, d, 4)).toBeCloseTo(40, 9);
+    let prev = -Infinity;
+    for (let t = 2; t <= 4; t += 0.1) {
+      const v = pchip(a, b, c, d, t);
+      expect(v).toBeGreaterThanOrEqual(prev);
+      expect(v).toBeLessThanOrEqual(40 + 1e-9);
+      prev = v;
+    }
   });
 
   it('reports the walking speed from consecutive samples', () => {
