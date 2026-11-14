@@ -11,7 +11,7 @@ import pytest
 pytest.importorskip('rclpy', reason='Requires built ROS 2 workspace')
 
 from mge_gateway.replay_check import check_package
-from test_vertical_mock import GOAL, wait_for
+from tests.integration.test_vertical_mock import GOAL, wait_for
 
 RUN_ID = 'it-replay'
 PORT = 8766

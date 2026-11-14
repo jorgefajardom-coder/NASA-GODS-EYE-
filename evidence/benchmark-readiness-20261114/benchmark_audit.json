@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "BENCHMARK_EVIDENCE_AUDIT",
+  "recorded_at_utc": "2026-11-14T16:47:27.529921+00:00",
+  "scientific_approval": false,
+  "integrated_mission_executed_by_tool": false,
+  "input_errors": [],
+  "status": "NOT_READY",
+  "reason_code": "PLAN_NOT_FROZEN",
+  "observed_runs": 0
+}

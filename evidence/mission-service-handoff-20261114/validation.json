@@ -1,0 +1,40 @@
+{
+  "classification": "software_integration_not_mission_acceptance",
+  "source_commit": "255be89e4d3dab2620ab0a1a2c4a3d63b26d650f",
+  "mission_source": "8f69f62bb65f6fdd0151580901b81c22049dfaed",
+  "reference_main": "6ec9b84de0034a940cfe7e3491308fc4957810ca",
+  "windows_full_pytest": {
+    "tests": 651,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 15
+  },
+  "jazzy_selected_pytest": {
+    "tests": 557,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "real_mission_launch_and_consumer": {
+    "tests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "target_build": "Ubuntu24.04/Jazzy: eight packages built, six messages and two services inspected",
+  "web": "Node24.18.0: npm test4passed; npm run build passed; existing bundle-size warning",
+  "repository_check": "passed",
+  "diff_check": "passed",
+  "mission_outcome": "Expected BLOCKED/MODEL_NOT_AGREED, empty authorized route; not a completed mission",
+  "notes": [
+    "Real mission and planner are the sole canonical providers in the synthetic HTTP consumer smoke.",
+    "Conflicting reuse of a mission request ID returns REQUEST_ID_CONFLICT.",
+    "Native Windows skips ROS modules and three symlink privilege cases; Linux executes ROS/symlink cases.",
+    "Explicit published-planner snapshot probe was not materialized; retained conformance evidence still records one agreement and six model disagreements.",
+    "Initial sandboxed HTTP test stalled; successful full native suite used permitted local execution.",
+    "Initial target attempt lacked WebSocket dependency; it was installed from the existing gateway requirements before final verification.",
+    "Initial new launch smoke exposed an incorrect global executor in clock preflight; corrected to an explicit Context-bound executor and retested.",
+    "Local ROS build uses an isolated Python environment for HTTP dependencies and an ASCII source snapshot; interpreter is propagated to colcon/CMake.",
+    "No Gazebo dynamics, physical stop acknowledgement, scientific approval or new mission A/B/C run is claimed."
+  ]
+}
