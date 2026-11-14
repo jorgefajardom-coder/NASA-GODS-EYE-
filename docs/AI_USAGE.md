@@ -52,3 +52,12 @@ evidence/planner-p0-20261114. Their scenarios were AI-assisted illustrative test
 data; reported timings and costs are actual new executions of the recorded code
 commit. They are computational test measurements, not physical or NASA mission
 measurements. No generated image, video or audio asset was added.
+
+## Continuous ground-start extension
+
+OpenAI Codex assisted with the within-cell start connector, shared directed cost
+function, search/result integration, synthetic regression tests and associated
+model/interface documentation on feat/planner. Affected paths are recorded in
+ai_usage.json. Tests use illustrative grids and resource parameters, not new NASA
+observations or certified mobility limits. No ROS message/service definition or
+generated media was added. Human review remains pending.

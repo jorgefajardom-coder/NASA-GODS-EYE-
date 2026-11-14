@@ -2,10 +2,11 @@
 
 Inputs are one copied, read-only **public belief** snapshot, explicit profile,
 request and resource budget. There is no evaluator-reference argument. Local ENU
-uses metres, southwest origin, rows north, columns east. P0 endpoints must be
-cell-centre XY positions within 1e-6 m. A continuous pose is rejected rather than
-silently snapped without costing/checking its connector. Output z is belief
-surface elevation; this is a grid surface model, not a vehicle dynamics model.
+uses metres, southwest origin, rows north, columns east. Goals and return targets
+must be cell-centre XY positions within 1e-6 m. Human/rover starts outside that
+tolerance use the validated connector below. Centred requests retain the prior
+graph-only behavior (including that tolerance). Graph waypoint z is belief surface
+elevation; this is a grid surface model, not a vehicle dynamics model.
 
 ## Admissibility and geometry
 
@@ -23,6 +24,55 @@ between samples using the 1-Lipschitz distance property. The map-boundary segmen
 distance is handled exactly. Consequently this model can reject a physically
 possible narrow corridor; it never claims an exact collision geometry or an EVA
 certificate. Reported clearance is a conservative footprint margin.
+
+## Continuous ground start: one conservative connector
+
+The only candidate is the centre of the cell containing the requested XY pose.
+There is no nearest-free-cell fallback. Both endpoints lie in that convex cell,
+so the entire straight segment remains there. A known admissible containing cell
+is mandatory; unknown/NoData/sigma failures never produce a candidate. A pose on
+a cell boundary still undergoes the footprint check against neighbouring cells.
+
+The swept footprint uses the same obstacle-square distance lower bound as graph
+edges, with a stricter rejection at zero obstacle clearance even for point agents.
+For segment horizontal length h, let d_min be the smallest distance to any blocked
+cell centre at five equally spaced samples. Every point lies within h/8 of a
+sample. Thus d_min - h/8 - resolution/sqrt(2) - radius - localization_error bounds
+the margin to every blocked/unknown square for the ENTIRE segment. A nonpositive
+bound rejects the connector; it is never clamped to zero and accepted. Boundary
+clearance is exact: each signed distance to an axis-aligned map boundary is affine
+on the segment, with its minimum at an endpoint. The smaller of these margins and
+the destination's graph clearance is included in SAFE's bottleneck objective.
+
+A 3-D start retains its supplied z; a 2-D start uses the containing cell's belief
+height. Within this single-cell model z varies linearly along the connector, so
+its directed slope is constant and its total height change is checked against the
+step limit. The same profile cost/limit function as graph edges is used. No
+subcell relief is inferred from a single DEM height: input pose height/localization
+must be consistent with the public map. This is not a reconstruction of physical
+ground beneath the segment. Profiles and that modeling assumption need science
+review; arbitrary drone altitude/flight remains unsupported.
+
+Connector time/energy/human oxygen initialize the first A* label, before budget
+pruning. They are charged exactly once along with outbound, service and return;
+the heuristic, label dominance and graph search remain unchanged. SAFE filters
+the connector by each trial threshold too. Optimality is within this ONE-connector
+augmented graph, not among all possible continuous-space attachments or paths.
+
+Successful Python results expose immutable `start_connector` metadata (start/end,
+3-D distance, costs and minimum margin). `outbound_path` starts with its exact
+3-D start and then retains every graph waypoint, including the attachment centre.
+The ROS wire schema is unchanged: its first two outbound points delimit this
+connector and existing resource fields include its costs; separate metadata is
+Python-only. Centred results have `start_connector=None` and no extra waypoint.
+If return is required, supply an explicit centred base: the default return-to-start
+is rejected when that start is continuous. Continuous goals/bases are not added.
+
+`UNKNOWN/UNVERIFIED_START_CONNECTOR` means unknown cells/sigma prevent verification
+but an optimistic connector could exist (diagnosis only). Otherwise
+`NO_PATH/NO_ADMISSIBLE_START_CONNECTOR` means this particular attachment is
+inadmissible under the model; it does not prove every continuous route impossible.
+Ordinary graph/budget/status handling applies after a connector is verified.
 
 ## Costs and joint search
 

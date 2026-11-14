@@ -62,6 +62,21 @@ There is a resource-feasible alternative-path case so an expensive fastest route
 cannot trigger a false global rejection. Tests also cover snapshot invalidation
 and bounds. Whole mission R01-R18 acceptance is still pending.
 
+Continuous human/rover starts now have a checked and costed connector to their
+containing cell centre; see MODEL.md and tests/planning/test_continuous_start.py.
+The first outbound point is the actual start, followed by the graph centre.
+Goals/bases remain centred, and return from a continuous start requires an explicit
+centred base. Replanning still needs an external request: no automatic event,
+corridor or hysteresis policy was added. The historical 154-test evidence above
+predates this extension; it must not be cited as verification of the new code.
+
+Local verification of the continuous-start working tree on 14 November 2026
+(Python 3.12.3): full pytest suite 184 passed, 2 ROS modules skipped, 0 failures;
+114 planning cases include 30 new connector cases. Repository static checks passed.
+The existing Starlette/httpx deprecation warning remains. Web tests: 2 passed;
+web build unavailable because frontend dependencies (tsc) are not installed.
+ROS compilation/service execution and mission E2E remain unverified here.
+
 Profiles in config/planner_profiles.illustrative.json are not approved scientific
 parameters. Speed/slope are tentative references recorded in
 [data provenance](planner_provenance.md); energy, oxygen, footprint and other

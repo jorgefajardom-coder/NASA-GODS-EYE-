@@ -3,6 +3,7 @@
 from dataclasses import replace
 
 import numpy as np
+import pytest
 
 from mge_planning.core import (
     MotionProfile, PlanRequest, ResourceBudget, RouteMode, RouteStatus,
@@ -23,10 +24,13 @@ def scenario(mask=None):
 def test_continuous_pose_is_not_teleported_to_a_free_cell_centre():
     grid, profile, request = scenario()
     result = plan_route(terrain=grid, profile=profile,
-                        request=replace(request, start=(1.1, 2.5)))
-    assert result.status == RouteStatus.ERROR
-    assert result.reason_code == "NON_CELL_CENTER"
-    assert result.outbound_path == ()
+                        request=replace(request, start=(1.1, 2.5), return_to=request.start))
+    assert result.status == RouteStatus.FEASIBLE
+    assert result.outbound_path[:2] == ((1.1, 2.5, 0.), (1.5, 2.5, 0.))
+    assert result.start_connector.distance_m == pytest.approx(.4)
+    # Includes connector + outbound graph + return to the original centred base.
+    assert result.travel_time_s == pytest.approx(4.4)
+    assert result.energy_est_wh == pytest.approx(4.4)
 
 
 def test_unknown_shortcuts_prevent_an_unproven_global_budget_rejection():

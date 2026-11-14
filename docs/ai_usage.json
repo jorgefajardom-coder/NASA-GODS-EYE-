@@ -7,6 +7,22 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "continuous_start_code_and_illustrative_tests",
+      "generation": "AI-assisted generation, pending human review",
+      "paths": [
+        "src/mge_planning/mge_planning/core.py",
+        "src/mge_planning/MODEL.md",
+        "tests/planning/test_continuous_start.py",
+        "tests/planning/test_kernel_guards.py",
+        "docs/ICD.md",
+        "docs/planner_handoff.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Implement a conservative within-cell ground-start connector, movement costs in the initial search label, explicit Python result metadata and synthetic regression cases; document unchanged ROS wire fields and consumer behavior. No automatic replan policy or new scientific data."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "code_and_configuration",
       "generation": "AI-assisted generation, pending human review",
       "paths": [

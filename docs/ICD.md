@@ -219,10 +219,20 @@ profiles never produce an executable candidate. The snapshot token includes
 layer revision and rejection state; changes during search discard the candidate
 with STALE_MAP. A rejected immutable batch needs a fresh version to recover.
 
-P0 positions must be exact XY cell centres (1e-6 m tolerance). Continuous poses
-are rejected as NON_CELL_CENTER, since a connector cannot be silently teleported
-or left out of resource costs. Output z is public belief surface elevation, not
-validated drone altitude or physical locomotion. MissionManager remains responsible
+P0 goals/return targets must be XY cell centres (1e-6 m tolerance). Human/rover
+starts may be continuous: the planner checks a straight connector to the containing
+cell centre and charges its costs before resource pruning. It never selects a
+different free cell to escape a blocked or unknown start. A required return needs
+an explicit centred base when the start is continuous; otherwise NON_CELL_CENTER
+is returned. Drone continuous starts are unsupported. Graph z is public belief
+height; a 3-D continuous start retains its supplied z, with linear connector z
+under the declared single-cell model, not validated physical locomotion.
+
+No ROS fields change. For Jesus/consumers: the first outbound Point may now be
+off-centre; the second is its graph attachment centre and must not be stripped.
+Existing time/energy/oxygen fields include that first segment. Python-only
+start_connector metadata is not serialized as a new wire field. Revalidate this
+behavior in Jazzy before mission integration. MissionManager remains responsible
 for current-route authorization, observation-triggered invalidation and new requests
 from the current admissible pose. See planner_handoff.md and the planning MODEL.md.
 
