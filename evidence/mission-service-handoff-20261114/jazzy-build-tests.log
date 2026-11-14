@@ -1,0 +1,180 @@
+Source: /mnt/c/Users/User/.codex/worktrees/6f05/Hacktón NASA
+Validation workspace: /tmp/mge-mission-service-iyJYz8
+WARNING: Skipping /usr/lib/python3.12/dist-packages/pybind11-2.11.1.dist-info due to invalid metadata entry 'name'
+Collecting fastapi<1,>=0.115
+  Using cached fastapi-0.162.7-py3-none-any.whl.metadata (27 kB)
+Collecting httpx<1,>=0.27
+  Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Collecting jsonschema<5,>=4.23
+  Using cached jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+Collecting pytest<9,>=8
+  Using cached pytest-8.4.2-py3-none-any.whl.metadata (7.7 kB)
+Collecting PyYAML<7,>=6
+  Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+Collecting uvicorn<1,>=0.27 (from -r src/mge_gateway/requirements.txt (line 2))
+  Using cached uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting websockets>=10.4 (from -r src/mge_gateway/requirements.txt (line 3))
+  Using cached websockets-17.4-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+Collecting starlette>=0.46.0 (from fastapi<1,>=0.115)
+  Using cached starlette-1.10.0-py3-none-any.whl.metadata (6.6 kB)
+Collecting anyio>=4.1.0 (from fastapi<1,>=0.115)
+  Using cached anyio-4.16.0-py3-none-any.whl.metadata (4.7 kB)
+Collecting pydantic>=2.9.0 (from fastapi<1,>=0.115)
+  Using cached pydantic-2.14.3-py3-none-any.whl.metadata (141 kB)
+Collecting typing-extensions>=4.8.0 (from fastapi<1,>=0.115)
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting typing-inspection>=0.4.2 (from fastapi<1,>=0.115)
+  Using cached typing_inspection-0.4.5-py3-none-any.whl.metadata (2.6 kB)
+Collecting annotated-doc>=0.0.2 (from fastapi<1,>=0.115)
+  Using cached annotated_doc-0.0.6-py3-none-any.whl.metadata (6.5 kB)
+Collecting opentelemetry-api>=1.44.0 (from fastapi<1,>=0.115)
+  Using cached opentelemetry_api-1.45.2-py3-none-any.whl.metadata (1.4 kB)
+Collecting certifi (from httpx<1,>=0.27)
+  Using cached certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+Collecting httpcore==1.* (from httpx<1,>=0.27)
+  Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Collecting idna (from httpx<1,>=0.27)
+  Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.27)
+  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting attrs>=22.2.0 (from jsonschema<5,>=4.23)
+  Using cached attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Collecting jsonschema-specifications>=2023.03.6 (from jsonschema<5,>=4.23)
+  Using cached jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+Collecting referencing>=0.28.4 (from jsonschema<5,>=4.23)
+  Using cached referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+Collecting rpds-py>=0.25.0 (from jsonschema<5,>=4.23)
+  Using cached rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+Collecting iniconfig>=1 (from pytest<9,>=8)
+  Using cached iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+Collecting packaging>=20 (from pytest<9,>=8)
+  Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting pluggy<2,>=1.5 (from pytest<9,>=8)
+  Using cached pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+Collecting pygments>=2.7.2 (from pytest<9,>=8)
+  Using cached pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting click>=7.0 (from uvicorn<1,>=0.27->-r src/mge_gateway/requirements.txt (line 2))
+  Using cached click-8.5.1-py3-none-any.whl.metadata (2.6 kB)
+Collecting annotated-types>=0.6.0 (from pydantic>=2.9.0->fastapi<1,>=0.115)
+  Using cached annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.50.4 (from pydantic>=2.9.0->fastapi<1,>=0.115)
+  Using cached pydantic_core-2.50.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.6 kB)
+Using cached fastapi-0.162.7-py3-none-any.whl (152 kB)
+Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
+Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+Using cached jsonschema-4.26.0-py3-none-any.whl (90 kB)
+Using cached pytest-8.4.2-py3-none-any.whl (365 kB)
+Using cached pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+Using cached uvicorn-0.54.0-py3-none-any.whl (87 kB)
+Using cached websockets-17.4-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (226 kB)
+Using cached annotated_doc-0.0.6-py3-none-any.whl (5.3 kB)
+Using cached anyio-4.16.0-py3-none-any.whl (134 kB)
+Using cached attrs-26.1.0-py3-none-any.whl (67 kB)
+Using cached click-8.5.1-py3-none-any.whl (126 kB)
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Using cached idna-3.20-py3-none-any.whl (69 kB)
+Using cached iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+Using cached jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+Using cached opentelemetry_api-1.45.2-py3-none-any.whl (60 kB)
+Using cached packaging-26.3-py3-none-any.whl (129 kB)
+Using cached pluggy-1.7.0-py3-none-any.whl (27 kB)
+Using cached pydantic-2.14.3-py3-none-any.whl (494 kB)
+Using cached pydantic_core-2.50.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.3 MB)
+Using cached pygments-2.21.0-py3-none-any.whl (1.3 MB)
+Using cached referencing-0.37.0-py3-none-any.whl (26 kB)
+Using cached rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (371 kB)
+Using cached starlette-1.10.0-py3-none-any.whl (80 kB)
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached typing_inspection-0.4.5-py3-none-any.whl (14 kB)
+Using cached certifi-2026.10.23-py3-none-any.whl (135 kB)
+Using cached annotated_types-0.8.0-py3-none-any.whl (13 kB)
+WARNING: Skipping /usr/lib/python3.12/dist-packages/pybind11-2.11.1.dist-info due to invalid metadata entry 'name'
+Installing collected packages: websockets, typing-extensions, rpds-py, PyYAML, pygments, pluggy, packaging, iniconfig, idna, h11, click, certifi, attrs, annotated-types, annotated-doc, uvicorn, typing-inspection, referencing, pytest, pydantic-core, opentelemetry-api, httpcore, anyio, starlette, pydantic, jsonschema-specifications, httpx, jsonschema, fastapi
+  Attempting uninstall: typing-extensions
+    Found existing installation: typing_extensions 4.10.0
+    Not uninstalling typing-extensions at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'typing_extensions'. No files were found to uninstall.
+  Attempting uninstall: PyYAML
+    Found existing installation: PyYAML 6.0.1
+    Not uninstalling pyyaml at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'PyYAML'. No files were found to uninstall.
+  Attempting uninstall: pygments
+    Found existing installation: Pygments 2.17.2
+    Not uninstalling pygments at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'Pygments'. No files were found to uninstall.
+  Attempting uninstall: pluggy
+    Found existing installation: pluggy 1.4.0
+    Not uninstalling pluggy at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'pluggy'. No files were found to uninstall.
+  Attempting uninstall: packaging
+    Found existing installation: packaging 24.0
+    Not uninstalling packaging at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'packaging'. No files were found to uninstall.
+  Attempting uninstall: iniconfig
+    Found existing installation: iniconfig 1.1.1
+    Not uninstalling iniconfig at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'iniconfig'. No files were found to uninstall.
+  Attempting uninstall: idna
+    Found existing installation: idna 3.6
+    Not uninstalling idna at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'idna'. No files were found to uninstall.
+  Attempting uninstall: click
+    Found existing installation: click 8.1.6
+    Not uninstalling click at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'click'. No files were found to uninstall.
+  Attempting uninstall: certifi
+    Found existing installation: certifi 2023.11.17
+    Not uninstalling certifi at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'certifi'. No files were found to uninstall.
+  Attempting uninstall: attrs
+    Found existing installation: attrs 23.2.0
+    Not uninstalling attrs at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'attrs'. No files were found to uninstall.
+  Attempting uninstall: pytest
+    Found existing installation: pytest 7.4.4
+    Not uninstalling pytest at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'pytest'. No files were found to uninstall.
+  Attempting uninstall: jsonschema
+    Found existing installation: jsonschema 4.10.3
+    Not uninstalling jsonschema at /usr/lib/python3/dist-packages, outside environment /tmp/mge-mission-service-iyJYz8/venv
+    Can't uninstall 'jsonschema'. No files were found to uninstall.
+Successfully installed PyYAML-6.0.3 annotated-doc-0.0.6 annotated-types-0.8.0 anyio-4.16.0 attrs-26.1.0 certifi-2026.10.23 click-8.5.1 fastapi-0.162.7 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.20 iniconfig-2.3.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 opentelemetry-api-1.45.2 packaging-26.3 pluggy-1.7.0 pydantic-2.14.3 pydantic-core-2.50.4 pygments-2.21.0 pytest-8.4.2 referencing-0.37.0 rpds-py-2026.9.1 starlette-1.10.0 typing-extensions-4.16.0 typing-inspection-0.4.5 uvicorn-0.54.0 websockets-17.4
+Starting >>> mge_interfaces
+Finished <<< mge_interfaces [14.0s]
+Starting >>> mge_data
+Starting >>> mge_gateway
+Starting >>> mge_mission
+Starting >>> mge_planning
+Starting >>> mge_sim
+Finished <<< mge_data [2.00s]
+Starting >>> mge_mapping
+Finished <<< mge_gateway [2.02s]
+Finished <<< mge_planning [2.02s]
+Finished <<< mge_mission [2.03s]
+Finished <<< mge_sim [2.07s]
+Finished <<< mge_mapping [1.88s]
+Starting >>> mge_bringup
+Finished <<< mge_bringup [3.96s]
+
+Summary: 8 packages finished [22.2s]
+Inspected six messages and two services.
+..........                                                               [100%]
+- generated xml file: /mnt/c/Users/User/.codex/worktrees/6f05/Hacktón NASA/.local/mission-service-focused.xml -
+10 passed in 7.93s
+........................................................................ [ 12%]
+........................................................................ [ 25%]
+......s................................................................. [ 38%]
+........................................................................ [ 51%]
+........................................................................ [ 64%]
+........................................................................ [ 77%]
+........................................................................ [ 90%]
+.....................................................                    [100%]
+=============================== warnings summary ===============================
+venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  Warning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/c/Users/User/.codex/worktrees/6f05/Hacktón NASA/.local/mission-service-jazzy.xml -
+=========================== short test summary info ============================
+SKIPPED [1] tests/mission/test_conformance.py:227: Explicit published planner snapshot is not materialized
+556 passed, 1 skipped, 1 warning in 26.38s

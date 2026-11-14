@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "recorder-software-validation-20261114",
+  "kind": "SOFTWARE_VALIDATION",
+  "recorded_at_utc": "2026-11-14T17:26:18.774939+00:00",
+  "source_revision": "df7f7cdc8ee4fed2f81fcd81cc705895a1688831",
+  "working_tree_dirty": true,
+  "scientific_approval": false,
+  "integrated_mission_executed": false,
+  "checks": {
+    "python": {
+      "passed": 366,
+      "skipped": 5,
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "--basetemp=tmp/pytest-recorder-final-2",
+        "-q",
+        "--junitxml=tmp/recorder-python-final-2.xml"
+      ]
+    },
+    "jazzy": {
+      "passed": 312,
+      "skipped": 1,
+      "packages_built": 8,
+      "interfaces_inspected": 8,
+      "command": [
+        "wsl",
+        "-d",
+        "Ubuntu-24.04",
+        "--exec",
+        "bash",
+        "scripts/validate_mission_ros.sh"
+      ]
+    },
+    "repository": {
+      "exit_code": 0,
+      "command": [
+        "python",
+        "scripts/check_repository.py"
+      ]
+    },
+    "frontend_tests": {
+      "passed": 2,
+      "command": [
+        "npm",
+        "test"
+      ]
+    },
+    "frontend_build": {
+      "exit_code": 0,
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ]
+    }
+  },
+  "limitations": [
+    "Windows skipped two ROS modules and three symlink fixtures; symlink fixtures ran on Linux.",
+    "Linux optional published planner snapshot was not materialized in its build copy.",
+    "Sandboxed Windows test attempt stalled and was interrupted; successful full Windows run used the permitted launcher outside the sandbox.",
+    "Existing Starlette deprecation and frontend chunk-size warnings remain.",
+    "Recorder is in-memory until export; execution producer wiring and scientific approval remain pending."
+  ],
+  "source_sha256": {
+    "config/agents.yaml": "ac3e56ee10021e19409e03c8511b1978e163fa7d02e6a32dc8503e32cd25da0d",
+    "config/benchmark_outcome.template.json": "4b8b206edf8eff96c3fbd9959f22d1e465788a4d75bf83b3a7b77d6482105ebc",
+    "config/benchmark_plan.template.json": "52dac88f9ae2dc249b12d24521cb15ab72e86d8adb6027c1f5f143846b74ecb0",
+    "config/mission.yaml": "b33fedc2ab3a34c186dca5918b90f6dcb7f0348f424bb2953ab5e1cdfcd81bb7",
+    "config/planner_profiles.proposed.json": "4c4d2607db4bda661608b0c18d17c319e9587d8d441b37bd48b7160f86ec54ef",
+    "config/README.md": "f2ab6ae07a02314086ef972765a6ef795fc532c014c374f1c538bfa5d8408555",
+    "config/scenario_demo.yaml": "a39186f91d2f44f05e6569cfa89cbf54fc7c266e76f34603d2f2011a595ee12f",
+    "config/science_profiles.proposed.json": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "config/terrain.yml": "7754080eb8512cd434bfc1bfd621be9067443cd408df9a15f7c016ae2909d8cb",
+    "pyproject.toml": "c70e9f1ba58b18f76fe676793d7358b95d3032e829c5e631460567e4d2fba3eb",
+    "scripts/sweep_mission_sensitivity.py": "8a8618b167db9cf06ab17d7e188d96a9fe190df6c57ddc0543060b4a74a5dfd4",
+    "src/mge_mission/mge_mission/__init__.py": "c4d0a343fe14d25931d280dda8e78281cb17d8444f22da58520691d792378df7",
+    "src/mge_mission/mge_mission/adapter.py": "fd77a8b102ae584abaacef706c46fb09f48f64037f76dfaf0af7e0d51c2a5884",
+    "src/mge_mission/mge_mission/audit.py": "509a176c1ef8f8b4b37a5519d9adc60c8ae53c741fd871d92053ede4f542638d",
+    "src/mge_mission/mge_mission/benchmark.py": "eca3490341f7ca3a5f7b925955a71bf9dbd000ff0ee9dfc0b21da10830f858f8",
+    "src/mge_mission/mge_mission/conformance.py": "60cf240d8408252b9d34d0fd2e42c2b55f87d89fb68402262ba9738f84b0daaa",
+    "src/mge_mission/mge_mission/core.py": "a077697b5a3cf5e8c56c3c7f81cc3bf3e1f362645ea1fc3afa699845c2c4a2bc",
+    "src/mge_mission/mge_mission/manager.py": "e19bf4676f65b8362d47febecffc8a03d2391d441673e5380e2071b5a1b66beb",
+    "src/mge_mission/mge_mission/models.py": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "src/mge_mission/mge_mission/node.py": "5f5cf57c40391f8c4ab803b04dccbce76d75f53ca666761b75d86300bcf99ade",
+    "src/mge_mission/mge_mission/recorder.py": "6e6018bad7630631899cf7b4aeeb437ab0e2be6459ec8b79aabdc19fcd0161e5",
+    "src/mge_mission/mge_mission/sensitivity.py": "0642f9c4e6057dddb0ef4b84ddf7a20d14405019f2a173a414e6fbd933a5a663",
+    "src/mge_mission/mge_mission/types.py": "5de63a8c2eb00b067226d6d2353bbfdb07e89b0244f02f8da900143cb11e196e",
+    "src/mge_mission/package.xml": "8020383b07650ec7834361204d8126f0769bb9c9fd4c69befe9ac5e1c5ac53a2",
+    "src/mge_mission/README.md": "d99506cf67130af608cf5b7bf07bbc037cae1167e26a210679d994630e156a48",
+    "src/mge_mission/resource/mge_mission": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/mge_mission/setup.cfg": "9f78694082ca02df61d83e659dd012a44361f671a357036d5b2509f066812f74",
+    "src/mge_mission/setup.py": "41f9d56359f2bcda6685ebb654cb4c901770ce97de6d3eb0314f2e20a2221670",
+    "tests/mission/test_adapter.py": "5d16d1ac44ff51b192e1b6d6b9d0ffceb501fdcc66afafb9bdc9ff40fe906a05",
+    "tests/mission/test_audit.py": "6ef58eb23899cbf8d84ab0e1b50571ac2c53e839aa79af3a2ec0941138ec393d",
+    "tests/mission/test_benchmark.py": "de024dce79bd30ad14f258f5ceb7e189e124f214fb35c42b254d2e49220c9d87",
+    "tests/mission/test_conformance.py": "9fc9a43912a50763bb76aec35c5a81793b46988cf055d101c9ad3b507ee7c097",
+    "tests/mission/test_manager.py": "e8a33fd7935921922a061115195fe0e9e5f44c26ca79a81d9dd2f23a118b7171",
+    "tests/mission/test_models.py": "22270500ddab8f07920bc439128cce45227a7944df9305b5c7654b4ee7ec51a8",
+    "tests/mission/test_recorder.py": "69aca769ce2a10fb094724c99c8f214233ca42a431562e16450f23ad1d407262",
+    "tests/mission/test_sensitivity.py": "6ce1c7f53b96f054635a55151963a778b1c5f4731323d0e32f3e3c08bb5accb9",
+    "tests/mission/test_success_criterion.py": "564360522490f14b27b5d012984250ed2bc4746a98e2e6eff3725bc3e25a6686"
+  },
+  "artifacts_sha256": {
+    "jazzy.junit.xml": "04177b2c221d243fbf6916d99379bd61fcbeab2c12c206a02513458a5e735c64",
+    "jazzy.log": "60076bbefa7962667705f644bd949b57aed10c4dd3afb7afd4b8a6227a9a3f84",
+    "jazzy.source.json": "640c8cb9f384ea3f6c358e97dabfd615a8db8a2575cfcc64d7538e85158eae05",
+    "windows.junit.xml": "e602b8fa50982b806e411a66dff4503139ea0850f0355ce96b19620be91e3db3"
+  }
+}

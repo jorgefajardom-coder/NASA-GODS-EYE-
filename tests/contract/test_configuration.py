@@ -44,7 +44,7 @@ def test_no_implicit_scaffold_activation_or_live():
 
 def test_owner_parameters_reach_selected_providers_without_identity_override():
     doc=receipt("mock"); doc["parameters"]={"gateway":{"host":"127.0.0.1"}}
-    assert launch_parameters("mock",doc,"run-a")["gateway"] == {"host":"127.0.0.1","run_id":"run-a","use_sim_time":False}
+    assert launch_parameters("mock",doc,"run-a")["gateway"] == {"host":"127.0.0.1","run_id":"run-a","use_sim_time":False,"source_mode":"MOCK"}
     doc["parameters"]["gateway"]["run_id"]="other"
     with pytest.raises(ValueError,match="OVERRIDE_FORBIDDEN"): launch_parameters("mock",doc,"run-a")
 
@@ -60,3 +60,17 @@ def test_real_provider_configuration_is_explicit_and_preserved():
     assert result["planner"]["profiles_file"]=="approved-planner.json"
     assert result["mission"]["approved_model_id"]=="reviewed-model"
     assert all(value["use_sim_time"] is True for value in result.values())
+
+
+def test_launcher_declares_source_mode_and_never_live():
+    doc=receipt("mock")
+    assert launch_parameters("mock",doc,"run-a")["gateway"]["source_mode"]=="MOCK"
+    assert "source_mode" not in launch_parameters("mock",doc,"run-a")["planner"]
+    doc["parameters"]={"gateway":{"source_mode":"SIMULATION"}}
+    with pytest.raises(ValueError,match="OVERRIDE_FORBIDDEN"): launch_parameters("mock",doc,"run-a")
+    real={"planner":{"profiles_file":"approved-planner.json","snapshot_contract_confirmed":True},
+          "mission":{"profiles_path":"approved-science.json","mission_path":"mission.yaml","model_agreement_confirmed":True,"approved_model_id":"reviewed-model"}}
+    for profile,expected in (("integration","MOCK"),("simulation","SIMULATION")):
+        doc=receipt(profile)
+        doc.update(science_approved=True,resource_model_agreed=True,dataset_approved=True,snapshot_contract_confirmed=True,parameters=real)
+        assert launch_parameters(profile,doc,"run-a")["gateway"]["source_mode"]==expected

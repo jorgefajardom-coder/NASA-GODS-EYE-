@@ -114,3 +114,83 @@ fresh CTX check correctly returned UNKNOWN rather than inventing local corridor
 verification. These checks replace the initial planner placeholder only; the
 full mission, final science products, approved rates and public live demo remain
 unvalidated. This branch leaves the existing ROS message/service schema intact.
+
+## Preserved mission-branch records (source8f69f62)
+
+These module records predate the combined mission-service handoff; they are not
+combined-main acceptance. Fresh results will accompany this PR.
+
+## Mission module verification, 14 November 2026
+
+The mission branch now has implementation and software-contract evidence, not
+an accepted end-to-end mission. Operational scientific parameters remain
+proposed and S-01 through S-08 reviews remain pending.
+
+| Check | Observed outcome |
+| --- | --- |
+| Windows Python 3.12.14, `python -m pytest -q` | 226 passed; 2 ROS-dependent modules skipped |
+| Ubuntu 24.04 / ROS 2 Jazzy, `colcon build --symlink-install` | All 8 packages compiled |
+| `ros2 interface show` | All 6 messages and 2 services inspected |
+| Jazzy mission and contract suites | 162 passed; no skips or failures |
+| `python scripts/check_repository.py` | Passed, 8 package manifests |
+| Pinned Node 24.18.0, `npm test` | 2 passed |
+| `npm run build` | Passed, TypeScript and Vite |
+| `git diff --check` | Passed |
+
+The [machine-readable record](../evidence/mission-validation-20261114-v2/validation.json)
+contains JUnit reports, the build/test log and SHA-256 hashes for 93 exact files
+copied to the tested ROS workspace. Three idempotency failures from the prior ROS
+attempt are preserved with their correction and passing regressions. Raw CDR
+serialization is not a canonical equality key; the adapter now compares request
+field values explicitly.
+
+Native Windows Python requires the existing virtual environment on this host;
+the Store launcher is inaccessible. The installed ROSIDL tooling failed with the
+Windows source path containing spaces/accented characters. Run
+`bash scripts/validate_mission_ros.sh` on Jazzy to build an ASCII-path Linux
+snapshot instead. The script retains logs/source hashes/JUnit XML in ignored
+`tmp/`, and uses ROS domain 83 unless `MGE_TEST_ROS_DOMAIN_ID` is supplied.
+
+The ROS smoke uses a controlled planner and synthetic inputs. It verifies actual
+services, state/events/path publications, run/time/version guards, idempotency
+and invalidation. It establishes no Gazebo movement, NASA terrain processing,
+physical stop acknowledgement or complete optional-task/mission execution.
+Scientific-model agreement with `feat/planner` and ROS inputs for discovery,
+work completion and traversal evidence remain integration work.
+
+The standalone [final model check](../evidence/mission-models-20261114-v2/model_checks.json)
+records 15 synthetic formula estimates, input profiles and code/configuration
+hashes. It is labelled MODEL_CHECK and does not establish NASA observations,
+scientific acceptance or an A/B/C benchmark. Existing Starlette/httpx deprecation
+and frontend bundle-size warnings remain outside this module's changes.
+
+## Evidence recorder and sensitivity follow-up, 14 November 2026
+
+The isolated `feat/mission` follow-up passed 366 Python cases on Windows
+(five platform/ROS skips) and 312 mission/contract cases on Ubuntu 24.04/Jazzy
+(one optional published-planner-snapshot skip). The eight packages compiled
+and six messages/two services were inspected. Repository checks, both frontend
+tests and frontend production build passed. Existing Starlette deprecation
+and frontend chunk-size warnings remain. A sandboxed Windows full-suite attempt
+stalled and was interrupted; the successful complete suite used the permitted
+launcher outside that restriction.
+
+The [retained validation record](../evidence/mission-recorder-validation-20261114/validation.json)
+includes exact tested source hashes and JUnit/log exports. The
+[sensitivity report](../evidence/mission-sensitivity-20261114/sensitivity.json)
+contains 138 low/nominal/high model evaluations across three illustrative
+round trips. Nominal time/energy estimates are human 98.801 s / 12.850 Wh,
+rover 628.326 s / 24.095 Wh, drone 80 s / 4.823 Wh. Low drone horizontal
+speed changes model budget feasibility because the illustrative time reserve
+leaves only one second nominal margin. These are synthetic calculations,
+not observed endurance, mission success, scientific approval or A/B/C results.
+
+## Real mission-provider integration cut
+
+Combined source255be89 (mission8f69f62, refreshed main6ec9b84): full native
+Python636passed/15skipped; Jazzy selected mission/contract/integration/unit/HTTP
+suites556passed/one optional published-snapshot skip. Ten focused launch/consumer
+checks passed. All eight ROS packages built and all eight custom definitions
+were inspected. The real mission service is unique; model disagreement remains
+BLOCKED with no active route. Web4tests/build, repository and whitespace checks
+passed. [Logs, JUnit, source hashes and limits](../evidence/mission-service-handoff-20261114/README.md).

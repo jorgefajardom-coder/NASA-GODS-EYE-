@@ -15,6 +15,58 @@ No NASA scientific dataset, measured result or benchmark was generated or
 claimed. No generated image/video/audio asset is included. The empty Three.js
 grid is a code-rendered placeholder, not a terrain product or mission run.
 
+## Mission profiles and authority, 14 November 2026
+
+OpenAI Codex assisted with the activity/grade cost models, proposed profile
+registry and provenance records, illustrative test configuration, pure mission
+authority and task/evidence types, ROS boundary, regression/contract tests,
+reproducible formula-check script, scientific model documentation, benchmark
+protocol and integration handoff. David selected the modeling approach and task
+policy; numerical coefficients remain proposed unless separately approved.
+
+NASA/JPL and NIST references are cited as technical sources, not authors of the
+adapted engineering model. Synthetic formula outputs are marked MODEL_CHECK;
+they are not NASA observations, live missions, physical tests or an A/B/C result.
+No generated image, video or audio is part of this change.
+
+## Planner response interoperability, 14 November 2026
+
+OpenAI Codex assisted with mission-owned handling of unavailable planner metrics,
+nullable internal decision values, map-batch response timestamps and related
+Python/ROS regression tests. The published planner source was inspected at
+34c515b6b86f73336844e8b3614c70b144574ec3; its code was not modified or merged.
+These changes preserve failure reasons and do not approve scientific profiles.
+
+## Planner model conformance, 14 November 2026
+
+OpenAI Codex assisted with the isolated published-source loader, synthetic
+seven-case cost comparison, reproducible CLI, tests and technical report.
+The generated numerical diagnostics are classified MODEL_CONFORMANCE; they
+are not NASA observations, integrated missions or an A/B/C benchmark. All
+profile approval states remain unchanged and authorization remains blocked.
+Exact source/model/profile hashes are retained with the comparison.
+
+## Frozen benchmark evidence tools, 14 November 2026
+
+OpenAI Codex assisted with immutable protocol/outcome types, first-attempt
+comparison reporting, filesystem/event/traversal evidence checks, draft
+templates, audit CLI, regression tests and documentation. Synthetic test
+fixtures exercise the auditor; they are not submitted mission outcomes.
+The recorded draft-readiness diagnostic reports NOT_READY and zero observed
+mission runs. Software validation logs/JUnit reports record actual command
+outcomes and preserve source hashes; they grant no scientific approval.
+
+## Public evidence recorder and sensitivity tools, 14 November 2026
+
+OpenAI Codex assisted with the typed public execution recorder/exporter,
+interval accounting and traversal closure checks, offline coefficient sweep,
+illustrative sensitivity cases, regression tests and handoff documentation.
+The disclosure metadata lists the affected files and retained software/model
+checks. No ROS evidence input, planner change, physical observation, mission
+execution or A/B/C outcome was generated. Model coefficients remain proposed.
+
+## Delivery verification checklist
+
 ## Terrain data and incremental mapping implementation (`feat/data`), 14 November 2026
 
 Google Antigravity assisted Daniel with the bounded HTTP 206 ingestion script
@@ -209,6 +261,16 @@ strict offline contract reader and viewer oracle added by the approved main
 baseline. That consumer now compares snapshot history by sequence while
 preserving arrival timestamps and all existing identity/provenance guards.
 
+## Real mission provider handoff, 14 November 2026
+
+OpenAI Codex assisted with reconciling the published mission implementation and
+current main, selecting one MOCK or real mission provider in the launch file,
+configuration/clock preflight, consumer regressions, test discovery/import fixes,
+and this handoff's documentation and validation records. Existing mission
+models, task authority, planner and wire definitions are preserved. No profile
+or model was promoted to scientific approval and no mission outcome was invented.
+No generated image, video, audio or NASA observation is introduced.
+
 ## Local organizer delivery coordination
 
 OpenAI Codex assisted documenting the owner's pre-submission organizer notice
@@ -226,3 +288,54 @@ integration test for them and updating the related documentation. The test
 sends illustrative SIMULATED observations that repeat public prior heights; no
 terrain array, scientific dataset, mission result, image, video or audio was
 generated. The affected paths are listed in ai_usage.json.
+
+## Gateway typed serialization and source provenance
+
+Claude Code (Anthropic) assisted the integration owner with the typed JSON
+converters in the gateway store, their adoption by the ROS bridge and replay
+recorder, the `source_mode` field in the gateway manifest, recorded manifests,
+launch files and offline validators, the mock planner clearance correction,
+the new unit/contract/integration test cases and the related documentation.
+Test inputs are illustrative values and relabelled copies of the MOCK fixture;
+no scientific dataset, mission result, image, video or audio was generated.
+The affected paths are listed in ai_usage.json.
+
+## Vertical on the public Jezero terrain
+
+Claude Code (Anthropic) assisted the integration owner with the `terrain:=real`
+selection in `vertical_mock.launch.py`, the placeholder Jezero agents file, the
+end-to-end integration test and the related documentation. The test sends an
+illustrative SIMULATED observation that repeats public prior heights; no
+terrain array, scientific dataset, mission result, image, video or audio was
+generated. The affected paths are listed in ai_usage.json.
+
+## Main synchronization after viewer merge
+
+OpenAI Codex assisted with the README and mandatory metadata conflict resolution
+when main7ec1a06 was incorporated into the mission handoff. Mission and viewer
+implementations, existing licence notices and both contributors' required
+AI-use declarations were retained. The provenance test declaration follows its
+move to web/tests. No new generated code, media or scientific data is introduced
+by this synchronization.
+
+## ROS CI fixture readiness after main synchronization
+
+OpenAI Codex assisted with two test-harness corrections after ROS CI exhausted
+its search limit and the mission fixture timed out. The terrain functional test
+now has an explicit finite 10-second search budget; production defaults and all
+feasibility assertions remain unchanged. The mission fixture probes the actual
+canonical planner for a complete loaded map before submitting its one mission
+goal, and retains diagnostic state on failure. No runtime policy, scientific
+approval, observation or resource model is changed.
+
+The authority smoke now scopes its synthetic grid to16x16 cells at the same
+five-metre resolution through a test-only LaunchService wrapper around the
+unchanged production LaunchDescription. Actual service providers, positions,
+readiness/model checks and the default production200x200 grid are preserved.
+This fixture is not a large-map throughput benchmark or a scientific dataset.
+
+## PR11 reconciliation review
+
+OpenAI Codex assisted preserving the real mission selector while merging the
+terrain/provenance integration cut with main. Both launch preflights and all
+existing disclosures remain; no scientific approval or media was generated.

@@ -120,6 +120,14 @@ def test_active_run_is_live_with_full_envelope(client, bridge):
     assert [e['seq'] for e in snap['events']] == [1]
     manifest = client.get('/api/manifest').json()
     assert manifest['agents'] == [{'agent_id': 'rover_1', 'agent_kind': 'ROVER'}]
+    # Transport is LIVE; nobody declared who produces the data.
+    assert manifest['mode'] == 'LIVE' and manifest['source_mode'] == 'UNKNOWN'
+
+
+def test_manifest_reports_mock_source_from_terrain_evidence(client, bridge):
+    activate(bridge)
+    bridge.store.apply_meta({'run_id': RUN, 'map_version': 3, 'dataset_id': 'MOCK-flat-grid'})
+    assert client.get('/api/manifest').json()['source_mode'] == 'MOCK'
 
 
 def test_unknown_run_is_404(client, bridge):

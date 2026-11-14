@@ -39,6 +39,11 @@ def package(tmp_path):
     return w.dir
 
 
+def read(path, name):
+    with open(os.path.join(path, name), encoding='utf-8') as f:
+        return json.load(f)
+
+
 def lines(path):
     with open(os.path.join(path, 'timeline.jsonl'), encoding='utf-8') as f:
         return [json.loads(line) for line in f]
@@ -138,3 +143,36 @@ def test_conflicting_sequence_is_not_recorded(tmp_path):
     writer.close()
     assert len(lines(writer.dir)) == 1
     assert check_package(writer.dir) == []
+
+
+def test_manifest_records_who_produced_the_data(tmp_path):
+    # The fixture terrain says MOCK, so no declaration can relabel it.
+    writer = ReplayWriter(str(tmp_path), RUN, 'sim', 'SIMULATION')
+    assert read(writer.dir, 'manifest.json')['source_mode'] == 'SIMULATION'
+    writer.record('terrain_meta', meta(10))
+    writer.close()
+    manifest = read(writer.dir, 'manifest.json')
+    assert manifest['source_mode'] == 'MOCK'
+    assert manifest['recorded_from'] == 'LIVE' and manifest['mode'] == 'REPLAY'
+    assert check_package(writer.dir) == []
+
+
+def test_undeclared_source_is_unknown_not_live(tmp_path):
+    writer = ReplayWriter(str(tmp_path), RUN, 'system')
+    writer.close()
+    assert read(writer.dir, 'manifest.json')['source_mode'] == 'UNKNOWN'
+
+
+def test_recording_cannot_declare_a_live_source(tmp_path):
+    with pytest.raises(ValueError, match='LIVE_BACKEND_UNAVAILABLE'):
+        ReplayWriter(str(tmp_path), RUN, 'system', 'LIVE')
+    assert not os.path.exists(os.path.join(str(tmp_path), RUN))
+
+
+@pytest.mark.parametrize('value', ['LIVE', 'SIMULATION', 'REAL'])
+def test_validator_reports_relabelled_source(package, value):
+    manifest = read(package, 'manifest.json')
+    manifest['source_mode'] = value
+    with open(os.path.join(package, 'manifest.json'), 'w', encoding='utf-8') as f:
+        json.dump(manifest, f)
+    assert any('source_mode' in p for p in check_package(package))

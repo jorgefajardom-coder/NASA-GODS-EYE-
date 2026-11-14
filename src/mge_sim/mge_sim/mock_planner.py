@@ -84,7 +84,9 @@ class MockPlanner(Node):
         d.energy_est_wh = energy_wh
         d.reserve_time_s = req.time_budget_s - time_s
         d.reserve_wh = req.energy_budget_wh - energy_wh
-        d.min_clearance_m = math.nan  # not evaluated by the mock
+        # Not evaluated by the mock. A FEASIBLE route may not carry NaN, so it
+        # reports the lower bound: no clearance is claimed.
+        d.min_clearance_m = 0.0
         if human:
             d.oxygen_est_l = time_s * OXYGEN_L_PER_S
             d.reserve_oxygen_l = req.oxygen_budget_l - d.oxygen_est_l
