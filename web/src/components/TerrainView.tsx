@@ -24,25 +24,56 @@ float gNoise(vec2 p) {
   return mix(mix(gHash(i), gHash(i + vec2(1.0, 0.0)), u.x), mix(gHash(i + vec2(0.0, 1.0)), gHash(i + vec2(1.0, 1.0)), u.x), u.y);
 }
 float gFbm(vec2 p) { float a = 0.5, s = 0.0; for (int k = 0; k < 5; k++) { s += a * gNoise(p); p = p * 2.03 + 17.1; a *= 0.5; } return s; }
-// Relief in metres-like units: metre-scale undulation, decimetre ripples, centimetre grit.
-float groundHeight(vec2 g) {
-  float undulation = gFbm(g * 0.35) * 0.35;
-  float ripples = sin(dot(g, vec2(0.83, 0.56)) * 9.0 + gFbm(g * 1.3) * 6.0) * 0.025;
-  float grit = gFbm(g * 7.0) * 0.04;
-  float pebbles = smoothstep(0.78, 0.86, gNoise(g * 3.1)) * 0.05;
-  return undulation + ripples + grit + pebbles;
+// Cellular noise: distance to the nearest random feature point (F1) and its random id.
+vec2 gCell(vec2 p) {
+  vec2 i = floor(p); vec2 f = fract(p); float d = 8.0; float id = 0.0;
+  for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++) {
+    vec2 o = vec2(float(x), float(y));
+    vec2 h = vec2(gHash(i + o), gHash(i + o + 31.7));
+    float r = length(o + h - f);
+    if (r < d) { d = r; id = gHash(i + o + 7.3); }
+  }
+  return vec2(d, id);
 }
-// Brightness modulation: dust patches, darker grit and pebble speckle (multiplies the map colour).
+// Ripple field whose direction, spacing and strength wander across the ground (domain warping),
+// so no two patches repeat.
+float gRipples(vec2 g) {
+  vec2 warp = vec2(gFbm(g * 0.05), gFbm(g * 0.05 + 9.2)) * 6.2831;
+  float ang = warp.x * 0.35 + 0.6;
+  vec2 dir = vec2(cos(ang), sin(ang));
+  float spacing = mix(2.5, 4.2, gNoise(g * 0.03)); // 1.5-2.5 m wavelength
+  float phase = dot(g, dir) * spacing + gFbm(g * 0.35) * 1.6 + warp.y;
+  float crest = pow(0.5 + 0.5 * sin(phase), 2.0);
+  return crest * smoothstep(0.5, 0.78, gFbm(g * 0.03 + 3.1)); // ripples only in patches
+}
+// Pebbles and small rocks of random size and density.
+float gPebbles(vec2 g) {
+  vec2 a = gCell(g * 1.7);
+  vec2 b = gCell(g * 4.3 + 11.0);
+  float density = smoothstep(0.35, 0.8, gFbm(g * 0.06 + 5.0));
+  float big = (1.0 - smoothstep(0.08, 0.16 + 0.12 * a.y, a.x)) * step(0.7 - 0.25 * density, a.y);
+  float small = (1.0 - smoothstep(0.05, 0.1, b.x)) * step(0.55 - 0.3 * density, b.y);
+  return max(big, small * 0.6);
+}
+// Relief in metres-like units: metre-scale undulation, irregular ripples, grit, pebbles.
+float groundHeight(vec2 g) {
+  float undulation = gFbm(g * 0.3 + gFbm(g * 0.07) * 2.0) * 0.4;
+  float ripples = gRipples(g) * 0.02;
+  float grit = gFbm(g * 7.0) * 0.035;
+  return undulation + ripples + grit + gPebbles(g) * 0.06;
+}
+// Brightness modulation: dust patches, darker grit, ripple crests catching dust, pebble speckle.
 float groundAlbedo(vec2 g) {
-  float patches = gFbm(g * 0.08) * 0.25 + 0.88;
-  float grit = 0.92 + gFbm(g * 9.0) * 0.16;
-  float pebbles = 1.0 - smoothstep(0.78, 0.86, gNoise(g * 3.1)) * 0.35;
-  return patches * grit * pebbles;
+  float patches = gFbm(g * 0.06 + gFbm(g * 0.02) * 3.0) * 0.3 + 0.86;
+  float grit = 0.9 + gFbm(g * 9.0) * 0.18;
+  float crests = 1.0 + gRipples(g) * 0.05;
+  float pebbles = 1.0 - gPebbles(g) * (0.25 + 0.25 * gNoise(g * 2.0));
+  return patches * grit * crests * pebbles;
 }
 // Bump mapping from screen-space derivatives (same method as three.js bumpmap_pars).
 vec3 groundNormal(vec3 surfPos, vec3 surfNorm, float h, float faceDir) {
   vec3 sx = dFdx(surfPos); vec3 sy = dFdy(surfPos);
-  vec2 dh = vec2(dFdx(h), dFdy(h)) * 1.6;
+  vec2 dh = vec2(dFdx(h), dFdy(h)) * 1.0;
   vec3 r1 = cross(sy, surfNorm); vec3 r2 = cross(surfNorm, sx);
   float det = dot(sx, r1) * faceDir;
   vec3 grad = sign(det) * (dh.x * r1 + dh.y * r2);
@@ -203,7 +234,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
           }`,
         );
     };
-    m.customProgramCacheKey = () => 'terrain-contours-v4';
+    m.customProgramCacheKey = () => 'terrain-contours-v6';
     return m;
   }, [uniforms]);
 
