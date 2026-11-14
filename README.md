@@ -3,13 +3,15 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
-**Status: mission core, P0 planner and public terrain providers implemented; integrated mission acceptance pending.**
-This branch combines proposed scientific profiles and a Python/ROS mission authority
-with the published planner, Daniel's public CTX terrain/mapping providers and the
-gateway/replay baseline. Existing mock integration launches remain explicitly
-MOCK. Scientific model agreement, execution evidence inputs, Gazebo movement
-and verified end-to-end mission completion remain pending. The web on main is
-a scaffold; Jorge's advanced viewer remains on its own branch.
+**Status: mission authority, planner, data/mapping and gateway implemented; integrated mission acceptance pending.**
+This branch preserves the existing real mission authority, resource models,
+recorder and tests from feat/mission. The default synthetic vertical keeps
+MOCK terrain/agents/mission; select mission:=real with explicit configuration
+and a clock to substitute one authority, never run both mission providers.
+The integrated web viewer plays saved runs offline in REPLAY mode: an
+illustrative demo on a provisional CTX crop and the gateway's recorded MOCK run.
+It is not connected to a live gateway. Science-model agreement, actual execution
+and Gazebo acceptance remain pending; software availability is not mission evidence.
 
 Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
 Confirm any earlier local judging cutoff separately.
@@ -22,11 +24,6 @@ Confirm any earlier local judging cutoff separately.
 - [Proposed shared interface contract](docs/ICD.md), pending team confirmation
 - [Requirements and acceptance](docs/requirements.md)
 - [Scientific decisions](docs/science_decisions.md)
-- [Scientific models and proposed coefficients](docs/science_models.md)
-- [Planner model conformance and known differences](docs/planner_model_conformance.md)
-- [Mission integration handoff](docs/mission_handoff.md)
-- [A/B/C protocol, awaiting integrated runs](docs/science_benchmark.md)
-- [Frozen benchmark evidence and audit CLI](docs/benchmark_evidence.md)
 - [Competition checklist](docs/competition.md)
 - [Required AI declaration](docs/AI_USAGE.md) and [metadata](docs/ai_usage.json)
 - [Integration status](docs/integration_log.md) and [verification](docs/verification.md)
@@ -41,7 +38,7 @@ Confirm any earlier local judging cutoff separately.
 | `src/mge_planning` | Diego | Pure planning core and ROS service adapter |
 | `src/mge_mission`, `config` | David; integration by Jesus | Mission authority, resources and tasks |
 | `src/mge_sim`, `src/mge_gateway`, `src/mge_bringup` | Jesus | Simulation adapter, API and launch |
-| `web` | Jorge | React / TypeScript / Three.js viewer and future replay |
+| `web` | Jorge | React / TypeScript / Three.js viewer with offline replay |
 | `tests`, `evidence`, `docs` | Everyone | Verification, immutable runs and contracts |
 
 The evaluator reference is isolated in `data/reference` and must never be
@@ -85,7 +82,8 @@ ros2 interface show mge_interfaces/srv/PlanRoute
 ros2 launch mge_bringup demo.launch.py
 ```
 
-`demo.launch.py` starts placeholder processes, not an E2E mission. Read package READMEs.
+`demo.launch.py` starts package entrypoints with incomplete default mission
+configuration, not an accepted E2E mission. Read package READMEs.
 The dedicated CI job compiles ROS; Windows Python checks cannot replace that.
 
 ## Collaboration and licensing
@@ -144,6 +142,14 @@ to route through `mge_planning` instead of the mock planner. Terrain and mission
 stay MOCK, positions must be cell centres of the 5 m grid (for example
 `2.5, 2.5`), and the profiles are illustrative.
 
+Add `terrain:=real` as well (it requires `planner:=real`) to replace the mock
+terrain by `mge_data` and `mge_mapping` on the public Jezero package: a 32 x 32
+grid of 4 m cells centred on the map origin, so cell centres are `-62 + 4 k`.
+Agents then default to `src/mge_bringup/config/agents_jezero.yaml`. Every cell
+starts unobserved, so a first route request is `UNKNOWN`; a SIMULATED
+observation creates the next map version and the mission replans. Mission and
+agents stay MOCK and the run is declared MOCK.
+
 `smoke.launch.py` starts only the static MOCK agent publisher, and
 `demo.launch.py` starts the scaffold processes of every package; with the
 latter the gateway reports `NOT_READY`, because no mission state is published.
@@ -178,3 +184,6 @@ python scripts/check_mission_models.py --run-id my-model-check --output-dir evid
 
 Existing evidence files are not overwritten. MODEL_CHECK outputs do not establish
 actual agent traversal, completed tasks, mission success or an A/B/C result.
+
+See [real mission provider handoff](docs/mission_integration_handoff.md) for exclusive
+launch selection, clock/configuration requirements and unchanged scientific gates.

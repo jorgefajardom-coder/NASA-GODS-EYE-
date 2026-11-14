@@ -1,0 +1,147 @@
+{
+  "schema_version": "mge-web-0.1-draft",
+  "icd": "ICD-ROS2-V1 (draft)",
+  "run_id": "demo-sim-002",
+  "mode": "REPLAY",
+  "provenance": [
+    "nasa",
+    "simulated",
+    "fictitious"
+  ],
+  "illustrative": true,
+  "title": "Demo run: corridor survey and replanning",
+  "summary": "The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.",
+  "disclaimer": "Terrain: NASA/USGS CTX DTM crop (real, provisional). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Not EVA-certified limits, not a planner output.",
+  "ai_disclosure": {
+    "ai_assisted": true,
+    "scope": "Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.",
+    "tool": "Claude (Anthropic) through Claude Code",
+    "observational_data": "Only the terrain heights come from NASA/USGS data; everything else here is simulated."
+  },
+  "duration_s": 4442,
+  "local_z_offset_m": -2495,
+  "imagery": {
+    "file": "ctx_ortho.png",
+    "title": "MRO CTX Jezero orthomosaic, controlled (Mars 2020 TRN)",
+    "source": "JPL Mars Trek WMTS layer JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0, https://trek.nasa.gov/mars/",
+    "credit": "NASA/JPL-Caltech/MSSS/USGS",
+    "native_resolution_m": 6,
+    "resolution_m": 5,
+    "extent": {
+      "origin_x_m": -1000,
+      "origin_y_m": -1000,
+      "width_m": 2000,
+      "height_m": 2000
+    },
+    "row0": "north",
+    "processing": "Bilinear resampling onto the crop ENU grid; display contrast stretched linearly between the 1st and 99th percentile. Panchromatic; the viewer tints it for display only."
+  },
+  "geology": {
+    "file": "geology.json"
+  },
+  "terrain_meta": {
+    "run_id": "demo-sim-002",
+    "dataset_id": "mars2020-trn-ctx-dtm-20m",
+    "frame_id": "map",
+    "map_version": 1,
+    "origin_x_m": -1000,
+    "origin_y_m": -1000,
+    "resolution_m": 20,
+    "rows": 100,
+    "cols": 100,
+    "crs": "Local tangent ENU grid; source Equirectangular, Mars 2000 sphere IAU (R = 3396190 m)",
+    "origin_lat_deg": 18.53545,
+    "origin_lon_deg": 77.42382,
+    "vertical_datum": "MOLA areoid; local z = elevation - (-2495 m)",
+    "nodata_value": -32768,
+    "sources": [
+      "Mars 2020 Terrain Relative Navigation CTX DTM mosaic, USGS Astrogeology Science Center / NASA. File JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0.tif, 9662387 bytes, SHA-256 16a1aa66c3f48c1bca252795827db7b417876217aff0f5e1aff18027fab2327b.",
+      "Product page https://astrogeology.usgs.gov/search/map/mars_2020_terrain_relative_navigation_ctx_dtm_mosaic (DOI family https://doi.org/10.5066/P906QQT8). Native resolution 20 m. Not verified here: USGS-hosted NASA planetary data, see the product page for usage terms.",
+      "Crop: 100 x 100 cells of 20 m centred at 18.53545 N, 77.42382 E, bilinear resampling onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); same cell size as the source, so no resolution gain. PROVISIONAL, made by the frontend until the data owner delivers the processed package.",
+      "SYNTHETIC: a scarp was added to the hidden evaluator reference to create an adverse case. It does not exist in the CTX data.",
+      "ILLUSTRATIVE: uncertainty (sigma), budgets, speeds and consumption rates are assumptions of a simulated mission."
+    ],
+    "checksum_sha256": "abb67ccacde4709aeeea10fa0261ef601b56dcf97c0fdfc4c95c016c3a25d5e8"
+  },
+  "vertical_exaggeration_default": 2,
+  "control_points": [
+    {
+      "id": "cp-1",
+      "position": {
+        "x": -590,
+        "y": -710,
+        "z": 32.3
+      },
+      "description": "Cell centre row 14, col 20 of the CTX crop."
+    },
+    {
+      "id": "cp-2",
+      "position": {
+        "x": 10,
+        "y": 10,
+        "z": -29.8
+      },
+      "description": "Cell centre row 50, col 50 of the CTX crop."
+    },
+    {
+      "id": "cp-3",
+      "position": {
+        "x": 570,
+        "y": 690,
+        "z": 43.2
+      },
+      "description": "Cell centre row 84, col 78 of the CTX crop."
+    }
+  ],
+  "pois": [
+    {
+      "id": "A",
+      "label": "Base A",
+      "kind": "base",
+      "position": {
+        "x": 750,
+        "y": -610,
+        "z": -33.1
+      },
+      "revealed_at_s": 0
+    },
+    {
+      "id": "B",
+      "label": "Goal B",
+      "kind": "primary_goal",
+      "position": {
+        "x": -770,
+        "y": 690,
+        "z": 67.5
+      },
+      "revealed_at_s": 0
+    },
+    {
+      "id": "C",
+      "label": "POI C",
+      "kind": "poi",
+      "position": {
+        "x": 190,
+        "y": -10,
+        "z": -29.5
+      },
+      "revealed_at_s": 156
+    },
+    {
+      "id": "D",
+      "label": "POI D",
+      "kind": "poi",
+      "position": {
+        "x": -10,
+        "y": -50,
+        "z": -29.7
+      },
+      "revealed_at_s": 158
+    }
+  ],
+  "files": {
+    "rasters": "rasters.json",
+    "timeline": "timeline.json",
+    "routes": "routes.json"
+  }
+}

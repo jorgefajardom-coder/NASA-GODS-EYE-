@@ -117,3 +117,18 @@ no substitute planner or execution mock was added for this cut.
 Delivery coordination remains pending: Jesus leads organizer notification and
 explicit endorsement, David is backup (JES-07/AC-10). This software handoff does
 not claim readiness to submit or organizer approval.
+
+## Direct integration reconciliation
+
+The owner requested integrating the remaining `feat/mission` advances directly
+if GitHub rules permit. At inspection, mission PR #10 was already merged;
+the open conflicting PR #12 belongs to the planner and is not part of this
+operation. Main `4b72d30` includes the real mission-provider handoff, complete
+viewer and Jezero integration cut. Reconciliation retains our newer journal,
+recovery and scenario tools alongside those published modules and interfaces.
+Only documentation and the mission validation helper required conflict resolution.
+
+GitHub reported main unprotected with no applicable branch rules or rulesets.
+The direct integration is specific owner authorization, not a relaxation of
+normal team review requirements. Model agreement, operational evidence inputs,
+stop acknowledgement and scientific approval remain separate pending gates.

@@ -1,5 +1,33 @@
 # Current contract reconciliation verification
 
+## Direct mission/main integration validation, 14 November 2026
+
+The owner-authorized reconciliation combines mission `37a2bd6` and main
+`4b72d30`, retaining the durable journal and public-scenario tools with the
+published viewer/provider integration. Conflicts affected documentation and
+the validation snapshot helper only; owner implementations and wire types
+match main. GitHub reports main unprotected with no applicable rules/rulesets.
+Mission PR #10 was already merged; planner PR #12 is outside this operation.
+
+Validation: 709 Windows Python cases passed (16 ROS/platform skips); 518
+Jazzy mission/contract/integration cases passed (one optional published-source
+snapshot skip); all eight packages compiled and all six messages/two services
+were inspected. The complete viewer passed 84 tests and its production build.
+Repository and whitespace checks passed. See the
+[retained reports and source hashes](../evidence/mission-main-direct-20261114/validation.json).
+
+The first WSL run lacked HTTP dependencies. A subsequent run omitted the
+integration package because WebSocket support was absent; its 484 passes are
+not the final acceptance count. The final run used the declared gateway
+requirements in a temporary virtual environment and a fresh source snapshot
+excluding Windows bytecode caches. Original attempts remain recorded. No
+assertion, production limit, model agreement or scientific approval was relaxed.
+Existing Starlette deprecation, four npm development-tool advisories and the
+frontend install-script notice are retained as limitations. These software
+checks do not establish physical execution or mission success.
+
+## Original baseline record
+
 Source `f2af4b23b57e0ef28c245cca0ad64a886ded039e`, based on updated main
 `004b3b2`; baseline `1.0.0-rc.1`, 2026-11-14 (America/Bogota).
 
@@ -38,15 +66,6 @@ result above supersedes their environment/availability statements.
 
 # Scaffold verification
 
-Latest continuation: see [the follow-up software record](../evidence/mission-followup-validation-20261114/validation.json).
-Windows passes 348 cases (two ROS modules and three symlink cases skipped).
-Jazzy passes 294 cases, including all symlink guards (one optional external
-snapshot test skipped); all eight packages and definitions compile/inspect.
-The actual published-planner probe ran separately: seven feasible candidates,
-one cost agreement and six disagreements, with authorization blocked. The draft
-benchmark gate correctly reports NOT_READY and zero observed mission runs.
-Earlier records below are retained historical checks, not A/B/C results.
-
 Date: 14 November 2026. Scope: repository structure and implemented contract
 guards only. These results are not evidence of a Mars mission or EVA safety.
 
@@ -57,7 +76,7 @@ guards only. These results are not evidence of a Mars mission or EVA safety.
   execution environment on this Windows host; the restricted attempt stalled.
 - `python scripts/check_repository.py`: package XML, Python syntax, JSON,
   declared AI paths and local documentation links.
-- Frontend: `npm test` (2 tests); `npm run build` (TypeScript + Vite).
+- Frontend: `npm test` (64 Vitest tests on feat/ux); `npm run build` (TypeScript + Vite).
 - `git diff --check`: whitespace validation.
 
 Known nonblocking warnings: Starlette deprecates its httpx TestClient integration;
@@ -97,6 +116,37 @@ compiled all eight packages, inspected the eight definitions and passed all ten
 ROS contract tests. Python/web jobs passed. Its final empty package-local test
 discovery step exited with code 5; CI now explicitly uses the actual root
 pytest suites and ROS contract tests rather than claiming package-local tests.
+
+## Web viewer verification (feat/ux)
+
+64 Vitest tests cover frame conversion, replay state and replanning, the stale-route
+guard, management and alert logic, terrain smoothing, display easing, the gateway
+package adapter on the real `mock-vertical-001` files, and astronaut posture measured
+on the real model (torso lean, shoulder and pelvis roll under 1 degree). Checked by
+hand in the dev server on 14 November 2026: both saved runs load, the gateway replay
+reaches its last recorded state, Credits list the NASA reference resources, and the
+follow camera keeps the astronaut steady at 20x. Not validated: browser automation,
+J-05 beyond 1366x768, J-06, and any live gateway connection.
+
+## Planner branch verification
+
+The P0 planner at code commit `6e4984d` passes 154 local Python cases, including
+new D-01..D-10 scenarios, batch/provenance guards and a fresh-prior check. Two
+ROS-only test modules skip on native Windows; Jazzy CI runs them with generated
+messages and a real request/publisher/service/client flow. The tests include
+missing data, stale map and invalidation during search.
+
+New measured artifacts are in evidence/planner-p0-20261114. Nine illustrative
+FAST round-trip queries across three seeds matched independent Dijkstra. The
+fresh CTX check correctly returned UNKNOWN rather than inventing local corridor
+verification. These checks replace the initial planner placeholder only; the
+full mission, final science products, approved rates and public live demo remain
+unvalidated. This branch leaves the existing ROS message/service schema intact.
+
+## Preserved mission-branch records (source8f69f62)
+
+These module records predate the combined mission-service handoff; they are not
+combined-main acceptance. Fresh results will accompany this PR.
 
 ## Mission module verification, 14 November 2026
 
@@ -163,20 +213,15 @@ speed changes model budget feasibility because the illustrative time reserve
 leaves only one second nominal margin. These are synthetic calculations,
 not observed endurance, mission success, scientific approval or A/B/C results.
 
-## Planner branch verification
+## Real mission-provider integration cut
 
-The P0 planner at code commit `6e4984d` passes 154 local Python cases, including
-new D-01..D-10 scenarios, batch/provenance guards and a fresh-prior check. Two
-ROS-only test modules skip on native Windows; Jazzy CI runs them with generated
-messages and a real request/publisher/service/client flow. The tests include
-missing data, stale map and invalidation during search.
-
-New measured artifacts are in evidence/planner-p0-20261114. Nine illustrative
-FAST round-trip queries across three seeds matched independent Dijkstra. The
-fresh CTX check correctly returned UNKNOWN rather than inventing local corridor
-verification. These checks replace the initial planner placeholder only; the
-full mission, final science products, approved rates and public live demo remain
-unvalidated. This branch leaves the existing ROS message/service schema intact.
+Combined source255be89 (mission8f69f62, refreshed main6ec9b84): full native
+Python636passed/15skipped; Jazzy selected mission/contract/integration/unit/HTTP
+suites556passed/one optional published-snapshot skip. Ten focused launch/consumer
+checks passed. All eight ROS packages built and all eight custom definitions
+were inspected. The real mission service is unique; model disagreement remains
+BLOCKED with no active route. Web4tests/build, repository and whitespace checks
+passed. [Logs, JUnit, source hashes and limits](../evidence/mission-service-handoff-20261114/README.md).
 
 ## Durable mission evidence and public scenario, 14 November 2026
 

@@ -34,7 +34,9 @@ Real profiles require planner profiles_file and snapshot_contract_confirmed=true
 mission profiles_path, mission_path, model_agreement_confirmed=true and
 approved_model_id. Other owner parameters (terrain manifest, base/tolerances,
 service assumptions, agents_file, gateway host) pass through unchanged. The
-launcher owns run_id/use_sim_time and rejects overrides. Configuration files
+launcher owns run_id/use_sim_time and the gateway's source_mode, and rejects
+overrides. source_mode is MOCK when any selected provider is MOCK (mock and
+integration profiles) and SIMULATION otherwise; it is never LIVE. Configuration files
 must exist and their validity/approval is checked by their real producer; record
 their SHA-256 and source/model IDs in run evidence. Do not infer resource inputs
 from mock defaults or invent approvals to activate a profile.

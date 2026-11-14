@@ -1,0 +1,27 @@
+# Agents for the vertical on the public Jezero package (terrain:=real).
+# That grid is 32 x 32 cells of 4 m with its origin at (-64, -64) in the local
+# "map" frame (x east, y north, z up, metres), so cell centres are -62 + 4 k.
+# The planner rejects any pose that is not a cell centre.
+# PLACEHOLDER VALUES: positions and budgets are not mission assumptions yet.
+# David owns the real numbers; they are assumptions of a simulated mission,
+# never certified EVA limits.
+agents:
+  - id: human_1
+    kind: HUMAN
+    x_m: -14.0          # row 12, col 12
+    y_m: -14.0
+    time_budget_s: 14400.0
+    energy_budget_wh: 1000.0
+    oxygen_budget_l: 1000.0
+  - id: drone_1
+    kind: DRONE
+    x_m: -10.0          # row 12, col 13
+    y_m: -14.0
+    time_budget_s: 600.0
+    energy_budget_wh: 100.0
+  - id: rover_1
+    kind: ROVER
+    x_m: -14.0          # row 13, col 12
+    y_m: -10.0
+    time_budget_s: 14400.0
+    energy_budget_wh: 2000.0

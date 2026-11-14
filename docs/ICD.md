@@ -30,9 +30,10 @@ field names and types; this document records the conventions around them.
   wire definitions. Adapters must map non-applicable NaN to JSON `null`, never a JSON NaN token.
   This baseline tests that conversion; PR #3 implements its own ROS bridge.
   The ROS-backed HTTP boundary stays NOT_READY until a configured mission state arrives.
-- Proposed quantitative clarification from mission: `_l` denotes dry ideal-gas-
-  equivalent oxygen at 273.15 K and 101.325 kPa, not tank volume. Consumer
-  confirmation and scientific profile approval remain pending.
+- Proposed quantitative clarification from the mission model: `_l` denotes dry
+  ideal-gas-equivalent oxygen at 273.15 K and 101.325 kPa, not tank volume. This
+  convention remains pending consumer confirmation; proposed profiles are not
+  operational approval and a planner projection is not model agreement.
 - ROS wire kinds are uppercase `HUMAN`/`DRONE`/`ROVER`; pure Python/configuration
   may use lowercase. Adapters must map these intentionally and reject unknown
   values. Do not assume Python models are already the ROS wire representation.
@@ -131,12 +132,12 @@ map version once. Defining fields does not implement these checks.
 
 Service positions and RouteDecision paths are `geometry_msgs/Point` values in
 `map`, not Pose or nav_msgs/Path. The active-path topic remains `nav_msgs/Path`.
-SetMissionGoal permits an empty run ID to mean the current run; adapters must
-resolve it before recording or replay. The published main planner is integrated
-unchanged. This mission branch implements the authority and service behind
-explicit configuration, profile approval, simulation-clock and model-agreement
-gates; see the [mission package](../src/mge_mission/README.md),
-[handoff](mission_handoff.md) and [implementation inventory](INTEGRATION_MATRIX.md).
+SetMissionGoal permits an empty run ID to mean the current run; resolve it
+before events/replay. This candidate integrates the real MissionNode from
+feat/mission at8f69f62 beside main's real planner and gateway. The real manager
+replaces mock_mission by configuration; it must never share the mission service
+or state/path publishers with the MOCK provider. Missing configuration/clock
+or unapproved models remain explicit rejection reasons, not MOCK fallback.
 
 MissionManager alone authorizes and publishes the active route. Only FEASIBLE
 candidates may be considered after current-run/map and return-budget checks.
@@ -209,20 +210,32 @@ planning or mission logic. Every JSON response and WebSocket message is an
 envelope with `schema_version` (`"1.0.0"`; it applies to JSON, not to the ROS
 wire messages), `run_id`, `mode` (`LIVE` | `REPLAY`), `map_version` and
 `timestamp_sim_s`, plus the payload. Payloads use the ROS
-field names unchanged. The typed non-finite conversion requirements in
-section 5 remain the target; the broad existing output serializer still needs
-the hardening identified in REPLAY_CONTRACT.md. The input checks below do not
-claim that output-side gate is resolved.
+field names unchanged. Output follows the typed non-finite rules of section 5:
+NaN becomes `null` only for `TerrainMeta.nodata_value`, oxygen of an agent that
+is not `HUMAN` (`AgentState.oxygen_remaining_l`, and `oxygen_est_l` /
+`reserve_oxygen_l` of its route) and the seven metrics of a `RouteDecision`
+whose status is not `FEASIBLE`. Any other NaN, and every infinity, rejects the
+whole message: the gateway and the recorder drop it, log the field path and keep
+the last valid state. A `FEASIBLE` route with a NaN metric is therefore never
+shown. The route's agent kind is read from `MissionState.agents`.
 
 | Route | Payload |
 |---|---|
 | `GET /api/health` | `status` (`READY`), `ros_connected`, `terrain_meta_received` |
-| `GET /api/manifest` | `terrain_meta`, `agents` (`agent_id`, `agent_kind`), `endpoints` |
+| `GET /api/manifest` | `source_mode`, `terrain_meta`, `agents` (`agent_id`, `agent_kind`), `endpoints` |
 | `GET /api/run/{run_id}/snapshot` | `mission_state`, `terrain_meta`, `events` (all so far) |
 | `GET /api/run/{run_id}/events?after_seq=N` | `events` with `seq > N`; polling fallback |
 | `POST /api/mission/goal` | Body: `request_id` (optional), `primary_agent_id`, `base`, `goal`, `mode`, budgets and reserves. Answer: the `SetMissionGoal` response fields |
 | `WS /api/events?after_seq=N` | Backlog of events with `seq > N`, then the current state, then live messages |
 
+- `source_mode` (`MOCK` | `SIMULATION` | `UNKNOWN`) says who produces the data
+  of the run. It is separate from `mode`, which only says whether the data is
+  arriving now (`LIVE`) or was recorded (`REPLAY`). The launcher declares it
+  through the `source_mode` parameter (default `UNKNOWN`); terrain metadata
+  that says MOCK (dataset ID or a source entry) always yields `MOCK`. `LIVE` is
+  reserved for a validated real source and cannot be declared: the node refuses
+  to start with `NOT_READY: LIVE_BACKEND_UNAVAILABLE`. The field is an optional
+  addition to JSON `1.0.0`; a client that does not find it must show `UNKNOWN`.
 - WebSocket messages carry `type`: `"event"` with an `event` object
   (`MissionEvent`) or `"state"` with a `state` object (`MissionState`).
 - **No active run.** Until a mission state of the configured run has been
@@ -278,12 +291,18 @@ plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
 
 | File | Content |
 |---|---|
-| `<run_id>/manifest.json` | Envelope plus `recorded_from`, `clock_source`, `time_start_sim_s`, `record_count`, `event_count`, `terrain_meta`, `agents`, `files` |
+| `<run_id>/manifest.json` | Envelope plus `recorded_from`, `source_mode`, `clock_source`, `time_start_sim_s`, `record_count`, `event_count`, `terrain_meta`, `agents`, `files` |
 | `<run_id>/timeline.jsonl` | One record per line, in arrival order |
 | `<run_id>/snapshot.json` | Final state, same shape as `GET /api/run/{run_id}/snapshot` |
 
 - Every file and every record says `mode: "REPLAY"`. A client must show
   `REPLAY` for this data and must not present it as a live computation.
+- `recorded_from: "LIVE"` only says the records came off a running graph.
+  `source_mode` says who produced them, with the rules of section 6.1; show
+  `REPLAY · MOCK` or `REPLAY · SIMULATION` accordingly. Packages recorded
+  before the field existed (the pinned sample included) lack it; their source
+  is then read from the terrain metadata, or is `UNKNOWN`. `check_replay`
+  rejects a package that says `LIVE`, or anything but `MOCK` over MOCK terrain.
 - A timeline record has the shape of a WebSocket message: the envelope,
   `type` (`event` | `state` | `terrain_meta`) and an object of that name, so
   live messages and replay records can share one handler.
@@ -420,3 +439,15 @@ UNKNOWN semantics and validate latency/load before asserting resource proof.
 The current mock mission/terrain do not implement full scientific audit,
 conflicting-request payload checks or real footprint fusion. Their tests are
 integration harness evidence only. Latest source/evidence is in the matrix.
+
+## Mission provider substitution cut
+
+The mission-service handoff publishes the existing real MissionManager without
+new message/service fields, alternate science policy or a replacement planner.
+The vertical launch selects mission:=mock|real exclusively; real selection
+requires explicit science/mission configuration, use_sim_time=true and an
+external /clock. Illustrative opt-in does not approve models. The real manager
+retains profile approval, MODEL_NOT_AGREED/MODEL_MISMATCH, current run/map/pose,
+return reserve, idempotency and logical stop checks. The mock provider remains
+available for explicitly labelled contract tests. See
+[configuration and consumer proof](mission_integration_handoff.md).

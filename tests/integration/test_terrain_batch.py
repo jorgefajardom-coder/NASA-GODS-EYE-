@@ -143,8 +143,11 @@ def probe():
     processes = [
         run('mge_data', 'data_node'),
         run('mge_mapping', 'mapping_node', repeat_period_s=1.0),
+        # This checks coherent-batch routing, not the production latency limit.
+        # Keep search bounded while allowing shared CI runners scheduling slack.
         run('mge_planning', 'planning_node', profiles_file=PROFILES,
-            allow_illustrative_profiles='true', snapshot_contract_confirmed='true'),
+            allow_illustrative_profiles='true', snapshot_contract_confirmed='true',
+            search_timeout_s=10.0),
     ]
     rclpy.init()
     probe = Probe()

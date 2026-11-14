@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Build a source snapshot on Linux; rosidl does not support every Windows path.
+# Build a source snapshot on Linux; install requirements-dev.txt in the active
+# Python environment first. rosidl does not support every Windows path.
 set -eo pipefail
 
 mission_repository_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
@@ -9,10 +10,8 @@ exec > >(tee "$mission_validation_log") 2>&1
 printf 'VALIDATION_LOG=%s\n' "$mission_validation_log"
 mission_validation_root=$(mktemp -d /tmp/mge-mission-jazzy.XXXXXX)
 printf 'VALIDATION_ROOT=%s\n' "$mission_validation_root"
-cp -a -- "$mission_repository_root/src" "$mission_repository_root/config" \
-  "$mission_repository_root/tests" "$mission_repository_root/docs" "$mission_repository_root/scripts" \
-  "$mission_repository_root/pyproject.toml" \
-  "$mission_validation_root/"
+tar -C "$mission_repository_root" --exclude=__pycache__ --exclude=.pytest_cache \
+  -cf - src config tests docs scripts pyproject.toml | tar -C "$mission_validation_root" -xf -
 # Copy explicit public inputs only; never mount/copy evaluator reference assets.
 mkdir -p -- "$mission_validation_root/data"
 cp -a -- "$mission_repository_root/data/dataset.schema.json" \
@@ -40,7 +39,9 @@ PY
 
 # Retain the snapshot and build logs for inspection, including failed runs.
 source /opt/ros/jazzy/setup.bash
-colcon build --symlink-install
+mission_python=${MGE_PYTHON_EXECUTABLE:-$(command -v python3)}
+"$mission_python" "$(command -v colcon)" build --symlink-install \
+  --cmake-args -DPython3_EXECUTABLE="$mission_python"
 source install/setup.bash
 for mission_interface in TerrainMeta TerrainObservation AgentState MissionEvent MissionState RouteDecision; do
   ros2 interface show "mge_interfaces/msg/$mission_interface" >> checked_interfaces.txt
@@ -48,5 +49,5 @@ done
 ros2 interface show mge_interfaces/srv/PlanRoute >> checked_interfaces.txt
 ros2 interface show mge_interfaces/srv/SetMissionGoal >> checked_interfaces.txt
 printf 'Inspected six messages and two services.\n'
-ROS_DOMAIN_ID="${MGE_TEST_ROS_DOMAIN_ID:-83}" python3 -m pytest tests/mission tests/contract -q \
+ROS_DOMAIN_ID="${MGE_TEST_ROS_DOMAIN_ID:-83}" "$mission_python" -m pytest tests/mission tests/contract tests/integration -q \
   --tb=short --junitxml="$mission_validation_log.junit.xml"
