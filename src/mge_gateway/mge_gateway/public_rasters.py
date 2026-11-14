@@ -59,6 +59,7 @@ class PublicRasterAssembler:
         self.run_id = run_id
         self.meta = None            # latest metadata, for geometry and NoData
         self.prior = None
+        self.prior_shape = None     # (rows, cols) the prior arrived with
         self.stamps = {}            # map version -> stamp of its batch
         self.versions = {}          # str(map version) -> complete layers
         self.pending = {}           # stamp -> {layer: raw values}
@@ -90,7 +91,16 @@ class PublicRasterAssembler:
             raise RasterInputError(f'stamp of map version {version} is reused')
         self.meta = meta
         self.stamps[version] = stamp
-        return self._complete()
+        # A prior that arrived first was checked only for its cell count.
+        mismatch = self.prior is not None and self.prior_shape != (meta['rows'], meta['cols'])
+        if mismatch:
+            shape = self.prior_shape
+            self.prior = self.prior_shape = None
+        changed = self._complete()
+        if mismatch:
+            raise RasterInputError(f'prior: {shape[0]} x {shape[1]} differs from the metadata grid '
+                                   f'{meta["rows"]} x {meta["cols"]}; prior dropped')
+        return changed
 
     def on_prior(self, rows, cols, values):
         """The immutable public prior heights, row-major float32 values.
@@ -101,12 +111,13 @@ class PublicRasterAssembler:
         values = list(values)
         height_cells(values, None, 'prior')            # reject infinities now
         if self.prior is not None:
-            if len(values) != len(self.prior) or any(
+            if (rows, cols) != self.prior_shape or any(
                     a != b and not (math.isnan(a) and math.isnan(b))
                     for a, b in zip(values, self.prior)):
                 raise RasterInputError('prior: the immutable prior changed within the run')
             return False
         self.prior = values
+        self.prior_shape = (rows, cols)
         return self.ready()
 
     def on_layer(self, layer, header, rows, cols, values):
@@ -144,7 +155,8 @@ class PublicRasterAssembler:
         return changed and self.ready()
 
     def ready(self):
-        return self.meta is not None and self.prior is not None and bool(self.versions)
+        return (self.meta is not None and self.prior is not None and bool(self.versions)
+                and self.prior_shape == (self.meta['rows'], self.meta['cols']))
 
     def attachment(self):
         """The attachment, or None until the prior and one version are complete."""

@@ -91,6 +91,26 @@ def test_prior_is_needed_and_immutable():
         a.on_prior(ROWS, COLS, [2.0] * CELLS)
 
 
+def test_prior_before_metadata_keeps_its_own_shape():
+    # Same cell count, transposed grid: must not be accepted as the 2 x 3 grid.
+    a = PublicRasterAssembler(RUN)
+    assert a.on_prior(COLS, ROWS, [float(i) for i in range(CELLS)]) is False
+    with pytest.raises(RasterInputError, match='3 x 2 differs from the metadata grid 2 x 3'):
+        a.on_meta(meta(1, 10))
+    batch(a, 10)
+    assert a.prior is None and a.attachment() is None
+    # The metadata was kept, so a prior of the right shape completes the run.
+    assert a.on_prior(ROWS, COLS, [1.0] * CELLS) is True
+    assert a.attachment()['prior'] == [1.0] * CELLS
+
+
+def test_a_repeated_prior_with_another_shape_is_rejected():
+    a = PublicRasterAssembler(RUN)
+    a.on_prior(ROWS, COLS, [1.0] * CELLS)
+    with pytest.raises(RasterInputError, match='immutable prior'):
+        a.on_prior(COLS, ROWS, [1.0] * CELLS)
+
+
 def test_nodata_becomes_null_and_infinities_are_rejected():
     a = PublicRasterAssembler(RUN)
     a.on_prior(ROWS, COLS, [math.nan, -9999.0, 1.0, 1.0, 1.0, 1.0])
