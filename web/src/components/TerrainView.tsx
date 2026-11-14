@@ -9,6 +9,9 @@ import { bilinear, upsampleGrid } from '../lib/terrainSmooth';
 
 /** Mesh vertices per source cell interval. Source cell centres are always vertices (J-01). */
 export const MESH_SUBDIVISION = 3;
+/** Distance (m) at which the cosmetic ground grain has faded out; the first-person view reaches farther. */
+export const DETAIL_FAR_M = 180;
+export const DETAIL_FAR_POV_M = 480;
 export const CONTOUR_MINOR_M = 10;
 export const CONTOUR_MAJOR_M = 50;
 
@@ -104,6 +107,8 @@ interface Props {
   surfaceDetail?: boolean;
   /** A texture shown instead of the image (e.g. the geologic map), not tinted. Wins over `imagery`. */
   overlay?: { texture: THREE.Texture; extent: { origin_x_m: number; origin_y_m: number; width_m: number; height_m: number } } | null;
+  /** Distance (m) where the cosmetic grain fades out (default DETAIL_FAR_M). */
+  detailFarM?: number;
 }
 
 /**
@@ -113,7 +118,7 @@ interface Props {
  * same ENU point coincide. Triangles touching NoData are not drawn. Contour lines are drawn
  * in the shader from the true height of each fragment.
  */
-export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery, overlay, surfaceDetail = true }: Props) {
+export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery, overlay, surfaceDetail = true, detailFarM = DETAIL_FAR_M }: Props) {
   const heights = heightGrid(rasters, layer, mapVersion);
   const version = rasters.versions[versionKey(rasters, mapVersion)];
   const imageTexture = useImageryTexture(imagery?.url ?? null);
@@ -188,14 +193,15 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     return g;
   }, [meta, rasters, heights, version, layer, highlightObserved, draped, ext, slope]);
 
-  const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 }, uTint: { value: 1 }, uDetail: { value: 1 } }), []);
+  const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 }, uTint: { value: 1 }, uDetail: { value: 1 }, uDetailFar: { value: DETAIL_FAR_M } }), []);
   useEffect(() => {
     uniforms.uContour.value = contours ? 1 : 0;
     uniforms.uOffset.value = zOffsetM;
     uniforms.uTint.value = overlay ? 0 : 1; // only the panchromatic image is tinted
     // Cosmetic grain only on the real-surface views, never on the geologic map or uncertainty colours.
     uniforms.uDetail.value = surfaceDetail && !overlay && layer !== 'sigma' && layer !== 'slope' ? 1 : 0;
-  }, [uniforms, contours, zOffsetM, overlay, surfaceDetail, layer]);
+    uniforms.uDetailFar.value = detailFarM;
+  }, [uniforms, contours, zOffsetM, overlay, surfaceDetail, layer, detailFarM]);
 
   const material = useMemo(() => {
     const m = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, metalness: 0, side: THREE.DoubleSide });
@@ -204,17 +210,18 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
       shader.uniforms.uOffset = uniforms.uOffset;
       shader.uniforms.uTint = uniforms.uTint;
       shader.uniforms.uDetail = uniforms.uDetail;
+      shader.uniforms.uDetailFar = uniforms.uDetailFar;
       shader.vertexShader = shader.vertexShader
         .replace('#include <common>', '#include <common>\nvarying float vRealH;\nvarying vec2 vGround;')
         .replace('#include <begin_vertex>', '#include <begin_vertex>\nvRealH = position.y;\nvGround = position.xz;');
       shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', `#include <common>\nvarying float vRealH;\nvarying vec2 vGround;\nuniform float uContour;\nuniform float uOffset;\nuniform float uTint;\nuniform float uDetail;\n${SURFACE_DETAIL_GLSL}`)
+        .replace('#include <common>', `#include <common>\nvarying float vRealH;\nvarying vec2 vGround;\nuniform float uContour;\nuniform float uOffset;\nuniform float uTint;\nuniform float uDetail;\nuniform float uDetailFar;\n${SURFACE_DETAIL_GLSL}`)
         // Cosmetic surface grain (not measured): fades in below ~200 m of camera distance.
         .replace(
           '#include <color_fragment>',
           `#include <color_fragment>
           gPx = length(fwidth(vGround));
-          float detailFade = uDetail * (1.0 - smoothstep(50.0, 180.0, length(vViewPosition)));
+          float detailFade = uDetail * (1.0 - smoothstep(uDetailFar * 0.28, uDetailFar, length(vViewPosition)));
           if (detailFade > 0.0) diffuseColor.rgb *= mix(1.0, groundAlbedo(vGround), detailFade);`,
         )
         .replace(

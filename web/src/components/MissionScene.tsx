@@ -12,10 +12,12 @@ import * as THREE from 'three';
 import { FollowCamera, type Framing } from './FollowCamera';
 import { ViewRotator } from './ViewRotator';
 import { TerrainGrowth } from './TerrainGrowth';
+import { FirstPersonCamera } from './FirstPersonCamera';
+import { DroneScan, type ScanRequest } from './DroneScan';
 import { SUN_FROM } from '../lib/sun';
 import { enuToThree } from '../lib/coords';
 import { CutawayBlock } from './CutawayBlock';
-import { TerrainView } from './TerrainView';
+import { DETAIL_FAR_M, DETAIL_FAR_POV_M, TerrainView } from './TerrainView';
 import { RouteOverlay } from './RouteOverlay';
 import { AgentLayer } from './AgentLayer';
 import { SiteMarkers } from './SiteMarkers';
@@ -57,12 +59,16 @@ interface Props {
   showContext: boolean;
   /** Schematic cut-away strata block around the terrain (Ground layers tab). */
   cutaway: GeologyData | null;
+  /** First-person view from the followed agent (ignored when no agent is followed). */
+  firstPerson: boolean;
+  /** Last drone-camera scan to draw (display only), or null. */
+  scan: ScanRequest | null;
 }
 
 /** Horizon haze colour: dusty Martian daytime sky, darkened so the panels stay readable. */
 const SKY = '#6e5242';
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, scan }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
@@ -71,6 +77,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const groundHeight = useCallback((x: number, y: number) => smoothHeightAt(meta, grid, x, y), [meta, grid]);
   const followed = view.state?.agents.some((a) => a.agent_id === followAgentId) ? followAgentId : null;
   const smoothing = CAMERA_SMOOTHING[cameraSmoothing];
+  const followedKind = view.state?.agents.find((a) => a.agent_id === followed)?.agent_kind ?? null;
+  const pov = !!followed && firstPerson && !!followedKind;
+  const drone = view.state?.agents.find((a) => a.agent_kind === 'DRONE') ?? null;
   // Opening growth: the terrain appears from the centre of the map outwards, to the farthest
   // corner (of the 20 km surroundings when they are drawn). Labels show once it has finished.
   const [grown, setGrown] = useState(false);
@@ -131,6 +140,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         imagery={imageryUrl && bundle.manifest.imagery ? { url: imageryUrl, extent: bundle.manifest.imagery.extent } : null}
         overlay={geoTexture && geology ? { texture: geoTexture, extent: geology.data.frame } : null}
         surfaceDetail={surfaceDetail}
+        detailFarM={pov ? DETAIL_FAR_POV_M : DETAIL_FAR_M}
       />
       {ctx && (
         <ContextTerrain
@@ -169,11 +179,16 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         selectedId={selectedAgentId}
         groundHeight={groundHeight}
         trueScale={trueScale}
+        hideLabelFor={pov ? followed : null}
       />
+      {grown && <DroneScan scan={scan} droneName={drone ? `agent-${drone.agent_id}` : null} groundHeight={groundHeight} verticalExaggeration={exaggeration} />}
       {baseAnchor && <group name={BASE_ANCHOR} position={baseAnchor} />}
       <FollowCamera target={cameraTarget} framing={followed ? undefined : BASE_FRAMING} />
+      {/* Mounted after the follow camera: same frame priority, so it places the eye after the follow update. */}
+      <FirstPersonCamera target={pov ? `agent-${followed}` : null} kind={pov ? followedKind : null} />
       <OrbitControls
         makeDefault
+        enabled={!pov}
         enableDamping
         dampingFactor={smoothing.orbitDamping}
         maxPolarAngle={Math.PI / 2.05}

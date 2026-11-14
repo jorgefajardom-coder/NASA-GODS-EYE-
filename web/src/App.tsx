@@ -29,6 +29,11 @@ import { AtmosDetails, AtmosList } from './components/AtmosPanel';
 import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
 import { CameraBar } from './components/CameraBar';
+import { FirstPersonHud } from './components/FirstPersonHud';
+import type { ScanRequest } from './components/DroneScan';
+import { scanCells, scanSummary, type ScanClass } from './lib/scan';
+import { slopeDegrees } from './lib/slope';
+import { displayState } from './lib/provenance';
 import { Intro, introWanted } from './components/Intro';
 import { PORTRAITS } from './lib/portraits';
 import { rotateView, ROTATE_STEP_RAD } from './components/ViewRotator';
@@ -95,6 +100,12 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   // Camera: 'free' (map), 'base', or the id of the agent it follows.
   const [camView, setCamView] = useState<string>('free');
   const follow = camView !== 'free' && camView !== 'base';
+  // First or third person while following an agent (V toggles; no effect on the free/base cameras).
+  const [firstPerson, setFirstPerson] = useState(false);
+  const pov = follow && firstPerson;
+  // Drone-camera scan (display only): orbital slope bands around the drone, see lib/scan.
+  const slope = useMemo(() => slopeDegrees(bundle.rasters.prior, m.terrain_meta.rows, m.terrain_meta.cols, m.terrain_meta.resolution_m), [bundle, m.terrain_meta]);
+  const [scan, setScan] = useState<(ScanRequest & { counts: Record<ScanClass, number>; fromId: string }) | null>(null);
   // Grab-to-drag is the default for the free camera: left drag slides the map, right drag orbits.
   const [freePan, setFreePan] = useState(true);
   // The follow view plays at 1x so the walk is drawn at its natural pace (legs synced to the
@@ -172,6 +183,13 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   }, []);
   const setFollow = useCallback((on: boolean) => setCamView(on && agentId ? agentId : 'free'), [agentId]);
   const hasBase = m.pois.some((p) => p.kind === 'base');
+  const drone = view.state?.agents.find((a) => a.agent_kind === 'DRONE') ?? null;
+  const runScan = useCallback(() => {
+    if (!drone) return;
+    const { x, y } = drone.pose.position;
+    const marks = scanCells(m.terrain_meta, slope, x, y);
+    setScan((prev) => ({ seq: (prev?.seq ?? 0) + 1, x, y, marks, counts: scanSummary(marks), fromId: drone.agent_id }));
+  }, [drone, m.terrain_meta, slope]);
   // While following, picking another agent in the list moves the camera to it.
   useEffect(() => {
     if (follow && sel.kind === 'agent' && sel.id && sel.id !== camView) setCamView(sel.id);
@@ -224,12 +242,14 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'Home') restart();
       else if (e.code === 'KeyF') setFollow(!follow);
       else if (e.code === 'KeyG') setFreePan((g) => !g);
+      else if (e.code === 'KeyV') setFirstPerson((v) => !v);
+      else if (e.code === 'KeyR') runScan();
       else if (e.code === 'KeyQ') rotateView(-ROTATE_STEP_RAD);
       else if (e.code === 'KeyE') rotateView(ROTATE_STEP_RAD);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [playPause, seek, restart, t, follow, setFollow]);
+  }, [playPause, seek, restart, t, follow, setFollow, runScan]);
 
   // The footer wraps to more lines on narrow screens; the panels above it sit on its measured height.
   const appRef = useRef<HTMLDivElement>(null);
@@ -243,7 +263,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   }, []);
 
   return (
-    <div className="app" ref={appRef}>
+    <div className={`app${pov ? ' app--pov' : ''}`} ref={appRef}>
       <MissionScene
         bundle={bundle}
         view={view}
@@ -267,8 +287,23 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         showContext={showContext}
         geology={mode === 'geology' && showGeoMap && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
         cutaway={mode === 'geology' && showCut && bundle.geology ? bundle.geology : null}
+        firstPerson={firstPerson}
+        scan={scan}
       />
       <div className="vignette" aria-hidden />
+      {pov && agent && (
+        <FirstPersonHud
+          agent={view.state?.agents.find((a) => a.agent_id === camView) ?? agent}
+          sourceLabel={displayState({ mode: 'REPLAY', source: m.source_mode ?? 'UNKNOWN' }).label}
+          pois={m.pois.filter((p) => p.revealed_at_s <= t)}
+          lines={hudLines}
+          budget={budgets[camView]}
+          scan={scan}
+          canScan={!!drone}
+          onScan={runScan}
+          onExit={() => setFirstPerson(false)}
+        />
+      )}
       {!introDone && <Intro onDone={() => setIntroDone(true)} />}
 
       <div className="overlay">
@@ -290,6 +325,10 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             onFree={() => setCamView('free')}
             onBase={() => setCamView('base')}
             onAgent={followAgent}
+            firstPerson={firstPerson}
+            onFirstPerson={setFirstPerson}
+            canScan={!!drone}
+            onScan={runScan}
           />
           <div className="prompts">
             <button type="button" className="chip" aria-pressed={freePan} onClick={() => setFreePan((g) => !g)} title="On: left drag slides the map, right drag orbits. Off: left drag orbits, right drag slides. Wheel zooms.">
