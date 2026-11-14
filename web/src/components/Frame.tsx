@@ -55,7 +55,7 @@ interface StatusProps {
   exaggeration: number;
 }
 
-/** Link and replay status, top right (the agent position is in the details panel). The live link is shown as offline: no gateway exists yet. */
+/** Link and replay status, top right (the agent position is in the details panel). The live link is shown as offline: the viewer does not connect to the gateway yet, it only plays recorded replays. */
 export function StatusBlock({ missionState, mapVersion, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
   return (
     <section className="status" aria-label="Connection and mission status">
