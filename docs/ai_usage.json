@@ -7,6 +7,23 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "event_replan_policy_and_synthetic_tests",
+      "generation": "AI-assisted code/tests/documentation; pending owner review",
+      "paths": [
+        "src/mge_planning/mge_planning/replan.py",
+        "tests/planning/test_replan_policy.py",
+        "src/mge_planning/MODEL.md",
+        "docs/replan_policy.md",
+        "src/mge_planning/README.md",
+        "README.md",
+        "docs/planner_handoff.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Implement ROS-independent event/corridor/resource reevaluation, hysteresis, latched advisory invalidation, phase-aware requests and automatic OUTBOUND contingency-return evaluation using the existing planner. Audit fixes reject premature OUTBOUND service debits and explicitly invalidate event/map mismatches, with human/rover regressions. Update English planner capability documentation, with root README changes limited to its planner summary. No ROS schema or MissionManager modification, scientific observations or generated media."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "d07_synthetic_acceptance_tests",
       "generation": "AI-assisted tests and documentation; results produced by actual executions",
       "paths": [

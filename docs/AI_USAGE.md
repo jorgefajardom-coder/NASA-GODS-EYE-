@@ -71,3 +71,24 @@ resources, then request a new round trip after a map update. JSON/JUnit files
 are outputs of actual test executions; scenario geometry and rates are
 illustrative, not NASA observations, physiology or physical validation. No
 automatic replan policy, MissionManager change or ROS wire change is included.
+
+## F03.4 ROS-independent event policy
+
+OpenAI Codex assisted with replan.py, synthetic event-policy tests and policy/model
+documentation. The policy reuses the existing planner and movement model; it does
+not authorize routes, command physical stops or change ROS contracts/MissionManager.
+Test data and thresholds are illustrative, not approved scientific limits or NASA
+observations. Local JUnit outputs record actual computational executions, without
+claiming ROS integration, vehicle dynamics or physical safety. Affected paths are
+listed in ai_usage.json; human review remains pending.
+
+The subsequent contingency extension and English planner/root README updates were
+also assisted by OpenAI Codex. The policy now tests direct-base return after a
+proven primary-mission no-path/budget failure during OUTBOUND, preserving both
+attempts for audit. Human/rover test scenarios distinguish detour, base-only access,
+no escape, uncertainty and budgets; these remain synthetic computational examples.
+
+Codex also assisted the subsequent audit fixes: reject premature service debits
+during OUTBOUND, explicitly invalidate event/map version mismatches, and add
+human/rover regression tests plus English policy/README/handoff clarification.
+No A*, MissionManager or ROS contract change was made for these fixes.

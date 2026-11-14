@@ -120,3 +120,9 @@ unresolved terrain nor reached search limits prove global impossibility.
 Only MissionManager may authorize/publish an active route. A route ID is
 deterministic from run/request/version, actual output paths and costs; elapsed
 search time is diagnostic and excluded from the identifier.
+
+## Event policy
+
+The independent `replan.py` layer reuses this geometry, costs and `plan_route()`.
+It does not implement another search or change this service's wire definitions.
+See [policy inputs, phase mapping and proof boundaries](../../docs/replan_policy.md).

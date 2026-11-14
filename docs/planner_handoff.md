@@ -122,9 +122,10 @@ temporary directory contains d07.json with the grid definition, both requests,
 initial route, travelled prefix, consumed resources and final result. JUnit
 records executed assertions. These are synthetic computational acceptance cases;
 movement is polyline interpolation, not dynamics, perception, ROS/Gazebo or a
-LIVE mission. F03.4 still requires automatic event handling, corridor relevance,
-hysteresis, immediate danger invalidation and MissionManager authorization, plus
-integration with actual pose/resources and coherent published map snapshots.
+LIVE mission. D-07 alone does not establish F03.4. A ROS-independent event policy
+is now implemented in replan.py; see [policy documentation](replan_policy.md).
+MissionManager authorization and integration with actual pose/resources,
+supervisor feedback and coherent published map snapshots remain pending.
 
 Local execution on 14 November 2026, Python 3.12.3: focused D-07 tests 9 passed;
 full Python suite 193 passed, 2 ROS modules skipped, 0 failures, with the existing
@@ -132,6 +133,18 @@ Starlette/httpx deprecation warning. Static repository checks passed. No product
 planner code or ROS contracts changed for this acceptance extension.
 
 ### Team handoffs
+
+F03.4 consumers must pass authoritative phase/cursor/remaining resources, preserve
+candidate_phase=RETURN for single-leg base requests, and explicitly adopt new
+routes. The policy never changes MissionManager state or commands physical stops.
+During OUTBOUND, a failed primary mission (NO_PATH/INSUFFICIENT_BUDGET) now triggers
+an automatic direct-base contingency evaluation with zero service and unchanged
+remaining resources/reserves. primary_request/primary_candidate retain its cause.
+Mission must authorize the feasible fallback and enact RETURN; see the policy
+documentation for no-escape, unknown and immediate-stop semantics.
+Audit guards: OUTBOUND cannot debit any original service; premature completion
+returns UNKNOWN/OUTBOUND_SERVICE_MISMATCH without a search. EVENT_MAP_MISMATCH
+always invalidates the active authorization, even on an otherwise unaffected path.
 
 1. Daniel supplies public belief/sigma/profile masks with unique batch stamps,
    approved CRS/datum and three matching control points. Do not expose reference.

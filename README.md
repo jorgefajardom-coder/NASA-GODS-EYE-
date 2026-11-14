@@ -4,8 +4,13 @@ NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
 **Status: P0 planner implemented; full mission integration pending.** The planner
-supports bounded FAST/SAFE search, return/resources and a guarded PlanRoute ROS
-service. A newly processed provisional CTX prior is included; it is not a locally
+supports bounded FAST/SAFE A* over outbound, service and return, validated continuous
+ground starts, and tested D-07 replanning after 20 m with remaining resources.
+Its ROS-independent F03.4 policy detects route-affecting events, applies hysteresis
+and proposes contingency return when the primary mission is infeasible but base
+is reachable. Candidates require MissionManager authorization; event-policy ROS
+and supervisor integration remain pending. The guarded PlanRoute service is
+implemented. A newly processed provisional CTX prior is included; it is not a locally
 verified corridor. The viewer, other science modules and gateway remain scaffold
 components. No validated mission, Gazebo world or published demo is claimed.
 
