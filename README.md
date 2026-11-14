@@ -108,6 +108,13 @@ fails because `packages.ros.org` no longer has a Release file, the machine still
 uses the retired ROS apt source; install the current `ros2-apt-source` package as
 described in the ROS 2 Jazzy installation guide before updating.
 
+The integration tests also need `python3-fastapi`, `python3-uvicorn`,
+`python3-websockets` and `python3-httpx` (apt); without them they are skipped,
+not passed. Last local run on 2026-11-14 (WSL 2, Ubuntu 24.04, ROS 2 Jazzy):
+8 packages built, `tests/contract tests/unit tests/contracts/test_gateway.py`
+284 passed, `tests/integration` 34 passed, none skipped. This checks the MOCK
+and real-terrain verticals and the replay recorder; it is not a validated mission.
+
 ```sh
 source /opt/ros/jazzy/setup.bash
 rosdep install --from-paths src --ignore-src -r -y
