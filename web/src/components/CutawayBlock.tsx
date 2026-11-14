@@ -12,17 +12,23 @@ interface Props {
   meta: TerrainMeta;
   /** Heights of the layer on screen (same grid the terrain mesh uses). */
   heights: ReadonlyArray<number | null>;
-  geology: GeologyData;
+  /** Geologic map for the schematic strata; null draws plain walls (no claim about what is below). */
+  geology: GeologyData | null;
   verticalExaggeration: number;
 }
 
+/** Plain wall tone when no strata are shown: a neutral rock colour, not a measured layer. */
+const PLAIN_ROCK: [number, number, number] = [0.33, 0.22, 0.16];
+
 /**
- * Cut-away block: vertical walls along the crop edges showing a SCHEMATIC stratigraphic
- * column under each edge point (surface unit from SIM 3464, then older strata; thicknesses
- * schematic, see lib/strata.ts). Display only; it never changes the terrain data.
+ * Cut-away block: vertical walls along the crop edges and a base, so the terrain reads as a
+ * solid piece of ground instead of a sheet. With a geologic map the walls show a SCHEMATIC
+ * stratigraphic column under each edge point (surface unit from SIM 3464, then older strata;
+ * thicknesses schematic, see lib/strata.ts); without one they are a single plain rock tone
+ * that claims nothing about the subsurface. Display only; it never changes the terrain data.
  */
 export function CutawayBlock({ meta, heights, geology, verticalExaggeration }: Props) {
-  const grid = useMemo(() => rasterizeUnits(geology, GEO_GRID), [geology]);
+  const grid = useMemo(() => (geology ? rasterizeUnits(geology, GEO_GRID) : null), [geology]);
 
   const geometry = useMemo(() => {
     const step = meta.resolution_m / MESH_SUBDIVISION;
@@ -33,9 +39,11 @@ export function CutawayBlock({ meta, heights, geology, verticalExaggeration }: P
     let lo = Infinity;
     for (const h of heights) if (h != null && h < lo) lo = h;
     const bottom = lo - CUT_DEPTH_M;
-    const fx = geology.frame;
-    const symbolAt = (x: number, y: number) =>
-      surfaceSymbolAt(geology, grid, GEO_GRID, Math.floor(((y - fx.origin_y_m) / fx.height_m) * GEO_GRID), Math.floor(((x - fx.origin_x_m) / fx.width_m) * GEO_GRID));
+    const columnAt = (x: number, y: number): Array<{ thicknessM: number; rgb: [number, number, number] }> => {
+      if (!geology || !grid) return [{ thicknessM: CUT_DEPTH_M, rgb: PLAIN_ROCK }];
+      const fx = geology.frame;
+      return columnBelow(surfaceSymbolAt(geology, grid, GEO_GRID, Math.floor(((y - fx.origin_y_m) / fx.height_m) * GEO_GRID), Math.floor(((x - fx.origin_x_m) / fx.width_m) * GEO_GRID)));
+    };
     const hAt = (x: number, y: number) => smoothHeightAt(meta, heights, x, y) ?? lo;
 
     // Edge polylines (counter-clockwise seen from above): south, east, north, west.
@@ -65,7 +73,7 @@ export function CutawayBlock({ meta, heights, geology, verticalExaggeration }: P
       const [bx, by] = pts[k + 1];
       const ha = hAt(ax, ay);
       const hb = hAt(bx, by);
-      const layers = columnBelow(symbolAt((ax + bx) / 2, (ay + by) / 2));
+      const layers = columnAt((ax + bx) / 2, (ay + by) / 2);
       let d = 0;
       layers.forEach((s, li) => {
         const last = li === layers.length - 1;

@@ -12,7 +12,7 @@ const RADIUS_M = 450;
 const KIND_COLOR = { HUMAN: '#E8F4FF', DRONE: '#65CBE8', ROVER: '#D8AD66' } as const;
 
 /**
- * Game-style circular minimap, north up, centred on the selected agent: elevation bands,
+ * Game-style circular minimap, heading up (turns with the agent), centred on the selected agent: elevation bands,
  * coverage, the route in force, other agents and sites. Display only.
  */
 export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle: ReplayBundle; view: ReplayView; agentId: string; size?: number }) {
@@ -44,12 +44,18 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     const k = (SIZE / 2) / RADIUS_M; // px per metre
     const toPx = (p: Point) => [c + (p.x - centre.x) * k, c - (p.y - centre.y) * k] as const;
 
+    // Heading-up: the map turns so the selected agent always points up (its heading, clockwise
+    // from north, becomes straight ahead); the N mark moves round the rim to show north.
+    const hdg = agent ? (headingFromNorth(yawFromQuaternion(agent.pose.orientation)) * Math.PI) / 180 : 0;
     g.save();
     g.beginPath();
     g.arc(c, c, c - 2, 0, Math.PI * 2);
     g.clip();
     g.fillStyle = '#030a14';
     g.fillRect(0, 0, SIZE, SIZE);
+    g.translate(c, c);
+    g.rotate(-hdg);
+    g.translate(-c, -c);
     // Terrain: the full map image placed in metres around the agent.
     const W = meta.cols * meta.resolution_m;
     const H = meta.rows * meta.resolution_m;
@@ -96,12 +102,10 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     }
     g.restore();
 
-    // Selected agent: heading arrow at the centre.
+    // Selected agent: arrow at the centre, always pointing up (the map turns around it).
     if (agent) {
-      const hdg = (headingFromNorth(yawFromQuaternion(agent.pose.orientation)) * Math.PI) / 180;
       g.save();
       g.translate(c, c);
-      g.rotate(hdg);
       g.fillStyle = KIND_COLOR[agent.agent_kind];
       g.shadowColor = KIND_COLOR[agent.agent_kind];
       g.shadowBlur = 8;
@@ -120,14 +124,23 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     g.beginPath();
     g.arc(c, c, c - 2, 0, Math.PI * 2);
     g.stroke();
+    // North mark on the rim, at north's bearing on the turned map.
+    const nx = c + Math.sin(-hdg) * (c - 10);
+    const ny = c - Math.cos(-hdg) * (c - 10);
+    g.fillStyle = 'rgba(3,10,20,0.75)';
+    g.beginPath();
+    g.arc(nx, ny, 7, 0, Math.PI * 2);
+    g.fill();
     g.fillStyle = '#cfe9ff';
     g.font = '600 11px "Barlow Condensed", sans-serif';
     g.textAlign = 'center';
-    g.fillText('N', c, 13);
+    g.textBaseline = 'middle';
+    g.fillText('N', nx, ny + 0.5);
+    g.textBaseline = 'alphabetic';
   }, [baseCanvas, view, agent, bundle.manifest.pois, meta, SIZE]);
 
   return (
-    <div className="minimap" role="img" aria-label="Minimap, north up, centred on the selected agent">
+    <div className="minimap" role="img" aria-label="Minimap, heading up (turns with the selected agent), centred on it; N marks north">
       <canvas ref={canvas} style={{ width: SIZE, height: SIZE }} />
     </div>
   );

@@ -18,6 +18,7 @@ import signal
 import struct
 import subprocess
 import time
+import yaml
 
 import httpx
 import pytest
@@ -27,9 +28,13 @@ rclpy = pytest.importorskip('rclpy', reason='Requires built ROS 2 workspace')
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy  # noqa: E402
 from sensor_msgs.msg import Image  # noqa: E402
 
+from mge_gateway.contract_replay import (  # noqa: E402
+    read_package, read_public_rasters, to_viewer)
 from mge_gateway.replay_check import check_package  # noqa: E402
 from mge_interfaces.msg import TerrainObservation  # noqa: E402
 from tests.integration.test_vertical_mock import wait_for  # noqa: E402
+from tests.integration.ground_fixture import (  # noqa: E402
+    initialize_ground_agents, observed_public_scene, simulated_ground_point)
 
 RUN_ID = 'it-terrain-vertical'
 PORT = 8768
@@ -74,14 +79,38 @@ def mission():
     return get(f'/api/run/{RUN_ID}/snapshot')['mission_state']
 
 
+def rasters_cover(package, versions):
+    """True once the package's raster attachment holds these map versions."""
+    try:
+        with open(os.path.join(package, 'manifest.json'), encoding='utf-8') as f:
+            name = json.load(f)['files'].get('public_rasters')
+        if name is None:
+            return False
+        with open(os.path.join(package, name), encoding='utf-8') as f:
+            return set(versions) <= set(json.load(f)['versions'])
+    except (OSError, ValueError):
+        return False
+
+
 class Stack:
     """The launched vertical plus a test-side node that plays the drone sensor."""
 
     def __init__(self, record_dir):
+        # Initialize the static MOCK scene, rather than projecting any live pose.
+        # These same explicit SIMULATED values will be published by this fixture;
+        # the production belief remains unobserved until then.
+        self.surface, self.vertical_datum = observed_public_scene(RUN_ID, BLOCK)
+        template = yaml.safe_load((ROOT / 'src/mge_bringup/config/agents_jezero.yaml').read_text())
+        agents_file = Path(record_dir) / 'simulated-ground-agents.yaml'
+        agents_file.write_text(yaml.safe_dump(initialize_ground_agents(template, self.surface)))
+        self.goal = {**GOAL,
+                     'base': dict(zip(('x', 'y', 'z'), simulated_ground_point(self.surface, HUMAN_START))),
+                     'goal': dict(zip(('x', 'y', 'z'), simulated_ground_point(self.surface, GOAL_CELL)))}
         self.package = os.path.join(record_dir, RUN_ID)
         self.proc = subprocess.Popen(
             ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',
              f'port:={PORT}', 'terrain:=real', 'planner:=real', f'profiles_file:={PROFILES}',
+             f'agents_file:={agents_file}',
              'record:=true', f'record_dir:={record_dir}'],
             cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
         rclpy.init()
@@ -105,6 +134,8 @@ class Stack:
         self.spin_until(lambda: self.observations.get_subscription_count() >= 1,
                         'mapping_node observation subscription')
         heights = struct.unpack(f'<{ROWS * COLS}f', bytes(self.belief.data))
+        # The initial scene and simulated sensor share one public vertical datum.
+        assert all(heights[i] == self.surface.elevation_m.flat[i] for i in BLOCK)
         msg = TerrainObservation()
         msg.header.frame_id = 'map'
         msg.header.stamp = self.node.get_clock().now().to_msg()
@@ -142,12 +173,18 @@ def test_real_terrain_refuses_the_mock_planner():
 
 
 @pytest.fixture(scope='module')
-def stack(tmp_path_factory):
+def stack(tmp_path_factory, planner_ready):
     stack = Stack(str(tmp_path_factory.mktemp('replay')))
     try:
         wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3
                  and get('/api/manifest').get('terrain_meta'),
                  timeout_s=30.0, what='gateway, 3 agents and terrain metadata')
+        # The mission, not only the gateway, must hold the map; and version 1
+        # must be recorded before an observation supersedes its latched batch.
+        wait_for(lambda: mission()['map_version'] >= 1, timeout_s=30.0, what='mission map')
+        wait_for(lambda: rasters_cover(stack.package, {'1'}), timeout_s=30.0,
+                 what='public rasters of map version 1')
+        planner_ready()
         yield stack
     finally:
         stack.stop()
@@ -173,7 +210,7 @@ def test_jezero_batch_reaches_the_gateway_as_a_mock_run(stack):
 
 
 def test_unobserved_terrain_is_unknown_not_infeasible(stack):
-    r = httpx.post(f'{BASE}/api/mission/goal', json={**GOAL, 'request_id': 'req-unobserved'})
+    r = httpx.post(f'{BASE}/api/mission/goal', json={**stack.goal, 'request_id': 'req-unobserved'})
     assert r.json()['accepted'] is True, r.text
     ms = wait_for(lambda: (m := mission())['mission_state'] == 'BLOCKED' and m,
                   timeout_s=30.0, what='BLOCKED on unobserved terrain')
@@ -199,6 +236,7 @@ def test_simulated_observation_replans_on_the_new_map_version(stack):
     assert ms['route_id'] == route['route_id'] != ''
     out, back = route['outbound_path'], route['return_path']
     assert (out[0]['x'], out[0]['y']) == HUMAN_START
+    assert out[0]['z'] == simulated_ground_point(stack.surface, HUMAN_START)[2] != 0.0
     assert (out[-1]['x'], out[-1]['y']) == GOAL_CELL
     assert (back[-1]['x'], back[-1]['y']) == HUMAN_START
     # Only observed cells are admissible, so the route stays inside the block.
@@ -217,6 +255,16 @@ def test_recorded_package_is_complete_after_the_run_stops(stack):
         return ms and ms['route_id'] == route_id
 
     wait_for(recorded, what='route in the recorded snapshot')
+
+    def rasters_recorded():
+        with open(os.path.join(stack.package, 'manifest.json'), encoding='utf-8') as f:
+            names = json.load(f)['files']
+        if 'public_rasters' not in names:
+            return False
+        with open(os.path.join(stack.package, names['public_rasters']), encoding='utf-8') as f:
+            return set(json.load(f)['versions']) == {'1', '2'}
+
+    wait_for(rasters_recorded, what='public rasters of map versions 1 and 2')
     stack.stop()
     assert check_package(stack.package) == []
     with open(os.path.join(stack.package, 'manifest.json'), encoding='utf-8') as f:
@@ -226,3 +274,21 @@ def test_recorded_package_is_complete_after_the_run_stops(stack):
         snap = json.load(f)
     assert snap['terrain_meta']['dataset_id'] == 'jezero_mvp'
     assert snap['terrain_meta']['map_version'] == 2
+
+
+def test_recorded_public_rasters_make_the_package_viewer_ready(stack):
+    # Runs after the stack stopped: the package alone is read, offline.
+    manifest, records, snapshot = read_package(stack.package)
+    rasters = read_public_rasters(stack.package, manifest)
+    assert rasters['dataset_id'] == 'jezero_mvp' and (rasters['rows'], rasters['cols']) == (ROWS, COLS)
+    assert 'reference' not in json.dumps(rasters)
+    v1, v2 = rasters['versions']['1'], rasters['versions']['2']
+    # Before the observation nothing is observed and the belief is the prior.
+    assert v1['observed'] == [] and v1['belief'] == rasters['prior']
+    # The observation covered the block, and only the block.
+    assert v2['observed'] == sorted(BLOCK)
+    assert all(v2['sigma'][i] == pytest.approx(0.25) for i in BLOCK)
+    result = to_viewer(manifest, records, snapshot, public_rasters=rasters)
+    assert result['status'] == 'READY', result['reason_code']
+    assert result['manifest']['source_mode'] == 'MOCK'
+    assert all(v is None for v in result['rasters']['reference'])

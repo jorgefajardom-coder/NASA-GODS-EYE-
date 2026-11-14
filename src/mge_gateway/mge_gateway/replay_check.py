@@ -8,6 +8,8 @@ import json
 import os
 import sys
 
+from mge_gateway.contract_replay import check_public_rasters, ReplayContractError
+from mge_gateway.public_rasters import FILE as RASTERS
 from mge_gateway.replay import MANIFEST, SNAPSHOT
 from mge_gateway.store import (
     DECLARABLE_SOURCE_MODES, mock_evidence, SCHEMA_VERSION, valid_event_sequence)
@@ -120,6 +122,19 @@ def check_package(path):
         problems.append(f'{SNAPSHOT}: mission_state is not the last state of the timeline')
     if manifest.get('event_count') != len(events):
         problems.append(f'{MANIFEST}: event_count differs from the timeline')
+
+    # Optional: present once the run published a complete public batch.
+    rasters = manifest.get('files', {}).get('public_rasters')
+    if rasters is not None:
+        if rasters != RASTERS:
+            problems.append(f'{MANIFEST}: public_rasters must be {RASTERS!r}')
+        else:
+            attachment = load(RASTERS)
+            if attachment is not None:
+                try:
+                    check_public_rasters(manifest, records, attachment)
+                except (ReplayContractError, KeyError, TypeError) as e:
+                    problems.append(f'{RASTERS}: {e}')
     return problems
 
 

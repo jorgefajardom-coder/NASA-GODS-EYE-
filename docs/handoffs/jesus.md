@@ -1,5 +1,24 @@
 # Jesus - integrate providers through the canonical interfaces
 
+## Current continuation — 14 November 2026, main 5ab1387
+
+Follow [CONT-JES-01..05](../team_continuation_plan.md#jesús--three-role-execution-recording-and-deployment-integration):
+bind three executed roles and typed evidence with David; connect confirmed
+stop/replan/reauthorization with Diego; close linked scientific/gateway packages
+for one run. Co-own reproducible site deployment with Fajardo. Coordinate
+organizer notification/explicit endorsement under JES-07; David is backup.
+Historical inventories below retain their original revision and limitations.
+
+PR17 timeout follow-up: `docs/integration_log.md` records the failed source
+`17eb644`, reconciliation with `bec3873` / main `70cd2e5`, reproduced worker
+starvation, callback-group correction and before/after ROS regressions. Map
+ingestion and search retain concurrent stale-map invalidation. The terrain
+fixture tests 1 and 100 Hz under its original 20 s response deadline. No open
+PR12 or pending local replay/viewer work is included. Next delivery remains
+the real integrated execution/replan and same-run replay evidence; current
+MOCK tests do not satisfy M04/M05 or scientific acceptance. Organizer
+notification/endorsement (JES-07) remains undocumented.
+
 Active branch: **`feat/integration`**. Audited head: `45a4590f8e8330a3896c170ec2c9ee272ae0b423` at the final refresh; initial head
 was `d28f3e2`. PR #3 remains the integration review front. Main PR #2 merged
 externally and is included in this branch. Recorder increment: `74ed6f3`; replay documentation: `02f4155`. Existing handoffs: `src/mge_gateway/README.md`, `src/mge_sim/README.md`, `docs/ICD.md`, `docs/integration_log.md` and PR #3. The removed `dev/jesus` remote branch is not a new front; its work is preserved here.
@@ -154,3 +173,51 @@ unchanged: ROS ICD-ROS2-V1/package 1.0.0, JSON/replay 1.0.0, baseline review
   `vertical_mock.launch.py`; reconcile both selections when it is reviewed.
   Then public raster recording (JES-04) and survey observations from the
   simulated drone (JES-02). No mission or scientific acceptance is claimed.
+
+## Public raster recording cut (JES-04)
+
+Source: `feat/integration` on main `059f8ef`. Baselines: ROS ICD-ROS2-V1 /
+package 1.0.0 with one proposed additive topic, JSON/replay 1.0.0 with one
+optional file, raster attachment `mge-public-rasters-1.0.0`, baseline review
+1.0.0-rc.1 (not frozen). Dataset `jezero_mvp`.
+
+- **Input.** `/mge/terrain/prior` and the stamped batch: metadata, belief,
+  sigma and the new `/mge/terrain/observed` (`mono8`, published by
+  `mapping_node` and `mock_terrain`). Owner decision recorded: additive topic
+  instead of inferring coverage from sigma or masks.
+- **Output.** `<run_id>/public_rasters.json`, named by `files.public_rasters`;
+  `read_public_rasters` and `check_replay` validate it; `to_viewer` turns the
+  package READY. Version 0 needs no raster; extra keys only for recorded
+  TerrainMeta versions; no nearest-version fallback.
+- **Commands.** In `mge-dev`: `colcon build --symlink-install`,
+  `python3 -m pytest` (805 passed, 1 skipped), `python3 scripts/check_repository.py`
+  (passed). Python 3.12 without ROS: `python -m pytest` (730 passed, 13 skipped).
+- **MOCK and gaps.** Mission and agents MOCK; observations come from tests.
+  The viewer does not read the attachment yet. Not run: Gazebo, real mission
+  with model agreement.
+- **Blockers / next.** Daniel reviews the `mapping_node` publisher, Jorge the
+  consumer (JOR-03). Intermittent planner `SEARCH_LIMIT` in
+  `test_terrain_batch.py` goes to Diego. Next for Jesus: JES-02 kinematic
+  execution and stop acknowledgement. Organizer endorsement (JES-07) remains
+  undocumented.
+
+## MOCK kinematic execution cut (JES-02, first part)
+
+Source: `feat/integration` on main `7d9a3bf`. Baselines unchanged: ROS
+ICD-ROS2-V1 / package 1.0.0, JSON/replay 1.0.0, baseline review 1.0.0-rc.1.
+
+- **Input/output.** Input: MissionState (route ID, primary agent, active
+  route and estimates) and `/mge/planner/active_path`. Output: AgentState for
+  every agent; the primary one `MOVING` along the path, `IDLE` on arrival,
+  `HALTED` with zero velocity after an invalidation (stop acknowledgement).
+  Selected by `agents:=kinematic`; exclusive with `mock_agents`.
+- **Commands.** In `mge-dev`: `colcon build --symlink-install`,
+  `python3 -m pytest` (844 passed, 1 skipped), `python3 scripts/check_repository.py`
+  (passed). Python 3.12 without ROS: 756 passed, 14 skipped.
+- **MOCK and gaps.** Executor, mission and agents MOCK; motion is constant
+  speed from route estimates. Not run: real mission path (needs model
+  agreement), Gazebo, robots, survey observations from a simulated sensor.
+- **Blockers / next.** PR #12 for replanning from a halted off-centre pose and
+  for the ICD section 7 acknowledgement wording; real mission once David and
+  Diego agree the model; M04/M05 runs with David. JES-07 organizer endorsement
+  remains undocumented.

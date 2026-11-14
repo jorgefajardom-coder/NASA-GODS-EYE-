@@ -1,10 +1,80 @@
 {
   "schema_version": "1.0.0",
   "recorded_on": "2026-11-14",
-  "status": "mission_and_integrated_baseline",
+  "status": "planner_integrated_contract_reconciliation_pending_review",
   "policy_url": "https://github.com/nasa/spaceapps/discussions/1849",
   "human_review": "pending module owners",
   "uses": [
+    {
+      "tool": "OpenAI Codex",
+      "kind": "experimental_continuous_recovery",
+      "generation": "AI-assisted code, tests and documentation requested by the repository owner",
+      "paths": [
+        "src/mge_planning/mge_planning/core.py", "src/mge_planning/mge_planning/replan.py",
+        "src/mge_sim/mge_sim/mock_mission.py", "src/mge_sim/mge_sim/recovery.py",
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "tests/planning/test_continuous_recovery.py", "tests/planning/test_simulated_ground_initialization.py",
+        "tests/unit/test_recovery.py", "tests/contract/test_mock_recovery.py",
+        "tests/contract/test_mission_launch.py", "tests/integration/test_vertical_execution.py",
+        "tests/integration/test_terrain_batch.py",
+        "docs/ICD.md", "docs/mission_replay_recovery.md"
+      ],
+      "use": "Preserve bounded continuous XYZ, wait for stop acknowledgement, reject stale or resource-invalid candidates and retain spent allocations/reserves. Validate reauthorized motion, return and the same closed MOCK recorder package. No scientific or LIVE approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "strict_replay_validation",
+      "generation": "AI-assisted code, tests and documentation requested by the repository owner",
+      "paths": [
+        "web/src/data/gatewayReplay.ts", "web/src/data/replayAdapter.ts",
+        "web/tests/gatewayReplay.test.ts", "web/tests/gatewayIntegrity.test.ts"
+      ],
+      "use": "Validate replay counts, route identity, recorded raster versions and snapshot closure, and test the same MOCK recorder package in the existing web consumer. No scientific or LIVE approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "documentation_and_planning",
+      "generation": "AI-assisted continuation plan requested by the repository owner",
+      "paths": [
+        "AGENTS.md",
+        "docs/team_continuation_plan.md",
+        "docs/team.md",
+        "docs/mission_checklist.md",
+        "docs/handoffs/david.md",
+        "docs/handoffs/daniel.md",
+        "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md",
+        "docs/handoffs/jorge.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Record the five owners' next assignments, dependencies and acceptance from the Conciliación plan. Continue Daniel's larger-map feasibility and assign Fajardo NASA scientific-patch criteria research plus shared deployment with Jesus, assuming his publication usable as requested. Preserve existing mission/replay, science, provenance, optional-extension and organizer gates. Documentation only; no criteria research findings, source data, runtime code, scientific results or media generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "integration_reconciliation",
+      "generation": "AI-assisted reconciliation requested by the repository owner",
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "docs/planner_pr12_publication.md",
+        "tests/integration/test_vertical_execution.py"
+      ],
+      "use": "Reconcile planner a959d25 with main 3a9032b, preserving both histories, disclosures, planner corrections and callback scheduling/replay/executor changes. Initialize the new kinematic test's simulated ground scene with the existing fixture helper and check pose/observation consistency. No scientific or operational approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "code_tests_and_documentation",
+      "generation": "AI-assisted timeout diagnosis and correction requested by the repository owner",
+      "paths": [
+        "src/mge_planning/mge_planning/node.py",
+        "tests/integration/test_planner_concurrency.py",
+        "tests/integration/test_terrain_batch.py",
+        "docs/handoffs/jesus.md",
+        "docs/integration_log.md"
+      ],
+      "use": "Separate serialized map ingestion from serialized planning callbacks to prevent executor worker starvation; test bounded service availability and stale-search rejection over ROS, repeat Jezero batches at 1 and 100 Hz, and retain child logs. Delayed callbacks and flat grids are synthetic test fixtures, not scientific observations or mission results."
+    },
     {
       "tool": "OpenAI Codex",
       "kind": "code_and_configuration",
@@ -346,6 +416,49 @@
       "use": "Select the real public terrain providers in the vertical behind the MOCK mission, with agents on Jezero cell centres, and test unknown terrain, replan on a new map version and the recorded package end to end. Agent positions and budgets are placeholders; no terrain array, scientific observation or mission result is generated."
     },
     {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "public_raster_recording",
+      "generation": "AI-assisted code, tests and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_gateway/mge_gateway/public_rasters.py",
+        "src/mge_gateway/mge_gateway/recorder.py",
+        "src/mge_gateway/mge_gateway/replay.py",
+        "src/mge_gateway/mge_gateway/replay_check.py",
+        "src/mge_gateway/mge_gateway/contract_replay.py",
+        "src/mge_mapping/mge_mapping/node.py",
+        "src/mge_sim/mge_sim/mock_terrain.py",
+        "tests/unit/test_public_rasters.py",
+        "tests/integration/test_vertical_terrain.py",
+        "tests/integration/test_replay_package.py",
+        "tests/integration/test_terrain_batch.py",
+        "docs/ICD.md",
+        "docs/REPLAY_CONTRACT.md",
+        "docs/integration_log.md",
+        "docs/handoffs/jesus.md"
+      ],
+      "use": "Publish the observed mask in the stamped map batch and record the public prior and per-version belief, sigma and observed cells as the replay raster attachment, validated offline. Recorded rasters copy public layers and SIMULATED test observations; no terrain, scientific observation or mission result is generated."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "mock_kinematic_execution",
+      "generation": "AI-assisted code, tests and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_sim/mge_sim/kinematics.py",
+        "src/mge_sim/mge_sim/executor.py",
+        "src/mge_sim/setup.py",
+        "src/mge_sim/README.md",
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "tests/unit/test_kinematics.py",
+        "tests/integration/test_vertical_execution.py",
+        "tests/integration/README.md",
+        "tests/contract/test_mission_launch.py",
+        "README.md",
+        "docs/integration_log.md",
+        "docs/handoffs/jesus.md"
+      ],
+      "use": "MOCK executor that moves the primary agent along the authorized active path at the rates implied by the route's own estimates and halts in place, reported through AgentState, when the route is invalidated. No dynamics, resource model, scientific observation or mission result is generated."
+    },
+    {
       "tool": "OpenAI Codex",
       "kind": "code_configuration_and_synthetic_model_checks",
       "generation": "AI-assisted generation, pending human review",
@@ -521,35 +634,156 @@
     },
     {
       "tool": "OpenAI Codex",
-      "kind": "code_configuration_documentation_and_synthetic_contract_tests",
-      "generation": "AI-assisted generation; owner integration/science review pending",
+      "kind": "event_replan_policy_and_synthetic_tests",
+      "generation": "AI-assisted code/tests/documentation; pending owner review",
       "paths": [
-        "src/mge_gateway/mge_gateway/contract_replay.py",
-        "src/mge_bringup/mge_bringup/contract_guard.py",
-        "src/mge_bringup/mge_bringup/launch_profiles.py",
-        "src/mge_bringup/launch/profile.launch.py",
-        "src/mge_bringup/package.xml",
-        "src/mge_data/mge_data/dataset_contract.py",
-        "data/dataset.schema.json",
-        "tests/contract/test_baseline_guards.py",
-        "tests/contract/test_generated_conversion.py",
-        "tests/contract/test_replay_conversion.py",
-        "tests/contract/test_dataset.py",
-        "tests/contract/test_configuration.py",
-        "tests/contract/test_profile_launch.py",
-        "tests/integration/test_provider_substitution.py",
-        "tests/fixtures/replay/provenance.json",
-        "web/src/lib/provenance.ts",
-        "web/tests/provenance.test.ts",
-        "scripts/validate_contract_baseline.sh",
-        "AGENTS.md",
-        ".gitignore",
-        "docs",
-        "scripts/check_repository.py",
-        ".github/workflows/ci.yml",
-        "evidence/contract-baseline-20261114"
+        "src/mge_planning/mge_planning/replan.py",
+        "tests/planning/test_replan_policy.py",
+        "src/mge_planning/MODEL.md",
+        "docs/replan_policy.md",
+        "src/mge_planning/README.md",
+        "README.md",
+        "docs/planner_handoff.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
       ],
-      "use": "Audit owner branches; reconcile contracts without replacing implementations; add offline adapters, fail-closed guards, source locks, schema, deterministic synthetic contract cases, handoffs and actual validation records. No scientific observations generated."
+      "use": "Implement ROS-independent event/corridor/resource reevaluation, hysteresis, latched advisory invalidation, phase-aware requests and automatic OUTBOUND contingency-return evaluation using the existing planner. Audit fixes reject premature OUTBOUND service debits and explicitly invalidate event/map mismatches, with human/rover regressions. Update English planner capability documentation, with root README changes limited to its planner summary. No ROS schema or MissionManager modification, scientific observations or generated media."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "d07_synthetic_acceptance_tests",
+      "generation": "AI-assisted tests and documentation; results produced by actual executions",
+      "paths": [
+        "tests/planning/test_d07_twenty_metres.py",
+        "docs/planner_handoff.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Construct synthetic 20-metre trajectory-prefix scenarios for explicit replanning, independent remaining-resource accounting, detour and return verification, and no-path/resource-negative cases. Execution artifacts are local ignored tmp outputs. No physical or scientific measurements generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "continuous_start_code_and_illustrative_tests",
+      "generation": "AI-assisted generation, pending human review",
+      "paths": [
+        "src/mge_planning/mge_planning/core.py",
+        "src/mge_planning/MODEL.md",
+        "tests/planning/test_continuous_start.py",
+        "tests/planning/test_kernel_guards.py",
+        "docs/ICD.md",
+        "docs/planner_handoff.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Implement a conservative within-cell ground-start connector, movement costs in the initial search label, explicit Python result metadata and synthetic regression cases; document unchanged ROS wire fields and consumer behavior. No automatic replan policy or new scientific data."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_branch_sync_review",
+      "generation": "AI-assisted merge documentation reconciliation; shared-contract extension pending owner review",
+      "paths": [
+        "README.md",
+        "docs/ICD.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Combine planner and main documentation/disclosures; resolve the ICD conflict as a review proposal while retaining main consumer/scientific gates. No ROS wire change, scientific approval or operational authorization."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "pr12_main_mission_sync",
+      "generation": "AI-assisted merge documentation and actual software verification",
+      "paths": [
+        "README.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "tests/planning/test_replan_policy.py",
+        "docs/planner_pr12_sync.md"
+      ],
+      "use": "Preserve planner and mission implementations while merging main4b72d309; reconcile descriptions/disclosures without changing operational or scientific review gates. Adjust only the planner fixture import for main pytest importlib mode; preserve all assertions and document exact local validation and remaining scientific/integration gates."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_review_corrections_and_synthetic_regression_evidence",
+      "generation": "AI-assisted code and test-scenario generation; actual execution results; pending human integration/science review",
+      "paths": [
+        "src/mge_planning/mge_planning/core.py",
+        "src/mge_planning/mge_planning/replan.py",
+        "src/mge_planning/mge_planning/node.py",
+        "tests/planning",
+        "tests/contract/test_planner_service.py",
+        "src/mge_planning/MODEL.md",
+        "src/mge_planning/README.md",
+        "README.md",
+        "docs/replan_policy.md",
+        "docs/ICD.md",
+        "docs/planner_handoff.md",
+        "docs/planner_pr12_sync.md",
+        "docs/pr12_review_corrections.md",
+        "evidence/planner-pr12-review-20261114"
+      ],
+      "use": "Reproduce and correct PR12 review observations 1-10: dimensional and z guards, bounded retries, opt-in continuous starts, SERVICE contingency return, depleted-resource state, geometry caching, consistent clearance and cancellation of recovered deviations. Preserve authorization, scientific gates and ROS wire fields. Evidence reports actual passes, skips and failures; synthetic inputs are not NASA observations."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "simulated_ground_fixture_code_and_regression_evidence",
+      "generation": "AI-assisted test-only code and scenario configuration; actual executed results; owner review pending",
+      "paths": [
+        "tests/integration/ground_fixture.py",
+        "tests/integration/test_terrain_batch.py",
+        "tests/integration/test_vertical_terrain.py",
+        "tests/planning/test_simulated_ground_initialization.py",
+        "docs/pr12_review_corrections.md",
+        "docs/planner_handoff.md",
+        "evidence/planner-pr12-ground-z-20261114"
+      ],
+      "use": "Trace omitted/default ground z in two integration fixtures; initialize only missing synthetic HUMAN/ROVER starting heights using the explicitly declared SIMULATED public-terrain scene, preserve real explicit z and unknown terrain, and test centred/continuous safety and map-height changes. Public elevations retain source provenance and datum; no NASA observation or physical telemetry is generated or projected. Runtime planner, shared ROS types, mission and recorder are unchanged."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_review_corrections",
+      "generation": "AI-assisted code, regression tests and documentation",
+      "paths": [
+        "src/mge_planning/mge_planning/replan.py",
+        "tests/planning/test_replan_policy.py",
+        "docs/replan_policy.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "README.md"
+      ],
+      "use": "Preserve original mission reserves and phase-aware goal/return/path context, reconcile main documentation conflicts and retain all existing declarations and scientific/integration gates."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "code_and_configuration",
+      "generation": "AI-assisted edit requested by the repository owner",
+      "paths": [
+        ".github/workflows/ci.yml"
+      ],
+      "use": "Rename the workflow display name from Scaffold checks to CI checks; preserve triggers, jobs and commands."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "public_raster_recording",
+      "generation": "AI-assisted code, tests and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_gateway/mge_gateway/public_rasters.py",
+        "src/mge_gateway/mge_gateway/recorder.py",
+        "src/mge_gateway/mge_gateway/replay.py",
+        "src/mge_gateway/mge_gateway/replay_check.py",
+        "src/mge_gateway/mge_gateway/contract_replay.py",
+        "src/mge_mapping/mge_mapping/node.py",
+        "src/mge_sim/mge_sim/mock_terrain.py",
+        "tests/unit/test_public_rasters.py",
+        "tests/integration/test_vertical_terrain.py",
+        "tests/integration/test_replay_package.py",
+        "tests/integration/test_terrain_batch.py",
+        "docs/ICD.md",
+        "docs/REPLAY_CONTRACT.md",
+        "docs/integration_log.md",
+        "docs/handoffs/jesus.md"
+      ],
+      "use": "Publish the observed mask in the stamped map batch and record the public prior and per-version belief, sigma and observed cells as the replay raster attachment, validated offline. Recorded rasters copy public layers and SIMULATED test observations; no terrain, scientific observation or mission result is generated."
     },
     {
       "tool": "OpenAI Codex",
@@ -641,6 +875,156 @@
     },
     {
       "tool": "OpenAI Codex",
+      "kind": "planner_remote_reconciliation_and_validation",
+      "generation": "AI-assisted merge resolution and documentation; actual software execution results",
+      "paths": [
+        "docs/planner_pr12_publication.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "docs/replan_policy.md",
+        "README.md",
+        "src/mge_planning/mge_planning/replan.py",
+        "tests/planning/test_replan_policy.py",
+        "evidence/planner-pr12-publish-20261114"
+      ],
+      "use": "Preserve local0726082 and remote38ad692 histories and main7c16cd8 contributions; retain all planner guards and source-owner implementations, reconcile disclosures and record real tests without claiming physical or scientific mission acceptance."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "estimated_terrain_scope_decision_documentation",
+      "generation": "AI-assisted documentation of the project owner accepted scope decision; implementation and acceptance pending",
+      "paths": [
+        "docs/decisions/2026-11-14-estimated-terrain-planning.md",
+        "AGENTS.md",
+        "docs/ICD.md",
+        "docs/mission_checklist.md",
+        "docs/team.md",
+        "docs/research_hypotheses.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Record D-EST-01 superseding the blanket observation prerequisite for hypothetical planning over valid orbital estimates. Preserve NoData/obstacle distinctions, provenance/uncertainty, contradiction-driven invalidation/stop/replan and ownership. Keep integration steps 4/5 open and scene/size/domain-randomization extensions optional. No implementation, generated terrain, media, experiment or mission result claimed."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "integration_test_isolation",
+      "generation": "AI-assisted test fixtures and documentation, directed and reviewed by the integration owner",
+      "paths": [
+        "tests/integration/conftest.py",
+        "tests/integration/test_replay_package.py",
+        "tests/integration/test_vertical_execution.py",
+        "tests/integration/test_vertical_mock.py",
+        "tests/integration/test_vertical_planner.py",
+        "tests/integration/test_vertical_terrain.py",
+        "docs/integration_log.md"
+      ],
+      "use": "Isolate each integration module in its own ROS domain and wait for the planner service, the mission's map and recorded rasters before acting. No scientific observation or mission result is generated."
+    },
+    {
+      "tool": "OpenAI Codex (source model, owner-confirmed); Claude (Anthropic) through Claude Code (preparation script, realism pass, viewer code and tests)",
+      "kind": "ai_generated_3d_model_and_preparation_code",
+      "generation": "Source 3D model generated with OpenAI Codex by the owner; edited by a deterministic AI-assisted Blender script",
+      "paths": [
+        "web/scripts/blender/source/base-marciana-v2.blend",
+        "web/scripts/blender/prepare_base.py",
+        "web/public/assets/models/base.glb",
+        "web/src/components/BaseModel.tsx",
+        "web/tests/baseModel.test.ts"
+      ],
+      "use": "Team Mars base (hub, three modules, corridors, hangar, geodesic dome, solar field). The script removes its own ground and rocks and adds a deterministic realism pass: dust vertex colours, regolith sandbag berms, thermal radiators, a comms mast and power cables. Untextured, no agency logos, flags or mission marks. Visual context only; it does not affect routes or data.",
+      "source_sha256": "1599ec1bea327ead66e000a667e3791aa004c91502ab0bf1664febad93f646ee"
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_and_derived_data",
+      "generation": "AI-assisted extraction script and viewer code; the values are copied or grouped from public NASA feeds and a published paper, none generated",
+      "paths": [
+        "web/scripts/extract-atmosphere.mjs",
+        "web/public/replay/demo/atmosphere.json",
+        "web/src/lib/atmos.ts",
+        "web/src/components/AtmosPanel.tsx",
+        "web/tests/atmos.test.ts"
+      ],
+      "use": "Atmos tab: latest Perseverance MEDA daily summaries at Jezero, Curiosity REMS daily summaries at Gale grouped by solar longitude (medians), and MSL RAD surface dose rates from Hassler et al. (2014). Outreach summaries, not the PDS science archive; Gale and RAD values are another site's reference, not Jezero measurements. Display only."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_and_tests",
+      "generation": "AI-assisted generation",
+      "paths": [
+        "web/src/lib/provenance.ts",
+        "web/src/data/gatewayReplay.ts",
+        "web/src/data/replayAdapter.ts",
+        "web/src/components/Frame.tsx",
+        "web/src/components/AgentLayer.tsx",
+        "web/tests/provenance.test.ts",
+        "web/tests/gatewayReplay.test.ts"
+      ],
+      "use": "Viewer consumption of source_mode (ICD section 6.1 proposed in PR #11): REPLAY · MOCK / SIMULATION / UNKNOWN status, LIVE refused, MOCK terrain evidence wins. Drone drawn at its true height above the drawn ground and a true-size agents option."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_tests_and_derived_data",
+      "generation": "AI-assisted code; values derived from or resampled out of the CTX DTM and orthomosaic, none generated",
+      "paths": [
+        "web/src/lib/slope.ts",
+        "web/tests/slope.test.ts",
+        "web/scripts/extract-ctx-context.mjs",
+        "web/scripts/extract-ctx-ortho.mjs",
+        "web/public/replay/demo/context.json",
+        "web/public/replay/demo/context_ortho.png",
+        "web/src/components/ContextTerrain.tsx",
+        "web/src/components/CutawayBlock.tsx",
+        "web/tests/contextTerrain.test.ts"
+      ],
+      "use": "Slope layer (Horn 3x3 on the orbital CTX DTM), the mission area drawn as a solid block with plain walls, and optional 20 km surroundings from the same CTX DTM (100 m box average) and orthomosaic (40 m). Context only; never read by the planner or mission."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_and_tests",
+      "generation": "AI-assisted generation",
+      "paths": [
+        "web/src/lib/astronautPose.ts",
+        "web/src/components/AstronautModel.tsx",
+        "web/src/components/AgentLayer.tsx",
+        "web/src/components/CameraBar.tsx",
+        "web/src/components/ViewRotator.tsx",
+        "web/src/components/LiveClocks.tsx",
+        "web/src/lib/marsClock.ts",
+        "web/tests/marsClock.test.ts",
+        "web/src/components/Downwash.tsx",
+        "web/scripts/make-demo-fixture.mjs",
+        "web/public/replay/demo/timeline.json",
+        "web/public/replay/demo/routes.json",
+        "web/src/components/RadialHud.tsx",
+        "web/src/components/HudGauge.tsx",
+        "web/src/lib/atmosMap.ts",
+        "web/src/lib/sun.ts",
+        "web/src/lib/labels.ts",
+        "web/src/data/gatewayReplay.ts",
+        "web/src/data/replayAdapter.ts",
+        "web/tests/gatewayReplay.test.ts",
+        "web/tests/atmosMap.test.ts",
+        "web/src/lib/resources.ts",
+        "web/tests/resources.test.ts",
+        "web/src/styles.css",
+        "web/src/components/FollowCamera.tsx",
+        "web/src/components/MissionScene.tsx",
+        "web/src/components/VehicleModel.tsx",
+        "web/src/components/FootDust.tsx",
+        "web/src/lib/atmos.ts",
+        "web/src/lib/replay.ts",
+        "web/src/lib/smoothing.ts",
+        "web/src/App.tsx",
+        "web/tests/astronaut.test.ts",
+        "web/tests/atmos.test.ts",
+        "web/tests/replay.test.ts",
+        "web/tests/smoothing.test.ts"
+      ],
+      "use": "Viewer display only: walk cycle re-timed and pelvis motion kept for the legs so the planted foot does not slide; distance pins shown only when a model is a few pixels tall; grab-to-drag map camera; cameras for each agent and the base; camera kept above the drawn terrain; replay restart skips the idle lead-in; running crew dose estimate from the published RAD surface rate (not a dosimeter reading); monotone cubic interpolation between received samples; drone drawn with gentle take-off and landing; rover tilted to the terrain with spinning wheels; boot-shaped footprints; radial agent HUD with per-element gauges (use rates derived from the received samples, route figures as published, latest MEDA summary, pressure map estimated barometrically from it); astronaut projected shadow; files.public_rasters attachment read and validated; live Earth and Mars clocks (Mars24 algorithm, NASA GISS); drone rotor spin-up, blur and downwash dust; demo regenerated with rover turns in place and a drone spin-up/climb/descent profile (simulated values). No data or values generated."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "mission_cost_duration_and_success_contract_packet",
       "generation": "AI-assisted code, configuration, source synthesis and analytical diagnostics, pending review",
       "paths": [
@@ -665,15 +1049,47 @@
         "evidence/mission-cost-closure-20261114"
       ],
       "use": "Prepare a hash-bound scientific cost agreement packet and 38 baseline plus seven duration vectors; distinguish published lunar model primitives, D-RATS reported complete sample durations and prescribed ARGOS blocks from our pending inspection/phase-allocation assumptions; evaluate the existing public-prior probe with unchanged experimental budgets/reserves; document strict success criteria and known missing runtime evidence/progress bindings. Preserve all JZ-P01..07 approved values and original receipt. Read main2f50ae6 and planner69101e9 without merging or modifying their owner implementations. Retain model mismatch and operational gates. No terrain, mock, task, observation, integrated mission result, media or new approval is generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "mission_main_conflict_reconciliation",
+      "generation": "AI-assisted merge reconciliation, documentation and software validation",
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "docs/handoffs/david.md",
+        "docs/cost_agreement_handoff.md",
+        "evidence/mission-reconciliation-20261114"
+      ],
+      "use": "Reconcile mission ec819e5 with published main5898e7d, preserving both histories, all contributor disclosures and generated-media declarations. Retain scenario-value approval, cost mismatch and execution gates. Keep owner implementations and existing contracts unchanged; record fresh software checks and model diagnostics, not a scientific or LIVE mission result."
     }
   ],
-  "generated_media": [],
+  "generated_media": [
+    {
+      "path": "web/public/assets/portraits/human_1.webp",
+      "kind": "ai_generated_image",
+      "tool": "ChatGPT (OpenAI) image generation, supplied by the owner (the source carries a 'Created with ChatGPT' mark)",
+      "editing": "Cropped to the face and resized to 256 x 256 with Pillow; a visible 'AI-generated' band burned into the bottom of the image",
+      "watermark": "AI-generated (burned into the pixels; legible at the 80 px display size)",
+      "use": "Illustrative portrait beside astronaut human_1 in the viewer's details panel. Not a photograph of a crew member and not NASA data; no NASA logos, flags or mission marks.",
+      "sha256": "7d0b020623f6c864c1486a7320961ad62e5361e8d7bfc11d63db85cfcbf24e3e"
+    },
+    {
+      "path": "web/public/assets/intro/mars-gods-eye-intro.webm",
+      "kind": "ai_generated_video_with_audio_track",
+      "tool": "Kling (Kuaishou) video generation, supplied by the owner; the file's AIGC metadata names ContentProducer 'kling' (ProduceID KLingMuse_f3500bd8-5e38-45c9-b8ab-e8ab688814eb)",
+      "editing": "A visible 'AI-generated' label burned into the bottom-right corner of every frame with ffmpeg drawtext (VP9 re-encode); audio track and AIGC metadata copied unchanged (5.0 s, 1920 x 1080, VP9 video, Opus audio track)",
+      "watermark": "AI-generated (burned into the pixels of every frame, bottom-right; stays in downloads and captures of the file). The viewer also shows an 'AI-generated \u00b7 Kling' label over the clip (web/src/components/Intro.tsx)",
+      "audio": "The audio track is treated as AI-generated; it is declared here and in the AIGC metadata of the file; the viewer plays the clip muted",
+      "use": "Opening intro screen of the viewer (skippable). Project emblem only; no NASA logos, flags or mission marks. Not data.",
+      "sha256": "4897e14fcfc185e9ec623d1f4401807706193e1614eb780431675b8641f73581"
+    }
+  ],
   "scientific_datasets_generated": false,
   "measured_results_generated": true,
   "notes": [
     "Project idea and science specifications supplied by the human team.",
     "Update this register and descriptive disclosure when generated artifacts change.",
-    "No generated bitmap, video or audio asset is included at scaffold time.",
     "Fresh CTX/HiRISE processing occurs during competition; source observations pre-exist and are cited.",
     "Contract reconciliation synthetic raster attachments and metadata exist only in explicitly labelled tests; no NASA dataset, measured outcome, image, video or audio is generated.",
     "Terrain arrays in data/sample/ and data/reference/ are derived via GDAL/rasterio from observational NASA PDS / USGS Astrogeology products, not AI-generated.",
@@ -683,7 +1099,8 @@
     "Mission coefficients remain proposed; accepting a lunar analog approach does not approve quantitative Mars EVA limits.",
     "Measured-results flags refer to physical/scientific measurements. Software validation and synthetic model diagnostics are recorded separately; no mission or A/B/C result is asserted.",
     "Main synchronization preserves mission and integrated viewer declarations; the provenance test moved from web/src/lib to web/tests in the viewer merge.",
-    "Merged main contributor confirmation supersedes the earlier pending confirmation for the same retained dev/jesus commit; original history is preserved."
+    "Merged main contributor confirmation supersedes the earlier pending confirmation for the same retained dev/jesus commit; original history is preserved.",
+    "No generated bitmap, video or audio asset was included at scaffold time; the only generated image since is listed in generated_media."
   ],
   "retained_contributions": [
     {
@@ -706,10 +1123,47 @@
       ],
       "tool_declared_by_original_contributor": "Claude Code (Anthropic)",
       "use": "Retain byte-for-byte MOCK recorder fixture for adapter conformance, with original source/hash/AI disclosure metadata. No actual Mars measurements."
+    },
+    {
+      "source_ref": "dev/jesus",
+      "commit": "00c8e44b8b50a6f893c122fff1818eeaf48825bb",
+      "scope": [
+        "src/mge_interfaces",
+        "src/mge_sim/mge_sim/mock_agents.py",
+        "src/mge_bringup/launch/smoke.launch.py",
+        "tests/contract",
+        "scripts/dev.sh"
+      ],
+      "use": "Historical pre-confirmation record; original source/scope retained. Integration contributor tool-use history is confirmed in the Integration work section of AI_USAGE.md."
+    },
+    {
+      "source_ref": "dev/jesus",
+      "commit": "00c8e44b8b50a6f893c122fff1818eeaf48825bb",
+      "scope": [
+        "src/mge_interfaces",
+        "src/mge_sim/mge_sim/mock_agents.py",
+        "src/mge_bringup/launch/smoke.launch.py",
+        "tests/contract",
+        "scripts/dev.sh"
+      ],
+      "use": "Historical pre-confirmation record retained with its source and scope; contributor tool-use history is now confirmed in the Integration work section of AI_USAGE.md and the corresponding retained-contribution entry above."
+    },
+    {
+      "source_ref": "dev/jesus",
+      "commit": "00c8e44b8b50a6f893c122fff1818eeaf48825bb",
+      "scope": [
+        "src/mge_interfaces",
+        "src/mge_sim/mge_sim/mock_agents.py",
+        "src/mge_bringup/launch/smoke.launch.py",
+        "tests/contract",
+        "scripts/dev.sh"
+      ],
+      "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
     }
   ],
   "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements",
   "software_validation_results_recorded": true,
   "synthetic_model_diagnostics_recorded": true,
-  "integrated_mission_results_recorded": false
+  "integrated_mission_results_recorded": false,
+  "uses_note_base_model": "base-marciana-v2: AI-generated 3D geometry (no images or video). Renders or captures that show it in the delivery should follow the AI-generated image/video watermark rule."
 }

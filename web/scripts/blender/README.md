@@ -2,6 +2,27 @@
 
 Run with Blender 5.2 in background mode from `web/`.
 
+## Surface base
+
+Source: the team's `source/base-marciana-v2.blend` (AI-generated with OpenAI Codex by the owner, 14 November 2026,
+SHA-256 `1599ec1bea327ead66e000a667e3791aa004c91502ab0bf1664febad93f646ee`): hub, three
+habitat modules, corridors, hangar, geodesic dome and solar field, untextured, without agency
+logos, flags or mission marks. `prepare_base.py` turns it into `public/assets/models/base.glb`:
+
+- removes its own ground and rocks (the viewer draws the real CTX terrain);
+- realism pass: matte cladding, a dust film fading from the ground up to 1.6 m (vertex
+  colours), regolith sandbag berms against the module block (radiation shielding), two
+  thermal radiators, a comms mast with a dish and guy lines, and power cables from the solar
+  field to the hub. The solar panels are checked to face the equator (south at 18° N);
+- exports GLB with +Y up and the origin on the ground at the hub centre.
+
+`tests/baseModel.test.ts` checks that no ground or rocks remain, the model sits on y = 0 at
+real scale, carries no textures and stays under 60k triangles.
+
+```sh
+blender -b scripts/blender/source/base-marciana-v2.blend --python scripts/blender/prepare_base.py -- public/assets/models/base.glb [preview.png]
+```
+
 ## Rover and drone (official NASA/JPL models, branding removed)
 
 Sources (credit NASA/JPL-Caltech), downloaded 14 November 2026:

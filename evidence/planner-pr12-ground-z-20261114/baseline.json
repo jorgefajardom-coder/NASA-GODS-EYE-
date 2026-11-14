@@ -1,0 +1,18 @@
+{
+  "previous_evidence": "evidence/planner-pr12-review-20261114/validation.json",
+  "head": "0215b724e375e1256aaf689573e52fda04ebacae",
+  "pending_merge_target": "4b72d309a4ff3d87650289b8367044cff16b915f",
+  "before": {
+    "test_planner_routes_inside_the_observed_block": "ERROR/INVALID_START_Z",
+    "test_simulated_observation_replans_on_the_new_map_version": "BLOCKED/INVALID_START_Z",
+    "test_recorded_run_is_readable_without_backend": "timeline 6 records vs manifest 5, plus snapshot-history mismatch"
+  },
+  "public_vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+  "sample_heights_m": {
+    "row12_col12": -2571.199462890625,
+    "row13_col12": -2571.32958984375,
+    "row19_col19": -2572.591552734375
+  },
+  "interpretation": "test-only static MOCK initial conditions; no physical telemetry projection or production missing-z convention",
+  "owner_review": "Jesus integration fixtures; David science/datum/tolerance; pending"
+}

@@ -1,0 +1,195 @@
+{
+  "recorded_on": "2026-11-14",
+  "branch": "feat/planner",
+  "head": "0215b724e375e1256aaf689573e52fda04ebacae",
+  "uncommitted_merge_target": "4b72d309a4ff3d87650289b8367044cff16b915f",
+  "status": "uncommitted_review_candidate_integration_blocked",
+  "review_url": "https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/pull/12#issuecomment-6882884265",
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "pytest": "8.4.2",
+      "fastapi": "0.162.7",
+      "httpx": "0.28.1",
+      "PyYAML": "6.0.3"
+    },
+    "node_actual": "24.18.1",
+    "node_pinned": "24.18.0",
+    "npm": "11.16.0",
+    "ros": "Jazzy, Ubuntu 24.04 WSL2"
+  },
+  "results": {
+    "windows_full": {
+      "tests": 835,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 16,
+      "passed": 819,
+      "junit": "windows_full.junit.xml",
+      "failed_cases": [],
+      "omissions": [
+        {
+          "classname": "",
+          "name": "tests.contract.test_generated_conversion",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.contract.test_interfaces",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.contract.test_mission_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.contract.test_mission_service",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.contract.test_planner_service",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.contract.test_profile_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.integration.test_replay_package",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.integration.test_terrain_batch",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.integration.test_vertical_mission",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.integration.test_vertical_mock",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.integration.test_vertical_planner",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "",
+          "name": "tests.integration.test_vertical_terrain",
+          "reason": "collection skipped"
+        },
+        {
+          "classname": "tests.mission.test_audit",
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[outside]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\pr12-review-final-full\\\\test_symlinks_cannot_open_exte0\\\\outside.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\pr12-review-final-full\\\\test_symlinks_cannot_open_exte0\\\\run\\\\public.json'"
+        },
+        {
+          "classname": "tests.mission.test_audit",
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[reference]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\pr12-review-final-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\reference\\\\hidden.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\pr12-review-final-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\public.json'"
+        },
+        {
+          "classname": "tests.mission.test_conformance",
+          "name": "test_package_symlink_escape_is_rejected",
+          "reason": "Host does not permit creating symlink fixtures"
+        },
+        {
+          "classname": "tests.mission.test_conformance",
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        }
+      ]
+    },
+    "d07_f034_review": {
+      "tests": 114,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 114,
+      "junit": "d07_f034_review.junit.xml",
+      "failed_cases": [],
+      "omissions": []
+    },
+    "jazzy_contract_mission_unit": {
+      "tests": 507,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 506,
+      "junit": "jazzy_contract_mission_unit.junit.xml",
+      "failed_cases": [],
+      "omissions": [
+        {
+          "classname": "tests.mission.test_conformance",
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        }
+      ]
+    },
+    "jazzy_ci_with_real_consumers": {
+      "tests": 608,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 604,
+      "junit": "jazzy_ci_with_real_consumers.junit.xml",
+      "failed_cases": [
+        {
+          "classname": "tests.integration.test_replay_package",
+          "name": "test_recorded_run_is_readable_without_backend",
+          "message": "AssertionError: assert ['timeline.js...the timeline'] == []\n  Left contains 2 more items, first extra item: 'timeline.jsonl: 6 records, manifest says 5'\n  Use -v to get more diff",
+          "details": "tmp_path = PosixPath('/mnt/c/Users/Admin/Desktop/NASA-GODS-EYE-/tmp/pr12-review-ros-ci/test_recorded_run_is_readable_0')\n\n    def test_recorded_run_is_readable_without_backend(tmp_path):\n        proc = subprocess.Popen(\n            ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',\n             f'port:={PORT}', 'record:=true', f'record_dir:={tmp_path}'],\n            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)\n        try:\n            wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,\n                     what='gateway and 3 agents')\n            r = httpx.post(f'{BASE}/api/mission/goal', json={**GOAL, 'request_id': 'req-1'})\n            assert r.json()['accepted'] is True\n    \n            def ready():\n                ms = httpx.get(f'{BASE}/api/run/{RUN_ID}/snapshot').json()['mission_state']\n                return ms if ms['mission_state'] == 'READY' else None\n    \n            live = wait_for(ready, what='READY')\n            package = os.path.join(tmp_path, RUN_ID)\n    \n            def recorded():\n                with open(os.path.join(package, 'snapshot.json'), encoding='utf-8') as f:\n                    ms = json.load(f)['mission_state']\n                return ms and ms['route_id'] == live['route_id']\n    \n            wait_for(recorded, what='route in the recorded snapshot')\n        finally:\n            os.killpg(proc.pid, signal.SIGINT)\n            try:\n                proc.wait(timeout=10)\n            except subprocess.TimeoutExpired:\n                os.killpg(proc.pid, signal.SIGKILL)\n    \n        # Everything is stopped: the gateway no longer answers.\n        try:\n            httpx.get(f'{BASE}/api/health', timeout=1.0)\n            raise AssertionError('gateway still running')\n        except httpx.HTTPError:\n            pass\n    \n>       assert check_package(package) == []\nE       AssertionError: assert ['timeline.js...the timeline'] == []\nE         Left contains 2 more items, first extra item: 'timeline.jsonl: 6 records, manifest says 5'\nE         Use -v to get more diff\n\ntests/integration/test_replay_package.py:59: AssertionError"
+        },
+        {
+          "classname": "tests.integration.test_terrain_batch",
+          "name": "test_planner_routes_inside_the_observed_block",
+          "message": "AssertionError: ('INVALID_START_Z', 'Supplied ground start z must match belief height within 1e-6 m; no vertical snapping is performed.')\nassert 'ERROR' == 'FEASIBLE'\n  - FEASIBLE\n  + ERROR",
+          "details": "probe = <tests.integration.test_terrain_batch.Probe object at 0x732ca4e03a40>\n\n    def test_planner_routes_inside_the_observed_block(probe):\n        batch = probe.batch(2)\n        free = [i for i, value in enumerate(batch['rover'].data) if value == 0]\n        assert free, 'no admissible observed cell for the rover'\n        decision = probe.plan('req-observed', 2, (12, 12), (19, 19))\n        assert decision.map_version_used == 2\n>       assert decision.status == 'FEASIBLE', (decision.reason_code, decision.detail)\nE       AssertionError: ('INVALID_START_Z', 'Supplied ground start z must match belief height within 1e-6 m; no vertical snapping is performed.')\nE       assert 'ERROR' == 'FEASIBLE'\nE         - FEASIBLE\nE         + ERROR\n\ntests/integration/test_terrain_batch.py:234: AssertionError"
+        },
+        {
+          "classname": "tests.integration.test_vertical_terrain",
+          "name": "test_simulated_observation_replans_on_the_new_map_version",
+          "message": "AssertionError: ('ERROR', 'INVALID_START_Z', 'Supplied ground start z must match belief height within 1e-6 m; no vertical snapping is performed.')\nassert 'BLOCKED' == 'READY'\n  - READY\n  + BLOCKED",
+          "details": "stack = <tests.integration.test_vertical_terrain.Stack object at 0x732ca4b8ab40>\n\n    def test_simulated_observation_replans_on_the_new_map_version(stack):\n        stack.observe_prior_block('obs-block', base_version=1)\n    \n        def replanned():\n            m = mission()\n            return m if m['map_version'] == 2 and m['mission_state'] in ('READY', 'BLOCKED') else None\n    \n        ms = wait_for(replanned, timeout_s=40.0, what='replan on map version 2')\n        route = ms['active_route']\n>       assert ms['mission_state'] == 'READY', (route['status'], route['reason_code'], route['detail'])\nE       AssertionError: ('ERROR', 'INVALID_START_Z', 'Supplied ground start z must match belief height within 1e-6 m; no vertical snapping is performed.')\nE       assert 'BLOCKED' == 'READY'\nE         - READY\nE         + BLOCKED\n\ntests/integration/test_vertical_terrain.py:195: AssertionError"
+        }
+      ],
+      "omissions": [
+        {
+          "classname": "tests.mission.test_conformance",
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        }
+      ]
+    }
+  },
+  "checks": {
+    "colcon": "8 packages built successfully",
+    "custom_interfaces": "6 messages and 2 services inspected",
+    "web": "84 tests passed; tsc/vite production build passed",
+    "repository": "passed: Static scaffold checks passed (8 ROS package manifests).",
+    "diff_check": "passed for staged and unstaged changes",
+    "unmerged_index_entries": 0
+  },
+  "limitations": [
+    "Two new real-terrain consumer failures: strict ground z guard rejects legacy z=0 requests. Requires Jesus/David contract decision; consumers unchanged.",
+    "Replay closure failure inherited from unchanged main integration code, reproduced again; owner review required.",
+    "Windows: 12 ROS modules skipped, 3 symlink privilege skips, 1 missing external planner snapshot. Jazzy: only the external snapshot omitted.",
+    "WSL initial HCS/ERROR_NO_SYSTEM_RESOURCES resolved on a later retry; current ROS counts are actual completed runs.",
+    "Node available patch differs from .nvmrc (24.18.1 vs 24.18.0); no dependency install performed for this correction.",
+    "Actual MissionManager transport/model-gate cases passed on synthetic MOCK terrain/agents; no approved full-mission or physical execution established.",
+    "F03.4 policy remains unwired to MissionManager/supervisor; no scientific model approval or authorization implied."
+  ]
+}

@@ -2,7 +2,8 @@ import type { MissionEvent } from '../types/icd';
 import { fmtSimTime } from '../lib/format';
 import { PlayIcon, RestartIcon } from './icons';
 
-export const SPEEDS = [1, 5, 10, 20, 40, 80] as const;
+/** Replay speeds offered; capped at 10x so the agents stay readable. */
+export const SPEEDS = [1, 5, 10] as const;
 
 interface Props {
   t: number;

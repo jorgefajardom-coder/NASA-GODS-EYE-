@@ -1,5 +1,14 @@
 # David - retain scientific mission authority and approve the model
 
+## Current continuation — 14 November 2026, main 5ab1387
+
+Follow [CONT-DAV-01..04](../team_continuation_plan.md#david--mission-authority-and-scientific-acceptance):
+agree executable scenario/costs and drone scope with Diego/Jesús; bind evidence
+and outcome criteria; review Fajardo's NASA-criteria dossier and Daniel's
+larger-map feasibility; freeze experiment metrics before comparisons. The plan
+includes dependencies, acceptance and organizer reminders. Historical inventories
+below retain their original cut; they do not supersede this next-work allocation.
+
 Active branch: **`feat/mission`**. Audited head: `cf292107277e1aaf130d6c0ecd33904a22638f4f` (scientific mission authority). This head is unchanged at the final refresh. Main `004b3b2` now includes
 Diego's real planner externally via PR #2; Jesus's latest integration branch
 already tests it behind MOCK mission/terrain. Existing handoff is `docs/mission_handoff.md`; also read `docs/science_models.md`, `docs/science_benchmark.md`, `docs/science_decisions.md` and the retained mission validation/model-check evidence on that branch. Continue its actual manager, models, adapters and tests rather than the main scaffold.
@@ -136,3 +145,21 @@ At scope freeze/readiness/pre-submission, remind Jesús to obtain and record the
 local organizer's explicit endorsement with review margin; David is backup.
 No organizer contact, endorsement, external team message or A/B/C execution is
 performed by this packet.
+
+## Requested merge reconciliation
+
+The owner requested conflict resolution and integration after the two pushes.
+The scenario approval commit `09d7d6a` is already in main through PR14. The
+remaining packet `ec819e5` is reconciled with published main
+`5898e7d74c3eb00a018a2061a9b2264d947f12a8`. Two content conflicts in the
+mandatory AI registers retain both sides, including all main media declarations.
+Owner implementations and shared contracts are retained from main unchanged.
+Earlier source/validation records remain historical snapshots, not replaced.
+
+The [fresh comparison](../../evidence/mission-reconciliation-20261114/conformance-main/conformance.json)
+against that main planner still reports one agreement and six disagreements,
+authorization BLOCKED. The [new readiness](../../evidence/mission-reconciliation-20261114/readiness/scenario_diagnostic.json)
+preserves approved experimental values, zero findings and six pending inputs.
+This Git merge does not close scientific or execution gates. Fresh combined
+checks and exact tested source hashes are retained with the
+[reconciliation evidence](../../evidence/mission-reconciliation-20261114/README.md).

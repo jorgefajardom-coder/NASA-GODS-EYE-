@@ -2,20 +2,36 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
-import { dampFactor } from '../lib/smoothing';
 
-interface Props {
-  /** Agent to follow, or null to leave the camera free. */
-  agentId: string | null;
-  /** Follow time constant, s (0 = the camera is locked to the agent). */
-  smoothingS: number;
+/** Where the camera sits relative to what it follows (m): behind, above, and the look-at height. */
+export interface Framing {
+  distanceM: number;
+  heightM: number;
+  lookAtM: number;
 }
 
-const DISTANCE_M = 8;
-const HEIGHT_M = 3.4;
-const LOOK_AT_HEIGHT_M = 1.25;
-/** Minimum easing of the camera's vertical follow (s). */
-const VERTICAL_TAU_S = 0.45;
+/**
+ * Frame order (lower runs first): agent poses are eased at -2, then this camera at -1 (mounted
+ * before the orbit controls, which update at -1), then the ground clamp (-1, mounted after the
+ * controls), the distance scaling (-0.5) and finally the labels (drei Html, 0). Every label is
+ * then placed with the camera of the same frame; placing it with the previous frame's camera
+ * made the followed drone's label vibrate.
+ */
+export const FOLLOW_PRIORITY = -1;
+
+/** Closest orbit distance (m) while following, and back in the free view (MissionScene). */
+const FOLLOW_MIN_DISTANCE_M = 0.3;
+const FREE_MIN_DISTANCE_M = 0.35; // same as MIN_ORBIT_DISTANCE_M in MissionScene
+
+/** Over-the-shoulder view of an agent. */
+export const AGENT_FRAMING: Framing = { distanceM: 6, heightM: 2.6, lookAtM: 1.25 };
+
+interface Props {
+  /** Name of the scene object to follow (an agent group or the base anchor), or null for the free camera. */
+  target: string | null;
+  framing?: Framing;
+}
+
 
 /**
  * Third-person follow view. It reads the drawn (already eased) agent group from the
@@ -23,7 +39,7 @@ const VERTICAL_TAU_S = 0.45;
  * agent stays steady on screen at any zoom. It only moves the camera and the orbit
  * target; the agent pose is never changed. The user can still orbit and zoom.
  */
-export function FollowCamera({ agentId, smoothingS }: Props) {
+export function FollowCamera({ target, framing = AGENT_FRAMING }: Props) {
   const camera = useThree((s) => s.camera);
   const scene = useThree((s) => s.scene);
   const controls = useThree((s) => s.controls) as OrbitControlsImpl | null;
@@ -35,44 +51,41 @@ export function FollowCamera({ agentId, smoothingS }: Props) {
 
   useEffect(() => {
     if (!controls) return;
-    if (!agentId && following.current && home.current) {
+    if (!target && following.current && home.current) {
       camera.position.copy(home.current.pos);
       controls.target.copy(home.current.target);
-      controls.minDistance = 30;
+      controls.minDistance = FREE_MIN_DISTANCE_M;
       controls.update();
       following.current = null;
     }
-  }, [agentId, controls, camera]);
+  }, [target, controls, camera]);
 
-  // Default priority: runs after the agent groups were eased (priority -2) in the same frame.
-  useFrame((_, dt) => {
-    if (!agentId || !controls) return;
-    const obj = scene.getObjectByName(`agent-${agentId}`);
+  useFrame(() => {
+    if (!target || !controls) return;
+    const obj = scene.getObjectByName(target);
     if (!obj) return;
     obj.getWorldPosition(world.current);
-    goal.current.set(world.current.x, world.current.y + LOOK_AT_HEIGHT_M, world.current.z);
+    goal.current.set(world.current.x, world.current.y + framing.lookAtM, world.current.z);
 
-    if (following.current !== agentId) {
-      // Entering: remember the orbital view and place the camera behind the agent's shoulder.
+    if (following.current !== target) {
+      // Entering (or switching target): remember the orbital view and place the camera behind the target.
       if (!following.current) home.current = { pos: camera.position.clone(), target: controls.target.clone() };
       const yaw = obj.rotation.y;
       controls.target.copy(goal.current);
-      camera.position.set(world.current.x - Math.cos(yaw) * DISTANCE_M, world.current.y + HEIGHT_M, world.current.z + Math.sin(yaw) * DISTANCE_M);
-      controls.minDistance = 3;
+      camera.position.set(world.current.x - Math.cos(yaw) * framing.distanceM, world.current.y + framing.heightM, world.current.z + Math.sin(yaw) * framing.distanceM);
+      controls.minDistance = FOLLOW_MIN_DISTANCE_M;
       controls.update();
-      following.current = agentId;
+      following.current = target;
       return;
     }
     // Move camera and orbit target together so the user's chosen angle and zoom are kept.
     delta.current.copy(goal.current).sub(controls.target);
-    // Horizontal follow uses the chosen smoothing; vertical changes (steps, terrain relief) are
-    // always eased more slowly so the view does not jerk up and down.
-    const kh = dampFactor(dt, smoothingS);
-    const kv = dampFactor(dt, Math.max(smoothingS * 2, VERTICAL_TAU_S));
-    delta.current.set(delta.current.x * kh, delta.current.y * kv, delta.current.z * kh);
+    // Locked on the target: a lagging follow let the target drift and catch up on screen, which
+    // read as jumps (worst on the drone's altitude changes). Motion is already smoothed upstream
+    // (monotone cubic between samples, eased drawn pose), so the lock itself is steady.
     controls.target.add(delta.current);
     camera.position.add(delta.current);
-  });
+  }, FOLLOW_PRIORITY);
 
   return null;
 }

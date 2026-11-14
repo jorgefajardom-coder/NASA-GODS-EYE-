@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="42.407" timestamp="2026-11-14T16:00:24.519810" hostname="Monitor"><testcase classname="tests.integration.test_replay_package" name="test_recorded_run_is_readable_without_backend" time="16.556"><failure message="AssertionError: assert ['GOAL_ACCEPT...TE_PUBLISHED'] == ['GOAL_ACCEPT...TATE_CHANGED']&#10;  Right contains one more item: 'MISSION_STATE_CHANGED'&#10;  Use -v to get more diff">tmp_path = PosixPath('/mnt/c/Users/Admin/Desktop/NASA-GODS-EYE-/tmp/pr12-main-baseline-run/test_recorded_run_is_readable_0')
+
+    def test_recorded_run_is_readable_without_backend(tmp_path):
+        proc = subprocess.Popen(
+            ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',
+             f'port:={PORT}', 'record:=true', f'record_dir:={tmp_path}'],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
+        try:
+            wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,
+                     what='gateway and 3 agents')
+            r = httpx.post(f'{BASE}/api/mission/goal', json={**GOAL, 'request_id': 'req-1'})
+            assert r.json()['accepted'] is True
+
+            def ready():
+                ms = httpx.get(f'{BASE}/api/run/{RUN_ID}/snapshot').json()['mission_state']
+                return ms if ms['mission_state'] == 'READY' else None
+
+            live = wait_for(ready, what='READY')
+            package = os.path.join(tmp_path, RUN_ID)
+
+            def recorded():
+                with open(os.path.join(package, 'snapshot.json'), encoding='utf-8') as f:
+                    ms = json.load(f)['mission_state']
+                return ms and ms['route_id'] == live['route_id']
+
+            wait_for(recorded, what='route in the recorded snapshot')
+        finally:
+            os.killpg(proc.pid, signal.SIGINT)
+            try:
+                proc.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                os.killpg(proc.pid, signal.SIGKILL)
+
+        # Everything is stopped: the gateway no longer answers.
+        try:
+            httpx.get(f'{BASE}/api/health', timeout=1.0)
+            raise AssertionError('gateway still running')
+        except httpx.HTTPError:
+            pass
+
+        assert check_package(package) == []
+        with open(os.path.join(package, 'manifest.json'), encoding='utf-8') as f:
+            manifest = json.load(f)
+        assert manifest['mode'] == 'REPLAY' and manifest['recorded_from'] == 'LIVE'
+        assert manifest['source_mode'] == 'MOCK'      # recorded off a running MOCK graph
+        assert manifest['clock_source'] == 'system'
+        assert len(manifest['agents']) == 3
+        with open(os.path.join(package, 'snapshot.json'), encoding='utf-8') as f:
+            snap = json.load(f)
+        assert snap['mission_state']['active_route']['status'] == 'FEASIBLE'
+        assert snap['mission_state']['route_id'] == live['route_id']
+&gt;       assert [e['event_type'] for e in snap['events']] == [
+            'GOAL_ACCEPTED', 'MISSION_STATE_CHANGED', 'ROUTE_PUBLISHED', 'MISSION_STATE_CHANGED']
+E       AssertionError: assert ['GOAL_ACCEPT...TE_PUBLISHED'] == ['GOAL_ACCEPT...TATE_CHANGED']
+E         Right contains one more item: 'MISSION_STATE_CHANGED'
+E         Use -v to get more diff
+
+tests/integration/test_replay_package.py:71: AssertionError</failure></testcase><testcase classname="tests.integration.test_vertical_terrain" name="test_real_terrain_refuses_the_mock_planner" time="4.525" /><testcase classname="tests.integration.test_vertical_terrain" name="test_jezero_batch_reaches_the_gateway_as_a_mock_run" time="15.607" /><testcase classname="tests.integration.test_vertical_terrain" name="test_unobserved_terrain_is_unknown_not_infeasible" time="0.400" /><testcase classname="tests.integration.test_vertical_terrain" name="test_simulated_observation_replans_on_the_new_map_version" time="0.285" /><testcase classname="tests.integration.test_vertical_terrain" name="test_recorded_package_is_complete_after_the_run_stops" time="0.629" /><testcase classname="tests.integration.test_vertical_terrain" name="test_recorded_public_rasters_make_the_package_viewer_ready" time="0.021" /></testsuite></testsuites>

@@ -5,6 +5,8 @@ A package is a directory named after the run:
     <run_id>/manifest.json    what the run is and which files it has
     <run_id>/timeline.jsonl   one accepted record per line, in arrival order
     <run_id>/snapshot.json    last known state, same shape as the live snapshot
+    <run_id>/public_rasters.json   public prior and per-version layers, once the
+                              run has published a complete batch (optional)
 
 Timeline records have the shape of the gateway WebSocket messages
 (`type` plus an object of that name), so a web client can feed live messages
@@ -18,6 +20,7 @@ overwritten.
 import json
 import os
 
+from mge_gateway.public_rasters import FILE as RASTERS
 from mge_gateway.store import RunStore
 
 TIMELINE = 'timeline.jsonl'
@@ -58,6 +61,7 @@ class ReplayWriter:
         self.first_s = None
         self.last_s = 0.0
         self._last_state = None
+        self._rasters = False
         self._timeline = open(os.path.join(self.dir, TIMELINE), 'w', encoding='utf-8')
         self._write_summary()
 
@@ -87,6 +91,14 @@ class ReplayWriter:
         self._write_summary()
         return True
 
+    def write_public_rasters(self, attachment):
+        """Replace the attachment; the manifest names it from then on."""
+        if attachment.get('run_id') != self.store.run_id:
+            raise ValueError('public rasters of another run')
+        write_json(os.path.join(self.dir, RASTERS), attachment)
+        self._rasters = True
+        self._write_summary()
+
     def _write_summary(self):
         state = self.store.state()
         write_json(os.path.join(self.dir, SNAPSHOT), self.store.envelope(
@@ -105,7 +117,8 @@ class ReplayWriter:
             terrain_meta=self.store.meta(),
             agents=[{'agent_id': a['agent_id'], 'agent_kind': a['agent_kind']}
                     for a in (state['agents'] if state else [])],
-            files={'timeline': TIMELINE, 'snapshot': SNAPSHOT}))
+            files={'timeline': TIMELINE, 'snapshot': SNAPSHOT,
+                   **({'public_rasters': RASTERS} if self._rasters else {})}))
 
     def close(self):
         self._timeline.close()

@@ -1,8 +1,10 @@
 """ROS 2 Mapping node for incremental belief updates and traversability publication.
 
 Publishes the public map batch the planner consumes (docs/ICD.md, section 5):
-metadata first, then belief, sigma and one traversability mask per agent kind,
-all with the same stamp. One stamp identifies one map version and is never
+metadata first, then belief, sigma, the observed mask and one traversability
+mask per agent kind, all with the same stamp. The observed mask (mono8, 1 for a
+cell some applied observation covered) is for the recorder and viewer; the
+planner does not subscribe to it. One stamp identifies one map version and is never
 reused. Topics have no common delivery order, so the same batch is repeated.
 """
 
@@ -67,6 +69,7 @@ def main(args=None) -> None:
         meta_pub = node.create_publisher(TerrainMeta, "/mge/terrain/meta", latched_qos)
         belief_pub = node.create_publisher(Image, "/mge/terrain/belief", latched_qos)
         sigma_pub = node.create_publisher(Image, "/mge/terrain/sigma", latched_qos)
+        observed_pub = node.create_publisher(Image, "/mge/terrain/observed", latched_qos)
         trav_pubs = {
             kind: node.create_publisher(OccupancyGrid, f"/mge/terrain/traversability/{kind}", latched_qos)
             for kind in AGENT_SLOPE_LIMITS_DEG
@@ -114,6 +117,16 @@ def main(args=None) -> None:
                 img.step = bmap.cols * 4
                 img.data = arr.astype("<f4").tobytes()
                 messages.append((pub, img))
+
+            observed = Image()
+            observed.header = meta.header
+            observed.height = bmap.rows
+            observed.width = bmap.cols
+            observed.encoding = "mono8"
+            observed.is_bigendian = 0
+            observed.step = bmap.cols
+            observed.data = bmap.observed_mask.astype("u1").tobytes()
+            messages.append((observed_pub, observed))
 
             for kind, max_slope in AGENT_SLOPE_LIMITS_DEG.items():
                 occ = OccupancyGrid()

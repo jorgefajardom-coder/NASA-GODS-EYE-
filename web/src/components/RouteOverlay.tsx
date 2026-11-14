@@ -1,3 +1,4 @@
+import { LABEL_Z } from '../lib/labels';
 import { Html, Line } from '@react-three/drei';
 import type { Point, RouteDecision } from '../types/icd';
 import { enuToThree } from '../lib/coords';
@@ -85,7 +86,7 @@ function RouteLabel({
   if (!point) return null;
   const [x, y, z] = enuToThree(point, exaggeration);
   return (
-    <Html position={[x, y + 10, z]} center zIndexRange={[20, 0]} className={`route-label route-label--${tone}`}>
+    <Html position={[x, y + 10, z]} center zIndexRange={LABEL_Z} className={`route-label route-label--${tone}`}>
       {children}
     </Html>
   );

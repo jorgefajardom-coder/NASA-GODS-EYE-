@@ -1,0 +1,168 @@
+{
+  "branch": "feat/planner",
+  "local_original": "072608222b961644bd3d48549baced349be97131",
+  "remote_planner": "38ad69215eaa4925c95f35b5355cbae9bec25bb2",
+  "first_merge": "4cda3a5c110f918f16a72ad94db8e49bfde6e2f5",
+  "main": "7c16cd8da21a61bb3dc8b94067ade01ffb3d7b27",
+  "results": {
+    "planning": {
+      "tests": 266,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 266,
+      "failed_cases": [],
+      "omissions": [],
+      "raw_sha256": "ff4bd211c6f3ea4fadd13c4d98172d9c266fc92dcbf6773c9bffd9b38731d21b",
+      "stored_sha256": "ff4bd211c6f3ea4fadd13c4d98172d9c266fc92dcbf6773c9bffd9b38731d21b"
+    },
+    "windows_full": {
+      "tests": 941,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 17,
+      "passed": 924,
+      "failed_cases": [],
+      "omissions": [
+        {
+          "name": "tests.contract.test_generated_conversion",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_interfaces",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mission_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mission_service",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_planner_service",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_profile_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_replay_package",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_terrain_batch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_mission",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_mock",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_planner",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_terrain",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[outside]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\pr12-publish-full\\\\test_symlinks_cannot_open_exte0\\\\outside.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\pr12-publish-full\\\\test_symlinks_cannot_open_exte0\\\\run\\\\public.json'"
+        },
+        {
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[reference]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\pr12-publish-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\reference\\\\hidden.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\pr12-publish-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\public.json'"
+        },
+        {
+          "name": "test_package_symlink_escape_is_rejected",
+          "reason": "Host does not permit creating symlink fixtures"
+        },
+        {
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        },
+        {
+          "name": "test_symlinked_public_archive_cannot_escape_package",
+          "reason": "Host does not allow symlink fixture: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\pr12-publish-full\\\\test_symlinked_public_archive_0\\\\outside.npz' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\pr12-publish-full\\\\test_symlinked_public_archive_0\\\\public\\\\terrain.npz'"
+        }
+      ],
+      "raw_sha256": "d2d5c1fb85562fc1070a40d2d3dab1cf48a496a1fc7866eac4b1006dece632ef",
+      "stored_sha256": "d2d5c1fb85562fc1070a40d2d3dab1cf48a496a1fc7866eac4b1006dece632ef"
+    },
+    "jazzy_contracts_mission_unit": {
+      "tests": 576,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 575,
+      "failed_cases": [],
+      "omissions": [
+        {
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        }
+      ],
+      "raw_sha256": "7024f3a51e401f5708d70661c819c5bdc0c609be23744a431ee0b1dbe759cb5e",
+      "stored_sha256": "7024f3a51e401f5708d70661c819c5bdc0c609be23744a431ee0b1dbe759cb5e"
+    },
+    "jazzy_extended": {
+      "tests": 678,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 675,
+      "failed_cases": [
+        {
+          "classname": "tests.integration.test_replay_package",
+          "name": "test_recorded_run_is_readable_without_backend",
+          "detail": "tmp_path = PosixPath('/mnt/c/Users/Admin/Desktop/NASA-GODS-EYE-/tmp/pr12-publish-ros-ci/test_recorded_run_is_readable_0')\n\n    def test_recorded_run_is_readable_without_backend(tmp_path):\n        proc = subprocess.Popen(\n            ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',\n             f'port:={PORT}', 'record:=true', f'record_dir:={tmp_path}'],\n            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)\n        try:\n            wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,\n                     what='gateway and 3 agents')\n            r = httpx.post(f'{BASE}/api/mission/goal', json={**GOAL, 'request_id': 'req-1'})\n            assert r.json()['accepted'] is True\n    \n            def ready():\n                ms = httpx.get(f'{BASE}/api/run/{RUN_ID}/snapshot').json()['mission_state']\n                return ms if ms['mission_state'] == 'READY' else None\n    \n            live = wait_for(ready, what='READY')\n            package = os.path.join(tmp_path, RUN_ID)\n    \n            def recorded():\n                with open(os.path.join(package, 'snapshot.json'), encoding='utf-8') as f:\n                    ms = json.load(f)['mission_state']\n                return ms and ms['route_id'] == live['route_id']\n    \n>           wait_for(recorded, what='route in the recorded snapshot')\n\ntests/integration/test_replay_package.py:45: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/integration/test_vertical_mock.py:42: in wait_for\n    value = predicate()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    def recorded():\n>       with open(os.path.join(package, 'snapshot.json'), encoding='utf-8') as f:\nE       FileNotFoundError: [Errno 2] No such file or directory: '/mnt/c/Users/Admin/Desktop/NASA-GODS-EYE-/tmp/pr12-publish-ros-ci/test_recorded_run_is_readable_0/it-replay/snapshot.json'\n\ntests/integration/test_replay_package.py:41: FileNotFoundError"
+        },
+        {
+          "classname": "tests.integration.test_vertical_terrain",
+          "name": "test_recorded_public_rasters_make_the_package_viewer_ready",
+          "detail": "stack = <tests.integration.test_vertical_terrain.Stack object at 0x75325c483a40>\n\n    def test_recorded_public_rasters_make_the_package_viewer_ready(stack):\n        # Runs after the stack stopped: the package alone is read, offline.\n>       manifest, records, snapshot = read_package(stack.package)\n\ntests/integration/test_vertical_terrain.py:262: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/mge_gateway/mge_gateway/contract_replay.py:171: in read_package\n    validate_package(manifest, records, snapshot)\nsrc/mge_gateway/mge_gateway/contract_replay.py:129: in validate_package\n    _need(version == rec[\"map_version\"], \"STALE_STATE\")\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\ncondition = False, reason = 'STALE_STATE'\n\n    def _need(condition, reason):\n        if not condition:\n>           raise ReplayContractError(reason)\nE           mge_gateway.contract_replay.ReplayContractError: STALE_STATE\n\nsrc/mge_gateway/mge_gateway/contract_replay.py:32: ReplayContractError"
+        }
+      ],
+      "omissions": [
+        {
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        }
+      ],
+      "raw_sha256": "cac028d02a1aed9a1479c752e0919a25661d41017740f203f54576f74f28c2fa",
+      "stored_sha256": "2cab838131b7b9dd74dad3c2901dccb67802a68a118eaf13f871e9185e38d484"
+    }
+  },
+  "replay_current": "failed",
+  "web": "84 passed; production build passed",
+  "colcon": "8 packages built; 6 messages and 2 services inspected",
+  "protected_production": "identical to origin/main; no planner-authored producer/mission/recorder/interface edit",
+  "limitations": [
+    "F03.4 mission/supervisor wiring pending",
+    "Continuous-start extension default-off in ROS; owner review pending",
+    "David scoped experimental approvals preserved, no broader scientific/physical approval inferred",
+    "Windows host skips and external snapshot omission are not passes",
+    "One Starlette/httpx warning persists"
+  ],
+  "environment": "Existing Python3.12 venv and Ubuntu24.04/Jazzy WSL; no dependency install or persistent config edit",
+  "normalization": "Trimmed only trailing whitespace in stored JUnit diagnostic text; raw reports remain under ignored tmp; both hashes recorded",
+  "integration_diagnosis": {
+    "STALE_STATE": "Reproduced deterministically with exact detached main gateway and captured meta1/IDLE0 before planning, no planner import. Integration baseline defect, not planner regression.",
+    "snapshot_missing": "Replay test reads snapshot before file exists; no assertion changed."
+  },
+  "baseline_main_ros": {
+    "passed": 6,
+    "failed": 1,
+    "failure": "replay missing final MISSION_STATE_CHANGED event; raster test passed in this timing-dependent baseline run"
+  },
+  "publication_gate": "Planner 266 passed; both ROS failures isolated to unchanged main replay code, baseline proof recorded; not a green overall ROS claim.",
+  "final_main": "70cd2e5611032e76ed211afcd52cf29065ed940f",
+  "final_main_change": "Documentation-only D-EST-01; tested source hashes unchanged; coordinated implementation pending"
+}

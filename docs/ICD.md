@@ -64,6 +64,7 @@ field names and types; this document records the conventions around them.
 | `/mge/terrain/prior` | `sensor_msgs/msg/Image` `32FC1`, m | DataProvider → Mapping | reliable, transient_local |
 | `/mge/terrain/belief` | `sensor_msgs/msg/Image` `32FC1`, m | Mapping → Planner/UI | reliable, transient_local |
 | `/mge/terrain/sigma` | `sensor_msgs/msg/Image` `32FC1`, m | Mapping → Planner/UI | reliable, transient_local |
+| `/mge/terrain/observed` | `sensor_msgs/msg/Image` `mono8`, 1 observed / 0 not | Mapping → Recorder/UI | reliable, transient_local |
 | `/mge/terrain/traversability/{kind}` | `nav_msgs/msg/OccupancyGrid` | Mapping → Planner | reliable, transient_local |
 | `/mge/observations` | `mge_interfaces/msg/TerrainObservation` | SimAdapter → Mapping | reliable |
 | `/mge/agents/{id}/state` | `mge_interfaces/msg/AgentState` | SimAdapter → Mission | reliable |
@@ -78,8 +79,22 @@ Metadata has exactly one publisher per run: the node that owns `map_version`
 (`mapping_node`, or `mock_terrain` in the mock vertical), because metadata is
 part of the stamped batch of section 5. `data_node` publishes the prior only.
 OccupancyGrid values: `-1` unknown, `0` admissible, `100` forbidden. Unknown is
-not free. The prior is immutable within a run; the belief is never the hidden
+not free. `observed` marks the cells an applied local observation covered; it
+is coverage, not knowledge: an observed cell stays unknown (`-1`) when it is
+NoData or its sigma is too high. It travels in the stamped batch of section 5,
+after sigma, so the recorder can associate it with its map version; the planner
+does not subscribe to it. This topic is a proposed additive change (no message
+or field changes) pending Daniel's producer review and Jorge's consumer review. The prior is immutable within a run; the belief is never the hidden
 reference DEM. Publisher and subscriber declare the same QoS explicitly.
+
+**Accepted owner scope update, implementation pending:**
+[D-EST-01](decisions/2026-11-14-estimated-terrain-planning.md) removes prior local
+observation as a blanket prerequisite for proposing routes over valid orbital
+estimates. Do not equate estimated with verified/observed, redefine these numeric
+wire codes silently or close this decision by changing a display label alone.
+Daniel/Diego/Jesus must reconcile masks, exploration policy, consumers and tests;
+David reviews illustrative inspection/stop/resource assumptions. NoData and
+confirmed obstacles retain separate treatment; planner UNKNOWN remains valid.
 `mge_interfaces` types stay inside ROS; `ros_gz_bridge` is only used for types
 it supports.
 
@@ -294,6 +309,7 @@ plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
 | `<run_id>/manifest.json` | Envelope plus `recorded_from`, `source_mode`, `clock_source`, `time_start_sim_s`, `record_count`, `event_count`, `terrain_meta`, `agents`, `files` |
 | `<run_id>/timeline.jsonl` | One record per line, in arrival order |
 | `<run_id>/snapshot.json` | Final state, same shape as `GET /api/run/{run_id}/snapshot` |
+| `<run_id>/public_rasters.json` | Optional. Public prior and, per recorded map version, belief, sigma and observed cells (`mge-public-rasters-1.0.0`, docs/REPLAY_CONTRACT.md) |
 
 - Every file and every record says `mode: "REPLAY"`. A client must show
   `REPLAY` for this data and must not present it as a live computation.
@@ -322,14 +338,20 @@ plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
   recorded again. Duplicates, older states and data of another run are
   dropped, as in the gateway.
 - An existing run directory is never overwritten.
-- `ros2 run mge_gateway check_replay <dir>` validates a package offline.
+- `public_rasters.json` appears, and `files.public_rasters` names it, once the
+  run has published the prior and one complete batch (metadata, belief, sigma,
+  observed under one stamp). A version whose batch never completes is absent,
+  never interpolated; the offline oracle then refuses the package. Only public
+  topics are recorded; NoData cells are `null`.
+- `ros2 run mge_gateway check_replay <dir>` validates a package offline,
+  including the raster attachment when the manifest names it.
 
 `data/sample/replay/mock-vertical-001` is a sample package recorded from the
 mock vertical (goal, route, simulated observation, replan). It contains mock
 data only.
 
-The advanced viewer consumer remains on Jorge's separate branch; this PR
-adds no viewer implementation or public raster recording. GitHub Pages serves
+The recorder writes the public raster attachment; the viewer does not read it
+yet (it still rejects non-flat terrain packages), which is Jorge's next step. GitHub Pages serves
 static web/replay only; ROS and FastAPI require a separate host. Transport
 availability never establishes validated LIVE mission provenance.
 
@@ -353,12 +375,71 @@ clear authorized route/path, emit the logical stop/replan reason and reject old
 responses. An empty Path is a logical stop, not proof the executor stopped;
 Jesus must validate acknowledgement with current agent state before execution.
 
-The existing planner requires XY cell centres with 1e-6 m tolerance. Continuous
+**Pre-extension consumer baseline, retained pending owner review:**
+The baseline requires XY cell centres with 1e-6 m tolerance. Continuous
 poses fail explicitly NON_CELL_CENTER; never silently round. A future connector
 must check the swept geometry/public uncertainty and charge its time, energy and
 oxygen before changing that policy. Surface z is belief elevation, not validated
 drone flight altitude. EFFICIENT is an enum but current planner returns
 ERROR/MODE_NOT_SUPPORTED. Search bounds and unverified terrain return UNKNOWN.
+
+### Proposed ground-start extension — review required, not approved or frozen
+
+The cell-centre-only wording above and in CONTRACT_BASELINE.md / handoffs/diego.md
+records the pre-extension consumer baseline. It does not require removing the
+newer working implementation on feat/planner. The following is a proposed shared
+consumer extension, implemented/tested in that branch at 2d9f416, not an approved
+operational contract. Existing baseline gates remain in force until owner review.
+The PR12 review corrections restore opt-in gating: Python
+allow_continuous_start=False and ROS startup allow_continuous_starts=false by
+default. An explicit experimental opt-in does not constitute contract approval.
+
+- Previous behavior: non-centred starts/goals/bases failed NON_CELL_CENTER (XY
+  tolerance 1e-6 m). Proposed behavior: human/rover START only may be continuous;
+  goals/bases stay centred. Required return from a continuous start needs an
+  explicit centred base; drone continuous starts remain unsupported.
+- Connect only to the containing cell centre. No nearest-free-cell escape or
+  uncosted snapping is permitted. The full segment stays in a convex known cell.
+  Swept footprint checks include forbidden/unknown/NoData/sigma cells, agent radius
+  plus localization allowance, map bounds, blocked corner contact and directed
+  slope/step limits. At least five distance samples (spacing <= resolution/4), minus half sample spacing and obstacle
+  square circumradius conservatively bound clearance BETWEEN samples, not only at
+  endpoints. See [MODEL.md](../src/mge_planning/MODEL.md) for proof boundaries.
+- Connector 3-D distance, time, energy and human oxygen use the existing profile
+  equations and initialize the first A* label BEFORE budget/reserve pruning.
+  Completed travel is not charged again. Two-dimensional input adopts belief z.
+  Centred three-dimensional human/rover starts must match belief z within 1e-6 m.
+  An explicitly opted-in continuous start retains its supplied XYZ, including the
+  interpolated height of an executed route. Its directed connection to the
+  containing cell centre must satisfy the profile's step/slope bounds, swept
+  footprint and uncertainty checks; all 3-D costs are charged. An impossible
+  supplied height returns ERROR/INVALID_START_Z, without projecting telemetry.
+  Unknown or inadmissible terrain cannot establish a valid height. This strict
+  model-consistency tolerance is proposed, not a localization accuracy claim.
+  Single-cell attachment and conservative bounds can reject physically possible
+  starts; subcell relief, dynamics, physical safety and drone flight are unvalidated.
+- No fields, names, types, units or enums change. The first outbound Point may be
+  off-centre; the second is its attachment centre. Consumers must preserve both.
+  Existing cost fields include that segment. start_connector metadata is Python-only.
+- Affected consumers: MissionManager/current-pose request generation, executor/
+  supervisor path following, gateway/replay serializers and viewer route display.
+  ROS service checks do not establish combined continuous-pose mission/executor
+  acceptance. Exact current and prior execution results, including the independent
+  replay failure, are recorded in [PR12 review audit](pr12_review_corrections.md).
+- F03.4 is a ROS-independent recommendation policy, not MissionManager authority.
+  A contingency RETURN candidate uses goal=base, require_return=False, service=0
+  and outbound_path for that one leg. Contingency may abandon unfinished SERVICE
+  as well as OUTBOUND after a proven primary failure. Mission must explicitly adopt it and preserve
+  RETURN context. KEEP on an irrelevant map update never overrides the mandatory
+  MissionManager map-version invalidation gate above. Supervisor owns physical stop.
+
+**Jesus review required:** confirm current-pose and snapshot association, path
+consumers, RETURN-context transport, authorization/invalidation and stop feedback;
+run the combined real consumer tests before approving any baseline extension.
+**David review required:** approve terrain/profile assumptions, uncertainty margins,
+resource/service accounting and conservative treatment; numerical science/search
+model agreement remains pending. Neither unit tests nor this merge approve it.
+The current scientific-model blocks and all other main agreements below are retained.
 
 David's proposed science model `mge-science-1.0.0` governs scientific audit of
 complete outbound + service + optional work + return itineraries. Diego's

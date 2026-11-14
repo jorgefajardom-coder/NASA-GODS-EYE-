@@ -9,6 +9,71 @@ const PUFF_LIFE_S = 1.4;
 const PRINT_LIFE_S = 40;
 /** Drawn model height before distance scaling (AstronautModel.ASTRONAUT_VISUAL_HEIGHT_M). */
 const ASTRONAUT_HEIGHT_M = 1.9;
+/** EVA boot sole, real size (m), and how far behind the toe bone its centre lies. */
+const BOOT_LENGTH_M = 0.33;
+const BOOT_WIDTH_M = 0.13;
+const TOE_TO_SOLE_CENTRE_M = 0.1;
+
+let soleTexture: THREE.Texture | null = null;
+/**
+ * Left-boot sole print drawn once on a canvas: rounded toe, narrower arch, heel, and the tread
+ * lugs pressed darker into the regolith. Toe at the bottom of the canvas (+z on the ground); the
+ * arch, on the canvas's left (-x), is the inner side of a left foot on a model facing +z.
+ */
+function bootSoleTexture(): THREE.Texture | null {
+  if (soleTexture || typeof document === 'undefined') return soleTexture;
+  const W = 128;
+  const H = 320;
+  const c = document.createElement('canvas');
+  c.width = W;
+  c.height = H;
+  const g = c.getContext('2d')!;
+  // Outline: heel at the top, toe at the bottom, arch pinched on the canvas's left side.
+  const sole = new Path2D();
+  sole.moveTo(64, 10);
+  sole.bezierCurveTo(104, 10, 112, 40, 110, 80); // heel, outer side
+  sole.bezierCurveTo(108, 120, 112, 150, 118, 190); // outer edge
+  sole.bezierCurveTo(124, 240, 116, 300, 70, 310); // toe, outer
+  sole.bezierCurveTo(24, 314, 8, 280, 10, 230); // toe, inner
+  sole.bezierCurveTo(12, 190, 34, 160, 34, 125); // ball to arch (inner side pinched)
+  sole.bezierCurveTo(34, 95, 18, 70, 20, 45); // arch to heel
+  sole.bezierCurveTo(22, 22, 40, 10, 64, 10);
+  sole.closePath();
+  // Compressed regolith: darker than the ground, darkest in the middle of the print.
+  const fill = g.createRadialGradient(64, 170, 10, 64, 170, 170);
+  fill.addColorStop(0, 'rgba(26,13,6,0.78)');
+  fill.addColorStop(1, 'rgba(40,20,9,0.55)');
+  g.fillStyle = fill;
+  g.fill(sole);
+  // Tread lugs: chevron bars on the forefoot, blocks on the heel, a plain arch between.
+  g.save();
+  g.clip(sole);
+  g.strokeStyle = 'rgba(8,3,1,0.85)';
+  g.lineWidth = 9;
+  g.lineCap = 'round';
+  for (let y = 175; y < 305; y += 22) {
+    g.beginPath();
+    g.moveTo(14, y + 10);
+    g.lineTo(64, y - 4);
+    g.lineTo(116, y + 10);
+    g.stroke();
+  }
+  g.fillStyle = 'rgba(8,3,1,0.85)';
+  for (let y = 22; y < 100; y += 24) {
+    for (let x = 28; x < 104; x += 26) g.fillRect(x, y, 16, 14);
+  }
+  g.restore();
+  // Raised rim of displaced soil, lighter than the ground, just outside the print.
+  g.strokeStyle = 'rgba(214,170,128,0.35)';
+  g.lineWidth = 4;
+  g.stroke(sole);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
+  soleTexture = t;
+  return t;
+}
+
 /** Footfalls detected since load; read by tests in the browser (window.__mgeFootfalls). */
 let footfalls = 0;
 if (typeof window !== 'undefined') Object.defineProperty(window, '__mgeFootfalls', { get: () => footfalls, configurable: true });
@@ -66,21 +131,36 @@ export function FootDust({ model, active, screenSpeedMps }: Props) {
   const parts = useRef(Array.from({ length: MAX_PARTICLES }, () => ({ age: Infinity, scale: 1, p: new THREE.Vector3(), v: new THREE.Vector3() })));
   const nextPart = useRef(0);
 
-  // Footprints: an instanced dark ellipse per print.
+  // Footprints: an instanced boot-sole decal per print (one mesh per foot, the right one mirrored).
   const prints = useMemo(() => {
-    const geo = new THREE.CircleGeometry(0.5, 16);
-    geo.scale(0.42, 1, 1); // boot-shaped ellipse, long axis along the step
-    geo.rotateX(-Math.PI / 2);
-    const mat = new THREE.MeshBasicMaterial({ color: '#1c0e07', transparent: true, opacity: 0.6, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -4 });
-    const mesh = new THREE.InstancedMesh(geo, mat, MAX_PRINTS);
-    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    mesh.count = 0;
-    mesh.frustumCulled = false;
-    mesh.renderOrder = 1;
-    return mesh;
+    const tex = bootSoleTexture();
+    const geo = new THREE.PlaneGeometry(BOOT_WIDTH_M, BOOT_LENGTH_M);
+    geo.rotateX(-Math.PI / 2); // flat on the ground, toe (texture bottom) toward +z
+    const make = (mirror: boolean) => {
+      const mat = new THREE.MeshBasicMaterial({
+        map: tex,
+        transparent: true,
+        opacity: 0.85,
+        depthWrite: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -4,
+        side: THREE.DoubleSide, // the right print is mirrored (negative x scale)
+      });
+      const mesh = new THREE.InstancedMesh(geo, mat, MAX_PRINTS);
+      mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      mesh.count = 0;
+      mesh.frustumCulled = false;
+      mesh.renderOrder = 1;
+      mesh.userData.mirror = mirror;
+      return mesh;
+    };
+    const group = new THREE.Group();
+    group.add(make(false), make(true));
+    return group;
   }, []);
   const printAges = useRef<number[]>([]);
   const printMats = useRef<THREE.Matrix4[]>([]);
+  const printLeft = useRef<boolean[]>([]);
 
   useEffect(() => {
     scene.add(dust, prints);
@@ -88,8 +168,10 @@ export function FootDust({ model, active, screenSpeedMps }: Props) {
       scene.remove(dust, prints);
       dust.geometry.dispose();
       (dust.material as THREE.Material).dispose();
-      prints.geometry.dispose();
-      (prints.material as THREE.Material).dispose();
+      for (const m of prints.children as THREE.InstancedMesh[]) {
+        m.geometry.dispose();
+        (m.material as THREE.MeshBasicMaterial).dispose();
+      }
     };
   }, [scene, dust, prints]);
 
@@ -141,20 +223,27 @@ export function FootDust({ model, active, screenSpeedMps }: Props) {
       footfalls++;
       const scale = sc.current.y;
       spawn(w.current, ground.current.y, scale, PUFF_PARTICLES, 1);
-      // Footprint on the ground, aligned with the body's facing.
+      // Footprint on the ground, aligned with the body's facing. The toe bone sits near the front
+      // of the boot, so the sole is centred a little behind it.
       model.getWorldQuaternion(q.current);
       fwd.current.set(0, 0, 1).applyQuaternion(q.current);
+      fwd.current.y = 0;
+      fwd.current.normalize();
       const yaw = Math.atan2(fwd.current.x, fwd.current.z);
+      const left = /^L_/.test(toe.name);
+      const back = TOE_TO_SOLE_CENTRE_M * scale;
       const m = new THREE.Matrix4().compose(
-        new THREE.Vector3(w.current.x, ground.current.y + 0.12 * scale, w.current.z),
+        new THREE.Vector3(w.current.x - fwd.current.x * back, ground.current.y + 0.04 * scale, w.current.z - fwd.current.z * back),
         new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), yaw),
-        new THREE.Vector3(0.7 * scale, 1, 0.7 * scale),
+        new THREE.Vector3(left ? scale : -scale, 1, scale), // the texture is a left sole; mirrored for the right foot
       );
       printMats.current.push(m);
       printAges.current.push(0);
+      printLeft.current.push(left);
       if (printMats.current.length > MAX_PRINTS) {
         printMats.current.shift();
         printAges.current.shift();
+        printLeft.current.shift();
       }
     });
 
@@ -184,10 +273,16 @@ export function FootDust({ model, active, screenSpeedMps }: Props) {
     while (ages.length && ages[0] > PRINT_LIFE_S) {
       ages.shift();
       printMats.current.shift();
+      printLeft.current.shift();
     }
-    prints.count = printMats.current.length;
-    printMats.current.forEach((m, i) => prints.setMatrixAt(i, m));
-    prints.instanceMatrix.needsUpdate = true;
+    for (const mesh of prints.children as THREE.InstancedMesh[]) {
+      let n = 0;
+      printMats.current.forEach((m, i) => {
+        if (printLeft.current[i] !== mesh.userData.mirror) mesh.setMatrixAt(n++, m);
+      });
+      mesh.count = n;
+      mesh.instanceMatrix.needsUpdate = true;
+    }
   });
 
   return null;

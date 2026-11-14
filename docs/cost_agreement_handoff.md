@@ -122,3 +122,14 @@ marking it locally observed. That owner decision changes neither the resource
 equations nor traversal verification. Daniel/Diego must implement the estimated
 cell boundary together; mission must preserve stop/inspection/return authority.
 `MODEL_NOT_AGREED` and `MODEL_MISMATCH` remain active until the joint closure.
+
+## Merge reconciliation refresh
+
+The owner-requested Git reconciliation incorporates published main
+`5898e7d74c3eb00a018a2061a9b2264d947f12a8`, preserving the continuous-recovery
+and replay changes already integrated there. The
+[fresh exact-main comparison](../evidence/mission-reconciliation-20261114/conformance-main/conformance.json)
+again produces one agreement and six disagreements, authorization BLOCKED.
+Its source hash identifies the newer connector/recovery implementation; prior
+`69101e9` records above remain immutable. Resolving the documentation conflicts
+does not establish cost agreement or approve any profile.
