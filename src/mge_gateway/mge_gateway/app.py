@@ -14,11 +14,13 @@ from typing import Literal, Optional
 import uuid
 
 from fastapi import FastAPI, Header, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, confloat
 
-from mge_gateway.store import unavailable
+from mge_gateway.store import to_json, unavailable
 
 NO_ACTIVE_RUN = 'NO_ACTIVE_RUN'
 
@@ -75,6 +77,14 @@ def create_app(bridge):
     app.add_middleware(
         CORSMiddleware, allow_origins=list(bridge.cors_origins),
         allow_methods=['GET', 'POST'], allow_headers=['*'])
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_error(_request, error):
+        # Pydantic may include the rejected NaN/inf in its error details.
+        # Keep FastAPI's standard 422 shape without invalid JSON numbers.
+        return JSONResponse(status_code=422, content={
+            'detail': to_json(jsonable_encoder(error.errors())),
+        })
 
     def active():
         return store.state() is not None

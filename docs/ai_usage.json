@@ -109,7 +109,7 @@
         "tests/contracts/test_gateway.py",
         "docs/ICD.md"
       ],
-      "use": "Reject non-finite base/goal coordinates and explicitly supplied invalid float32 resource values before ROS forwarding; verify HTTP 422 with no bridge call and retain valid finite requests."
+      "use": "Reject non-finite base/goal coordinates and explicitly supplied invalid float32 resource values before ROS forwarding; sanitize validation-error details for raw non-finite JSON and numeric overflow, verify JSON-safe HTTP 422 without a bridge call, and retain valid finite requests."
     },
     {
       "tool": "OpenAI Codex",

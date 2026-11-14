@@ -72,6 +72,11 @@ The existing ROS fields, optional oxygen sentinel and mission authority remain
 unchanged. The affected code/tests and contract clarification are listed in
 ai_usage.json.
 
+The HTTP correction also covers raw non-finite JSON numbers and numeric overflow:
+rejected values are sanitized in validation-error details so HTTP 422 itself
+cannot fail JSON serialization. Four additional adversarial regression requests
+exercise that case without forwarding a ROS command.
+
 ## PR #3 late-event replay correction
 
 OpenAI Codex assisted consistent validation of arrival-ordered replay records

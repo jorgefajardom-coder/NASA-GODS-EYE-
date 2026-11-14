@@ -4,6 +4,8 @@ Covers the unavailable boundary (no run loaded: nothing is invented, nothing
 is LIVE) and the envelope and error semantics once a run is active. The
 ROS-to-HTTP flow itself is covered in tests/integration.
 """
+import json
+
 import pytest
 from fastapi.testclient import TestClient
 from starlette.websockets import WebSocketDisconnect
@@ -189,6 +191,20 @@ def test_finite_coordinates_and_zero_reserves_are_forwarded(client, bridge):
     assert response.status_code == 200
     assert bridge.goals[0]['goal'] == {'x': -10.5, 'y': 2.25, 'z': 0.5}
     assert bridge.goals[0]['reserve_wh'] == 0
+
+
+@pytest.mark.parametrize('token', ['NaN', 'Infinity', '-Infinity', '1e309'])
+def test_raw_nonfinite_json_gets_a_json_safe_422(client, bridge, token):
+    activate(bridge)
+    bridge.answer = {'accepted': True}
+    raw = json.dumps({**GOAL, 'goal': {'x': '__invalid_number__', 'y': 0}})
+    raw = raw.replace('"__invalid_number__"', token)
+    response = client.post('/api/mission/goal', content=raw,
+                           headers={'Content-Type': 'application/json'})
+    assert response.status_code == 422
+    assert response.json()['detail']
+    json.dumps(response.json(), allow_nan=False)
+    assert bridge.goals == []
 
 
 def test_control_token_is_enforced(bridge, monkeypatch):
