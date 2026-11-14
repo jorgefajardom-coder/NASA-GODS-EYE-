@@ -1,14 +1,23 @@
-# Arrays have the same length; cell_indices are row-major in TerrainMeta.
-# A receiver must reject duplicate IDs, stale runs, invalid indices and NaN values.
+# ICD-ROS2-V1 | One local observation of the terrain made by an agent.
+# Topic: /mge/observations  (SimulationAdapter -> Mapping, reliable)
+# Only the cells listed here may change in the belief map. Re-sending the
+# same observation_id must not be applied twice.
+
 string SOURCE_SIMULATED=SIMULATED
-std_msgs/Header header
-string schema_version
-string observation_id
+
+int8 OBSTACLE_UNKNOWN=-1
+int8 OBSTACLE_FREE=0
+int8 OBSTACLE_BLOCKED=100
+
+std_msgs/Header header          # frame_id = "map", stamp = simulated time
+string observation_id           # unique, idempotency key
 string run_id
 string agent_id
-uint64 prior_map_version
+uint32 base_map_version         # map version the observation was taken against
+string source_kind              # SOURCE_* ; P0 is always SIMULATED
+
+# Parallel arrays, one entry per observed cell (flat index, see TerrainMeta).
 uint32[] cell_indices
 float32[] elevation_m
-int8[] obstacle_state
-float32[] sigma_m
-string source_kind
+float32[] sigma_m               # 1-sigma of the simulated sensor model
+int8[] obstacle                 # OBSTACLE_*

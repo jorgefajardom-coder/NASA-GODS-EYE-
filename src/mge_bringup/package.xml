@@ -1,18 +1,25 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>mge_bringup</name>
-  <version>0.0.0</version>
-  <description>Workspace launch configuration</description>
-  <maintainer email="team@example.invalid">MARS GODS EYE team</maintainer>
-  <license>LicenseRef-UNSPECIFIED</license>
+  <version>0.1.0</version>
+  <description>Mars Gods Eye launch files and run configuration.</description>
+  <maintainer email="noreply@example.com">Houston, We Have a Bug!</maintainer>
+  <license>MIT</license>
+
   <buildtool_depend>ament_python</buildtool_depend>
-  <depend>launch</depend>
-  <depend>launch_ros</depend>
-  <depend>mge_data</depend>
-  <depend>mge_mapping</depend>
-  <depend>mge_planning</depend>
-  <depend>mge_mission</depend>
-  <depend>mge_sim</depend>
-  <depend>mge_gateway</depend>
-  <export><build_type>ament_python</build_type></export>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>mge_sim</exec_depend>
+
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>mge_data</exec_depend>
+  <exec_depend>mge_mapping</exec_depend>
+  <exec_depend>mge_planning</exec_depend>
+  <exec_depend>mge_mission</exec_depend>
+  <exec_depend>mge_gateway</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
 </package>

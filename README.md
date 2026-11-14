@@ -83,6 +83,21 @@ Read [AGENTS.md](AGENTS.md). Work on your assigned branch; open small PRs to
 producers, consumers and contract tests together when fields/frames/units change.
 Use English Conventional Commits and English PR descriptions.
 
-No project software license is chosen yet. `LicenseRef-UNSPECIFIED` and
-`team@example.invalid` in ROS metadata are explicit placeholders to replace
-before distribution. Dataset licenses are recorded independently.
+The integrated interfaces/simulation/bringup packages retain their existing MIT
+metadata. New packages use `LicenseRef-UNSPECIFIED` and `team@example.invalid`
+as explicit placeholders to replace before distribution. The team still needs
+to choose and supply the overall project license; dataset licenses are separate.
+
+## Existing integration smoke test
+
+The team work on dev/jesus is included with its original history and canonical
+ROS definitions. After colcon build/source on Jazzy, run:
+
+```sh
+ros2 launch mge_bringup smoke.launch.py
+```
+
+This publishes static MOCK agent states with explicitly illustrative positions
+and budgets from src/mge_bringup/config/agents.yaml. It is not a moving mission
+or a NASA measurement. `demo.launch.py` starts the other scaffold processes;
+neither launch establishes E2E acceptance. See docs/ICD.md for the wire mapping.

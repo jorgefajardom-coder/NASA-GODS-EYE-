@@ -27,3 +27,11 @@ grid is a code-rendered placeholder, not a terrain product or mission run.
 - Reflect actual uses in the competition submission form too.
 
 [Official GO Team policy](https://github.com/nasa/spaceapps/discussions/1849).
+
+## Existing integration contribution
+
+The canonical ROS definitions, mock_agents publisher, smoke launch and ROS-only
+contract checks were retained from dev/jesus at 00c8e44 with their history and
+license metadata. Codex assisted with merging and adapting the shared scaffold.
+The scope above does not assert that all retained contributor code was generated
+by this tool; the contributor must confirm its own tool-use history for delivery.

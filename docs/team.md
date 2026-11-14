@@ -12,6 +12,7 @@ not completed features or approved PRs. Names follow the integration guide.
 | David | `feat/mission` | mission, agent config, science docs | Approve success criteria, resources, task precedence and benchmark |
 
 The pre-existing `dev/jesus` and `docs/agents-policy` branches are preserved.
+The integration work from `dev/jesus` at `00c8e44` is included in the shared base.
 The canonical integration front for this scaffold is `feat/integration`.
 No GitHub usernames or reviewer permissions are guessed.
 

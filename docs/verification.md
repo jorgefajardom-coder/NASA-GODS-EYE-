@@ -5,7 +5,7 @@ guards only. These results are not evidence of a Mars mission or EVA safety.
 
 ## Local checks
 
-- Python 3.12: `python -m pytest` (93 test cases across contracts, mapping,
+- Python 3.12: `python -m pytest` (93 local test cases across contracts, mapping,
   mission and planning). The HTTP TestClient requires an unrestricted local
   execution environment on this Windows host; the sandbox attempt stalled.
 - `python scripts/check_repository.py`: package XML, Python syntax, JSON,
@@ -33,3 +33,10 @@ source install/setup.bash, inspect all six messages and two services, and run
 colcon test. An HTTP 200 health response only means the process is available;
 it explicitly says ROS is disconnected. An API command receives 503, not an
 acceptance. Record actual consumer/run evidence separately under evidence/.
+
+## Included ROS-only tests
+
+The ten interface checks from dev/jesus require rosidl_runtime_py and a sourced
+built workspace. They skip as one module locally and run explicitly in ROS CI.
+Contributor-reported checks are retained in integration_log.md; the combined
+workspace must pass a fresh ROS CI build before it is called compiled.
