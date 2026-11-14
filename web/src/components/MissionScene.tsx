@@ -10,6 +10,7 @@ import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
 import * as THREE from 'three';
 import { FollowCamera } from './FollowCamera';
+import { CutawayBlock } from './CutawayBlock';
 import { TerrainView } from './TerrainView';
 import { RouteOverlay } from './RouteOverlay';
 import { AgentLayer } from './AgentLayer';
@@ -36,9 +37,11 @@ interface Props {
   geology: { data: GeologyData; selected: string | null } | null;
   /** Cosmetic close-range ground grain. */
   surfaceDetail: boolean;
+  /** Schematic cut-away strata block around the terrain (Ground layers tab). */
+  cutaway: GeologyData | null;
 }
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
@@ -74,6 +77,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         overlay={geoTexture && geology ? { texture: geoTexture, extent: geology.data.frame } : null}
         surfaceDetail={surfaceDetail}
       />
+      {cutaway && <CutawayBlock meta={meta} heights={grid} geology={cutaway} verticalExaggeration={exaggeration} />}
       <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />
       <SiteMarkers
         pois={bundle.manifest.pois}

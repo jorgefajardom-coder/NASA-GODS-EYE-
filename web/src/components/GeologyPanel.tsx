@@ -1,11 +1,22 @@
 import { useMemo } from 'react';
 import { rasterizeUnits, unitColor, unitShares, type GeologyData } from '../lib/geology';
+import { STRATA_ORDER } from '../lib/strata';
 
 /** Grid used to measure unit shares in the list (5 m cells over the 2 km crop). */
 export const SHARE_GRID = 400;
 
 /** Left panel of the Ground layers tab: the mapped units of the run area and their extent. */
-export function GeologyList({ data, selected, onSelect }: { data: GeologyData | undefined; selected: string | null; onSelect: (id: string | null) => void }) {
+interface ListProps {
+  data: GeologyData | undefined;
+  selected: string | null;
+  onSelect: (id: string | null) => void;
+  showMap: boolean;
+  onShowMap: (v: boolean) => void;
+  showCut: boolean;
+  onShowCut: (v: boolean) => void;
+}
+
+export function GeologyList({ data, selected, onSelect, showMap, onShowMap, showCut, onShowCut }: ListProps) {
   const shares = useMemo(() => (data ? unitShares(data, rasterizeUnits(data, SHARE_GRID)) : null), [data]);
   if (!data || !shares) {
     return (
@@ -34,6 +45,32 @@ export function GeologyList({ data, selected, onSelect }: { data: GeologyData | 
         ))}
       </ul>
       <p className="note">Share of the 2 km area. Boundaries are approximate (about 100–200 m registration offset).</p>
+      <label className="check">
+        <input type="checkbox" checked={showMap} onChange={(e) => onShowMap(e.target.checked)} /> Geologic map on the terrain
+      </label>
+      <label className="check">
+        <input type="checkbox" checked={showCut} onChange={(e) => onShowCut(e.target.checked)} /> Cut-away block (schematic strata)
+      </label>
+      {showCut && (
+        <div className="strata">
+          <div className="geo__head">
+            <span>Cut-away layers, youngest first</span>
+          </div>
+          <ul className="strata__list">
+            {STRATA_ORDER.map((s) => (
+              <li key={s.symbol}>
+                <span className="geo__swatch" style={{ background: `rgb(${s.rgb.map((v) => Math.round(v * 255)).join(',')})` }} aria-hidden />
+                <span>
+                  <strong>{s.label}</strong> <span className="mono">{s.symbol !== 'base' ? s.symbol : ''}</span>
+                  <br />
+                  <span className="muted small">{s.composition}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="note">Order from the SIM 3464 unit interpretations (Nue below Njf assumed). Thicknesses and rock tones are schematic, not measured; each wall column starts with the unit mapped at the surface there.</p>
+        </div>
+      )}
     </section>
   );
 }

@@ -103,6 +103,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   }, []);
   const [mode, setMode] = useState<UiMode>('exploration');
   const [geoUnit, setGeoUnit] = useState<string | null>(null);
+  const [showGeoMap, setShowGeoMap] = useState(true);
+  const [showCut, setShowCut] = useState(true);
   const [selection, setSelection] = useState<Selection>({ kind: 'agent', id: '' });
 
   const view = useMemo(() => viewAt(bundle, t), [bundle, t]);
@@ -182,7 +184,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         cameraSmoothing={cameraSmoothing}
         imageryUrl={imageryUrl}
         surfaceDetail={surfaceDetail}
-        geology={mode === 'geology' && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
+        geology={mode === 'geology' && showGeoMap && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
+        cutaway={mode === 'geology' && showCut && bundle.geology ? bundle.geology : null}
       />
       <div className="vignette" aria-hidden />
       {mode === 'tactical' && <TacticalMap bundle={bundle} view={view} />}
@@ -193,7 +196,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           <ModeTabs mode={mode} onMode={setMode} />
           <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR && !!bundle.rasters.reference} />
           {mode === 'geology' ? (
-            <GeologyList data={bundle.geology} selected={geoUnit} onSelect={setGeoUnit} />
+            <GeologyList data={bundle.geology} selected={geoUnit} onSelect={setGeoUnit} showMap={showGeoMap} onShowMap={setShowGeoMap} showCut={showCut} onShowCut={setShowCut} />
           ) : (
             <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
           )}
