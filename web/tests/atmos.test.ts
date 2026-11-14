@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { barometricRatio, galeBinAt, jezeroToGalePressure, latestJezeroSol, parseAtmosphere, surfaceDose } from '../src/lib/atmos';
+import { barometricRatio, galeBinAt, jezeroToGalePressure, latestJezeroSol, parseAtmosphere, surfaceDose, crewDose, fmtMicroSv } from '../src/lib/atmos';
 
 const FILE = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'replay', 'demo', 'atmosphere.json');
 const data = parseAtmosphere(JSON.parse(readFileSync(FILE, 'utf8')))!;
@@ -41,5 +41,15 @@ describe('atmosphere context', () => {
     expect(day.msv).toBeCloseTo(data.radiation.dose_equivalent_msv_per_day, 9);
     expect(surfaceDose(data, 2 * 86400).msv).toBeCloseTo(2 * day.msv, 9);
     expect(surfaceDose(data, -5).msv).toBe(0);
+  });
+
+  it('gives the running crew dose in microsieverts at the RAD rate', () => {
+    const run = crewDose(data, 4442); // whole demo run, about 1.23 h
+    expect(run.usv).toBeCloseTo((data.radiation.dose_equivalent_msv_per_day * 1000 * 4442) / 86400, 9);
+    expect(run.sigmaUsv).toBeLessThan(run.usv);
+    expect(crewDose(data, 0).usv).toBe(0);
+    expect(fmtMicroSv(0.123)).toBe('0.12');
+    expect(fmtMicroSv(32.94)).toBe('32.9');
+    expect(fmtMicroSv(640.4)).toBe('640');
   });
 });

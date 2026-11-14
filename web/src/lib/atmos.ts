@@ -126,6 +126,28 @@ export function surfaceDose(data: AtmosphereData, exposureS: number): { msv: num
   };
 }
 
+/** Running crew dose shown beside oxygen and energy: dose equivalent so far (µSv) and its rate. */
+export interface CrewDose {
+  usv: number;
+  sigmaUsv: number;
+  msvPerDay: number;
+}
+
+/**
+ * Dose equivalent accumulated by an unshielded astronaut from the start of the run to `t`
+ * (simulated seconds), at the Gale surface average. An estimate that advances with the replay
+ * clock, not a dosimeter reading.
+ */
+export function crewDose(data: AtmosphereData, t: number): CrewDose {
+  const d = surfaceDose(data, t);
+  return { usv: d.msv * 1000, sigmaUsv: d.sigmaMsv * 1000, msvPerDay: data.radiation.dose_equivalent_msv_per_day };
+}
+
+/** Dose in µSv with a precision that keeps the counter moving at 1x (0.01 µSv every ~1.4 s). */
+export function fmtMicroSv(usv: number): string {
+  return usv < 10 ? usv.toFixed(2) : usv < 100 ? usv.toFixed(1) : usv.toFixed(0);
+}
+
 /** Readable UV level. */
 export function uvLabel(uv: UvIndex | null): string {
   return uv == null ? 'n/a' : uv.replace('_', ' ').toLowerCase();
