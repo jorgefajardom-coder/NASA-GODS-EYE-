@@ -81,12 +81,40 @@ in `ros2 topic echo`, in logs and in the web JSON is the same.
 - Agent kind: `HUMAN`, `DRONE`, `ROVER`.
 - Observation source: `SIMULATED`.
 
-## 5. Web contract (proposed, not implemented)
+## 5. Web contract
 
-`GET /api/health`, `GET /api/manifest`, `GET /api/run/{run_id}/snapshot`,
-`POST /api/mission/goal`, `WS /api/events`. Every response declares
-`schema_version`, `run_id`, `mode` (`LIVE` | `REPLAY`), `map_version` and
-`timestamp_sim_s`. JSON bodies use the ROS field names unchanged.
+Served by `mge_gateway`. It binds to `127.0.0.1` by default and holds no
+planning or mission logic. Every JSON response and WebSocket message is an
+envelope with `schema_version`, `run_id`, `mode` (`LIVE` | `REPLAY`),
+`map_version` and `timestamp_sim_s`, plus the payload. Payloads use the ROS
+field names unchanged. `NaN` is sent as `null` (for example oxygen fields of
+a rover).
+
+| Route | Payload |
+|---|---|
+| `GET /api/health` | `status`, `mission_state_received`, `terrain_meta_received` |
+| `GET /api/manifest` | `terrain_meta`, `agents` (`agent_id`, `agent_kind`), `endpoints` |
+| `GET /api/run/{run_id}/snapshot` | `mission_state`, `terrain_meta`, `events` (all so far) |
+| `GET /api/run/{run_id}/events?after_seq=N` | `events` with `seq > N`; polling fallback |
+| `POST /api/mission/goal` | Body: `request_id` (optional), `primary_agent_id`, `base`, `goal`, `mode`, budgets and reserves. Answer: the `SetMissionGoal` response fields |
+| `WS /api/events?after_seq=N` | Backlog of events with `seq > N`, then the current state, then live messages |
+
+- WebSocket messages carry `type`: `"event"` with an `event` object
+  (`MissionEvent`) or `"state"` with a `state` object (`MissionState`).
+- An unknown `run_id` answers `404`. A malformed body answers `422`. A goal
+  the mission refuses answers `200` with `accepted: false` and a
+  `reason_code`. `503` means the mission service did not answer.
+- Repeating a `request_id` returns the first answer and creates no events.
+- A planning failure is not an HTTP error: the goal is accepted, the mission
+  goes to `BLOCKED`, and `mission_state.active_route` carries the `status`,
+  `reason_code` and `detail`, with empty paths and an empty `route_id`.
+- If the environment variable `MGE_CONTROL_TOKEN` is set, `POST` requires
+  `Authorization: Bearer <token>`. Set it before binding to anything other
+  than localhost.
+- Allowed browser origins come from the `cors_origins` parameter
+  (default `http://localhost:5173`).
+
+Not implemented yet: `mode = REPLAY` and the static replay package.
 
 ## 6. Open points for the freeze meeting
 
