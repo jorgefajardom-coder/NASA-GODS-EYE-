@@ -1,4 +1,10 @@
-"""ROS 2 Mapping node for incremental belief updates and traversability publication."""
+"""ROS 2 Mapping node for incremental belief updates and traversability publication.
+
+Publishes the public map batch the planner consumes (docs/ICD.md, section 5):
+metadata first, then belief, sigma and one traversability mask per agent kind,
+all with the same stamp. One stamp identifies one map version and is never
+reused. Topics have no common delivery order, so the same batch is repeated.
+"""
 
 from __future__ import annotations
 
@@ -9,6 +15,7 @@ from mge_data.core import default_manifest_path, load_public_terrain
 from mge_mapping.core import BeliefMap, ObservationFusion, SimulatedObservation
 
 DEFAULT_MANIFEST_PATH = default_manifest_path()
+# PLACEHOLDER slope limits per agent kind, pending David's scientific approval.
 AGENT_SLOPE_LIMITS_DEG = {"human": 10.0, "rover": 20.0, "drone": 90.0}
 
 
@@ -30,91 +37,107 @@ def build_mapping_state_summary(belief: BeliefMap) -> dict[str, Any]:
 
 def main(args=None) -> None:
     import rclpy
+    from nav_msgs.msg import OccupancyGrid
     from rclpy.node import Node
     from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+    from rclpy.time import Time
+    from sensor_msgs.msg import Image
+
+    from mge_interfaces.msg import TerrainMeta, TerrainObservation
 
     rclpy.init(args=args)
     node = Node("mapping_node")
     manifest_param = node.declare_parameter("manifest_path", str(DEFAULT_MANIFEST_PATH)).value
     run_id_param = str(node.declare_parameter("run_id", "run-1").value)
+    # Slow by default: re-ingesting layers at 1 Hz starves the planner service.
+    repeat_s = float(node.declare_parameter("repeat_period_s", 5.0).value)
 
     try:
+        # A provider without valid terrain must not stay up looking healthy.
         tile = load_public_terrain(Path(manifest_param))
-        initial_belief = BeliefMap.from_terrain_tile(tile, run_id=run_id_param, initial_map_version=1)
-        fusion = ObservationFusion(initial_belief)
+        fusion = ObservationFusion(
+            BeliefMap.from_terrain_tile(tile, run_id=run_id_param, initial_map_version=1))
 
         latched_qos = QoSProfile(
             depth=1,
             reliability=ReliabilityPolicy.RELIABLE,
             durability=DurabilityPolicy.TRANSIENT_LOCAL,
         )
-        obs_qos = QoSProfile(
-            depth=10,
-            reliability=ReliabilityPolicy.RELIABLE,
-        )
+        obs_qos = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
+        meta_pub = node.create_publisher(TerrainMeta, "/mge/terrain/meta", latched_qos)
+        belief_pub = node.create_publisher(Image, "/mge/terrain/belief", latched_qos)
+        sigma_pub = node.create_publisher(Image, "/mge/terrain/sigma", latched_qos)
+        trav_pubs = {
+            kind: node.create_publisher(OccupancyGrid, f"/mge/terrain/traversability/{kind}", latched_qos)
+            for kind in AGENT_SLOPE_LIMITS_DEG
+        }
+        batch = {"version": None, "stamp": None, "messages": ()}
 
-        try:
-            from mge_interfaces.msg import TerrainMeta, TerrainObservation
-            from nav_msgs.msg import OccupancyGrid
-            from sensor_msgs.msg import Image
+        def new_stamp():
+            """Strictly later than the stamp of the previous map version."""
+            now = node.get_clock().now()
+            if batch["stamp"] is not None:
+                previous_ns = Time.from_msg(batch["stamp"]).nanoseconds
+                if now.nanoseconds <= previous_ns:
+                    now = Time(nanoseconds=previous_ns + 1, clock_type=now.clock_type)
+            return now.to_msg()
 
-            meta_pub = node.create_publisher(TerrainMeta, "/mge/terrain/meta", latched_qos)
-            belief_pub = node.create_publisher(Image, "/mge/terrain/belief", latched_qos)
-            sigma_pub = node.create_publisher(Image, "/mge/terrain/sigma", latched_qos)
-            trav_pubs = {
-                kind: node.create_publisher(OccupancyGrid, f"/mge/terrain/traversability/{kind}", latched_qos)
-                for kind in AGENT_SLOPE_LIMITS_DEG
-            }
+        def build_batch(bmap: BeliefMap) -> None:
+            stamp = new_stamp()
+            meta = TerrainMeta()
+            meta.header.frame_id = bmap.frame_id
+            meta.header.stamp = stamp
+            meta.run_id = bmap.run_id
+            meta.dataset_id = bmap.dataset_id
+            meta.map_version = bmap.map_version
+            meta.origin_x_m = float(bmap.origin_x_m)
+            meta.origin_y_m = float(bmap.origin_y_m)
+            meta.resolution_m = float(bmap.resolution_m)
+            meta.rows = bmap.rows
+            meta.cols = bmap.cols
+            meta.crs = tile.metadata.crs
+            meta.origin_lat_deg = float(tile.metadata.origin_lat_deg)
+            meta.origin_lon_deg = float(tile.metadata.origin_lon_deg)
+            meta.vertical_datum = tile.metadata.vertical_datum
+            meta.nodata_value = float(tile.metadata.nodata_value)
+            meta.sources = list(tile.sources.public_sources_summary())
+            meta.checksum_sha256 = tile.metadata.checksum_sha256
+            messages = [(meta_pub, meta)]           # metadata first: layers need it
 
-            def publish_layers(bmap: BeliefMap) -> None:
-                stamp = node.get_clock().now().to_msg()
-                for arr, pub in ((bmap.belief, belief_pub), (bmap.sigma, sigma_pub)):
-                    img = Image()
-                    img.header.frame_id = bmap.frame_id
-                    img.header.stamp = stamp
-                    img.height = bmap.rows
-                    img.width = bmap.cols
-                    img.encoding = "32FC1"
-                    img.is_bigendian = 0
-                    img.step = bmap.cols * 4
-                    img.data = arr.astype("<f4").tobytes()
-                    pub.publish(img)
+            for arr, pub in ((bmap.belief, belief_pub), (bmap.sigma, sigma_pub)):
+                img = Image()
+                img.header = meta.header
+                img.height = bmap.rows
+                img.width = bmap.cols
+                img.encoding = "32FC1"
+                img.is_bigendian = 0
+                img.step = bmap.cols * 4
+                img.data = arr.astype("<f4").tobytes()
+                messages.append((pub, img))
 
-                for kind, max_slope in AGENT_SLOPE_LIMITS_DEG.items():
-                    occ = OccupancyGrid()
-                    occ.header.frame_id = bmap.frame_id
-                    occ.header.stamp = stamp
-                    occ.info.resolution = float(bmap.resolution_m)
-                    occ.info.width = bmap.cols
-                    occ.info.height = bmap.rows
-                    occ.info.origin.position.x = float(bmap.origin_x_m)
-                    occ.info.origin.position.y = float(bmap.origin_y_m)
-                    occ.info.origin.orientation.w = 1.0
-                    occ_grid = bmap.traversability_grid(max_slope_deg=max_slope)
-                    occ.data = [int(v) for v in occ_grid.ravel()]
-                    trav_pubs[kind].publish(occ)
+            for kind, max_slope in AGENT_SLOPE_LIMITS_DEG.items():
+                occ = OccupancyGrid()
+                occ.header = meta.header
+                occ.info.map_load_time = stamp
+                occ.info.resolution = float(bmap.resolution_m)
+                occ.info.width = bmap.cols
+                occ.info.height = bmap.rows
+                occ.info.origin.position.x = float(bmap.origin_x_m)
+                occ.info.origin.position.y = float(bmap.origin_y_m)
+                occ.info.origin.orientation.w = 1.0
+                occ_grid = bmap.traversability_grid(max_slope_deg=max_slope)
+                occ.data = [int(v) for v in occ_grid.ravel()]
+                messages.append((trav_pubs[kind], occ))
 
-                meta = TerrainMeta()
-                meta.header.frame_id = bmap.frame_id
-                meta.header.stamp = stamp
-                meta.run_id = bmap.run_id
-                meta.dataset_id = bmap.dataset_id
-                meta.map_version = bmap.map_version
-                meta.origin_x_m = float(bmap.origin_x_m)
-                meta.origin_y_m = float(bmap.origin_y_m)
-                meta.resolution_m = float(bmap.resolution_m)
-                meta.rows = bmap.rows
-                meta.cols = bmap.cols
-                meta.crs = tile.metadata.crs
-                meta.origin_lat_deg = float(tile.metadata.origin_lat_deg)
-                meta.origin_lon_deg = float(tile.metadata.origin_lon_deg)
-                meta.vertical_datum = tile.metadata.vertical_datum
-                meta.nodata_value = float(tile.metadata.nodata_value)
-                meta.sources = list(tile.sources.public_sources_summary())
-                meta.checksum_sha256 = tile.metadata.checksum_sha256
-                meta_pub.publish(meta)
+            batch.update(version=bmap.map_version, stamp=stamp, messages=tuple(messages))
 
-            def on_observation(msg: Any) -> None:
+        def publish_batch() -> None:
+            for pub, message in batch["messages"]:
+                pub.publish(message)
+
+        def on_observation(msg: Any) -> None:
+            # A bad observation is dropped; it must not stop the map provider.
+            try:
                 stamp_s = float(msg.header.stamp.sec) + float(msg.header.stamp.nanosec) * 1e-9
                 obs = SimulatedObservation(
                     observation_id=str(msg.observation_id),
@@ -129,18 +152,19 @@ def main(args=None) -> None:
                     source_kind=str(msg.source_kind),
                 )
                 updated, applied = fusion.apply(obs)
-                if applied:
-                    publish_layers(updated)
+            except (ValueError, TypeError) as exc:
+                node.get_logger().warning(f"Rejected observation '{msg.observation_id}': {exc}")
+                return
+            if applied:
+                build_batch(updated)
+                publish_batch()
 
-            publish_layers(fusion.belief_map)
-            node.create_subscription(TerrainObservation, "/mge/observations", on_observation, obs_qos)
-            node.get_logger().info(f"Initialized mapping_node at map_version={fusion.map_version}")
-        except ImportError:
-            node.get_logger().warning("ROS interfaces not compiled; mapping fusion initialized in memory only")
-    except Exception as exc:  # noqa: BLE001
-        node.get_logger().error(f"Failed to initialize mapping_node: {exc}")
-
-    try:
+        build_batch(fusion.belief_map)
+        publish_batch()
+        node.create_subscription(TerrainObservation, "/mge/observations", on_observation, obs_qos)
+        if repeat_s > 0:
+            node.create_timer(repeat_s, publish_batch)
+        node.get_logger().info(f"Initialized mapping_node at map_version={fusion.map_version}")
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass

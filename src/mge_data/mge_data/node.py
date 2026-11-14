@@ -1,4 +1,10 @@
-"""ROS 2 DataProvider node for validated public terrain metadata and prior layer."""
+"""ROS 2 DataProvider node: publishes the immutable public prior layer.
+
+Terrain metadata is not published here. A map version is one batch of metadata,
+belief, sigma and masks under a single stamp (docs/ICD.md, section 5), and the
+planner rejects metadata of the same version that arrives with another stamp.
+`mapping_node` owns the map version, so it is the only metadata publisher.
+"""
 
 from __future__ import annotations
 
@@ -37,66 +43,35 @@ def main(args=None) -> None:
     import rclpy
     from rclpy.node import Node
     from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+    from sensor_msgs.msg import Image
 
     rclpy.init(args=args)
     node = Node("data_node")
     manifest_param = node.declare_parameter("manifest_path", str(DEFAULT_MANIFEST_PATH)).value
-    run_id_param = node.declare_parameter("run_id", "run-1").value
-
+    node.declare_parameter("run_id", "run-1")
     try:
+        # A provider without valid terrain must not stay up looking healthy.
         tile = load_public_terrain(Path(manifest_param))
-        meta_dict = build_terrain_meta_dict(tile, run_id=str(run_id_param))
         qos = QoSProfile(
             depth=1,
             reliability=ReliabilityPolicy.RELIABLE,
             durability=DurabilityPolicy.TRANSIENT_LOCAL,
         )
-        try:
-            from mge_interfaces.msg import TerrainMeta
-            from sensor_msgs.msg import Image
-
-            meta_pub = node.create_publisher(TerrainMeta, "/mge/terrain/meta", qos)
-            prior_pub = node.create_publisher(Image, "/mge/terrain/prior", qos)
-
-            msg = TerrainMeta()
-            msg.header.frame_id = meta_dict["frame_id"]
-            msg.header.stamp = node.get_clock().now().to_msg()
-            msg.run_id = meta_dict["run_id"]
-            msg.dataset_id = meta_dict["dataset_id"]
-            msg.map_version = meta_dict["map_version"]
-            msg.origin_x_m = meta_dict["origin_x_m"]
-            msg.origin_y_m = meta_dict["origin_y_m"]
-            msg.resolution_m = meta_dict["resolution_m"]
-            msg.rows = meta_dict["rows"]
-            msg.cols = meta_dict["cols"]
-            msg.crs = meta_dict["crs"]
-            msg.origin_lat_deg = meta_dict["origin_lat_deg"]
-            msg.origin_lon_deg = meta_dict["origin_lon_deg"]
-            msg.vertical_datum = meta_dict["vertical_datum"]
-            msg.nodata_value = meta_dict["nodata_value"]
-            msg.sources = meta_dict["sources"]
-            msg.checksum_sha256 = meta_dict["checksum_sha256"]
-            meta_pub.publish(msg)
-
-            img = Image()
-            img.header = msg.header
-            img.height = tile.metadata.rows
-            img.width = tile.metadata.cols
-            img.encoding = "32FC1"
-            img.is_bigendian = 0
-            img.step = tile.metadata.cols * 4
-            img.data = tile.prior.astype("<f4").tobytes()
-            prior_pub.publish(img)
-            node.get_logger().info(
-                f"Published validated public terrain '{meta_dict['dataset_id']}' "
-                f"({meta_dict['rows']}x{meta_dict['cols']} @ {meta_dict['resolution_m']} m)"
-            )
-        except ImportError:
-            node.get_logger().warning("mge_interfaces or sensor_msgs not built; validated terrain loaded in memory only")
-    except Exception as exc:  # noqa: BLE001
-        node.get_logger().error(f"Failed to load public terrain manifest: {exc}")
-
-    try:
+        prior_pub = node.create_publisher(Image, "/mge/terrain/prior", qos)
+        img = Image()
+        img.header.frame_id = tile.metadata.frame_id
+        img.header.stamp = node.get_clock().now().to_msg()
+        img.height = tile.metadata.rows
+        img.width = tile.metadata.cols
+        img.encoding = "32FC1"
+        img.is_bigendian = 0
+        img.step = tile.metadata.cols * 4
+        img.data = tile.prior.astype("<f4").tobytes()
+        prior_pub.publish(img)
+        node.get_logger().info(
+            f"Published public prior of '{tile.metadata.dataset_id}' "
+            f"({tile.metadata.rows}x{tile.metadata.cols} @ {tile.metadata.resolution_m} m)"
+        )
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass
