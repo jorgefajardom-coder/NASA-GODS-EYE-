@@ -15,6 +15,7 @@ import { TerrainView } from './TerrainView';
 import { RouteOverlay } from './RouteOverlay';
 import { AgentLayer } from './AgentLayer';
 import { SiteMarkers } from './SiteMarkers';
+import { BaseModel } from './BaseModel';
 
 interface Props {
   bundle: ReplayBundle;
@@ -79,6 +80,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       />
       {cutaway && <CutawayBlock meta={meta} heights={grid} geology={cutaway} verticalExaggeration={exaggeration} />}
       <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />
+      {bundle.manifest.pois.filter((p) => p.kind === 'base').map((p) => (
+        <BaseModel key={p.id} site={p.position} verticalExaggeration={exaggeration} groundHeight={groundHeight} />
+      ))}
       <SiteMarkers
         pois={bundle.manifest.pois}
         controlPoints={bundle.manifest.control_points}
