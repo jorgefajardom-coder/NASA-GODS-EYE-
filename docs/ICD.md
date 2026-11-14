@@ -121,8 +121,10 @@ Service positions and RouteDecision paths are `geometry_msgs/Point` values in
 `map`, not Pose or nav_msgs/Path. The active-path topic remains `nav_msgs/Path`.
 SetMissionGoal permits an empty run ID to mean the current run; the eventual
 adapter must resolve that before crossing into stored events or replay. Current
-ROS planning/mission services are implemented only by the labelled MOCK nodes in
-`mge_sim`; the `mge_planning` and `mge_mission` packages are still scaffolds.
+The planning service is implemented by `mge_planning`; the mission service is
+implemented only by the labelled MOCK node in `mge_sim`, and `mge_mission` is
+still a scaffold. The planner returns candidates only and never publishes
+active_path.
 
 MissionManager alone authorizes and publishes the active route. Only FEASIBLE
 candidates may be considered after current-run/map and return-budget checks.
@@ -130,7 +132,8 @@ candidates may be considered after current-run/map and return-budget checks.
 is in force. Do not treat default numeric values as measurements or outcomes.
 Native Image/OccupancyGrid/Path lack custom run/version fields: consumers need an
 unambiguous association with metadata/state by frame, timestamp and run context.
-That association is pending integration and cannot be assumed from a topic name.
+The strict planner batch protocol below defines that association; producers must
+confirm and implement it. It cannot be assumed from a topic name.
 
 ## 6. Web contract
 
@@ -245,6 +248,40 @@ clock consistency, service-to-route flow and replay without backend. Writing
 these types and passing static checks is not evidence of an E2E mission or
 physical safety. Preserve commands, run IDs and outcomes in evidence records.
 Interface changes update this ICD, consumers, tests and versions together.
+
+## Planner batch protocol and implementation boundary
+
+The existing message/service definitions are unchanged. The planner requires
+metadata followed by belief, sigma and the applicable traversability mask with
+the exact same frame and `(sec,nanosec)` snapshot stamp. One stamp must identify
+only one run/map version for the lifetime of the process. Stamp reuse across
+runs or versions is rejected; old runs cannot reactivate after a run switch.
+Repeated packets are allowed only when identical. Changing a layer, CRS, datum,
+NoData or grid geometry requires a new map version and unique stamp.
+
+Native layers received before their matching metadata are discarded. Producers
+must repeat the coherent batch until consumers receive all layers; publishing
+metadata first does not guarantee delivery order across DDS topics. Metadata
+and static layers use reliable/transient_local QoS. No reference DEM is subscribed.
+
+`snapshot_contract_confirmed` defaults false. Integration must explicitly enable
+it after confirming the producer protocol; otherwise PlanRoute returns UNKNOWN.
+`profiles_file` must contain approved explicit motion parameters, or illustrative
+profiles require `allow_illustrative_profiles=true`. Missing/incomplete data or
+profiles never produce an executable candidate. The snapshot token includes
+layer revision and rejection state; changes during search discard the candidate
+with STALE_MAP. A rejected immutable batch needs a fresh version to recover.
+
+P0 positions must be exact XY cell centres (1e-6 m tolerance). Continuous poses
+are rejected as NON_CELL_CENTER, since a connector cannot be silently teleported
+or left out of resource costs. Output z is public belief surface elevation, not
+validated drone altitude or physical locomotion. MissionManager remains responsible
+for current-route authorization, observation-triggered invalidation and new requests
+from the current admissible pose. See planner_handoff.md and the planning MODEL.md.
+
+EFFICIENT returns ERROR/MODE_NOT_SUPPORTED. Search limits return UNKNOWN/SEARCH_LIMIT,
+including when SAFE cannot prove its maximal conservative bottleneck. Orbital
+prior validity is not observation: the included CTX loader marks all cells unknown.
 
 ## 8. Open points for the freeze meeting
 

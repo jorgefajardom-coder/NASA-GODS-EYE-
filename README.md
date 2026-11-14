@@ -3,14 +3,16 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
-**Status: scaffold plus a mock integration vertical.** No validated mission,
-NASA terrain, working planner, Gazebo world or published demo is included yet.
-What runs end to end today is the integration plumbing: a goal sent over HTTP
-reaches a mission node, a route comes back over REST and WebSocket, and the run
-can be recorded as a replay package. The terrain, planner and mission in that
-path are labelled MOCK stand-ins (a flat grid and straight-line routes), so it
-is not mission evidence. The data, mapping, planning and mission packages are
-still scaffolds, and the web viewer is empty by design.
+**Status: P0 planner and integration plumbing implemented; full mission pending.**
+The planner supports bounded FAST/SAFE search, return/resources and a guarded
+PlanRoute ROS service. A newly processed provisional CTX prior is included; it is
+not a locally verified corridor. The gateway serves a run over REST and
+WebSocket and a run can be recorded as a replay package. The terrain and mission
+nodes that feed that path are still labelled MOCK stand-ins in `mge_sim` (a
+synthetic flat grid, a goal-route-replan mission), so no run here is mission
+evidence. The data, mapping and mission packages are scaffolds and the web
+viewer is empty by design. No validated mission, Gazebo world or published demo
+is claimed.
 
 Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
 Confirm any earlier local judging cutoff separately.
@@ -24,6 +26,7 @@ Confirm any earlier local judging cutoff separately.
 - [Competition checklist](docs/competition.md)
 - [Required AI declaration](docs/AI_USAGE.md) and [metadata](docs/ai_usage.json)
 - [Integration status](docs/integration_log.md) and [verification](docs/verification.md)
+- [Planner handoff for Diego](docs/planner_handoff.md) and [temporary data provenance](docs/planner_provenance.md)
 
 ## Layout and owners
 
