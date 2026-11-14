@@ -21,7 +21,8 @@ export function versionKey(rasters: RasterSet, version: number): string {
 /** Heights that shape the mesh for a layer. Sigma is drawn on the updated map. */
 export function heightGrid(rasters: RasterSet, layer: TerrainLayer, version: number): (number | null)[] {
   if (layer === 'prior') return rasters.prior;
-  if (layer === 'reference') return rasters.reference;
+  if (layer === 'reference' && rasters.reference) return rasters.reference;
+  if (layer === 'reference') return rasters.prior; // not loaded: the layer is not offered
   return rasters.versions[versionKey(rasters, version)].belief;
 }
 

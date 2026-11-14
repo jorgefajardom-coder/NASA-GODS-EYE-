@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from './types/replay';
-import { assetUrl, loadReplay } from './data/replayAdapter';
+import { assetUrl, loadEvaluatorReference, loadReplay } from './data/replayAdapter';
 import { REFERENCE_SOURCES } from './data/referenceSources';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from './lib/smoothing';
 import { viewAt } from './lib/replay';
@@ -38,6 +38,13 @@ export function App() {
   useEffect(() => {
     let cancelled = false;
     loadReplay(RUN_DIR)
+      .then(async (bundle) => {
+        if (EVALUATOR) {
+          const reference = await loadEvaluatorReference(bundle.manifest.run_id, bundle.rasters.rows, bundle.rasters.cols);
+          if (reference) bundle = { ...bundle, rasters: { ...bundle.rasters, reference } };
+        }
+        return bundle;
+      })
       .then((bundle) => !cancelled && setLoad({ status: 'ready', bundle }))
       .catch((err: unknown) => !cancelled && setLoad({ status: 'error', message: err instanceof Error ? err.message : String(err) }));
     return () => {
@@ -177,7 +184,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         <div className="left">
           <TitleBlock manifest={m} runId={RUN_ID} />
           <ModeTabs mode={mode} onMode={setMode} />
-          <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR} />
+          <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR && !!bundle.rasters.reference} />
           <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
           <div className="prompts">
             <button type="button" className="chip" aria-pressed={follow} onClick={() => setFollow((f) => !f)}>
@@ -218,6 +225,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             t={t}
             agent={agent}
             evaluator={EVALUATOR}
+            evaluatorMissing={EVALUATOR && !bundle.rasters.reference}
             exaggeration={exaggeration}
           />
           {mode === 'replay' ? <EventInspector view={view} onSeek={seek} /> : details && <DetailsPanel data={details} />}

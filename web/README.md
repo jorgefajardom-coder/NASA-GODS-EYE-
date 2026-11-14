@@ -60,7 +60,11 @@ The terrain is drawn smoothed between the 20 m cells, with contour lines every 1
 Agents are drawn at an eased copy of their pose (about 0.1 s, display only) so they do not tremble when the camera is close; the follow camera reads that drawn pose in the same frame. **Camera smoothing** in the view options sets the follow and orbit easing: Off (rigid), Soft (default) or Cinematic; the choice is remembered in this browser.
 
 Keys: `F` follow camera, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
-`?evaluator=1` shows the hidden reference layer; it is off by default.
+`?evaluator=1` shows the hidden reference layer, **in the dev server only** (R05). `npm run fixture`
+writes the reference to the repository's Git-ignored `data/reference/<run_id>/`; the dev server
+serves it to the evaluator view and the build never copies it, so `dist/` and GitHub Pages do not
+contain it (checked by `tests/referenceIsolation.test.ts`). Without the file the evaluator view says
+the reference is not available.
 
 The **Run** selector under the title (or `?run=<id>`) opens another saved run:
 

@@ -623,8 +623,9 @@ const manifest = {
   pois: [
     { id: 'A', label: 'Base A', kind: 'base', position: baseP, revealed_at_s: 0 },
     { id: 'B', label: 'Goal B', kind: 'primary_goal', position: goalP, revealed_at_s: 0 },
-    { id: 'C', label: 'POI C', kind: 'poi', position: { x: r2d(C.p.x), y: r2d(C.p.y), z: r2d(heightAt(reference, C.p.x, C.p.y)) }, revealed_at_s: T_MAP },
-    { id: 'D', label: 'POI D', kind: 'poi', position: { x: r2d(D.p.x), y: r2d(D.p.y), z: r2d(heightAt(reference, D.p.x, D.p.y)) }, revealed_at_s: T_MAP + DT },
+    // POI heights from the updated map, not from the hidden reference (R05).
+    { id: 'C', label: 'POI C', kind: 'poi', position: { x: r2d(C.p.x), y: r2d(C.p.y), z: r2d(heightAt(belief2, C.p.x, C.p.y)) }, revealed_at_s: T_MAP },
+    { id: 'D', label: 'POI D', kind: 'poi', position: { x: r2d(D.p.x), y: r2d(D.p.y), z: r2d(heightAt(belief2, D.p.x, D.p.y)) }, revealed_at_s: T_MAP + DT },
   ],
   files: { rasters: 'rasters.json', timeline: 'timeline.json', routes: 'routes.json' },
 };
@@ -636,12 +637,21 @@ writeFileSync(join(OUT, 'timeline.json'), JSON.stringify({ schema_version: SCHEM
 writeFileSync(
   join(OUT, 'rasters.json'),
   JSON.stringify({
-    run_id: RUN_ID, rows: ROWS, cols: COLS, prior, reference,
+    run_id: RUN_ID, rows: ROWS, cols: COLS, prior,
     versions: {
       1: { belief: prior, sigma: Array.from(sigma1, r2d), observed: [] },
       2: { belief: belief2, sigma: Array.from(sigma2, r2d), observed },
     },
   }),
+);
+// The hidden evaluator reference never goes into the public fixture (R05). It is written to the
+// repository's data/reference/ boundary, which Git ignores; only the dev server serves it, and only
+// to the evaluator view (?evaluator=1). It is never copied into dist/.
+const REF_DIR = join(HERE, '..', '..', 'data', 'reference', RUN_ID);
+mkdirSync(REF_DIR, { recursive: true });
+writeFileSync(
+  join(REF_DIR, 'reference.json'),
+  JSON.stringify({ run_id: RUN_ID, rows: ROWS, cols: COLS, note: 'Evaluator-only reference: CTX prior plus a SYNTHETIC scarp. Do not distribute.', reference }),
 );
 console.log(`terrain: ${ROWS}x${COLS} @ ${RES} m, local z offset ${ZOFF} m, relief ${cp.max_m - cp.min_m} m`);
 console.log(`A->B route r1 ${Math.round(L1)} m, r2 out ${Math.round(len(r2Out))} m, r2 back ${Math.round(len(r2Ret))} m, clearance ${routes[1].min_clearance_m} m`);

@@ -42,7 +42,7 @@ describe('gateway replay package', () => {
     expect(bundle.manifest.mode).toBe('REPLAY');
     expect(bundle.manifest.provenance).toEqual(['replay', 'simulated']);
     expect(bundle.rasters.prior.every((h) => h === 0)).toBe(true); // declared flat synthetic grid
-    expect(bundle.rasters.reference.every((h) => h === null)).toBe(true); // no evaluator reference in the package
+    expect(bundle.rasters.reference).toBeUndefined(); // no evaluator reference in the package (R05)
     expect(Object.values(bundle.rasters.versions).every((v) => v.sigma.every((s) => s === null))).toBe(true);
     expect(bundle.manifest.pois.find((p) => p.kind === 'primary_goal')!.position).toEqual({ x: 300, y: 400, z: 0 });
   });

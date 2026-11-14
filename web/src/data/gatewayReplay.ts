@@ -130,7 +130,7 @@ export function fromGatewayPackage(manifest: GatewayManifest, records: GatewayRe
   for (const v of new Set([...metas.map((m) => m.map_version), meta.map_version, ...frames.map((f) => f.mission_state.map_version)])) {
     versions[String(v)] = { belief: prior, sigma: noData, observed: [] };
   }
-  const rasters: RasterSet = { run_id: runId, rows: meta.rows, cols: meta.cols, prior, reference: noData, versions };
+  const rasters: RasterSet = { run_id: runId, rows: meta.rows, cols: meta.cols, prior, versions };
 
   const last = frames[frames.length - 1].mission_state;
   const endT = Math.max(...mine.map((r) => r.timestamp_sim_s - t0));

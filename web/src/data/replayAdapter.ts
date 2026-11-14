@@ -64,6 +64,23 @@ export function assembleBundle(
   };
 }
 
+/**
+ * Evaluator view only: asks the dev server for the run's hidden reference, kept outside the
+ * public site in data/reference/ (R05). A production build has no such file, so this
+ * returns null and the reference layer is not offered.
+ */
+export async function loadEvaluatorReference(runId: string, rows: number, cols: number): Promise<(number | null)[] | null> {
+  try {
+    const res = await fetch(assetUrl(`evaluator/${encodeURIComponent(runId)}/reference.json`));
+    if (!res.ok || !(res.headers.get('content-type') ?? '').includes('json')) return null;
+    const j = (await res.json()) as { run_id?: string; reference?: (number | null)[] };
+    if (j.run_id !== runId || !Array.isArray(j.reference) || j.reference.length !== rows * cols) return null;
+    return j.reference;
+  } catch {
+    return null;
+  }
+}
+
 /** ReplayAdapter: loads a saved run from static files (no ROS, no gateway, no network). */
 export async function loadReplay(runDir: string): Promise<ReplayBundle> {
   const dir = runDir.replace(/\/+$/, '');

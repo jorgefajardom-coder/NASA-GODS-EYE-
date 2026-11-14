@@ -57,11 +57,13 @@ interface StatusProps {
   t: number;
   agent: AgentState | null;
   evaluator: boolean;
+  /** Evaluator view requested but no reference available (production build or not generated). */
+  evaluatorMissing?: boolean;
   exaggeration: number;
 }
 
 /** Link, replay and position status, top right. The live link is shown as offline: no gateway exists yet. */
-export function StatusBlock({ manifest, missionState, mapVersion, t, agent, evaluator, exaggeration }: StatusProps) {
+export function StatusBlock({ manifest, missionState, mapVersion, t, agent, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
   const p = agent?.pose.position;
   return (
     <section className="status" aria-label="Connection and mission status">
@@ -89,7 +91,7 @@ export function StatusBlock({ manifest, missionState, mapVersion, t, agent, eval
           <span key={x}>{PROVENANCE_LABEL[x] ?? x}</span>
         ))}
         {manifest.illustrative && <span>illustrative</span>}
-        {evaluator && <span className="status__eval">evaluator view</span>}
+        {evaluator && <span className="status__eval">{evaluatorMissing ? 'evaluator view: reference not available here' : 'evaluator view'}</span>}
       </div>
     </section>
   );

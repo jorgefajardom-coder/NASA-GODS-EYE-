@@ -70,8 +70,11 @@ export interface RasterSet {
   rows: number;
   cols: number;
   prior: (number | null)[];
-  /** Hidden reference DEM: only for the evaluator view, never used by the planner. */
-  reference: (number | null)[];
+  /**
+   * Hidden reference DEM. Never part of a public fixture (R05): only the dev server's
+   * evaluator view attaches it, from the repository's ignored data/reference/ boundary.
+   */
+  reference?: (number | null)[];
   /** One belief/sigma pair per map_version. */
   versions: Record<string, { belief: (number | null)[]; sigma: (number | null)[]; observed: number[] }>;
 }
