@@ -127,7 +127,7 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
   }, [baseCanvas, view, agent, bundle.manifest.pois, meta, SIZE]);
 
   return (
-    <div className="minimap" role="img" aria-label="">
+    <div className="minimap" role="img" aria-label="Minimap, north up, centred on the selected agent">
       <canvas ref={canvas} style={{ width: SIZE, height: SIZE }} />
     </div>
   );
