@@ -23,8 +23,8 @@ PORT = 8765
 BASE = f'http://127.0.0.1:{PORT}'
 GOAL = {
     'primary_agent_id': 'human_1',
-    'base': {'x': 0.0, 'y': 0.0},
-    'goal': {'x': 300.0, 'y': 400.0},     # 500 m away -> 1000 m round trip
+    'base': {'x': 2.5, 'y': 2.5},          # cell centres of the 5 m mock grid
+    'goal': {'x': 302.5, 'y': 402.5},     # 500 m away -> 1000 m round trip
     'mode': 'FAST',
     'time_budget_s': 14400.0,
     'energy_budget_wh': 1000.0,
@@ -104,9 +104,9 @@ def test_goal_to_route(stack):
     assert route['status'] == 'FEASIBLE'
     assert route['map_version_used'] == 1
     assert ms['route_id'] == route['route_id'] != ''
-    assert route['outbound_path'][0] == {'x': 0.0, 'y': 0.0, 'z': 0.0}
-    assert route['outbound_path'][-1] == {'x': 300.0, 'y': 400.0, 'z': 0.0}
-    assert route['return_path'][-1] == {'x': 0.0, 'y': 0.0, 'z': 0.0}
+    assert route['outbound_path'][0] == {'x': 2.5, 'y': 2.5, 'z': 0.0}
+    assert route['outbound_path'][-1] == {'x': 302.5, 'y': 402.5, 'z': 0.0}
+    assert route['return_path'][-1] == {'x': 2.5, 'y': 2.5, 'z': 0.0}
     assert route['travel_time_s'] == pytest.approx(1000.0)      # 1000 m at 1 m/s (mock)
     assert route['reserve_oxygen_l'] is not None                # human has oxygen
     types = [e['event_type'] for e in snap['events']]

@@ -52,7 +52,7 @@ try:
              'gateway and 3 agents')
     httpx.post(f'{BASE}/api/mission/goal', json={
         'request_id': 'req-1', 'primary_agent_id': 'human_1',
-        'base': {'x': 0, 'y': 0}, 'goal': {'x': 300, 'y': 400}, 'mode': 'FAST',
+        'base': {'x': 2.5, 'y': 2.5}, 'goal': {'x': 302.5, 'y': 402.5}, 'mode': 'FAST',
         'time_budget_s': 14400, 'energy_budget_wh': 1000, 'oxygen_budget_l': 1000,
         'reserve_time_s': 600, 'reserve_wh': 100, 'reserve_oxygen_l': 100,
     }).raise_for_status()
