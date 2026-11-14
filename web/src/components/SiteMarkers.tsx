@@ -1,4 +1,7 @@
 import { Html } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef, type ReactNode } from 'react';
+import * as THREE from 'three';
 import type { ControlPoint, PointOfInterest } from '../types/replay';
 import type { TaskView } from '../lib/replay';
 import { enuToThree } from '../lib/coords';
@@ -29,14 +32,16 @@ export function SiteMarkers({ pois, controlPoints, showControlPoints, tasks, t, 
           return (
             <group key={p.id} position={[x, y, z]}>
               <ScaleWithDistance perMetre={1 / 110} max={10}>
-              <mesh position={[0, 4, 0]}>
-                <cylinderGeometry args={[0.25, 0.25, 8, 8]} />
-                <meshStandardMaterial color="#e5e7eb" />
-              </mesh>
-              <mesh position={[0, 8.5, 0]}>
-                <sphereGeometry args={[1.3, 16, 12]} />
-                <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.35} />
-              </mesh>
+              <HideWhenClose>
+                <mesh position={[0, 4, 0]}>
+                  <cylinderGeometry args={[0.25, 0.25, 8, 8]} />
+                  <meshStandardMaterial color="#e5e7eb" />
+                </mesh>
+                <mesh position={[0, 8.5, 0]}>
+                  <sphereGeometry args={[1.3, 16, 12]} />
+                  <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.35} />
+                </mesh>
+              </HideWhenClose>
               <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.3, 0]}>
                 <ringGeometry args={[3.2, 4, 32]} />
                 <meshBasicMaterial color={color} transparent opacity={0.8} />
@@ -66,4 +71,23 @@ export function SiteMarkers({ pois, controlPoints, showControlPoints, tasks, t, 
         })}
     </group>
   );
+}
+
+/** Below this camera distance the pin mast is hidden; the ground ring and label stay (m). */
+export const PIN_HIDE_DISTANCE_M = 70;
+
+/**
+ * Hides a marker's mast when the camera is close. Agents often stand on a site (the
+ * astronaut starts on the base), and at close range the 8 m pole would cut through them.
+ */
+function HideWhenClose({ children }: { children: ReactNode }) {
+  const group = useRef<THREE.Group>(null);
+  const world = useRef(new THREE.Vector3());
+  useFrame(({ camera }) => {
+    const g = group.current;
+    if (!g) return;
+    g.getWorldPosition(world.current);
+    g.visible = camera.position.distanceTo(world.current) > PIN_HIDE_DISTANCE_M;
+  });
+  return <group ref={group}>{children}</group>;
 }
