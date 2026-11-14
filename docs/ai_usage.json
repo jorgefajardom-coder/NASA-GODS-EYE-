@@ -98,7 +98,7 @@
         "tests/integration/test_provider_substitution.py",
         "tests/fixtures/replay/provenance.json",
         "web/src/lib/provenance.ts",
-        "web/src/lib/provenance.test.ts",
+        "web/tests/provenance.test.ts",
         "scripts/validate_contract_baseline.sh",
         "AGENTS.md",
         ".gitignore",
