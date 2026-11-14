@@ -202,6 +202,41 @@
       "use": "Document local organizer notice and explicit endorsement before submission, Jesus/David responsibility, a proposed four-hour review margin, evidence and contextual reminders for every member agent. No external contact, endorsement or scheduled alert is claimed."
     },
     {
+      "tool": "Google Antigravity",
+      "kind": "code_and_documentation",
+      "generation": "AI-assisted generation, reviewed by data/mapping owner",
+      "paths": [
+        "scripts/prepare_jezero_terrain.py",
+        "src/mge_data",
+        "src/mge_mapping",
+        "config/terrain.yml",
+        "data/sample/README.md",
+        "data/sample/manifest.json",
+        "data/sample/provenance_details.json",
+        "docs/data_sources.md",
+        "tests/contracts/test_data_manifest.py",
+        "tests/mapping/test_observation.py"
+      ],
+      "use": "Implement bounded HTTP 206 ingestion of official NASA/USGS MRO CTX, MRO HiRISE and MGS MOLA products, Mars ENU georeferencing and control-point verification, reference isolation checks, and incremental belief observation fusion."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "terrain_provider_integration_corrections",
+      "generation": "AI-assisted code, test and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_data/mge_data/node.py",
+        "src/mge_data/package.xml",
+        "src/mge_mapping/mge_mapping/node.py",
+        "src/mge_mapping/package.xml",
+        "tests/integration/test_terrain_batch.py",
+        "data/sample/README.md",
+        "docs/ICD.md",
+        "docs/data_sources.md",
+        "docs/integration_log.md"
+      ],
+      "use": "Make the real terrain providers publish one coherent, repeated map batch per version with a single metadata publisher, survive invalid observations, and test them against the real planner over ROS. Terrain arrays are unchanged observational derivatives; no scientific observation or mission result is generated."
+    },
+    {
       "tool": "OpenAI Codex",
       "kind": "code_configuration_documentation_and_synthetic_contract_tests",
       "generation": "AI-assisted generation; owner integration/science review pending",
@@ -261,6 +296,8 @@
     "No generated bitmap, video or audio asset is included at scaffold time.",
     "Fresh CTX/HiRISE processing occurs during competition; source observations pre-exist and are cited.",
     "Contract reconciliation synthetic raster attachments and metadata exist only in explicitly labelled tests; no NASA dataset, measured outcome, image, video or audio is generated.",
+    "Terrain arrays in data/sample/ and data/reference/ are derived via GDAL/rasterio from observational NASA PDS / USGS Astrogeology products, not AI-generated.",
+    "data/sample/preview_ctx_prior.png is a deterministic grayscale plot of the observational MRO/CTX DEM array, not an AI-generated image.",
     "The Codex frontend scaffold in web/ was replaced by the mission viewer; its stale-route guard and ICD-WEB-V1 envelope types were moved into web/src/lib/format.ts and web/src/types/icd.ts."
   ],
   "retained_contributions": [
