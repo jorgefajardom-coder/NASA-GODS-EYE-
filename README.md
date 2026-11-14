@@ -23,6 +23,7 @@ Confirm any earlier local judging cutoff separately.
 - [Planner model conformance and known differences](docs/planner_model_conformance.md)
 - [Mission integration handoff](docs/mission_handoff.md)
 - [A/B/C protocol, awaiting integrated runs](docs/science_benchmark.md)
+- [Frozen benchmark evidence and audit CLI](docs/benchmark_evidence.md)
 - [Competition checklist](docs/competition.md)
 - [Required AI declaration](docs/AI_USAGE.md) and [metadata](docs/ai_usage.json)
 - [Integration status](docs/integration_log.md) and [verification](docs/verification.md)

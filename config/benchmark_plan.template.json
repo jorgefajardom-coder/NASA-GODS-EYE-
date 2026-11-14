@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0.0",
+  "status": "draft",
+  "benchmark_id": null,
+  "frozen_at_utc": null,
+  "hypotheses": [
+    "Compare demonstrated mission completion for B versus A and C versus A under identical frozen inputs.",
+    "Compare verification timing, per-agent resources and replanning without presuming C outperforms B."
+  ],
+  "planned_seeds": [
+    7
+  ],
+  "policies": [
+    "A",
+    "B",
+    "C"
+  ],
+  "experiment_kind": "nominal",
+  "context": {
+    "scenario_id": null,
+    "mission_config_sha256": null,
+    "dataset_manifest_sha256": null,
+    "prior_sha256": null,
+    "initial_belief_sha256": null,
+    "profile_registry_sha256": null,
+    "model_id": "mge-science-1.0.0",
+    "model_source_sha256": null,
+    "observation_model_sha256": null,
+    "task_generator_sha256": null,
+    "reference_id": null,
+    "profile_status": "proposed"
+  },
+  "metric_definitions": {
+    "verified_ground_fraction": "Verified executed ground metres / all executed ground metres, using knowledge at traversal time. Null for zero distance or unavailable execution evidence.",
+    "unsafe_step_count": "Count from all instrumented executed ground steps. Zero requires every step checked; null when no traversal/checking evidence exists.",
+    "optional_tasks_accepted": "Number of distinct optional task IDs assigned; repeated events and replans do not count twice.",
+    "optional_tasks_rejected": "Number of distinct optional task IDs rejected, retaining reason codes.",
+    "time_to_verified_route_s": "Simulated seconds from run start to first route meeting the frozen verification rule; null if none. FEASIBLE does not prove actual traversal.",
+    "mission_duration_s": "Simulated seconds from run start to terminal state; null if no terminal simulated timestamp exists.",
+    "energy_est_wh": "Per-agent modeled gross expenditure including movement, work and waiting. Human metabolic Wh and robot electrical Wh remain separate.",
+    "oxygen_est_l": "Human-only modeled oxygen in equivalent dry ideal litres at 273.15 K and 101325 Pa, including all outside-base activities.",
+    "replan_count": "Number of distinct replanning request IDs after the initial plan, excluding idempotent duplicates.",
+    "replan_latency_ms": "Median steady-wall-clock dispatch-to-response latency for resolved replans; retain individual request IDs and timeouts; null with no responses.",
+    "max_map_age_s": "Maximum simulation-time decision timestamp minus its public map batch timestamp across authorized routes; null with no authorized decision."
+  },
+  "source_revision": null,
+  "source_manifest_sha256": null,
+  "notes": [
+    "Template only: no scenario, run, scientific approval or result is supplied.",
+    "Choose planned seeds before execution; possible follow-up seeds are 19 and 42. Do not add favorable seeds after seeing results.",
+    "reference_id is an opaque evaluator identifier, never a path loaded by mission/planner/auditor."
+  ]
+}

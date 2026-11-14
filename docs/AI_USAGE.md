@@ -46,6 +46,16 @@ are not NASA observations, integrated missions or an A/B/C benchmark. All
 profile approval states remain unchanged and authorization remains blocked.
 Exact source/model/profile hashes are retained with the comparison.
 
+## Frozen benchmark evidence tools, 14 November 2026
+
+OpenAI Codex assisted with immutable protocol/outcome types, first-attempt
+comparison reporting, filesystem/event/traversal evidence checks, draft
+templates, audit CLI, regression tests and documentation. Synthetic test
+fixtures exercise the auditor; they are not submitted mission outcomes.
+The recorded draft-readiness diagnostic reports NOT_READY and zero observed
+mission runs. Software validation logs/JUnit reports record actual command
+outcomes and preserve source hashes; they grant no scientific approval.
+
 ## Delivery verification checklist
 
 - Record actual tool uses and affected code/data/assets in text and metadata.

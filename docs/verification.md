@@ -1,5 +1,14 @@
 # Scaffold verification
 
+Latest continuation: see [the follow-up software record](../evidence/mission-followup-validation-20261114/validation.json).
+Windows passes 348 cases (two ROS modules and three symlink cases skipped).
+Jazzy passes 294 cases, including all symlink guards (one optional external
+snapshot test skipped); all eight packages and definitions compile/inspect.
+The actual published-planner probe ran separately: seven feasible candidates,
+one cost agreement and six disagreements, with authorization blocked. The draft
+benchmark gate correctly reports NOT_READY and zero observed mission runs.
+Earlier records below are retained historical checks, not A/B/C results.
+
 Date: 14 November 2026. Scope: repository structure and implemented contract
 guards only. These results are not evidence of a Mars mission or EVA safety.
 

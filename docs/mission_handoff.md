@@ -57,3 +57,25 @@ model; Daniel supplies the public, coherently versioned scenario; Jesus binds
 execution/discovery/evidence inputs and verifies empty-path invalidation; David
 reviews coefficients, budgets and tolerances before operational approval. Keep
 the benchmark protocol fixed before collecting comparison results.
+
+## Independent continuation after the first publication
+
+The mission adapter now accepts the published planner's unavailable failure
+metrics and map-batch response timestamps without activating failed routes.
+The [published-source conformance report](planner_model_conformance.md) records
+one agreement and six disagreements across seven synthetic cases. The human
+slope case underestimates energy under the declared science model; a projected
+profile is not a proven conservative bound. Do not loosen tolerances or approve
+model agreement to hide these differences.
+
+The [benchmark evidence auditor](benchmark_evidence.md) is executable and its
+templates remain drafts. It preserves failed/unknown attempts, validates hashed
+exports and first-attempt pairing, and reports missing data explicitly. No
+integrated A/B/C run was supplied or generated.
+
+The [follow-up validation](../evidence/mission-followup-validation-20261114/validation.json)
+records 348 passing Windows cases and 294 passing Jazzy cases, eight compiled
+packages/eight inspected definitions and exact hashes for the tested source.
+Linux executes the symlink-isolation cases unavailable on Windows. The actual
+published-planner probe is separate from the optional snapshot test in the
+Linux build copy.

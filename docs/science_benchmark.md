@@ -1,6 +1,10 @@
 # A/B/C benchmark protocol
 
-Status: protocol only; no integrated mission results are claimed.
+Status: protocol and executable evidence audit; no integrated mission results are claimed.
+
+Use the [evidence audit](benchmark_evidence.md) and its draft templates to record
+the freeze and externally supplied execution outcomes. No mission is generated
+by the auditor.
 Owner: David. Integration and evidence support: Jesus and module owners.
 
 ## Experimental question

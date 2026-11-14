@@ -114,6 +114,27 @@
         "evidence/planner-conformance-20261114"
       ],
       "use": "Compare the exact published planner source to mission activity/grade costs on seven public synthetic grids, preserve mismatch evidence and hashes, keep authorization blocked; no observational data or mission benchmark generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "benchmark_evidence_audit_and_software_validation",
+      "generation": "AI-assisted code, draft templates, documentation, synthetic test fixtures and orchestration of actual software checks",
+      "paths": [
+        "src/mge_mission/mge_mission/benchmark.py",
+        "src/mge_mission/mge_mission/audit.py",
+        "scripts/audit_benchmark.py",
+        "tests/mission/test_benchmark.py",
+        "tests/mission/test_audit.py",
+        "config/benchmark_plan.template.json",
+        "config/benchmark_outcome.template.json",
+        "docs/benchmark_evidence.md",
+        "docs/science_benchmark.md",
+        "docs/mission_handoff.md",
+        "docs/verification.md",
+        "evidence/benchmark-readiness-20261114",
+        "evidence/mission-followup-validation-20261114"
+      ],
+      "use": "Freeze comparison inputs, retain all attempts and unknowns, audit hashed execution exports without opening hidden reference content, and preserve actual software test reports. The supplied plan is draft; no integrated mission or A/B/C result was generated."
     }
   ],
   "generated_media": [],
@@ -123,7 +144,8 @@
     "Project idea and science specifications supplied by the human team.",
     "Update this register and descriptive disclosure when generated artifacts change.",
     "No generated bitmap, video or audio asset is included at scaffold time.",
-    "Mission coefficients remain proposed; accepting a lunar analog approach does not approve quantitative Mars EVA limits."
+    "Mission coefficients remain proposed; accepting a lunar analog approach does not approve quantitative Mars EVA limits.",
+    "Measured-results flags refer to physical/scientific measurements. Software validation and synthetic model diagnostics are recorded separately; no mission or A/B/C result is asserted."
   ],
   "retained_contributions": [
     {
@@ -138,5 +160,8 @@
       ],
       "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
     }
-  ]
+  ],
+  "software_validation_results_recorded": true,
+  "synthetic_model_diagnostics_recorded": true,
+  "integrated_mission_results_recorded": false
 }
