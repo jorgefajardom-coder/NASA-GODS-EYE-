@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>mge_sim</name>
+  <version>0.1.0</version>
+  <description>Mars Gods Eye simulation adapter and minimal P0 emulator.</description>
+  <maintainer email="noreply@example.com">Houston, We Have a Bug!</maintainer>
+  <license>MIT</license>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>mge_interfaces</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
