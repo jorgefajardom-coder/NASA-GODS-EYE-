@@ -973,6 +973,19 @@
       "watermark": "AI-generated (burned into the pixels; legible at the 80 px display size)",
       "use": "Illustrative portrait beside astronaut human_1 in the viewer's details panel. Not a photograph of a crew member and not NASA data; no NASA logos, flags or mission marks.",
       "sha256": "7d0b020623f6c864c1486a7320961ad62e5361e8d7bfc11d63db85cfcbf24e3e"
+      "tool": "Claude Code (Anthropic)",
+      "kind": "integration_test_isolation",
+      "generation": "AI-assisted test fixtures and documentation, directed and reviewed by the integration owner",
+      "paths": [
+        "tests/integration/conftest.py",
+        "tests/integration/test_replay_package.py",
+        "tests/integration/test_vertical_execution.py",
+        "tests/integration/test_vertical_mock.py",
+        "tests/integration/test_vertical_planner.py",
+        "tests/integration/test_vertical_terrain.py",
+        "docs/integration_log.md"
+      ],
+      "use": "Isolate each integration module in its own ROS domain and wait for the planner service, the mission's map and recorded rasters before acting. No scientific observation or mission result is generated."
     }
   ],
   "scientific_datasets_generated": false,

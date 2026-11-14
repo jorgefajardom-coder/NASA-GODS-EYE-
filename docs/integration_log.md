@@ -337,3 +337,21 @@ unchanged. No open planner PR or pending local replay work was imported.
 |---|---|---|---|---|---|
 | 2026-11-14 14:12 | `feat/ux` `7a7a1d3`, web viewer, docs | Jorge | Commits in window: `7a7a1d3` docs(readme) layer sources, `489647a` uncertainty layer labelled as assumed, `0e7f00e` merge main, `ebbe25e` AI docs, `8a886c9` Atmos tab, `a5eff6f` base model, `078981d` drone/agents true size, `3086f63` source_mode in status. Uncommitted: `web/scripts/extract-ctx-ortho.mjs` (extent/level args), new `web/scripts/extract-ctx-context.mjs`, `web/public/replay/demo/context.json`, `web/src/lib/slope.ts`, `web/tests/slope.test.ts`. `npm test --prefix web`: 18 files, 101 tests passed. | Context terrain and slope not wired into the viewer; demo mission and scarp are simulated; no real planner/live gateway link | Jesús: live gateway and raster recording; Daniel: processed terrain package; Diego: planner routes |
 | 2026-11-14 18:30 | `feat/ux` `82f9108`, web viewer, demo fixture, docs | Jorge | Public raster attachment read and validated (`files.public_rasters`, JOR-03); live Earth/Mars clocks (Mars24); radial agent HUD with gauges; agent/base cameras, view rotation, terrain clamp; astronaut planted feet (slip 35 cm to 5 mm/step) and shadow; rover pivot turns, corner steering, wheel suspension; drone spin-up, vertical climb/descent, wall clearance, downwash; demo regenerated (rover turns, drone 4 m/s profile); AI-generated portrait with visible watermark. `npm test`: 22 files, 123 tests passed; `npm run build` passed; `check_repository.py` passed. | No bundled package carries the raster attachment yet; AC-08 private-browser replay not recorded; vehicle motion checked in the dev server on one machine | Jesús: a recorded package with `public_rasters.json`; integration review of this PR |
+## Integration test isolation, 2026-11-14
+
+- Base: main `5ab1387` (PRs #12 and #17 merged). Owner: Jesus.
+- Finding: every integration module launched its graph in one ROS domain, so
+  a module could start while DDS still listed the previous module's nodes;
+  with fewer CPUs, launch tests of several owners failed in sequence but not
+  alone. Fixtures also sent goals before the planner service existed
+  (`PLANNER_UNAVAILABLE`) and before the mission held the map (`NO_MAP`).
+- Change: `tests/integration/conftest.py` gives each module its own
+  `ROS_DOMAIN_ID` (from 60; explicit domains such as 173 are kept) and a
+  `planner_ready` fixture; the five launch fixtures of the integration owner
+  wait for the planner service, the mission's map and, before observing,
+  for version 1 rasters to be recorded.
+- Evidence (`mge-dev`, CPUs pinned to two): before, almost every run of
+  `tests/integration` failed somewhere; after, 47 passed in normal runs and
+  most pinned runs. Still intermittent under two pinned CPUs: the fixture of
+  `test_vertical_mission.py` (David) and `test_vertical_planner.py` on the
+  200 x 200 MOCK grid (planner load; Diego). Not seen with all CPUs.

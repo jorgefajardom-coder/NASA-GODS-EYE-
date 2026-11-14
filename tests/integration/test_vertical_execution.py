@@ -70,6 +70,19 @@ def mission():
     return get(f'/api/run/{RUN_ID}/snapshot')['mission_state']
 
 
+def rasters_cover(package, versions):
+    """True once the package's raster attachment holds these map versions."""
+    try:
+        with open(os.path.join(package, 'manifest.json'), encoding='utf-8') as f:
+            name = json.load(f)['files'].get('public_rasters')
+        if name is None:
+            return False
+        with open(os.path.join(package, name), encoding='utf-8') as f:
+            return set(versions) <= set(json.load(f)['versions'])
+    except (OSError, ValueError):
+        return False
+
+
 def submit(request_id, goal):
     r = httpx.post(f'{BASE}/api/mission/goal', json={
         **REQUEST, 'request_id': request_id, 'goal': {'x': goal[0], 'y': goal[1]}})
@@ -177,11 +190,16 @@ def speed(state):
 
 
 @pytest.fixture(scope='module')
-def stack(tmp_path_factory):
+def stack(tmp_path_factory, planner_ready):
     stack = Stack(str(tmp_path_factory.mktemp('replay')))
     try:
         wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3,
                  timeout_s=30.0, what='gateway and 3 agents')
+        # Record version 1 before the observation supersedes its latched batch.
+        wait_for(lambda: mission()['map_version'] >= 1, timeout_s=30.0, what='mission map')
+        wait_for(lambda: rasters_cover(stack.package, {'1'}), timeout_s=30.0,
+                 what='public rasters of map version 1')
+        planner_ready()
         stack.observe_block('obs-block', base_version=1)
         wait_for(lambda: mission()['map_version'] == 2, timeout_s=30.0, what='map version 2')
         yield stack
@@ -267,8 +285,12 @@ def test_new_map_version_halts_the_agent_in_place(stack):
 
 
 def test_recorded_package_shows_the_motion(stack):
+    # Stop only once every map version the mission used has its rasters.
+    wait_for(lambda: rasters_cover(stack.package, {'1', '2', '3'}), timeout_s=30.0,
+             what='public rasters of map versions 1-3')
     stack.stop()
-    assert check_package(stack.package) == []
+    problems = check_package(stack.package)
+    assert problems == [], problems
     with open(os.path.join(stack.package, 'timeline.jsonl'), encoding='utf-8') as f:
         states = [json.loads(line)['state'] for line in f if '"type": "state"' in line]
     poses = {(a['pose']['position']['x'], a['pose']['position']['y'])
