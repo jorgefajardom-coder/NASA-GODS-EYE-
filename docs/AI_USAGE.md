@@ -616,3 +616,12 @@ launch arguments, gateway API, CI jobs and open milestones. The data
 provenance table and the AI declarations already on main are kept unchanged.
 No code, data, mission result, image, video or audio was generated. The
 affected paths are listed in ai_usage.json.
+
+## Replay recorder shutdown fix
+
+Claude Code (Anthropic) assisted the integration owner in fixing a shutdown
+race in the replay recorder: a signal now only asks the node to stop between
+callbacks, the writer closes idempotently and a closed package is never
+extended, with unit tests in `tests/unit/test_replay.py`. No data, mission
+result, image, video or audio was generated. The affected paths are listed in
+ai_usage.json.

@@ -1033,6 +1033,17 @@
         "docs/ai_usage.json"
       ],
       "use": "Describe the system overview, branch and pull request state, web viewer features, launch arguments, gateway API, CI jobs and open milestones in the root README, keeping the existing data provenance table and AI declarations. No code, data, mission result, image, video or audio was generated."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "replay_recorder_shutdown_fix",
+      "generation": "AI-assisted bug fix and unit tests, directed by the integration owner",
+      "paths": [
+        "src/mge_gateway/mge_gateway/recorder.py",
+        "src/mge_gateway/mge_gateway/replay.py",
+        "tests/unit/test_replay.py"
+      ],
+      "use": "Stop the replay recorder on SIGINT/SIGTERM between callbacks so a record is never cut between its timeline line and the manifest/snapshot rewrite; close idempotently and never extend a closed package. No data, mission result or media was generated."
     }
   ],
   "generated_media": [
