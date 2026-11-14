@@ -141,9 +141,23 @@ class Probe:
         req.time_budget_s, req.energy_budget_wh = 14400.0, 1000.0
         req.oxygen_budget_l = req.reserve_oxygen_l = math.nan      # not a human
         self.wait(self.planner.service_is_ready, 'PlanRoute service')
-        future = self.planner.call_async(req)
-        self.wait(future.done, f'PlanRoute answer to {request_id}')
-        return future.result().decision
+        # A coherent batch at this probe does not imply that DDS has delivered
+        # every layer to the planner, especially under the 100 Hz fixture.
+        # Bound readiness by the existing 20 s wait; never retry SEARCH_LIMIT,
+        # input errors, immutable-batch violations or a substantive decision.
+        future = None
+        def ready_answer():
+            nonlocal future
+            if future is None:
+                future = self.planner.call_async(req)
+            if not future.done():
+                return None
+            decision = future.result().decision
+            future = None
+            if decision.reason_code in {'MAP_NOT_READY', 'SNAPSHOT_INCOMPLETE', 'MAP_VERSION_MISMATCH'}:
+                return None
+            return decision
+        return self.wait(ready_answer, f'assembled PlanRoute answer to {request_id}')
 
 
 @pytest.fixture(scope='module', params=[1.0, 0.01], ids=['1Hz', '100Hz'])

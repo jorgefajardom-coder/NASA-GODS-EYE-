@@ -74,6 +74,15 @@ The final PR CI must rerun the complete combined source. Earlier failures remain
 in `.local/recovery-validation-1/`; the recovered package ends READY on map3
 with a feasible route and recorded return, not scientific mission COMPLETE.
 
+The first PR CI passed recovery and all contracts but exposed two 100 Hz batch
+startup races: this probe had a coherent batch before the planner assembled it.
+The fixture now waits within its existing 20 s deadline for planner-side assembly,
+retrying only MAP_NOT_READY/SNAPSHOT_INCOMPLETE/MAP_VERSION_MISMATCH. It preserves
+100 Hz load, all final assertions and the search timeout; SEARCH_LIMIT and
+substantive results are returned immediately. The CI failure log remains local.
+The complete terrain-batch module then passed all 12 cases (1 Hz and 100 Hz)
+with the test and child ROS nodes restricted to two CPUs, in 20.73 s.
+
 ## Remaining real acceptance
 
 Jesus reviews the MOCK stop/authorization loop and Jorge the existing consumer.

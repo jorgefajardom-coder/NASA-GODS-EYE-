@@ -8,6 +8,8 @@ MOCK mission waits for fresh stop feedback, rejects stale results and retains
 spent allocations and required reserves. Tests use synthetic inputs and a MOCK
 software execution/recorder package. This does not approve a scientific model,
 physical traversal or LIVE mission. Affected paths are in ai_usage.json.
+The terrain batch test also waits for planner-side assembly within its existing
+readiness deadline; substantive results and search limits are not retried.
 
 ## Strict recorded replay
 

@@ -16,6 +16,7 @@
         "tests/planning/test_continuous_recovery.py", "tests/planning/test_simulated_ground_initialization.py",
         "tests/unit/test_recovery.py", "tests/contract/test_mock_recovery.py",
         "tests/contract/test_mission_launch.py", "tests/integration/test_vertical_execution.py",
+        "tests/integration/test_terrain_batch.py",
         "docs/ICD.md", "docs/mission_replay_recovery.md"
       ],
       "use": "Preserve bounded continuous XYZ, wait for stop acknowledgement, reject stale or resource-invalid candidates and retain spent allocations/reserves. Validate reauthorized motion, return and the same closed MOCK recorder package. No scientific or LIVE approval."
