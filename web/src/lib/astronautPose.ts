@@ -17,10 +17,16 @@ export interface CalmOptions {
   bounce: number;
   /** Forward lean left in the torso after straightening, degrees. */
   residualLeanDeg: number;
+  /**
+   * Keep the lower foot on the ground at every keyframe by moving the hips down. The source
+   * clip is a lunar bounding gait with a long phase where both feet are in the air, which reads
+   * as hopping; planting removes that flight phase without changing the legs.
+   */
+  plantFeet: boolean;
 }
 
 // bounce 0.1: the moon_walk hop is almost removed (a little is kept so the legs do not sink at full stride).
-export const CALM: CalmOptions = { sway: 0, bounce: 0.1, residualLeanDeg: 0 };
+export const CALM: CalmOptions = { sway: 0, bounce: 0.1, residualLeanDeg: 0, plantFeet: true };
 
 const ROTATION_TRACK = /^(Center|Hip|Spine_[123]|[LR]_Clevicle)\d+_\d+\.quaternion$/;
 const HIPS_POSITION_TRACK = /^Center\d+_\d+\.position$/;
@@ -172,6 +178,47 @@ function levelShoulders(root: THREE.Object3D, clip: THREE.AnimationClip) {
   rotateTrackInWorld(r.track, rParent, turn(mean.rArm, mean.rClav));
 }
 
+/**
+ * Moves the hips track so that, at every keyframe, the lower ankle sits at the lowest ankle
+ * height of the whole cycle (the stance foot stays on the ground). A rigid vertical shift of
+ * the hips moves both feet by the same amount, so one pass is exact.
+ */
+function plantFeet(root: THREE.Object3D, clip: THREE.AnimationClip) {
+  const hips = findNode(root, /^Center\d/);
+  const lAnkle = findNode(root, /^L_Ankle\d/);
+  const rAnkle = findNode(root, /^R_Ankle\d/);
+  const track = hips && clip.tracks.find((t) => t.name === `${hips.name}.position`);
+  if (!hips || !lAnkle || !rAnkle || !track || !hips.parent) return;
+
+  const mixer = new THREE.AnimationMixer(root);
+  const action = mixer.clipAction(clip);
+  action.play();
+  const a = new THREE.Vector3();
+  const b = new THREE.Vector3();
+  const lowest: number[] = [];
+  for (const t of track.times) {
+    mixer.setTime(Math.min(t, clip.duration - 1e-6));
+    root.updateMatrixWorld(true);
+    lowest.push(Math.min(lAnkle.getWorldPosition(a).y, rAnkle.getWorldPosition(b).y));
+  }
+  // World "down" expressed in the hips' parent frame (that parent is not animated).
+  const parent = hips.parent;
+  const origin = parent.worldToLocal(new THREE.Vector3(0, 0, 0));
+  const down = parent.worldToLocal(new THREE.Vector3(0, -1, 0)).sub(origin);
+  action.stop();
+  mixer.uncacheClip(clip);
+  mixer.uncacheRoot(root);
+
+  const ground = Math.min(...lowest);
+  const v = track.values;
+  lowest.forEach((y, i) => {
+    const lift = y - ground; // world units the stance foot is off the ground
+    v[i * 3] += down.x * lift;
+    v[i * 3 + 1] += down.y * lift;
+    v[i * 3 + 2] += down.z * lift;
+  });
+}
+
 /** Returns a calmer copy of a clip. `root` must be the model the clip animates. */
 export function calmClip(root: THREE.Object3D, clip: THREE.AnimationClip, opts: CalmOptions = CALM): THREE.AnimationClip {
   const out = clip.clone();
@@ -181,5 +228,6 @@ export function calmClip(root: THREE.Object3D, clip: THREE.AnimationClip, opts: 
   }
   straightenTorso(root, out, opts.residualLeanDeg);
   if (opts.sway === 0) levelShoulders(root, out); // only meaningful when the clavicles are held still
+  if (opts.plantFeet) plantFeet(root, out);
   return out;
 }

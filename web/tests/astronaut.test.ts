@@ -132,13 +132,43 @@ describe('calmed walk and idle', () => {
     expect(calm.lean[0]).toBeGreaterThanOrEqual(0);
   });
 
-  it('removes the side-to-side rocking and reduces the hip bounce', () => {
+  it('removes the side-to-side rocking and keeps the hip bob below the original', () => {
     const raw = measure(model.scene, original('moon_walk'));
     const calm = measure(model.scene, calmClip(model.scene, original('moon_walk')));
     expect(raw.pelvisSwing).toBeGreaterThan(5);
     expect(calm.pelvisSwing).toBeLessThan(0.5);
     expect(calm.shoulderSwing).toBeLessThan(0.5);
-    expect(calm.hipSwing).toBeLessThan(raw.hipSwing * 0.15); // the hop is almost removed
+    expect(calm.hipSwing).toBeLessThan(raw.hipSwing * 0.75); // a walking bob, smaller than the source hop
+  });
+
+  it('walks instead of hopping: the lower foot never leaves the ground', () => {
+    const lowFoot = (clip: THREE.AnimationClip) => {
+      const root = model.scene;
+      const pick = (re: RegExp) => {
+        let f: THREE.Object3D | null = null;
+        root.traverse((o) => {
+          if (!f && re.test(o.name)) f = o;
+        });
+        return f!;
+      };
+      const l = pick(/^L_Ankle\d/);
+      const r = pick(/^R_Ankle\d/);
+      const mixer = new THREE.AnimationMixer(root);
+      mixer.clipAction(clip).play();
+      const a = new THREE.Vector3();
+      const ys: number[] = [];
+      for (let i = 0; i < 60; i++) {
+        mixer.setTime((clip.duration * i) / 60);
+        root.updateMatrixWorld(true);
+        ys.push(Math.min(l.getWorldPosition(a).y, r.getWorldPosition(a.clone()).y));
+      }
+      mixer.stopAllAction();
+      return Math.max(...ys) - Math.min(...ys); // how far the stance foot rises over the cycle
+    };
+    const raw = lowFoot(original('moon_walk'));
+    const calm = lowFoot(calmClip(model.scene, original('moon_walk')));
+    expect(raw).toBeGreaterThan(0.15); // the source clip has a long both-feet-off-the-ground phase
+    expect(calm).toBeLessThan(0.02); // planted: the lower foot stays on the ground
   });
 
   it('stands upright when idle', () => {
