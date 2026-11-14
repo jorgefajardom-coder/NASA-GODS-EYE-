@@ -308,6 +308,23 @@ def test_missing_configuration_stays_unavailable():
         rclpy.shutdown()
 
 
+def test_approved_experimental_values_do_not_unlock_runtime():
+    rclpy.init()
+    root = Path(__file__).resolve().parents[2]
+    node = create_node_class()(parameter_overrides=[
+        Parameter("use_sim_time", value=True), Parameter("run_id", value="approved-scenario-still-blocked"),
+        Parameter("profiles_path", value=str(root / "config/science_profiles.proposed.json")),
+        Parameter("mission_path", value=str(root / "config/mission_jezero.experimental.yaml")),
+    ])
+    try:
+        response = node._set_goal(SetMissionGoal.Request(), SetMissionGoal.Response())
+        assert not response.accepted and response.reason_code == "CONFIG_NOT_READY"
+        assert node._manager is None
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+
 @pytest.mark.parametrize("allow", [False, True])
 def test_illustrative_runtime_configuration_requires_explicit_opt_in(allow):
     rclpy.init()

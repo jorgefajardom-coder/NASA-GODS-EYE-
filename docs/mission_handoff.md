@@ -4,6 +4,9 @@ Owner: David. Integration reviewer: Jesus. Work branch: `feat/mission`.
 
 This record describes implementation boundaries, not a verified end-to-end
 mission. Scientific coefficients remain proposed until David approves them.
+Latest decision: JZ-P01..JZ-P07 nominal experimental scenario values were
+explicitly approved on 14 November 2026. The approval and remaining operational
+gates are recorded at the end of this chronological handoff.
 
 ## Integration dependencies
 
@@ -91,8 +94,10 @@ with the integration front and no execution evidence is invented here.
 
 The coefficient sweep uses illustrative directed routes/services/waits and
 existing reserves, varying traced low/nominal/high values independently. Its
-reports are model checks and cannot enter mission A/B/C results. The operational
-scenario and scientific approval remain pending Daniel and David respectively.
+reports are model checks and cannot enter mission A/B/C results. At that cut,
+scenario and scientific approval were pending. The later experimental-scenario
+approval below supersedes the scenario-value status only, not model or execution
+approval.
 
 ## Published public scenario and persistent evidence
 
@@ -133,14 +138,35 @@ The direct integration is specific owner authorization, not a relaxation of
 normal team review requirements. Model agreement, operational evidence inputs,
 stop acknowledgement and scientific approval remain separate pending gates.
 
-## Concrete scientific proposal for review
+## Concrete scientific proposal and subsequent approval
 
 The [Jezero proposal](jezero_mission_proposal.md) and its separate
-[configuration](../config/mission_jezero.proposed.yaml) now specify public A/B
+[original configuration](../config/mission_jezero.proposed.yaml) specify public A/B
 cells, service, allocations, reserves and a model-pose tolerance. Decision IDs
-JZ-P01..JZ-P07 are **proposed**, not approved. The operational template and
-source profile approvals remain unchanged. Reproducible costs are computed on
+JZ-P01..JZ-P07 were originally proposed for review and were then explicitly
+approved by David on 14 November 2026 **for the experimental scenario only**.
+The operational template and source profile approvals remain unchanged.
+Reproducible costs are computed on
 Daniel's public prior without modifying observed/traversability layers or
 loading reference truth. No planned route or simulated observation is generated.
-The readiness report retains six approval/model/snapshot requirements; a review
-of numerical values must not silently approve the missing integration evidence.
+The original pre-approval report is retained; numerical-value approval does not
+approve missing integration evidence.
+
+## Approved scenario values; operational gates remain pending
+
+[Receipt JZ-APP-20261114-01](science_approvals/jezero_scenario_20261114.json)
+records the exact decision IDs, reviewed proposal identity and approved nominal
+values. The current [experimental configuration](../config/mission_jezero.experimental.yaml)
+uses `status: pending_integration`: the node remains unavailable, and the
+separate `scenario_approval` marker must not be substituted for empty operational
+`approval_evidence`. The original proposed YAML and existing calculation exports
+remain unchanged. FAST/connectivity keep the baseline meanings; no ROS field,
+model coefficient or shared contract is changed.
+
+The [refreshed readiness](../evidence/jezero-scenario-approval-20261114/readiness/scenario_diagnostic.json)
+can report verified experimental-scenario approval while remaining `NOT_READY`.
+Profiles, cost agreement, snapshot/execution bindings, verified traversal and
+stop acknowledgement remain pending. Global scientific/operational readiness
+flags remain false; no execution, optional-task completion or A/B/C result is
+inferred. Next handoff is owner-reviewed profile/model reconciliation and public
+execution evidence, not silent activation of the approved numerical settings.

@@ -1,10 +1,19 @@
-# Jezero primary mission: proposal for David's review
+# Jezero primary mission: approved experimental scenario
 
-Proposal `jezero-primary-review-01`, recorded **14 November 2026**. Every new
-value below is **PROPOSED**. Preparing or committing this document is not
-scientific approval. [Configuration](../config/mission_jezero.proposed.yaml)
-is separate from the unapproved operational template and is rejected by the
-current node because its status is `proposed`. No runtime approval flag changes.
+Proposal `jezero-primary-review-01` was recorded on **14 November 2026** and
+subsequently approved explicitly by David for **JZ-P01 through JZ-P07 as
+experimental scenario values only**. The approval is recorded as
+[JZ-APP-20261114-01](science_approvals/jezero_scenario_20261114.json), binding the
+reviewed proposal and approved nominal values. Profile coefficients, cost-model
+agreement, snapshot/execution inputs and operational authorization remain pending.
+
+Use the separate [experimental configuration](../config/mission_jezero.experimental.yaml)
+for the approved values. Its runtime status remains `pending_integration`, with
+`scenario_approval` recorded separately and operational `approval_evidence`
+empty. The current node must reject it. The
+[original proposed configuration](../config/mission_jezero.proposed.yaml) and
+original sizing evidence remain unchanged as the historical review artifacts.
+Neither preparing this document nor recording approval changes a runtime flag.
 
 ## Scenario and objective
 
@@ -15,7 +24,7 @@ MOLA/DeltaGeoid vertical datum. Keep public elevations unchanged; no local z
 offset or viewer exaggeration is applied. Data provenance and original NASA/
 USGS source identities remain in [data sources](data_sources.md).
 
-| Item | Proposed value | Reason / qualification |
+| Item | Approved nominal experimental value | Reason / qualification |
 |---|---|---|
 | Base A | cell (12,12): (-14,-14,-2571.199462890625) m | Matches the current integration human placeholder's XY, limiting handoff changes; this does not establish a safe landing/base site |
 | Objective B | cell (23,23): (30,30,-2573.264892578125) m | 62.23 m horizontal separation; compact experiment inside the crop, 34 m from the nearest crop edge; no geological-interest claim |
@@ -26,9 +35,9 @@ USGS source identities remain in [data sources](data_sources.md).
 | Return tolerance | 1 m, **3D distance** used by MissionManager | Model-pose threshold below half the 4 m cell spacing; native 20 m DEM and initial sigma 2.5 m do not substantiate physical 1 m accuracy |
 | Planning mode / connectivity | FAST / ideal_global_p0 | Keep the existing experimental baseline fixed across comparisons; no communications guarantee |
 
-The original `agents_jezero.yaml` remains unchanged. The proposed z values and
-resource allocations need explicit owner integration after approval; never
-replace the latest observed pose by a proposed staging position. Neither B nor
+The original `agents_jezero.yaml` remains unchanged. The approved experimental
+z values and resource allocations still need explicit owner integration; never
+replace the latest observed pose by an approved staging position. Neither B nor
 the local rover sizing endpoint is a discovered POI. No future task catalogue,
 reference DEM, observation or new mock is used.
 
@@ -45,8 +54,8 @@ rejectable and keeps a first comparison bounded. Human energy/O2 caps leave
 headroom for short optional work without automatically admitting every task.
 The rover cap targets local inspection; accompanying the human all the way to
 B is not assumed feasible. The drone cap is a short analytical envelope only.
-These allocations do **not** describe suit/battery capacity, certified endurance
-or physical safety. The 20% holdback is our experimental policy, **not a NASA
+These approved experimental allocations do **not** describe suit/battery capacity,
+certified endurance or physical safety. The 20% holdback is our policy, **not a NASA
 standard**; return is costed first and the reserve must remain afterward.
 
 O2 means equivalent dry ideal gas at 273.15 K / 101.325 kPa. It covers the
@@ -61,9 +70,11 @@ python scripts/size_jezero_proposal.py --run-id jezero-review \
   --output-dir tmp/jezero-review
 ```
 
-The tool consumes Daniel's unchanged public loader, validates the proposal,
+The tool consumes Daniel's unchanged public loader, validates the original proposal,
 and evaluates explicit geometry and activity costs through the scientific API.
 It performs no search or traversability update and generates no observations.
+Its proposed-only input guard remains intact for reproducing the historical
+review. Approval does not relabel its original output as an execution result.
 
 | Public-prior cost probe | Nominal time | Nominal energy | Nominal O2 |
 |---|---:|---:|---:|
@@ -99,11 +110,15 @@ must be charged from current resources and may eliminate the sampling margin.
 Drone observation duration likewise implies no footprint or corridor coverage;
 the observation producer/model must establish that separately.
 
-## Evidence, sources and decisions to approve
+## Evidence, sources and approval boundaries
 
 The [retained sizing](../evidence/jezero-proposal-review-20261114/proposal_sizing.json)
 binds the public inputs, proposal, profile registry and implementation hashes.
-Status remains `NOT_READY`: six approval/model/snapshot fields remain missing.
+That original report remains immutable and describes the pre-approval state.
+The [approval readiness diagnostic](../evidence/jezero-scenario-approval-20261114/readiness/scenario_diagnostic.json)
+reports the experimental approval separately while retaining `NOT_READY` and
+pending operational/model/snapshot requirements. The approval receipt is a
+traceability record, not an authenticated signature or execution evidence.
 
 The existing human activity anchors come from the lunar analog in
 [NASA/TM-2010-216138, Table 4](https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=21).
@@ -116,9 +131,12 @@ provide reference scales only; our vehicle coefficients, budgets and reserve
 fraction are not inferred NASA operational limits. The full source/assumption
 registry remains in [scientific models](science_models.md).
 
-David's review should explicitly accept/adjust the proposed scenario, cells,
-service, tolerance, allocations and reserves (JZ-P01 through JZ-P07 in the
-decision register). Profile coefficient approval, consumer O2 semantics,
-planner-model agreement and execution/observation bindings remain separate
-gates. An approval of this proposal must not silently approve those gates,
-freeze A/B/C or populate operational `approval_evidence` with invented records.
+David has approved the nominal scenario, cells, service, tolerance, allocations
+and reserves recorded under JZ-P01 through JZ-P07. Sensitivity alternatives
+remain analytical cases; they are not additional approved execution settings.
+FAST and ideal_global_p0 keep their existing experimental baseline meanings;
+this decision freezes no shared contract. Profile coefficient approval, consumer
+O2 semantics, planner-model agreement and execution/observation bindings remain
+separate gates. The scenario approval does not approve those gates, freeze A/B/C,
+populate operational `approval_evidence`, or change the global
+`scientific_approval=false` / `mission_execution_authorized=false` readiness flags.

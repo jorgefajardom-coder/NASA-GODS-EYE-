@@ -16,11 +16,15 @@ authority must reject operational use without explicit approval or an explicitly
 selected illustrative run.
 
 [The illustrative scenario](../config/scenario_demo.yaml) retains the synthetic
-test inputs. A separate [Jezero proposal](jezero_mission_proposal.md) combines
-Daniel's public observational terrain with proposed positions, services,
-allocations, reserves and a model-pose tolerance for David's review. It grants
-no approval and creates no observations or hidden sites. Operational
-configuration remains incomplete.
+test inputs. The separate [Jezero experimental scenario](jezero_mission_proposal.md)
+combines Daniel's public observational terrain with nominal positions, service,
+allocations, reserves and a model-pose tolerance explicitly approved by David
+under JZ-P01..JZ-P07 on 14 November 2026. The
+[approval receipt](science_approvals/jezero_scenario_20261114.json) does not approve
+these scientific profile coefficients, planner cost agreement or execution
+evidence. The experimental configuration remains `pending_integration`; no
+observation, hidden site or operational authorization is created. The original
+proposal/configuration and its pre-approval calculations remain immutable.
 
 `AgentProfile` copies and freezes capabilities, parameters and powers, so later
 mutation of a caller's dictionaries cannot silently change an accepted profile.

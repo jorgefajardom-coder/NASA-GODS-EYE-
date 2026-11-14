@@ -1,5 +1,24 @@
 # Current contract reconciliation verification
 
+## Experimental scenario approval validation, 14 November 2026
+
+The human approval of JZ-P01..JZ-P07 is recorded separately from runtime/model
+authorization. The [new readiness report](../evidence/jezero-scenario-approval-20261114/readiness/scenario_diagnostic.json)
+verifies the hash-bound receipt and unchanged numerical values, reports
+`APPROVED_EXPERIMENTAL_VALUES`, and retains `NOT_READY` with six operational
+requirements outstanding. All source profiles remain proposed, no cost
+agreement is asserted and all 1024 public cells remain unobserved.
+
+Windows: 723 cases passed, 16 platform/ROS skips. Jazzy: eight packages built,
+eight interfaces inspected, 533 mission/contract/integration cases passed with
+one optional snapshot skip. The real MissionNode rejects the experimental file
+with CONFIG_NOT_READY. Tampered values, receipt hashes, scope, decisions,
+profile approval and original proposal are rejected. Frontend: 84 tests/build
+passed; repository/whitespace checks passed. See the
+[validation record](../evidence/jezero-scenario-approval-20261114/validation.json).
+Existing tooling notices remain. No execution or scientific-model approval
+was inferred, and the original proposal/results were not changed.
+
 ## Jezero scientific proposal validation, 14 November 2026
 
 Proposal `jezero-primary-review-01` is a review artifact, not an operational
