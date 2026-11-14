@@ -96,4 +96,3 @@ LIVE mission. No push, merge or release is implied by this handoff alone.
 - Still open from this handoff: strict canonical package validation with Daniel's raster
   sidecar, `displayState` labels in the status block, three control points, and
   backend-off evidence.
-
