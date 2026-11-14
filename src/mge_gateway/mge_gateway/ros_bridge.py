@@ -8,7 +8,7 @@ from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from rosidl_runtime_py import message_to_ordereddict
 
-from mge_gateway.store import RunStore, to_json
+from mge_gateway.store import CONVERTERS, NonFiniteValue, RunStore, strict_json
 from mge_interfaces.msg import MissionEvent, MissionState, TerrainMeta
 from mge_interfaces.srv import SetMissionGoal
 
@@ -20,8 +20,9 @@ LATCHED = QoSProfile(
 )
 
 
-def msg_json(msg):
-    return to_json(message_to_ordereddict(msg))
+def msg_json(kind, msg):
+    """kind: 'state' | 'event' | 'terrain_meta'. Raises NonFiniteValue."""
+    return CONVERTERS[kind](message_to_ordereddict(msg))
 
 
 class RosBridge(Node):
@@ -34,6 +35,7 @@ class RosBridge(Node):
             'cors_origins', ['http://localhost:5173']).value
         self.store = RunStore(self.declare_parameter('run_id', 'mock-run').value)
         self.on_update = None       # set by the web app: fn(kind, payload)
+        self.rejected = 0           # messages dropped for invalid numbers
 
         self.create_subscription(
             MissionState, '/mge/mission/state', self._on_state, LATCHED)
@@ -50,18 +52,29 @@ class RosBridge(Node):
         if self.on_update:
             self.on_update(kind, payload)
 
+    def _convert(self, kind, msg):
+        """An invalid message is dropped whole and reported, never patched."""
+        try:
+            return msg_json(kind, msg)
+        except NonFiniteValue as e:
+            self.rejected += 1
+            self.get_logger().error(f'dropped {kind} message: {e}')
+            return None
+
     def _on_state(self, msg):
-        data = msg_json(msg)
-        if self.store.apply_state(data):
+        data = self._convert('state', msg)
+        if data is not None and self.store.apply_state(data):
             self._notify('state', data)
 
     def _on_event(self, msg):
-        data = msg_json(msg)
-        if self.store.apply_event(data):
+        data = self._convert('event', msg)
+        if data is not None and self.store.apply_event(data):
             self._notify('event', data)
 
     def _on_meta(self, msg):
-        self.store.apply_meta(msg_json(msg))
+        data = self._convert('terrain_meta', msg)
+        if data is not None:
+            self.store.apply_meta(data)
 
     def set_goal(self, fields, timeout_s=5.0):
         """Blocking call from a web worker thread. Returns the response as a
@@ -85,7 +98,7 @@ class RosBridge(Node):
         if not done.wait(timeout_s):
             future.cancel()
             return None
-        return msg_json(future.result())
+        return strict_json(message_to_ordereddict(future.result()), 'set_mission_goal')
 
 
 def spin_in_thread(node):

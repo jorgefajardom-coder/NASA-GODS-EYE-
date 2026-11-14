@@ -188,10 +188,14 @@ planning or mission logic. Every JSON response and WebSocket message is an
 envelope with `schema_version` (`"1.0.0"`; it applies to JSON, not to the ROS
 wire messages), `run_id`, `mode` (`LIVE` | `REPLAY`), `map_version` and
 `timestamp_sim_s`, plus the payload. Payloads use the ROS
-field names unchanged. The typed non-finite conversion requirements in
-section 5 remain the target; the broad existing output serializer still needs
-the hardening identified in REPLAY_CONTRACT.md. The input checks below do not
-claim that output-side gate is resolved.
+field names unchanged. Output follows the typed non-finite rules of section 5:
+NaN becomes `null` only for `TerrainMeta.nodata_value`, oxygen of an agent that
+is not `HUMAN` (`AgentState.oxygen_remaining_l`, and `oxygen_est_l` /
+`reserve_oxygen_l` of its route) and the seven metrics of a `RouteDecision`
+whose status is not `FEASIBLE`. Any other NaN, and every infinity, rejects the
+whole message: the gateway and the recorder drop it, log the field path and keep
+the last valid state. A `FEASIBLE` route with a NaN metric is therefore never
+shown. The route's agent kind is read from `MissionState.agents`.
 
 | Route | Payload |
 |---|---|

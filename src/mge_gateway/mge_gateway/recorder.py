@@ -6,6 +6,7 @@ from rclpy.node import Node
 
 from mge_gateway.replay import ReplayWriter
 from mge_gateway.ros_bridge import LATCHED, msg_json, RELIABLE
+from mge_gateway.store import NonFiniteValue
 from mge_interfaces.msg import MissionEvent, MissionState, TerrainMeta
 
 
@@ -19,14 +20,21 @@ class ReplayRecorder(Node):
         self.writer = ReplayWriter(root, run_id, 'sim' if sim_time else 'system')
         self.create_subscription(
             MissionState, '/mge/mission/state',
-            lambda m: self.writer.record('state', msg_json(m)), LATCHED)
+            lambda m: self.record('state', m), LATCHED)
         self.create_subscription(
             MissionEvent, '/mge/mission/events',
-            lambda m: self.writer.record('event', msg_json(m)), RELIABLE)
+            lambda m: self.record('event', m), RELIABLE)
         self.create_subscription(
             TerrainMeta, '/mge/terrain/meta',
-            lambda m: self.writer.record('terrain_meta', msg_json(m)), LATCHED)
+            lambda m: self.record('terrain_meta', m), LATCHED)
         self.get_logger().info(f'recording run {run_id} to {self.writer.dir}')
+
+    def record(self, kind, msg):
+        """An invalid message is left out of the package and reported."""
+        try:
+            self.writer.record(kind, msg_json(kind, msg))
+        except NonFiniteValue as e:
+            self.get_logger().error(f'not recorded, {kind} message: {e}')
 
 
 def main():
