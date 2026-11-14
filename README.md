@@ -5,39 +5,68 @@ astronaut, one drone and one rover. Built by team "Houston, We Have a Bug!"
 for the NASA Space Apps Challenge 2026, challenge *Interplanetary Survival
 Guide: Martian Map*.
 
-**Status: early development.** What exists today is the interface contract
-and a workspace skeleton. Agent data published by the smoke launch is mock
-data. Perception, locomotion and consumption are simulated and labelled as
-such.
+**Status: early development.** What exists today is the interface contract,
+the ROS-to-web gateway and an end-to-end path built on mock producers. The
+terrain, planner and mission nodes are labelled stand-ins: routes are straight
+lines and no Mars data is loaded yet. Perception, locomotion and consumption
+are simulated and labelled as such.
 
 ## Layout
 
 | Path | Content |
 |---|---|
 | `src/mge_interfaces` | ROS 2 messages and services (ICD-ROS2-V1) |
-| `src/mge_sim` | Simulation adapter; currently a mock agent state publisher |
+| `src/mge_sim` | Simulation adapter; currently mock agents, terrain, planner and mission |
+| `src/mge_gateway` | FastAPI gateway: REST and WebSocket over the ROS graph |
 | `src/mge_bringup` | Launch files and agent configuration |
-| `tests/contract` | Contract tests for the interfaces |
+| `tests` | Unit, contract and end-to-end tests |
+| `docker/Dockerfile` | Development image (ROS 2 Jazzy plus web dependencies) |
 | `docs/ICD.md` | Frames, units, channels, enumerations, open points |
 | `docs/integration_log.md` | Integration evidence and blockers |
+| `docs/AI_USAGE.md` | Where and how AI tools were used |
 
 ## Requirements
 
-ROS 2 Jazzy with `colcon`. Gazebo Harmonic is needed only for simulation
-work. Either install them natively or use Docker through `scripts/dev.sh`,
-which runs any command in a Jazzy container with the repository mounted.
-Set `MGE_IMAGE` to choose the image.
+Docker, or a native ROS 2 Jazzy install with `colcon`, `python3-fastapi`,
+`python3-uvicorn`, `python3-websockets` and `python3-httpx`. Gazebo Harmonic
+is needed only for simulation work.
 
-## Build and smoke test
+With Docker, build the development image once and run every command through
+`scripts/dev.sh`, which mounts the repository in the container:
+
+```bash
+docker build -t mge-dev docker/
+```
+
+`--build-arg BASE=<image>` selects another ROS 2 Jazzy base image.
+
+## Build and test
 
 ```bash
 scripts/dev.sh colcon build --symlink-install
-scripts/dev.sh ros2 interface show mge_interfaces/msg/AgentState
-scripts/dev.sh python3 -m pytest tests/contract
-scripts/dev.sh ros2 launch mge_bringup smoke.launch.py run_id:=smoke-001
-# in a second terminal
-scripts/dev.sh ros2 topic echo /mge/agents/human_1/state
+scripts/dev.sh python3 -m pytest tests
 ```
+
+## Run the mock vertical
+
+```bash
+scripts/dev.sh ros2 launch mge_bringup vertical_mock.launch.py run_id:=demo-001
+```
+
+In a second terminal:
+
+```bash
+curl http://127.0.0.1:8000/api/manifest
+curl -X POST http://127.0.0.1:8000/api/mission/goal \
+  -H 'Content-Type: application/json' \
+  -d '{"request_id": "req-1", "primary_agent_id": "human_1",
+       "base": {"x": 0, "y": 0}, "goal": {"x": 300, "y": 400},
+       "time_budget_s": 14400, "energy_budget_wh": 1000, "oxygen_budget_l": 1000}'
+curl http://127.0.0.1:8000/api/run/demo-001/snapshot
+```
+
+Interactive API documentation is at `http://127.0.0.1:8000/docs`. The web
+contract is described in `docs/ICD.md`, section 5.
 
 With a native install, drop `scripts/dev.sh` and source
 `/opt/ros/jazzy/setup.bash` and `install/setup.bash` first.
@@ -45,3 +74,8 @@ With a native install, drop `scripts/dev.sh` and source
 Agents are listed in `src/mge_bringup/config/agents.yaml`; adding an entry
 adds an agent without changing any contract. Pass another file with
 `agents_file:=/path/to/agents.yaml`.
+
+## AI tools
+
+AI tools were used to write code and documentation in this repository. See
+`docs/AI_USAGE.md`.
