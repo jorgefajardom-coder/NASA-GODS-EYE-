@@ -48,6 +48,13 @@ def oxygen_from_wire(value, kind, field):
     return None
 
 
+def unavailable_number_from_wire(value, field):
+    """NaN denotes an unavailable failure metric, never a zero measurement."""
+    if isinstance(value, float) and isnan(value):
+        return None
+    return finite_number(value, field, nonnegative=True)
+
+
 def kind_from_wire(value):
     try:
         return WIRE_KINDS[value]
@@ -177,9 +184,18 @@ def decision_from_wire(message, run_id, now_s, *, kind):
         raise ValueError("unknown route status or mode")
     if type(message.map_version_used) is not int or not 0 <= message.map_version_used <= 0xFFFFFFFF:
         raise ValueError("invalid map version")
-    values = {name: finite_number(getattr(message, name), name, nonnegative=True)
+    feasible = message.status == "FEASIBLE"
+    if not feasible and (message.route_id or message.outbound_path or message.return_path):
+        raise ValueError("a failed planning decision must not contain an active route")
+    convert_number = (lambda value, name: finite_number(value, name, nonnegative=True)) if feasible else unavailable_number_from_wire
+    values = {name: convert_number(getattr(message, name), name)
               for name in ("travel_time_s", "energy_est_wh", "min_clearance_m",
                            "reserve_time_s", "reserve_wh")}
+    oxygen = {}
+    for name in ("oxygen_est_l", "reserve_oxygen_l"):
+        oxygen[name] = (unavailable_number_from_wire(getattr(message, name), name)
+                        if not feasible and kind == "human"
+                        else oxygen_from_wire(getattr(message, name), kind, name))
     return RouteDecision(
         run_id=message.run_id, request_id=message.request_id, route_id=message.route_id,
         agent_id=message.agent_id, mode=message.mode,
@@ -187,9 +203,7 @@ def decision_from_wire(message, run_id, now_s, *, kind):
         reason_code=message.reason_code, detail=message.detail,
         outbound_path=tuple(_point_from_wire(point) for point in message.outbound_path),
         return_path=tuple(_point_from_wire(point) for point in message.return_path),
-        oxygen_est_l=oxygen_from_wire(message.oxygen_est_l, kind, "oxygen_est_l"),
-        reserve_oxygen_l=oxygen_from_wire(message.reserve_oxygen_l, kind, "reserve_oxygen_l"),
-        **values,
+        **oxygen, **values,
     )
 
 
@@ -217,7 +231,9 @@ def decision_to_wire(decision, message, stamp, point_factory):
     for name in ("outbound_path", "return_path"):
         setattr(message, name, [point_to_wire(point, point_factory) for point in getattr(decision, name)])
     for name in ("travel_time_s", "energy_est_wh", "min_clearance_m", "reserve_time_s", "reserve_wh"):
-        setattr(message, name, float32(getattr(decision, name), name))
+        value = getattr(decision, name)
+        setattr(message, name, float("nan") if decision.status != "FEASIBLE" and value is None
+                else float32(value, name))
     for name in ("oxygen_est_l", "reserve_oxygen_l"):
         setattr(message, name, float32(getattr(decision, name), name, oxygen_na=True))
     return message

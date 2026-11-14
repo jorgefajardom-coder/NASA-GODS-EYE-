@@ -134,6 +134,56 @@ def test_route_round_trip_preserves_canonical_fields():
     assert output.header.frame_id == "map"
 
 
+@pytest.mark.parametrize("status", ["UNKNOWN", "NO_PATH", "INSUFFICIENT_BUDGET"])
+def test_planner_failures_preserve_nan_metrics_as_unavailable(status):
+    message = route_message()
+    message.status, message.reason_code = status, f"{status}_DETAIL"
+    message.route_id, message.outbound_path, message.return_path = "", [], []
+    # Published planner 34c515b6 emits zero stamp before a map is loaded and
+    # NaN in every unavailable metric, including human oxygen.
+    message.header.stamp.sec = 0
+    fields = ("travel_time_s", "energy_est_wh", "oxygen_est_l", "min_clearance_m",
+              "reserve_time_s", "reserve_wh", "reserve_oxygen_l")
+    for name in fields:
+        setattr(message, name, float("nan"))
+    result = adapter.decision_from_wire(message, "run", 4.0, kind="human")
+    assert result.status == status and result.reason_code == f"{status}_DETAIL"
+    assert all(getattr(result, name) is None for name in fields)
+    output = adapter.decision_to_wire(result, route_message(), message.header.stamp, wire_point)
+    assert all(isnan(getattr(output, name)) for name in fields)
+    assert output.route_id == "" and output.outbound_path == [] and output.return_path == []
+
+
+@pytest.mark.parametrize("field", ["travel_time_s", "energy_est_wh", "oxygen_est_l", "min_clearance_m",
+                                  "reserve_time_s", "reserve_wh", "reserve_oxygen_l"])
+def test_feasible_candidate_still_requires_every_applicable_finite_metric(field):
+    message = route_message()
+    setattr(message, field, float("nan"))
+    with pytest.raises(ValueError, match="finite"):
+        adapter.decision_from_wire(message, "run", 4.0, kind="human")
+
+
+@pytest.mark.parametrize("invalid", ["frame", "run", "future"])
+def test_failure_cannot_bypass_valid_run_frame_and_nonfuture_stamp(invalid):
+    message = route_message()
+    message.status, message.route_id, message.outbound_path, message.return_path = "UNKNOWN", "", [], []
+    if invalid == "frame":
+        message.header.frame_id = "odom"
+    elif invalid == "run":
+        message.run_id = "another-run"
+    else:
+        message.header.stamp.sec = 5
+    with pytest.raises(ValueError):
+        adapter.decision_from_wire(message, "run", 4.0, kind="human")
+
+
+def test_failure_must_not_advertise_a_route():
+    message = route_message()
+    message.status = "NO_PATH"
+    with pytest.raises(ValueError, match="failed planning decision"):
+        adapter.decision_from_wire(message, "run", 4.0, kind="human")
+
+
 def test_robot_plan_writes_nan_oxygen_and_uppercase_kind():
     plan = PlanRequest("run", "request", "rover_1", "ROVER", Point(0, 0), Point(1, 0),
                        Point(0, 0), True, "FAST", 2, 0.0, 100.0, 100.0, None,

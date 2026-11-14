@@ -85,6 +85,21 @@
         "evidence/mission-validation-20261114-v2"
       ],
       "use": "Preserve actual Windows/Jazzy JUnit reports and build/test logs, exact source hashes, corrected failures and limits; no scientific acceptance, physical execution or NASA observations asserted."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_response_interoperability",
+      "generation": "AI-assisted code and regression-test generation, pending human review",
+      "paths": [
+        "src/mge_mission/mge_mission/adapter.py",
+        "src/mge_mission/mge_mission/node.py",
+        "src/mge_mission/mge_mission/types.py",
+        "src/mge_mission/README.md",
+        "tests/mission/test_adapter.py",
+        "tests/contract/test_mission_service.py",
+        "docs/ICD.md"
+      ],
+      "use": "Preserve non-feasible unavailable metrics and original reasons, accept canonical map-batch timestamps with independent pose/resource checks; no planner code merged and no scientific approval granted."
     }
   ],
   "generated_media": [],

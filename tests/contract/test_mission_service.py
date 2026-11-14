@@ -79,12 +79,19 @@ def graph():
     def planner(request, response):
         requests.append(request)
         output = response.decision
-        if behavior["value"] == "UNKNOWN":
-            output.header.frame_id, output.header.stamp = "map", Time(sec=10)
+        if behavior["value"] in {"UNKNOWN", "NO_PATH", "INSUFFICIENT_BUDGET"}:
+            # Matches failure representation from published planner 34c515b6:
+            # no loaded snapshot may mean stamp zero, and all costs are NaN.
+            output.header.frame_id, output.header.stamp = "map", Time()
             output.run_id, output.request_id = request.run_id, request.request_id
             output.agent_id, output.mode = request.agent_id, request.mode
-            output.map_version_used, output.status = request.map_version, "UNKNOWN"
-            output.reason_code, output.detail = "MAP_NOT_VERIFIED", "Controlled unavailable map."
+            output.map_version_used, output.status = request.map_version, behavior["value"]
+            output.reason_code = {"UNKNOWN": "MAP_NOT_VERIFIED", "NO_PATH": "NO_ADMISSIBLE_PATH",
+                                  "INSUFFICIENT_BUDGET": "BUDGET_EXCEEDED"}[behavior["value"]]
+            output.detail = "Controlled planner rejection."
+            for name in ("travel_time_s", "energy_est_wh", "oxygen_est_l", "min_clearance_m",
+                         "reserve_time_s", "reserve_wh", "reserve_oxygen_l"):
+                setattr(output, name, float("nan"))
             return response
         profile = profiles[request.agent_id]
         start, goal, home = (Point(*adapter.point_values(getattr(request, name)))
@@ -105,21 +112,31 @@ def graph():
             reserve_wh=request.energy_budget_wh - energy,
             reserve_oxygen_l=request.oxygen_budget_l - oxygen,
         )
-        response.decision = adapter.decision_to_wire(decision, RouteDecision(), Time(sec=10), WirePoint)
+        response.decision = adapter.decision_to_wire(decision, RouteDecision(), Time(sec=9 + request.map_version), WirePoint)
+        if behavior["value"] == "WRONG_RUN":
+            response.decision.run_id = "another-run"
+        elif behavior["value"] == "FUTURE":
+            response.decision.header.stamp.sec = 1000
+        elif behavior["value"] == "WRONG_FRAME":
+            response.decision.header.frame_id = "odom"
+        elif behavior["value"] == "WRONG_STAMP":
+            response.decision.header.stamp.sec += 1
         return response
 
     service = peer.create_service(PlanRoute, "/mge/planner/plan_route", planner)
     goal_client = peer.create_client(SetMissionGoal, "/mge/mission/set_goal")
 
-    def send_inputs(version=1):
-        clock.publish(Clock(clock=Time(sec=10)))
+    def send_inputs(version=1, agent_stamp=None):
+        map_stamp = 9 + version
+        agent_stamp = map_stamp if agent_stamp is None else agent_stamp
+        clock.publish(Clock(clock=Time(sec=max(map_stamp, agent_stamp))))
         terrain = TerrainMeta()
-        terrain.header.frame_id, terrain.header.stamp = "map", Time(sec=10)
+        terrain.header.frame_id, terrain.header.stamp = "map", Time(sec=map_stamp)
         terrain.run_id, terrain.dataset_id, terrain.map_version = "contract-run", "synthetic-contract", version
         terrain.rows, terrain.cols, terrain.resolution_m = 20, 20, 1.0
         meta.publish(terrain)
         state = AgentState()
-        state.header.frame_id, state.header.stamp = "map", Time(sec=10)
+        state.header.frame_id, state.header.stamp = "map", Time(sec=agent_stamp)
         state.run_id, state.agent_id, state.agent_kind = "contract-run", "human_1", "HUMAN"
         state.pose.orientation.w, state.mode, state.confidence = 1.0, "IDLE", 1.0
         state.time_remaining_s, state.energy_remaining_wh, state.oxygen_remaining_l = 3600.0, 600.0, 150.0
@@ -210,6 +227,48 @@ def test_stale_planner_response_never_publishes_active_route(graph):
     spin_until(executor, lambda: future.done() and manager.snapshot().mission_state == "BLOCKED")
     assert manager.snapshot().reason_code == "STALE_MAP"
     assert not manager.snapshot().route_id
+    assert not any(path.poses for path in graph["paths"])
+
+
+@pytest.mark.parametrize("status,reason", [("UNKNOWN", "MAP_NOT_VERIFIED"),
+                                          ("NO_PATH", "NO_ADMISSIBLE_PATH"),
+                                          ("INSUFFICIENT_BUDGET", "BUDGET_EXCEEDED")])
+def test_actual_service_preserves_planner_failure_reason_with_nan_metrics(graph, status, reason):
+    graph["behavior"]["value"] = status
+    manager, executor = graph["manager"], graph["executor"]
+    spin_until(executor, lambda: manager.snapshot().map_version == 1 and manager.snapshot().agents,
+               tick=graph["send_inputs"])
+    future = graph["client"].call_async(graph["goal_request"]())
+    spin_until(executor, lambda: future.done() and manager.snapshot().mission_state == "BLOCKED")
+    assert future.result().accepted is True
+    assert manager.snapshot().reason_code == reason
+    assert manager.snapshot().active_route is None
+    assert not any(path.poses for path in graph["paths"])
+    spin_until(executor, lambda: any(event.reason_code == reason for event in graph["events"]))
+
+
+def test_map_batch_response_accepts_newer_current_agent_timestamp(graph):
+    manager, executor = graph["manager"], graph["executor"]
+    spin_until(executor, lambda: manager.snapshot().map_version == 1 and manager.snapshot().agents,
+               tick=lambda: graph["send_inputs"](agent_stamp=12))
+    assert manager.snapshot().agents[0].timestamp_sim_s == 12.0
+    assert graph["mission"]._map_stamp_key == (10, 0)
+    future = graph["client"].call_async(graph["goal_request"]())
+    spin_until(executor, lambda: future.done() and manager.snapshot().mission_state == "READY")
+    assert manager.snapshot().route_id
+    assert not manager.snapshot().mission_success
+
+
+@pytest.mark.parametrize("behavior", ["WRONG_RUN", "FUTURE", "WRONG_FRAME", "WRONG_STAMP"])
+def test_actual_service_rejects_invalid_candidate_envelope(graph, behavior):
+    graph["behavior"]["value"] = behavior
+    manager, executor = graph["manager"], graph["executor"]
+    spin_until(executor, lambda: manager.snapshot().map_version == 1 and manager.snapshot().agents,
+               tick=lambda: graph["send_inputs"](agent_stamp=12))
+    future = graph["client"].call_async(graph["goal_request"]())
+    spin_until(executor, lambda: future.done() and manager.snapshot().mission_state == "BLOCKED")
+    assert manager.snapshot().reason_code == "INVALID_PLANNER_RESPONSE"
+    assert manager.snapshot().active_route is None
     assert not any(path.poses for path in graph["paths"])
 
 

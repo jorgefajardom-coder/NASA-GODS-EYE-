@@ -132,6 +132,19 @@ profile approval, simulation-clock and model-agreement gates; see the
 
 MissionManager alone authorizes and publishes the active route. Only FEASIBLE
 candidates may be considered after current-run/map and return-budget checks.
+For FEASIBLE decisions, applicable numeric estimates must be finite. The
+published planner uses NaN for unavailable cost/clearance/reserve fields on
+non-FEASIBLE decisions; mission represents these as None and preserves the
+original status/reason. Unavailable diagnostics are never activated routes or
+measured zeros. No wire field is changed by this clarification.
+
+The published planner stamps a FEASIBLE response with its map batch timestamp.
+Mission associates it with the captured map/run/version and independently audits
+the request, current pose and resources; newer agent telemetry does not require
+a newer map stamp. Failure stamp zero can express unavailable context, while
+run/frame and future-time guards still apply. Consumer confirmation remains
+part of the draft ICD freeze.
+
 `MissionState.active_route` embeds the decision; an empty route ID means no route
 is in force. Do not treat default numeric values as measurements or outcomes.
 Native Image/OccupancyGrid/Path lack custom run/version fields: consumers need an

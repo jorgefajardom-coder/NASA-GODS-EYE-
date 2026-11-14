@@ -55,10 +55,11 @@ def create_node_class():
             self._clock_stamp = Time()
             self._waiting_meta = None
             self._terrain_signature, self._map_stamp = None, None
+            self._map_stamp_key = None
             self._agent_wire, self._agent_stamps = {}, {}
             self._goal_answers = {}
             self._future = self._inflight_plan = self._request_wall_s = None
-            self._inflight_min_stamp = None
+            self._inflight_map_stamp = None
             self._last_path_key = None
             for name, default in {
                 "run_id": "", "profiles_path": "", "mission_path": "",
@@ -197,8 +198,16 @@ def create_node_class():
                     raise ValueError("terrain geometry or source identity changed within the run")
                 if self._map_stamp is not None and stamp < self._map_stamp:
                     raise ValueError("terrain metadata is older than the accepted map context")
+                stamp_key = (message.header.stamp.sec, message.header.stamp.nanosec)
+                current_version = self._manager.snapshot().map_version
+                if self._map_stamp_key is not None:
+                    if current_version == message.map_version and stamp_key != self._map_stamp_key:
+                        raise ValueError("terrain batch timestamp changed without a new map version")
+                    if current_version != message.map_version and stamp_key == self._map_stamp_key:
+                        raise ValueError("terrain batch timestamp was reused for another map version")
                 if self._manager.update_map(message.run_id, message.map_version, stamp):
                     self._terrain_signature, self._map_stamp = signature, stamp
+                    self._map_stamp_key = stamp_key
                 self._publish()
             except (TypeError, ValueError) as exc:
                 self.get_logger().warning(f"Ignored terrain metadata: {exc}")
@@ -281,7 +290,9 @@ def create_node_class():
             try:
                 request = adapter.plan_to_wire(plan, PlanRoute.Request(), WirePoint)
                 self._inflight_plan, self._request_wall_s = plan, monotonic()
-                self._inflight_min_stamp = max(self._map_stamp or 0.0, self._agent_stamps.get(plan.agent_id, 0.0))
+                if self._map_stamp_key is None:
+                    raise ValueError("no explicit terrain batch timestamp is available")
+                self._inflight_map_stamp = self._map_stamp_key
                 self._future = self._planner_client.call_async(request)
                 self._future.add_done_callback(self._on_plan_result)
             except (ValueError, TypeError, RuntimeError) as exc:
@@ -294,7 +305,7 @@ def create_node_class():
             if self._destroying or future is not self._future:
                 return
             plan = self._inflight_plan
-            min_stamp = self._inflight_min_stamp
+            map_stamp = self._inflight_map_stamp
             self._future = self._inflight_plan = None
             try:
                 if not self._ready_clock():
@@ -302,10 +313,11 @@ def create_node_class():
                 result = future.result()
                 if result is None:
                     raise ValueError("planner returned no response")
-                if adapter.stamp_seconds(result.decision.header.stamp) + 1e-6 < min_stamp:
-                    raise ValueError("planner response stamp predates its input context")
                 decision = adapter.decision_from_wire(result.decision, self._run_id, self._clock_s,
                                                      kind=adapter.kind_from_wire(plan.agent_kind))
+                stamp_key = (result.decision.header.stamp.sec, result.decision.header.stamp.nanosec)
+                if decision.status == "FEASIBLE" and stamp_key != map_stamp:
+                    raise ValueError("planner response stamp does not match the dispatched terrain batch")
                 if decision.request_id != plan.request_id:
                     raise ValueError("planner request ID does not match the dispatched request")
                 self._manager.apply_plan(decision)

@@ -122,12 +122,12 @@ class RouteDecision:
     detail: str = ""
     outbound_path: tuple[Point, ...] = ()
     return_path: tuple[Point, ...] = ()
-    travel_time_s: float = 0.0
-    energy_est_wh: float = 0.0
+    travel_time_s: float | None = None
+    energy_est_wh: float | None = None
     oxygen_est_l: float | None = None
-    min_clearance_m: float = 0.0
-    reserve_time_s: float = 0.0
-    reserve_wh: float = 0.0
+    min_clearance_m: float | None = None
+    reserve_time_s: float | None = None
+    reserve_wh: float | None = None
     reserve_oxygen_l: float | None = None
 
     def __post_init__(self):

@@ -36,6 +36,21 @@ model, remaining resources and return/reserves. Uppercase ROS kinds are mapped
 explicitly; non-human oxygen must be NaN on ROS and becomes `None` internally.
 Source agent orientation, velocity and timestamps are preserved in snapshots.
 
+The compatibility baseline is the published planner at
+`34c515b6b86f73336844e8b3614c70b144574ec3` (`origin/feat/planner` at inspection).
+Its non-FEASIBLE responses use NaN for unavailable costs/reserves/clearance,
+including human oxygen; mission converts those values to `None` and preserves
+the explicit failure reason. It never replaces unavailable estimates with zero.
+A failure may have stamp zero before a map is loaded, but still requires the
+canonical `map` frame and matching run/request/map context.
+
+A FEASIBLE response must have finite applicable estimates and the exact
+timestamp of the terrain batch captured at dispatch. That stamp may precede the
+current agent timestamp: the core independently audits the requested pose and
+current remaining resources. Metadata batches retain one timestamp per map
+version, with a new timestamp for each new version. These representation checks
+do not establish agreement between the planner and scientific resource models.
+
 No evaluator reference or hidden future POI belongs in mission input. Discovery,
 inspection/sampling completion and verified traversal have core-only evidence
 APIs; their ROS input contracts remain pending integration. The node does not
