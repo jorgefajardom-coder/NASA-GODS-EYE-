@@ -1,0 +1,23 @@
+{
+  "source_commit": "d28f3e23f268d50c6c55f2b1f85a1cadbe9281ed",
+  "classification": "MOCK recorded fixture, not scientific measurements",
+  "files": {
+    "manifest.json": {
+      "source_path": "data/sample/replay/mock-vertical-001/manifest.json",
+      "sha256": "6c96799114a0d6c22eda15d3bcedd50f3de98e2c445687c95f916a6c81097b5e"
+    },
+    "timeline.jsonl": {
+      "source_path": "data/sample/replay/mock-vertical-001/timeline.jsonl",
+      "sha256": "2901b74f19ca489032cbae4102f4e7258643924b585c01cec447dfaea9d3ee94"
+    },
+    "snapshot.json": {
+      "source_path": "data/sample/replay/mock-vertical-001/snapshot.json",
+      "sha256": "84d4c356ed07f5076ccd2bf9c1610720ed0bae7e6dba6f9b7f876b37bc67685f"
+    }
+  },
+  "source_ai_usage": {
+    "tool": "Claude Code (Anthropic)",
+    "declaration_path": "docs/ai_usage.json",
+    "note": "Original recorded MOCK fixture retained unchanged; no observational NASA measurements."
+  }
+}

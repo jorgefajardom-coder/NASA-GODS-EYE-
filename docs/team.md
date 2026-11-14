@@ -1,47 +1,85 @@
 # Team branches and ownership
 
-The five branches start at the shared scaffold on main. They are work areas,
-not completed features or approved PRs. Names follow the integration guide.
+The active branch inventory was inspected against remote main
+`004b3b2c59a27794a1e49a61f48d0569bad020b2` at the final refresh on
+2026-11-14; initial audit main was `f75c54e`. PR #2 merged externally during
+this task, and that main is incorporated into the reconciliation. See [contract baseline](CONTRACT_BASELINE.md) and [integration matrix](INTEGRATION_MATRIX.md) for publication state, exact revisions, contracts and unresolved acceptance.
 
-| Person | Branch | Scope | First handoff |
+| Person | Actual active branch | Owned scope | Individual handoff |
 | --- | --- | --- | --- |
-| Jorge | `feat/ux` | web | Three ENU control points rendered; route state and reason visible |
-| Jesus | `feat/integration` | interfaces, gateway, bringup, sim, CI, ICD | Compile six messages/two services; confirm ICD; connect first vertical |
-| Diego | `feat/planner` | planning package and tests | A* vs Dijkstra; return budget and blocked-corner cases |
-| Daniel | `feat/data` | data, mapping, terrain config | Licensed Jezero crop, manifest, control points, isolated reference |
-| David | `feat/mission` | mission, agent config, science docs | Approve success criteria, resources, task precedence and benchmark |
+| Jorge | `feat/ux` (verified latest continuation; PR source alignment pending) | Existing 3D viewer, scene, assets, layers, agents, timeline, display adapters | [Jorge](handoffs/jorge.md) |
+| Jesus | `feat/integration` | ROS interfaces, ICD, gateway, recorder, bringup, sim/CI and integration adapters | [Jesus](handoffs/jesus.md) |
+| Diego | `feat/planner` | Advanced planning engine, snapshot adapter, PlanRoute service and planner tests | [Diego](handoffs/diego.md) |
+| Daniel | `feat/data` | Canonical public data, mapping, terrain configuration, provenance and control points | [Daniel](handoffs/daniel.md) |
+| David | `feat/mission` | Scientific authority, mission/task manager, resource profiles, acceptance and benchmark protocol | [David](handoffs/david.md) |
 
-The pre-existing `dev/jesus` and `docs/agents-policy` branches are preserved.
-The integration work from `dev/jesus` at `00c8e44` is included in the shared base.
-The canonical integration front for this scaffold is `feat/integration`.
-No GitHub usernames or reviewer permissions are guessed.
+The initial audit found `feat/ux` at the scaffold; concurrent work has since
+advanced it to `d649e2e` with the complete viewer, gateway replay adapter and
+main merge. `feature/web-replay-viewer` at `73f22db` is a verified ancestor and
+remains preserved. The objective requested that historical branch as PR source;
+Jorge/Jesus must confirm alignment with the latest `feat/ux`/PR #5. Do not force
+branch changes or substitute an older scaffold for either implementation.
 
-## Begin work
+`dev/jesus` was pruned remotely; its prior work survives on `feat/integration`
+(now `45a4590`). `codex/docs-probable-mission-plan` remains PR #4's separate
+proposal, now at `5bb6566`. No GitHub usernames or reviewer permissions are
+guessed. The matrix retains both initial and final inventories.
+
+## Begin or resume work
+
+Read AGENTS.md, ICD.md, CONTRACT_BASELINE.md and your handoff first. Keep local changes safe before switching. For an existing local branch, replacing BRANCH with your confirmed active branch above (Jorge confirms PR-source alignment first):
 
 ```sh
-git fetch origin
-git switch --track origin/feat/ux
+git status --short
+git fetch origin --prune
+git switch BRANCH
+git pull --ff-only origin BRANCH
+git log -1 --format=fuller origin/main
+git diff --stat origin/main...HEAD
+git merge origin/main
 ```
 
-Replace `feat/ux` with your branch. If already local, use `git switch feat/ux`
-and `git pull --ff-only`. For later integration, fetch and merge `origin/main`
-into your work branch. Never force-push another person's work.
+If the branch is not local, use `git switch --track -c BRANCH origin/BRANCH`
+in place of switch/pull. Merge origin/main only while on your owned branch.
+Do not switch a branch that is already active in another worktree; use that
+worktree. Resolve conflicts by contract ownership and rerun producer/consumer
+checks; never force-push, reset away work, or resolve by copying another
+module.
 
-## Merge gate
+The proposed reconciliation is consumable as the main baseline only
+after its review/merge. Do not pull an unmerged contract as if it were main.
 
-1. State requirement IDs, R-F-L-P mapping and input/output contracts.
-2. Make a small logical change and review status/diff.
-3. Run module checks plus a consumer test; record checks not run.
-4. Update provenance, required AI declarations and ICD/version as relevant.
-5. Open a PR to main with an English Conventional Commit title and evidence.
-6. Jesus reviews integration; David approves scientific assumptions.
+## Merge gate and ownership
 
-The ICD is proposed, pending team confirmation. No acceptance case is passed
-until evidence exists. Prior code/assets need eligibility and license review.
+1. State requirement IDs and R-F-L-P allocation, input/output contracts,
+   baseline/schema versions, source/configuration hashes and pending decisions.
+2. Make a small logical change; review status/diff and preserve concurrent edits.
+3. Run module unit checks, contract checks and at least one actual consumer case;
+   identify every mock and every check not run.
+4. Update provenance, required AI declarations/metadata, licenses and watermarks.
+   Never publish the evaluator reference in web assets, replay or planner input.
+5. Open/update a PR to main with an English Conventional Commit title and actual
+   evidence. Do not redefine shared .msg/.srv fields to suit one consumer.
+6. Jesus reviews integration; David approves scientific assumptions, success
+   criteria and model agreement. Data/grid changes also require Daniel; display
+   compatibility requires Jorge; planner math requires Diego.
+
+MissionManager alone owns mission state, task eligibility and active-route
+policy. Planner returns candidates. Gateway serializes authoritative state.
+Web displays it. Missing producers use conforming deterministic MOCK providers;
+exactly one provider may own each canonical ROS service in a launch profile.
+
+The ICD is versioned for reconciliation, with outstanding owner decisions; it
+is not a claim that scientific approval or all system acceptance is frozen.
+Do not report MOCK, replay, synthetic observations, a build or a unit test as
+validated LIVE mission execution.
 
 ## Integration cuts (America/Bogota)
 
-Deadline: Sunday **2026-11-15 23:59**. First connect map -> route -> view; then
-observation/replan; Sunday morning budgets and A/B/C; scope freeze Sunday 16:00;
-presentation/compliance 16:00-20:00; submission buffer 20:00-23:59. Confirm any
-earlier local cutoff. Guide milestones are targets, not proof of completion.
+The existing team target remains Sunday **2026-11-15 23:59**; this is a team
+planning target, not a newly verified official competition cutoff. The prior
+guide targets map -> route -> view, then observation/replan, Sunday morning
+budgets/A-B-C, scope freeze Sunday 16:00, presentation/compliance 16:00-20:00,
+and submission buffer 20:00-23:59. Readiness is determined by evidence and
+owner approval, not elapsed time. Preserve the final buffer and confirm any
+applicable earlier local deadline with the organizer.

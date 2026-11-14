@@ -31,7 +31,7 @@ def main():
         for scope in item["paths"]:
             if not (ROOT / scope).exists():
                 errors.append(f"AI disclosure points to missing path: {scope}")
-    for doc in [ROOT / "README.md", *(ROOT / "docs").glob("*.md")]:
+    for doc in [ROOT / "README.md", *(ROOT / "docs").rglob("*.md")]:
         for target in re.findall(r"\]\(([^)]+)\)", doc.read_text(encoding="utf-8")):
             if "://" in target or target.startswith("#"):
                 continue

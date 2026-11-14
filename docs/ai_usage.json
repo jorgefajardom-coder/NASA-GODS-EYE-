@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "recorded_on": "2026-11-14",
-  "status": "planner_p0_implemented_pending_scientific_review",
+  "status": "planner_integrated_contract_reconciliation_pending_review",
   "policy_url": "https://github.com/nasa/spaceapps/discussions/1849",
   "human_review": "pending module owners",
   "uses": [
@@ -76,6 +76,38 @@
         "evidence/planner-p0-20261114"
       ],
       "use": "Run three seeded newly generated benchmark scenarios and a fresh unverified CTX prior check; retain exact code commit, costs, timing, environment and limitations."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "code_configuration_documentation_and_synthetic_contract_tests",
+      "generation": "AI-assisted generation; owner integration/science review pending",
+      "paths": [
+        "src/mge_gateway/mge_gateway/contract_replay.py",
+        "src/mge_bringup/mge_bringup/contract_guard.py",
+        "src/mge_bringup/mge_bringup/launch_profiles.py",
+        "src/mge_bringup/launch/profile.launch.py",
+        "src/mge_bringup/package.xml",
+        "src/mge_data/mge_data/dataset_contract.py",
+        "data/dataset.schema.json",
+        "tests/contract/test_baseline_guards.py",
+        "tests/contract/test_generated_conversion.py",
+        "tests/contract/test_replay_conversion.py",
+        "tests/contract/test_dataset.py",
+        "tests/contract/test_configuration.py",
+        "tests/contract/test_profile_launch.py",
+        "tests/integration/test_provider_substitution.py",
+        "tests/fixtures/replay/provenance.json",
+        "web/src/lib/provenance.ts",
+        "web/src/lib/provenance.test.ts",
+        "scripts/validate_contract_baseline.sh",
+        "AGENTS.md",
+        ".gitignore",
+        "docs",
+        "scripts/check_repository.py",
+        ".github/workflows/ci.yml",
+        "evidence/contract-baseline-20261114"
+      ],
+      "use": "Audit owner branches; reconcile contracts without replacing implementations; add offline adapters, fail-closed guards, source locks, schema, deterministic synthetic contract cases, handoffs and actual validation records. No scientific observations generated."
     }
   ],
   "generated_media": [],
@@ -85,7 +117,8 @@
     "Project idea and science specifications supplied by the human team.",
     "Update this register and descriptive disclosure when generated artifacts change.",
     "No generated bitmap, video or audio asset is included at scaffold time.",
-    "Fresh CTX/HiRISE processing occurs during competition; source observations pre-exist and are cited."
+    "Fresh CTX/HiRISE processing occurs during competition; source observations pre-exist and are cited.",
+    "Contract reconciliation synthetic raster attachments and metadata exist only in explicitly labelled tests; no NASA dataset, measured outcome, image, video or audio is generated."
   ],
   "retained_contributions": [
     {
@@ -99,6 +132,15 @@
         "scripts/dev.sh"
       ],
       "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
+    },
+    {
+      "source_ref": "feat/integration",
+      "commit": "d28f3e23f268d50c6c55f2b1f85a1cadbe9281ed",
+      "scope": [
+        "tests/fixtures/replay/mock-vertical-001"
+      ],
+      "tool_declared_by_original_contributor": "Claude Code (Anthropic)",
+      "use": "Retain byte-for-byte MOCK recorder fixture for adapter conformance, with original source/hash/AI disclosure metadata. No actual Mars measurements."
     }
   ],
   "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements"

@@ -1,3 +1,41 @@
+# Current contract reconciliation verification
+
+Source `f2af4b23b57e0ef28c245cca0ad64a886ded039e`, based on updated main
+`004b3b2`; baseline `1.0.0-rc.1`, 2026-11-14 (America/Bogota).
+
+| Command / platform | Actual result |
+| --- | --- |
+| python -m pytest (Python 3.12.14, Windows) | 263 passed; four ROS-only modules skipped |
+| python scripts/check_repository.py | Passed including nested handoff links |
+| web: npm ci; npm test; npm run build (Node24.18.0) | Passed; 4 tests; build passed |
+| Ubuntu24.04/Jazzy colcon build --symlink-install | All 8 packages built |
+| ros2 interface show | All six messages/two services inspected |
+| Jazzy: python3 -m pytest tests/contract tests/integration | 129 passed, no skips |
+| git diff --check | Passed |
+
+[Immutable source hashes, JUnit and full target log](../evidence/contract-baseline-20261114/README.md).
+The real planner/provider seam now passes after PR #2 was merged externally.
+The generated tests cover actual ROS arrays/NaN plus the real planner failure
+serializer; generated PlanRoute service tests are included on target. These
+checks do not imply real MissionManager/data/gateway/viewer execution together.
+
+The initial native-path ROS attempt failed in rosidl/CMake on spaces/non-ASCII;
+the successful script uses an exact source copy under a fresh ASCII temporary
+path. Native Python required an isolated basetemp due local Temp permissions.
+Earlier setup errors were corrected before the final recorded passes. Existing
+Starlette TestClient deprecation and >500kB web bundle warnings remain.
+
+Not executed: Gazebo Harmonic E2E, complete mission/executor stop feedback,
+scientific model agreement, canonical georeferenced data acceptance and a fresh
+combined run of unmerged PR #3/#5 stacks. All R01-R18 system acceptance remains
+pending/blocked as detailed in the matrix. Branch-owner reports retain their
+original source/revision and are not substituted for these fresh results.
+
+## Historical records retained below
+
+The following scaffold/planner records describe earlier snapshots; the current
+result above supersedes their environment/availability statements.
+
 # Scaffold verification
 
 Date: 14 November 2026. Scope: repository structure and implemented contract
