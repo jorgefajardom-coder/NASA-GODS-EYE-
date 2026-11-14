@@ -1,0 +1,7 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [
+  "src/mge_data", "src/mge_mapping", "src/mge_planning",
+  "src/mge_mission", "src/mge_gateway", "src/mge_sim", "src/mge_bringup"
+]
+addopts = "-ra"

@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "status": "pending",
+  "region_id": "jezero_mvp",
+  "frame_id": "map",
+  "local_origin": {
+    "lat_planetocentric_deg": null,
+    "lon_east_deg": null
+  },
+  "resolution_m": null,
+  "rows": null,
+  "cols": null,
+  "row_orientation": null,
+  "vertical_units": "m",
+  "vertical_datum": null,
+  "sources": [
+    {
+      "mission": "MRO",
+      "instrument": "CTX",
+      "role": "prior",
+      "product_id": null,
+      "native_resolution_m": null,
+      "source_url": null,
+      "sha256": null,
+      "license_or_terms_url": null
+    },
+    {
+      "mission": "MRO",
+      "instrument": "HiRISE",
+      "role": "evaluation_reference",
+      "product_id": null,
+      "native_resolution_m": null,
+      "source_url": null,
+      "sha256": null,
+      "license_or_terms_url": null
+    },
+    {
+      "mission": "Mars Global Surveyor",
+      "instrument": "MOLA",
+      "role": "regional_context",
+      "product_id": null,
+      "native_resolution_m": null,
+      "source_url": null,
+      "sha256": null,
+      "license_or_terms_url": null
+    }
+  ]
+}

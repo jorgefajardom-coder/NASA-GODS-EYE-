@@ -1,0 +1,21 @@
+# All poses use the same ENU map frame; budgets cover outbound + service + return.
+std_msgs/Header header
+string schema_version
+string run_id
+string request_id
+string agent_id
+string agent_kind
+geometry_msgs/Pose start
+geometry_msgs/Pose goal
+geometry_msgs/Pose base
+string cost_mode
+uint64 map_version
+float64 time_available_s
+float64 energy_available_wh
+bool oxygen_applicable
+float64 oxygen_available_l
+float64 reserve_time_s
+float64 reserve_wh
+float64 reserve_oxygen_l
+---
+mge_interfaces/RouteDecision decision

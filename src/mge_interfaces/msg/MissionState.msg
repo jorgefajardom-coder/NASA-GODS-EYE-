@@ -1,0 +1,26 @@
+# MissionManager alone owns the published active state and route.
+string IDLE=IDLE
+string PLANNING=PLANNING
+string READY=READY
+string ACTIVE=ACTIVE
+string REPLAN=REPLAN
+string RETURNING=RETURNING
+string COMPLETE=COMPLETE
+string BLOCKED=BLOCKED
+string ABORTED=ABORTED
+std_msgs/Header header
+string schema_version
+string run_id
+uint64 map_version
+string mission_state
+geometry_msgs/Pose primary_goal
+geometry_msgs/Pose base
+string active_task_id
+string active_agent_id
+mge_interfaces/AgentState[] agents
+string route_id
+float64 reserve_wh
+float64 reserve_oxygen_l
+bool mission_success
+bool result_available
+string reason_code

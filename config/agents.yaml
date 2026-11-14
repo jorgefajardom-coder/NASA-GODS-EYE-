@@ -1,0 +1,11 @@
+# Proposed registry only. Quantitative profiles require David's approval.
+schema_version: "1.0.0"
+status: pending_scientific_approval
+owner: David
+provenance: team_specification
+units: {time: s, energy: Wh, oxygen: L, distance: m}
+agents:
+  - {agent_id: human_1, kind: human, capabilities: [reach, sample], profile: null}
+  - {agent_id: rover_1, kind: rover, capabilities: [inspect], profile: null}
+  - {agent_id: drone_1, kind: drone, capabilities: [observe], profile: null}
+# Add agents through this registry; never assign oxygen to rover/drone profiles.

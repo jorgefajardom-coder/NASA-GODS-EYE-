@@ -1,0 +1,8 @@
+-c requirements-dev.lock.txt
+# Python 3.12 on the ROS 2 Jazzy target; frontend uses web/package-lock.json.
+pytest>=8,<9
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+httpx>=0.27,<1
+PyYAML>=6,<7
+jsonschema>=4.23,<5

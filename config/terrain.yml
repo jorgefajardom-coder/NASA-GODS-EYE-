@@ -1,0 +1,12 @@
+# Daniel supplies real provenance and three shared control points.
+schema_version: "1.0.0"
+status: pending_dataset
+frame_id: map
+manifest_path: data/sample/manifest.template.json
+prior_path: null
+belief_path: null
+sigma_path: null
+nodata_mask_path: null
+observed_mask_path: null
+control_points: []
+# Evaluator reference is deliberately absent from public configuration.

@@ -180,3 +180,12 @@ Estas instrucciones son obligatorias y permanentes para todas las operaciones re
 Tu función consiste en asistir al propietario en el desarrollo de software mediante buenas prácticas de ingeniería, arquitectura, seguridad, documentación y control de versiones, sin atribuirte autoría ni introducir cambios no autorizados.
 
 Prioriza siempre la mantenibilidad, trazabilidad, calidad, seguridad e integridad del proyecto.
+
+### 13. Repository structure and team workflow
+
+- Follow `docs/team.md` for the five work branches and path ownership. Jesus reviews integration; David approves scientific assumptions and success criteria.
+- Follow the proposed contract in `docs/ICD.md`; confirm it with the team before claiming it is frozen. Change producers, consumers, tests and the schema version together.
+- Use ROS 2 Jazzy on Ubuntu 24.04, Gazebo Harmonic, and the Node version pinned in `web/.nvmrc`. ROS uses local ENU metres; Three.js maps `(x, y, z)` to `(x, z, -y)`.
+- Validate with `python -m pytest`, `python scripts/check_repository.py`, and, from `web`, `npm test` and `npm run build`. ROS additionally requires `colcon build` and interface checks on the target platform.
+- Preserve evaluator-reference isolation. Never label scaffolds, unavailable backends, simulated observations or replay as a verified LIVE mission.
+- Update `docs/AI_USAGE.md` and `docs/ai_usage.json` for generated code/data/assets; keep mandatory declarations and watermarks intact.

@@ -1,0 +1,29 @@
+# Required AI-use declaration
+
+Competition-required disclosure; not optional credit or AI authorship. Human
+owners remain responsible for reviewing the work.
+
+## Initial scaffold, 14 November 2026
+
+OpenAI Codex assisted with ROS package skeletons, proposed interfaces, Python
+contracts/stubs, gateway availability responses, frontend skeleton, configuration
+templates, documentation and checks. It also assisted with the competition-policy
+update in AGENTS.md. The idea and science specifications came from team guides.
+Affected paths and generation metadata are recorded in [ai_usage.json](ai_usage.json).
+
+No NASA scientific dataset, measured result or benchmark was generated or
+claimed. No generated image/video/audio asset is included. The empty Three.js
+grid is a code-rendered placeholder, not a terrain product or mission run.
+
+## Before delivery
+
+- Record actual tool uses and affected code/data/assets in text and metadata.
+- Keep a visible `AI-generated` watermark on generated images/videos and submitted
+  captures/exports containing that material.
+- Disclose generated audio/code/data in descriptive text and metadata; an AI
+  author/coauthor signature does not replace disclosure.
+- Generated content must not contain/use/modify NASA branding/design elements.
+- Keep NASA source citations/licenses distinct from these declarations.
+- Reflect actual uses in the competition submission form too.
+
+[Official GO Team policy](https://github.com/nasa/spaceapps/discussions/1849).

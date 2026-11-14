@@ -1,0 +1,24 @@
+# Only FEASIBLE may contain a candidate for execution; MissionManager approves it.
+string FEASIBLE=FEASIBLE
+string UNKNOWN=UNKNOWN
+string NO_PATH=NO_PATH
+string INSUFFICIENT_BUDGET=INSUFFICIENT_BUDGET
+string STALE_MAP=STALE_MAP
+string ERROR=ERROR
+std_msgs/Header header
+string schema_version
+string run_id
+string request_id
+string route_id
+uint64 map_version_used
+string status
+nav_msgs/Path outbound_path
+nav_msgs/Path return_path
+float64 travel_time_s
+float64 energy_est_wh
+bool oxygen_applicable
+float64 oxygen_est_l
+float64 min_clearance_m
+float64 reserve_wh
+float64 reserve_oxygen_l
+string reason_code

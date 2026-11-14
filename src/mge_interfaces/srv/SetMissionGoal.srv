@@ -1,0 +1,23 @@
+# request_id is idempotent within run_id. Unknown/stale data must be rejected.
+std_msgs/Header header
+string schema_version
+string run_id
+string request_id
+string agent_id
+uint64 map_version
+geometry_msgs/Pose goal
+geometry_msgs/Pose base
+float64 time_available_s
+float64 energy_available_wh
+bool oxygen_applicable
+float64 oxygen_available_l
+float64 reserve_time_s
+float64 reserve_wh
+float64 reserve_oxygen_l
+---
+std_msgs/Header header
+string schema_version
+string run_id
+string request_id
+bool accepted
+string reason_code

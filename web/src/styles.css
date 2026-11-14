@@ -1,0 +1,23 @@
+:root { font-family: Inter, system-ui, sans-serif; color: #e4edf2; background: #0b131c; font-synthesis: none; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1480px; margin: auto; padding: 32px; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.eyebrow { color: #9fb5c5; letter-spacing: .08em; font-size: .8rem; text-transform: uppercase; margin: 0 0 8px; }
+h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin: 0; }
+h2 { font-size: 1rem; margin: 0 0 16px; }
+.badge { color: #f5c97b; padding: 9px 14px; border: 1px solid #876b3a; border-radius: 4px; font-size: .75rem; letter-spacing: .04em; }
+.intro { color: #a8becc; max-width: 850px; line-height: 1.6; margin: 24px 0; }
+.workspace { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; }
+section { background: #101c28; border: 1px solid #293b49; border-radius: 8px; padding: 20px; }
+.viewport { min-width: 0; }
+.terrain { height: 440px; position: relative; }
+.terrain canvas { display: block; max-width: 100%; }
+.caption, footer { color: #a6bac8; font-size: .8rem; line-height: 1.6; }
+aside { display: grid; gap: 16px; align-content: start; }
+aside p { color: #a8becc; font-size: .9rem; line-height: 1.5; margin-bottom: 0; }
+dl { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: .85rem; }
+dt { color: #a8becc; } dd { margin: 0; text-align: right; }
+footer { margin-top: 24px; }
+.webgl-failure { color: #f5c97b; padding: 24px; }
+@media (max-width: 850px) { main { padding: 20px; } .workspace { grid-template-columns: 1fr; } .terrain { height: 320px; } }

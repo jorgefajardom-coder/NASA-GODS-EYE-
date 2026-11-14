@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0.0",
+  "recorded_on": "2026-11-14",
+  "status": "initial_scaffold",
+  "policy_url": "https://github.com/nasa/spaceapps/discussions/1849",
+  "human_review": "pending module owners",
+  "uses": [
+    {
+      "tool": "OpenAI Codex",
+      "kind": "code_and_configuration",
+      "generation": "AI-assisted generation, pending human review",
+      "paths": [
+        "src",
+        "web",
+        "config",
+        "scripts",
+        "tests",
+        ".github",
+        ".gitignore",
+        ".gitattributes",
+        ".editorconfig",
+        ".python-version",
+        "requirements-dev.txt",
+        "requirements-dev.lock.txt",
+        "pyproject.toml"
+      ],
+      "use": "Create initial package scaffolds, proposed interfaces, input contracts, UI, configuration templates, validation checks and CI."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "documentation_and_metadata",
+      "generation": "AI-assisted generation, pending human review",
+      "paths": [
+        "README.md",
+        "AGENTS.md",
+        "docs",
+        "data",
+        "evidence/README.md"
+      ],
+      "use": "Document team-supplied specification, competition requirements, source manifest templates and required disclosures; no scientific results or NASA datasets generated."
+    }
+  ],
+  "generated_media": [],
+  "scientific_datasets_generated": false,
+  "measured_results_generated": false,
+  "notes": [
+    "Project idea and science specifications supplied by the human team.",
+    "Update this register and descriptive disclosure when generated artifacts change.",
+    "No generated bitmap, video or audio asset is included at scaffold time."
+  ]
+}

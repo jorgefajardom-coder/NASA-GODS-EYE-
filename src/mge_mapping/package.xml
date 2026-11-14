@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>mge_mapping</name>
+  <version>0.0.0</version>
+  <description>P0 scaffold; F02: maintain prior, belief and versioned observations</description>
+  <maintainer email="team@example.invalid">MARS GODS EYE team</maintainer>
+  <license>LicenseRef-UNSPECIFIED</license>
+  <buildtool_depend>ament_python</buildtool_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>mge_interfaces</exec_depend>
+  <export><build_type>ament_python</build_type></export>
+</package>

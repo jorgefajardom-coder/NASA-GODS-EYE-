@@ -1,0 +1,18 @@
+# No coordinates or budgets are approved; do not execute this template.
+schema_version: "1.0.0"
+status: pending_scientific_approval
+owner: David
+frame_id: map
+dataset_id: null
+base_enu_m: null
+primary_goal_enu_m: null
+primary_agent_id: human_1
+return_tolerance_m: null
+budgets: null
+optional_tasks: []
+connectivity: ideal_global_p0
+success_requires:
+  - primary_goal_completed
+  - returned_to_base_within_tolerance
+  - verified_ground_traversal_under_model
+  - no_budget_violation
