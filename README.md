@@ -10,7 +10,7 @@ not a locally verified corridor. The gateway serves a run over REST and
 WebSocket and a run can be recorded as a replay package. The terrain and mission
 nodes that feed that path are still labelled MOCK stand-ins in `mge_sim` (a
 synthetic flat grid, a goal-route-replan mission), so no run here is mission
-evidence. The data, mapping and mission packages are scaffolds and the web
+evidence. The planner can be switched into that path (`planner:=real`). The data, mapping and mission packages are scaffolds and the web
 viewer is empty by design. No validated mission, Gazebo world or published demo
 is claimed.
 
@@ -124,7 +124,7 @@ curl http://127.0.0.1:8000/api/manifest
 curl -X POST http://127.0.0.1:8000/api/mission/goal \
   -H 'Content-Type: application/json' \
   -d '{"request_id": "req-1", "primary_agent_id": "human_1",
-       "base": {"x": 0, "y": 0}, "goal": {"x": 300, "y": 400},
+       "base": {"x": 2.5, "y": 2.5}, "goal": {"x": 152.5, "y": 202.5},
        "time_budget_s": 14400, "energy_budget_wh": 1000, "oxygen_budget_l": 1000}'
 curl http://127.0.0.1:8000/api/run/demo-001/snapshot
 ```
@@ -134,6 +134,11 @@ contract is in [docs/ICD.md](docs/ICD.md), section 6. Agent positions and
 budgets come from `src/mge_bringup/config/agents.yaml` and are explicitly
 illustrative. Routes are straight lines that ignore terrain. Nothing here is a
 moving mission or a NASA measurement.
+
+Add `planner:=real profiles_file:=$PWD/config/planner_profiles.illustrative.json`
+to route through `mge_planning` instead of the mock planner. Terrain and mission
+stay MOCK, positions must be cell centres of the 5 m grid (for example
+`2.5, 2.5`), and the profiles are illustrative.
 
 `smoke.launch.py` starts only the static MOCK agent publisher, and
 `demo.launch.py` starts the scaffold processes of every package; with the
