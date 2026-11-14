@@ -5,7 +5,11 @@ export type TerrainLayer = 'prior' | 'belief' | 'sigma' | 'reference';
 export const LAYER_INFO: Record<TerrainLayer, { label: string; description: string }> = {
   prior: { label: 'Orbital map', description: 'Prior from orbit. Fixed for the whole run.' },
   belief: { label: 'Updated map', description: 'Prior plus agent observations up to the current map version.' },
-  sigma: { label: 'Uncertainty', description: 'One-sigma height uncertainty of the updated map.' },
+  sigma: {
+    label: 'Uncertainty',
+    description:
+      'One-sigma height uncertainty of the updated map. Assumed, not measured: the demo sets it by hand (1 m, 3 m on the surveyed crossing, 0.2 m once observed) and no source product supplies a per-cell error yet.',
+  },
   reference: { label: 'Reference (evaluator)', description: 'Hidden ground truth used only to evaluate. The planner never sees it.' },
 };
 
