@@ -2,6 +2,7 @@ import type { ReplayManifest } from '../types/replay';
 import type { AgentState } from '../types/icd';
 import type { MissionAlert } from '../lib/management';
 import { fmtSimTime } from '../lib/format';
+import { RUNS } from '../data/replayAdapter';
 
 export type UiMode = 'exploration' | 'replay';
 
@@ -19,14 +20,32 @@ function terrainLabel(m: ReplayManifest): string {
   return `${name} ${t.resolution_m} m${where}`;
 }
 
-/** Mission identity, top left. */
-export function TitleBlock({ manifest }: { manifest: ReplayManifest }) {
+/** Opens another saved run (full reload keeps every run's state separate). */
+function openRun(id: string) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('run', id);
+  window.location.assign(url.toString());
+}
+
+/** Mission identity and run selector, top left. */
+export function TitleBlock({ manifest, runId }: { manifest: ReplayManifest; runId: string }) {
   return (
     <header className="title">
       <h1 className="title__main">Mission Management</h1>
       <div className="title__sub">
         {manifest.title} · {terrainLabel(manifest)}
       </div>
+      <label className="title__run">
+        <span>Run</span>
+        <select value={runId} onChange={(e) => openRun(e.target.value)} aria-label="Saved run">
+          {RUNS.map((r) => (
+            <option key={r.id} value={r.id}>
+              {r.label}
+            </option>
+          ))}
+          {!RUNS.some((r) => r.id === runId) && <option value={runId}>{runId}</option>}
+        </select>
+      </label>
     </header>
   );
 }

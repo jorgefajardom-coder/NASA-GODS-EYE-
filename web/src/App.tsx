@@ -25,7 +25,8 @@ import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './c
 const params = new URLSearchParams(window.location.search);
 /** Evaluator view shows the hidden reference DEM. Off by default; enable with ?evaluator=1. */
 const EVALUATOR = params.get('evaluator') === '1';
-const RUN_DIR = `replay/${params.get('run') ?? 'demo'}`;
+const RUN_ID = params.get('run') ?? 'demo';
+const RUN_DIR = `replay/${RUN_ID}`;
 
 type Load = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; bundle: ReplayBundle };
 
@@ -62,7 +63,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const duration = m.duration_s;
   const [t, setT] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useState(20);
+  // Short recorded runs (seconds long) start at real time; the long demo starts at 20x.
+  const [speed, setSpeed] = useState(duration < 120 ? 1 : 20);
   const [layer, setLayer] = useState<TerrainLayer>('belief');
   const [exaggeration, setExaggeration] = useState(m.vertical_exaggeration_default);
   const [showControlPoints, setShowControlPoints] = useState(false);
@@ -151,7 +153,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
 
       <div className="overlay">
         <div className="left">
-          <TitleBlock manifest={m} />
+          <TitleBlock manifest={m} runId={RUN_ID} />
           <ModeTabs mode={mode} onMode={setMode} />
           <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR} />
           <ManagementList groups={groups} selected={sel} onSelect={setSelection} />

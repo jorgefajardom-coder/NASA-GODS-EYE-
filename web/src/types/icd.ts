@@ -169,7 +169,8 @@ export interface TerrainMeta {
   origin_lat_deg: number | null;
   origin_lon_deg: number | null;
   vertical_datum: string;
-  nodata_value: number;
+  /** null when the grid has no NoData value (the gateway records ROS NaN as null). */
+  nodata_value: number | null;
   sources: string[];
   checksum_sha256: string;
 }

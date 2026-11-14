@@ -2,6 +2,13 @@ import { WEB_SCHEMA_VERSION } from '../types/icd';
 import type { RouteDecision } from '../types/icd';
 import type { RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
 import { normalizeEvents } from '../lib/replay';
+import { fromGatewayPackage, isGatewayManifest, parseJsonLines } from './gatewayReplay';
+
+/** Runs offered in the viewer. `dir` is relative to the site under replay/. */
+export const RUNS: ReadonlyArray<{ id: string; label: string }> = [
+  { id: 'demo', label: 'Demo on CTX terrain (simulated)' },
+  { id: 'mock-vertical-001', label: 'Gateway replay mock-vertical-001 (MOCK)' },
+];
 
 export class ReplayLoadError extends Error {}
 
@@ -60,7 +67,14 @@ export function assembleBundle(
 /** ReplayAdapter: loads a saved run from static files (no ROS, no gateway, no network). */
 export async function loadReplay(runDir: string): Promise<ReplayBundle> {
   const dir = runDir.replace(/\/+$/, '');
-  const manifest = await getJson<ReplayManifest>(assetUrl(`${dir}/manifest.json`));
+  const raw = await getJson<unknown>(assetUrl(`${dir}/manifest.json`));
+  if (isGatewayManifest(raw)) {
+    const url = assetUrl(`${dir}/${raw.files.timeline}`);
+    const res = await fetch(url);
+    if (!res.ok) throw new ReplayLoadError(`Could not load ${url} (HTTP ${res.status}).`);
+    return fromGatewayPackage(raw, parseJsonLines(await res.text()));
+  }
+  const manifest = raw as ReplayManifest;
   const [rasters, timeline, routes] = await Promise.all([
     getJson<RasterSet>(assetUrl(`${dir}/${manifest.files.rasters}`)),
     getJson<ReplayTimeline>(assetUrl(`${dir}/${manifest.files.timeline}`)),

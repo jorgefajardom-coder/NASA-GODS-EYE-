@@ -56,12 +56,26 @@ The terrain is drawn smoothed between the 20 m cells, with contour lines every 1
 Keys: `F` follow camera, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 `?evaluator=1` shows the hidden reference layer; it is off by default.
 
+The **Run** selector under the title (or `?run=<id>`) opens another saved run:
+
+| Run | Source |
+|---|---|
+| `demo` | Simulated mission on the real CTX crop (`public/replay/demo/`) |
+| `mock-vertical-001` | Package recorded by the gateway's `replay_recorder` from the MOCK vertical (Jesús, `../data/sample/replay/`, ICD §7). Flat synthetic grid, straight-line MOCK planner, 5.4 s of wall-clock time |
+
+Gateway packages are read unchanged from `../data/sample/replay/<run_id>/`: Vite serves them
+in development and copies them into `dist/replay/` on build. `src/data/gatewayReplay.ts`
+converts `manifest.json` + `timeline.jsonl` into the viewer's bundle. The package has no
+rasters yet, so only a declared flat grid can be shown; sigma and the evaluator reference
+are NoData, and a MOCK grid shows no latitude or longitude.
+
 ## Architecture
 
 | Path | Role |
 |---|---|
 | `src/types/` | TypeScript mirror of ICD-ROS2-V1 (draft) and the replay fixture layout |
-| `src/data/replayAdapter.ts` | Loads and validates a saved run |
+| `src/data/replayAdapter.ts` | Loads and validates a saved run; lists the runs offered |
+| `src/data/gatewayReplay.ts` | Reads a gateway replay package (ICD §7) into the same bundle |
 | `src/lib/coords.ts` | ENU to Three.js conversion and grid sampling |
 | `src/lib/replay.ts` | State at time t, event ordering, replans, visual pose interpolation |
 | `src/lib/management.ts` | List, details and alert data built only from received objects |

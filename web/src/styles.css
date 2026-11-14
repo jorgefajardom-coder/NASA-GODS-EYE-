@@ -171,6 +171,24 @@ ul {
   padding-top: 4px;
 }
 
+.title__run {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray);
+  pointer-events: auto;
+}
+
+.title__run select {
+  max-width: 100%;
+  min-width: 0;
+  flex: 1;
+}
+
 /* ---------------------------------------------------------------- mode tabs */
 .tabs {
   display: flex;

@@ -48,7 +48,7 @@ export function Timeline({ t, duration, playing, speed, events, onPlayPause, onR
           type="range"
           min={0}
           max={duration}
-          step={1}
+          step={duration < 120 ? 'any' : 1}
           value={Math.min(t, duration)}
           onChange={(e) => onSeek(Number(e.target.value))}
           aria-label="Simulated time"
