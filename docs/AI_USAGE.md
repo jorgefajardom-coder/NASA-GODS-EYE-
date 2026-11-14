@@ -204,7 +204,8 @@ size and in any capture. It is an illustration, not a photograph of a crew membe
 data, and contains no NASA logos, flags or mission marks. One AI-generated video is included: `web/public/assets/intro/mars-gods-eye-intro.webm`,
 the skippable intro screen (5 s, project emblem, no NASA marks). It was generated with Kling
 and supplied by the owner (the file's AIGC metadata names Kling as content producer) and is
-used as supplied. A visible `AI-generated` mark stays over the clip while the intro shows.
+used as supplied except for a visible `AI-generated` label burned into every frame (ffmpeg),
+so the mark stays in downloads and captures; the viewer also shows the mark over the clip.
 Its audio track is treated as AI-generated and declared here and in the file metadata; the
 viewer plays the clip muted. Machine-readable metadata:
 [ai_usage.json](ai_usage.json), the `aiDisclosure` field in `web/package.json` and

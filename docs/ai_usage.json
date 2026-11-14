@@ -993,11 +993,11 @@
       "path": "web/public/assets/intro/mars-gods-eye-intro.webm",
       "kind": "ai_generated_video_with_audio_track",
       "tool": "Kling (Kuaishou) video generation, supplied by the owner; the file's AIGC metadata names ContentProducer 'kling' (ProduceID KLingMuse_f3500bd8-5e38-45c9-b8ab-e8ab688814eb)",
-      "editing": "None; used as supplied (5.0 s, 1920 x 1080, VP9 video, Opus audio track)",
-      "watermark": "Visible 'AI-generated' text over the clip for the whole time the intro screen shows (web/src/components/Intro.tsx); not burned into the file",
+      "editing": "A visible 'AI-generated' label burned into the bottom-right corner of every frame with ffmpeg drawtext (VP9 re-encode); audio track and AIGC metadata copied unchanged (5.0 s, 1920 x 1080, VP9 video, Opus audio track)",
+      "watermark": "AI-generated (burned into the pixels of every frame, bottom-right; stays in downloads and captures of the file). The viewer also shows an 'AI-generated \u00b7 Kling' label over the clip (web/src/components/Intro.tsx)",
       "audio": "The audio track is treated as AI-generated; it is declared here and in the AIGC metadata of the file; the viewer plays the clip muted",
       "use": "Opening intro screen of the viewer (skippable). Project emblem only; no NASA logos, flags or mission marks. Not data.",
-      "sha256": "fe74cb92b59ce8b6b9068ff61bfcafc54db1fdc711ad303cff1fa05ba50953bd"
+      "sha256": "4897e14fcfc185e9ec623d1f4401807706193e1614eb780431675b8641f73581"
     }
   ],
   "scientific_datasets_generated": false,
