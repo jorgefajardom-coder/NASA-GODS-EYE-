@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { calmClip, clipWalkSpeed, walkTimeScale, WALK_MAX_TIME_SCALE } from '../src/lib/astronautPose';
+import { calmClip, clipWalkSpeed, evenStride, walkTimeScale, WALK_CALM, WALK_MAX_TIME_SCALE } from '../src/lib/astronautPose';
 
 const GLB = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'assets', 'models', 'astronaut.glb');
 
@@ -120,25 +120,28 @@ describe('calmed walk and idle', () => {
 
   it('leaves the loaded clip untouched', () => {
     const before = Array.from(original('moon_walk').tracks[0].values.slice(0, 8));
-    calmClip(model.scene, original('moon_walk'));
+    calmClip(model.scene, original('moon_walk'), WALK_CALM);
     expect(Array.from(original('moon_walk').tracks[0].values.slice(0, 8))).toEqual(before);
   });
 
   it('keeps the torso vertical while walking (no tilt)', () => {
     const raw = measure(model.scene, original('moon_walk'));
-    const calm = measure(model.scene, calmClip(model.scene, original('moon_walk')));
+    const calm = measure(model.scene, calmClip(model.scene, original('moon_walk'), WALK_CALM));
     expect(raw.lean[1]).toBeGreaterThan(15); // the original leans a lot
     expect(calm.lean[1]).toBeLessThan(1);
     expect(calm.lean[0]).toBeGreaterThanOrEqual(0);
   });
 
-  it('removes the side-to-side rocking and keeps the hip bob below the original', () => {
+  it('removes the side-to-side rocking of the torso and keeps the hip bob below the original', () => {
     const raw = measure(model.scene, original('moon_walk'));
-    const calm = measure(model.scene, calmClip(model.scene, original('moon_walk')));
+    const calm = measure(model.scene, calmClip(model.scene, original('moon_walk'), WALK_CALM));
     expect(raw.pelvisSwing).toBeGreaterThan(5);
-    expect(calm.pelvisSwing).toBeLessThan(0.5);
+    // The pelvis keeps its turn for the legs (the feet need it to stay planted); the torso does not.
+    expect(calm.pelvisSwing).toBeLessThanOrEqual(raw.pelvisSwing + 1e-6);
     expect(calm.shoulderSwing).toBeLessThan(0.5);
-    expect(calm.hipSwing).toBeLessThan(raw.hipSwing * 0.75); // a walking bob, smaller than the source hop
+    expect(calm.lean[1] - calm.lean[0]).toBeLessThan(0.5);
+    // A walking bob, smaller than the source hop (about 77%: planting the turned legs needs a little).
+    expect(calm.hipSwing).toBeLessThan(raw.hipSwing * 0.8);
   });
 
   it('walks instead of hopping: the lower foot never leaves the ground', () => {
@@ -166,7 +169,7 @@ describe('calmed walk and idle', () => {
       return Math.max(...ys) - Math.min(...ys); // how far the stance foot rises over the cycle
     };
     const raw = lowFoot(original('moon_walk'));
-    const calm = lowFoot(calmClip(model.scene, original('moon_walk')));
+    const calm = lowFoot(calmClip(model.scene, original('moon_walk'), WALK_CALM));
     expect(raw).toBeGreaterThan(0.15); // the source clip has a long both-feet-off-the-ground phase
     expect(calm).toBeLessThan(0.02); // planted: the lower foot stays on the ground
   });
@@ -175,7 +178,7 @@ describe('calmed walk and idle', () => {
     model.scene.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(model.scene);
     const toMetres = 1.9 / (box.max.y - box.min.y); // drawn at 1.9 m, as AstronautModel does
-    const v = clipWalkSpeed(model.scene, calmClip(model.scene, original('moon_walk'))) * toMetres;
+    const v = clipWalkSpeed(model.scene, calmClip(model.scene, original('moon_walk'), WALK_CALM)) * toMetres;
     expect(v).toBeGreaterThan(0.2); // a slow suited gait, well below the old 1.05 m/s assumption
     expect(v).toBeLessThan(0.6);
     // Exact sync below the cap: the stance foot moves backwards as fast as the body moves forwards.
@@ -192,11 +195,69 @@ describe('calmed walk and idle', () => {
 
   it('keeps the shoulders level in walk and idle (no fixed side tilt)', () => {
     for (const name of ['moon_walk', 'idle']) {
-      const calm = measure(model.scene, calmClip(model.scene, original(name)));
+      const calm = measure(model.scene, calmClip(model.scene, original(name), name === 'moon_walk' ? WALK_CALM : undefined));
       expect(Math.abs(calm.shoulderRoll[0])).toBeLessThan(1);
       expect(Math.abs(calm.shoulderRoll[1])).toBeLessThan(1);
-      expect(Math.abs(calm.pelvisRoll[0])).toBeLessThan(1);
-      expect(Math.abs(calm.pelvisRoll[1])).toBeLessThan(1);
+      if (name === 'idle') {
+        expect(Math.abs(calm.pelvisRoll[0])).toBeLessThan(1);
+        expect(Math.abs(calm.pelvisRoll[1])).toBeLessThan(1);
+      }
     }
+  });
+
+  it('keeps the planted foot still on the ground while the agent walks at constant speed', () => {
+    const root = model.scene;
+    root.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(root);
+    const toMetres = 1.9 / (box.max.y - box.min.y);
+    const pick = (re: RegExp) => {
+      let f: THREE.Object3D | null = null;
+      root.traverse((o) => {
+        if (!f && re.test(o.name)) f = o;
+      });
+      return f!;
+    };
+    const l = pick(/^L_Ankle\d/);
+    const r = pick(/^R_Ankle\d/);
+    /** Largest world-space slide (m) of a planted foot during one stance, agent moving forward at 1 m/s. */
+    const worstSlip = (clip: THREE.AnimationClip) => {
+      const ground = 1.0; // m/s, the demo astronaut's speed
+      const rate = walkTimeScale(ground, clipWalkSpeed(root, clip) * toMetres);
+      const mixer = new THREE.AnimationMixer(root);
+      mixer.clipAction(clip).play();
+      const a = new THREE.Vector3();
+      const b = new THREE.Vector3();
+      const sample = (t: number) => {
+        mixer.setTime((t * rate) % clip.duration);
+        root.updateMatrixWorld(true);
+        l.getWorldPosition(a);
+        r.getWorldPosition(b);
+      };
+      let floor = Infinity;
+      for (let i = 0; i < 240; i++) {
+        sample(i / 120);
+        floor = Math.min(floor, a.y, b.y);
+      }
+      let worst = 0;
+      let contact: { left: boolean; x: number; z: number } | null = null;
+      for (let i = 0; i < 600; i++) {
+        const t = i / 120;
+        sample(t);
+        const left = a.y < b.y;
+        const foot = left ? a : b;
+        // The model faces +z; the agent carries it forward at `ground` m/s.
+        const x = foot.x * toMetres;
+        const z = foot.z * toMetres + ground * t;
+        const planted = (foot.y - floor) * toMetres < 0.01;
+        if (!planted || !contact || contact.left !== left) contact = planted ? { left, x, z } : null;
+        else worst = Math.max(worst, Math.hypot(x - contact.x, z - contact.z));
+      }
+      mixer.stopAllAction();
+      mixer.uncacheRoot(root);
+      return worst;
+    };
+    const walk = calmClip(root, original('moon_walk'), WALK_CALM);
+    expect(worstSlip(walk)).toBeGreaterThan(0.1); // the source timing alone skates the stance foot
+    expect(worstSlip(evenStride(root, walk))).toBeLessThan(0.02); // re-timed: planted to within 2 cm
   });
 });
