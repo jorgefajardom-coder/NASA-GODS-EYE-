@@ -3,48 +3,160 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
-**Status: mission authority, planner, data/mapping and gateway implemented; integrated mission acceptance pending.**
-This branch preserves the existing real mission authority, resource models,
-recorder and tests from feat/mission. The default synthetic vertical keeps
-MOCK terrain/agents/mission; select mission:=real with explicit configuration
-and a clock to substitute one authority, never run both mission providers.
-The integrated web viewer plays saved runs offline in REPLAY mode: an
-illustrative demo on a provisional CTX crop and the gateway's recorded MOCK run,
-labelled with each run's `source_mode` (`REPLAY · SIMULATION`, `REPLAY · MOCK`).
-It reads a package's public raster attachment (`files.public_rasters`) when
-present, shows live Earth and Mars clocks, and offers agent and base cameras and
-an agent HUD with oxygen, energy, time, route, atmosphere and dose gauges.
-It is not connected to a live gateway. Science-model agreement, actual execution
-and Gazebo acceptance remain pending; software availability is not mission evidence.
+Mars Gods Eye plans and replays crewed surface missions (astronaut, rover and
+drone) over real Mars terrain at Jezero crater: orbital terrain priors, a
+resource-aware route planner, a mission authority, a ROS 2 simulation vertical
+with a gateway and replay recorder, and a 3D web viewer that plays saved runs
+offline.
 
-The planner retains FAST/SAFE joint outbound/service/return A*, validated
-continuous human/rover starts behind an explicit opt-in (disabled by default in
-the ROS service), D-07 after 20 m and the ROS-independent F03.4 policy with bounded
-search retries and outbound/service contingency-return proposals. Its shared connector extension remains
-pending owner review; ReplanPolicy is not wired into MissionManager or the physical
-supervisor and never authorizes motion. Existing scientific model-agreement gates
-remain enforced by the integrated manager.
+**Status (2026-11-14): mission authority, planner, data/mapping, gateway and web
+viewer are implemented and on `main`; integrated mission acceptance is pending.** Nothing in
+this repository is a validated LIVE mission. MOCK providers, synthetic
+observations, replays and successful builds are labelled as such and are not
+mission evidence.
 
-Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
-Confirm any earlier local judging cutoff separately.
+- **Web viewer (public preview):** <https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/>
+  — static build of `main`, published on the `gh-pages` branch (each publish commit names
+  its source revision).
+  It plays saved runs in REPLAY mode only; it is not connected to a gateway.
+- **Team deadline:** 2026-11-15 23:59 America/Bogota (UTC-05:00). Confirm any
+  earlier local judging cutoff separately.
+- **Delivery gate pending:** local organizer notification and explicit
+  endorsement (JES-07 / AC-10 in [the mission checklist](docs/mission_checklist.md))
+  are not yet recorded. Reserve at least four hours before final submission;
+  silence is not approval. See [AGENTS.md](AGENTS.md), section 15.
 
 ## Start here
 
-- [Team branches and first tasks](docs/team.md)
+- [Team branches and ownership](docs/team.md) and
+  [continuation plan, 14 November 2026](docs/team_continuation_plan.md) (on `main`)
 - [Probable roadmap and owner checklists](docs/mission_checklist.md)
+- [Accepted estimated-terrain scope, D-EST-01](docs/decisions/2026-11-14-estimated-terrain-planning.md)
 - [NASA resource-to-result traceability](docs/nasa_traceability.md)
-- [Proposed shared interface contract](docs/ICD.md), pending team confirmation
-- [Requirements and acceptance](docs/requirements.md)
-- [Scientific decisions](docs/science_decisions.md)
-- [Competition checklist](docs/competition.md)
+- [Proposed shared interface contract](docs/ICD.md) (pending team confirmation),
+  [contract baseline](docs/CONTRACT_BASELINE.md) and [replay contract](docs/REPLAY_CONTRACT.md)
+- [Launch profiles](docs/LAUNCH_PROFILES.md)
+- [Requirements and acceptance](docs/requirements.md),
+  [scientific decisions](docs/science_decisions.md) and [competition checklist](docs/competition.md)
+- [Integration status](docs/integration_log.md), [integration matrix](docs/INTEGRATION_MATRIX.md)
+  and [verification](docs/verification.md)
+- Per-owner handoffs: [Jesus](docs/handoffs/jesus.md), [Jorge](docs/handoffs/jorge.md),
+  [Diego](docs/handoffs/diego.md), [Daniel](docs/handoffs/daniel.md), [David](docs/handoffs/david.md)
+- [Planner handoff](docs/planner_handoff.md) and [temporary data provenance](docs/planner_provenance.md)
 - [Required AI declaration](docs/AI_USAGE.md) and [metadata](docs/ai_usage.json)
-- [Integration status](docs/integration_log.md) and [verification](docs/verification.md)
-- [Planner handoff for Diego](docs/planner_handoff.md) and [temporary data provenance](docs/planner_provenance.md)
 
-## Web viewer: what is real and where it comes from
+## System overview
 
-Nothing in the viewer is presented as a measurement unless it comes from the
-source named here; everything else is labelled in the interface as simulated,
+```text
+ public NASA/USGS data ──> mge_data ──> mge_mapping ──> terrain prior / belief (map versions)
+                                                          │
+ agents (MOCK static or kinematic, mge_sim) ──────────────┤
+                                                          v
+                      mge_planning (PlanRoute: FAST/SAFE A*, replan policy)
+                                                          │ candidates
+                                                          v
+                      mge_mission (MissionManager: authority, resources, tasks)
+                                                          │ authoritative state
+                                                          v
+                      mge_gateway (REST + WebSocket, replay recorder)
+                                                          │ static replay package
+                                                          v
+                      web/ (React + Three.js viewer, offline REPLAY)
+```
+
+MissionManager alone owns mission state, task eligibility and active-route
+policy. The planner returns candidates, the gateway serializes authoritative
+state and the web viewer only displays it; it never plans routes. Missing
+producers use deterministic, visibly labelled MOCK providers, and exactly one
+provider may own each canonical ROS service in a launch profile.
+
+## Branches and pull requests
+
+Snapshot of the remote on 2026-11-14 (`origin/main` = `5898e7d`). See
+[docs/team.md](docs/team.md) for the authoritative ownership record.
+
+| Branch | Owner | State |
+| --- | --- | --- |
+| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#21 merged |
+| `feat/ux` | Jorge | Web viewer; merged in PRs #5 and #19 (offline viewer, agent HUD, public raster input, intro) |
+| `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI; last merged in PR #18 |
+| `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service; merged in PRs #2 and #12 |
+| `feat/data` | Daniel | Public terrain data, mapping, provenance and control points; merged in PR #8 |
+| `feat/mission` | David | Mission authority, resource profiles and acceptance; merged in PRs #10 and #14 |
+| `codex/mission-replay-recovery` | Jesus (with Jorge's history) | Continuous-pose replan recovery after a stop and strict web replay validation; merged in PR #21 |
+| `gh-pages` | Jorge + Jesus | Published static viewer build from `main` |
+| `feature/web-replay-viewer` | Jorge | Historical viewer branch, ancestor of `feat/ux`; PR #6 closed, preserved |
+| `docs/agents-policy`, `codex/*` (other) | Owner / Jesus | Merged documentation and reconciliation branches, kept for traceability |
+
+## Layout and owners
+
+| Path | Owner | Purpose |
+| --- | --- | --- |
+| `src/mge_interfaces` | Jesus + consumers | ROS messages and services |
+| `src/mge_data`, `src/mge_mapping`, `data` | Daniel | Provenance, terrain and belief updates |
+| `src/mge_planning` | Diego | Pure planning core and ROS service adapter |
+| `src/mge_mission`, `config` | David; integration by Jesus | Mission authority, resources and tasks |
+| `src/mge_sim`, `src/mge_gateway`, `src/mge_bringup` | Jesus | Simulation adapter, API and launch |
+| `web` | Jorge | React / TypeScript / Three.js viewer with offline replay |
+| `scripts` | Per script owner | Terrain preparation, benchmarks, conformance and repository checks |
+| `tests`, `evidence`, `docs` | Everyone | Verification, immutable runs and contracts |
+
+The evaluator reference is isolated in `data/reference` and must never be
+distributed to the planner, mission manager or public mission viewer.
+
+## Web viewer
+
+React 19, TypeScript, Three.js (`@react-three/fiber`, `drei`) and Vite, with
+fonts bundled and no CDN or network dependency. Details, architecture and
+acceptance status are in [web/README.md](web/README.md).
+
+### Runs and data handling
+
+- REPLAY mode only. The status block shows `REPLAY · <source_mode>` (`MOCK`,
+  `SIMULATION` or `UNKNOWN`); a package that claims `LIVE` is refused.
+- Run selector (or `?run=<id>`): `demo`, a simulated mission on a provisional
+  real CTX crop of Jezero, and `mock-vertical-001`, a package recorded by the
+  gateway's `replay_recorder` from the MOCK vertical (flat synthetic grid).
+- Reads gateway replay packages (ICD §7) and their public raster attachment
+  `files.public_rasters` (`mge-public-rasters-1.0.0`), checked against the package;
+  mismatches fail with `PUBLIC_RASTERS_INVALID`, and non-MOCK packages without it
+  fail with `PUBLIC_RASTERS_REQUIRED`.
+- Recorded packages are checked before rendering: record counts, run, schema,
+  clock and map identity, immutable routes and recorded raster versions.
+- The evaluator reference is shown only in the dev server with `?evaluator=1`;
+  the production build never contains it (`tests/referenceIsolation.test.ts`).
+
+### Interface
+
+- Intro screen: skippable AI-generated video with a burned-in `AI-generated`
+  watermark, followed by a layered terrain reveal (`?nointro=1` or reduced motion skips it).
+- Modes: Exploration, Ground layers, Atmos and Mission replay.
+- Terrain layers: Orbital map, Updated map (per map version), Slope (Horn 3x3),
+  Uncertainty (sigma) and, for the evaluator only, Reference.
+- Real CTX orthomosaic drape, contour lines every 10 m, optional 20 km surroundings,
+  close-up procedural ground grain (cosmetic) and a solid terrain block.
+- Ground layers: USGS SIM 3464 geologic map with unit list and a schematic
+  cut-away block of strata.
+- Atmos: Perseverance MEDA weather at Jezero, Curiosity REMS annual cycle at
+  Gale (reference) and an unshielded radiation estimate from MSL RAD averages.
+- Management list of agents, tasks and routes, contextual details panel, event
+  inspector and replan alerts built only from received objects.
+- Agent HUD: heading-up minimap plus six gauges (oxygen, energy, time, route,
+  atmosphere, dose), amber when a route leaves under 15 % of the starting budget.
+- Live Earth and Mars clocks (NASA GISS Mars24: MTC, LMST at Jezero, sol, Ls),
+  independent of the replay time.
+- Cameras: Map, Astronaut, Rover, Drone and Base; grab-to-drag map and 45° view rotation.
+- Timeline at 1×, 5× and 10×, starting 4 s before the first agent moves.
+- Display-only motion: monotone cubic (PCHIP) pose interpolation, astronaut with
+  planted feet and shadow, rover steering and suspension, drone rotor spin-up,
+  terrain clearance and downwash dust. None of it changes a position in the data.
+
+Keys: `F` follow camera, `G` grab map, `Q` / `E` rotate view, `Space` play/pause,
+`←` `→` ±5 s, `Home` restart.
+
+### What is real in the viewer
+
+Everything not listed as real is labelled in the interface as simulated,
 illustrative, synthetic or AI-generated.
 
 | Layer or element | Source | Status |
@@ -79,20 +191,10 @@ Credits and licences are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md),
 AI use in [docs/AI_USAGE.md](docs/AI_USAGE.md), and the viewer details in
 [web/README.md](web/README.md).
 
-## Layout and owners
-
-| Path | Owner | Purpose |
-| --- | --- | --- |
-| `src/mge_interfaces` | Jesus + consumers | ROS messages and services |
-| `src/mge_data`, `src/mge_mapping`, `data` | Daniel | Provenance, terrain and belief updates |
-| `src/mge_planning` | Diego | Pure planning core and ROS service adapter |
-| `src/mge_mission`, `config` | David; integration by Jesus | Mission authority, resources and tasks |
-| `src/mge_sim`, `src/mge_gateway`, `src/mge_bringup` | Jesus | Simulation adapter, API and launch |
-| `web` | Jorge | React / TypeScript / Three.js viewer with offline replay |
-| `tests`, `evidence`, `docs` | Everyone | Verification, immutable runs and contracts |
-
-The evaluator reference is isolated in `data/reference` and must never be
-distributed to the planner, mission manager or public mission viewer.
+Known gaps: the viewer does not consume a live gateway; no bundled recorded
+package carries public rasters yet, so recorded runs show the flat MOCK grid;
+AC-08 (private-browser replay with every backend off) is not recorded; J-06
+render acceptance and a screen-reader audit are not done.
 
 ## Checks without ROS
 
@@ -104,18 +206,26 @@ python -m pytest
 python scripts/check_repository.py
 ```
 
-Use Node as pinned in `web/.nvmrc`:
+Use Node as pinned in `web/.nvmrc` (24.18.0; `package.json` engines `>=24 <25`):
 
 ```sh
 cd web
 npm ci
-npm test
-npm run build
-npm run preview
+npm test            # vitest run
+npm run typecheck   # tsc -b --noEmit
+npm run build       # tsc -b && vite build into dist/
+npm run preview     # serve the production build
+npm run dev         # development server
+npm run fixture     # regenerate the demo replay fixture
 ```
 
-See [web/README.md](web/README.md). A static build does not imply a loaded replay
-or connected ROS system. Do not expose ROS DDS to the browser.
+A static build does not imply a loaded replay or a connected ROS system. Do not
+expose ROS DDS to the browser.
+
+CI (`.github/workflows/ci.yml`, "CI checks") runs three jobs: `python`
+(repository check and pytest), `web` (`npm test` and `npm run build`) and `ros`
+(Jazzy build, interface inspection and the MOCK vertical end to end). The dedicated ROS job
+compiles ROS; Python checks on Windows cannot replace it.
 
 ## ROS target: Ubuntu 24.04 / ROS 2 Jazzy
 
@@ -144,20 +254,16 @@ ros2 launch mge_bringup demo.launch.py
 ```
 
 `demo.launch.py` starts package entrypoints with incomplete default mission
-configuration, not an accepted E2E mission. Read package READMEs.
-The dedicated CI job compiles ROS; Windows Python checks cannot replace that.
+configuration, not an accepted E2E mission. Read the package READMEs.
 
-## Collaboration and licensing
+| Launch file | Purpose |
+| --- | --- |
+| `vertical_mock.launch.py` | Gateway plus selectable MOCK or real terrain, planner, mission and agents (below) |
+| `profile.launch.py` | Exclusive provider profiles `mock`, `integration`, `simulation`, `live` with an approval receipt; see [LAUNCH_PROFILES](docs/LAUNCH_PROFILES.md) |
+| `smoke.launch.py` | Static MOCK agent publisher only |
+| `demo.launch.py` | Scaffold processes of every package; the gateway reports `NOT_READY` |
 
-Read [AGENTS.md](AGENTS.md). Work on your assigned branch; open small PRs to
-`main`. Jesus reviews integration, David scientific assumptions. Update the ICD,
-producers, consumers and contract tests together when fields/frames/units change.
-Use English Conventional Commits and English PR descriptions.
-
-The integrated interfaces/simulation/bringup packages retain their existing MIT
-metadata. New packages use `LicenseRef-UNSPECIFIED` and `team@example.invalid`
-as explicit placeholders to replace before distribution. The team still needs
-to choose and supply the overall project license; dataset licenses are separate.
+None of these launches establishes E2E acceptance.
 
 ## Docker alternative for ROS
 
@@ -192,42 +298,81 @@ curl -X POST http://127.0.0.1:8000/api/mission/goal \
 curl http://127.0.0.1:8000/api/run/demo-001/snapshot
 ```
 
-Interactive API documentation is at `http://127.0.0.1:8000/docs`; the web
-contract is in [docs/ICD.md](docs/ICD.md), section 6. Agent positions and
-budgets come from `src/mge_bringup/config/agents.yaml` and are explicitly
-illustrative. Routes are straight lines that ignore terrain. Nothing here is a
-moving mission or a NASA measurement.
+Launch arguments of `vertical_mock.launch.py`:
 
-Add `planner:=real profiles_file:=$PWD/config/planner_profiles.illustrative.json`
-to route through `mge_planning` instead of the mock planner. Terrain and mission
-stay MOCK, positions must be cell centres of the 5 m grid (for example
-`2.5, 2.5`), and the profiles are illustrative.
+| Argument | Default | Effect |
+| --- | --- | --- |
+| `run_id` | `mock-run` | Run identifier used by the gateway and recorder |
+| `terrain` | `mock` | `real` uses `mge_data` + `mge_mapping` on the public Jezero package (requires `planner:=real`) |
+| `planner` | `mock` | `real` routes through `mge_planning`; set `profiles_file` |
+| `mission` | `mock` | `real` substitutes the real mission authority; needs explicit configuration and a clock |
+| `agents` | `static` | `kinematic` runs the MOCK kinematic executor |
+| `agents_file` | per terrain | Agent positions and budgets (illustrative) |
+| `record`, `record_dir` | `false`, `evidence` | Write a replay package to `<record_dir>/<run_id>` |
+| `host`, `port`, `use_sim_time` | `127.0.0.1`, `8000`, `false` | Gateway binding and clock |
 
-Add `terrain:=real` as well (it requires `planner:=real`) to replace the mock
-terrain by `mge_data` and `mge_mapping` on the public Jezero package: a 32 x 32
-grid of 4 m cells centred on the map origin, so cell centres are `-62 + 4 k`.
-Agents then default to `src/mge_bringup/config/agents_jezero.yaml`. Every cell
-starts unobserved, so a first route request is `UNKNOWN`; a SIMULATED
-observation creates the next map version and the mission replans. Mission and
-agents stay MOCK and the run is declared MOCK.
+Mission-provider arguments (`mission_profiles_path`, `mission_path`,
+`base_enu_m`, `allow_illustrative`, `model_agreement_confirmed`,
+`approved_model_id`) are described in the
+[real mission provider handoff](docs/mission_integration_handoff.md). Never run
+both mission providers.
 
-Add `agents:=kinematic` to replace the static agents by the MOCK kinematic
-executor: the primary agent follows the authorized active path at the speed
-the route's estimates imply and halts in place, reporting `HALTED` with zero
-velocity, when the route is invalidated. With the current planner a halted
-agent off a cell centre cannot be replanned (`NON_CELL_CENTER`); continuous
-ground starts are proposed in PR #12.
+With the default MOCK planner, routes are straight lines that ignore terrain.
+Agent positions and budgets come from `src/mge_bringup/config/agents.yaml` and
+are explicitly illustrative. Nothing here is a moving mission or a NASA measurement.
 
-`smoke.launch.py` starts only the static MOCK agent publisher, and
-`demo.launch.py` starts the scaffold processes of every package; with the
-latter the gateway reports `NOT_READY`, because no mission state is published.
-Neither launch establishes E2E acceptance.
+- `planner:=real profiles_file:=$PWD/config/planner_profiles.illustrative.json`
+  routes through `mge_planning`. Terrain and mission stay MOCK, positions must be
+  cell centres of the 5 m grid (for example `2.5, 2.5`), and the profiles are illustrative.
+- `terrain:=real` (with `planner:=real`) loads the public Jezero package: a
+  32 x 32 grid of 4 m cells centred on the map origin, so cell centres are
+  `-62 + 4 k`. Agents default to `src/mge_bringup/config/agents_jezero.yaml`.
+  Under the accepted scope [D-EST-01](docs/decisions/2026-11-14-estimated-terrain-planning.md)
+  valid orbital-prior cells start as estimates; until it is implemented, the
+  integrated code may still answer a first request with `UNKNOWN`, and a
+  SIMULATED observation creates the next map version that triggers a replan.
+  Mission and agents stay MOCK and the run is declared MOCK.
+- `agents:=kinematic` makes the primary agent follow the authorized active path
+  at the speed the route's estimates imply and halt in place, reporting `HALTED`
+  with zero velocity, when the route is invalidated. Continuous ground starts
+  for replanning from a halted pose exist behind an explicit opt-in (disabled by
+  default); PR #21 added the acknowledged-stop recovery that resumes from the
+  exact stopped pose (see [the recovery handoff](docs/mission_replay_recovery.md)).
+
+### Gateway API
+
+Interactive documentation is at `http://127.0.0.1:8000/docs`; the web contract
+is in [docs/ICD.md](docs/ICD.md), section 6.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/api/health` | ROS connection and terrain metadata flags |
+| GET | `/api/manifest` | Run, `source_mode`, terrain metadata, agents and endpoints |
+| GET | `/api/run/{run_id}/snapshot` | Mission state, terrain metadata and events |
+| GET | `/api/run/{run_id}/events?after_seq=` | Polling fallback for events |
+| POST | `/api/mission/goal` | Mission goal request; Bearer token when `MGE_CONTROL_TOKEN` is set |
+| WS | `/api/events` | Event and state stream |
+
+Without an active run the endpoints answer `503` with `NO_ACTIVE_RUN`.
+
+## Planner
+
+The planner retains FAST/SAFE joint outbound/service/return A*, validated
+continuous human/rover starts behind an explicit opt-in (disabled by default in
+the ROS service), D-07 after 20 m and the ROS-independent F03.4 policy with
+bounded search retries and outbound/service contingency-return proposals. Its
+shared connector extension remains pending owner review; ReplanPolicy is not
+wired into MissionManager or the physical supervisor and never authorizes
+motion. Existing scientific model-agreement gates remain enforced by the
+integrated manager. See [the planning package](src/mge_planning) and
+[the replan policy](docs/replan_policy.md).
 
 ## Replay package
 
 Add `record:=true` to write a replay package to `evidence/<run_id>` (or to
 `record_dir:=<dir>`). A package is a set of static files that can be read
-without ROS or the gateway; see [docs/ICD.md](docs/ICD.md), section 7.
+without ROS or the gateway; see [docs/ICD.md](docs/ICD.md), section 7, and
+[docs/REPLAY_CONTRACT.md](docs/REPLAY_CONTRACT.md) for the public raster attachment.
 
 ```sh
 ros2 launch mge_bringup vertical_mock.launch.py run_id:=demo-002 record:=true
@@ -235,7 +380,8 @@ ros2 run mge_gateway check_replay evidence/demo-002
 ```
 
 `data/sample/replay/mock-vertical-001` is a sample recorded from the mock
-vertical with `scripts/record_sample_replay.py`. It holds MOCK data only.
+vertical with `scripts/record_sample_replay.py`. It holds MOCK data only. The
+web viewer bundles it as the `mock-vertical-001` run.
 
 ## Mission module checks
 
@@ -255,3 +401,36 @@ actual agent traversal, completed tasks, mission success or an A/B/C result.
 
 See [real mission provider handoff](docs/mission_integration_handoff.md) for exclusive
 launch selection, clock/configuration requirements and unchanged scientific gates.
+
+## Open milestones
+
+- Step 4: integrated execution with three agent roles, stop and authorized
+  replan on the same run (C3/C4 in the [continuation plan](docs/team_continuation_plan.md)).
+- Step 5: offline replay and web video of that same run, validated without
+  backends (C5, AC-08).
+- D-EST-01 implementation, scientific model agreement and Gazebo acceptance.
+- Local organizer notification and endorsement before submission (JES-07 / AC-10).
+
+Varied scenes, larger maps and H-DAN-01 are optional extensions, not substitutes
+for these milestones.
+
+## Collaboration and licensing
+
+Read [AGENTS.md](AGENTS.md). Work on your assigned branch; open small PRs to
+`main`. Jesus reviews integration, David scientific assumptions. Update the ICD,
+producers, consumers and contract tests together when fields/frames/units change.
+Use English Conventional Commits and English PR descriptions.
+
+The integrated interfaces/simulation/bringup packages retain their existing MIT
+metadata. New packages use `LicenseRef-UNSPECIFIED` and `team@example.invalid`
+as explicit placeholders to replace before distribution. The team still needs
+to choose and supply the overall project license; dataset licenses are separate.
+Third-party credits and licences are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## AI use
+
+AI tools were used in this project as required to be declared by NASA Space Apps.
+Where and how is recorded in [docs/AI_USAGE.md](docs/AI_USAGE.md) and
+[docs/ai_usage.json](docs/ai_usage.json); AI-generated images and video carry a
+visible `AI-generated` watermark, and no AI-generated content is presented as
+NASA observational data.
