@@ -272,3 +272,18 @@ without rasters; full real-terrain browser playback remains a separate handoff.
   starts); the real mission needs model agreement before it publishes a path;
   robots, survey observations and Gazebo remain pending. ICD section 7 wording
   for the acknowledgement waits for PR #12, which edits the same section.
+
+## CI failures on main and PR #17, 2026-11-14
+
+- `test_terrain_batch.py::test_planner_routes_inside_the_observed_block`
+  timed out waiting for the PlanRoute answer on main (`7d9a3bf`, `70cd2e5`)
+  and on PR #17; not caused by either change and not reproduced locally. The
+  test repeated the map batch at 1 Hz while the planner searched (finding 1);
+  it now uses the node default of 5 s and waits up to 60 s for an answer with
+  a 10 s search budget. The FEASIBLE assertion is unchanged. For Diego.
+- Reproducing the CI order locally exposed two flakes of PR #13 in
+  `test_replay_package.py`: the run could stop before the 200 x 200 raster
+  attachment was written (the test now waits for it), and the strict oracle
+  rejected a MissionState that lagged the recorded map in arrival order
+  (`STALE_STATE`). The oracle now accepts lag and rejects a state ahead of
+  the map; REPLAY_CONTRACT documents it.

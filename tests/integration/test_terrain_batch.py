@@ -127,7 +127,8 @@ class Probe:
         req.oxygen_budget_l = req.reserve_oxygen_l = math.nan      # not a human
         self.wait(self.planner.service_is_ready, 'PlanRoute service')
         future = self.planner.call_async(req)
-        self.wait(future.done, f'PlanRoute answer to {request_id}')
+        # search_timeout_s is 10 s; leave slack for a loaded runner.
+        self.wait(future.done, f'PlanRoute answer to {request_id}', timeout_s=60.0)
         return future.result().decision
 
 
@@ -142,7 +143,10 @@ def probe():
 
     processes = [
         run('mge_data', 'data_node'),
-        run('mge_mapping', 'mapping_node', repeat_period_s=1.0),
+        # The node default: repeating at 1 Hz makes the planner re-ingest the
+        # batch during its search (integration log, planner finding 1) and the
+        # answer missed the wait on shared CI runners. Repeats still happen.
+        run('mge_mapping', 'mapping_node', repeat_period_s=5.0),
         # This checks coherent-batch routing, not the production latency limit.
         # Keep search bounded while allowing shared CI runners scheduling slack.
         run('mge_planning', 'planning_node', profiles_file=PROFILES,
