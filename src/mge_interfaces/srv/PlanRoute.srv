@@ -1,0 +1,24 @@
+# ICD-ROS2-V1 | /mge/planner/plan_route  (Mission -> Planner)
+# The planner only returns candidates; MissionManager decides what is published.
+# Budgets are per agent. Oxygen fields are NaN for agents that are not HUMAN.
+
+string run_id
+string request_id               # idempotency key
+string agent_id
+string agent_kind               # AgentState.KIND_*
+geometry_msgs/Point start       # current pose of the agent
+geometry_msgs/Point goal
+geometry_msgs/Point return_to   # base or shelter
+bool require_return
+string mode                     # RouteDecision.MODE_*
+uint32 map_version              # version the caller believes is current
+
+float32 service_time_s          # time spent at the goal
+float32 time_budget_s           # available
+float32 energy_budget_wh
+float32 oxygen_budget_l
+float32 reserve_time_s          # must remain after outbound + service + return
+float32 reserve_wh
+float32 reserve_oxygen_l
+---
+RouteDecision decision
