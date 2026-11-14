@@ -18,6 +18,10 @@ export const CONTOUR_MAJOR_M = 50;
  * and vanishes beyond ~220 m of camera distance, so it never changes the map at mission scale.
  */
 export const SURFACE_DETAIL_GLSL = /* glsl */ `
+// Ground metres covered by one pixel at this fragment; set before the detail functions run.
+// Each detail level fades out once it is smaller than a pixel, which removes the moire at distance.
+float gPx = 0.0;
+float gKeep(float lo, float hi) { return 1.0 - smoothstep(lo, hi, gPx); }
 float gHash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float gNoise(vec2 p) {
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
@@ -60,9 +64,9 @@ float gRipples(vec2 g) {
 vec2 gPebbles(vec2 g) {
   vec2 w = g + vec2(gFbm(g * 0.15), gFbm(g * 0.15 + 4.7)) * 2.5;
   float density = smoothstep(0.3, 0.85, gFbm(g * 0.045 + 5.0));
-  vec2 a = gStones(w * 0.9 + 17.0, 0.05, 0.42, 0.15 + 0.35 * density);
-  vec2 b = gStones(w * 2.3 + 41.0, 0.06, 0.35, 0.2 + 0.5 * density);
-  vec2 c = gStones(w * 5.7 + 73.0, 0.08, 0.3, 0.25 + 0.55 * density);
+  vec2 a = gStones(w * 0.9 + 17.0, 0.05, 0.42, 0.15 + 0.35 * density) * vec2(gKeep(0.12, 0.35), 1.0);
+  vec2 b = gStones(w * 2.3 + 41.0, 0.06, 0.35, 0.2 + 0.5 * density) * vec2(gKeep(0.05, 0.14), 1.0);
+  vec2 c = gStones(w * 5.7 + 73.0, 0.08, 0.3, 0.25 + 0.55 * density) * vec2(gKeep(0.02, 0.06), 1.0);
   vec2 best = a;
   if (b.x * 0.75 > best.x) best = vec2(b.x * 0.75, b.y);
   if (c.x * 0.5 > best.x) best = vec2(c.x * 0.5, c.y);
@@ -71,15 +75,15 @@ vec2 gPebbles(vec2 g) {
 // Relief in metres-like units: metre-scale undulation, irregular ripples, grit, pebbles.
 float groundHeight(vec2 g) {
   float undulation = gFbm(g * 0.3 + gFbm(g * 0.07) * 2.0) * 0.4;
-  float ripples = gRipples(g) * 0.02;
-  float grit = gFbm(g * 7.0) * 0.035;
+  float ripples = gRipples(g) * 0.02 * gKeep(0.2, 0.6);
+  float grit = gFbm(g * 7.0) * 0.035 * gKeep(0.015, 0.05);
   return undulation + ripples + grit + gPebbles(g).x * 0.07;
 }
 // Brightness modulation: dust patches, darker grit, ripple crests catching dust, pebble speckle.
 float groundAlbedo(vec2 g) {
   float patches = gFbm(g * 0.06 + gFbm(g * 0.02) * 3.0) * 0.3 + 0.86;
-  float grit = 0.9 + gFbm(g * 9.0) * 0.18;
-  float crests = 1.0 + gRipples(g) * 0.05;
+  float grit = mix(1.0, 0.9 + gFbm(g * 9.0) * 0.18, gKeep(0.012, 0.04));
+  float crests = 1.0 + gRipples(g) * 0.05 * gKeep(0.2, 0.6);
   vec2 st = gPebbles(g);
   float pebbles = 1.0 + st.x * (st.y * 0.35 - 0.12); // some stones darker, some lighter than the dust
   return patches * grit * crests * pebbles;
@@ -214,7 +218,8 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
         .replace(
           '#include <color_fragment>',
           `#include <color_fragment>
-          float detailFade = uDetail * (1.0 - smoothstep(60.0, 220.0, length(vViewPosition)));
+          gPx = length(fwidth(vGround));
+          float detailFade = uDetail * (1.0 - smoothstep(50.0, 180.0, length(vViewPosition)));
           if (detailFade > 0.0) diffuseColor.rgb *= mix(1.0, groundAlbedo(vGround), detailFade);`,
         )
         .replace(
@@ -248,7 +253,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
           }`,
         );
     };
-    m.customProgramCacheKey = () => 'terrain-contours-v7';
+    m.customProgramCacheKey = () => 'terrain-contours-v8';
     return m;
   }, [uniforms]);
 

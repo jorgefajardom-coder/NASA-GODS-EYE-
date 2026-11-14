@@ -113,7 +113,7 @@ export function CutawayBlock({ meta, heights, geology, verticalExaggeration }: P
           }`,
         );
     };
-    mat.customProgramCacheKey = () => 'cutaway-strata-v4';
+    mat.customProgramCacheKey = () => 'cutaway-strata-v5';
     return mat;
   }, []);
 
