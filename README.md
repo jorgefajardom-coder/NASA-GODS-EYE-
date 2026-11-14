@@ -9,7 +9,8 @@ recorder and tests from feat/mission. The default synthetic vertical keeps
 MOCK terrain/agents/mission; select mission:=real with explicit configuration
 and a clock to substitute one authority, never run both mission providers.
 The integrated web viewer plays saved runs offline in REPLAY mode: an
-illustrative demo on a provisional CTX crop and the gateway's recorded MOCK run.
+illustrative demo on a provisional CTX crop and the gateway's recorded MOCK run,
+labelled with each run's `source_mode` (`REPLAY · SIMULATION`, `REPLAY · MOCK`).
 It is not connected to a live gateway. Science-model agreement, actual execution
 and Gazebo acceptance remain pending; software availability is not mission evidence.
 
@@ -28,6 +29,34 @@ Confirm any earlier local judging cutoff separately.
 - [Required AI declaration](docs/AI_USAGE.md) and [metadata](docs/ai_usage.json)
 - [Integration status](docs/integration_log.md) and [verification](docs/verification.md)
 - [Planner handoff for Diego](docs/planner_handoff.md) and [temporary data provenance](docs/planner_provenance.md)
+
+## Web viewer: what is real and where it comes from
+
+Nothing in the viewer is presented as a measurement unless it comes from the
+source named here; everything else is labelled in the interface as simulated,
+illustrative, synthetic or AI-generated.
+
+| Layer or element | Source | Status |
+| --- | --- | --- |
+| Elevation (Orbital map) | MRO/CTX DTM, Mars 2020 TRN mosaic, USGS Astrogeology ([DOI 10.5066/P906QQT8](https://doi.org/10.5066/P906QQT8)), 2 km crop at 20 m | Real, provisional crop |
+| Contour lines | Derived from that elevation every 10 m | Derived from real data |
+| Surface image | MRO/CTX orthomosaic `JEZ_ctx_B_soc_008`, via [JPL Mars Trek](https://trek.nasa.gov/mars/), 6 m resampled to 5 m | Real, contrast-stretched for display |
+| Ground layers (geology) | USGS SIM 3464, Sun and Stack (2020), [doi:10.3133/sim3464](https://doi.org/10.3133/sim3464) | Real map; boundaries 100-200 m approximate |
+| Cut-away strata | Unit order from the SIM 3464 interpretations | Schematic: thicknesses and tones not measured |
+| Atmos: Jezero weather | Perseverance MEDA daily summaries, NASA Mars weather feed | Real; outreach summary, not the PDS archive |
+| Atmos: annual cycle | Curiosity REMS daily summaries at Gale crater | Real, another site; reference only |
+| Atmos: radiation | MSL RAD surface averages, Hassler et al. (2014), [doi:10.1126/science.1244797](https://doi.org/10.1126/science.1244797) | Published values; Gale, unshielded estimate |
+| Uncertainty (sigma) | Set by the demo fixture (1 m, 3 m on the surveyed crossing, 0.2 m once observed); the data package uses a constant 2.5 m | **Assumed, not measured** |
+| Updated map (v2) | CTX prior plus a simulated drone observation over a scarp added to the hidden reference | **Synthetic** adverse case |
+| Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious |
+| Rover and drone models | NASA/JPL-Caltech Perseverance and Ingenuity 3D models | Real models, agency branding removed |
+| Astronaut model | Sketchfab, LasquetiSpice, CC BY 4.0 | Third-party asset |
+| Surface base | `base-marciana-v2`, generated with OpenAI Codex, prepared by `web/scripts/blender/prepare_base.py` | **AI-generated** 3D model |
+| Evaluator reference | MRO/HiRISE DTM ([DOI 10.5066/P9REJ9JN](https://doi.org/10.5066/P9REJ9JN)) | Real; isolated, never in the public build |
+
+Credits and licences are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md),
+AI use in [docs/AI_USAGE.md](docs/AI_USAGE.md), and the viewer details in
+[web/README.md](web/README.md).
 
 ## Layout and owners
 
@@ -70,7 +99,11 @@ or connected ROS system. Do not expose ROS DDS to the browser.
 ## ROS target: Ubuntu 24.04 / ROS 2 Jazzy
 
 Gazebo Harmonic is the intended simulator, installed separately. Native Windows
-is not the declared ROS integration target; use prepared Linux/WSL.
+is not the declared ROS integration target; use prepared Linux/WSL (Ubuntu 24.04
+on WSL 2 works with ROS 2 Jazzy desktop and Gazebo Harmonic 8). If `apt-get update`
+fails because `packages.ros.org` no longer has a Release file, the machine still
+uses the retired ROS apt source; install the current `ros2-apt-source` package as
+described in the ROS 2 Jazzy installation guide before updating.
 
 ```sh
 source /opt/ros/jazzy/setup.bash
