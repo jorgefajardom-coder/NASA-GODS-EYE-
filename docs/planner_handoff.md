@@ -86,6 +86,53 @@ Neither these tests nor its finite pixels prove EVA, flight or vehicle safety.
 
 ## Next dependency and takeover checklist
 
+### D-07: explicit request after 20 metres
+
+`tests/planning/test_d07_twenty_metres.py` closes the literal D-07 scenario at the
+pure Python integration level for human and rover profiles. Its deterministic
+9x18 flat grid has 3 m cells; the initial route runs from (4.5,13.5,0) to
+(43.5,13.5,0), with return to the explicit original base. The test walks the
+initial polyline for exactly 20 m and interpolates the last segment, yielding
+(24.5,13.5,0), not a cell centre. It then blocks pending cell (row 4, col 10),
+increments map_version from 1 to 2 and explicitly requests a new route.
+
+Illustrative speed 2 m/s and energy rate 0.5 Wh/m consume 10 s and 10 Wh during
+the prefix; the human oxygen rate 0.2 L/s consumes 2 L. These are test assumptions,
+not approved scientific rates. Remaining availability subtracts ONLY this prefix;
+reserves are unchanged and service is still pending. The new result includes
+the 1 m connector, outbound detour, 4 s service and full return. Independent
+polyline costing verifies totals and conservation across both planning requests.
+An independent whole-segment intersection check against the inflated obstacle
+square covers connector, outbound and return. The outbound cannot visit the old
+origin or reduce x below the current pose in this scenario; only the return ends
+at the base. Repeated requests preserve paths/route IDs, and old map versions
+are rejected. Negative tests cover a full barrier and separate remaining time,
+energy and human oxygen shortages, despite the original mission being feasible.
+
+Reproduce locally (use fresh output paths to preserve previous evidence):
+
+```sh
+python -m pytest tests/planning/test_d07_twenty_metres.py -q -p no:cacheprovider --basetemp=tmp/d07-20m-focused-NEW --junitxml=tmp/d07-20m-focused-NEW.xml
+python -m pytest -q -p no:cacheprovider --basetemp=tmp/d07-20m-full-NEW --junitxml=tmp/d07-20m-full-NEW.xml
+python scripts/check_repository.py
+```
+
+Create the ignored `tmp` parent first on a fresh checkout. Each focused-test
+temporary directory contains d07.json with the grid definition, both requests,
+initial route, travelled prefix, consumed resources and final result. JUnit
+records executed assertions. These are synthetic computational acceptance cases;
+movement is polyline interpolation, not dynamics, perception, ROS/Gazebo or a
+LIVE mission. F03.4 still requires automatic event handling, corridor relevance,
+hysteresis, immediate danger invalidation and MissionManager authorization, plus
+integration with actual pose/resources and coherent published map snapshots.
+
+Local execution on 14 November 2026, Python 3.12.3: focused D-07 tests 9 passed;
+full Python suite 193 passed, 2 ROS modules skipped, 0 failures, with the existing
+Starlette/httpx deprecation warning. Static repository checks passed. No production
+planner code or ROS contracts changed for this acceptance extension.
+
+### Team handoffs
+
 1. Daniel supplies public belief/sigma/profile masks with unique batch stamps,
    approved CRS/datum and three matching control points. Do not expose reference.
 2. David supplies reviewed rates, budgets, uncertainty limits and mission criteria.

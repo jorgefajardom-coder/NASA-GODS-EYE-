@@ -61,3 +61,13 @@ model/interface documentation on feat/planner. Affected paths are recorded in
 ai_usage.json. Tests use illustrative grids and resource parameters, not new NASA
 observations or certified mobility limits. No ROS message/service definition or
 generated media was added. Human review remains pending.
+
+## D-07 explicit replanning after 20 metres
+
+OpenAI Codex assisted with tests/planning/test_d07_twenty_metres.py and its
+documentation. These newly generated synthetic flat-grid scenarios interpolate
+20 metres along the initial planned polyline, independently account for consumed
+resources, then request a new round trip after a map update. JSON/JUnit files
+are outputs of actual test executions; scenario geometry and rates are
+illustrative, not NASA observations, physiology or physical validation. No
+automatic replan policy, MissionManager change or ROS wire change is included.

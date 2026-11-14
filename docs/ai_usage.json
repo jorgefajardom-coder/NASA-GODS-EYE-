@@ -7,6 +7,18 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "d07_synthetic_acceptance_tests",
+      "generation": "AI-assisted tests and documentation; results produced by actual executions",
+      "paths": [
+        "tests/planning/test_d07_twenty_metres.py",
+        "docs/planner_handoff.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Construct synthetic 20-metre trajectory-prefix scenarios for explicit replanning, independent remaining-resource accounting, detour and return verification, and no-path/resource-negative cases. Execution artifacts are local ignored tmp outputs. No physical or scientific measurements generated."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "continuous_start_code_and_illustrative_tests",
       "generation": "AI-assisted generation, pending human review",
       "paths": [
