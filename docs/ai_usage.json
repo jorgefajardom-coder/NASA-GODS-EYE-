@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "recorded_on": "2026-11-14",
-  "status": "planner_p0_in_progress",
+  "status": "planner_p0_implemented_pending_scientific_review",
   "policy_url": "https://github.com/nasa/spaceapps/discussions/1849",
   "human_review": "pending module owners",
   "uses": [
@@ -49,6 +49,24 @@
         "scripts/benchmark_planner.py"
       ],
       "use": "Implement FAST/SAFE resource-constrained search, mathematical model, independent acceptance tests and newly generated illustrative benchmark scenarios. No prior Sandbox algorithm or reported results copied."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_adapters_and_data_processing",
+      "generation": "AI-assisted code generation; upstream scientific observations retain original provenance",
+      "paths": [
+        "src/mge_planning/mge_planning/adapter.py",
+        "src/mge_planning/mge_planning/node.py",
+        "scripts/prepare_planner_terrain.py",
+        "scripts/check_planner_crop.py",
+        "data/planner_provisional",
+        "config/planner_profiles.illustrative.json",
+        "tests/contract/test_planner_service.py",
+        "tests/contracts/test_planner_provenance.py",
+        "docs/planner_provenance.md",
+        "docs/planner_handoff.md"
+      ],
+      "use": "Implement coherent ROS service boundary and fresh upstream processing; create test-only profiles, tests and relevo. HiRISE reference is excluded from distribution; CTX prior is not a verified corridor."
     }
   ],
   "generated_media": [],
@@ -57,7 +75,8 @@
   "notes": [
     "Project idea and science specifications supplied by the human team.",
     "Update this register and descriptive disclosure when generated artifacts change.",
-    "No generated bitmap, video or audio asset is included at scaffold time."
+    "No generated bitmap, video or audio asset is included at scaffold time.",
+    "Fresh CTX/HiRISE processing occurs during competition; source observations pre-exist and are cited. No prior Sandbox code, arrays, media or reported outcomes copied."
   ],
   "retained_contributions": [
     {

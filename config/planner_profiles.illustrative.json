@@ -1,0 +1,24 @@
+{
+  "status": "illustrative",
+  "provenance": "New test-only profiles. Speed/slope are tentative references to NASA-Sandbox scenario at 827da15; other values are invented test assumptions, not certified physical limits.",
+  "profiles": {
+    "human_1": {
+      "agent_kind": "human", "speed_m_s": 0.9, "max_slope_deg": 22.0,
+      "max_step_m": 1.0, "radius_m": 0.25, "localization_error_m": 0.1,
+      "energy_wh_per_m": 0.2, "oxygen_l_per_s": 0.01,
+      "uphill_time_factor": 2.0, "uphill_energy_factor": 3.0,
+      "service_power_w": 40.0
+    },
+    "rover_1": {
+      "agent_kind": "rover", "speed_m_s": 0.65, "max_slope_deg": 18.0,
+      "max_step_m": 1.0, "radius_m": 0.5, "localization_error_m": 0.1,
+      "energy_wh_per_m": 0.15, "uphill_time_factor": 2.0,
+      "uphill_energy_factor": 4.0, "service_power_w": 20.0
+    },
+    "drone_1": {
+      "agent_kind": "drone", "speed_m_s": 4.0, "max_slope_deg": 89.0,
+      "max_step_m": 10.0, "radius_m": 0.25, "localization_error_m": 0.1,
+      "energy_wh_per_m": 0.1, "service_power_w": 10.0
+    }
+  }
+}
