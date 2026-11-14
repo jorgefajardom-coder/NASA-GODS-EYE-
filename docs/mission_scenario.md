@@ -36,12 +36,22 @@ valid terrain and at cell centres under the pinned main contract; the tool
 reports `NON_CELL_CENTER` rather than moving them. Human oxygen is required;
 robot oxygen is absent. Reserves cannot exceed capacities.
 
-All candidate values remain pending review. Even fully populated and consistent
+The diagnostic itself approves no candidate values. Even fully populated and consistent
 inputs yield `CONFIGURATION_CONSISTENT_REVIEW_REQUIRED`, with
 `mission_execution_authorized=false` and `scientific_approval=false`. No owner
 approval is inferred from a producer manifest saying `ready` or from nonempty
 approval-reference strings. Source/configuration hashes and run ID distinguish
 this consistency diagnostic from any later mission execution.
+
+David explicitly approved JZ-P01..JZ-P07 as experimental values in
+[receipt JZ-APP-20261114-01](science_approvals/jezero_scenario_20261114.json).
+Use `--mission config/mission_jezero.experimental.yaml` to diagnose that
+configuration. Its separate `scenario_approval` is verified against the receipt
+hash and exact original/current values. Tampering produces an explicit finding
+and `NOT_READY`; the receipt is traceability, not an authenticated signature.
+Valid approval reports `APPROVED_EXPERIMENTAL_VALUES`, while model/profile and
+execution approvals stay false. `pending_integration` still prevents node startup
+as an operational mission. The original proposal and prior outputs are retained.
 
 The CLI also hashes its own code, diagnostic code and Daniel's loader. An
 exported source snapshot without Git retains these hashes and reports unknown

@@ -624,6 +624,43 @@
         "evidence/mission-main-direct-20261114"
       ],
       "use": "Reconcile mission37a2bd6 with published main4b72d30, preserve scientific/journal/scenario functionality and all owner implementations/disclosures, align moved web test metadata and public-only ROS validation inputs. Owner explicitly requested direct integration if branch rules permit; no branch protection or checks bypassed, no planner PR merged and no approval or mission execution inferred."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "scientific_scenario_proposal_and_public_prior_sizing",
+      "generation": "AI-assisted proposal, code and model-derived diagnostic data, pending David review",
+      "paths": [
+        "config/mission_jezero.proposed.yaml",
+        "scripts/size_jezero_proposal.py",
+        "tests/mission/test_jezero_proposal.py",
+        "docs/jezero_mission_proposal.md",
+        "docs/science_decisions.md",
+        "docs/science_models.md",
+        "docs/mission_handoff.md",
+        "docs/verification.md",
+        "evidence/jezero-proposal-review-20261114"
+      ],
+      "use": "Propose public Daniel scenario A/B/staging coordinates, service, experimental resource caps and separate reserves; calculate directed public-prior cost probes and OAT sensitivity using existing proposed scientific profiles. Inputs are unchanged observational terrain, not generated elevations. No route search, observation, task completion, mock, approval, mission execution or A/B/C result was generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "experimental_scenario_approval_record",
+      "generation": "AI-assisted recording of explicit human approval, validation and regression tests",
+      "paths": [
+        "config/mission_jezero.experimental.yaml",
+        "docs/science_approvals/jezero_scenario_20261114.json",
+        "src/mge_mission/mge_mission/scenario.py",
+        "tests/mission/test_scenario_approval.py",
+        "tests/contract/test_mission_service.py",
+        "docs/science_decisions.md",
+        "docs/jezero_mission_proposal.md",
+        "docs/science_models.md",
+        "docs/mission_handoff.md",
+        "docs/verification.md",
+        "evidence/jezero-scenario-approval-20261114",
+        "docs/mission_scenario.md"
+      ],
+      "use": "Record David explicit JZ-P01..07 approval of nominal experimental scenario values only, bind receipt to unchanged reviewed proposal and current values, and verify runtime stays blocked. Profiles, cost-model agreement, snapshot/execution evidence and operational authorization remain unapproved. No terrain, observations, tasks, mock or execution was generated; original proposal and evidence retained unchanged."
     }
   ],
   "generated_media": [],

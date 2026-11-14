@@ -1,0 +1,219 @@
+# Approved JZ-P01..07 values only. Runtime remains blocked: pending_integration.
+schema_version: 1.0.0
+status: pending_integration
+owner: David
+recorded_on: '2026-11-14'
+proposal_id: jezero-primary-review-01
+model_id: mge-science-1.0.0
+profiles_path: config/science_profiles.proposed.json
+manifest_path: data/sample/manifest.json
+manifest_sha256: f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1
+frame_id: map
+dataset_id: jezero_mvp
+base_enu_m:
+- -14.0
+- -14.0
+- -2571.199462890625
+primary_goal_enu_m:
+- 30.0
+- 30.0
+- -2573.264892578125
+primary_agent_id: human_1
+mode: FAST
+return_tolerance_m: 1.0
+primary_service_time_s: 120.0
+primary_activity: inspect
+primary_service_meaning: stationary visual observation and check-in, costed as light
+  work; no optional inspection or sample completion
+optional_human_sampling: after_primary_goal_and_completed_public_inspection
+optional_tasks: []
+connectivity: ideal_global_p0
+approval_evidence: {}
+budgets:
+  human_1:
+    time_s: 1200.0
+    energy_wh: 100.0
+    oxygen_l: 25.0
+    reserve_time_s: 240.0
+    reserve_wh: 20.0
+    reserve_oxygen_l: 5.0
+  rover_1:
+    time_s: 1200.0
+    energy_wh: 60.0
+    reserve_time_s: 240.0
+    reserve_wh: 12.0
+  drone_1:
+    time_s: 180.0
+    energy_wh: 15.0
+    reserve_time_s: 36.0
+    reserve_wh: 3.0
+agent_staging_cells:
+  human_1:
+  - 12
+  - 12
+  rover_1:
+  - 13
+  - 12
+  drone_1:
+  - 12
+  - 13
+sizing:
+  wait_allowance_s:
+    human_1: 60.0
+    rover_1: 60.0
+    drone_1: 10.0
+  service_s:
+    human_1: 120.0
+    rover_1: 120.0
+    drone_1: 30.0
+  service_activity:
+    human_1: inspect
+    rover_1: inspect
+    drone_1: observe
+  human_probe_cells:
+  - - 12
+    - 12
+  - - 23
+    - 12
+  - - 23
+    - 23
+  rover_probe_cells:
+  - - 13
+    - 12
+  - - 13
+    - 14
+  drone_probe_cells:
+  - - 12
+    - 13
+  - - 23
+    - 23
+  optional_sample_duration_s: 180.0
+  reserve_fraction_sensitivity:
+  - 0.1
+  - 0.2
+  - 0.3
+review_parameters:
+- parameter: base_enu_m
+  unit: m
+  approval_status: approved_experimental_values
+  justification: Choose public cell (12,12) to match the current human integration
+    placeholder; no geological or safety claim
+  sensitivity: Neighbouring cells +/-1 row/column require new exact heights and all
+    cost checks
+- parameter: primary_goal_enu_m
+  unit: m
+  approval_status: approved_experimental_values
+  justification: Choose cell (23,23), 62.23 m horizontally from A, within the public
+    crop and away from its boundary; experimental objective, not a discovered POI
+  sensitivity: Neighbouring cells +/-1 row/column; do not silently move a goal
+- parameter: agent_staging_cells
+  unit: row_col
+  approval_status: approved_experimental_values
+  justification: Preserve main's adjacent Jezero placeholder XY positions; proposal
+    only, latest observed poses govern execution
+  sensitivity: Recompute from each actual pose; no automatic snapping
+- parameter: primary_service_time_s
+  unit: s
+  approval_status: approved_experimental_values
+  justification: Two minutes for a stationary visual check-in, a chosen experiment
+    duration, not a NASA task measurement
+  sensitivity:
+  - 60
+  - 120
+  - 180
+- parameter: primary_activity
+  unit: activity
+  approval_status: approved_experimental_values
+  justification: inspect selects existing light-work metabolic power only; it does
+    not complete an inspection TaskSpec
+  sensitivity: Compare stationary light/heavy cost; sampling remains optional and
+    gated
+- parameter: return_tolerance_m
+  unit: m_3d
+  approval_status: approved_experimental_values
+  justification: Model-pose threshold below the 2 m half-cell spacing; neither native
+    20 m DEM nor 2.5 m prior sigma establishes 1 m physical accuracy
+  sensitivity:
+  - 0.5
+  - 1.0
+  - 2.0
+- parameter: budgets.human_1
+  unit: s,metabolic_Wh,equivalent_dry_O2_l
+  approval_status: approved_experimental_values
+  justification: Experimental 20 min ceiling and resource caps leave explicit room
+    beyond primary service and return; not suit capacities or total oxygen losses
+  sensitivity:
+    time_s:
+    - 900
+    - 1200
+    - 1800
+    energy_wh:
+    - 80
+    - 100
+    - 120
+    oxygen_l:
+    - 20
+    - 25
+    - 30
+- parameter: budgets.rover_1
+  unit: s,electrical_Wh
+  approval_status: approved_experimental_values
+  justification: Same 20 min horizon as human for local inspection; distant tasks
+    may be rejected at proposed 0.04 m/s
+  sensitivity:
+    time_s:
+    - 900
+    - 1200
+    - 1800
+    energy_wh:
+    - 40
+    - 60
+    - 80
+- parameter: budgets.drone_1
+  unit: s,electrical_Wh
+  approval_status: approved_experimental_values
+  justification: Short 3 min analytical envelope with 15 Wh cap; not Ingenuity certified
+    endurance or flight approval
+  sensitivity:
+    time_s:
+    - 150
+    - 180
+    - 210
+    energy_wh:
+    - 12
+    - 15
+    - 18
+- parameter: reserves_all_agents
+  unit: fraction_of_initial_budget
+  approval_status: approved_experimental_values
+  justification: 20 percent is a chosen experimental holdback, additional to explicitly
+    costed return; not a NASA reserve standard
+  sensitivity:
+  - 0.1
+  - 0.2
+  - 0.3
+- parameter: sizing.wait_allowance_s
+  unit: s
+  approval_status: approved_experimental_values
+  justification: One explicit waiting allowance per cost probe; humans/rover stationary,
+    drone on ground; not a mandatory extra allocation at runtime
+  sensitivity: 0, nominal, twice nominal
+- parameter: sizing.service_s
+  unit: s
+  approval_status: approved_experimental_values
+  justification: Rover local inspection 120 s and drone suspended observation 30 s
+    are design durations, not observed tasks
+  sensitivity: 0.5, 1, 1.5 times nominal
+- parameter: sizing.optional_sample_duration_s
+  unit: s
+  approval_status: approved_experimental_values
+  justification: Three-minute heavy-work sensitivity example after B and completed
+    public inspection; no task is created or promised
+  sensitivity:
+  - 60
+  - 180
+  - 300
+scenario_approval:
+  status: approved_experimental_values
+  receipt_path: docs/science_approvals/jezero_scenario_20261114.json
+  receipt_sha256: c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518

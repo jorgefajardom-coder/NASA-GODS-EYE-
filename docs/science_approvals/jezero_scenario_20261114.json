@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "approval_id": "JZ-APP-20261114-01",
+  "scope": "experimental_scenario_values_only",
+  "approved_by": "David",
+  "approved_on": "2026-11-14",
+  "decision_ids": [
+    "JZ-P01",
+    "JZ-P02",
+    "JZ-P03",
+    "JZ-P04",
+    "JZ-P05",
+    "JZ-P06",
+    "JZ-P07"
+  ],
+  "basis": "Explicit repository-owner instruction in the current chat",
+  "instruction": "Apruebo los valores JZ-P01 a JZ-P07 para el escenario experimental. Registra la aprobación y continúa, manteniendo pendientes la aprobación de perfiles, el acuerdo de costes y las evidencias de ejecución.",
+  "reviewed_commit": "2477aa4b644161e8ae429d1f64d81ca2245ffd5d",
+  "reviewed_proposal_path": "config/mission_jezero.proposed.yaml",
+  "reviewed_proposal_sha256": "e9cb9144a6861de71fbe0f633b9b3bc9f58c322666c1717c6523a948c5603a42",
+  "approved_values": {
+    "dataset_id": "jezero_mvp",
+    "manifest_path": "data/sample/manifest.json",
+    "manifest_sha256": "f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1",
+    "frame_id": "map",
+    "base_enu_m": [
+      -14.0,
+      -14.0,
+      -2571.199462890625
+    ],
+    "primary_goal_enu_m": [
+      30.0,
+      30.0,
+      -2573.264892578125
+    ],
+    "primary_agent_id": "human_1",
+    "mode": "FAST",
+    "return_tolerance_m": 1.0,
+    "primary_service_time_s": 120.0,
+    "primary_activity": "inspect",
+    "primary_service_meaning": "stationary visual observation and check-in, costed as light work; no optional inspection or sample completion",
+    "optional_human_sampling": "after_primary_goal_and_completed_public_inspection",
+    "optional_tasks": [],
+    "connectivity": "ideal_global_p0",
+    "budgets": {
+      "human_1": {
+        "time_s": 1200.0,
+        "energy_wh": 100.0,
+        "oxygen_l": 25.0,
+        "reserve_time_s": 240.0,
+        "reserve_wh": 20.0,
+        "reserve_oxygen_l": 5.0
+      },
+      "rover_1": {
+        "time_s": 1200.0,
+        "energy_wh": 60.0,
+        "reserve_time_s": 240.0,
+        "reserve_wh": 12.0
+      },
+      "drone_1": {
+        "time_s": 180.0,
+        "energy_wh": 15.0,
+        "reserve_time_s": 36.0,
+        "reserve_wh": 3.0
+      }
+    },
+    "agent_staging_cells": {
+      "human_1": [
+        12,
+        12
+      ],
+      "rover_1": [
+        13,
+        12
+      ],
+      "drone_1": [
+        12,
+        13
+      ]
+    },
+    "sizing": {
+      "wait_allowance_s": {
+        "human_1": 60.0,
+        "rover_1": 60.0,
+        "drone_1": 10.0
+      },
+      "service_s": {
+        "human_1": 120.0,
+        "rover_1": 120.0,
+        "drone_1": 30.0
+      },
+      "service_activity": {
+        "human_1": "inspect",
+        "rover_1": "inspect",
+        "drone_1": "observe"
+      },
+      "human_probe_cells": [
+        [
+          12,
+          12
+        ],
+        [
+          23,
+          12
+        ],
+        [
+          23,
+          23
+        ]
+      ],
+      "rover_probe_cells": [
+        [
+          13,
+          12
+        ],
+        [
+          13,
+          14
+        ]
+      ],
+      "drone_probe_cells": [
+        [
+          12,
+          13
+        ],
+        [
+          23,
+          23
+        ]
+      ],
+      "optional_sample_duration_s": 180.0,
+      "reserve_fraction_sensitivity": [
+        0.1,
+        0.2,
+        0.3
+      ]
+    }
+  },
+  "approved_values_sha256": "9261db1aa2ffbb99197916d7d450fbd5bad5bbdc76066e2950dc0f9ce1cc7f67",
+  "profiles_approved": false,
+  "cost_agreement_approved": false,
+  "execution_evidence_approved": false,
+  "operational_authorization": false,
+  "limitations": [
+    "Approval traceability record, not an authenticated signature.",
+    "Only experimental scenario values are approved; no mission execution, operational approval, validated flight or physical localization accuracy is established."
+  ]
+}

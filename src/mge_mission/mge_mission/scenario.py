@@ -19,6 +19,59 @@ from mge_data.core import load_public_terrain
 from .models import MODEL_ID, estimate_activity, load_profiles
 
 PRIVATE_PARTS = {"reference", "evaluation_reference", "ground_truth", "hirise", ".git", ".env"}
+REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
+EXPERIMENTAL_VALUE_FIELDS = (
+    "dataset_id", "manifest_path", "manifest_sha256", "frame_id", "base_enu_m",
+    "primary_goal_enu_m", "primary_agent_id", "mode", "return_tolerance_m",
+    "primary_service_time_s", "primary_activity", "primary_service_meaning",
+    "optional_human_sampling", "optional_tasks", "connectivity", "budgets",
+    "agent_staging_cells", "sizing",
+)
+
+
+def experimental_values(configuration):
+    """Exact values covered by JZ-P01..07; profiles and runtime flags excluded."""
+    return {key: configuration[key] for key in EXPERIMENTAL_VALUE_FIELDS}
+
+
+def _canonical(value):
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
+
+
+def _scenario_approval(mission, root):
+    declaration = mission.get("scenario_approval")
+    if declaration is None:
+        return {"status": "NOT_RECORDED"}
+    receipt_path = _public_path(root, root / declaration["receipt_path"])
+    if _sha(receipt_path) != declaration["receipt_sha256"]:
+        raise ValueError("Experimental approval receipt hash mismatch")
+    receipt = _document(receipt_path)
+    decisions = [f"JZ-P{i:02d}" for i in range(1, 8)]
+    if (declaration.get("status") != "approved_experimental_values"
+            or receipt.get("schema_version") != "1.0.0"
+            or receipt.get("scope") != "experimental_scenario_values_only"
+            or receipt.get("approval_id") != "JZ-APP-20261114-01"
+            or receipt.get("decision_ids") != decisions
+            or receipt.get("approved_by") != "David"
+            or receipt.get("approved_on") != "2026-11-14"):
+        raise ValueError("Experimental approval scope, identity or decisions are invalid")
+    for key in ("profiles_approved", "cost_agreement_approved", "execution_evidence_approved", "operational_authorization"):
+        if receipt.get(key) is not False:
+            raise ValueError("Experimental approval cannot approve profiles, model agreement or execution")
+    proposal_path = _public_path(root, root / receipt["reviewed_proposal_path"])
+    if _sha(proposal_path) != receipt["reviewed_proposal_sha256"]:
+        raise ValueError("Reviewed proposal hash mismatch")
+    values = _canonical(receipt["approved_values"])
+    if (hashlib.sha256(values.encode("utf-8")).hexdigest() != receipt["approved_values_sha256"]
+            or values != _canonical(experimental_values(_document(proposal_path)))
+            or values != _canonical(experimental_values(mission))):
+        raise ValueError("Experimental values differ from the approved proposal/receipt")
+    return {"status": "APPROVED_EXPERIMENTAL_VALUES", "approval_id": receipt["approval_id"],
+            "approved_by": receipt["approved_by"], "approved_on": receipt["approved_on"],
+            "decision_ids": decisions, "scope": receipt["scope"],
+            "receipt_sha256": declaration["receipt_sha256"], "profiles_approved": False,
+            "cost_agreement_approved": False, "execution_evidence_approved": False,
+            "operational_authorization": False}
 
 
 def _sha(path):
@@ -227,6 +280,11 @@ def diagnose(manifest_path, profiles_path, mission_path, *, run_id):
                     if budget[reserve] > budget[capacity]:
                         finding("RESERVE_EXCEEDS_CAPACITY", f"{agent_id}: {reserve} exceeds {capacity}")
 
+    try:
+        report["scenario_approval"] = _scenario_approval(mission, REPOSITORY_ROOT)
+    except (OSError, ValueError, KeyError, TypeError, yaml.YAMLError) as error:
+        report["scenario_approval"] = {"status": "INVALID"}
+        finding("EXPERIMENTAL_APPROVAL_INVALID", str(error))
     approvals = mission.get("approval_evidence", {})
     for key in ("dataset", "science", "resource_model_agreement", "snapshot_contract"):
         if not isinstance(approvals, dict) or not isinstance(approvals.get(key), str) or not approvals[key].strip():
@@ -243,6 +301,7 @@ def diagnose(manifest_path, profiles_path, mission_path, *, run_id):
         "dataset_id": tile.metadata.dataset_id if tile is not None else None,
         "mission_inputs": {key: mission.get(key) for key in required_fields},
         "approval_evidence": approvals if isinstance(approvals, dict) else {},
+        "scenario_approval": report["scenario_approval"],
     }
     if not report["missing_inputs"] and not report["findings"]:
         report["status"] = "CONFIGURATION_CONSISTENT_REVIEW_REQUIRED"
