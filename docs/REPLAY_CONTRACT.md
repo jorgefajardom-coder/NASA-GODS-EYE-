@@ -69,7 +69,7 @@ planner or mission authority.
 | Empty default ROS route | Omit optional viewer `active_route`; never render numeric defaults as measured results |
 | Agent/route resources | Preserve numbers and JSON null exactly; no model or parameter conversion |
 | Canonical schema 1.0.0 | Compatibility manifest/timeline schema `mge-web-0.1-draft`; canonical inputs untouched |
-| `recorded_from=LIVE` | Retain original field, derive `source_mode=MOCK` only from explicit MOCK terrain evidence; otherwise UNKNOWN |
+| `recorded_from=LIVE` | Retain original field. `source_mode` is the manifest's declared value when present (`MOCK`, `SIMULATION`, `UNKNOWN`); explicit MOCK terrain evidence always yields MOCK; absent field and no evidence is UNKNOWN; `LIVE` is rejected |
 
 The oracle labels the system-clock fixture **REPLAY / MOCK**. The current web
 continuation already shows a REPLAY badge and a recorded MOCK disclaimer for
@@ -146,21 +146,26 @@ isolated process/mount before publication. Disable public evaluator selection.
 The canonical MOCK recording's reference output is all NoData; that does not
 resolve the separate demo leak.
 
-Jesus must record explicit source provenance (MOCK/SIMULATION/LIVE/UNKNOWN)
-instead of relying on `recorded_from=LIVE`, and add public raster recording
-without exposing evaluator data. No source metadata is silently rewritten.
-A live connected process is insufficient evidence of a valid LIVE mission.
+The recorder now writes explicit source provenance: manifest `source_mode`
+(`MOCK`, `SIMULATION` or `UNKNOWN`), declared by the launcher and forced to
+`MOCK` by MOCK terrain metadata. `recorded_from=LIVE` is kept unchanged as
+transport terminology. `LIVE` cannot be declared or accepted from a package:
+a live connected process is insufficient evidence of a valid LIVE mission.
+The pinned fixture and `data/sample/replay` predate the field and are not
+rewritten. Public raster recording without evaluator data is still missing.
 
-A serializer defect remains on the inspected gateway branch:
-`mge_gateway.store.to_json` maps **every NaN and infinity to null**, including
-invalid pose, map and applicable resource values. JSON validity alone then
-hides an invalid input. The strict boundary helper in
-[contract_guard.py](../src/mge_bringup/mge_bringup/contract_guard.py) must be
-adopted before that lossy conversion: permit NaN only for explicitly
-non-applicable oxygen, NoData fields and status-conditioned unavailable route
-metrics; reject infinities and other non-finite values. Applying validation
-after broad null conversion cannot recover the original error. These helper
-tests do not prove the existing gateway has adopted the stricter serializer.
+The gateway and recorder no longer map every NaN and infinity to null. The
+typed converters in `mge_gateway.store` (`state_json`, `event_json`,
+`meta_json`) apply the same cases as
+[contract_guard.py](../src/mge_bringup/mge_bringup/contract_guard.py) before
+any conversion: NaN is null only for non-applicable oxygen, TerrainMeta NoData
+and the metrics of a route that is not FEASIBLE; infinities and any other
+non-finite value reject the message, which is dropped and logged rather than
+recorded. The gateway does not import `mge_bringup`; the two implementations
+are kept equivalent by tests, not by sharing code. `to_json` remains only to
+echo rejected HTTP input in 422 details. Unlike `ros_json`, the gateway does
+not reject a finite oxygen value on a non-human agent: that is a producer
+check, and the offline oracle still reports it.
 
 The oracle is deliberately strict about shared run identity, monotonic record
 clocks/map envelopes/state sequences, unique event IDs/sequences, route

@@ -1,0 +1,338 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "mission-models-20261114-v2",
+  "recorded_at_utc": "2026-11-14T16:18:56.320884+00:00",
+  "mode": "MODEL_CHECK",
+  "implementation_revision": "f75c54e929576c6780d559c9daa24d06ccf0a0b8",
+  "working_tree_dirty": true,
+  "model_id": "mge-science-1.0.0",
+  "profile_sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+  "model_source_sha256": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+  "checker_source_sha256": "cb162c3e882ad85b93a6ea1fa56773ab10814d45a5c91c9a8dfbb20ad7cd497b",
+  "profile_states": {
+    "human_1": "proposed",
+    "rover_1": "proposed",
+    "drone_1": "proposed"
+  },
+  "profile_inputs": {
+    "human_1": {
+      "kind": "human",
+      "capabilities": [
+        "reach",
+        "sample"
+      ],
+      "model_id": "mge-science-1.0.0",
+      "approval_status": "proposed",
+      "parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "activity_power_w": {
+        "walk": 417.7,
+        "wait": 358.08,
+        "inspect": 358.08,
+        "sample": 461.17
+      }
+    },
+    "rover_1": {
+      "kind": "rover",
+      "capabilities": [
+        "inspect"
+      ],
+      "model_id": "mge-science-1.0.0",
+      "approval_status": "proposed",
+      "parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "activity_power_w": {
+        "wait": 80.0,
+        "inspect": 200.0
+      }
+    },
+    "drone_1": {
+      "kind": "drone",
+      "capabilities": [
+        "observe"
+      ],
+      "model_id": "mge-science-1.0.0",
+      "approval_status": "proposed",
+      "parameters": {
+        "mass_kg": 1.8,
+        "speed_m_s": 2.0,
+        "vertical_speed_m_s": 1.0,
+        "climb_efficiency": 0.5,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 90.0,
+        "max_step_m": 1000000.0,
+        "radius_m": 0.6,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "activity_power_w": {
+        "ground_wait": 5.0,
+        "translate": 350.0,
+        "ascent": 350.0,
+        "descent": 230.0,
+        "hover": 230.0,
+        "observe": 230.0
+      }
+    }
+  },
+  "scientific_acceptance": false,
+  "observational_nasa_data": false,
+  "integrated_mission_executed": false,
+  "datasets_used": [],
+  "seed": null,
+  "command": [
+    "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+    "scripts/check_mission_models.py",
+    "--run-id",
+    "mission-models-20261114-v2",
+    "--output-dir",
+    "evidence/mission-models-20261114-v2"
+  ],
+  "limitations": [
+    "Formula estimates on synthetic geometry and durations only.",
+    "No ROS, simulator, hidden reference, real traversal or task execution.",
+    "Proposed profiles remain proposed regardless of formula-check success."
+  ],
+  "results": [
+    {
+      "agent_id": "drone_1",
+      "case": "flat",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 5.0,
+      "energy_wh": 0.4861111111111111,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "drone_1",
+      "case": "uphill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "time_s": 5.0,
+      "energy_wh": 0.4898211111111111,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "drone_1",
+      "case": "downhill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "end_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 5.0,
+      "energy_wh": 0.4861111111111111,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "drone_1",
+      "case": "idle",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 0.041666666666666664,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "drone_1",
+      "case": "observe",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 1.9166666666666667,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "human_1",
+      "case": "flat",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 12.000480019200767,
+      "energy_wh": 1.392389028894489,
+      "oxygen_l": 0.2843296257303004
+    },
+    {
+      "agent_id": "human_1",
+      "case": "uphill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "time_s": 14.400576023040921,
+      "energy_wh": 2.498196834673387,
+      "oxygen_l": 0.510138586460473
+    },
+    {
+      "agent_id": "human_1",
+      "case": "downhill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "end_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 14.400576023040921,
+      "energy_wh": 1.6708668346733868,
+      "oxygen_l": 0.3411955508763605
+    },
+    {
+      "agent_id": "human_1",
+      "case": "idle",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 2.984,
+      "oxygen_l": 0.6093409137623338
+    },
+    {
+      "agent_id": "human_1",
+      "case": "sample",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 3.8430833333333334,
+      "oxygen_l": 0.7847680663532604
+    },
+    {
+      "agent_id": "rover_1",
+      "case": "flat",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 277.77777777777777,
+      "energy_wh": 9.392746913580247,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "rover_1",
+      "case": "uphill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "end_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "time_s": 279.16321169780247,
+      "energy_wh": 12.784626250864882,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "rover_1",
+      "case": "downhill",
+      "input_kind": "synthetic_geometry",
+      "start_enu_m": [
+        10.0,
+        0.0,
+        1.0
+      ],
+      "end_enu_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "time_s": 279.16321169780247,
+      "energy_wh": 7.754533658272291,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "rover_1",
+      "case": "idle",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 0.6666666666666666,
+      "oxygen_l": null
+    },
+    {
+      "agent_id": "rover_1",
+      "case": "inspect",
+      "input_kind": "synthetic_duration",
+      "duration_s": 30.0,
+      "time_s": 30.0,
+      "energy_wh": 1.6666666666666667,
+      "oxygen_l": null
+    }
+  ]
+}

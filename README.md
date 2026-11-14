@@ -3,24 +3,20 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
-**Status: P0 planner and integration plumbing implemented; full mission pending.**
-The planner
-supports bounded FAST/SAFE A* over outbound, service and return, validated continuous
-ground starts, and tested D-07 replanning after 20 m with remaining resources.
-Its ROS-independent F03.4 policy detects route-affecting events, applies hysteresis
-and proposes contingency return when the primary mission is infeasible but base
-is reachable. Candidates require MissionManager authorization; event-policy ROS
-and supervisor integration remain pending. The guarded PlanRoute service is
-implemented. A newly processed provisional CTX prior is included; it is
-not a locally verified corridor. The gateway serves a run over REST and
-WebSocket and a run can be recorded as a replay package. The terrain and mission
-nodes that feed that path are still labelled MOCK stand-ins in `mge_sim` (a
-synthetic flat grid, a goal-route-replan mission), so no run here is mission
-evidence. The planner can be switched into that path (`planner:=real`). The data, mapping and mission packages are scaffolds. The web viewer (PR #5)
-plays saved runs offline in REPLAY mode: a simulated demo on a real provisional
-CTX crop of Jezero and the gateway's recorded MOCK run; it is not connected to a
-live gateway. No validated mission, Gazebo world or published demo
-is claimed.
+**Status: real planner, data/mapping and gateway available; mission integration candidate.**
+This branch preserves the existing real mission authority, resource models,
+recorder and tests from feat/mission. The default synthetic vertical keeps
+MOCK terrain/agents/mission; select mission:=real with explicit configuration
+and a clock to substitute one authority, never run both mission providers.
+The integrated web viewer plays saved runs offline in REPLAY mode: an
+illustrative demo on a provisional CTX crop and the gateway's recorded MOCK run.
+It is not connected to a live gateway. Science-model agreement, actual execution
+and Gazebo acceptance remain pending; software availability is not mission evidence.
+
+The planner branch adds validated continuous ground starts and the ROS-independent
+F03.4 replanning/contingency-return policy. These remain a proposed contract
+extension requiring integration and scientific review; no movement is authorized
+by the policy itself.
 
 Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
 Confirm any earlier local judging cutoff separately.
@@ -91,7 +87,8 @@ ros2 interface show mge_interfaces/srv/PlanRoute
 ros2 launch mge_bringup demo.launch.py
 ```
 
-`demo.launch.py` starts placeholder processes, not an E2E mission. Read package READMEs.
+`demo.launch.py` starts package entrypoints with incomplete default mission
+configuration, not an accepted E2E mission. Read package READMEs.
 The dedicated CI job compiles ROS; Windows Python checks cannot replace that.
 
 ## Collaboration and licensing
@@ -150,6 +147,14 @@ to route through `mge_planning` instead of the mock planner. Terrain and mission
 stay MOCK, positions must be cell centres of the 5 m grid (for example
 `2.5, 2.5`), and the profiles are illustrative.
 
+Add `terrain:=real` as well (it requires `planner:=real`) to replace the mock
+terrain by `mge_data` and `mge_mapping` on the public Jezero package: a 32 x 32
+grid of 4 m cells centred on the map origin, so cell centres are `-62 + 4 k`.
+Agents then default to `src/mge_bringup/config/agents_jezero.yaml`. Every cell
+starts unobserved, so a first route request is `UNKNOWN`; a SIMULATED
+observation creates the next map version and the mission replans. Mission and
+agents stay MOCK and the run is declared MOCK.
+
 `smoke.launch.py` starts only the static MOCK agent publisher, and
 `demo.launch.py` starts the scaffold processes of every package; with the
 latter the gateway reports `NOT_READY`, because no mission state is published.
@@ -168,3 +173,22 @@ ros2 run mge_gateway check_replay evidence/demo-002
 
 `data/sample/replay/mock-vertical-001` is a sample recorded from the mock
 vertical with `scripts/record_sample_replay.py`. It holds MOCK data only.
+
+## Mission module checks
+
+The proposed profiles are available for formula inspection and sensitivity
+checks. They are not silently promoted to operational approval. The ROS node
+requires explicit configuration, simulation time and model agreement; see
+[the mission package](src/mge_mission/README.md) for startup and boundaries.
+
+To record standalone, synthetic formula estimates in a new evidence directory:
+
+```sh
+python scripts/check_mission_models.py --run-id my-model-check --output-dir evidence/my-model-check
+```
+
+Existing evidence files are not overwritten. MODEL_CHECK outputs do not establish
+actual agent traversal, completed tasks, mission success or an A/B/C result.
+
+See [real mission provider handoff](docs/mission_integration_handoff.md) for exclusive
+launch selection, clock/configuration requirements and unchanged scientific gates.

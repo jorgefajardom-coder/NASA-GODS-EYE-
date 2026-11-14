@@ -188,3 +188,24 @@ remain outside this policy. Callers must authenticate the adopted route context;
 this Python API is not an authorization/security boundary. Restart recovery,
 persisted event IDs/request sequences and liveness under repeated uncertain maps
 still require integration design. Runtime performance on full terrain is unmeasured.
+
+## PR12 reserve and destination review corrections
+
+Mission reserve time, energy and human oxygen are immutable context. Availability
+may decrease with execution, but a remaining-budget update or adopted request
+with changed reserves now returns UNKNOWN/RESERVE_CONTEXT_MISMATCH and latches
+invalidation before search. A deliberate reserve-policy change needs a new
+reviewed mission context, rather than silently changing remaining availability.
+
+The policy validates both request goals and actual route endpoints. OUTBOUND and
+SERVICE retain the primary mission goal and required return/base; a direct
+contingency request targets the mission base only in RETURN. Mismatched goals,
+return settings or endpoints yield UNKNOWN with ACTIVE_GOAL_MISMATCH,
+ACTIVE_RETURN_MISMATCH or ACTIVE_PATH_MISMATCH. Existing phase-rollback precedence
+and valid contingency adoption are preserved. No candidate authorizes motion.
+
+Reconciled against main 4b72d30. Fresh local checks: 211 planning tests passed;
+complete Python suite 802 passed and 16 skipped (ROS/runtime, host symlink privileges,
+and an unavailable optional published snapshot). Web 84 tests and production build
+passed. The planning test helper import is namespaced for main's importlib mode.
+Repository/whitespace checks pass. Jazzy/consumer verification runs in PR CI.

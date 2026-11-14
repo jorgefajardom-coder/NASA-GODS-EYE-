@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": null,
+  "policy": null,
+  "seed": null,
+  "attempt": 1,
+  "freeze_sha256": null,
+  "execution_kind": null,
+  "started_at_utc": null,
+  "finished_at_utc": null,
+  "outcome_status": "UNKNOWN",
+  "termination_state": "IDLE",
+  "reason_code": "NOT_EXECUTED",
+  "predicates": {
+    "primary_goal_completed": null,
+    "returned_to_base_within_tolerance": null,
+    "verified_ground_traversal_under_model": null,
+    "no_budget_violation": null
+  },
+  "metrics": {
+    "verified_ground_fraction": null,
+    "unsafe_step_count": null,
+    "optional_tasks_accepted": null,
+    "optional_tasks_rejected": null,
+    "time_to_verified_route_s": null,
+    "mission_duration_s": null,
+    "energy_est_wh": null,
+    "oxygen_est_l": null,
+    "replan_count": null,
+    "replan_latency_ms": null,
+    "max_map_age_s": null
+  },
+  "metrics_unavailable": {
+    "verified_ground_fraction": "No execution or instrumentation is supplied by this template.",
+    "unsafe_step_count": "No execution or instrumentation is supplied by this template.",
+    "optional_tasks_accepted": "No execution or instrumentation is supplied by this template.",
+    "optional_tasks_rejected": "No execution or instrumentation is supplied by this template.",
+    "time_to_verified_route_s": "No execution or instrumentation is supplied by this template.",
+    "mission_duration_s": "No execution or instrumentation is supplied by this template.",
+    "energy_est_wh": "No execution or instrumentation is supplied by this template.",
+    "oxygen_est_l": "No execution or instrumentation is supplied by this template.",
+    "replan_count": "No execution or instrumentation is supplied by this template.",
+    "replan_latency_ms": "No execution or instrumentation is supplied by this template.",
+    "max_map_age_s": "No execution or instrumentation is supplied by this template."
+  },
+  "artifacts": [],
+  "event_refs": [],
+  "experiment_kind": "nominal",
+  "source_revision": null,
+  "source_manifest_sha256": null,
+  "command": [],
+  "environment": {},
+  "notes": [
+    "Template only. Never fill missing observations with zeros or a calculated feasible path.",
+    "Use first attempts for the planned comparison; retain all retries with unique run IDs and increasing attempt numbers."
+  ]
+}

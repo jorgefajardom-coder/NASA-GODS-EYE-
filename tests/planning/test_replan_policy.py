@@ -11,7 +11,7 @@ from mge_planning.replan import (
     ReplanPolicy, ReplanState, _segment_issue,
 )
 from mge_planning.core import _Geometry
-from test_d07_twenty_metres import setup_case, costs, length, misses_box
+from tests.planning.test_d07_twenty_metres import setup_case, costs, length, misses_box
 
 
 def scene(kind="human"):
@@ -575,3 +575,77 @@ def test_event_map_mismatch_invalidates_even_unaffected_route_and_stays_latched(
     candidate = plan_route(terrain=revised, request=request, profile=profile)
     adopted = replace(moved, active_request=request, active_route=candidate, next_waypoint=1)
     assert evaluate(p, revised, profile, adopted, EventKind.TICK, "adopted", 3.).action == ReplanAction.KEEP
+
+
+@pytest.mark.parametrize("agent", ["human", "rover"])
+def test_remaining_resources_cannot_erase_the_original_mission_energy_reserve(agent):
+    grid, profile, start, *_ = scene(agent)
+    pending = costs(start.active_route.outbound_path + start.active_route.return_path[1:],
+                    profile, service_s=start.service_remaining_s)["energy_wh"]
+    remaining = replace(start.remaining, energy_wh=pending + 1., reserve_wh=0.)
+    assert start.mission.budget.reserve_wh > 1.
+    result = evaluate(policy(), grid, profile, replace(start, remaining=remaining), EventKind.RESOURCES)
+    assert result.action == ReplanAction.UNKNOWN and result.invalidate_active
+    assert result.reason_code == "RESERVE_CONTEXT_MISMATCH"
+    assert result.request is None and result.candidate is None
+
+
+@pytest.mark.parametrize("source", ["remaining", "active_request"])
+@pytest.mark.parametrize("field", ["reserve_wh", "reserve_oxygen_l"])
+def test_reserve_changes_in_resources_or_adopted_request_are_rejected(source, field):
+    grid, profile, start, *_ = scene("human")
+    if source == "remaining":
+        state = replace(start, remaining=replace(start.remaining, **{field: 0.}))
+    else:
+        request = replace(start.active_request, budget=replace(start.active_request.budget, **{field: 0.}))
+        state = replace(start, active_request=request)
+    result = evaluate(policy(), grid, profile, state)
+    assert result.action == ReplanAction.UNKNOWN and result.invalidate_active
+    assert result.reason_code == "RESERVE_CONTEXT_MISMATCH"
+
+
+def test_adopted_request_cannot_change_the_original_time_reserve():
+    grid, profile, start, *_ = scene()
+    state = replace(start, active_request=replace(start.active_request, reserve_time_s=0.))
+    assert start.mission.reserve_time_s > 0.
+    result = evaluate(policy(), grid, profile, state)
+    assert result.reason_code == "RESERVE_CONTEXT_MISMATCH" and result.invalidate_active
+
+
+@pytest.mark.parametrize("agent", ["human", "rover"])
+def test_outbound_request_for_another_goal_is_not_kept(agent):
+    grid, profile, start, *_ = scene(agent)
+    request = replace(start.active_request, request_id="unrelated-goal", goal=(16.5, 13.5, 0.))
+    route = plan_route(terrain=grid, profile=profile, request=request)
+    assert route.status == RouteStatus.FEASIBLE
+    state = replace(start, active_request=request, active_route=route)
+    result = evaluate(policy(), grid, profile, state)
+    assert result.action == ReplanAction.UNKNOWN and result.invalidate_active
+    assert result.reason_code == "ACTIVE_GOAL_MISMATCH"
+
+
+@pytest.mark.parametrize("leg,index", [("outbound_path", -1), ("return_path", 0), ("return_path", -1)])
+def test_route_endpoints_must_match_the_request_goal_and_mission_base(leg, index):
+    grid, profile, start, *_ = scene()
+    path = list(getattr(start.active_route, leg))
+    path[index] = (16.5, 13.5, 0.)
+    route = replace(start.active_route, **{leg: tuple(path)})
+    result = evaluate(policy(), grid, profile, replace(start, active_route=route))
+    assert result.action == ReplanAction.UNKNOWN and result.invalidate_active
+    assert result.reason_code == "ACTIVE_PATH_MISMATCH"
+
+
+def test_outbound_request_cannot_drop_a_required_return():
+    grid, profile, start, *_ = scene()
+    request = replace(start.active_request, require_return=False)
+    route = plan_route(terrain=grid, profile=profile, request=request)
+    result = evaluate(policy(), grid, profile, replace(start, active_request=request, active_route=route))
+    assert result.reason_code == "ACTIVE_RETURN_MISMATCH" and result.invalidate_active
+
+
+def test_outbound_request_cannot_substitute_a_different_return_base():
+    grid, profile, start, *_ = scene()
+    request = replace(start.active_request, return_to=(7.5, 13.5, 0.))
+    route = plan_route(terrain=grid, profile=profile, request=request)
+    result = evaluate(policy(), grid, profile, replace(start, active_request=request, active_route=route))
+    assert result.reason_code == "ACTIVE_RETURN_MISMATCH" and result.invalidate_active
