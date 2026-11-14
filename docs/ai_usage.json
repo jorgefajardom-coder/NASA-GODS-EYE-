@@ -366,6 +366,26 @@
         "scripts/validate_mission_ros.sh"
       ],
       "use": "Reconcile main6ec9b84 into the isolated mission branch, preserve all owner modules and mandatory declarations, namespace mission tests to avoid planner basename collisions, and copy only explicitly public data into the mission ROS validation snapshot. No scientific model approval or new mission execution."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "mission_durability_and_public_scenario_diagnostics",
+      "generation": "AI-assisted code, tests and diagnostic reports, pending human review",
+      "paths": [
+        "src/mge_mission/mge_mission/recorder.py",
+        "src/mge_mission/mge_mission/scenario.py",
+        "scripts/check_mission_scenario.py",
+        "tests/mission/test_recorder_journal.py",
+        "tests/mission/test_scenario.py",
+        "docs/mission_recording.md",
+        "docs/mission_scenario.md",
+        "docs/mission_handoff.md",
+        "docs/verification.md",
+        "evidence/mission-planner-refresh-20261114",
+        "evidence/mission-public-scenario-20261114",
+        "evidence/mission-durable-scenario-validation-20261114"
+      ],
+      "use": "Add optional fsync journal, typed same-run recovery and fault tests, consume Daniel public terrain unchanged through its loader, export hash-bound pending configuration, and retain exact-source software/scenario/model diagnostics. No terrain, discoveries, simulated observations, executor, mission outcome or A/B/C result is generated; no planner or execution mock is added."
     }
   ],
   "generated_media": [],

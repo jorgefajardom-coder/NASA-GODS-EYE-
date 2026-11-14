@@ -93,3 +93,27 @@ The coefficient sweep uses illustrative directed routes/services/waits and
 existing reserves, varying traced low/nominal/high values independently. Its
 reports are model checks and cannot enter mission A/B/C results. The operational
 scenario and scientific approval remain pending Daniel and David respectively.
+
+## Published public scenario and persistent evidence
+
+This branch reconciles published main `6ec9b84` while preserving the other
+owners' implementations. Daniel's public sample is now available through his
+loader; [scenario diagnostics](mission_scenario.md) validate it and export a
+hash-bound candidate, without selecting or approving operational inputs.
+Dataset validity does not make unobserved cells traversable or approve budgets.
+
+The [optional recorder journal](mission_recording.md) adds fsync-before-memory
+acceptance, same-run recovery, exclusive writer locking and a hashed journal
+export. Corrupt/truncated journals fail without repair; a sealed partial export
+cannot be silently retried as another outcome. In-memory use stays compatible.
+
+Published dependency audit: planner `8259001` still uses the search cost model;
+the refreshed seven-case comparison remains one agreement/six disagreements and
+authorization BLOCKED. Integration `5294832` adds replay source provenance and
+typed serialization, not operational discovery/completion/traversal inputs or
+stop acknowledgement. Both promised connections remain pending their owners;
+no substitute planner or execution mock was added for this cut.
+
+Delivery coordination remains pending: Jesus leads organizer notification and
+explicit endorsement, David is backup (JES-07/AC-10). This software handoff does
+not claim readiness to submit or organizer approval.

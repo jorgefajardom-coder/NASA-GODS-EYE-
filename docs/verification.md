@@ -177,3 +177,28 @@ fresh CTX check correctly returned UNKNOWN rather than inventing local corridor
 verification. These checks replace the initial planner placeholder only; the
 full mission, final science products, approved rates and public live demo remain
 unvalidated. This branch leaves the existing ROS message/service schema intact.
+
+## Durable mission evidence and public scenario, 14 November 2026
+
+After reconciling main `6ec9b84` (including Daniel's PR #8), Windows Python
+passed 670 cases with 13 platform/ROS skips. Ubuntu 24.04/Jazzy compiled all
+eight packages, inspected the six messages/two services, and passed 466
+mission/contract cases with one optional planner-snapshot skip. Repository
+checks passed; frontend tests passed four cases and the production build passed.
+The existing Starlette deprecation and frontend chunk-size warnings remain.
+
+The [retained validation](../evidence/mission-durable-scenario-validation-20261114/validation.json)
+contains exact source hashes, JUnit reports and target build logs. An early
+Linux snapshot caught an unfinished concurrent edit; another omitted the data
+owner's public manifest schema. Those attempts are retained as failed checks;
+the completed source and corrected public-only snapshot passed on repeat.
+Mission tests now use a package namespace to avoid basename collisions with
+the planner suite; no planner test or implementation was changed.
+
+The [public scenario diagnostic](../evidence/mission-public-scenario-20261114/scenario_diagnostic.json)
+validates the 32 by 32 public grid, four controls, native 20 m prior/grid 4 m
+distinction and explicit uncertainty. It retains 1024 unobserved cells and
+reports NOT_READY with 13 operational inputs/approvals missing. The
+[refreshed planner comparison](../evidence/mission-planner-refresh-20261114/conformance.json)
+at `8259001` remains BLOCKED, with one agreement and six disagreements.
+None of these outputs is a mission execution, scientific approval or A/B/C result.

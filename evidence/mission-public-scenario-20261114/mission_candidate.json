@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "status": "pending_review",
+  "run_id": "mission-public-scenario-20261114",
+  "model_id": "mge-science-1.0.0",
+  "bindings_sha256": {
+    "manifest": "f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1",
+    "terrain.npz": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+    "provenance_details.json": "8e9d506230f101c02c8f1ee319aad18cce47215d1d3eb79dfdeb1dd37d826911",
+    "mola_regional_context.npz": "b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6",
+    "profiles": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "mission": "b33fedc2ab3a34c186dca5918b90f6dcb7f0348f424bb2953ab5e1cdfcd81bb7",
+    "model_source": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52"
+  },
+  "dataset_id": "jezero_mvp",
+  "mission_inputs": {
+    "dataset_id": null,
+    "base_enu_m": null,
+    "primary_goal_enu_m": null,
+    "primary_agent_id": "human_1",
+    "return_tolerance_m": null,
+    "primary_service_time_s": null,
+    "primary_activity": null,
+    "budgets": null
+  },
+  "approval_evidence": {}
+}

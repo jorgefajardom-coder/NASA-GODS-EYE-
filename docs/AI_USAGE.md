@@ -11,6 +11,15 @@ alongside planner tests, and adapting the mission validation snapshot to copy
 explicit public inputs only. Other owners' implementations remain unchanged;
 this merge grants no scientific approval or verified mission result.
 
+## Persistent mission journal and scenario readiness
+
+OpenAI Codex assisted the optional durable recorder/recovery, fault and audit
+tests, the public scenario diagnostic/candidate exporter, CLI and tests, and
+the related mission documentation and retained validation reports. Scenario
+checks consume Daniel's existing observational public arrays unchanged; no
+terrain, observation or scientific dataset was generated. Journal tests use
+software fixtures, not submitted execution outcomes. Model conformance and
+readiness outputs are diagnostics; proposed assumptions remain unapproved.
 
 ## Initial scaffold, 14 November 2026
 
