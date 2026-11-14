@@ -1,5 +1,24 @@
 # Current contract reconciliation verification
 
+## Jezero scientific proposal validation, 14 November 2026
+
+Proposal `jezero-primary-review-01` is a review artifact, not an operational
+approval. Its public-prior cost probes, directed return, separate service/wait,
+20% reserve policy, rejected low-speed rover envelope and rejected 300 s
+additional sample are reproducible in
+[the sizing report](../evidence/jezero-proposal-review-20261114/proposal_sizing.json).
+The diagnostic validates Daniel's unchanged public package and retains six
+approval/model/snapshot requirements. The operational template, profile
+approval states, observations and all ROS interfaces remain unchanged.
+
+Windows: 714 Python cases passed, 16 platform/ROS skips. Jazzy: eight packages
+compiled, eight interfaces inspected, 523 mission/contract/integration cases
+passed with one optional published-snapshot skip. Frontend: 84 tests and build
+passed. Repository/whitespace checks passed. Exact sources, JUnit and target
+logs are retained in the [validation record](../evidence/jezero-proposal-review-20261114/validation.json).
+Existing Starlette deprecation and tooling notices remain. No execution,
+scientific approval or A/B/C result is inferred from these software checks.
+
 ## Direct mission/main integration validation, 14 November 2026
 
 The owner-authorized reconciliation combines mission `37a2bd6` and main

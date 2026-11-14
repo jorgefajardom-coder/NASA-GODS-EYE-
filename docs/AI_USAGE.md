@@ -3,6 +3,16 @@
 Competition-required disclosure; not optional credit or AI authorship. Human
 owners remain responsible for reviewing the work.
 
+## Concrete Jezero scientific proposal, 14 November 2026
+
+OpenAI Codex assisted the proposed A/B/staging selection on Daniel's public
+grid, mission service, resource allocations/reserves, rationale and sensitivity
+records, the reproducible public-prior sizing tool and its consistency tests.
+Generated numerical outputs are model diagnostics, not observations, planned
+routes, executed tasks or scientific approval. Public terrain arrays and the
+operational mission template remain unchanged. Exact affected paths are in
+ai_usage.json; all new choices await David's review.
+
 ## Direct mission reconciliation, 14 November 2026
 
 OpenAI Codex assisted resolving the mission/main documentation and validation

@@ -132,3 +132,15 @@ GitHub reported main unprotected with no applicable branch rules or rulesets.
 The direct integration is specific owner authorization, not a relaxation of
 normal team review requirements. Model agreement, operational evidence inputs,
 stop acknowledgement and scientific approval remain separate pending gates.
+
+## Concrete scientific proposal for review
+
+The [Jezero proposal](jezero_mission_proposal.md) and its separate
+[configuration](../config/mission_jezero.proposed.yaml) now specify public A/B
+cells, service, allocations, reserves and a model-pose tolerance. Decision IDs
+JZ-P01..JZ-P07 are **proposed**, not approved. The operational template and
+source profile approvals remain unchanged. Reproducible costs are computed on
+Daniel's public prior without modifying observed/traversability layers or
+loading reference truth. No planned route or simulated observation is generated.
+The readiness report retains six approval/model/snapshot requirements; a review
+of numerical values must not silently approve the missing integration evidence.

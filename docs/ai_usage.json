@@ -601,6 +601,23 @@
         "evidence/mission-main-direct-20261114"
       ],
       "use": "Reconcile mission37a2bd6 with published main4b72d30, preserve scientific/journal/scenario functionality and all owner implementations/disclosures, align moved web test metadata and public-only ROS validation inputs. Owner explicitly requested direct integration if branch rules permit; no branch protection or checks bypassed, no planner PR merged and no approval or mission execution inferred."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "scientific_scenario_proposal_and_public_prior_sizing",
+      "generation": "AI-assisted proposal, code and model-derived diagnostic data, pending David review",
+      "paths": [
+        "config/mission_jezero.proposed.yaml",
+        "scripts/size_jezero_proposal.py",
+        "tests/mission/test_jezero_proposal.py",
+        "docs/jezero_mission_proposal.md",
+        "docs/science_decisions.md",
+        "docs/science_models.md",
+        "docs/mission_handoff.md",
+        "docs/verification.md",
+        "evidence/jezero-proposal-review-20261114"
+      ],
+      "use": "Propose public Daniel scenario A/B/staging coordinates, service, experimental resource caps and separate reserves; calculate directed public-prior cost probes and OAT sensitivity using existing proposed scientific profiles. Inputs are unchanged observational terrain, not generated elevations. No route search, observation, task completion, mock, approval, mission execution or A/B/C result was generated."
     }
   ],
   "generated_media": [],
