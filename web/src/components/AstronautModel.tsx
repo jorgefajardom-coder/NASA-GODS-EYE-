@@ -21,12 +21,12 @@ import { FootDust } from './FootDust';
 export const ASTRONAUT_URL = assetUrl('assets/models/astronaut.glb');
 
 /** Drawn taller than a real person so it stays readable on a regional map (visual only). */
-export const ASTRONAUT_VISUAL_HEIGHT_M = 4;
+export const ASTRONAUT_VISUAL_HEIGHT_M = 1.9; // real EVA-suit height, next to real-size rover and base
 
 const WALKING: ReadonlySet<AgentMode> = new Set(['MOVING', 'RETURNING']);
 const FADE_S = 0.35;
 /** Screen speed at which moon_walk plays at its authored rate for the enlarged model (visual tuning). */
-const CLIP_SPEED_MPS = 2.2;
+const CLIP_SPEED_MPS = 1.05; // authored walk rate for a real-size (1.9 m) astronaut
 /**
  * The walk cycle stays near its natural pace. Replay speed makes the astronaut cross the map
  * faster, but playing the cycle faster too looks like shaking, so foot sliding is accepted.

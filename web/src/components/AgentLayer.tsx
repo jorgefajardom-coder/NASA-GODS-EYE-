@@ -6,10 +6,16 @@ import { AGENT_POSE_TAU_S, dampAngle, dampFactor, SNAP_DISTANCE_M } from '../lib
 import type { AgentState } from '../types/icd';
 import { enuToThree, yawFromQuaternion } from '../lib/coords';
 import { AstronautModel, ModelBoundary } from './AstronautModel';
+import { DRONE_URL, ROVER_URL, VehicleModel } from './VehicleModel';
 import { ScaleWithDistance } from './ScaleWithDistance';
 
 const KIND_COLOR = { HUMAN: '#C9D7DD', DRONE: '#65CBE8', ROVER: '#D8AD66' } as const;
 const KIND_LABEL = { HUMAN: 'Astronaut', DRONE: 'Drone', ROVER: 'Rover' } as const;
+/** Real sizes: car-sized rover with its arm (m) and helicopter rotor span (m). */
+const ROVER_LENGTH_M = 3.6;
+const DRONE_ROTOR_M = 1.2;
+/** Label height above each agent's origin (m, before distance scaling). */
+const LABEL_HEIGHT_M = { HUMAN: 2.6, DRONE: 1.4, ROVER: 3.0 } as const;
 
 interface Props {
   agents: AgentState[];
@@ -56,10 +62,18 @@ export function AgentLayer({ agents, verticalExaggeration, showLabels, playing, 
                   </Suspense>
                 </ModelBoundary>
               ) : (
-                <AgentMesh kind={a.agent_kind} />
+                <ModelBoundary fallback={<AgentMesh kind={a.agent_kind} />}>
+                  <Suspense fallback={<AgentMesh kind={a.agent_kind} />}>
+                    {a.agent_kind === 'ROVER' ? (
+                      <VehicleModel url={ROVER_URL} lengthM={ROVER_LENGTH_M} yawOffset={Math.PI} />
+                    ) : (
+                      <VehicleModel url={DRONE_URL} lengthM={DRONE_ROTOR_M} spinning={playing && a.mode !== 'IDLE'} />
+                    )}
+                  </Suspense>
+                </ModelBoundary>
               )}
               {showLabels && (
-                <Html position={[0, 9, 0]} center zIndexRange={[30, 0]} className={`agent-label agent-label--${a.agent_kind.toLowerCase()}`}>
+                <Html position={[0, LABEL_HEIGHT_M[a.agent_kind], 0]} center zIndexRange={[30, 0]} className={`agent-label agent-label--${a.agent_kind.toLowerCase()}`}>
                   <strong>{KIND_LABEL[a.agent_kind]}</strong> <span>{a.mode.toLowerCase()}</span>
                 </Html>
               )}

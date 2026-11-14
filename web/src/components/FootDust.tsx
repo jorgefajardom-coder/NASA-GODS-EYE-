@@ -8,7 +8,7 @@ const MAX_PRINTS = 80;
 const PUFF_LIFE_S = 1.4;
 const PRINT_LIFE_S = 40;
 /** Drawn model height before distance scaling (AstronautModel.ASTRONAUT_VISUAL_HEIGHT_M). */
-const ASTRONAUT_HEIGHT_M = 4;
+const ASTRONAUT_HEIGHT_M = 1.9;
 /** Footfalls detected since load; read by tests in the browser (window.__mgeFootfalls). */
 let footfalls = 0;
 if (typeof window !== 'undefined') Object.defineProperty(window, '__mgeFootfalls', { get: () => footfalls, configurable: true });
