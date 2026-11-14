@@ -19,7 +19,7 @@ PORT = 8766
 BASE = f'http://127.0.0.1:{PORT}'
 
 
-def test_recorded_run_is_readable_without_backend(tmp_path):
+def test_recorded_run_is_readable_without_backend(tmp_path, planner_ready):
     proc = subprocess.Popen(
         ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',
          f'port:={PORT}', 'record:=true', f'record_dir:={tmp_path}'],
@@ -27,6 +27,7 @@ def test_recorded_run_is_readable_without_backend(tmp_path):
     try:
         wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,
                  what='gateway and 3 agents')
+        planner_ready()
         r = httpx.post(f'{BASE}/api/mission/goal', json={**GOAL, 'request_id': 'req-1'})
         assert r.json()['accepted'] is True
 

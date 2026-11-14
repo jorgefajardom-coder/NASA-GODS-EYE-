@@ -5,6 +5,10 @@ Source inputs: main `5ab1387`, Jorge's PR19 `9ef42ff` (web tree identical to
 targets main and depends on PR19; it does not merge PR19 or approve its unrelated
 visual changes. The correction commits isolate recovery and replay validation.
 
+Publication refresh also incorporates main `2f50ae6`, retaining PR18's per-module
+ROS domains, planner/raster readiness waits and the team continuation plan.
+Disclosure and integration-log conflicts retain both contributors' records.
+
 ## Baselines and behavior
 
 ROS ICD-ROS2-V1/package 1.0.0, gateway/replay 1.0.0, public rasters

@@ -566,6 +566,17 @@ paths are listed in ai_usage.json.
 ## PR12 remote publication reconciliation
 
 OpenAI Codex assisted merging remote planner38ad692 and main7c16cd8 while preserving both histories, reserve/goal guards, prior corrections and mandatory disclosures. Documentation and software-test evidence are in planner_pr12_publication.md and evidence/planner-pr12-publish-20261114. Production mission, simulation, mapping, gateway and ROS definitions are retained from main unchanged; fixture/scientific integration review remains pending. No scientific observations or media generated.
+
+## Team continuation planning
+
+OpenAI Codex assisted drafting the owner-requested next-work plan and navigation
+updates in AGENTS.md, team.md, mission_checklist.md and all five handoff guides.
+The plan records human assignments, the Conciliación integration cuts, larger-map
+feasibility, Fajardo's future NASA-criteria research and shared deployment work.
+Publication usability is an explicit planning assumption, not new verification.
+No runtime code, scientific criteria/results, terrain, observations or media were
+generated. No scientific or operational approval is granted by these documents.
+
 ## MOCK kinematic execution
 
 OpenAI Codex subsequently assisted the owner-requested PR17 timeout diagnosis,
@@ -581,3 +592,10 @@ estimates and observations in the tests are illustrative inputs; motion and
 consumption derive from planner estimates and are not a model. No scientific
 dataset, mission result, image, video or audio was generated. The affected
 paths are listed in ai_usage.json.
+
+## Integration test isolation
+
+Claude Code (Anthropic) assisted the integration owner with per-module ROS
+domain isolation and readiness waits in the integration test fixtures and the
+related log entry. No data, mission result, image, video or audio was
+generated. The affected paths are listed in ai_usage.json.
