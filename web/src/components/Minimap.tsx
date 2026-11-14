@@ -6,7 +6,7 @@ import { tacticalBase } from '../lib/tacticalMap';
 import { yawFromQuaternion } from '../lib/coords';
 import { headingFromNorth } from '../lib/management';
 
-const SIZE = 168;
+const DEFAULT_SIZE = 168;
 /** Ground radius shown around the agent (m). */
 const RADIUS_M = 450;
 const KIND_COLOR = { HUMAN: '#E8F4FF', DRONE: '#65CBE8', ROVER: '#D8AD66' } as const;
@@ -16,7 +16,8 @@ const KIND_COLOR = { HUMAN: '#E8F4FF', DRONE: '#65CBE8', ROVER: '#D8AD66' } as c
  * coverage, the route in force, other agents and sites. Clicking it opens the full tactical
  * map. Display only.
  */
-export function Minimap({ bundle, view, agentId, onOpen }: { bundle: ReplayBundle; view: ReplayView; agentId: string; onOpen: () => void }) {
+export function Minimap({ bundle, view, agentId, onOpen, size = DEFAULT_SIZE }: { bundle: ReplayBundle; view: ReplayView; agentId: string; onOpen: () => void; size?: number }) {
+  const SIZE = size;
   const canvas = useRef<HTMLCanvasElement>(null);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
@@ -124,12 +125,11 @@ export function Minimap({ bundle, view, agentId, onOpen }: { bundle: ReplayBundl
     g.font = '600 11px "Barlow Condensed", sans-serif';
     g.textAlign = 'center';
     g.fillText('N', c, 13);
-  }, [baseCanvas, view, agent, bundle.manifest.pois, meta]);
+  }, [baseCanvas, view, agent, bundle.manifest.pois, meta, SIZE]);
 
   return (
     <button type="button" className="minimap" onClick={onOpen} title="Open the tactical map" aria-label="Minimap, north up, centred on the selected agent. Opens the tactical map.">
       <canvas ref={canvas} style={{ width: SIZE, height: SIZE }} />
-      <span className="minimap__scale mono">{RADIUS_M} m</span>
     </button>
   );
 }

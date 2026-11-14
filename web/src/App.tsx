@@ -7,7 +7,6 @@ import { viewAt } from './lib/replay';
 import type { TerrainLayer } from './lib/layers';
 import {
   agentStats,
-  AGENT_GLYPH,
   AGENT_NAME,
   detailsFor,
   initialBudgets,
@@ -19,7 +18,7 @@ import {
 import { MissionScene } from './components/MissionScene';
 import { ManagementList } from './components/ManagementList';
 import { DetailsPanel } from './components/DetailsPanel';
-import { Vitals } from './components/Vitals';
+import { HUD_MAP_PX, Vitals } from './components/Vitals';
 import { EventInspector } from './components/EventInspector';
 import { GeologyDetails, GeologyList } from './components/GeologyPanel';
 import { TacticalMap } from './components/TacticalMap';
@@ -255,13 +254,11 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           )}
         </aside>
 
-        {mode !== 'tactical' && <Minimap bundle={bundle} view={view} agentId={agentId} onOpen={() => setMode('tactical')} />}
-
         <AlertBanner alert={alert} />
 
         <Vitals
           who={agent ? `${AGENT_NAME[agent.agent_kind]} · ${agent.agent_id}` : 'No agent'}
-          glyph={agent ? AGENT_GLYPH[agent.agent_kind] : null}
+          map={<Minimap bundle={bundle} view={view} agentId={agentId} onOpen={() => setMode('tactical')} size={HUD_MAP_PX} />}
           stats={agent ? agentStats(agent, budgets[agent.agent_id]) : []}
           route={view.activeRoute}
           replanning={view.state?.mission_state === 'REPLAN'}

@@ -1,6 +1,7 @@
 import { ELEVATION_CSS_GRADIENT, LAYER_INFO, SIGMA_CSS_GRADIENT, SIGMA_SCALE_MAX_M, type TerrainLayer } from '../lib/layers';
 import { ROUTE_STATUS_STYLE } from '../lib/format';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
+import { Info } from './Info';
 
 interface StripProps {
   layer: TerrainLayer;
@@ -84,7 +85,7 @@ export function ViewOptions(p: OptionsProps) {
         </li>
       </ul>
       <label className="row-opt">
-        Vertical exaggeration
+        Vertical exaggeration <Info text="Heights are exaggerated for readability only; distances and data are unchanged." />
         <select value={p.exaggeration} onChange={(e) => p.onExaggeration(Number(e.target.value))}>
           {[1, 2, 3, 5].map((v) => (
             <option key={v} value={v}>
@@ -93,19 +94,18 @@ export function ViewOptions(p: OptionsProps) {
           ))}
         </select>
       </label>
-      {p.exaggeration !== 1 && <p className="note note--warn">Heights exaggerated {p.exaggeration}× for readability (visual only).</p>}
+
       {p.imagery && (
         <label className="check">
-          <input type="checkbox" checked={p.showImagery} onChange={(e) => p.onShowImagery(e.target.checked)} /> CTX image on terrain ({p.imagery.resolutionM} m; not on the uncertainty layer)
+          <input type="checkbox" checked={p.showImagery} onChange={(e) => p.onShowImagery(e.target.checked)} /> CTX image <Info text={`Real CTX orthomosaic, ${p.imagery.resolutionM} m, contrast-stretched and tinted for display. Not drawn on the uncertainty layer.`} />
         </label>
       )}
       <label className="check">
-        <input type="checkbox" checked={p.surfaceDetail} onChange={(e) => p.onSurfaceDetail(e.target.checked)} /> Close-up ground grain (cosmetic, not measured)
+        <input type="checkbox" checked={p.surfaceDetail} onChange={(e) => p.onSurfaceDetail(e.target.checked)} /> Ground grain <Info text="Cosmetic close-range detail (ripples, grit, stones). Not measured: the terrain data stops at 5-20 m." />
       </label>
       <label className="check">
-        <input type="checkbox" checked={p.contours} onChange={(e) => p.onContours(e.target.checked)} /> Contour lines (10 m, bold every 50 m)
+        <input type="checkbox" checked={p.contours} onChange={(e) => p.onContours(e.target.checked)} /> Contours <Info text="Every 10 m, bold every 50 m, at true elevation." />
       </label>
-      <p className="note">The surface is smoothed between the 20 m source cells for display. This adds no detail: heights at cell centres are the source values.</p>
       <label className="check">
         <input type="checkbox" checked={p.follow} onChange={(e) => p.onFollow(e.target.checked)} /> Follow selected agent (F)
       </label>

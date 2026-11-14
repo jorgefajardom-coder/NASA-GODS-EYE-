@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { rasterizeUnits, unitColor, unitShares, type GeologyData } from '../lib/geology';
 import { STRATA_ORDER } from '../lib/strata';
+import { Info } from './Info';
 
 /** Grid used to measure unit shares in the list (5 m cells over the 2 km crop). */
 export const SHARE_GRID = 400;
@@ -29,7 +30,9 @@ export function GeologyList({ data, selected, onSelect, showMap, onShowMap, show
   return (
     <section className="panel geo" aria-label="Ground layers">
       <div className="geo__head">
-        <span>Geologic units in this area</span>
+        <span>
+          Geologic units <Info text="Share of the 2 km area. Boundaries are approximate (about 100-200 m registration offset against the terrain)." />
+        </span>
         <span className="mono">{data.units.length}</span>
       </div>
       <ul className="geo__list">
@@ -44,17 +47,19 @@ export function GeologyList({ data, selected, onSelect, showMap, onShowMap, show
           </li>
         ))}
       </ul>
-      <p className="note">Share of the 2 km area. Boundaries are approximate (about 100–200 m registration offset).</p>
       <label className="check">
-        <input type="checkbox" checked={showMap} onChange={(e) => onShowMap(e.target.checked)} /> Geologic map on the terrain
+        <input type="checkbox" checked={showMap} onChange={(e) => onShowMap(e.target.checked)} /> Geologic map
       </label>
       <label className="check">
-        <input type="checkbox" checked={showCut} onChange={(e) => onShowCut(e.target.checked)} /> Cut-away block (schematic strata)
+        <input type="checkbox" checked={showCut} onChange={(e) => onShowCut(e.target.checked)} /> Cut-away block
       </label>
       {showCut && (
         <div className="strata">
           <div className="geo__head">
-            <span>Cut-away layers, youngest first</span>
+            <span>
+              Layers, youngest first{' '}
+              <Info text="Order from the SIM 3464 unit interpretations (Nue below Njf assumed). Thicknesses and rock tones are schematic, not measured; each wall column starts with the unit mapped at the surface there." />
+            </span>
           </div>
           <ul className="strata__list">
             {STRATA_ORDER.map((s) => (
@@ -68,7 +73,6 @@ export function GeologyList({ data, selected, onSelect, showMap, onShowMap, show
               </li>
             ))}
           </ul>
-          <p className="note">Order from the SIM 3464 unit interpretations (Nue below Njf assumed). Thicknesses and rock tones are schematic, not measured; each wall column starts with the unit mapped at the surface there.</p>
         </div>
       )}
     </section>
@@ -110,12 +114,11 @@ export function GeologyDetails({ data, unitId }: { data: GeologyData | undefined
       ) : (
         <p className="muted small">Select a unit to see its description, composition and interpretation.</p>
       )}
-      <p className="note">
-        Source:{' '}
+      <p className="geo-source">
         <a href={data.source.doi} target="_blank" rel="noreferrer">
-          {data.source.authors} ({data.source.year}), {data.source.title}, {data.source.scale}
-        </a>
-        . {data.source.registration_note} Composition notes are orbital spectral associations reported by the map, not measurements at this site.
+          USGS SIM 3464 ({data.source.year})
+        </a>{' '}
+        <Info text={`${data.source.authors} (${data.source.year}), ${data.source.title}, ${data.source.scale}. ${data.source.registration_note} Composition notes are orbital spectral associations reported by the map, not measurements at this site.`} />
       </p>
     </section>
   );

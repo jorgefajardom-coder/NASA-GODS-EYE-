@@ -6,13 +6,6 @@ import { RUNS } from '../data/replayAdapter';
 
 export type UiMode = 'exploration' | 'geology' | 'tactical' | 'replay';
 
-const PROVENANCE_LABEL: Record<string, string> = {
-  nasa: 'NASA/USGS terrain',
-  simulated: 'simulated mission',
-  fictitious: 'fictitious POIs',
-  replay: 'replay',
-};
-
 function terrainLabel(m: ReplayManifest): string {
   const t = m.terrain_meta;
   const where = t.origin_lat_deg == null || t.origin_lon_deg == null ? '' : ` · ${t.origin_lat_deg.toFixed(2)}°N ${t.origin_lon_deg.toFixed(2)}°E`;
@@ -63,7 +56,7 @@ interface StatusProps {
 }
 
 /** Link and replay status, top right (the agent position is in the details panel). The live link is shown as offline: no gateway exists yet. */
-export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
+export function StatusBlock({ missionState, mapVersion, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
   return (
     <section className="status" aria-label="Connection and mission status">
       <div className="status__link">Offline</div>
@@ -83,13 +76,12 @@ export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, 
         <dt>Relief</dt>
         <dd>{exaggeration === 1 ? 'true scale' : `${exaggeration}× (visual only)`}</dd>
       </dl>
-      <div className="status__prov">
-        {manifest.provenance.map((x) => (
-          <span key={x}>{PROVENANCE_LABEL[x] ?? x}</span>
-        ))}
-        {manifest.illustrative && <span>illustrative</span>}
-        {evaluator && <span className="status__eval">{evaluatorMissing ? 'evaluator view: reference not available here' : 'evaluator view'}</span>}
-      </div>
+      {/* Provenance is stated once, in the footer disclaimer; only the evaluator flag stays here. */}
+      {evaluator && (
+        <div className="status__prov">
+          <span className="status__eval">{evaluatorMissing ? 'evaluator view: reference not available here' : 'evaluator view'}</span>
+        </div>
+      )}
     </section>
   );
 }
