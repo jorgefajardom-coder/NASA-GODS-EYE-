@@ -30,6 +30,18 @@ or physical mission validation is implied.
 | 6e4984d | Diego front; David science review | PlanRoute server, immutable public batches, fresh CTX prior and isolated local HiRISE reference | Jazzy CI, producer batch protocol, approved profiles |
 | planner-p0-20261114 | Team takeover | Nine new illustrative benchmark queries match independent Dijkstra; real unverified CTX yields UNKNOWN; 154 local tests pass, two ROS modules skip | Full mission/consumer acceptance on Daniel and David inputs |
 
+## Web viewer (feat/ux, PR #5)
+
+| Commit / run | Owner / review | Observed result | Next dependency |
+| --- | --- | --- | --- |
+| fc03df6 | Jorge; Jesus integration review | Mission viewer replaces the web scaffold; scaffold stale-route guard and envelope types kept in the viewer | Review of PR #5 |
+| 89216fc | Jorge; Jesus | Viewer plays the gateway package `mock-vertical-001` (copied unchanged from feat/integration d28f3e2) and ends in READY, map v2, route r2 | Rasters inside replay packages; live gateway connection |
+| 1e37fd3 | Jorge | `main` (planner PR #2) merged into feat/ux; only the AI disclosure register conflicted, both entries kept | Consume planner routes in the viewer |
+
+Local evidence: 64 web tests, `npm run build` and `scripts/check_repository.py` pass;
+`python -m pytest` was not run on this host (pytest not installed). The terrain is a
+provisional CTX crop pending Daniel's processed package.
+
 Continue on feat/planner; see planner_handoff.md. The generated benchmark is
 computational acceptance evidence, not mission safety or scientific validation.
 
@@ -76,6 +88,29 @@ computational acceptance evidence, not mission safety or scientific validation.
   Exact commands, source references and remaining gates: [Jesus handoff](handoffs/jesus.md#pr-3-correction-and-reconciliation-cut).
 - No new NASA observation, scientific model approval or validated LIVE mission
   is claimed. Internal hours remain outside Git.
+
+## Real terrain providers against the planner, 2026-11-14
+
+- Cut: PR #8 (`feat/data`, Daniel) with main `8afc7bf` merged in; integration
+  review and corrections by Jesus.
+- Finding: `data_node` and `mapping_node` both published TerrainMeta for map
+  version 1 with different stamps, metadata went out after its layers, nothing
+  was repeated, and an invalid observation raised inside the callback. The
+  planner rejects same-version metadata with another stamp, so it would never
+  have held a usable map.
+- Correction: `mapping_node` is the only metadata publisher and sends the batch
+  metadata-first under one stamp per map version, repeated every
+  `repeat_period_s`; `data_node` publishes the prior only; invalid observations
+  are logged and dropped; both nodes exit if the terrain cannot be loaded.
+- Evidence: `tests/integration/test_terrain_batch.py` in the `mge-dev` Jazzy
+  container. Before any observation every mask cell is unknown and the planner
+  answers without a route. After one SIMULATED observation that repeats the
+  prior heights of a 16 x 16 cell block, `mge_planning` returns a FEASIBLE rover
+  route inside that block (illustrative profiles). This is plumbing on the
+  public Jezero package, not a validated route or a mission run.
+- Open for David: slope limits in `mapping_node` are placeholders; the 20 m CTX
+  product is resampled to a 4 m grid. Next: a vertical launch on this terrain
+  needs agent positions on its cell centres and the real mission provider.
 
 ## Typed serialization and source provenance, 2026-11-14
 

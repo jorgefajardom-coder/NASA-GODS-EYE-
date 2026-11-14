@@ -1,12 +1,63 @@
-# Daniel supplies real provenance and three shared control points.
+# Validated public Jezero terrain configuration and shared ENU control points.
+# Evaluator reference (HiRISE) is deliberately isolated in data/reference/ and absent here.
 schema_version: "1.0.0"
-status: pending_dataset
+status: ready
+region_id: jezero_mvp
 frame_id: map
-manifest_path: data/sample/manifest.template.json
-prior_path: null
-belief_path: null
-sigma_path: null
-nodata_mask_path: null
-observed_mask_path: null
-control_points: []
-# Evaluator reference is deliberately absent from public configuration.
+manifest_path: data/sample/manifest.json
+provenance_details_path: data/sample/provenance_details.json
+preview_path: data/sample/preview_ctx_prior.png
+prior_path: data/sample/terrain.npz#prior
+belief_path: data/sample/terrain.npz#belief
+sigma_path: data/sample/terrain.npz#sigma
+nodata_mask_path: data/sample/terrain.npz#nodata_mask
+observed_mask_path: data/sample/terrain.npz#observed_mask
+regional_context_path: data/sample/mola_regional_context.npz#regional_elevation_m
+
+grid:
+  rows: 32
+  cols: 32
+  resolution_m: 4.0
+  origin_x_m: -64.0
+  origin_y_m: -64.0
+  row_orientation: south_to_north
+  origin_lat_planetocentric_deg: 18.45
+  origin_lon_east_deg: 77.45
+  mars_sphere_radius_m: 3396190.0
+  vertical_units: m
+  vertical_datum: "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion"
+  default_prior_sigma_m: 2.5
+
+control_points:
+  - id: cp_sw_origin
+    row: 0
+    col: 0
+    x_east_m: -62.0
+    y_north_m: -62.0
+    elevation_m: -2570.634765625
+    lat_planetocentric_deg: 18.448954022498796
+    lon_east_deg: 77.44889734631394
+  - id: cp_se_offdiag
+    row: 5
+    col: 26
+    x_east_m: 42.0
+    y_north_m: -42.0
+    elevation_m: -2569.00537109375
+    lat_planetocentric_deg: 18.44929143459596
+    lon_east_deg: 77.45074695894863
+  - id: cp_nw_offdiag
+    row: 25
+    col: 6
+    x_east_m: -38.0
+    y_north_m: 38.0
+    elevation_m: -2572.03564453125
+    lat_planetocentric_deg: 18.45064108298461
+    lon_east_deg: 77.44932417999887
+  - id: cp_ne_corner
+    row: 31
+    col: 31
+    x_east_m: 62.0
+    y_north_m: 62.0
+    elevation_m: -2573.8408203125
+    lat_planetocentric_deg: 18.451045977501202
+    lon_east_deg: 77.45110265368606

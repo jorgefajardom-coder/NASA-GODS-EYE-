@@ -90,3 +90,12 @@ budgets/A-B-C, scope freeze Sunday 16:00, presentation/compliance 16:00-20:00,
 and submission buffer 20:00-23:59. Readiness is determined by evidence and
 owner approval, not elapsed time. Preserve the final buffer and confirm any
 applicable earlier local deadline with the organizer.
+
+Local organizer endorsement is a P0 delivery gate: Jesus contacts the organizer
+when the package is ready, David backs him up, and everyone checks JES-07/AC-10
+in the mission checklist. Reserve at least four hours before intended submission
+(or longer if requested); the current coordination target is Sunday 16:00 for
+the desired 20:00 submission, subject to earlier local requirements. Every
+member's agent must remind them at scope freeze, readiness and pre-submission
+while notification/explicit endorsement is undocumented. Record the pending
+action in handoffs; silence does not close the gate. See AGENTS.md section 15.
