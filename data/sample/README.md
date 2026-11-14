@@ -14,3 +14,12 @@ This directory contains the validated public multi-mission terrain package for J
 ## Reference isolation
 
 Evaluator reference arrays (**MRO / HiRISE** 1 m DTM, DOI `10.5066/P9REJ9JN`) are stored exclusively under `../reference/` (ignored by Git) and are never included in `terrain.npz` or loaded by `mge_data.core.load_public_terrain`.
+
+## What the manifest digests cover
+
+`sources[].sha256` in `manifest.json` is the digest of the **derived local
+artifact** of each source, not of the upstream GeoTIFF at `source_url`:
+`terrain.npz` for the CTX prior, `mola_regional_context.npz` for MOLA and the
+isolated, uncommitted reference archive for HiRISE. `load_public_terrain`
+checks the first two on every load. Digests of the upstream pixel windows that
+were actually read are in `provenance_details.json` (`upstream_sources`).

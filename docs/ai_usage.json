@@ -205,6 +205,23 @@
         "tests/mapping/test_observation.py"
       ],
       "use": "Implement bounded HTTP 206 ingestion of official NASA/USGS MRO CTX, MRO HiRISE and MGS MOLA products, Mars ENU georeferencing and control-point verification, reference isolation checks, and incremental belief observation fusion."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "terrain_provider_integration_corrections",
+      "generation": "AI-assisted code, test and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_data/mge_data/node.py",
+        "src/mge_data/package.xml",
+        "src/mge_mapping/mge_mapping/node.py",
+        "src/mge_mapping/package.xml",
+        "tests/integration/test_terrain_batch.py",
+        "data/sample/README.md",
+        "docs/ICD.md",
+        "docs/data_sources.md",
+        "docs/integration_log.md"
+      ],
+      "use": "Make the real terrain providers publish one coherent, repeated map batch per version with a single metadata publisher, survive invalid observations, and test them against the real planner over ROS. Terrain arrays are unchanged observational derivatives; no scientific observation or mission result is generated."
     }
   ],
   "generated_media": [],

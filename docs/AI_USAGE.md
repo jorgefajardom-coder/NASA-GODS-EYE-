@@ -153,3 +153,13 @@ The late-event regression also exercises the real ReplayWriter through the
 strict offline contract reader and viewer oracle added by the approved main
 baseline. That consumer now compares snapshot history by sequence while
 preserving arrival timestamps and all existing identity/provenance guards.
+
+## Terrain provider integration corrections
+
+Claude Code (Anthropic) assisted the integration owner in reviewing PR #8 and
+correcting the `mge_data` and `mge_mapping` ROS nodes to follow the planner's
+map batch protocol, declaring their package dependencies, writing the ROS
+integration test for them and updating the related documentation. The test
+sends illustrative SIMULATED observations that repeat public prior heights; no
+terrain array, scientific dataset, mission result, image, video or audio was
+generated. The affected paths are listed in ai_usage.json.
