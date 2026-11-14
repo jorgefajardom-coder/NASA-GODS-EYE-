@@ -24,16 +24,25 @@ float gNoise(vec2 p) {
   return mix(mix(gHash(i), gHash(i + vec2(1.0, 0.0)), u.x), mix(gHash(i + vec2(0.0, 1.0)), gHash(i + vec2(1.0, 1.0)), u.x), u.y);
 }
 float gFbm(vec2 p) { float a = 0.5, s = 0.0; for (int k = 0; k < 5; k++) { s += a * gNoise(p); p = p * 2.03 + 17.1; a *= 0.5; } return s; }
-// Cellular noise: distance to the nearest random feature point (F1) and its random id.
-vec2 gCell(vec2 p) {
-  vec2 i = floor(p); vec2 f = fract(p); float d = 8.0; float id = 0.0;
+// One stone per cell of a jittered grid, each with its own size, elongation, rotation,
+// irregular outline and tone. Returns (coverage 0..1, tone -1..1).
+vec2 gStones(vec2 p, float sizeMin, float sizeMax, float presence) {
+  vec2 i = floor(p); vec2 f = fract(p); float cover = 0.0; float tone = 0.0;
   for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++) {
     vec2 o = vec2(float(x), float(y));
-    vec2 h = vec2(gHash(i + o), gHash(i + o + 31.7));
-    float r = length(o + h - f);
-    if (r < d) { d = r; id = gHash(i + o + 7.3); }
+    vec2 c = i + o;
+    if (gHash(c + 3.1) > presence) continue;                 // not every cell has a stone
+    vec2 centre = o + vec2(gHash(c), gHash(c + 31.7)) - f;
+    float ang = gHash(c + 13.9) * 6.2831;
+    float stretch = mix(1.0, 2.6, gHash(c + 5.3));            // round to elongated
+    mat2 rot = mat2(cos(ang), -sin(ang), sin(ang), cos(ang));
+    vec2 q = rot * centre; q.x /= stretch;
+    float radius = mix(sizeMin, sizeMax, pow(gHash(c + 8.8), 2.2)); // many small, few big
+    float wobble = (gNoise(q * 9.0 + c) - 0.5) * 0.35 * radius;     // irregular outline
+    float k = 1.0 - smoothstep(radius * 0.75, radius + wobble, length(q));
+    if (k > cover) { cover = k; tone = gHash(c + 21.4) * 2.0 - 1.0; }
   }
-  return vec2(d, id);
+  return vec2(cover, tone);
 }
 // Ripple field whose direction, spacing and strength wander across the ground (domain warping),
 // so no two patches repeat.
@@ -46,28 +55,33 @@ float gRipples(vec2 g) {
   float crest = pow(0.5 + 0.5 * sin(phase), 2.0);
   return crest * smoothstep(0.5, 0.78, gFbm(g * 0.03 + 3.1)); // ripples only in patches
 }
-// Pebbles and small rocks of random size and density.
-float gPebbles(vec2 g) {
-  vec2 a = gCell(g * 1.7);
-  vec2 b = gCell(g * 4.3 + 11.0);
-  float density = smoothstep(0.35, 0.8, gFbm(g * 0.06 + 5.0));
-  float big = (1.0 - smoothstep(0.08, 0.16 + 0.12 * a.y, a.x)) * step(0.7 - 0.25 * density, a.y);
-  float small = (1.0 - smoothstep(0.05, 0.1, b.x)) * step(0.55 - 0.3 * density, b.y);
-  return max(big, small * 0.6);
+// Stones at three independent scales, clustered by a low-frequency density field and sampled
+// through a warped domain so neither spacing nor shape repeats. Returns (coverage, tone).
+vec2 gPebbles(vec2 g) {
+  vec2 w = g + vec2(gFbm(g * 0.15), gFbm(g * 0.15 + 4.7)) * 2.5;
+  float density = smoothstep(0.3, 0.85, gFbm(g * 0.045 + 5.0));
+  vec2 a = gStones(w * 0.9 + 17.0, 0.05, 0.42, 0.15 + 0.35 * density);
+  vec2 b = gStones(w * 2.3 + 41.0, 0.06, 0.35, 0.2 + 0.5 * density);
+  vec2 c = gStones(w * 5.7 + 73.0, 0.08, 0.3, 0.25 + 0.55 * density);
+  vec2 best = a;
+  if (b.x * 0.75 > best.x) best = vec2(b.x * 0.75, b.y);
+  if (c.x * 0.5 > best.x) best = vec2(c.x * 0.5, c.y);
+  return best;
 }
 // Relief in metres-like units: metre-scale undulation, irregular ripples, grit, pebbles.
 float groundHeight(vec2 g) {
   float undulation = gFbm(g * 0.3 + gFbm(g * 0.07) * 2.0) * 0.4;
   float ripples = gRipples(g) * 0.02;
   float grit = gFbm(g * 7.0) * 0.035;
-  return undulation + ripples + grit + gPebbles(g) * 0.06;
+  return undulation + ripples + grit + gPebbles(g).x * 0.07;
 }
 // Brightness modulation: dust patches, darker grit, ripple crests catching dust, pebble speckle.
 float groundAlbedo(vec2 g) {
   float patches = gFbm(g * 0.06 + gFbm(g * 0.02) * 3.0) * 0.3 + 0.86;
   float grit = 0.9 + gFbm(g * 9.0) * 0.18;
   float crests = 1.0 + gRipples(g) * 0.05;
-  float pebbles = 1.0 - gPebbles(g) * (0.25 + 0.25 * gNoise(g * 2.0));
+  vec2 st = gPebbles(g);
+  float pebbles = 1.0 + st.x * (st.y * 0.35 - 0.12); // some stones darker, some lighter than the dust
   return patches * grit * crests * pebbles;
 }
 // Bump mapping from screen-space derivatives (same method as three.js bumpmap_pars).
@@ -234,7 +248,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
           }`,
         );
     };
-    m.customProgramCacheKey = () => 'terrain-contours-v6';
+    m.customProgramCacheKey = () => 'terrain-contours-v7';
     return m;
   }, [uniforms]);
 
