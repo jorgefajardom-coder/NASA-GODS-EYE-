@@ -68,6 +68,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showControlPoints, setShowControlPoints] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
   const [follow, setFollow] = useState(false);
+  const [contours, setContours] = useState(true);
   const [mode, setMode] = useState<UiMode>('exploration');
   const [selection, setSelection] = useState<Selection>({ kind: 'agent', id: '' });
 
@@ -144,6 +145,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         replaySpeed={speed}
         followAgentId={follow ? agentId : null}
         selectedAgentId={agentId}
+        contours={contours}
       />
       <div className="vignette" aria-hidden />
 
@@ -174,6 +176,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             onShowLabels={setShowLabels}
             follow={follow}
             onFollow={setFollow}
+            contours={contours}
+            onContours={setContours}
           />
         </div>
 

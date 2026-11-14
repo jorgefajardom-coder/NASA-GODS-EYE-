@@ -5,7 +5,8 @@ import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { TerrainLayer } from '../lib/layers';
 import { heightGrid } from '../lib/layers';
-import { enuToThree, sampleHeight, yawFromQuaternion } from '../lib/coords';
+import { enuToThree, yawFromQuaternion } from '../lib/coords';
+import { smoothHeightAt } from '../lib/terrainSmooth';
 import { FollowCamera } from './FollowCamera';
 import { TerrainView } from './TerrainView';
 import { RouteOverlay } from './RouteOverlay';
@@ -24,21 +25,30 @@ interface Props {
   /** Agent followed by the third-person camera, or null for the free orbital view. */
   followAgentId: string | null;
   selectedAgentId: string | null;
+  contours: boolean;
 }
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours }: Props) {
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
   const grid = heightGrid(bundle.rasters, layer, mapVersion);
-  const groundHeight = useCallback((x: number, y: number) => sampleHeight(meta, grid, x, y), [meta, grid]);
+  // Same interpolation as the mesh, so agents stand on the surface that is drawn.
+  const groundHeight = useCallback((x: number, y: number) => smoothHeightAt(meta, grid, x, y), [meta, grid]);
   const followed = view.state?.agents.find((a) => a.agent_id === followAgentId) ?? null;
+  const followTarget = followed
+    ? enuToThree(
+        { ...followed.pose.position, z: followed.agent_kind === 'DRONE' ? followed.pose.position.z : (groundHeight(followed.pose.position.x, followed.pose.position.y) ?? followed.pose.position.z) },
+        exaggeration,
+      )
+    : null;
   const extent = Math.max(meta.rows, meta.cols) * meta.resolution_m;
 
   return (
     <Canvas
       className="scene"
       camera={{ position: [-0.75 * extent, 1.25 * extent, 1.7 * extent], fov: 38, near: 1, far: extent * 10 }}
-      dpr={[1, 2]}
+      dpr={[1, 1.75]}
+      gl={{ antialias: true, powerPreference: 'high-performance' }}
       aria-label="3D view of the mission area"
     >
       <color attach="background" args={['#090D11']} />
@@ -52,6 +62,8 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         mapVersion={mapVersion}
         verticalExaggeration={exaggeration}
         highlightObserved
+        contours={contours}
+        zOffsetM={bundle.manifest.local_z_offset_m ?? 0}
       />
       <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />
       <SiteMarkers
@@ -73,7 +85,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         groundHeight={groundHeight}
       />
       <FollowCamera
-        target={followed ? enuToThree(followed.pose.position, exaggeration) : null}
+        target={followTarget}
         yaw={followed ? yawFromQuaternion(followed.pose.orientation) : 0}
       />
       <OrbitControls makeDefault enableDamping maxPolarAngle={Math.PI / 2.05} minDistance={30} maxDistance={extent * 2.5} />

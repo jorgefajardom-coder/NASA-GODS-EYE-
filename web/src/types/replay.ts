@@ -38,6 +38,8 @@ export interface ReplayManifest {
   summary: string;
   disclaimer: string;
   duration_s: number;
+  /** Local z = source elevation - this offset (m). Lets the viewer draw contour lines at true elevations. */
+  local_z_offset_m?: number;
   terrain_meta: TerrainMeta;
   vertical_exaggeration_default: number;
   control_points: ControlPoint[];

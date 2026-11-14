@@ -19,6 +19,7 @@
     "observational_data": "Only the terrain heights come from NASA/USGS data; everything else here is simulated."
   },
   "duration_s": 4442,
+  "local_z_offset_m": -2495,
   "terrain_meta": {
     "run_id": "demo-sim-002",
     "dataset_id": "mars2020-trn-ctx-dtm-20m",

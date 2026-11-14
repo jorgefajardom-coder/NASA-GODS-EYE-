@@ -48,6 +48,8 @@ interface OptionsProps {
   onShowLabels: (v: boolean) => void;
   follow: boolean;
   onFollow: (v: boolean) => void;
+  contours: boolean;
+  onContours: (v: boolean) => void;
 }
 
 /** View options and legend, collapsed by default so they do not cover the terrain. */
@@ -83,6 +85,10 @@ export function ViewOptions(p: OptionsProps) {
         </select>
       </label>
       {p.exaggeration !== 1 && <p className="note note--warn">Heights exaggerated {p.exaggeration}× for readability (visual only).</p>}
+      <label className="check">
+        <input type="checkbox" checked={p.contours} onChange={(e) => p.onContours(e.target.checked)} /> Contour lines (10 m, bold every 50 m)
+      </label>
+      <p className="note">The surface is smoothed between the 20 m source cells for display. This adds no detail: heights at cell centres are the source values.</p>
       <label className="check">
         <input type="checkbox" checked={p.follow} onChange={(e) => p.onFollow(e.target.checked)} /> Follow selected agent (F)
       </label>
