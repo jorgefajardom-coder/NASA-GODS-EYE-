@@ -23,6 +23,7 @@ import { Vitals } from './components/Vitals';
 import { EventInspector } from './components/EventInspector';
 import { GeologyDetails, GeologyList } from './components/GeologyPanel';
 import { TacticalMap } from './components/TacticalMap';
+import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
 import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './components/Frame';
@@ -253,6 +254,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             details && <DetailsPanel data={details} />
           )}
         </aside>
+
+        {mode !== 'tactical' && <Minimap bundle={bundle} view={view} agentId={agentId} onOpen={() => setMode('tactical')} />}
 
         <AlertBanner alert={alert} />
 
