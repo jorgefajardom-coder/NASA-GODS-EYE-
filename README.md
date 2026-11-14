@@ -11,6 +11,9 @@ and a clock to substitute one authority, never run both mission providers.
 The integrated web viewer plays saved runs offline in REPLAY mode: an
 illustrative demo on a provisional CTX crop and the gateway's recorded MOCK run,
 labelled with each run's `source_mode` (`REPLAY · SIMULATION`, `REPLAY · MOCK`).
+It reads a package's public raster attachment (`files.public_rasters`) when
+present, shows live Earth and Mars clocks, and offers agent and base cameras and
+an agent HUD with oxygen, energy, time, route, atmosphere and dose gauges.
 It is not connected to a live gateway. Science-model agreement, actual execution
 and Gazebo acceptance remain pending; software availability is not mission evidence.
 
@@ -49,9 +52,14 @@ illustrative, synthetic or AI-generated.
 | Atmos: Jezero weather | Perseverance MEDA daily summaries, NASA Mars weather feed | Real; outreach summary, not the PDS archive |
 | Atmos: annual cycle | Curiosity REMS daily summaries at Gale crater | Real, another site; reference only |
 | Atmos: radiation | MSL RAD surface averages, Hassler et al. (2014), [doi:10.1126/science.1244797](https://doi.org/10.1126/science.1244797) | Published values; Gale, unshielded estimate |
+| HUD: crew dose | RAD surface average times the replay time | **Estimate**, not a dosimeter reading |
+| HUD: pressure map | Latest MEDA pressure scaled with height over the area (barometric law, 11.1 km scale height) | **Estimate**, not a measured field |
+| HUD: resource use | Drop between the two received samples around the replay time; route cost and reserve as published | Derived from the simulated run |
+| Earth and Mars clocks | Device clock; NASA GISS Mars24 algorithm (Allison and McEwen 2000) | Real present time, not the run's time |
 | Uncertainty (sigma) | Set by the demo fixture (1 m, 3 m on the surveyed crossing, 0.2 m once observed); the data package uses a constant 2.5 m | **Assumed, not measured** |
 | Updated map (v2) | CTX prior plus a simulated drone observation over a scarp added to the hidden reference | **Synthetic** adverse case |
-| Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious |
+| Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
+| Shadows, footprints, dust, rotor blur, wheel and steering motion | Derived in the viewer from the drawn poses | **Cosmetic display** only |
 | Rover and drone models | NASA/JPL-Caltech Perseverance and Ingenuity 3D models | Real models, agency branding removed |
 | Astronaut model | Sketchfab, LasquetiSpice, CC BY 4.0 | Third-party asset |
 | Surface base | `base-marciana-v2`, generated with OpenAI Codex, prepared by `web/scripts/blender/prepare_base.py` | **AI-generated** 3D model |
