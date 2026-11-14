@@ -622,6 +622,9 @@ affected paths are listed in ai_usage.json.
 Claude Code (Anthropic) assisted the integration owner in fixing a shutdown
 race in the replay recorder: a signal now only asks the node to stop between
 callbacks, the writer closes idempotently and a closed package is never
-extended, with unit tests in `tests/unit/test_replay.py`. No data, mission
-result, image, video or audio was generated. The affected paths are listed in
+extended, with unit tests in `tests/unit/test_replay.py`. It also keeps planner
+searches valid while other agent kinds complete the same map batch
+(`mge_planning`, tests in `tests/planning/test_adapter.py`) and gives the MOCK
+mission more time for the planner to assemble a new map version. No data,
+mission result, image, video or audio was generated. The affected paths are listed in
 ai_usage.json.
