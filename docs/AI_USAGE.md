@@ -71,3 +71,12 @@ and valid requests; no scientific dataset, mission run or media was generated.
 The existing ROS fields, optional oxygen sentinel and mission authority remain
 unchanged. The affected code/tests and contract clarification are listed in
 ai_usage.json.
+
+## PR #3 late-event replay correction
+
+OpenAI Codex assisted consistent validation of arrival-ordered replay records
+against sequence-ordered snapshot history, rejection of conflicting/invalid event
+sequences, regression tests and the corresponding ICD clarification. The tests
+generate illustrative event/state fixtures in temporary directories; no NASA
+observations, mission benchmark or media are generated. Original event stamps,
+late deliveries and existing source/tool disclosures are preserved.

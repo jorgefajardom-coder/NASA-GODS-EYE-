@@ -2,6 +2,8 @@
 import json
 import math
 
+import pytest
+
 from mge_gateway.store import RunStore, to_json
 
 
@@ -28,6 +30,20 @@ def test_duplicate_event_is_applied_once():
     assert store.apply_event(event(1))
     assert not store.apply_event(event(1))
     assert len(store.events()) == 1
+
+
+def test_conflicting_event_sequence_is_rejected():
+    store = RunStore('run-a')
+    assert store.apply_event(event(1))
+    assert not store.apply_event({**event(1), 'event_id': 'different-id'})
+    assert store.events() == [event(1)]
+
+
+@pytest.mark.parametrize('seq', [0, -1, True, '1', None, 2**64])
+def test_invalid_event_sequence_is_rejected(seq):
+    store = RunStore('run-a')
+    assert not store.apply_event({**event(1), 'seq': seq})
+    assert store.events() == []
 
 
 def test_other_run_is_dropped():

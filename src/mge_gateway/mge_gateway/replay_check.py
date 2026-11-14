@@ -9,7 +9,7 @@ import os
 import sys
 
 from mge_gateway.replay import MANIFEST, SNAPSHOT
-from mge_gateway.store import SCHEMA_VERSION
+from mge_gateway.store import SCHEMA_VERSION, valid_event_sequence
 
 ENVELOPE = ('schema_version', 'run_id', 'mode', 'map_version', 'timestamp_sim_s')
 KINDS = ('event', 'state', 'terrain_meta')
@@ -67,7 +67,7 @@ def check_package(path):
                         f'{manifest.get("record_count")}')
 
     events, last_state = [], None
-    last_t = last_seq = last_state_seq = last_map = -1
+    last_t = last_state_seq = last_map = -1
     for n, rec in enumerate(records, 1):
         where = f'{timeline}:{n}'
         check_envelope(where, rec)
@@ -83,9 +83,9 @@ def check_package(path):
             problems.append(f'{where}: time goes backwards')
         last_t = max(last_t, t)
         if kind == 'event':
-            if body['seq'] <= last_seq:
-                problems.append(f'{where}: event seq {body["seq"]} is not increasing')
-            last_seq = max(last_seq, body['seq'])
+            if not valid_event_sequence(body.get('seq')):
+                problems.append(f'{where}: event seq must be a positive uint64')
+                continue
             events.append(body)
         elif kind == 'state':
             if body['last_event_seq'] < last_state_seq:
@@ -98,6 +98,13 @@ def check_package(path):
     ids = [e['event_id'] for e in events]
     if len(ids) != len(set(ids)):
         problems.append(f'{timeline}: duplicate event_id')
+    seqs = [e['seq'] for e in events]
+    if len(seqs) != len(set(seqs)):
+        problems.append(f'{timeline}: duplicate event seq')
+
+    # The timeline preserves arrival order, including late DDS deliveries.
+    # Reconstruct the same logical event history as RunStore and the snapshot.
+    events.sort(key=lambda e: e['seq'])
 
     if snapshot.get('events') != events:
         problems.append(f'{SNAPSHOT}: events differ from the timeline')

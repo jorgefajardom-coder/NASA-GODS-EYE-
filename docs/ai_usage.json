@@ -110,6 +110,20 @@
         "docs/ICD.md"
       ],
       "use": "Reject non-finite base/goal coordinates and explicitly supplied invalid float32 resource values before ROS forwarding; verify HTTP 422 with no bridge call and retain valid finite requests."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "replay_ordering_and_regression_tests",
+      "generation": "AI-assisted code and illustrative event fixtures; no scientific observation generated",
+      "paths": [
+        "src/mge_gateway/mge_gateway/store.py",
+        "src/mge_gateway/mge_gateway/replay.py",
+        "src/mge_gateway/mge_gateway/replay_check.py",
+        "tests/unit/test_store.py",
+        "tests/unit/test_replay.py",
+        "docs/ICD.md"
+      ],
+      "use": "Retain late event arrivals while validating the sequence-ordered logical history, reject conflicting or invalid event sequences, and test valid delayed events plus tampered packages. Existing replay schema and data attribution remain unchanged."
     }
   ],
   "generated_media": [],

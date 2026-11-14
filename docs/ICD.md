@@ -225,13 +225,18 @@ plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
 - A timeline record has the shape of a WebSocket message: the envelope,
   `type` (`event` | `state` | `terrain_meta`) and an object of that name, so
   live messages and replay records can share one handler.
-- `timestamp_sim_s` of a record is the `header.stamp` of its message and
-  never decreases along the file. Replay time is
+- `timestamp_sim_s` is the running maximum of accepted message stamps, so it
+  never decreases along the arrival-ordered file. Each payload retains its
+  original `header.stamp`, including for late messages. Replay time is
   `timestamp_sim_s - time_start_sim_s`.
 - `clock_source` is `sim` when the run used `/clock` and `system` when no
   simulator was running; in that case the stamps are wall-clock seconds.
 - Events and states travel on different topics, so a state may be recorded
-  slightly before the event that caused it. Order events by `seq`.
+  slightly before the event that caused it. Late events are retained in arrival
+  order; reconstruct the logical history by `seq`, as in `snapshot.events`.
+  Event IDs and positive uint64 sequences must both be unique within a run.
+  The store rejects conflicting/reused sequences, and the offline validator
+  detects them in altered packages without rejecting valid late deliveries.
 - A mission state identical to the previous one, apart from stamps, is not
   recorded again. Duplicates, older states and data of another run are
   dropped, as in the gateway.

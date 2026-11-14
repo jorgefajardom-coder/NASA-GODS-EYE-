@@ -14,6 +14,11 @@ import threading
 SCHEMA_VERSION = '1.0.0'
 
 
+def valid_event_sequence(value):
+    """Events start at 1; 0 is the polling cursor before the first event."""
+    return type(value) is int and 0 < value < 2**64
+
+
 def to_json(value):
     """Make a message dict JSON-safe: NaN / infinity become null."""
     if isinstance(value, float):
@@ -48,6 +53,7 @@ class RunStore:
         self._meta = None
         self._events = []
         self._event_ids = set()
+        self._event_seqs = set()
 
     def apply_state(self, state):
         """Return True if the state was accepted."""
@@ -64,7 +70,11 @@ class RunStore:
         with self._lock:
             if event['run_id'] != self.run_id or event['event_id'] in self._event_ids:
                 return False
+            seq = event.get('seq')
+            if not valid_event_sequence(seq) or seq in self._event_seqs:
+                return False
             self._event_ids.add(event['event_id'])
+            self._event_seqs.add(seq)
             self._events.append(event)
             self._events.sort(key=lambda e: e['seq'])
             return True

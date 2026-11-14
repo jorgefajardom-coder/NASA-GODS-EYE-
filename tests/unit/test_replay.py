@@ -89,3 +89,52 @@ def test_validator_reports_tampering(package):
 
 def test_validator_reports_missing_package(tmp_path):
     assert check_package(str(tmp_path / 'nothing'))
+
+
+def test_late_events_preserve_arrival_and_logical_history(tmp_path):
+    writer = ReplayWriter(str(tmp_path), RUN, 'system')
+    assert writer.record('state', state(10, 0))
+    assert writer.record('event', event(12, 2))
+    assert writer.record('state', state(12, 2, route_id='r2'))
+    assert writer.record('event', event(11, 1))
+    writer.close()
+
+    records = lines(writer.dir)
+    assert [r['type'] for r in records] == ['state', 'event', 'state', 'event']
+    assert [r['event']['seq'] for r in records if r['type'] == 'event'] == [2, 1]
+    assert [r['timestamp_sim_s'] for r in records] == [10, 12, 12, 12]
+    # The original producer stamp is preserved even when receipt time is clamped.
+    assert records[-1]['event']['header']['stamp']['sec'] == 11
+    with open(os.path.join(writer.dir, 'snapshot.json'), encoding='utf-8') as f:
+        snapshot = json.load(f)
+    assert [e['seq'] for e in snapshot['events']] == [1, 2]
+    assert snapshot['mission_state']['route_id'] == 'r2'
+    assert check_package(writer.dir) == []
+
+
+def test_validator_rejects_conflicting_event_sequences(tmp_path):
+    writer = ReplayWriter(str(tmp_path), RUN, 'system')
+    assert writer.record('event', event(11, 1))
+    assert writer.record('event', event(12, 2))
+    writer.close()
+    records = lines(writer.dir)
+    records[1]['event']['seq'] = 1  # distinct IDs claiming the same logical event
+    with open(os.path.join(writer.dir, 'timeline.jsonl'), 'w', encoding='utf-8') as f:
+        for record in records:
+            f.write(json.dumps(record) + '\n')
+    snapshot_path = os.path.join(writer.dir, 'snapshot.json')
+    with open(snapshot_path, encoding='utf-8') as f:
+        snapshot = json.load(f)
+    snapshot['events'][1]['seq'] = 1
+    with open(snapshot_path, 'w', encoding='utf-8') as f:
+        json.dump(snapshot, f)
+    assert any('duplicate event seq' in p for p in check_package(writer.dir))
+
+
+def test_conflicting_sequence_is_not_recorded(tmp_path):
+    writer = ReplayWriter(str(tmp_path), RUN, 'system')
+    assert writer.record('event', event(11, 1))
+    assert not writer.record('event', {**event(12, 1), 'event_id': 'conflicting-id'})
+    writer.close()
+    assert len(lines(writer.dir)) == 1
+    assert check_package(writer.dir) == []

@@ -9,6 +9,8 @@ A package is a directory named after the run:
 Timeline records have the shape of the gateway WebSocket messages
 (`type` plus an object of that name), so a web client can feed live messages
 and replay records to the same handler. Everything is stamped mode=REPLAY.
+The timeline retains arrival order; reconstruct logical events by their unique
+positive seq, as in snapshot.events. Late events are retained, not discarded.
 Files are rewritten atomically after every record, so an interrupted run
 still leaves a readable package. An existing run directory is never
 overwritten.
