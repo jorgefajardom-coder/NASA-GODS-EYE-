@@ -1,6 +1,6 @@
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { Suspense, useRef, type ReactNode } from 'react';
+import { Suspense, useEffect, useMemo, useRef, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { AGENT_POSE_TAU_S, dampAngle, dampFactor, SNAP_DISTANCE_M } from '../lib/smoothing';
 import type { AgentState } from '../types/icd';
@@ -56,12 +56,7 @@ export function AgentLayer({ agents, verticalExaggeration, showLabels, playing, 
         return (
           <SmoothedPose key={a.agent_id} position={[x, y, z]} yaw={yaw} name={`agent-${a.agent_id}`}>
             <ScaleWithDistance perMetre={1 / 80} max={trueScale ? 1 : 14}>
-              {a.agent_id === selectedId && (
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.25, 0]}>
-                  <ringGeometry args={[3.4, 4, 40]} />
-                  <meshBasicMaterial color="#65CBE8" transparent opacity={0.9} depthWrite={false} />
-                </mesh>
-              )}
+              {a.agent_id === selectedId && <SelectionRing groundHeight={groundHeight} verticalExaggeration={verticalExaggeration} />}
               {a.agent_kind === 'HUMAN' ? (
                 <ModelBoundary fallback={<AgentMesh kind="HUMAN" />}>
                   <Suspense fallback={<AgentMesh kind="HUMAN" />}>
@@ -189,6 +184,68 @@ function AgentMesh({ kind }: { kind: AgentState['agent_kind'] }) {
         <meshStandardMaterial color="#9fd6ff" />
       </mesh>
     </group>
+  );
+}
+
+/** Selection ring size (m at true scale) and its lift above the drawn ground. */
+const RING_INNER_M = 3.4;
+const RING_OUTER_M = 4;
+const RING_SEGMENTS = 64;
+const RING_LIFT_M = 0.12;
+
+/**
+ * Ring around the selected agent that lies on the drawn terrain: every vertex takes the ground
+ * height under it (same surface as the mesh), so on slopes and bumps no part of the ring goes
+ * under the ground and gets cut off. Updated each frame in the parent's frame, so it follows the
+ * eased pose, the heading and the distance scaling.
+ */
+function SelectionRing({ groundHeight, verticalExaggeration }: { groundHeight: (x: number, y: number) => number | null; verticalExaggeration: number }) {
+  const mesh = useRef<THREE.Mesh>(null);
+  const geometry = useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    const n = RING_SEGMENTS;
+    g.setAttribute('position', new THREE.BufferAttribute(new Float32Array((n + 1) * 2 * 3), 3));
+    const index: number[] = [];
+    for (let i = 0; i < n; i++) {
+      const a = i * 2, b = a + 1, c = a + 2, d = a + 3; // inner/outer pairs
+      index.push(a, c, b, b, c, d);
+    }
+    g.setIndex(index);
+    return g;
+  }, []);
+  const center = useMemo(() => new THREE.Vector3(), []);
+  const scale = useMemo(() => new THREE.Vector3(), []);
+  const p = useMemo(() => new THREE.Vector3(), []);
+  useFrame(() => {
+    const m = mesh.current;
+    const parent = m?.parent;
+    if (!m || !parent) return;
+    parent.updateWorldMatrix(true, false);
+    parent.getWorldPosition(center);
+    parent.getWorldScale(scale);
+    const s = scale.x;
+    const attr = geometry.getAttribute('position') as THREE.BufferAttribute;
+    for (let i = 0; i <= RING_SEGMENTS; i++) {
+      const t = (i / RING_SEGMENTS) * Math.PI * 2;
+      for (let k = 0; k < 2; k++) {
+        const r = (k === 0 ? RING_INNER_M : RING_OUTER_M) * s;
+        const wx = center.x + Math.cos(t) * r;
+        const wz = center.z + Math.sin(t) * r;
+        // Three.js -> ENU: east = x, north = -z. Ground height is drawn with the exaggeration.
+        const h = groundHeight(wx, -wz);
+        const wy = (h == null ? center.y / Math.max(verticalExaggeration, 1e-6) : h) * verticalExaggeration + RING_LIFT_M * s;
+        parent.worldToLocal(p.set(wx, wy, wz));
+        attr.setXYZ(i * 2 + k, p.x, p.y, p.z);
+      }
+    }
+    attr.needsUpdate = true;
+    geometry.computeBoundingSphere();
+  });
+  useEffect(() => () => geometry.dispose(), [geometry]);
+  return (
+    <mesh ref={mesh} geometry={geometry} renderOrder={2} frustumCulled={false}>
+      <meshBasicMaterial color="#65CBE8" transparent opacity={0.9} depthWrite={false} side={THREE.DoubleSide} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />
+    </mesh>
   );
 }
 
