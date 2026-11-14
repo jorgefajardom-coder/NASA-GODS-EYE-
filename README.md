@@ -10,8 +10,10 @@ not a locally verified corridor. The gateway serves a run over REST and
 WebSocket and a run can be recorded as a replay package. The terrain and mission
 nodes that feed that path are still labelled MOCK stand-ins in `mge_sim` (a
 synthetic flat grid, a goal-route-replan mission), so no run here is mission
-evidence. The planner can be switched into that path (`planner:=real`). The data, mapping and mission packages are scaffolds and the web
-viewer is empty by design. No validated mission, Gazebo world or published demo
+evidence. The planner can be switched into that path (`planner:=real`). The data, mapping and mission packages are scaffolds. The web viewer (PR #5)
+plays saved runs offline in REPLAY mode: a simulated demo on a real provisional
+CTX crop of Jezero and the gateway's recorded MOCK run; it is not connected to a
+live gateway. No validated mission, Gazebo world or published demo
 is claimed.
 
 Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
@@ -39,7 +41,7 @@ Confirm any earlier local judging cutoff separately.
 | `src/mge_planning` | Diego | Pure planning core and ROS service adapter |
 | `src/mge_mission`, `config` | David; integration by Jesus | Mission authority, resources and tasks |
 | `src/mge_sim`, `src/mge_gateway`, `src/mge_bringup` | Jesus | Simulation adapter, API and launch |
-| `web` | Jorge | React / TypeScript / Three.js viewer and future replay |
+| `web` | Jorge | React / TypeScript / Three.js viewer with offline replay |
 | `tests`, `evidence`, `docs` | Everyone | Verification, immutable runs and contracts |
 
 The evaluator reference is isolated in `data/reference` and must never be

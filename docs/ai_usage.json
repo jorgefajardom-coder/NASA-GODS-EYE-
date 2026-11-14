@@ -98,7 +98,7 @@
         "tests/integration/test_provider_substitution.py",
         "tests/fixtures/replay/provenance.json",
         "web/src/lib/provenance.ts",
-        "web/src/lib/provenance.test.ts",
+        "web/tests/provenance.test.ts",
         "scripts/validate_contract_baseline.sh",
         "AGENTS.md",
         ".gitignore",
@@ -235,6 +235,70 @@
         "docs/integration_log.md"
       ],
       "use": "Make the real terrain providers publish one coherent, repeated map batch per version with a single metadata publisher, survive invalid observations, and test them against the real planner over ROS. Terrain arrays are unchanged observational derivatives; no scientific observation or mission result is generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "code_configuration_documentation_and_synthetic_contract_tests",
+      "generation": "AI-assisted generation; owner integration/science review pending",
+      "paths": [
+        "src/mge_gateway/mge_gateway/contract_replay.py",
+        "src/mge_bringup/mge_bringup/contract_guard.py",
+        "src/mge_bringup/mge_bringup/launch_profiles.py",
+        "src/mge_bringup/launch/profile.launch.py",
+        "src/mge_bringup/package.xml",
+        "src/mge_data/mge_data/dataset_contract.py",
+        "data/dataset.schema.json",
+        "tests/contract/test_baseline_guards.py",
+        "tests/contract/test_generated_conversion.py",
+        "tests/contract/test_replay_conversion.py",
+        "tests/contract/test_dataset.py",
+        "tests/contract/test_configuration.py",
+        "tests/contract/test_profile_launch.py",
+        "tests/integration/test_provider_substitution.py",
+        "tests/fixtures/replay/provenance.json",
+        "web/src/lib/provenance.ts",
+        "web/tests/provenance.test.ts",
+        "scripts/validate_contract_baseline.sh",
+        "AGENTS.md",
+        ".gitignore",
+        "docs",
+        "scripts/check_repository.py",
+        ".github/workflows/ci.yml",
+        "evidence/contract-baseline-20261114"
+      ],
+      "use": "Audit owner branches; reconcile contracts without replacing implementations; add offline adapters, fail-closed guards, source locks, schema, deterministic synthetic contract cases, handoffs and actual validation records. No scientific observations generated."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_and_data",
+      "generation": "AI-assisted generation, reviewed and directed by the module owner",
+      "paths": [
+        "web/src",
+        "web/scripts",
+        "web/tests",
+        "web/package.json",
+        "web/tsconfig.json",
+        "web/vite.config.ts",
+        "web/index.html",
+        "web/README.md",
+        "web/public/replay/demo",
+        "THIRD_PARTY_NOTICES.md"
+      ],
+      "use": "Web mission viewer that replaced the scaffold grid, terrain crop scripts, tests and the simulated replay fixture. The demo replay is simulated data; terrain heights come from NASA/USGS and are not generated."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_tests_and_deterministic_asset_cleanup",
+      "generation": "AI-assisted generation during integration review; deterministic edit, no image synthesised",
+      "paths": [
+        "web/scripts/glb.mjs",
+        "web/scripts/glb.d.mts",
+        "web/scripts/strip-glb-branding.mjs",
+        "web/tests/modelBranding.test.ts",
+        "web/public/assets/models/rover.glb",
+        "web/public/assets/models/drone.glb"
+      ],
+      "use": "Remove agency marks the Blender cleanup missed: the rover's blade sheet is replaced by the drone's already cleaned sheet and two logos on the drone blade roughness map are filled with its plain background. The models stay NASA/JPL-Caltech's and are not AI-generated; a regression test checks the cleaned regions."
     }
   ],
   "generated_media": [],
@@ -247,7 +311,9 @@
     "Fresh CTX/HiRISE processing occurs during competition; source observations pre-exist and are cited.",
     "Contract reconciliation synthetic raster attachments and metadata exist only in explicitly labelled tests; no NASA dataset, measured outcome, image, video or audio is generated.",
     "Terrain arrays in data/sample/ and data/reference/ are derived via GDAL/rasterio from observational NASA PDS / USGS Astrogeology products, not AI-generated.",
-    "data/sample/preview_ctx_prior.png is a deterministic grayscale plot of the observational MRO/CTX DEM array, not an AI-generated image."
+    "data/sample/preview_ctx_prior.png is a deterministic grayscale plot of the observational MRO/CTX DEM array, not an AI-generated image.",
+    "The Codex frontend scaffold in web/ was replaced by the mission viewer; its stale-route guard and ICD-WEB-V1 envelope types were moved into web/src/lib/format.ts and web/src/types/icd.ts.",
+    "web/public/assets/models/rover.glb and drone.glb are official NASA/JPL-Caltech models. Their branding cleanup is a flat fill or a copy of an already cleaned texture, not generative inpainting, so they contain no AI-generated imagery."
   ],
   "retained_contributions": [
     {
@@ -270,6 +336,18 @@
       ],
       "tool_declared_by_original_contributor": "Claude Code (Anthropic)",
       "use": "Retain byte-for-byte MOCK recorder fixture for adapter conformance, with original source/hash/AI disclosure metadata. No actual Mars measurements."
+    },
+    {
+      "source_ref": "dev/jesus",
+      "commit": "00c8e44b8b50a6f893c122fff1818eeaf48825bb",
+      "scope": [
+        "src/mge_interfaces",
+        "src/mge_sim/mge_sim/mock_agents.py",
+        "src/mge_bringup/launch/smoke.launch.py",
+        "tests/contract",
+        "scripts/dev.sh"
+      ],
+      "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
     }
   ],
   "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements"

@@ -79,3 +79,20 @@ Review `git status`, `git diff` and `git diff --check`. Keep commits atomic and 
 Jesus reviews integration; David approves scientific assumptions/success.
 Software tests, replay and synthetic fixtures do not establish a validated
 LIVE mission. No push, merge or release is implied by this handoff alone.
+
+## Status update from feat/ux (14 November 2026)
+
+- Evaluator reference isolated (`908edae`): `RasterSet.reference` is optional, the public
+  `rasters.json` has none, the generator writes it to the Git-ignored
+  `data/reference/<run_id>/`, and only the dev server's evaluator view loads it. A
+  production build contains no reference values or file
+  (`web/tests/referenceIsolation.test.ts`, plus a `dist/` scan). The values remain in
+  earlier Git history of `rasters.json`; removing them needs an owner decision on
+  rewriting history.
+- Demo terrain draped with the real CTX orthomosaic from Mars Trek (`f80b020`, same
+  `soc_008` production as the DTM); provenance in `THIRD_PARTY_NOTICES.md`.
+- Astronaut posture, pause pose, marker masts and camera easing fixed; 71 Vitest tests and
+  `npm run build` pass on Windows. `python -m pytest` and ROS checks were not run here.
+- Still open from this handoff: strict canonical package validation with Daniel's raster
+  sidecar, `displayState` labels in the status block, three control points, and
+  backend-off evidence.
