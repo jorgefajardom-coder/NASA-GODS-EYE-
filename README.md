@@ -16,7 +16,8 @@ observations, replays and successful builds are labelled as such and are not
 mission evidence.
 
 - **Web viewer (public preview):** <https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/>
-  — static build of `main` at `9614816` (after PR #19), published on the `gh-pages` branch.
+  — static build of `main`, published on the `gh-pages` branch (each publish commit names
+  its source revision).
   It plays saved runs in REPLAY mode only; it is not connected to a gateway.
 - **Team deadline:** 2026-11-15 23:59 America/Bogota (UTC-05:00). Confirm any
   earlier local judging cutoff separately.
@@ -71,19 +72,19 @@ provider may own each canonical ROS service in a launch profile.
 
 ## Branches and pull requests
 
-Snapshot of the remote on 2026-11-14 (`origin/main` = `9614816`). See
+Snapshot of the remote on 2026-11-14 (`origin/main` = `5898e7d`). See
 [docs/team.md](docs/team.md) for the authoritative ownership record.
 
 | Branch | Owner | State |
 | --- | --- | --- |
-| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5, #7–#20 merged |
+| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#21 merged |
 | `feat/ux` | Jorge | Web viewer; merged in PRs #5 and #19 (offline viewer, agent HUD, public raster input, intro) |
 | `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI; last merged in PR #18 |
 | `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service; merged in PRs #2 and #12 |
 | `feat/data` | Daniel | Public terrain data, mapping, provenance and control points; merged in PR #8 |
 | `feat/mission` | David | Mission authority, resource profiles and acceptance; merged in PRs #10 and #14 |
-| `codex/mission-replay-recovery` | Jesus (with Jorge's history) | **PR #21 open**, updated with `main` after #19: continuous-pose replan recovery after a stop and strict web replay validation |
-| `gh-pages` | Jorge + Jesus | Published static viewer build (from `main` `9614816`) |
+| `codex/mission-replay-recovery` | Jesus (with Jorge's history) | Continuous-pose replan recovery after a stop and strict web replay validation; merged in PR #21 |
+| `gh-pages` | Jorge + Jesus | Published static viewer build from `main` |
 | `feature/web-replay-viewer` | Jorge | Historical viewer branch, ancestor of `feat/ux`; PR #6 closed, preserved |
 | `docs/agents-policy`, `codex/*` (other) | Owner / Jesus | Merged documentation and reconciliation branches, kept for traceability |
 
@@ -120,6 +121,8 @@ acceptance status are in [web/README.md](web/README.md).
   `files.public_rasters` (`mge-public-rasters-1.0.0`), checked against the package;
   mismatches fail with `PUBLIC_RASTERS_INVALID`, and non-MOCK packages without it
   fail with `PUBLIC_RASTERS_REQUIRED`.
+- Recorded packages are checked before rendering: record counts, run, schema,
+  clock and map identity, immutable routes and recorded raster versions.
 - The evaluator reference is shown only in the dev server with `?evaluator=1`;
   the production build never contains it (`tests/referenceIsolation.test.ts`).
 
@@ -333,7 +336,8 @@ are explicitly illustrative. Nothing here is a moving mission or a NASA measurem
   at the speed the route's estimates imply and halt in place, reporting `HALTED`
   with zero velocity, when the route is invalidated. Continuous ground starts
   for replanning from a halted pose exist behind an explicit opt-in (disabled by
-  default); the recovery path is proposed in PR #21.
+  default); PR #21 added the acknowledged-stop recovery that resumes from the
+  exact stopped pose (see [the recovery handoff](docs/mission_replay_recovery.md)).
 
 ### Gateway API
 
@@ -405,7 +409,6 @@ launch selection, clock/configuration requirements and unchanged scientific gate
 - Step 5: offline replay and web video of that same run, validated without
   backends (C5, AC-08).
 - D-EST-01 implementation, scientific model agreement and Gazebo acceptance.
-- Review and merge PR #21 (replay recovery and strict replay validation).
 - Local organizer notification and endorsement before submission (JES-07 / AC-10).
 
 Varied scenes, larger maps and H-DAN-01 are optional extensions, not substitutes
