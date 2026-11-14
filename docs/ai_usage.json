@@ -1022,6 +1022,16 @@
         "web/tests/smoothing.test.ts"
       ],
       "use": "Viewer display only: walk cycle re-timed and pelvis motion kept for the legs so the planted foot does not slide; distance pins shown only when a model is a few pixels tall; grab-to-drag map camera; cameras for each agent and the base; camera kept above the drawn terrain; replay restart skips the idle lead-in; running crew dose estimate from the published RAD surface rate (not a dosimeter reading); monotone cubic interpolation between received samples; drone drawn with gentle take-off and landing; rover tilted to the terrain with spinning wheels; boot-shaped footprints; radial agent HUD with per-element gauges (use rates derived from the received samples, route figures as published, latest MEDA summary, pressure map estimated barometrically from it); astronaut projected shadow; files.public_rasters attachment read and validated; live Earth and Mars clocks (Mars24 algorithm, NASA GISS); drone rotor spin-up, blur and downwash dust; demo regenerated with rover turns in place and a drone spin-up/climb/descent profile (simulated values). No data or values generated."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "terrain_script_review_corrections",
+      "generation": "AI-assisted review corrections and tests for the configurable terrain region options, requested by the repository owner",
+      "paths": [
+        "scripts/prepare_jezero_terrain.py",
+        "tests/mapping/test_prepare_jezero_terrain.py"
+      ],
+      "use": "Read slope screening limits from the proposed science profiles instead of duplicated constants and label the summary as an estimate; refuse --sync-terrain-yml outside data/sample; drop an undocumented duplicate scale tier; add offline tests for parameter validation, slope screening and terrain.yml regeneration. No terrain data, observation, mission result or media was generated."
     }
   ],
   "generated_media": [

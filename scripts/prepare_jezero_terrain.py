@@ -72,7 +72,10 @@ DEFAULT_LATITUDE_DEG = 18.45
 DEFAULT_LONGITUDE_DEG = 77.45
 DEFAULT_SIDE_M = 128.0
 DEFAULT_RESOLUTION_M = 4.0
-AGENT_SLOPE_LIMITS_DEG = {"human": 10.0, "rover": 20.0, "drone": 90.0}
+# Slope screening limits come from the proposed science profiles (single source of truth,
+# status pending_model_agreement); they are not approved operational limits.
+PROPOSED_PROFILES_PATH = ROOT / "config/planner_profiles.proposed.json"
+SCALE_TO_SIDE_M = {1: 128.0, 2: 256.0, 3: 512.0}
 DEFAULT_JEZERO_BOUNDS = {
     "lat_min_deg": 18.3068,
     "lat_max_deg": 18.6693,
@@ -478,7 +481,8 @@ def prompt_custom_region(
     bounds: dict[str, float] = DEFAULT_JEZERO_BOUNDS,
 ) -> tuple[float, float, float]:
     """Prompt step-by-step for scale, latitude, and longitude using cached Jezero bounds."""
-    size_options = {"1": 128.0, "128": 128.0, "2": 256.0, "256": 256.0, "3": 512.0, "4": 512.0, "512": 512.0}
+    size_options = {str(tier): side for tier, side in SCALE_TO_SIDE_M.items()}
+    size_options.update({str(int(side)): side for side in SCALE_TO_SIDE_M.values()})
     print(f"Escalas ({resolution_m:.1f} m/celda): 1 = 128m (32x32) | 2 = 256m (64x64) | 3 = 512m (128x128)")
     while True:
         raw_size = input(f"Elige escala [1, 2, 3] (o 'escala,lat,lon') [Enter = 1 / {int(default_side_m)}m]: ").strip()
@@ -572,16 +576,39 @@ def request_coordinates(
     return lat, lon
 
 
+def load_slope_limits(profiles_path: Path = PROPOSED_PROFILES_PATH) -> tuple[dict[str, float], str]:
+    """Per-kind max_slope_deg from the proposed profiles, and the file's approval status."""
+    data = json.loads(profiles_path.read_text(encoding="utf-8"))
+    limits: dict[str, float] = {}
+    for profile in data["profiles"].values():
+        kind, limit = profile["agent_kind"], float(profile["max_slope_deg"])
+        if not math.isfinite(limit) or limit <= 0.0:
+            raise ValueError(f"{profiles_path}: max_slope_deg for {kind!r} must be positive and finite")
+        if limits.setdefault(kind, limit) != limit:
+            raise ValueError(f"{profiles_path}: conflicting max_slope_deg for {kind!r}")
+    return limits, str(data.get("status", "unknown"))
+
+
 def estimate_traversability_summary(
-    elevation: np.ndarray, valid_mask: np.ndarray, resolution_m: float
+    elevation: np.ndarray,
+    valid_mask: np.ndarray,
+    resolution_m: float,
+    slope_limits_deg: dict[str, float] | None = None,
+    limits_status: str = "unknown",
 ) -> dict[str, Any]:
-    """Estimate valid elevation range and slope-based traversability fractions."""
+    """Orbital slope screen: share of all cells that are valid and under each kind's slope limit.
+
+    The slope is the central-difference gradient of the prior grid, so it smooths short steps;
+    it is a screening estimate, not a certified traversability or hazard map.
+    """
+    if slope_limits_deg is None:
+        slope_limits_deg, limits_status = load_slope_limits()
     valid_elev = elevation[valid_mask]
     gy, gx = np.gradient(elevation, resolution_m, resolution_m)
     slope_deg = np.degrees(np.arctan(np.hypot(gx, gy)))
     admissible: dict[str, float] = {}
     total = float(elevation.size)
-    for kind, limit in AGENT_SLOPE_LIMITS_DEG.items():
+    for kind, limit in slope_limits_deg.items():
         ok = valid_mask & np.isfinite(slope_deg) & (slope_deg <= limit)
         admissible[kind] = round(float(ok.sum()) / total, 4)
     return {
@@ -589,6 +616,9 @@ def estimate_traversability_summary(
         "elevation_min_m": float(valid_elev.min()) if valid_elev.size else None,
         "elevation_max_m": float(valid_elev.max()) if valid_elev.size else None,
         "admissible_fraction_by_kind": admissible,
+        "slope_limits_deg": dict(slope_limits_deg),
+        "slope_limits_status": limits_status,
+        "note": "Orbital-grid slope screen over all cells; estimate only, not certified passage.",
     }
 
 
@@ -950,7 +980,7 @@ def main() -> None:
     parser.add_argument("--latitude", type=float, default=None, help=f"Mars planetocentric latitude deg N (default {DEFAULT_LATITUDE_DEG})")
     parser.add_argument("--longitude", type=float, default=None, help=f"Mars east longitude deg E (default {DEFAULT_LONGITUDE_DEG})")
     parser.add_argument("--side-m", type=float, default=DEFAULT_SIDE_M)
-    parser.add_argument("--scale", type=int, choices=(1, 2, 3, 4), default=None, help="Size tier (1=128m, 2=256m, 3=512m)")
+    parser.add_argument("--scale", type=int, choices=sorted(SCALE_TO_SIDE_M), default=None, help="Size tier (1=128m, 2=256m, 3=512m)")
     parser.add_argument("--resolution-m", type=float, default=DEFAULT_RESOLUTION_M)
     parser.add_argument("--region-id", type=str, default="jezero_mvp")
     parser.add_argument("--sample-dir", type=Path, default=ROOT / "data/sample")
@@ -969,9 +999,11 @@ def main() -> None:
     reference_dir = args.reference_dir.resolve()
     if sample_dir == reference_dir or sample_dir in reference_dir.parents or reference_dir in sample_dir.parents:
         parser.error("public sample_dir and evaluator reference_dir must be separate")
+    if args.sync_terrain_yml and sample_dir != (ROOT / "data/sample").resolve():
+        # config/terrain.yml points at data/sample; syncing it to another package would desync them.
+        parser.error("--sync-terrain-yml requires the default --sample-dir (data/sample)")
 
-    scale_to_side = {1: 128.0, 2: 256.0, 3: 512.0, 4: 512.0}
-    base_side_m = scale_to_side[args.scale] if args.scale is not None else args.side_m
+    base_side_m = SCALE_TO_SIDE_M[args.scale] if args.scale is not None else args.side_m
     latitude, longitude, side_m = request_region_params(
         interactive=args.interactive,
         latitude=args.latitude,

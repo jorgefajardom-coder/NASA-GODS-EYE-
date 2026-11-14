@@ -606,3 +606,14 @@ Claude Code (Anthropic) assisted the integration owner with per-module ROS
 domain isolation and readiness waits in the integration test fixtures and the
 related log entry. No data, mission result, image, video or audio was
 generated. The affected paths are listed in ai_usage.json.
+
+## Terrain script review corrections
+
+Claude Code (Anthropic) assisted the repository owner in reviewing the
+configurable region options of `scripts/prepare_jezero_terrain.py`: slope
+screening limits now come from `config/planner_profiles.proposed.json` (still
+pending model agreement) and the summary is labelled as an estimate, not
+certified passage; `--sync-terrain-yml` is refused for a package outside
+`data/sample`; an undocumented duplicate scale tier was removed; and offline
+tests were added in `tests/mapping/test_prepare_jezero_terrain.py`. No terrain
+data, observation, mission result, image, video or audio was generated.
