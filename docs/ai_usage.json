@@ -187,6 +187,19 @@
         "docs/integration_log.md"
       ],
       "use": "Retain late event arrivals while validating the sequence-ordered logical history, reject conflicting or invalid event sequences, and test valid delayed events plus tampered packages. Existing replay schema and data attribution remain unchanged. Reconcile the approved main consumer with the same late-event policy; test the recorder-to-viewer oracle round trip and preserve both CI dependency/test sets."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "organizer_coordination_documentation",
+      "generation": "AI-assisted documentation of an owner-required delivery gate; coordination margin is a planning assumption",
+      "paths": [
+        "AGENTS.md",
+        "docs/mission_checklist.md",
+        "docs/team.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Document local organizer notice and explicit endorsement before submission, Jesus/David responsibility, a proposed four-hour review margin, evidence and contextual reminders for every member agent. No external contact, endorsement or scheduled alert is claimed."
     }
   ],
   "generated_media": [],

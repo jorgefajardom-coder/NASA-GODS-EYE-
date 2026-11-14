@@ -215,3 +215,22 @@ Prioriza siempre la mantenibilidad, trazabilidad, calidad, seguridad e integrida
 - Never force-push, overwrite concurrent work or merge another owner's PR
   automatically. Recheck main before publishing; use the reviewed PR path for
   this reconciliation even when GitHub reports main unprotected.
+
+### 15. Local organizer endorsement before submission
+
+- The team requires notifying the local organizer when the submission package
+  is ready, with reasonable time for review and explicit endorsement before
+  final submission. This is an owner-required coordination gate, not a newly
+  verified competition rule. Follow JES-07 / AC-10 in docs/mission_checklist.md.
+- Every member's agent must remind its member at the delivery/scope-freeze cut,
+  whenever reporting readiness to submit, and before final submission while
+  notification or endorsement evidence is missing. Mention the pending action
+  in the handoff; do not mark delivery complete or assume silence is approval.
+- Jesus coordinates contact; David is backup. Plan at least four hours before
+  the intended submission, or the organizer's requested lead time if longer;
+  confirm local availability/deadlines and move this earlier when necessary.
+  If readiness is late, remind immediately and flag the lost review margin.
+- Record notification time, package revision/links, organizer response and any
+  required corrections in delivery evidence. Keep contact details private.
+  Agents provide contextual reminders during work; these instructions do not
+  create a scheduled notification or authorize sending external messages.
