@@ -134,7 +134,12 @@ RAD surface dose rates published by Hassler et al. (2014); only
 `web/scripts/extract-atmosphere.mjs` and the Atmos tab code were AI-assisted, and no value
 is generated. The slope layer (`web/src/lib/slope.ts`), the solid-block display and the optional surroundings (`web/scripts/extract-ctx-context.mjs`, `web/src/components/ContextTerrain.tsx`) were written with Claude through Claude Code; their values are computed from or copied out of the CTX DTM and orthomosaic, none generated.
 The viewer's `source_mode` handling (status chip, gateway package adapter)
-was also written with Claude through Claude Code.
+was also written with Claude through Claude Code. So were the viewer's walk-cycle timing and foot planting
+(`web/src/lib/astronautPose.ts`), the per-agent and base cameras with grab-to-drag and the
+terrain clamp (`web/src/components/CameraBar.tsx`, `FollowCamera.tsx`, `MissionScene.tsx`),
+the distance pins (`AgentLayer.tsx`) and the running crew dose estimate in the telemetry block
+(`web/src/lib/atmos.ts`, `HudGauge.tsx`, `RadialHud.tsx`), which multiplies the published RAD rate by the replay
+time and generates no value.
 
 Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
 by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).
