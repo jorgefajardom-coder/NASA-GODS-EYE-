@@ -625,6 +625,20 @@
         "evidence/planner-pr12-ground-z-20261114"
       ],
       "use": "Trace omitted/default ground z in two integration fixtures; initialize only missing synthetic HUMAN/ROVER starting heights using the explicitly declared SIMULATED public-terrain scene, preserve real explicit z and unknown terrain, and test centred/continuous safety and map-height changes. Public elevations retain source provenance and datum; no NASA observation or physical telemetry is generated or projected. Runtime planner, shared ROS types, mission and recorder are unchanged."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_review_corrections",
+      "generation": "AI-assisted code, regression tests and documentation",
+      "paths": [
+        "src/mge_planning/mge_planning/replan.py",
+        "tests/planning/test_replan_policy.py",
+        "docs/replan_policy.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "README.md"
+      ],
+      "use": "Preserve original mission reserves and phase-aware goal/return/path context, reconcile main documentation conflicts and retain all existing declarations and scientific/integration gates."
     }
   ],
   "generated_media": [],
@@ -689,6 +703,18 @@
         "scripts/dev.sh"
       ],
       "use": "Historical pre-confirmation record retained with its source and scope; contributor tool-use history is now confirmed in the Integration work section of AI_USAGE.md and the corresponding retained-contribution entry above."
+    },
+    {
+      "source_ref": "dev/jesus",
+      "commit": "00c8e44b8b50a6f893c122fff1818eeaf48825bb",
+      "scope": [
+        "src/mge_interfaces",
+        "src/mge_sim/mge_sim/mock_agents.py",
+        "src/mge_bringup/launch/smoke.launch.py",
+        "tests/contract",
+        "scripts/dev.sh"
+      ],
+      "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
     }
   ],
   "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements"

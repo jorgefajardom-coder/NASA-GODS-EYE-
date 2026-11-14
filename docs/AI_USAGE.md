@@ -429,3 +429,10 @@ OpenAI Codex also assisted the owner-authorized local merge commit audit and its
 included-file/validation metadata under the same evidence directory. Raw prior
 test reports remain historical; this does not generate scientific observations,
 approve models or add optional authorship/co-authorship credits.
+
+## PR12 review corrections
+
+OpenAI Codex assisted reconciling the planner branch with reviewed main, preserving
+both sets of mandatory declarations, and adding reserve/goal/route-context guards
+with regression tests. No scientific coefficients, ROS definitions, approval gates
+or execution authorization were changed. Test results describe software checks only.

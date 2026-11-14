@@ -260,6 +260,37 @@ class ReplanPolicy:
                 or active.request_id != r.request_id or active.map_version_used != r.map_version
                 or state.remaining.agent_kind != m.agent_kind):
             return decision(ReplanAction.UNKNOWN, "ACTIVE_CONTEXT_MISMATCH", True)
+        phase_index = list(MissionPhase).index(state.phase)
+        if phase_index < self._phase_index:
+            return decision(ReplanAction.UNKNOWN, "PHASE_ROLLBACK", True)
+        # Availability can decrease with execution; the mission's required
+        # reserves cannot be changed by a resource update or adopted request.
+        for budget in (r.budget, state.remaining):
+            if (budget.reserve_wh != m.budget.reserve_wh
+                    or budget.reserve_oxygen_l != m.budget.reserve_oxygen_l):
+                return decision(ReplanAction.UNKNOWN, "RESERVE_CONTEXT_MISMATCH", True)
+        if r.reserve_time_s != m.reserve_time_s:
+            return decision(ReplanAction.UNKNOWN, "RESERVE_CONTEXT_MISMATCH", True)
+        base = m.return_to if m.return_to is not None else m.start
+        same_xy = lambda a, b: math.dist(a[:2], b[:2]) <= 1e-6
+        # An ordinary return uses the original round-trip request. A direct
+        # contingency return uses a new one-leg request and must be in RETURN.
+        direct_return = state.phase == MissionPhase.RETURN and not r.require_return
+        expected_goal = base if direct_return else m.goal
+        if not same_xy(r.goal, expected_goal):
+            return decision(ReplanAction.UNKNOWN, "ACTIVE_GOAL_MISMATCH", True)
+        if not direct_return and r.require_return != m.require_return:
+            return decision(ReplanAction.UNKNOWN, "ACTIVE_RETURN_MISMATCH", True)
+        if r.require_return:
+            requested_base = r.return_to if r.return_to is not None else r.start
+            if not same_xy(requested_base, base):
+                return decision(ReplanAction.UNKNOWN, "ACTIVE_RETURN_MISMATCH", True)
+        if (not active.outbound_path or not same_xy(active.outbound_path[-1], r.goal)
+                or (r.require_return and (not active.return_path
+                    or not same_xy(active.return_path[0], r.goal)
+                    or not same_xy(active.return_path[-1], base)))
+                or (not r.require_return and active.return_path)):
+            return decision(ReplanAction.UNKNOWN, "ACTIVE_PATH_MISMATCH", True)
         if not math.isfinite(now_s) or now_s < self._last_now:
             return decision(ReplanAction.UNKNOWN, "NON_MONOTONIC_TIME", True)
         self._last_now = now_s
@@ -284,9 +315,6 @@ class ReplanPolicy:
         self._mission = m
         self._map_geometry, self._map_digest = geometry_key, fingerprint
         self._map_snapshot = terrain
-        phase_index = list(MissionPhase).index(state.phase)
-        if phase_index < self._phase_index:
-            return decision(ReplanAction.UNKNOWN, "PHASE_ROLLBACK", True)
         self._phase_index = phase_index
         changed_route = active.route_id != self._route_id
         if changed_route:
