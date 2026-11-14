@@ -49,10 +49,10 @@ def write_json(path, data):
 
 class ReplayWriter:
 
-    def __init__(self, root, run_id, clock_source):
+    def __init__(self, root, run_id, clock_source, source_mode='UNKNOWN'):
+        self.store = RunStore(run_id, source_mode)      # refuses an invalid mode
         self.dir = os.path.join(root, run_id)
         os.makedirs(self.dir)       # raises FileExistsError: never overwrite a run
-        self.store = RunStore(run_id)
         self.clock_source = clock_source
         self.count = 0
         self.first_s = None
@@ -94,7 +94,10 @@ class ReplayWriter:
             terrain_meta=self.store.meta(), events=self.store.events()))
         write_json(os.path.join(self.dir, MANIFEST), self.store.envelope(
             self.last_s, mode='REPLAY',
+            # recorded_from says the records came off a running graph, not
+            # that the mission was live: source_mode says who produced them.
             recorded_from='LIVE',
+            source_mode=self.store.source_mode(),
             clock_source=self.clock_source,
             time_start_sim_s=self.first_s,
             record_count=self.count,

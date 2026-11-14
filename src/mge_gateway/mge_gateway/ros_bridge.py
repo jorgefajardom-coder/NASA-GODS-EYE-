@@ -33,7 +33,9 @@ class RosBridge(Node):
         self.port = self.declare_parameter('port', 8000).value
         self.cors_origins = self.declare_parameter(
             'cors_origins', ['http://localhost:5173']).value
-        self.store = RunStore(self.declare_parameter('run_id', 'mock-run').value)
+        self.store = RunStore(
+            self.declare_parameter('run_id', 'mock-run').value,
+            self.declare_parameter('source_mode', 'UNKNOWN').value)
         self.on_update = None       # set by the web app: fn(kind, payload)
         self.rejected = 0           # messages dropped for invalid numbers
 

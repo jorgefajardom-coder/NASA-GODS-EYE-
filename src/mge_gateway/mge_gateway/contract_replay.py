@@ -9,6 +9,8 @@ import json
 import math
 from pathlib import Path
 
+from mge_gateway.store import DECLARABLE_SOURCE_MODES, mock_evidence
+
 SCHEMA = "1.0.0"
 VIEWER_SCHEMA = "mge-web-0.1-draft"
 PUBLIC_RASTER_SCHEMA = "mge-public-rasters-1.0.0"
@@ -85,6 +87,9 @@ def validate_package(manifest, records, snapshot):
     _need(manifest.get("files") == {"timeline": "timeline.jsonl", "snapshot": "snapshot.json"},
           "UNSUPPORTED_FILE_LAYOUT")
     _need(manifest.get("record_count") == len(records), "RECORD_COUNT_MISMATCH")
+    # Optional: absent in packages recorded before the field existed. A
+    # recording cannot vouch for a validated live mission.
+    _need(manifest.get("source_mode", "UNKNOWN") in DECLARABLE_SOURCE_MODES, "INVALID_SOURCE_MODE")
     events, state, meta = [], None, None
     seen_ids, seen_seqs = set(), set()
     last_time, state_seq, state_map, envelope_map = -math.inf, -1, -1, -1
@@ -253,17 +258,19 @@ def to_viewer(manifest, records, snapshot, public_rasters=None):
                 state.pop("active_route", None)
             versions.add(state["map_version"])
             frames.append({"timestamp_sim_s": t, "mission_state": state})
-    source_mock = str(meta["dataset_id"]).startswith("MOCK") or any(
-        "MOCK" in str(s) for s in meta.get("sources", []))
+    # Packages recorded before source_mode existed only have terrain evidence.
+    declared = manifest.get("source_mode", "UNKNOWN")
+    source_mode = "MOCK" if mock_evidence(meta) else declared
+    source_mock = source_mode == "MOCK"
     viewer_meta = deepcopy(meta)
     viewer_meta["frame_id"] = viewer_meta.pop("header")["frame_id"]
     viewer_manifest = {
         "schema_version": VIEWER_SCHEMA, "icd": "ICD-ROS2-V1",
-        "run_id": run, "mode": "REPLAY", "source_mode": "MOCK" if source_mock else "UNKNOWN",
+        "run_id": run, "mode": "REPLAY", "source_mode": source_mode,
         "clock_source": manifest.get("clock_source", "unknown"),
         "recorded_from": manifest.get("recorded_from"),
-        "provenance": ["replay", *(["simulated"] if source_mock else [])],
-        "illustrative": source_mock, "title": f"REPLAY{' / MOCK' if source_mock else ''}: {run}",
+        "provenance": ["replay", *(["simulated"] if source_mode in ("MOCK", "SIMULATION") else [])],
+        "illustrative": source_mock, "title": f"REPLAY{'' if source_mode == 'UNKNOWN' else ' / ' + source_mode}: {run}",
         "summary": "Converted recorded state; no route or scientific calculations performed.",
         "disclaimer": "Recorded replay. Source clock: " + str(manifest.get("clock_source", "unknown"))
                       + ". Scientific and operational acceptance pending.",

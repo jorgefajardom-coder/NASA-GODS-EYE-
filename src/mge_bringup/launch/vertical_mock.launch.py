@@ -26,6 +26,8 @@ def generate_launch_description():
         'use_sim_time': LaunchConfiguration('use_sim_time'),
     }
     with_agents = {**common, 'agents_file': LaunchConfiguration('agents_file')}
+    # Terrain, agents and mission are MOCK here even with planner:=real.
+    web = {**common, 'source_mode': 'MOCK'}
     return LaunchDescription([
         DeclareLaunchArgument('run_id', default_value='mock-run'),
         DeclareLaunchArgument('agents_file', default_value=default_agents),
@@ -58,11 +60,11 @@ def generate_launch_description():
              parameters=[with_agents]),
         Node(package='mge_gateway', executable='gateway', output='screen',
              parameters=[{
-                 **common,
+                 **web,
                  'host': LaunchConfiguration('host'),
                  'port': ParameterValue(LaunchConfiguration('port'), value_type=int),
              }]),
         Node(package='mge_gateway', executable='replay_recorder', output='screen',
              condition=IfCondition(LaunchConfiguration('record')),
-             parameters=[{**common, 'record_dir': LaunchConfiguration('record_dir')}]),
+             parameters=[{**web, 'record_dir': LaunchConfiguration('record_dir')}]),
     ])

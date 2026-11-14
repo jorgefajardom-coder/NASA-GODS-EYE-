@@ -111,6 +111,7 @@ def create_app(bridge):
         if not active():
             return not_ready()
         return envelope(
+            source_mode=store.source_mode(),
             terrain_meta=store.meta(),
             agents=[{'agent_id': a['agent_id'], 'agent_kind': a['agent_kind']}
                     for a in store.state()['agents']],

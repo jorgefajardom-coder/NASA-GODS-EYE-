@@ -17,7 +17,9 @@ class ReplayRecorder(Node):
         run_id = self.declare_parameter('run_id', 'mock-run').value
         root = self.declare_parameter('record_dir', 'evidence').value
         sim_time = self.get_parameter('use_sim_time').value
-        self.writer = ReplayWriter(root, run_id, 'sim' if sim_time else 'system')
+        source_mode = self.declare_parameter('source_mode', 'UNKNOWN').value
+        self.writer = ReplayWriter(
+            root, run_id, 'sim' if sim_time else 'system', source_mode)
         self.create_subscription(
             MissionState, '/mge/mission/state',
             lambda m: self.record('state', m), LATCHED)
@@ -44,6 +46,9 @@ def main():
     except FileExistsError as e:
         print(f'replay_recorder: {e.filename} already exists; a recorded run is never '
               'overwritten. Use another run_id or record_dir.', file=sys.stderr)
+        sys.exit(1)
+    except ValueError as e:
+        print(f'replay_recorder: {e}', file=sys.stderr)
         sys.exit(1)
     try:
         rclpy.spin(node)

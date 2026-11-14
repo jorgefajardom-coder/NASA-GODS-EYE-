@@ -181,3 +181,28 @@ def test_converters_do_not_modify_their_input():
     assert math.isnan(source['active_route']['oxygen_est_l'])
     assert event_json({'seq': 1, 'detail': 'x'}) == {'seq': 1, 'detail': 'x'}
     assert strict_json({'a': [1.0, 'x', None, True]}) == {'a': [1.0, 'x', None, True]}
+
+
+# Source provenance: who produced the data, separate from LIVE / REPLAY transport.
+
+def test_source_mode_defaults_to_unknown_and_is_declared_by_the_launcher():
+    assert RunStore('run-a').source_mode() == 'UNKNOWN'
+    assert RunStore('run-a', 'SIMULATION').source_mode() == 'SIMULATION'
+    assert RunStore('run-a', 'MOCK').source_mode() == 'MOCK'
+
+
+@pytest.mark.parametrize('meta', [
+    {'dataset_id': 'MOCK-flat-grid', 'sources': []},
+    {'dataset_id': 'jezero', 'sources': ['MOCK synthetic flat grid']},
+])
+def test_mock_terrain_overrides_the_declared_source(meta):
+    store = RunStore('run-a', 'SIMULATION')
+    store.apply_meta({'run_id': 'run-a', 'map_version': 1, **meta})
+    assert store.source_mode() == 'MOCK'
+
+
+def test_live_source_cannot_be_declared():
+    with pytest.raises(ValueError, match='LIVE_BACKEND_UNAVAILABLE'):
+        RunStore('run-a', 'LIVE')
+    with pytest.raises(ValueError, match='UNKNOWN_SOURCE_MODE'):
+        RunStore('run-a', 'REAL')

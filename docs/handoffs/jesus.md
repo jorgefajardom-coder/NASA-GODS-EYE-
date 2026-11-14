@@ -96,3 +96,31 @@ Remaining real acceptance is unchanged: public rasters/dataset, source provenanc
 strict output serializer adoption, scientific model agreement, real mission
 provider/current-pose binding and stop acknowledgement. These fixes establish
 input/replay regression behavior, not scientific or validated LIVE acceptance.
+
+## Typed serialization and source provenance cut
+
+Two of the remaining gateway gates are closed on `feat/integration`, on top of
+main `8afc7bf` (PR #3 merged). ROS stays ICD-ROS2-V1/package 1.0.0 and JSON
+stays 1.0.0; `source_mode` is an optional added field, not a version change.
+That choice needs Jorge's confirmation as the consumer before it is called agreed.
+
+- **Output serializer.** `store.state_json`, `event_json` and `meta_json`
+  replace the broad NaN/infinity-to-null conversion in the gateway and the
+  recorder. A message with a non-finite value outside the three typed cases is
+  dropped whole and logged with its field path (ICD 6.1). `mock_planner` set
+  `min_clearance_m = NaN` on FEASIBLE routes, which the contract forbids; it now
+  reports `0.0`, the lower bound, since the mock evaluates no clearance.
+- **Source provenance.** The gateway manifest and recorded manifests carry
+  `source_mode`. `vertical_mock.launch.py` and the `mock`/`integration` profiles
+  declare MOCK, `simulation` declares SIMULATION, and LIVE cannot be declared.
+
+Validation in the `mge-dev` Jazzy container, on the working tree of this cut:
+`colcon build --symlink-install` built 8 packages; `python3 -m pytest` passed
+426 tests, including the 20 in `tests/integration` (mock vertical, real planner
+vertical and replay package); `python3 scripts/check_repository.py` passed.
+Web tests and build were not run: no file under `web/` changed.
+
+Still open: public raster recording, the real `mge_mission` provider behind
+the unchanged gateway consumer, stop acknowledgement, and viewer adoption of
+`source_mode` (PR #5 prints `recorded_from` and a fixed MOCK disclaimer). These fixes are
+serialization and labelling behavior, not scientific or LIVE acceptance.

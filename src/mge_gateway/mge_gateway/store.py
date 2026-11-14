@@ -15,6 +15,11 @@ import threading
 
 SCHEMA_VERSION = '1.0.0'
 
+# Who produced the data of a run. LIVE is part of the vocabulary but cannot be
+# declared: no validated live backend exists (docs/LAUNCH_PROFILES.md).
+SOURCE_MODES = ('MOCK', 'SIMULATION', 'LIVE', 'UNKNOWN')
+DECLARABLE_SOURCE_MODES = ('MOCK', 'SIMULATION', 'UNKNOWN')
+
 ROUTE_METRICS = ('travel_time_s', 'energy_est_wh', 'oxygen_est_l', 'min_clearance_m',
                  'reserve_time_s', 'reserve_wh', 'reserve_oxygen_l')
 ROUTE_OXYGEN = ('oxygen_est_l', 'reserve_oxygen_l')
@@ -109,6 +114,13 @@ def event_json(event):
 CONVERTERS = {'state': state_json, 'event': event_json, 'terrain_meta': meta_json}
 
 
+def mock_evidence(meta):
+    """True if the terrain metadata itself says the data is a MOCK."""
+    return bool(meta) and (
+        str(meta.get('dataset_id', '')).startswith('MOCK')
+        or any('MOCK' in str(source) for source in meta.get('sources', [])))
+
+
 def unavailable(reason_code, run_id=None, status='NOT_READY'):
     """Envelope used while no run is loaded. It invents no run, map, clock or
     mode: only a run with a mission state may be reported as LIVE or REPLAY."""
@@ -125,8 +137,13 @@ def unavailable(reason_code, run_id=None, status='NOT_READY'):
 
 class RunStore:
 
-    def __init__(self, run_id):
+    def __init__(self, run_id, source_mode='UNKNOWN'):
+        if source_mode == 'LIVE':
+            raise ValueError('NOT_READY: LIVE_BACKEND_UNAVAILABLE')
+        if source_mode not in DECLARABLE_SOURCE_MODES:
+            raise ValueError(f'UNKNOWN_SOURCE_MODE: {source_mode!r}')
         self.run_id = run_id
+        self._declared_source = source_mode
         self._lock = threading.Lock()
         self._state = None
         self._meta = None
@@ -174,6 +191,12 @@ class RunStore:
     def meta(self):
         with self._lock:
             return self._meta
+
+    def source_mode(self):
+        """Declared by the launcher; terrain that says MOCK always wins, so a
+        run on mock data is never reported as a simulation."""
+        with self._lock:
+            return 'MOCK' if mock_evidence(self._meta) else self._declared_source
 
     def events(self, after_seq=0):
         with self._lock:

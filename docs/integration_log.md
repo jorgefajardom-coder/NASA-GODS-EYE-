@@ -76,3 +76,15 @@ computational acceptance evidence, not mission safety or scientific validation.
   Exact commands, source references and remaining gates: [Jesus handoff](handoffs/jesus.md#pr-3-correction-and-reconciliation-cut).
 - No new NASA observation, scientific model approval or validated LIVE mission
   is claimed. Internal hours remain outside Git.
+
+## Typed serialization and source provenance, 2026-11-14
+
+- Base: main `8afc7bf` (PR #3 merged). Owner: Jesus, on `feat/integration`.
+- Gateway and recorder reject non-finite values outside the typed NaN cases of
+  ICD section 5 instead of nulling them; `mock_planner` no longer emits NaN
+  clearance on FEASIBLE routes. Manifests carry `source_mode`
+  (MOCK/SIMULATION/UNKNOWN, never LIVE). Wire versions unchanged.
+- Jazzy container `mge-dev`: 8 packages built; 426 tests passed, 20 of them ROS
+  integration; repository check passed. Web suite not run (no web change).
+- Next dependency: Jorge reads `source_mode` in the viewer; public raster
+  recording; real mission provider. No mission run or scientific result here.

@@ -134,3 +134,14 @@ The late-event regression also exercises the real ReplayWriter through the
 strict offline contract reader and viewer oracle added by the approved main
 baseline. That consumer now compares snapshot history by sequence while
 preserving arrival timestamps and all existing identity/provenance guards.
+
+## Gateway typed serialization and source provenance
+
+Claude Code (Anthropic) assisted the integration owner with the typed JSON
+converters in the gateway store, their adoption by the ROS bridge and replay
+recorder, the `source_mode` field in the gateway manifest, recorded manifests,
+launch files and offline validators, the mock planner clearance correction,
+the new unit/contract/integration test cases and the related documentation.
+Test inputs are illustrative values and relabelled copies of the MOCK fixture;
+no scientific dataset, mission result, image, video or audio was generated.
+The affected paths are listed in ai_usage.json.

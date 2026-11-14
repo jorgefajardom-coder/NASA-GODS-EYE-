@@ -187,6 +187,36 @@
         "docs/integration_log.md"
       ],
       "use": "Retain late event arrivals while validating the sequence-ordered logical history, reject conflicting or invalid event sequences, and test valid delayed events plus tampered packages. Existing replay schema and data attribution remain unchanged. Reconcile the approved main consumer with the same late-event policy; test the recorder-to-viewer oracle round trip and preserve both CI dependency/test sets."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "gateway_serialization_and_provenance",
+      "generation": "AI-assisted code, tests and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_gateway/mge_gateway/store.py",
+        "src/mge_gateway/mge_gateway/ros_bridge.py",
+        "src/mge_gateway/mge_gateway/recorder.py",
+        "src/mge_gateway/mge_gateway/replay.py",
+        "src/mge_gateway/mge_gateway/replay_check.py",
+        "src/mge_gateway/mge_gateway/contract_replay.py",
+        "src/mge_gateway/mge_gateway/app.py",
+        "src/mge_sim/mge_sim/mock_planner.py",
+        "src/mge_bringup/mge_bringup/launch_profiles.py",
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "tests/unit/test_store.py",
+        "tests/unit/test_replay.py",
+        "tests/contracts/test_gateway.py",
+        "tests/contract/test_replay_conversion.py",
+        "tests/contract/test_configuration.py",
+        "tests/integration/test_replay_package.py",
+        "docs/ICD.md",
+        "docs/REPLAY_CONTRACT.md",
+        "docs/LAUNCH_PROFILES.md",
+        "docs/INTEGRATION_MATRIX.md",
+        "docs/handoffs/jesus.md",
+        "docs/integration_log.md"
+      ],
+      "use": "Reject non-finite values outside the typed NaN cases of the ICD instead of converting them to null, and record who produced a run (MOCK, SIMULATION or UNKNOWN, never LIVE) in the gateway manifest and replay packages. ROS and JSON schema versions are unchanged; no scientific observation or mission result is generated."
     }
   ],
   "generated_media": [],
