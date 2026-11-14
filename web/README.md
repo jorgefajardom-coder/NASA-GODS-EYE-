@@ -7,8 +7,9 @@ terrain, with a saved-run replay that needs no ROS, Gazebo or network.
 
 ## Status
 
-Early P0 increment, **REPLAY mode only**. The live link is shown as offline because the
-API gateway does not exist yet.
+Early P0 increment, **REPLAY mode only**. The live link is shown as offline: the gateway
+on `feat/integration` is not connected to the viewer yet. Two saved runs can be opened
+(see the Run selector below).
 
 | Part | What it is |
 |---|---|
@@ -16,6 +17,7 @@ API gateway does not exist yet.
 | Mission, agents, routes, events | **Simulated** (`scripts/make-demo-fixture.mjs`); routes come from a slope-constrained search inside the generator, not from the planner |
 | Adverse case | **Synthetic**: a scarp added to the hidden evaluator reference; it is not in the CTX data |
 | POIs C and D | Fictitious |
+| Gateway replay `mock-vertical-001` | **Recorded MOCK run** from Jesús's `replay_recorder`: flat synthetic grid, straight-line MOCK planner, no Mars data |
 | Uncertainty, budgets, consumption | Illustrative assumptions, not certified limits |
 
 The terrain crop is provisional: the data owner's processed package replaces it.
@@ -100,9 +102,9 @@ visual only and labelled. The viewer never plans routes.
 | Test | Status |
 |---|---|
 | J-01 coordinates | Automated on the fixture's control points; the data owner's three points not received |
-| J-02 replanning | Automated (data logic) and checked in the browser on 2026-11-14 |
+| J-02 replanning | Automated (data logic) and checked in the browser on 2026-11-14, on the demo and on the gateway replay (route r1 invalidated, r2 on map v2) |
 | J-03 restrictions | Automated for the list, details and alert logic; not exercised in the UI with a non-feasible route |
-| J-04 replay | Production build opened from a local preview without API or ROS |
+| J-04 replay | Production build opened from a local preview without API or ROS; the build also bundles the gateway package from `../data/sample/replay` |
 | J-05 accessibility | Checked at 1366×768 only |
 | J-06 render | Not done |
 
@@ -123,7 +125,14 @@ The code, scripts, tests and the simulated fixture were written with AI assistan
 
 Terrain detail is limited by the 20 m source: close-ups look smooth. The 1 m HiRISE DTM covers this area and could provide real detail, but it is the hidden evaluator reference and must not reveal unknown terrain in the normal view.
 
-No gateway, planner routes, mission profiles or processed terrain package from the other
-workstreams yet. Percentages are relative to the first received sample, not to a
-certified budget. Astronaut posture is covered by tests on the real model, but the walk in a live window at full frame rate has not been reviewed by eye. No
-browser automation tests. Tactical map, scanner and weather are not started.
+Not consumed yet from the other workstreams: the live gateway (`feat/integration`), routes
+from the planner now on `main`, mission profiles and the processed terrain package. Gateway
+packages carry no rasters yet, so a recorded run can only show a declared flat grid.
+Percentages are relative to the first received sample, not to a certified budget.
+
+Astronaut posture (vertical torso, level shoulders and pelvis) is covered by tests on the
+real model and was checked by eye in the follow view at 20×, but only in the dev server on
+one machine. No browser automation tests. Candidate NASA layers found in the reference
+review (Mars Trek CTX orthomosaic, USGS SIM 3464 geology, Perseverance raw images) are
+documented in `../docs/data_sources.md` and not yet shown. Tactical map, scanner and
+weather are not started.

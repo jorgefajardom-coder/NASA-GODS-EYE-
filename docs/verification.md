@@ -10,7 +10,7 @@ guards only. These results are not evidence of a Mars mission or EVA safety.
   execution environment on this Windows host; the restricted attempt stalled.
 - `python scripts/check_repository.py`: package XML, Python syntax, JSON,
   declared AI paths and local documentation links.
-- Frontend: `npm test` (2 tests); `npm run build` (TypeScript + Vite).
+- Frontend: `npm test` (64 Vitest tests on feat/ux); `npm run build` (TypeScript + Vite).
 - `git diff --check`: whitespace validation.
 
 Known nonblocking warnings: Starlette deprecates its httpx TestClient integration;
@@ -50,6 +50,17 @@ compiled all eight packages, inspected the eight definitions and passed all ten
 ROS contract tests. Python/web jobs passed. Its final empty package-local test
 discovery step exited with code 5; CI now explicitly uses the actual root
 pytest suites and ROS contract tests rather than claiming package-local tests.
+
+## Web viewer verification (feat/ux)
+
+64 Vitest tests cover frame conversion, replay state and replanning, the stale-route
+guard, management and alert logic, terrain smoothing, display easing, the gateway
+package adapter on the real `mock-vertical-001` files, and astronaut posture measured
+on the real model (torso lean, shoulder and pelvis roll under 1 degree). Checked by
+hand in the dev server on 14 November 2026: both saved runs load, the gateway replay
+reaches its last recorded state, Credits list the NASA reference resources, and the
+follow camera keeps the astronaut steady at 20x. Not validated: browser automation,
+J-05 beyond 1366x768, J-06, and any live gateway connection.
 
 ## Planner branch verification
 

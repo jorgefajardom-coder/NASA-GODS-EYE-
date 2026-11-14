@@ -1,6 +1,9 @@
 # Data source register (Daniel)
 
-No NASA datasets are included yet. Templates are not verified manifests.
+No verified NASA dataset manifest is included yet. Templates are not verified manifests.
+Provisional exception: the web viewer carries a 2 km crop of the Mars 2020 TRN CTX DTM
+(`web/scripts/data/ctx_crop.json`; source file and SHA-256 in `THIRD_PARTY_NOTICES.md`)
+until the processed package replaces it.
 Product selection, license, precise CRS/datum, crop and checksums are pending.
 
 | Candidate from team guides | Role | Next action / limitation |

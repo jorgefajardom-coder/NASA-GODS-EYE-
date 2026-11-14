@@ -135,7 +135,8 @@ confirm and implement it. It cannot be assumed from a topic name.
 
 ## 6. Web contract and current availability behavior
 
-The implemented gateway surface and `web/src/lib/contracts.ts` share the following
+The implemented gateway surface and the web viewer (`RunEnvelope` and
+`UnavailableResponse` in `web/src/types/icd.ts`) share the following
 inactive envelope (`schema_version` applies to JSON, not the ROS wire messages):
 
 ```json
@@ -163,8 +164,9 @@ A snapshot error may echo a requested run ID without claiming that run exists.
 | `POST /api/mission/goal` | Accepts a JSON object at the draft surface; always HTTP 503, no command accepted or forwarded |
 | `WS /api/events` | Accepts, sends inactive envelope, closes with 1013 |
 
-The web scaffold sends no API requests and renders no fabricated terrain, route
-or results. Operational manifest/snapshot/goal models, ROS executor, serializer,
+The web viewer sends no API requests yet; it only plays static saved runs and
+labels them REPLAY. It shows a route as current only when it was computed for the
+current map version (`isCurrentRoute` in `web/src/lib/format.ts`). Operational manifest/snapshot/goal models, ROS executor, serializer,
 event recorder and polling/reconnect logic are pending. Do not infer operational
 goal fields from the permissive starter JSON body. Typed adapters must preserve
 ROS field names, convert non-human oxygen NaN to JSON null, and map kind casing.
@@ -186,7 +188,10 @@ included by this scaffold.
 
 Target replay layout is `run_id/manifest.json`, `timeline.jsonl`, `snapshot.json`
 and referenced rasters. Offline playback must consume recorded events without
-new ROS state and display REPLAY. GitHub Pages serves static web/replay only;
+new ROS state and display REPLAY. The web viewer reads `manifest.json` and
+`timeline.jsonl` of a package under `data/sample/replay/<run_id>/`
+(`web/src/data/gatewayReplay.ts`); until rasters travel in the package it can
+only draw a terrain the package declares, such as the MOCK flat grid. GitHub Pages serves static web/replay only;
 ROS and FastAPI require a separate host for remote LIVE operation.
 
 Build all eight ROS definitions on Jazzy, run the imported ROS contract checks,
