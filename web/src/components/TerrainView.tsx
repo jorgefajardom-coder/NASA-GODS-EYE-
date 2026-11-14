@@ -276,7 +276,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
 }
 
 /** Loads the draped image once per URL (sRGB, mipmapped, sharp at grazing angles). */
-function useImageryTexture(url: string | null): THREE.Texture | null {
+export function useImageryTexture(url: string | null): THREE.Texture | null {
   const gl = useThree((st) => st.gl);
   const [tex, setTex] = useState<THREE.Texture | null>(null);
   useEffect(() => {

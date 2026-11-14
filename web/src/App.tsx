@@ -86,7 +86,9 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showImagery, setShowImagery] = useState(true);
   const [surfaceDetail, setSurfaceDetail] = useState(true);
   const [trueScale, setTrueScale] = useState(true);
+  const [showContext, setShowContext] = useState(false);
   const imageryUrl = m.imagery && showImagery ? assetUrl(`${RUN_DIR}/${m.imagery.file}`) : null;
+  const contextImageUrl = m.context?.image && showImagery ? assetUrl(`${RUN_DIR}/${m.context.image}`) : null;
   const [cameraSmoothing, setCameraSmoothingState] = useState<CameraSmoothing>(() => {
     try {
       const v = localStorage.getItem('mge.cameraSmoothing');
@@ -187,6 +189,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         imageryUrl={imageryUrl}
         surfaceDetail={surfaceDetail}
         trueScale={trueScale}
+        contextImageUrl={contextImageUrl}
+        showContext={showContext}
         geology={mode === 'geology' && showGeoMap && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
         cutaway={mode === 'geology' && showCut && bundle.geology ? bundle.geology : null}
       />
@@ -236,6 +240,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             onSurfaceDetail={setSurfaceDetail}
             trueScale={trueScale}
             onTrueScale={setTrueScale}
+            surroundings={bundle.context ? showContext : null}
+            onSurroundings={setShowContext}
           />
         </div>
 

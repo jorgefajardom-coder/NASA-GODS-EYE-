@@ -43,6 +43,10 @@
   "atmosphere": {
     "file": "atmosphere.json"
   },
+  "context": {
+    "file": "context.json",
+    "image": "context_ortho.png"
+  },
   "terrain_meta": {
     "run_id": "demo-sim-002",
     "dataset_id": "mars2020-trn-ctx-dtm-20m",

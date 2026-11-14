@@ -16,6 +16,7 @@ import { RouteOverlay } from './RouteOverlay';
 import { AgentLayer } from './AgentLayer';
 import { SiteMarkers } from './SiteMarkers';
 import { BaseModel } from './BaseModel';
+import { ContextTerrain } from './ContextTerrain';
 
 interface Props {
   bundle: ReplayBundle;
@@ -40,11 +41,18 @@ interface Props {
   surfaceDetail: boolean;
   /** Agents at true size at every zoom (no distance enlargement). */
   trueScale: boolean;
+  /** Orthomosaic of the context terrain (null = plain shading, e.g. when imagery is off). */
+  contextImageUrl: string | null;
+  /** Draw the 20 km surroundings (the block walls are then hidden under them). */
+  showContext: boolean;
   /** Schematic cut-away strata block around the terrain (Ground layers tab). */
   cutaway: GeologyData | null;
 }
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale }: Props) {
+/** Horizon haze colour: dusty Martian daytime sky, darkened so the panels stay readable. */
+const SKY = '#6e5242';
+
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
@@ -54,17 +62,25 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const followed = view.state?.agents.some((a) => a.agent_id === followAgentId) ? followAgentId : null;
   const smoothing = CAMERA_SMOOTHING[cameraSmoothing];
   const extent = Math.max(meta.rows, meta.cols) * meta.resolution_m;
+  const ctx = showContext ? bundle.context : undefined;
+  // Far plane and haze reach the edge of the context terrain when there is one.
+  const reach = ctx ? Math.max(ctx.frame.rows, ctx.frame.cols) * ctx.frame.resolution_m * 0.75 : extent * 6;
+  const hole = useMemo(
+    () => ({ origin_x_m: meta.origin_x_m, origin_y_m: meta.origin_y_m, width_m: meta.cols * meta.resolution_m, height_m: meta.rows * meta.resolution_m }),
+    [meta],
+  );
 
   return (
     <Canvas
       className="scene"
-      camera={{ position: [-0.75 * extent, 1.25 * extent, 1.7 * extent], fov: 38, near: 1, far: extent * 10 }}
+      camera={{ position: [-0.75 * extent, 1.25 * extent, 1.7 * extent], fov: 38, near: 1, far: Math.max(extent * 10, reach * 2) }}
       dpr={[1, 1.75]}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
       aria-label="3D view of the mission area"
     >
-      <color attach="background" args={['#090D11']} />
-      <fog attach="fog" args={['#090D11', extent * 2.5, extent * 6]} />
+      {/* Dusty daytime haze toward the horizon (display only, not an atmospheric model). */}
+      <color attach="background" args={[SKY]} />
+      <fog attach="fog" args={[SKY, extent * 2.5, reach]} />
       <hemisphereLight args={['#ffe2c8', '#2a1a12', 0.4]} />
       <directionalLight position={[-extent * 1.2, extent * 0.55, extent * 0.35]} intensity={2.6} color="#fff1e0" />
       <TerrainView
@@ -80,7 +96,16 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         overlay={geoTexture && geology ? { texture: geoTexture, extent: geology.data.frame } : null}
         surfaceDetail={surfaceDetail}
       />
-      {cutaway && <CutawayBlock meta={meta} heights={grid} geology={cutaway} verticalExaggeration={exaggeration} />}
+      {ctx && (
+        <ContextTerrain
+          data={ctx}
+          imageUrl={contextImageUrl}
+          hole={hole}
+          verticalExaggeration={exaggeration}
+        />
+      )}
+      {/* Always a solid block; schematic strata only in the Ground layers tab. Hidden under the surroundings. */}
+      {!ctx && <CutawayBlock meta={meta} heights={grid} geology={cutaway} verticalExaggeration={exaggeration} />}
       <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />
       {bundle.manifest.pois.filter((p) => p.kind === 'base').map((p) => (
         <BaseModel key={p.id} site={p.position} verticalExaggeration={exaggeration} groundHeight={groundHeight} />

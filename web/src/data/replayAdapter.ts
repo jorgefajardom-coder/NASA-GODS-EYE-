@@ -2,7 +2,7 @@ import { WEB_SCHEMA_VERSION } from '../types/icd';
 import type { RouteDecision } from '../types/icd';
 import type { GeologyData } from '../lib/geology';
 import { parseAtmosphere } from '../lib/atmos';
-import type { RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
+import type { ContextTerrainData, RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
 import { normalizeEvents } from '../lib/replay';
 import { resolveSourceMode } from '../lib/provenance';
 import { fromGatewayPackage, isGatewayManifest, parseJsonLines } from './gatewayReplay';
@@ -120,6 +120,17 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
       bundle.atmosphere = parseAtmosphere(await getJson<unknown>(assetUrl(`${dir}/${manifest.atmosphere.file}`))) ?? undefined;
     } catch {
       /* the Atmos tab then says no data is available */
+    }
+  }
+  if (manifest.context) {
+    // Optional surroundings: the run still opens without them.
+    try {
+      const ctx = await getJson<ContextTerrainData>(assetUrl(`${dir}/${manifest.context.file}`));
+      const f = ctx.frame;
+      const sameZ = f.local_z_offset_m === (manifest.local_z_offset_m ?? f.local_z_offset_m);
+      if (sameZ && ctx.heights.length === f.rows * f.cols) bundle.context = ctx;
+    } catch {
+      /* the crop is drawn alone */
     }
   }
   return bundle;

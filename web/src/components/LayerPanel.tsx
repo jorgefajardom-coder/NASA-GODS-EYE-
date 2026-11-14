@@ -63,6 +63,9 @@ interface OptionsProps {
   onSurfaceDetail: (v: boolean) => void;
   trueScale: boolean;
   onTrueScale: (v: boolean) => void;
+  /** Surroundings toggle; null when the run has none. */
+  surroundings: boolean | null;
+  onSurroundings: (v: boolean) => void;
 }
 
 /** View options and legend, collapsed by default so they do not cover the terrain. */
@@ -106,6 +109,12 @@ export function ViewOptions(p: OptionsProps) {
       <label className="check">
         <input type="checkbox" checked={p.surfaceDetail} onChange={(e) => p.onSurfaceDetail(e.target.checked)} /> Ground grain <Info text="Cosmetic close-range detail (ripples, grit, stones). Not measured: the terrain data stops at 5-20 m." />
       </label>
+      {p.surroundings != null && (
+        <label className="check">
+          <input type="checkbox" checked={p.surroundings} onChange={(e) => p.onSurroundings(e.target.checked)} /> Surroundings (20 km){' '}
+          <Info text="The same CTX DTM and orthomosaic around the mission area, averaged to 100 m and 40 m. Real data, context only: not part of the mission map. Off: the area is drawn as a solid block." />
+        </label>
+      )}
       <label className="check">
         <input type="checkbox" checked={p.trueScale} onChange={(e) => p.onTrueScale(e.target.checked)} /> True-size agents{' '}
         <Info text="Astronaut 1.9 m, rover 4.1 m, drone 1.2 m rotor span, base at real size. Off: agents are enlarged with camera distance (up to 14x) so they stay visible on the 2 km map; visual only." />

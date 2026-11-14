@@ -605,6 +605,8 @@ const manifest = {
   geology: { file: 'geology.json' },
   // Weather and radiation context (scripts/extract-atmosphere.mjs: MEDA, REMS, RAD). Display only.
   atmosphere: { file: 'atmosphere.json' },
+  // Surroundings from the same CTX DTM (20 km, 100 m box average) and orthomosaic (40 m). Context only.
+  context: { file: 'context.json', image: 'context_ortho.png' },
   terrain_meta: {
     run_id: RUN_ID, dataset_id: 'mars2020-trn-ctx-dtm-20m', frame_id: 'map', map_version: 1,
     origin_x_m: OX, origin_y_m: OY, resolution_m: RES, rows: ROWS, cols: COLS,

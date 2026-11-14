@@ -66,6 +66,8 @@ export interface ReplayManifest {
   geology?: { file: string };
   /** Atmosphere and radiation context (scripts/extract-atmosphere.mjs), drawn in the Atmos tab. */
   atmosphere?: { file: string };
+  /** Surroundings of the crop from the same DTM, coarser (scripts/extract-ctx-context.mjs). Context only. */
+  context?: { file: string; image?: string };
   vertical_exaggeration_default: number;
   control_points: ControlPoint[];
   pois: PointOfInterest[];
@@ -117,4 +119,13 @@ export interface ReplayBundle {
   geology?: GeologyData;
   /** Present when the manifest declares an atmosphere file and it loaded and validated. */
   atmosphere?: AtmosphereData;
+  /** Present when the manifest declares a context terrain and it loaded. */
+  context?: ContextTerrainData;
+}
+
+/** Context terrain around the crop: local ENU heights (row 0 = south, null = NoData). */
+export interface ContextTerrainData {
+  note: string;
+  frame: { origin_x_m: number; origin_y_m: number; resolution_m: number; rows: number; cols: number; local_z_offset_m: number };
+  heights: (number | null)[];
 }
