@@ -30,6 +30,31 @@ blender -b --factory-startup --python scripts/blender/clean_nasa_model.py -- per
 blender -b --factory-startup --python scripts/blender/clean_nasa_model.py -- ingenuity.glb <clean_tex>/ingenuity public/assets/models/drone.glb 1.0 512 0
 ```
 
+### Second pass: marks the Blender cleanup missed
+
+Two textures kept agency marks after the Blender export:
+
+- the rover's `blade` (the helicopter stowed under the rover), which still showed the
+  agency plate, the national flag and the agency logo;
+- the drone's `chopper_sp_r2` (blade roughness map), which still showed two agency logos.
+
+`../strip-glb-branding.mjs` removes them without Blender and without synthesising any
+image. It copies the drone's already cleaned `blade` sheet (same 512 × 256 layout) into the
+rover, and fills pixels x 440–511, y 172–255 of the roughness map with its plain
+background RGB (166, 161, 157). Every other buffer view stays byte-identical, and a second run changes
+nothing. Run it from `web/` after re-exporting:
+
+```sh
+node scripts/strip-glb-branding.mjs
+```
+
+| File | SHA-256 after cleanup |
+|---|---|
+| `public/assets/models/rover.glb` | `9588ad8239fc025bd5a210380fa84c2f61a5f343d4529ab4edd238fde8c0fcbc` |
+| `public/assets/models/drone.glb` | `48a4720a2f3ae234d86d7eb85defb2311e5e21a678588d04058b766ec574e219` |
+
+`tests/modelBranding.test.ts` fails if any of these regions shows marks again.
+
 The geometry and remaining textures are NASA/JPL-Caltech's and are not AI-generated; the
 cleanup and preparation scripts were written with AI assistance (see `docs/AI_USAGE.md`).
 

@@ -285,6 +285,20 @@
         "THIRD_PARTY_NOTICES.md"
       ],
       "use": "Web mission viewer that replaced the scaffold grid, terrain crop scripts, tests and the simulated replay fixture. The demo replay is simulated data; terrain heights come from NASA/USGS and are not generated."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_tests_and_deterministic_asset_cleanup",
+      "generation": "AI-assisted generation during integration review; deterministic edit, no image synthesised",
+      "paths": [
+        "web/scripts/glb.mjs",
+        "web/scripts/glb.d.mts",
+        "web/scripts/strip-glb-branding.mjs",
+        "web/tests/modelBranding.test.ts",
+        "web/public/assets/models/rover.glb",
+        "web/public/assets/models/drone.glb"
+      ],
+      "use": "Remove agency marks the Blender cleanup missed: the rover's blade sheet is replaced by the drone's already cleaned sheet and two logos on the drone blade roughness map are filled with its plain background. The models stay NASA/JPL-Caltech's and are not AI-generated; a regression test checks the cleaned regions."
     }
   ],
   "generated_media": [],
@@ -298,7 +312,8 @@
     "Contract reconciliation synthetic raster attachments and metadata exist only in explicitly labelled tests; no NASA dataset, measured outcome, image, video or audio is generated.",
     "Terrain arrays in data/sample/ and data/reference/ are derived via GDAL/rasterio from observational NASA PDS / USGS Astrogeology products, not AI-generated.",
     "data/sample/preview_ctx_prior.png is a deterministic grayscale plot of the observational MRO/CTX DEM array, not an AI-generated image.",
-    "The Codex frontend scaffold in web/ was replaced by the mission viewer; its stale-route guard and ICD-WEB-V1 envelope types were moved into web/src/lib/format.ts and web/src/types/icd.ts."
+    "The Codex frontend scaffold in web/ was replaced by the mission viewer; its stale-route guard and ICD-WEB-V1 envelope types were moved into web/src/lib/format.ts and web/src/types/icd.ts.",
+    "web/public/assets/models/rover.glb and drone.glb are official NASA/JPL-Caltech models. Their branding cleanup is a flat fill or a copy of an already cleaned texture, not generative inpainting, so they contain no AI-generated imagery."
   ],
   "retained_contributions": [
     {

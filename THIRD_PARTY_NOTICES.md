@@ -61,6 +61,5 @@ Sun, V., and Stack, K., 2020, Geologic map of Jezero crater and the Nili Planum 
 Official 3D models by NASA/JPL-Caltech: "Mars Perseverance Rover, 3D Model" (https://science.nasa.gov/resource/mars-perseverance-rover-3d-model/) and "Mars Ingenuity Helicopter, 3D Model" (https://science.nasa.gov/resource/mars-ingenuity-helicopter-3d-model/).
 
 - Files: `web/public/assets/models/rover.glb`, `web/public/assets/models/drone.glb`.
-- Modifications: all agency branding on the textures (logos, flag, mission plaques, perforated agency names, commemorative and brand text) was painted out with the surrounding plain surface, as the competition rules forbid NASA branding in the delivery; the rover was decimated to about 35 % and textures limited to 512 px; the rover was turned to face +X. Details and checksums in `web/scripts/blender/README.md`.
+- Modifications: all agency branding on the textures (logos, flag, mission plaques, perforated agency names, commemorative and brand text) was painted out with the surrounding plain surface, as the competition rules forbid NASA branding in the delivery; the rover was decimated to about 35 % and textures limited to 512 px; the rover was turned to face +X. Marks the Blender pass missed (the rover's stowed-helicopter blade sheet and the drone's blade roughness map) were then removed by `web/scripts/strip-glb-branding.mjs`. Details and checksums in `web/scripts/blender/README.md`.
 - Use of NASA imagery and models follows NASA's media usage guidelines; no NASA endorsement is implied.
-

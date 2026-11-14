@@ -62,6 +62,12 @@ only `extract-geology.mjs` and the viewer code were AI-assisted.
 The rover and drone models (`web/public/assets/models/rover.glb`, `drone.glb`) are official
 NASA/JPL-Caltech models, not AI-generated; the Blender scripts that removed their branding,
 decimated and exported them (`web/scripts/blender/`) were AI-assisted.
+During integration review, Claude through Claude Code also wrote
+`web/scripts/strip-glb-branding.mjs` (with `web/scripts/glb.mjs` and `glb.d.mts`) and
+`web/tests/modelBranding.test.ts`. They remove the marks the Blender pass missed: the
+rover's blade sheet is replaced with the drone's already cleaned sheet, and two logos on the
+drone blade roughness map are filled with its plain background. This is a deterministic flat
+fill or copy, not generative inpainting, so the models still contain no AI-generated imagery.
 
 Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
 by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).
