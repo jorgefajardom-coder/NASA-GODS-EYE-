@@ -19,7 +19,8 @@ export interface CalmOptions {
   residualLeanDeg: number;
 }
 
-export const CALM: CalmOptions = { sway: 0, bounce: 0.5, residualLeanDeg: 0 };
+// bounce 0.1: the moon_walk hop is almost removed (a little is kept so the legs do not sink at full stride).
+export const CALM: CalmOptions = { sway: 0, bounce: 0.1, residualLeanDeg: 0 };
 
 const ROTATION_TRACK = /^(Center|Hip|Spine_[123]|[LR]_Clevicle)\d+_\d+\.quaternion$/;
 const HIPS_POSITION_TRACK = /^Center\d+_\d+\.position$/;

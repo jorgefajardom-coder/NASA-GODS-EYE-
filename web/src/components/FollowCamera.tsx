@@ -14,6 +14,8 @@ interface Props {
 const DISTANCE_M = 16;
 const HEIGHT_M = 7;
 const LOOK_AT_HEIGHT_M = 2.6;
+/** Minimum easing of the camera's vertical follow (s). */
+const VERTICAL_TAU_S = 0.45;
 
 /**
  * Third-person follow view. It reads the drawn (already eased) agent group from the
@@ -62,7 +64,12 @@ export function FollowCamera({ agentId, smoothingS }: Props) {
       return;
     }
     // Move camera and orbit target together so the user's chosen angle and zoom are kept.
-    delta.current.copy(goal.current).sub(controls.target).multiplyScalar(dampFactor(dt, smoothingS));
+    delta.current.copy(goal.current).sub(controls.target);
+    // Horizontal follow uses the chosen smoothing; vertical changes (steps, terrain relief) are
+    // always eased more slowly so the view does not jerk up and down.
+    const kh = dampFactor(dt, smoothingS);
+    const kv = dampFactor(dt, Math.max(smoothingS * 2, VERTICAL_TAU_S));
+    delta.current.set(delta.current.x * kh, delta.current.y * kv, delta.current.z * kh);
     controls.target.add(delta.current);
     camera.position.add(delta.current);
   });

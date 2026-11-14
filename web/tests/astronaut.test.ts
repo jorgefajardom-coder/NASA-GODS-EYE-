@@ -138,7 +138,7 @@ describe('calmed walk and idle', () => {
     expect(raw.pelvisSwing).toBeGreaterThan(5);
     expect(calm.pelvisSwing).toBeLessThan(0.5);
     expect(calm.shoulderSwing).toBeLessThan(0.5);
-    expect(calm.hipSwing).toBeLessThan(raw.hipSwing * 0.6);
+    expect(calm.hipSwing).toBeLessThan(raw.hipSwing * 0.15); // the hop is almost removed
   });
 
   it('stands upright when idle', () => {
