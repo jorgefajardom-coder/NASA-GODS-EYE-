@@ -5,7 +5,7 @@ import { fmtSimTime } from '../lib/format';
 import { RUNS } from '../data/replayAdapter';
 import { displayState } from '../lib/provenance';
 
-export type UiMode = 'exploration' | 'geology' | 'replay';
+export type UiMode = 'exploration' | 'geology' | 'atmos' | 'replay';
 
 function terrainLabel(m: ReplayManifest): string {
   const t = m.terrain_meta;
@@ -92,7 +92,7 @@ export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, 
 const TABS: Array<{ id: string; label: string; mode?: UiMode; why?: string }> = [
   { id: 'exploration', label: 'Exploration', mode: 'exploration' },
   { id: 'geology', label: 'Ground layers', mode: 'geology' },
-  { id: 'atmos', label: 'Atmos', why: 'No weather data delivered yet' },
+  { id: 'atmos', label: 'Atmos', mode: 'atmos' },
   { id: 'replay', label: 'Mission replay', mode: 'replay' },
 ];
 

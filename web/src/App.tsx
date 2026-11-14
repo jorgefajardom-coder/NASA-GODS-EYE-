@@ -21,6 +21,7 @@ import { DetailsPanel } from './components/DetailsPanel';
 import { HUD_MAP_PX, Vitals } from './components/Vitals';
 import { EventInspector } from './components/EventInspector';
 import { GeologyDetails, GeologyList } from './components/GeologyPanel';
+import { AtmosDetails, AtmosList } from './components/AtmosPanel';
 import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
@@ -198,6 +199,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR && !!bundle.rasters.reference} />
           {mode === 'geology' ? (
             <GeologyList data={bundle.geology} selected={geoUnit} onSelect={setGeoUnit} showMap={showGeoMap} onShowMap={setShowGeoMap} showCut={showCut} onShowCut={setShowCut} />
+          ) : mode === 'atmos' ? (
+            <AtmosList data={bundle.atmosphere} t={t} duration={duration} />
           ) : (
             <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
           )}
@@ -251,6 +254,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             <EventInspector view={view} onSeek={seek} />
           ) : mode === 'geology' ? (
             <GeologyDetails data={bundle.geology} unitId={geoUnit} />
+          ) : mode === 'atmos' ? (
+            <AtmosDetails data={bundle.atmosphere} />
           ) : (
             details && <DetailsPanel data={details} />
           )}

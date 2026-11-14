@@ -40,6 +40,9 @@
   "geology": {
     "file": "geology.json"
   },
+  "atmosphere": {
+    "file": "atmosphere.json"
+  },
   "terrain_meta": {
     "run_id": "demo-sim-002",
     "dataset_id": "mars2020-trn-ctx-dtm-20m",

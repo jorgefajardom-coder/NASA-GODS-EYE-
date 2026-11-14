@@ -1,6 +1,7 @@
 import { WEB_SCHEMA_VERSION } from '../types/icd';
 import type { RouteDecision } from '../types/icd';
 import type { GeologyData } from '../lib/geology';
+import { parseAtmosphere } from '../lib/atmos';
 import type { RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
 import { normalizeEvents } from '../lib/replay';
 import { resolveSourceMode } from '../lib/provenance';
@@ -111,6 +112,14 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
       bundle.geology = await getJson<GeologyData>(assetUrl(`${dir}/${manifest.geology.file}`));
     } catch {
       /* the Ground layers tab then says no geology is available */
+    }
+  }
+  if (manifest.atmosphere) {
+    // Optional layer: the run still opens if it is missing or malformed.
+    try {
+      bundle.atmosphere = parseAtmosphere(await getJson<unknown>(assetUrl(`${dir}/${manifest.atmosphere.file}`))) ?? undefined;
+    } catch {
+      /* the Atmos tab then says no data is available */
     }
   }
   return bundle;
