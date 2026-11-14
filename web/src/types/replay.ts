@@ -1,5 +1,6 @@
 import type { MissionEvent, MissionState, Point, RouteDecision, TerrainMeta } from './icd';
 import type { GeologyData } from '../lib/geology';
+import type { SourceMode } from '../lib/provenance';
 
 /**
  * Replay fixture layout (proposal for Jesús; the gateway snapshot format is not frozen).
@@ -31,6 +32,11 @@ export interface ReplayManifest {
   icd: string;
   run_id: string;
   mode: 'REPLAY';
+  /**
+   * Who produced the data (ICD §6.1). Optional in JSON 1.0.0: older manifests lack it and are
+   * shown as UNKNOWN unless their terrain says MOCK. assembleBundle always fills it in.
+   */
+  source_mode?: SourceMode;
   provenance: Provenance[];
   illustrative: boolean;
   /** Where AI assistance was used in this fixture (competition transparency rule). */

@@ -3,6 +3,7 @@ import type { AgentState } from '../types/icd';
 import type { MissionAlert } from '../lib/management';
 import { fmtSimTime } from '../lib/format';
 import { RUNS } from '../data/replayAdapter';
+import { displayState } from '../lib/provenance';
 
 export type UiMode = 'exploration' | 'geology' | 'replay';
 
@@ -56,12 +57,14 @@ interface StatusProps {
 }
 
 /** Link and replay status, top right (the agent position is in the details panel). The live link is shown as offline: the viewer does not connect to the gateway yet, it only plays recorded replays. */
-export function StatusBlock({ missionState, mapVersion, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
+export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
   return (
     <section className="status" aria-label="Connection and mission status">
       <div className="status__link">Offline</div>
       <div className="status__line">
-        <span className="chip-mode">REPLAY</span>
+        <span className="chip-mode" title="Recorded data (REPLAY) and who produced it (source_mode, ICD §6.1)">
+          {displayState({ mode: 'REPLAY', source: manifest.source_mode ?? 'UNKNOWN' }).label}
+        </span>
         <span className="muted">live link not available</span>
       </div>
       <dl className="status__grid mono">

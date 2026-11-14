@@ -2,6 +2,7 @@ import type { AgentState, MissionEvent, MissionState, Point, RouteDecision, Terr
 import type { RasterSet, ReplayBundle, ReplayManifest } from '../types/replay';
 import { WEB_SCHEMA_VERSION } from '../types/icd';
 import { assembleBundle, ReplayLoadError } from './replayAdapter';
+import { resolveSourceMode, type SourceMode } from '../lib/provenance';
 
 /**
  * Reads a replay package written by the gateway's replay_recorder (docs/ICD.md §7,
@@ -28,7 +29,9 @@ export interface GatewayManifest {
   run_id: string;
   mode: 'REPLAY';
   map_version: number;
+  /** `recorded_from: LIVE` only says the records came off a running graph; this says who produced them (ICD §6.1). Absent in older packages. */
   recorded_from: string;
+  source_mode?: string;
   clock_source: 'sim' | 'system';
   time_start_sim_s: number;
   record_count: number;
@@ -83,6 +86,13 @@ function route(r: WithHeader<RouteDecision> | null | undefined, t0: number, fall
   return { ...rest, timestamp_sim_s: stampToS(header, fallback) - t0 };
 }
 
+/** What the viewer may say about a recording, by who produced it. None of them is a live mission. */
+const SOURCE_DISCLAIMER: Record<SourceMode, string> = {
+  MOCK: 'Recorded replay of MOCK producers: flat synthetic grid, straight-line MOCK planner, no Mars data.',
+  SIMULATION: 'Recorded replay of a simulation run: simulated producers, not a validated live mission.',
+  UNKNOWN: 'Recorded replay; the package does not say who produced the data (source UNKNOWN). Not a validated live mission.',
+};
+
 export function fromGatewayPackage(manifest: GatewayManifest, records: GatewayRecord[]): ReplayBundle {
   if (manifest.mode !== 'REPLAY') throw new ReplayLoadError('A recorded package must say mode "REPLAY".');
   const runId = manifest.run_id;
@@ -118,6 +128,10 @@ export function fromGatewayPackage(manifest: GatewayManifest, records: GatewayRe
   if (frames.length === 0) throw new ReplayLoadError(`The package of run "${runId}" has no mission state.`);
 
   const meta = terrainMeta(manifest.terrain_meta);
+  const source = resolveSourceMode(manifest.source_mode, meta);
+  if (!source) {
+    throw new ReplayLoadError(`The package says source_mode "${String(manifest.source_mode)}"; a recording may only say MOCK, SIMULATION or UNKNOWN.`);
+  }
   const cells = meta.rows * meta.cols;
   const flat = /flat/i.test(meta.dataset_id) || meta.sources.some((s) => /flat grid/i.test(s));
   if (!flat) {
@@ -141,11 +155,12 @@ export function fromGatewayPackage(manifest: GatewayManifest, records: GatewayRe
     icd: 'ICD-ROS2-V1 replay package (docs/ICD.md §7)',
     run_id: runId,
     mode: 'REPLAY',
-    provenance: ['replay', 'simulated'],
-    illustrative: true,
+    source_mode: source,
+    provenance: source === 'UNKNOWN' ? ['replay'] : ['replay', 'simulated'],
+    illustrative: source === 'MOCK',
     title: `Gateway replay ${runId}`,
     summary: `Recorded by the gateway replay_recorder from a ${manifest.recorded_from} run (${manifest.record_count} records, ${manifest.event_count} events).`,
-    disclaimer: `Recorded replay of MOCK producers: flat synthetic grid, straight-line MOCK planner, no Mars data. Clock: ${manifest.clock_source === 'system' ? 'wall clock (no simulator)' : 'simulation'}.`,
+    disclaimer: `${SOURCE_DISCLAIMER[source]} Clock: ${manifest.clock_source === 'system' ? 'wall clock (no simulator)' : 'simulation'}.`,
     duration_s: Math.max(endT, 1),
     terrain_meta: meta,
     vertical_exaggeration_default: 1,

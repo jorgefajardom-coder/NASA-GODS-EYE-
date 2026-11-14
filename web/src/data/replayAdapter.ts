@@ -3,6 +3,7 @@ import type { RouteDecision } from '../types/icd';
 import type { GeologyData } from '../lib/geology';
 import type { RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
 import { normalizeEvents } from '../lib/replay';
+import { resolveSourceMode } from '../lib/provenance';
 import { fromGatewayPackage, isGatewayManifest, parseJsonLines } from './gatewayReplay';
 
 /** Runs offered in the viewer. `dir` is relative to the site under replay/. */
@@ -49,6 +50,11 @@ export function assembleBundle(
     if (obj.run_id !== runId) throw new ReplayLoadError(`${name} belongs to run "${obj.run_id}", expected "${runId}".`);
   }
   const meta = manifest.terrain_meta;
+  const source = resolveSourceMode(manifest.source_mode, meta);
+  if (!source) {
+    throw new ReplayLoadError(`source_mode "${String(manifest.source_mode)}" is not allowed in a recording (MOCK, SIMULATION or UNKNOWN; LIVE cannot be declared).`);
+  }
+  manifest = { ...manifest, source_mode: source };
   if (rasters.rows !== meta.rows || rasters.cols !== meta.cols || rasters.prior.length !== meta.rows * meta.cols) {
     throw new ReplayLoadError('Raster size does not match TerrainMeta rows × cols.');
   }

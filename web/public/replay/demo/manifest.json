@@ -3,6 +3,7 @@
   "icd": "ICD-ROS2-V1 (draft)",
   "run_id": "demo-sim-002",
   "mode": "REPLAY",
+  "source_mode": "SIMULATION",
   "provenance": [
     "nasa",
     "simulated",

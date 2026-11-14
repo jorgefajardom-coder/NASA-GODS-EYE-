@@ -573,6 +573,8 @@ const manifest = {
   icd: 'ICD-ROS2-V1 (draft)',
   run_id: RUN_ID,
   mode: 'REPLAY',
+  // ICD §6.1: who produced the run. The mission is a scripted simulation (not a planner or ROS run); never LIVE.
+  source_mode: 'SIMULATION',
   provenance: ['nasa', 'simulated', 'fictitious'],
   illustrative: true,
   title: 'Demo run: corridor survey and replanning',

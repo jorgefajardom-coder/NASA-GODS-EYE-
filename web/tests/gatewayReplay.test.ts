@@ -40,6 +40,8 @@ describe('gateway replay package', () => {
 
   it('labels the run as a recorded MOCK replay and invents no terrain detail', () => {
     expect(bundle.manifest.mode).toBe('REPLAY');
+    expect(manifest.source_mode).toBeUndefined(); // pinned sample predates the field
+    expect(bundle.manifest.source_mode).toBe('MOCK'); // read from the MOCK terrain metadata
     expect(bundle.manifest.provenance).toEqual(['replay', 'simulated']);
     expect(bundle.rasters.prior.every((h) => h === 0)).toBe(true); // declared flat synthetic grid
     expect(bundle.rasters.reference).toBeUndefined(); // no evaluator reference in the package (R05)
@@ -50,5 +52,19 @@ describe('gateway replay package', () => {
   it('drops records of another run', () => {
     const foreign = records.map((r) => ({ ...r, run_id: 'other' }));
     expect(() => fromGatewayPackage(manifest, foreign)).toThrow(/no mission state/);
+  });
+
+  it('follows the declared source_mode and refuses LIVE (ICD §6.1)', () => {
+    const real = { ...manifest.terrain_meta, dataset_id: 'flat-test-grid', sources: ['flat grid for tests'] };
+    const sim = fromGatewayPackage({ ...manifest, source_mode: 'SIMULATION', terrain_meta: real }, records);
+    expect(sim.manifest.source_mode).toBe('SIMULATION');
+    expect(sim.manifest.illustrative).toBe(false);
+    expect(sim.manifest.disclaimer).not.toMatch(/MOCK/);
+    const unknown = fromGatewayPackage({ ...manifest, terrain_meta: real }, records);
+    expect(unknown.manifest.source_mode).toBe('UNKNOWN');
+    expect(unknown.manifest.provenance).toEqual(['replay']);
+    // A MOCK terrain stays MOCK whatever the package declares.
+    expect(fromGatewayPackage({ ...manifest, source_mode: 'SIMULATION' }, records).manifest.source_mode).toBe('MOCK');
+    expect(() => fromGatewayPackage({ ...manifest, source_mode: 'LIVE' }, records)).toThrow(/source_mode "LIVE"/);
   });
 });
