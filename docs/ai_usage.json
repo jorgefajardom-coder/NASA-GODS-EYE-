@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "recorded_on": "2026-11-14",
-  "status": "initial_scaffold",
+  "status": "planner_p0_in_progress",
   "policy_url": "https://github.com/nasa/spaceapps/discussions/1849",
   "human_review": "pending module owners",
   "uses": [
@@ -38,6 +38,17 @@
         "evidence/README.md"
       ],
       "use": "Document team-supplied specification, competition requirements, source manifest templates and required disclosures; no scientific results or NASA datasets generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_code_and_illustrative_test_data",
+      "generation": "AI-assisted generation; scientific assumptions awaiting owner review",
+      "paths": [
+        "src/mge_planning",
+        "tests/planning",
+        "scripts/benchmark_planner.py"
+      ],
+      "use": "Implement FAST/SAFE resource-constrained search, mathematical model, independent acceptance tests and newly generated illustrative benchmark scenarios. No prior Sandbox algorithm or reported results copied."
     }
   ],
   "generated_media": [],

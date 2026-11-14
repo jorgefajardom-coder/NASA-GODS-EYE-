@@ -35,3 +35,14 @@ contract checks were retained from dev/jesus at 00c8e44 with their history and
 license metadata. Codex assisted with merging and adapting the shared scaffold.
 The scope above does not assert that all retained contributor code was generated
 by this tool; the contributor must confirm its own tool-use history for delivery.
+
+## Planner P0 implementation
+
+Codex assisted the new bounded FAST/SAFE solver, input adapters, ROS service,
+acceptance tests, benchmark generator and handoff documentation. Synthetic maps,
+obstacles and resource assumptions in tests are newly generated illustrative
+inputs; benchmark timings will be measured anew, not copied from prior work.
+Motion/resource profiles require human scientific review. NASA source data remain
+observations from cited upstream products; new processing does not make those
+observations newly acquired by the team. See planner_provenance.md for the crop
+workflow and its separation from the pre-event Sandbox reference.
