@@ -38,6 +38,20 @@
         "evidence/README.md"
       ],
       "use": "Document team-supplied specification, competition requirements, source manifest templates and required disclosures; no scientific results or NASA datasets generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "documentation_and_internal_planning",
+      "generation": "AI-assisted planning; forecasts are assumptions pending owner review",
+      "paths": [
+        "docs/mission_checklist.md",
+        "docs/nasa_traceability.md",
+        "docs/data_sources.md",
+        "docs/team.md",
+        "README.md",
+        ".gitignore"
+      ],
+      "use": "Document the owner-selected probable mission, per-owner checklists, dependencies, acceptance cases and NASA source-to-result lineage. Keep detailed hours and compact thread observations in a locally ignored planning register with separate metadata. No new mission execution or scientific observation is claimed."
     }
   ],
   "generated_media": [],

@@ -1,5 +1,12 @@
 # Team branches and ownership
 
+The owner-selected working baseline is the [probable minimum mission
+checklist](mission_checklist.md), with priorities, dependencies, acceptance cases
+and desired coordination cuts. Follow its [NASA traceability
+register](nasa_traceability.md). Detailed expected/desired effort forecasts and
+thread snapshots are internal local records under Git-ignored `.local/planning/`;
+they are estimates, not evidence of completion or a public submission artifact.
+
 The five branches start at the shared scaffold on main. They are work areas,
 not completed features or approved PRs. Names follow the integration guide.
 
@@ -41,7 +48,9 @@ until evidence exists. Prior code/assets need eligibility and license review.
 
 ## Integration cuts (America/Bogota)
 
-Deadline: Sunday **2026-11-15 23:59**. First connect map -> route -> view; then
-observation/replan; Sunday morning budgets and A/B/C; scope freeze Sunday 16:00;
-presentation/compliance 16:00-20:00; submission buffer 20:00-23:59. Confirm any
-earlier local cutoff. Guide milestones are targets, not proof of completion.
+Deadline: Sunday **2026-11-15 23:59**. The owner-selected probable checklist now
+sets the detailed M00-M10 cuts: agree source/profile/cost contracts, connect
+map -> route -> view, then prove observation/replan, return and negative cases.
+A/B/C is P1 after that evidence. Keep Sunday 16:00 scope freeze and 20:00 desired
+completed submission, with the remaining time as internal buffer. Confirm any
+earlier official local cutoff. Targets and internal forecasts are not completion.

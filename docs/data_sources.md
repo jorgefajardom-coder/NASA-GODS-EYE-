@@ -1,7 +1,12 @@
 # Data source register (Daniel)
 
-No NASA datasets are included yet. Templates are not verified manifests.
-Product selection, license, precise CRS/datum, crop and checksums are pending.
+Daniel's final terrain release remains pending. A newly processed provisional
+CTX prior is now included on feat/planner; a separate HiRISE evaluator crop stays
+local and isolated. See [actual processing provenance](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/34c515b6b86f73336844e8b3614c70b144574ec3/docs/planner_provenance.md),
+the [provisional manifest](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/34c515b6b86f73336844e8b3614c70b144574ec3/data/planner_provisional/manifest.json), and the
+[resource-to-result register](nasa_traceability.md). Templates remain templates;
+an imported orbital product is not a locally verified corridor. Standalone
+MGS/MOLA selection and meaningful use remain pending.
 
 | Candidate from team guides | Role | Next action / limitation |
 | --- | --- | --- |

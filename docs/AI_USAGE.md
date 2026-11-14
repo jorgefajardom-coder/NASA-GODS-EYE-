@@ -35,3 +35,14 @@ contract checks were retained from dev/jesus at 00c8e44 with their history and
 license metadata. Codex assisted with merging and adapting the shared scaffold.
 The scope above does not assert that all retained contributor code was generated
 by this tool; the contributor must confirm its own tool-use history for delivery.
+
+## Probable mission planning and traceability
+
+OpenAI Codex assisted the owner-selected probable-roadmap checklist, dependency
+and acceptance definitions, NASA resource-to-result register, navigation updates
+and correction of the provisional data-register status. Internal desired/expected
+milestone estimates and compact observations from parallel planner/mission work are
+maintained locally under Git-ignored .local/planning, with their own metadata.
+Estimates are planning assumptions, not measured human effort, scientific results
+or newly completed mission acceptance. No media or NASA observation was generated
+by this documentation work. Human owners approve science and integration closure.
