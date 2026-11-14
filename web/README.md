@@ -61,6 +61,7 @@ Keys: `F` follow camera, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 | `src/lib/coords.ts` | ENU to Three.js conversion and grid sampling |
 | `src/lib/replay.ts` | State at time t, event ordering, replans, visual pose interpolation |
 | `src/lib/management.ts` | List, details and alert data built only from received objects |
+| `src/lib/astronautPose.ts` | Calmed copies of the idle and walk clips (less rocking, bounce and forward lean); the model file is not modified |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
 | `src/components/` | Terrain, routes, agents, sites, astronaut model, follow camera, interface panels |
 | `scripts/` | Terrain crop extraction and fixture generation |
@@ -100,5 +101,5 @@ The code, scripts, tests and the simulated fixture were written with AI assistan
 
 No gateway, planner routes, mission profiles or processed terrain package from the other
 workstreams yet. Percentages are relative to the first received sample, not to a
-certified budget. The astronaut walk cycle in motion has not been reviewed visually. No
+certified budget. Astronaut posture is covered by tests on the real model, but the walk in a live window at full frame rate has not been reviewed by eye. No
 browser automation tests. Tactical map, scanner and weather are not started.
