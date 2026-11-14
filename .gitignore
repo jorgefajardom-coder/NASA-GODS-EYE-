@@ -24,4 +24,6 @@ data/cache/
 *.mcap
 .DS_Store
 Thumbs.db
-/.local/planning/
+
+# Local integration validation and private working notes
+.local/

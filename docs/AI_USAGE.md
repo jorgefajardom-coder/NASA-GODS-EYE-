@@ -36,6 +36,24 @@ license metadata. Codex assisted with merging and adapting the shared scaffold.
 The scope above does not assert that all retained contributor code was generated
 by this tool; the contributor must confirm its own tool-use history for delivery.
 
+## Contract reconciliation, 14 November 2026
+
+OpenAI Codex assisted with the cross-branch audit, canonical replay adapter,
+strict ROS/JSON and dataset checks, launch profile gates, provenance display
+helper, contract/integration tests, target-platform validation script and the
+baseline/matrix/five handoffs. Exact paths are recorded in ai_usage.json.
+These are contract examples and tests, not replacement owner modules, an
+approved science model, NASA observations or a completed mission.
+
+The three unchanged MOCK replay files under tests/fixtures/replay were retained
+from Jesus's integration commit d28f3e23f268d50c6c55f2b1f85a1cadbe9281ed.
+The original contribution declares Claude Code (Anthropic) assistance; its source
+and byte hashes are retained in tests/fixtures/replay/provenance.json. Synthetic
+test arrays/metadata are explicitly MOCK and never NASA observational products.
+No generated image, video or audio was created in this reconciliation. Existing
+licences/attributions and mandatory declarations are preserved; human owner
+review and competition submission disclosure remain required.
+
 ## Planner P0 implementation
 
 Codex assisted the new bounded FAST/SAFE solver, input adapters, ROS service,
@@ -52,6 +70,11 @@ evidence/planner-p0-20261114. Their scenarios were AI-assisted illustrative test
 data; reported timings and costs are actual new executions of the recorded code
 commit. They are computational test measurements, not physical or NASA mission
 measurements. No generated image, video or audio asset was added.
+
+The reconciliation verification logs/JUnit and hashes under
+evidence/contract-baseline-20261114 are actual tool execution records on the
+reported source. Codex assisted their collection/documentation; they are not
+invented measurements or mission observations.
 
 ## Probable mission planning and traceability
 

@@ -189,3 +189,29 @@ Prioriza siempre la mantenibilidad, trazabilidad, calidad, seguridad e integrida
 - Validate with `python -m pytest`, `python scripts/check_repository.py`, and, from `web`, `npm test` and `npm run build`. ROS additionally requires `colcon build` and interface checks on the target platform.
 - Preserve evaluator-reference isolation. Never label scaffolds, unavailable backends, simulated observations or replay as a verified LIVE mission.
 - Update `docs/AI_USAGE.md` and `docs/ai_usage.json` for generated code/data/assets; keep mandatory declarations and watermarks intact.
+
+### 14. Mandatory contract reconciliation workflow
+
+- `main` contains the current integrated contract. A candidate on an open PR is
+  not a published main baseline and is not frozen without recorded owner review.
+- Before coding, read this entire file, `docs/ICD.md`,
+  `docs/CONTRACT_BASELINE.md` and your guide under `docs/handoffs/`.
+- Fetch first, inspect the latest `origin/main` SHA and your branch's log/diff.
+  Follow the real active branch and path ownership in `docs/team.md`.
+- Never redefine a shared message, service, raster, replay version, unit or enum
+  to fit one consumer. Reconcile the incompatibility, producers, consumers,
+  tests and version together; Jesus reviews integration, David science.
+- Never copy another module's implementation to fill a dependency. Use a
+  deterministic, visibly labelled conforming MOCK until its owner is ready.
+- Run contract tests and one actual consumer test before requesting integration;
+  state unexecuted or MOCK-only checks and remaining real acceptance explicitly.
+- Publish a handoff with source SHA, baseline versions, inputs/outputs, commands,
+  outcomes, blockers and next deliverable at each cut.
+- Preserve all existing authorship/commit rules, configured Git identity,
+  licences/third-party attributions and mandatory AI declarations/watermarks.
+- Never present MOCK, replay, synthetic observations or a successful build as a
+  validated LIVE mission. Never bundle evaluator-only reference data in web or
+  planner deliverables; a hidden toggle does not isolate a public asset.
+- Never force-push, overwrite concurrent work or merge another owner's PR
+  automatically. Recheck main before publishing; use the reviewed PR path for
+  this reconciliation even when GitHub reports main unprotected.
