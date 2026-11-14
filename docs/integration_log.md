@@ -144,3 +144,82 @@ computational acceptance evidence, not mission safety or scientific validation.
   validated route or mission run. Next: the real `mge_mission` provider (PR #10)
   in this path, public raster recording, and survey observations from a
   simulated sensor instead of a test publisher.
+
+## Real MissionManager handoff, 2026-11-14
+
+OwnerDavid; integration/reviewJesus. Source255be89 preserves mission8f69f62 and
+refreshes through main6ec9b84 after the externally merged data/endorsement cuts.
+No original owner branch is overwritten. The PR supplies the existing real
+mission module and exclusive mission:=mock|real selection, configuration/clock
+preflight and real-consumer regressions. It does not remove the contractual mock
+or redefine messages/services, approve models or synthesize completed missions.
+
+Actual checks: Python636passed/15native skips; Jazzy8packages/8definitions,
+556selected tests passed/one optional snapshot skip; ten focused selector/HTTP
+consumer tests passed; web4tests/build and repository/diff checks passed.
+Evidence: evidence/mission-service-handoff-20261114. Use the
+[handoff](mission_integration_handoff.md) to replace mock_mission, never run it
+alongside mission_node. Current test outcome remains MODEL_NOT_AGREED/BLOCKED;
+science-model reconciliation and actual execution remain separate owner gates.
+
+## Mission handoff sync after web merge
+
+Incorporated main7ec1a06 into codex/mission-service-handoff after the owner merged
+web PR #5. Resolved only README and AI metadata conflicts, retaining real mission
+selection, existing viewer implementation, mandatory declarations and licences.
+The moved provenance test is recorded at web/tests/provenance.test.ts.
+
+Checks: Python636passed/15platform-or-optional skips; web npm ci,84Vitest cases
+and TypeScript/Vite build passed; repository and whitespace checks passed.
+No ROS interface, mission source or launch selector changed. npm audit reports
+four inherited development-tool dependency alerts (one moderate, one high and
+two critical); dependency versions were preserved from main for this sync.
+The existing mission-service source evidence remains attached to its original
+commit; this paragraph records the subsequent web/main synchronization.
+
+### CI follow-up for the main synchronization
+
+CI run43626302116 initially failed the inherited observed-terrain route case
+with UNKNOWN/SEARCH_LIMIT. One failed-job rerun repeated it and also timed out
+waiting for the mission model gate. ROS source/profiles were unchanged by the
+web merge. Preserve these failed attempts as evidence; do not weaken FEASIBLE
+or MODEL_NOT_AGREED assertions.
+
+The coherent-terrain functional fixture now explicitly permits ten seconds of
+search, with the same label cap and unchanged production two-second default.
+The mission fixture waits for a canonical zero-distance planner candidate to
+prove that the matching public batch/profile is loaded before sending a single
+mission request. This candidate is never authorized as a mission route. The
+actual mission must still reject non-agreed models and conflicting IDs, with no
+active route. This separates functional plumbing from CPU-load timing and
+cross-topic DDS startup ordering; it makes no latency or mission acceptance claim.
+
+After those fixture corrections, fresh local validation again built eight Jazzy
+packages/inspected eight definitions and passed556selected ROS/mission/contract/
+HTTP cases (one optional published-snapshot skip). Ten focused launch/consumer
+cases passed; native Python636passed/15platform-or-optional skips. Repository
+and whitespace checks passed. Frontend84tests/build remain passed from the
+unchanged merged viewer. Production planner and mission sources are unchanged.
+
+The next CI passed the terrain fixture but the authority smoke's200x200 grid
+still did not produce a ready planner within its fixture deadline. Diagnostics
+retained the IDLE mission snapshot with no submitted goal. The authority smoke
+now uses a test-only scoped16x16 grid (5m cells, same explicit positions) while
+loading the actual production LaunchDescription and actual providers. The
+manifest dimensions are asserted. Production providers/defaults remain unchanged.
+Fresh Jazzy validation again passed10focused cases and556selected cases (one
+optional snapshot skip), with eight packages built/eight definitions inspected.
+
+## PR11 reconciliation against the integrated mission
+
+Review incorporated main73a06b2, preserving mission:=real and terrain:=real,
+source_mode=MOCK while agents remain mocks, both preflight gates and all
+mandatory disclosures. Fixed the new terrain test import for main's importlib
+mode. Added combination/guard coverage; no science approval is inferred.
+
+Validation: native Python675passed/16platform-or-optional skips; eight Jazzy
+packages built/eight interfaces inspected;15focused launch/mission cases passed;
+605selected ROS/mission/unit/HTTP/integration cases passed with one optional
+published-snapshot skip. Repository and whitespace checks passed. The viewer
+accepts additive manifest fields and fails closed for non-flat recorded terrain
+without rasters; full real-terrain browser playback remains a separate handoff.

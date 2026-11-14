@@ -17,7 +17,7 @@ import pytest
 
 pytest.importorskip('rclpy', reason='Requires built ROS 2 workspace')
 
-from test_vertical_mock import wait_for  # noqa: E402
+from tests.integration.test_vertical_mock import wait_for  # noqa: E402
 
 RUN_ID = 'it-planner'
 PORT = 8767

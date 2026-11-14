@@ -1,0 +1,26 @@
+VALIDATION_LOG=/mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.v8QSI6.log
+VALIDATION_ROOT=/tmp/mge-mission-jazzy.piNlMw
+Starting >>> mge_interfaces
+Finished <<< mge_interfaces [15.2s]
+Starting >>> mge_data
+Starting >>> mge_gateway
+Starting >>> mge_mapping
+Starting >>> mge_mission
+Starting >>> mge_planning
+Starting >>> mge_sim
+Finished <<< mge_mapping [2.21s]
+Finished <<< mge_sim [2.20s]
+Finished <<< mge_mission [2.22s]
+Finished <<< mge_data [2.23s]
+Finished <<< mge_gateway [2.23s]
+Finished <<< mge_planning [2.25s]
+Starting >>> mge_bringup
+Finished <<< mge_bringup [4.29s]
+
+Summary: 8 packages finished [21.9s]
+Inspected six messages and two services.
+........................................................................ [ 44%]
+........................................................................ [ 88%]
+..................                                                       [100%]
+- generated xml file: /mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.v8QSI6.log.junit.xml -
+162 passed in 0.83s

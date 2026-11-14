@@ -29,7 +29,7 @@ from sensor_msgs.msg import Image  # noqa: E402
 
 from mge_gateway.replay_check import check_package  # noqa: E402
 from mge_interfaces.msg import TerrainObservation  # noqa: E402
-from test_vertical_mock import wait_for  # noqa: E402
+from tests.integration.test_vertical_mock import wait_for  # noqa: E402
 
 RUN_ID = 'it-terrain-vertical'
 PORT = 8768

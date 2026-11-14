@@ -1,0 +1,30 @@
+{
+  "kind": "whitespace_normalization_after_validation",
+  "changes": [
+    {
+      "path": "config/scenario_demo.yaml",
+      "before_sha256": "2a23751aa2ea5d6a9d6fe31cf4e6717e327e0549cc5067f9555272350203d1d2",
+      "after_sha256": "f83716b3cae4720f5b04120e5bd73227632a46de61b585f945e306a4a93e4896",
+      "trailing_bytes_removed_hex": "0a"
+    },
+    {
+      "path": "config/science_profiles.proposed.json",
+      "before_sha256": "9d63e5df330e4d3c50361aef5192b6ad78b9f5df4032c5ada1285559d54e399c",
+      "after_sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "trailing_bytes_removed_hex": "0a"
+    },
+    {
+      "path": "docs/science_models.md",
+      "before_sha256": "817ac2dcff05c95fc729bf777568d2fcfc0bac14e5f2db31fa4afc92a61f95d0",
+      "after_sha256": "d0b1cba1efedc83f20a8b5625797f77726934532f30e6b68e2fbff51315c1090",
+      "trailing_bytes_removed_hex": "0a"
+    },
+    {
+      "path": "tests/mission/test_models.py",
+      "before_sha256": "40b40b31ea92ff60b9adf5ae439ec9214c97481e9e0142a2d4fcb2c5c3e992d1",
+      "after_sha256": "22270500ddab8f07920bc439128cce45227a7944df9305b5c7654b4ee7ec51a8",
+      "trailing_bytes_removed_hex": "0a"
+    }
+  ],
+  "behavior_change": false
+}

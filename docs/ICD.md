@@ -30,6 +30,10 @@ field names and types; this document records the conventions around them.
   wire definitions. Adapters must map non-applicable NaN to JSON `null`, never a JSON NaN token.
   This baseline tests that conversion; PR #3 implements its own ROS bridge.
   The ROS-backed HTTP boundary stays NOT_READY until a configured mission state arrives.
+- Proposed quantitative clarification from the mission model: `_l` denotes dry
+  ideal-gas-equivalent oxygen at 273.15 K and 101.325 kPa, not tank volume. This
+  convention remains pending consumer confirmation; proposed profiles are not
+  operational approval and a planner projection is not model agreement.
 - ROS wire kinds are uppercase `HUMAN`/`DRONE`/`ROVER`; pure Python/configuration
   may use lowercase. Adapters must map these intentionally and reject unknown
   values. Do not assume Python models are already the ROS wire representation.
@@ -128,13 +132,28 @@ map version once. Defining fields does not implement these checks.
 
 Service positions and RouteDecision paths are `geometry_msgs/Point` values in
 `map`, not Pose or nav_msgs/Path. The active-path topic remains `nav_msgs/Path`.
-SetMissionGoal permits an empty run ID to mean the current run; adapters must
-resolve it before recording or replay. Main advanced concurrently to `004b3b2` when Jesus merged PR #2; the real
-planner is now integrated unchanged. Mission service remains on `feat/mission`.
-This reconciliation incorporates reviewed main without merging other owner PRs. See the [implementation inventory](INTEGRATION_MATRIX.md).
+SetMissionGoal permits an empty run ID to mean the current run; resolve it
+before events/replay. This candidate integrates the real MissionNode from
+feat/mission at8f69f62 beside main's real planner and gateway. The real manager
+replaces mock_mission by configuration; it must never share the mission service
+or state/path publishers with the MOCK provider. Missing configuration/clock
+or unapproved models remain explicit rejection reasons, not MOCK fallback.
 
 MissionManager alone authorizes and publishes the active route. Only FEASIBLE
 candidates may be considered after current-run/map and return-budget checks.
+For FEASIBLE decisions, applicable numeric estimates must be finite. The
+published planner uses NaN for unavailable cost/clearance/reserve fields on
+non-FEASIBLE decisions; mission represents these as None and preserves the
+original status/reason. Unavailable diagnostics are never activated routes or
+measured zeros. No wire field is changed by this clarification.
+
+The published planner stamps a FEASIBLE response with its map batch timestamp.
+Mission associates it with the captured map/run/version and independently audits
+the request, current pose and resources; newer agent telemetry does not require
+a newer map stamp. Failure stamp zero can express unavailable context, while
+run/frame and future-time guards still apply. Consumer confirmation remains
+part of the draft ICD freeze.
+
 `MissionState.active_route` embeds the decision; an empty route ID means no route
 is in force. Do not treat default numeric values as measurements or outcomes.
 Native Image/OccupancyGrid/Path lack custom run/version fields: consumers need an
@@ -420,3 +439,15 @@ UNKNOWN semantics and validate latency/load before asserting resource proof.
 The current mock mission/terrain do not implement full scientific audit,
 conflicting-request payload checks or real footprint fusion. Their tests are
 integration harness evidence only. Latest source/evidence is in the matrix.
+
+## Mission provider substitution cut
+
+The mission-service handoff publishes the existing real MissionManager without
+new message/service fields, alternate science policy or a replacement planner.
+The vertical launch selects mission:=mock|real exclusively; real selection
+requires explicit science/mission configuration, use_sim_time=true and an
+external /clock. Illustrative opt-in does not approve models. The real manager
+retains profile approval, MODEL_NOT_AGREED/MODEL_MISMATCH, current run/map/pose,
+return reserve, idempotency and logical stop checks. The mock provider remains
+available for explicitly labelled contract tests. See
+[configuration and consumer proof](mission_integration_handoff.md).

@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "mission-followup-validation-20261114",
+  "kind": "software_validation",
+  "recorded_at_utc": "2026-11-14T16:58:09.843696+00:00",
+  "scientific_acceptance": false,
+  "integrated_mission_executed": false,
+  "source_revision": "3646449345d407b4d88d08b9d8b6b145e81ca08e",
+  "working_tree_dirty": true,
+  "source_files_verified": 101,
+  "checks": {
+    "windows_python": {
+      "tests": 353,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "passed": 348
+    },
+    "jazzy": {
+      "packages_built": 8,
+      "messages_inspected": 6,
+      "services_inspected": 2,
+      "tests": 295,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 294
+    },
+    "web_tests": {
+      "passed": 2,
+      "failed": 0
+    },
+    "web_build": {
+      "exit_code": 0
+    },
+    "repository": {
+      "exit_code": 0
+    },
+    "published_planner_probe": {
+      "revision": "34c515b6b86f73336844e8b3614c70b144574ec3",
+      "authorization": "BLOCKED",
+      "AGREE": 1,
+      "DISAGREE": 6,
+      "NOT_FEASIBLE": 0,
+      "ERROR": 0
+    },
+    "benchmark_draft_gate": {
+      "expected_child_exit_code": 2,
+      "observed_child_exit_code": 2,
+      "status": "NOT_READY",
+      "observed_mission_runs": 0
+    }
+  },
+  "skips": [
+    "Windows: two ROS-dependent modules and three symlink fixtures; Linux ran all three symlink fixtures.",
+    "Linux: optional published-snapshot test skipped because the peer snapshot is not copied into the build workspace; the actual seven-case published-source probe ran separately on Windows."
+  ],
+  "limits": [
+    "No integrated A/B/C mission or scientific approval is supplied.",
+    "One of seven synthetic planner cases agrees; six disagree; all route authorization remains blocked.",
+    "Null metrics remain unavailable; failure reasons and canonical map-batch timestamps preserve actual producer semantics."
+  ],
+  "artifacts_sha256": {
+    "windows-pytest.xml": "b8a3b303b23bb67a106fd0edefae1d4c015788236fe83de74439dde91c3dc5d1",
+    "jazzy-pytest.xml": "641c2bddf94bd93ee8252172302ba61c1abafb779aa1f2aa4387173535a1af90",
+    "jazzy-build-and-tests.log": "d505754204498aeadd5e959c28bbb39e84d4a6d5036964f751e6b7d74da4fa8e",
+    "tested-source-sha256.json": "fb3aae3e01ba68ba9850a4003041325e29559bfb25abe175dff517179895bc5a"
+  },
+  "cli_source_sha256": {
+    "scripts/audit_benchmark.py": "53a27d97a34d9bcfbd95534257ef68b78ef1278ee147c4dedcbaa557c025614b",
+    "scripts/check_planner_conformance.py": "d0da82efe00c209332d2c3ba4e793a5150f135e473fa36c0329385076d2aede1",
+    "scripts/validate_mission_ros.sh": "c6098846c14df7820b6abf7364cd59680b32cbfeee0183e7d227224138031d2c"
+  }
+}

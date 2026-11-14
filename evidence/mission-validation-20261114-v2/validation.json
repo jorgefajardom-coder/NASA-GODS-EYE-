@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "mission-validation-20261114-v2",
+  "kind": "software_validation",
+  "recorded_at_utc": "2026-11-14T16:20:17.531336+00:00",
+  "scientific_acceptance": false,
+  "integrated_mission_executed": false,
+  "nasa_observations_generated": false,
+  "source_identity": "Exact SHA-256 matches for every file in the ROS-tested source snapshot.",
+  "source_manifest": "tested-source-sha256.json",
+  "checks": {
+    "windows_python": {
+      "command": "python -m pytest -q --junitxml=tmp/mission-windows-final-v2.xml",
+      "python": "3.12.14",
+      "tests": 228,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2,
+      "passed": 226
+    },
+    "jazzy": {
+      "command": "bash scripts/validate_mission_ros.sh",
+      "platform": "Ubuntu 24.04 / ROS 2 Jazzy / WSL2",
+      "python": "3.12.3",
+      "packages_built": 8,
+      "messages_inspected": 6,
+      "services_inspected": 2,
+      "ros_domain_id": 83,
+      "tests": 162,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 162
+    },
+    "repository": {
+      "command": "python scripts/check_repository.py",
+      "exit_code": 0
+    },
+    "web_tests": {
+      "command": "npm test",
+      "passed": 2,
+      "failed": 0,
+      "node": "24.18.0"
+    },
+    "web_build": {
+      "command": "npm run build",
+      "exit_code": 0,
+      "node": "24.18.0"
+    },
+    "whitespace": {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  },
+  "retained_failed_attempt": {
+    "tests": 147,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 144,
+    "reason": "Raw CDR bytes were not a canonical fingerprint for semantically identical goal requests.",
+    "correction": "Use canonical semantic field tuples; the final ROS run passes the same three regression cases."
+  },
+  "environment_workarounds": [
+    "Windows Store Python launcher was inaccessible; use the existing Python 3.12 virtual environment.",
+    "rosidl rejected the Windows workspace path with spaces/accent; compile a temporary ASCII-path source snapshot on Linux.",
+    "Installed Jazzy rclpy has no qos_profile_clock export; declare the standard depth-1 best-effort volatile clock QoS explicitly."
+  ],
+  "warnings": [
+    "Existing Starlette/httpx TestClient deprecation.",
+    "Existing frontend bundle exceeds 500 kB minified."
+  ],
+  "limits": [
+    "Controlled planner and synthetic configuration; no Gazebo mission.",
+    "Scientific coefficients remain proposed.",
+    "Planner adoption/model agreement and public discovery/work/traversal ROS evidence are integration dependencies.",
+    "Empty path publication is not a physical stop acknowledgement."
+  ],
+  "artifacts_sha256": {
+    "windows-pytest.xml": "517a1a939698d6d49a7ea97fd607ee1ebef290643c494dff65eddcf455ecdb2c",
+    "jazzy-pytest.xml": "876f98eacf3227bf72382c133f06ee9b8a196af028793b250a07d35798f8410f",
+    "jazzy-build-and-tests.log": "d0f5861d4ec9b1b8d0b2efff33fd155fc88e4b5ea8030fb60ff6f03529b433be",
+    "tested-source-sha256.json": "a31a6d5d98879b82a572781f160840650ee4e4a66fc7056a4f260dac882f8602",
+    "jazzy-before-idempotency-fix.xml": "1de5254bc44bdd1a7c78afe038e6664d3d716354c4e43b98d8d6fb9968979721",
+    "jazzy-before-idempotency-fix.log": "5c6293d7d8635647905b609c53f7bd7ad3de8e235f2c2bb3f4dcaa569733ffd0"
+  },
+  "supersedes": "mission-validation-20261114",
+  "source_files_verified": 93,
+  "changes_since_previous": "Four trailing blank lines normalized; source/model behavior unchanged. Includes delivered planner projection."
+}

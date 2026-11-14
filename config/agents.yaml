@@ -3,6 +3,7 @@ schema_version: "1.0.0"
 status: pending_scientific_approval
 owner: David
 provenance: team_specification
+proposed_profile_registry: config/science_profiles.proposed.json
 units: {time: s, energy: Wh, oxygen: L, distance: m}
 agents:
   - {agent_id: human_1, kind: human, capabilities: [reach, sample], profile: null}
