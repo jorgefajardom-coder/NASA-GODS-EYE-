@@ -105,6 +105,12 @@ than rewriting historical runs.
   batches with the agreed unique-stamp/retry protocol. **Depends on:** JES-01,
   DAV-02 and the producer protocol already documented by DIE-00. **Acceptance:**
   AC-04 with DIE-03; missing/mixed batches stay unavailable.
+- [ ] **DAN-05 / P1 / optional research**: explore
+  [H-DAN-01: informed synthetic terrain and seeded adaptation](research_hypotheses.md#h-dan-01-informed-synthetic-terrain-and-seeded-planner-adaptation)
+  only if P0 handoffs and delivery remain protected. **Depends on:** stable
+  DAN-01..04 and DAV-02; David reviews assumptions, Diego evaluates adaptation.
+  **Acceptance:** the hypothesis's pilot checks, reproducible structural diversity
+  and truthful synthetic labels; no result or implementation is claimed yet.
 
 ### Diego: final-input planner acceptance
 

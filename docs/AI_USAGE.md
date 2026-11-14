@@ -46,3 +46,12 @@ maintained locally under Git-ignored .local/planning, with their own metadata.
 Estimates are planning assumptions, not measured human effort, scientific results
 or newly completed mission acceptance. No media or NASA observation was generated
 by this documentation work. Human owners approve science and integration closure.
+
+## Optional terrain-randomization hypothesis
+
+OpenAI Codex assisted documenting the owner's H-DAN-01 proposal, Daniel's P1
+checklist entry and source/assumption/seed traceability requirements. The proposed
+experiment remains unimplemented and untested. No rover image was imported and
+no terrain generator, synthetic map, image/video/audio or experiment result was
+created by this documentation change. Future generated artifacts require their
+own actual tool-use records and applicable visible watermarks.

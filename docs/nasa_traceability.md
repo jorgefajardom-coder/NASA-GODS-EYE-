@@ -94,6 +94,20 @@ and claim -> exact run -> exact input bytes/configuration -> source citation.
 The existing file manifest covers part of this chain; run and processing records
 must supply the remainder without silently extending or freezing the ICD.
 
+## Optional synthetic-terrain research
+
+[H-DAN-01](research_hypotheses.md) proposes a time-permitting experiment for
+Daniel, not a new NASA dataset or implemented sensing capability. Keep orbital
+inputs and rover-image references tied to explicit assumed generation parameters;
+record generator/configuration versions, family/seeds and canonical output hashes.
+Coarse-source resolution remains unchanged even when synthetic detail is added.
+
+Separate observational products, processed orbital derivatives, informed
+synthetic worlds and simulated observations in provenance and public claims.
+The full synthetic world is held out; only simulated footprint observations may
+reach belief. Preserve applicable AI declarations/watermarks in later artifacts.
+No raw rover image, synthetic map or new measured result is added by this proposal.
+
 ## Release checklist
 
 - [ ] Daniel verifies source/derived hashes and permitted distribution; David
