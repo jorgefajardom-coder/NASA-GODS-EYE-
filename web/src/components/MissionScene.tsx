@@ -4,8 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { TerrainLayer } from '../lib/layers';
-import { finiteRange, heightGrid } from '../lib/layers';
-import { CUT_DEPTH_M } from '../lib/strata';
+import { heightGrid } from '../lib/layers';
 import { smoothHeightAt } from '../lib/terrainSmooth';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
@@ -30,7 +29,7 @@ interface Props {
   exaggeration: number;
   showControlPoints: boolean;
   showLabels: boolean;
-  /** The intro has ended: the terrain grows in, layer by layer, once. */
+  /** The intro has ended: the terrain grows in from the centre, once. */
   reveal: boolean;
   playing: boolean;
   replaySpeed: number;
@@ -72,12 +71,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const groundHeight = useCallback((x: number, y: number) => smoothHeightAt(meta, grid, x, y), [meta, grid]);
   const followed = view.state?.agents.some((a) => a.agent_id === followAgentId) ? followAgentId : null;
   const smoothing = CAMERA_SMOOTHING[cameraSmoothing];
-  // Opening growth: from the base of the block (lowest ground minus the block depth) to above the
-  // highest relief plus room for the flying drone. Labels show once it has finished.
+  // Opening growth: the terrain appears from the centre of the map outwards, to the farthest
+  // corner (of the 20 km surroundings when they are drawn). Labels show once it has finished.
   const [grown, setGrown] = useState(false);
-  const [growLo, growHi] = useMemo(() => finiteRange(grid), [grid]);
-  const growBottom = (growLo - CUT_DEPTH_M) * exaggeration - 1;
-  const growTop = growHi * exaggeration + 80;
   // Base camera anchor: on the drawn ground at the centre of the habitat cluster.
   const base = bundle.manifest.pois.find((p) => p.kind === 'base');
   const baseAnchor = useMemo(() => {
@@ -93,6 +89,18 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const ctx = showContext ? bundle.context : undefined;
   // Far plane and haze reach the edge of the context terrain when there is one.
   const reach = ctx ? Math.max(ctx.frame.rows, ctx.frame.cols) * ctx.frame.resolution_m * 0.75 : extent * 6;
+  // Growth centre (Three.js ground plane) and the distance to the farthest drawn corner.
+  const growCx = meta.origin_x_m + (meta.cols * meta.resolution_m) / 2;
+  const growCz = -(meta.origin_y_m + (meta.rows * meta.resolution_m) / 2);
+  const growR = useMemo(() => {
+    const corner = (f: { origin_x_m: number; origin_y_m: number; resolution_m: number; rows: number; cols: number }) => {
+      const xs = [f.origin_x_m, f.origin_x_m + f.cols * f.resolution_m];
+      const ys = [f.origin_y_m, f.origin_y_m + f.rows * f.resolution_m];
+      return Math.max(...xs.flatMap((x) => ys.map((y) => Math.hypot(x - growCx, y + growCz)))) * 1.02;
+    };
+    const block = corner(meta);
+    return { block, max: ctx ? Math.max(block, corner(ctx.frame)) : block };
+  }, [ctx, meta, growCx, growCz]);
   const hole = useMemo(
     () => ({ origin_x_m: meta.origin_x_m, origin_y_m: meta.origin_y_m, width_m: meta.cols * meta.resolution_m, height_m: meta.rows * meta.resolution_m }),
     [meta],
@@ -178,7 +186,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         touches={freePan ? { ONE: THREE.TOUCH.PAN, TWO: THREE.TOUCH.DOLLY_ROTATE } : { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
       />
       <ViewRotator />
-      {!grown && <TerrainGrowth start={reveal} bottom={growBottom} top={growTop} onDone={() => setGrown(true)} />}
+      {!grown && <TerrainGrowth start={reveal} centerX={growCx} centerZ={growCz} maxRadius={growR.max} blockRadius={growR.block} onDone={() => setGrown(true)} />}
       {/* Mounted after the controls and the follow camera so it corrects their result in the same frame. */}
       <CameraGroundClamp meta={meta} groundHeight={groundHeight} verticalExaggeration={exaggeration} />
     </Canvas>
