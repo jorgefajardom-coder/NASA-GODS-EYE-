@@ -4,7 +4,7 @@ import type { MissionAlert } from '../lib/management';
 import { fmtSimTime } from '../lib/format';
 import { RUNS } from '../data/replayAdapter';
 
-export type UiMode = 'exploration' | 'geology' | 'replay';
+export type UiMode = 'exploration' | 'geology' | 'tactical' | 'replay';
 
 const PROVENANCE_LABEL: Record<string, string> = {
   nasa: 'NASA/USGS terrain',
@@ -100,7 +100,7 @@ export function StatusBlock({ manifest, missionState, mapVersion, t, agent, eval
 const TABS: Array<{ id: string; label: string; mode?: UiMode; why?: string }> = [
   { id: 'exploration', label: 'Exploration', mode: 'exploration' },
   { id: 'geology', label: 'Ground layers', mode: 'geology' },
-  { id: 'tactical', label: 'Tactical map', why: 'Not built yet (planned for phase P1)' },
+  { id: 'tactical', label: 'Tactical map', mode: 'tactical' },
   { id: 'atmos', label: 'Atmos', why: 'No weather data delivered yet' },
   { id: 'replay', label: 'Mission replay', mode: 'replay' },
 ];

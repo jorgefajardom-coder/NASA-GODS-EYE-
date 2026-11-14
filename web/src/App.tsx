@@ -21,6 +21,7 @@ import { DetailsPanel } from './components/DetailsPanel';
 import { Vitals } from './components/Vitals';
 import { EventInspector } from './components/EventInspector';
 import { GeologyDetails, GeologyList } from './components/GeologyPanel';
+import { TacticalMap } from './components/TacticalMap';
 import { Timeline } from './components/Timeline';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
 import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './components/Frame';
@@ -165,14 +166,14 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   }, [playPause, seek, restart, t]);
 
   return (
-    <div className="app">
+    <div className={`app${mode === 'tactical' ? ' is-tactical' : ''}`}>
       <MissionScene
         bundle={bundle}
         view={view}
         layer={layer}
         exaggeration={exaggeration}
         showControlPoints={showControlPoints}
-        showLabels={showLabels}
+        showLabels={showLabels && mode !== 'tactical'}
         playing={playing}
         replaySpeed={speed}
         followAgentId={follow ? agentId : null}
@@ -184,6 +185,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         geology={mode === 'geology' && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
       />
       <div className="vignette" aria-hidden />
+      {mode === 'tactical' && <TacticalMap bundle={bundle} view={view} />}
 
       <div className="overlay">
         <div className="left">
