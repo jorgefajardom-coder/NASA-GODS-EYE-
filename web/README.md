@@ -7,7 +7,7 @@ terrain, with a saved-run replay that needs no ROS, Gazebo or network.
 
 ## Status
 
-Early P0 increment, **REPLAY mode only**. The live link is shown as offline: the gateway
+**REPLAY mode only**. The live link is shown as offline: the gateway
 on `feat/integration` is not connected to the viewer yet. Two saved runs can be opened
 (see the Run selector below).
 
@@ -19,21 +19,25 @@ on `feat/integration` is not connected to the viewer yet. Two saved runs can be 
 | POIs C and D | Fictitious |
 | Gateway replay `mock-vertical-001` | **Recorded MOCK run** from Jesús's `replay_recorder`: flat synthetic grid, straight-line MOCK planner, no Mars data |
 | Uncertainty, budgets, consumption | Illustrative assumptions, not certified limits |
+| Atmos tab | NASA weather summaries and published radiation averages (other sites/periods); not the conditions of the simulated run |
+| Rover, drone, base models | NASA/JPL models with branding removed; the base is the team's own Blender model |
+| Work in progress, not wired into the viewer | `public/replay/demo/context.json` (20 km surroundings of the crop, `scripts/extract-ctx-context.mjs`) and `src/lib/slope.ts` (Horn slope with `tests/slope.test.ts`) exist as uncommitted files; no component imports them yet |
 
 The terrain crop is provisional: the data owner's processed package replaces it.
 
 ## Requirements
 
-Node 24 (`.nvmrc`).
+Node 24 (`.nvmrc` pins 24.18.0; `package.json` engines `>=24 <25`).
 
 ## Commands
 
 ```bash
 npm ci
-npm run dev        # development server
-npm run build      # type-check + production build into dist/
+npm run dev        # development server (vite)
+npm run build      # tsc -b && vite build into dist/
 npm run preview    # serve the production build
-npm test           # unit and contract tests (Vitest)
+npm test           # vitest run
+npm run typecheck  # tsc -b --noEmit
 npm run fixture    # regenerate the replay fixture from scripts/data/ctx_crop.json
 ```
 
@@ -106,9 +110,12 @@ are NoData, and a MOCK grid shows no latitude or longitude.
 | `src/lib/astronautPose.ts` | Upright copies of the idle and walk clips (torso vertical, shoulders and pelvis level, reduced bounce); the model file is not modified |
 | `src/lib/smoothing.ts` | Frame-rate independent easing for drawn agent poses and the camera |
 | `src/lib/terrainSmooth.ts` | Bicubic display smoothing between source cells (adds no detail; cell centres stay exact) |
+| `src/lib/slope.ts` | Terrain slope from an elevation grid (Horn 3x3); not yet used by a component |
+| `src/lib/atmos.ts`, `geology.ts`, `strata.ts`, `tacticalMap.ts`, `provenance.ts` | Atmos context, geologic units, schematic strata, minimap base image, REPLAY/source_mode display semantics |
+| `src/data/referenceSources.ts` | Status of the mandatory NASA reference resources |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
 | `src/components/` | Terrain, routes, agents, sites, astronaut model, follow camera, interface panels |
-| `scripts/` | Terrain crop extraction and fixture generation |
+| `scripts/` | Terrain crop, orthomosaic, context terrain, geology and atmosphere extraction, fixture generation, GLB branding strip, Blender base preparation |
 
 ## Data contract
 
@@ -117,7 +124,13 @@ the viewer converts with `(x, y, z)_three = (x_east, z_up, -y_north)`. Local z e
 MOLA areoid elevation minus the offset recorded in the manifest. Vertical exaggeration is
 visual only and labelled. The viewer never plans routes.
 
+ICD-ROS2-V1 types mirrored in `src/types/icd.ts`: `RunEnvelope`, `UnavailableResponse`, `Pose`, `AgentState`, `RouteDecision`, `MissionState`, `MissionEvent`, `TerrainMeta` (plus mode, route and task enums).
+
+Replay fixture layout (`public/replay/<run_id>/`, demo run `demo-sim-002`, `mode: REPLAY`, `source_mode: SIMULATION`, `illustrative: true`): `manifest.json`, `timeline.json`, `routes.json`, `rasters.json`, `geology.json`, `atmosphere.json`, `ctx_ortho.png`, plus the uncommitted `context.json`. Gateway packages (`manifest.json` + `timeline.jsonl`) are read from `../data/sample/replay/<run_id>/`.
+
 ## Acceptance tests
+
+Automated suite on 2026-11-14 14:10: 18 files, 101 tests passed (`npm test`).
 
 | Test | Status |
 |---|---|
@@ -154,5 +167,6 @@ Astronaut posture (vertical torso, level shoulders and pelvis) is covered by tes
 real model and was checked by eye in the follow view at 20×, but only in the dev server on
 one machine. No browser automation tests. Candidate NASA layers found in the reference
 review (Mars Trek CTX orthomosaic, USGS SIM 3464 geology, Perseverance raw images) are
-documented in `../docs/data_sources.md` and not yet shown. Tactical map, scanner and
-weather are not started.
+documented in `../docs/data_sources.md` and not yet shown. The
+tactical map tab was removed (a minimap remains in the agent HUD); scanner not started.
+`context.json` and `slope.ts` are not yet shown in the viewer.

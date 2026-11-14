@@ -223,3 +223,9 @@ packages built/eight interfaces inspected;15focused launch/mission cases passed;
 published-snapshot skip. Repository and whitespace checks passed. The viewer
 accepts additive manifest fields and fails closed for non-flat recorded terrain
 without rasters; full real-terrain browser playback remains a separate handoff.
+
+## Frontend progress log (Jorge)
+
+| Date | Version | Owner | Evidence | Blockers | Next dependency |
+|---|---|---|---|---|---|
+| 2026-11-14 14:12 | `feat/ux` `7a7a1d3`, web viewer, docs | Jorge | Commits in window: `7a7a1d3` docs(readme) layer sources, `489647a` uncertainty layer labelled as assumed, `0e7f00e` merge main, `ebbe25e` AI docs, `8a886c9` Atmos tab, `a5eff6f` base model, `078981d` drone/agents true size, `3086f63` source_mode in status. Uncommitted: `web/scripts/extract-ctx-ortho.mjs` (extent/level args), new `web/scripts/extract-ctx-context.mjs`, `web/public/replay/demo/context.json`, `web/src/lib/slope.ts`, `web/tests/slope.test.ts`. `npm test --prefix web`: 18 files, 101 tests passed. | Context terrain and slope not wired into the viewer; demo mission and scarp are simulated; no real planner/live gateway link | Jesús: live gateway and raster recording; Daniel: processed terrain package; Diego: planner routes |
