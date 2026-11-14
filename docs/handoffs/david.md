@@ -1,5 +1,14 @@
 # David - retain scientific mission authority and approve the model
 
+## Current continuation — 14 November 2026, main 5ab1387
+
+Follow [CONT-DAV-01..04](../team_continuation_plan.md#david--mission-authority-and-scientific-acceptance):
+agree executable scenario/costs and drone scope with Diego/Jesús; bind evidence
+and outcome criteria; review Fajardo's NASA-criteria dossier and Daniel's
+larger-map feasibility; freeze experiment metrics before comparisons. The plan
+includes dependencies, acceptance and organizer reminders. Historical inventories
+below retain their original cut; they do not supersede this next-work allocation.
+
 Active branch: **`feat/mission`**. Audited head: `cf292107277e1aaf130d6c0ecd33904a22638f4f` (scientific mission authority). This head is unchanged at the final refresh. Main `004b3b2` now includes
 Diego's real planner externally via PR #2; Jesus's latest integration branch
 already tests it behind MOCK mission/terrain. Existing handoff is `docs/mission_handoff.md`; also read `docs/science_models.md`, `docs/science_benchmark.md`, `docs/science_decisions.md` and the retained mission validation/model-check evidence on that branch. Continue its actual manager, models, adapters and tests rather than the main scaffold.

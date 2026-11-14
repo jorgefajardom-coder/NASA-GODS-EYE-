@@ -1,5 +1,14 @@
 # Diego - preserve the advanced planner and reconcile resource costs
 
+## Current continuation — 14 November 2026, main 5ab1387
+
+PR12 is integrated. Follow [CONT-DIE-01..03](../team_continuation_plan.md#diego--authorized-recovery-and-scalable-planning):
+connect ReplanPolicy to authoritative phase/pose/progress/resources and explicit
+continuous-start opt-in with David/Jesús; implement estimated-terrain policy
+with Daniel; measure larger-map limits. Preserve mission authorization and
+existing model gates. Read the current ICD extension and planner_handoff.md;
+cell-centre-only statements in the historical cut below predate PR12.
+
 Active branch: **`feat/planner`**. Audited head: `34c515b6b86f73336844e8b3614c70b144574ec3`. PR #2 was open at the initial
 audit, then merged externally into main `004b3b2`; this reconciliation preserves
 that advance. Continue incremental fixes on the owned planner front. Algorithm commit `a6204dd`, ROS/snapshot/provisional crop commit `6e4984d` and handoff `40c252d` contain the substantive increment. Read the existing `docs/planner_handoff.md`, `src/mge_planning/MODEL.md` and `docs/planner_provenance.md` on this branch; keep their evidence intact.
