@@ -87,32 +87,85 @@ export function replans(events: ReadonlyArray<MissionEvent>): Replan[] {
 /** Longest gap between two samples that is still bridged visually. */
 export const MAX_INTERPOLATION_GAP_S = 2;
 
+/** One received value with its time, or null where no usable neighbouring sample exists. */
+type Knot = { t: number; v: number } | null;
+
+/** Fritsch-Carlson slope at `b` from its neighbours (0 at a local extremum, so no overshoot). */
+function pchipSlope(a: Knot, b: { t: number; v: number }, c: Knot): number {
+  const dl = a ? (b.v - a.v) / (b.t - a.t) : null;
+  const dr = c ? (c.v - b.v) / (c.t - b.t) : null;
+  if (dl == null) return dr ?? 0;
+  if (dr == null) return dl;
+  if (dl * dr <= 0) return 0;
+  const hl = b.t - a!.t;
+  const hr = c!.t - b.t;
+  const w1 = 2 * hr + hl;
+  const w2 = hr + 2 * hl;
+  return (w1 + w2) / (w1 / dl + w2 / dr);
+}
+
+/**
+ * Monotone cubic (PCHIP) value between the samples `b` and `c` at time `t`. It passes through
+ * every sample, never leaves the range of the two samples it joins where the data is monotone,
+ * and keeps the speed continuous across samples (straight segments made the speed snap every
+ * sample, which read as jolts on the drone and through a locked camera).
+ */
+export function pchip(a: Knot, b: { t: number; v: number }, c: { t: number; v: number }, d: Knot, t: number): number {
+  const h = c.t - b.t;
+  if (!(h > 0)) return b.v;
+  const s = Math.max(0, Math.min(1, (t - b.t) / h));
+  const m1 = pchipSlope(a, b, c);
+  const m2 = pchipSlope(b, c, d);
+  const s2 = s * s;
+  const s3 = s2 * s;
+  return (2 * s3 - 3 * s2 + 1) * b.v + (s3 - 2 * s2 + s) * h * m1 + (-2 * s3 + 3 * s2) * c.v + (s3 - s2) * h * m2;
+}
+
 /**
  * Visual interpolation between two received samples so motion is smooth.
  * It never extrapolates: after the last sample, or across a gap longer than
  * MAX_INTERPOLATION_GAP_S, the last received pose is shown unchanged.
+ * Between samples the pose follows a monotone cubic through the received samples (the one
+ * before `a` and after `b`, when present and close enough, only shape the curve).
  * Mode and resources are taken from the earlier sample as received.
  */
-export function interpolateAgents(a: ReplayFrame, b: ReplayFrame | undefined, t: number): AgentState[] {
+export function interpolateAgents(a: ReplayFrame, b: ReplayFrame | undefined, t: number, before?: ReplayFrame, after?: ReplayFrame): AgentState[] {
   const agents = a.mission_state.agents;
   if (!b) return agents;
   const span = b.timestamp_sim_s - a.timestamp_sim_s;
   if (span <= 0 || span > MAX_INTERPOLATION_GAP_S) return agents;
   const k = Math.max(0, Math.min(1, (t - a.timestamp_sim_s) / span));
   if (k === 0) return agents;
+  const near = (f: ReplayFrame | undefined, from: ReplayFrame) =>
+    f && Math.abs(f.timestamp_sim_s - from.timestamp_sim_s) > 0 && Math.abs(f.timestamp_sim_s - from.timestamp_sim_s) <= MAX_INTERPOLATION_GAP_S ? f : undefined;
+  const prev = near(before, a);
+  const next = near(after, b);
   return agents.map((s) => {
     const n = b.mission_state.agents.find((x) => x.agent_id === s.agent_id);
     if (!n) return s;
-    const p = s.pose.position;
-    const q = n.pose.position;
-    const y0 = yawFromQuaternion(s.pose.orientation);
-    let dy = yawFromQuaternion(n.pose.orientation) - y0;
-    dy = Math.atan2(Math.sin(dy), Math.cos(dy));
-    const yaw = y0 + dy * k;
+    const p0 = prev?.mission_state.agents.find((x) => x.agent_id === s.agent_id);
+    const p3 = next?.mission_state.agents.find((x) => x.agent_id === s.agent_id);
+    const ta = a.timestamp_sim_s;
+    const tb = b.timestamp_sim_s;
+    const axis = (get: (x: AgentState) => number) =>
+      pchip(
+        p0 ? { t: prev!.timestamp_sim_s, v: get(p0) } : null,
+        { t: ta, v: get(s) },
+        { t: tb, v: get(n) },
+        p3 ? { t: next!.timestamp_sim_s, v: get(p3) } : null,
+        t,
+      );
+    // Yaw unwrapped along the samples so a turn goes the short way round.
+    const y1 = yawFromQuaternion(s.pose.orientation);
+    const unwrap = (from: number, to: number) => from + Math.atan2(Math.sin(to - from), Math.cos(to - from));
+    const y2 = unwrap(y1, yawFromQuaternion(n.pose.orientation));
+    const y0 = p0 ? unwrap(y1, yawFromQuaternion(p0.pose.orientation)) : null;
+    const y3 = p3 ? unwrap(y2, yawFromQuaternion(p3.pose.orientation)) : null;
+    const yaw = pchip(y0 == null ? null : { t: prev!.timestamp_sim_s, v: y0 }, { t: ta, v: y1 }, { t: tb, v: y2 }, y3 == null ? null : { t: next!.timestamp_sim_s, v: y3 }, t);
     return {
       ...s,
       pose: {
-        position: { x: p.x + (q.x - p.x) * k, y: p.y + (q.y - p.y) * k, z: p.z + (q.z - p.z) * k },
+        position: { x: axis((x) => x.pose.position.x), y: axis((x) => x.pose.position.y), z: axis((x) => x.pose.position.z) },
         orientation: { x: 0, y: 0, z: Math.sin(yaw / 2), w: Math.cos(yaw / 2) },
       },
     };
@@ -152,7 +205,7 @@ export function viewAt(bundle: ReplayBundle, t: number): ReplayView {
   const idx = frameIndexAt(frames, t);
   const frame = idx >= 0 ? frames[idx] : null;
   const next = idx >= 0 ? frames[idx + 1] : undefined;
-  const state = frame ? { ...frame.mission_state, agents: interpolateAgents(frame, next, t) } : null;
+  const state = frame ? { ...frame.mission_state, agents: interpolateAgents(frame, next, t, frames[idx - 1], frames[idx + 2]) } : null;
   const events = eventsUpTo(bundle.timeline.events, t);
   const activeRoute = state ? (state.active_route ?? bundle.routes.get(state.route_id) ?? null) : null;
   const rp = replans(events);
@@ -160,4 +213,17 @@ export function viewAt(bundle: ReplayBundle, t: number): ReplayView {
     .map((r) => bundle.routes.get(r.invalidated.route_id))
     .filter((r): r is RouteDecision => !!r && r.route_id !== activeRoute?.route_id);
   return { t, frame, state, events, activeRoute, previousRoutes, replans: rp, tasks: taskViews(events), speeds: frame ? agentSpeeds(frame, next) : {} };
+}
+
+/** Idle lead-in kept before the first motion when the replay is restarted (s of simulated time). */
+export const LEAD_IN_S = 4;
+
+/**
+ * Where playback restarts: LEAD_IN_S before the first sample in which an agent leaves IDLE
+ * (0 when an agent moves from the start or none ever moves). Display convenience only.
+ */
+export function firstMotionTime(bundle: ReplayBundle): number {
+  const frames = bundle.timeline.frames;
+  const i = frames.findIndex((f) => f.mission_state.agents.some((a) => a.mode !== 'IDLE'));
+  return i > 0 ? Math.max(0, frames[i].timestamp_sim_s - LEAD_IN_S) : 0;
 }

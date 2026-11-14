@@ -28,7 +28,12 @@
       "tool": "OpenAI Codex",
       "kind": "integration_reconciliation",
       "generation": "AI-assisted reconciliation requested by the repository owner",
-      "paths": ["docs/AI_USAGE.md", "docs/ai_usage.json", "docs/planner_pr12_publication.md", "tests/integration/test_vertical_execution.py"],
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "docs/planner_pr12_publication.md",
+        "tests/integration/test_vertical_execution.py"
+      ],
       "use": "Reconcile planner a959d25 with main 3a9032b, preserving both histories, disclosures, planner corrections and callback scheduling/replay/executor changes. Initialize the new kinematic test's simulated ground scene with the existing fixture helper and check pose/observation consistency. No scientific or operational approval."
     },
     {
@@ -888,15 +893,137 @@
         "docs/integration_log.md"
       ],
       "use": "Isolate each integration module in its own ROS domain and wait for the planner service, the mission's map and recorded rasters before acting. No scientific observation or mission result is generated."
+    },
+    {
+      "tool": "OpenAI Codex (source model, owner-confirmed); Claude (Anthropic) through Claude Code (preparation script, realism pass, viewer code and tests)",
+      "kind": "ai_generated_3d_model_and_preparation_code",
+      "generation": "Source 3D model generated with OpenAI Codex by the owner; edited by a deterministic AI-assisted Blender script",
+      "paths": [
+        "web/scripts/blender/source/base-marciana-v2.blend",
+        "web/scripts/blender/prepare_base.py",
+        "web/public/assets/models/base.glb",
+        "web/src/components/BaseModel.tsx",
+        "web/tests/baseModel.test.ts"
+      ],
+      "use": "Team Mars base (hub, three modules, corridors, hangar, geodesic dome, solar field). The script removes its own ground and rocks and adds a deterministic realism pass: dust vertex colours, regolith sandbag berms, thermal radiators, a comms mast and power cables. Untextured, no agency logos, flags or mission marks. Visual context only; it does not affect routes or data.",
+      "source_sha256": "1599ec1bea327ead66e000a667e3791aa004c91502ab0bf1664febad93f646ee"
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_and_derived_data",
+      "generation": "AI-assisted extraction script and viewer code; the values are copied or grouped from public NASA feeds and a published paper, none generated",
+      "paths": [
+        "web/scripts/extract-atmosphere.mjs",
+        "web/public/replay/demo/atmosphere.json",
+        "web/src/lib/atmos.ts",
+        "web/src/components/AtmosPanel.tsx",
+        "web/tests/atmos.test.ts"
+      ],
+      "use": "Atmos tab: latest Perseverance MEDA daily summaries at Jezero, Curiosity REMS daily summaries at Gale grouped by solar longitude (medians), and MSL RAD surface dose rates from Hassler et al. (2014). Outreach summaries, not the PDS science archive; Gale and RAD values are another site's reference, not Jezero measurements. Display only."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_and_tests",
+      "generation": "AI-assisted generation",
+      "paths": [
+        "web/src/lib/provenance.ts",
+        "web/src/data/gatewayReplay.ts",
+        "web/src/data/replayAdapter.ts",
+        "web/src/components/Frame.tsx",
+        "web/src/components/AgentLayer.tsx",
+        "web/tests/provenance.test.ts",
+        "web/tests/gatewayReplay.test.ts"
+      ],
+      "use": "Viewer consumption of source_mode (ICD section 6.1 proposed in PR #11): REPLAY · MOCK / SIMULATION / UNKNOWN status, LIVE refused, MOCK terrain evidence wins. Drone drawn at its true height above the drawn ground and a true-size agents option."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_tests_and_derived_data",
+      "generation": "AI-assisted code; values derived from or resampled out of the CTX DTM and orthomosaic, none generated",
+      "paths": [
+        "web/src/lib/slope.ts",
+        "web/tests/slope.test.ts",
+        "web/scripts/extract-ctx-context.mjs",
+        "web/scripts/extract-ctx-ortho.mjs",
+        "web/public/replay/demo/context.json",
+        "web/public/replay/demo/context_ortho.png",
+        "web/src/components/ContextTerrain.tsx",
+        "web/src/components/CutawayBlock.tsx",
+        "web/tests/contextTerrain.test.ts"
+      ],
+      "use": "Slope layer (Horn 3x3 on the orbital CTX DTM), the mission area drawn as a solid block with plain walls, and optional 20 km surroundings from the same CTX DTM (100 m box average) and orthomosaic (40 m). Context only; never read by the planner or mission."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_and_tests",
+      "generation": "AI-assisted generation",
+      "paths": [
+        "web/src/lib/astronautPose.ts",
+        "web/src/components/AstronautModel.tsx",
+        "web/src/components/AgentLayer.tsx",
+        "web/src/components/CameraBar.tsx",
+        "web/src/components/ViewRotator.tsx",
+        "web/src/components/LiveClocks.tsx",
+        "web/src/lib/marsClock.ts",
+        "web/tests/marsClock.test.ts",
+        "web/src/components/Downwash.tsx",
+        "web/scripts/make-demo-fixture.mjs",
+        "web/public/replay/demo/timeline.json",
+        "web/public/replay/demo/routes.json",
+        "web/src/components/RadialHud.tsx",
+        "web/src/components/HudGauge.tsx",
+        "web/src/lib/atmosMap.ts",
+        "web/src/lib/sun.ts",
+        "web/src/lib/labels.ts",
+        "web/src/data/gatewayReplay.ts",
+        "web/src/data/replayAdapter.ts",
+        "web/tests/gatewayReplay.test.ts",
+        "web/tests/atmosMap.test.ts",
+        "web/src/lib/resources.ts",
+        "web/tests/resources.test.ts",
+        "web/src/styles.css",
+        "web/src/components/FollowCamera.tsx",
+        "web/src/components/MissionScene.tsx",
+        "web/src/components/VehicleModel.tsx",
+        "web/src/components/FootDust.tsx",
+        "web/src/lib/atmos.ts",
+        "web/src/lib/replay.ts",
+        "web/src/lib/smoothing.ts",
+        "web/src/App.tsx",
+        "web/tests/astronaut.test.ts",
+        "web/tests/atmos.test.ts",
+        "web/tests/replay.test.ts",
+        "web/tests/smoothing.test.ts"
+      ],
+      "use": "Viewer display only: walk cycle re-timed and pelvis motion kept for the legs so the planted foot does not slide; distance pins shown only when a model is a few pixels tall; grab-to-drag map camera; cameras for each agent and the base; camera kept above the drawn terrain; replay restart skips the idle lead-in; running crew dose estimate from the published RAD surface rate (not a dosimeter reading); monotone cubic interpolation between received samples; drone drawn with gentle take-off and landing; rover tilted to the terrain with spinning wheels; boot-shaped footprints; radial agent HUD with per-element gauges (use rates derived from the received samples, route figures as published, latest MEDA summary, pressure map estimated barometrically from it); astronaut projected shadow; files.public_rasters attachment read and validated; live Earth and Mars clocks (Mars24 algorithm, NASA GISS); drone rotor spin-up, blur and downwash dust; demo regenerated with rover turns in place and a drone spin-up/climb/descent profile (simulated values). No data or values generated."
     }
   ],
-  "generated_media": [],
+  "generated_media": [
+    {
+      "path": "web/public/assets/portraits/human_1.webp",
+      "kind": "ai_generated_image",
+      "tool": "ChatGPT (OpenAI) image generation, supplied by the owner (the source carries a 'Created with ChatGPT' mark)",
+      "editing": "Cropped to the face and resized to 256 x 256 with Pillow; a visible 'AI-generated' band burned into the bottom of the image",
+      "watermark": "AI-generated (burned into the pixels; legible at the 80 px display size)",
+      "use": "Illustrative portrait beside astronaut human_1 in the viewer's details panel. Not a photograph of a crew member and not NASA data; no NASA logos, flags or mission marks.",
+      "sha256": "7d0b020623f6c864c1486a7320961ad62e5361e8d7bfc11d63db85cfcbf24e3e"
+    },
+    {
+      "path": "web/public/assets/intro/mars-gods-eye-intro.webm",
+      "kind": "ai_generated_video_with_audio_track",
+      "tool": "Kling (Kuaishou) video generation, supplied by the owner; the file's AIGC metadata names ContentProducer 'kling' (ProduceID KLingMuse_f3500bd8-5e38-45c9-b8ab-e8ab688814eb)",
+      "editing": "A visible 'AI-generated' label burned into the bottom-right corner of every frame with ffmpeg drawtext (VP9 re-encode); audio track and AIGC metadata copied unchanged (5.0 s, 1920 x 1080, VP9 video, Opus audio track)",
+      "watermark": "AI-generated (burned into the pixels of every frame, bottom-right; stays in downloads and captures of the file). The viewer also shows an 'AI-generated \u00b7 Kling' label over the clip (web/src/components/Intro.tsx)",
+      "audio": "The audio track is treated as AI-generated; it is declared here and in the AIGC metadata of the file; the viewer plays the clip muted",
+      "use": "Opening intro screen of the viewer (skippable). Project emblem only; no NASA logos, flags or mission marks. Not data.",
+      "sha256": "4897e14fcfc185e9ec623d1f4401807706193e1614eb780431675b8641f73581"
+    }
+  ],
   "scientific_datasets_generated": false,
   "measured_results_generated": true,
   "notes": [
     "Project idea and science specifications supplied by the human team.",
     "Update this register and descriptive disclosure when generated artifacts change.",
-    "No generated bitmap, video or audio asset is included at scaffold time.",
     "Fresh CTX/HiRISE processing occurs during competition; source observations pre-exist and are cited.",
     "Contract reconciliation synthetic raster attachments and metadata exist only in explicitly labelled tests; no NASA dataset, measured outcome, image, video or audio is generated.",
     "Terrain arrays in data/sample/ and data/reference/ are derived via GDAL/rasterio from observational NASA PDS / USGS Astrogeology products, not AI-generated.",
@@ -906,7 +1033,8 @@
     "Mission coefficients remain proposed; accepting a lunar analog approach does not approve quantitative Mars EVA limits.",
     "Measured-results flags refer to physical/scientific measurements. Software validation and synthetic model diagnostics are recorded separately; no mission or A/B/C result is asserted.",
     "Main synchronization preserves mission and integrated viewer declarations; the provenance test moved from web/src/lib to web/tests in the viewer merge.",
-    "Merged main contributor confirmation supersedes the earlier pending confirmation for the same retained dev/jesus commit; original history is preserved."
+    "Merged main contributor confirmation supersedes the earlier pending confirmation for the same retained dev/jesus commit; original history is preserved.",
+    "No generated bitmap, video or audio asset was included at scaffold time; the only generated image since is listed in generated_media."
   ],
   "retained_contributions": [
     {
@@ -970,5 +1098,6 @@
   "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements",
   "software_validation_results_recorded": true,
   "synthetic_model_diagnostics_recorded": true,
-  "integrated_mission_results_recorded": false
+  "integrated_mission_results_recorded": false,
+  "uses_note_base_model": "base-marciana-v2: AI-generated 3D geometry (no images or video). Renders or captures that show it in the delivery should follow the AI-generated image/video watermark rule."
 }

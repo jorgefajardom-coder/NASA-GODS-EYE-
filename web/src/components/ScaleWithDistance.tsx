@@ -22,6 +22,6 @@ export function ScaleWithDistance({ perMetre, min = 1, max = 12, children }: Pro
     if (!g) return;
     g.getWorldPosition(world.current);
     g.scale.setScalar(THREE.MathUtils.clamp(camera.position.distanceTo(world.current) * perMetre, min, max));
-  });
+  }, -0.5); // after the cameras have moved this frame, before the labels (drei Html, 0) are placed
   return <group ref={group}>{children}</group>;
 }

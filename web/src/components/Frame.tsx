@@ -1,10 +1,12 @@
+import { LiveClocks } from './LiveClocks';
 import type { ReplayManifest } from '../types/replay';
 import type { AgentState } from '../types/icd';
 import type { MissionAlert } from '../lib/management';
 import { fmtSimTime } from '../lib/format';
 import { RUNS } from '../data/replayAdapter';
+import { displayState } from '../lib/provenance';
 
-export type UiMode = 'exploration' | 'geology' | 'replay';
+export type UiMode = 'exploration' | 'geology' | 'atmos' | 'replay';
 
 function terrainLabel(m: ReplayManifest): string {
   const t = m.terrain_meta;
@@ -56,12 +58,14 @@ interface StatusProps {
 }
 
 /** Link and replay status, top right (the agent position is in the details panel). The live link is shown as offline: the viewer does not connect to the gateway yet, it only plays recorded replays. */
-export function StatusBlock({ missionState, mapVersion, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
+export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
   return (
     <section className="status" aria-label="Connection and mission status">
       <div className="status__link">Offline</div>
       <div className="status__line">
-        <span className="chip-mode">REPLAY</span>
+        <span className="chip-mode" title="Recorded data (REPLAY) and who produced it (source_mode, ICD §6.1)">
+          {displayState({ mode: 'REPLAY', source: manifest.source_mode ?? 'UNKNOWN' }).label}
+        </span>
         <span className="muted">live link not available</span>
       </div>
       <dl className="status__grid mono">
@@ -71,8 +75,8 @@ export function StatusBlock({ missionState, mapVersion, t, evaluator, evaluatorM
         <dd>v{mapVersion}</dd>
         <dt>Sim time</dt>
         <dd>{fmtSimTime(t)}</dd>
-        <dt>Mars time</dt>
-        <dd>Not available</dd>
+        {/* Real present time on Earth (the viewer's) and on Mars; the sim time above is the replay's. */}
+        <LiveClocks lonEastDeg={manifest.terrain_meta.origin_lon_deg ?? undefined} />
         <dt>Relief</dt>
         <dd>{exaggeration === 1 ? 'true scale' : `${exaggeration}× (visual only)`}</dd>
       </dl>
@@ -89,7 +93,7 @@ export function StatusBlock({ missionState, mapVersion, t, evaluator, evaluatorM
 const TABS: Array<{ id: string; label: string; mode?: UiMode; why?: string }> = [
   { id: 'exploration', label: 'Exploration', mode: 'exploration' },
   { id: 'geology', label: 'Ground layers', mode: 'geology' },
-  { id: 'atmos', label: 'Atmos', why: 'No weather data delivered yet' },
+  { id: 'atmos', label: 'Atmos', mode: 'atmos' },
   { id: 'replay', label: 'Mission replay', mode: 'replay' },
 ];
 

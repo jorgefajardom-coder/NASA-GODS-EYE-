@@ -1,13 +1,19 @@
-import { useMemo, type ReactElement } from 'react';
+import { useGLTF } from '@react-three/drei';
+import { Suspense, useMemo, type ReactElement } from 'react';
 import * as THREE from 'three';
+import { assetUrl } from '../data/replayAdapter';
 import type { Point } from '../types/icd';
+import { ModelBoundary } from './AstronautModel';
 
 /**
- * Surface habitat at the base site: an original, generic layout (two horizontal habitat
- * modules, a domed hub, pressurized tunnels, storage tanks, cargo containers, a solar field
- * and a comms mast). No agency logos, flags or mission marks. Real scale in metres; it is
- * visual context only and has no effect on routes or data.
+ * Surface habitat at the base site, real scale in metres, visual context only (no effect on
+ * routes or data). No agency logos, flags or mission marks. The model is the team's Blender
+ * base (scripts/blender/source/base-marciana-v2.blend) prepared by
+ * scripts/blender/prepare_base.py into base.glb; the simple procedural cluster below is drawn
+ * while it loads or if it fails.
  */
+export const BASE_URL = assetUrl('assets/models/base.glb');
+
 interface Props {
   /** Base site in frame `map` (ENU). The cluster is built beside it so agents do not start inside a module. */
   site: Point;
@@ -17,7 +23,7 @@ interface Props {
 }
 
 /** Offset of the habitat cluster from the site point (east, north), metres. */
-const CLUSTER_OFFSET = { x: 34, y: -22 };
+export const CLUSTER_OFFSET = { x: 34, y: -22 };
 
 const WHITE = new THREE.MeshStandardMaterial({ color: '#e9e6df', roughness: 0.55, metalness: 0.05 });
 const PANEL_WHITE = new THREE.MeshStandardMaterial({ color: '#d6d2c8', roughness: 0.7 });
@@ -166,7 +172,7 @@ const PARTS: Part[] = [
   { e: -10, n: -4, node: <Mast /> },
 ];
 
-export function BaseModel({ site, verticalExaggeration, groundHeight }: Props) {
+function ProceduralBase({ site, verticalExaggeration, groundHeight }: Props) {
   const placed = useMemo(
     () =>
       PARTS.map((p, i) => {
@@ -188,3 +194,61 @@ export function BaseModel({ site, verticalExaggeration, groundHeight }: Props) {
     </group>
   );
 }
+
+/**
+ * Blender model (public/assets/models/base.glb, from scripts/blender/prepare_base.py): one
+ * connected cluster with its origin on the ground at the hub centre, axes x east, y up,
+ * z = -north. It is placed as a whole so modules, corridors and the dome stay joined, at the
+ * median drawn ground height under its footprint, and sunk slightly so no edge floats on
+ * gently sloping ground.
+ */
+const BASE_SINK_M = 0.15;
+
+function GltfBase({ site, verticalExaggeration, groundHeight }: Props) {
+  const gltf = useGLTF(BASE_URL, false, false);
+  const { model, footprint } = useMemo(() => {
+    const root = gltf.scene.clone(true);
+    root.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (m.isMesh) {
+        m.castShadow = true;
+        m.receiveShadow = true;
+      }
+    });
+    const box = new THREE.Box3().setFromObject(root);
+    return { model: root, footprint: box };
+  }, [gltf.scene]);
+
+  const position = useMemo((): [number, number, number] => {
+    const cx = site.x + CLUSTER_OFFSET.x;
+    const cy = site.y + CLUSTER_OFFSET.y;
+    // Sample the footprint (model x = east, -z = north) and take the median height.
+    const hs: number[] = [];
+    for (const fx of [0, 0.5, 1]) {
+      for (const fz of [0, 0.5, 1]) {
+        const e = footprint.min.x + fx * (footprint.max.x - footprint.min.x);
+        const n = -(footprint.min.z + fz * (footprint.max.z - footprint.min.z));
+        const h = groundHeight(cx + e, cy + n);
+        if (h != null) hs.push(h);
+      }
+    }
+    hs.sort((a, b) => a - b);
+    const h = hs.length ? hs[hs.length >> 1] : site.z;
+    return [cx, h * verticalExaggeration - BASE_SINK_M, -cy];
+  }, [site, verticalExaggeration, groundHeight, footprint]);
+
+  return <primitive object={model} position={position} name="base-habitat" />;
+}
+
+export function BaseModel(props: Props) {
+  const fallback = <ProceduralBase {...props} />;
+  return (
+    <ModelBoundary fallback={fallback}>
+      <Suspense fallback={fallback}>
+        <GltfBase {...props} />
+      </Suspense>
+    </ModelBoundary>
+  );
+}
+
+useGLTF.preload(BASE_URL, false, false);

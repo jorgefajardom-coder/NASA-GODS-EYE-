@@ -1,9 +1,11 @@
 import { WEB_SCHEMA_VERSION } from '../types/icd';
 import type { RouteDecision } from '../types/icd';
 import type { GeologyData } from '../lib/geology';
-import type { RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
+import { parseAtmosphere } from '../lib/atmos';
+import type { ContextTerrainData, RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
 import { normalizeEvents } from '../lib/replay';
-import { fromGatewayPackage, isGatewayManifest, parseJsonLines } from './gatewayReplay';
+import { resolveSourceMode } from '../lib/provenance';
+import { fromGatewayPackage, isGatewayManifest, parseJsonLines, type PublicRasters } from './gatewayReplay';
 
 /** Runs offered in the viewer. `dir` is relative to the site under replay/. */
 export const RUNS: ReadonlyArray<{ id: string; label: string }> = [
@@ -49,6 +51,11 @@ export function assembleBundle(
     if (obj.run_id !== runId) throw new ReplayLoadError(`${name} belongs to run "${obj.run_id}", expected "${runId}".`);
   }
   const meta = manifest.terrain_meta;
+  const source = resolveSourceMode(manifest.source_mode, meta);
+  if (!source) {
+    throw new ReplayLoadError(`source_mode "${String(manifest.source_mode)}" is not allowed in a recording (MOCK, SIMULATION or UNKNOWN; LIVE cannot be declared).`);
+  }
+  manifest = { ...manifest, source_mode: source };
   if (rasters.rows !== meta.rows || rasters.cols !== meta.cols || rasters.prior.length !== meta.rows * meta.cols) {
     throw new ReplayLoadError('Raster size does not match TerrainMeta rows × cols.');
   }
@@ -90,7 +97,10 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
     const url = assetUrl(`${dir}/${raw.files.timeline}`);
     const res = await fetch(url);
     if (!res.ok) throw new ReplayLoadError(`Could not load ${url} (HTTP ${res.status}).`);
-    return fromGatewayPackage(raw, parseJsonLines(await res.text()));
+    // The public raster attachment is read whenever the manifest names it (files.public_rasters).
+    const named = raw.files.public_rasters;
+    const rasters = named ? await getJson<PublicRasters>(assetUrl(`${dir}/${named}`)) : undefined;
+    return fromGatewayPackage(raw, parseJsonLines(await res.text()), rasters);
   }
   const manifest = raw as ReplayManifest;
   const [rasters, timeline, routes] = await Promise.all([
@@ -105,6 +115,25 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
       bundle.geology = await getJson<GeologyData>(assetUrl(`${dir}/${manifest.geology.file}`));
     } catch {
       /* the Ground layers tab then says no geology is available */
+    }
+  }
+  if (manifest.atmosphere) {
+    // Optional layer: the run still opens if it is missing or malformed.
+    try {
+      bundle.atmosphere = parseAtmosphere(await getJson<unknown>(assetUrl(`${dir}/${manifest.atmosphere.file}`))) ?? undefined;
+    } catch {
+      /* the Atmos tab then says no data is available */
+    }
+  }
+  if (manifest.context) {
+    // Optional surroundings: the run still opens without them.
+    try {
+      const ctx = await getJson<ContextTerrainData>(assetUrl(`${dir}/${manifest.context.file}`));
+      const f = ctx.frame;
+      const sameZ = f.local_z_offset_m === (manifest.local_z_offset_m ?? f.local_z_offset_m);
+      if (sameZ && ctx.heights.length === f.rows * f.cols) bundle.context = ctx;
+    } catch {
+      /* the crop is drawn alone */
     }
   }
   return bundle;

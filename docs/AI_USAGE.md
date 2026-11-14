@@ -174,9 +174,40 @@ rover's blade sheet is replaced with the drone's already cleaned sheet, and two 
 drone blade roughness map are filled with its plain background. This is a deterministic flat
 fill or copy, not generative inpainting, so the models still contain no AI-generated imagery.
 
+The surface base model starts from the Blender file
+`web/scripts/blender/source/base-marciana-v2.blend`, an AI-generated 3D model created by the
+owner with OpenAI Codex outside this repository (owner-confirmed, 14 November 2026). `web/scripts/blender/prepare_base.py`, written with Claude through Claude
+Code, removes its ground and rocks and adds a deterministic realism pass (dust vertex
+colours, sandbag berms, radiators, comms mast, cables) to produce
+`web/public/assets/models/base.glb`: flat colours, no textures, no AI image generator, no
+agency marks. `web/public/replay/demo/atmosphere.json` holds values copied or
+grouped (medians per 15° of solar longitude) from the public NASA Mars weather feed
+(Perseverance MEDA at Jezero, Curiosity REMS at Gale; CAB outreach summaries) and the MSL
+RAD surface dose rates published by Hassler et al. (2014); only
+`web/scripts/extract-atmosphere.mjs` and the Atmos tab code were AI-assisted, and no value
+is generated. The slope layer (`web/src/lib/slope.ts`), the solid-block display and the optional surroundings (`web/scripts/extract-ctx-context.mjs`, `web/src/components/ContextTerrain.tsx`) were written with Claude through Claude Code; their values are computed from or copied out of the CTX DTM and orthomosaic, none generated.
+The viewer's `source_mode` handling (status chip, gateway package adapter)
+was also written with Claude through Claude Code. So were the viewer's walk-cycle timing and foot planting
+(`web/src/lib/astronautPose.ts`), the per-agent and base cameras with grab-to-drag and the
+terrain clamp (`web/src/components/CameraBar.tsx`, `FollowCamera.tsx`, `MissionScene.tsx`),
+the distance pins (`AgentLayer.tsx`) and the running crew dose estimate in the telemetry block
+(`web/src/lib/atmos.ts`, `HudGauge.tsx`, `RadialHud.tsx`), which multiplies the published RAD rate by the replay
+time and generates no value.
+
 Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
 by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).
-No AI-generated image, video or audio is included. Machine-readable metadata:
+One AI-generated image is included: `web/public/assets/portraits/human_1.webp`, the
+portrait shown beside astronaut human_1 in the viewer's details panel. It was generated
+with ChatGPT (OpenAI) and supplied by the owner; it was cropped and resized with Pillow and
+carries a visible `AI-generated` band burned into the image, legible at its 80 px display
+size and in any capture. It is an illustration, not a photograph of a crew member or NASA
+data, and contains no NASA logos, flags or mission marks. One AI-generated video is included: `web/public/assets/intro/mars-gods-eye-intro.webm`,
+the skippable intro screen (5 s, project emblem, no NASA marks). It was generated with Kling
+and supplied by the owner (the file's AIGC metadata names Kling as content producer) and is
+used as supplied except for a visible `AI-generated` label burned into every frame (ffmpeg),
+so the mark stays in downloads and captures; the viewer also shows the mark over the clip.
+Its audio track is treated as AI-generated and declared here and in the file metadata; the
+viewer plays the clip muted. Machine-readable metadata:
 [ai_usage.json](ai_usage.json), the `aiDisclosure` field in `web/package.json` and
 the `ai_disclosure` object in `web/public/replay/demo/manifest.json`.
 

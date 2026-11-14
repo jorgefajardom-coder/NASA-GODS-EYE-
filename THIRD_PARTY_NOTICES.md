@@ -25,6 +25,7 @@ Mars 2020 Terrain Relative Navigation CTX DTM mosaic, USGS Astrogeology Science 
   (9,662,387 bytes, SHA-256 `16a1aa66c3f48c1bca252795827db7b417876217aff0f5e1aff18027fab2327b`).
 - Product page: https://astrogeology.usgs.gov/search/map/mars_2020_terrain_relative_navigation_ctx_dtm_mosaic
 - DOI of the CTX DTM product family: https://doi.org/10.5066/P906QQT8
+- `web/public/replay/demo/context.json`: the same file over a 20 km square centred on the crop, each 100 m cell the mean of 5 × 5 bilinear samples (box average), made by `web/scripts/extract-ctx-context.mjs` after checking the file's SHA-256. Context surroundings only.
 - The full file is not stored in this repository. `web/scripts/data/ctx_crop.json` holds a
   2 km × 2 km crop (100 × 100 cells of 20 m) resampled by `web/scripts/extract-ctx-crop.mjs`
   onto a local tangent ENU grid. The resampling adds no resolution.
@@ -47,6 +48,7 @@ MRO CTX Jezero orthomosaic, controlled (Mars 2020 Terrain Relative Navigation), 
 
 - WMTS layer: `JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0` (https://trek.nasa.gov/mars/), native 6 m, same `soc_008` production as the CTX DTM above.
 - `web/public/replay/demo/ctx_ortho.png`: 400 × 400 px over the 2 km crop (5 m/px), made by `web/scripts/extract-ctx-ortho.mjs` from nine level-13 tiles (tiles SHA-256 `f2ad4cdaf747f36b508cb063ee904d60204c5f3c5dcb77284ab201812369e527`). Bilinear resampling onto the crop's ENU grid and a 1st–99th percentile contrast stretch; no detail is added. The viewer tints the panchromatic image for display.
+- `web/public/replay/demo/context_ortho.png`: 500 × 500 px over a 20 km square centred on the crop (40 m/px), made by the same script from nine level-10 tiles (tiles SHA-256 `cd464000d6050216cf1638f836ea5e0523124e87c05735d7f7cd56c3e5a09f5e`), same resampling and contrast stretch. Context surroundings only.
 - Usage terms not verified here: NASA planetary data, see the Mars Trek and USGS product pages.
 
 ## Geologic units
@@ -63,3 +65,9 @@ Official 3D models by NASA/JPL-Caltech: "Mars Perseverance Rover, 3D Model" (htt
 - Files: `web/public/assets/models/rover.glb`, `web/public/assets/models/drone.glb`.
 - Modifications: all agency branding on the textures (logos, flag, mission plaques, perforated agency names, commemorative and brand text) was painted out with the surrounding plain surface, as the competition rules forbid NASA branding in the delivery; the rover was decimated to about 35 % and textures limited to 512 px; the rover was turned to face +X. Marks the Blender pass missed (the rover's stowed-helicopter blade sheet and the drone's blade roughness map) were then removed by `web/scripts/strip-glb-branding.mjs`. Details and checksums in `web/scripts/blender/README.md`.
 - Use of NASA imagery and models follows NASA's media usage guidelines; no NASA endorsement is implied.
+
+## Mars weather and radiation context
+
+- File: `web/public/replay/demo/atmosphere.json` (built by `web/scripts/extract-atmosphere.mjs`).
+- Mars 2020 Perseverance MEDA and MSL Curiosity REMS daily weather summaries from the NASA Mars weather feed (https://mars.nasa.gov/rss/api/?feed=weather&feedtype=json&category=mars2020 and `category=msl`), credit NASA/JPL-Caltech/CAB(CSIC-INTA). CAB provides these summaries for outreach purposes; the science data is archived at PDS. Values are copied (Jezero) or grouped into medians per 15° of solar longitude (Gale).
+- MSL RAD surface dose rates from Hassler, D. M., et al. (2014), Mars' surface radiation environment measured with the Mars Science Laboratory's Curiosity rover, Science 343, 1244797, https://doi.org/10.1126/science.1244797 (published values only).

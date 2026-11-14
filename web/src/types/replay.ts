@@ -1,5 +1,7 @@
 import type { MissionEvent, MissionState, Point, RouteDecision, TerrainMeta } from './icd';
 import type { GeologyData } from '../lib/geology';
+import type { SourceMode } from '../lib/provenance';
+import type { AtmosphereData } from '../lib/atmos';
 
 /**
  * Replay fixture layout (proposal for Jesús; the gateway snapshot format is not frozen).
@@ -31,6 +33,11 @@ export interface ReplayManifest {
   icd: string;
   run_id: string;
   mode: 'REPLAY';
+  /**
+   * Who produced the data (ICD §6.1). Optional in JSON 1.0.0: older manifests lack it and are
+   * shown as UNKNOWN unless their terrain says MOCK. assembleBundle always fills it in.
+   */
+  source_mode?: SourceMode;
   provenance: Provenance[];
   illustrative: boolean;
   /** Where AI assistance was used in this fixture (competition transparency rule). */
@@ -57,6 +64,10 @@ export interface ReplayManifest {
   };
   /** Geologic units of the run area (USGS SIM 3464), drawn in the Ground layers tab. */
   geology?: { file: string };
+  /** Atmosphere and radiation context (scripts/extract-atmosphere.mjs), drawn in the Atmos tab. */
+  atmosphere?: { file: string };
+  /** Surroundings of the crop from the same DTM, coarser (scripts/extract-ctx-context.mjs). Context only. */
+  context?: { file: string; image?: string };
   vertical_exaggeration_default: number;
   control_points: ControlPoint[];
   pois: PointOfInterest[];
@@ -106,4 +117,15 @@ export interface ReplayBundle {
   routes: Map<string, RouteDecision>;
   /** Present when the manifest declares a geology file and it loaded. */
   geology?: GeologyData;
+  /** Present when the manifest declares an atmosphere file and it loaded and validated. */
+  atmosphere?: AtmosphereData;
+  /** Present when the manifest declares a context terrain and it loaded. */
+  context?: ContextTerrainData;
+}
+
+/** Context terrain around the crop: local ENU heights (row 0 = south, null = NoData). */
+export interface ContextTerrainData {
+  note: string;
+  frame: { origin_x_m: number; origin_y_m: number; resolution_m: number; rows: number; cols: number; local_z_offset_m: number };
+  heights: (number | null)[];
 }

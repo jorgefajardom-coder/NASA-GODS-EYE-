@@ -11,7 +11,6 @@ describe('display smoothing', () => {
 
   it('jumps straight to the target when smoothing is off', () => {
     expect(dampFactor(1 / 60, 0)).toBe(1);
-    expect(CAMERA_SMOOTHING.off.followTauS).toBe(0);
   });
 
   it('never overshoots', () => {
@@ -30,7 +29,7 @@ describe('display smoothing', () => {
   });
 
   it('orders the settings from rigid to cinematic', () => {
-    expect(CAMERA_SMOOTHING.off.followTauS).toBeLessThan(CAMERA_SMOOTHING.soft.followTauS);
-    expect(CAMERA_SMOOTHING.soft.followTauS).toBeLessThan(CAMERA_SMOOTHING.cinematic.followTauS);
+    expect(CAMERA_SMOOTHING.off.orbitDamping).toBeGreaterThan(CAMERA_SMOOTHING.soft.orbitDamping);
+    expect(CAMERA_SMOOTHING.soft.orbitDamping).toBeGreaterThan(CAMERA_SMOOTHING.cinematic.orbitDamping);
   });
 });

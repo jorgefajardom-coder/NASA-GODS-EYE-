@@ -3,7 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import type { TerrainMeta } from '../types/icd';
 import type { RasterSet } from '../types/replay';
-import { elevationColor, finiteRange, heightGrid, sigmaColor, versionKey, type TerrainLayer } from '../lib/layers';
+import { elevationColor, finiteRange, heightGrid, sigmaColor, slopeColor, versionKey, type TerrainLayer } from '../lib/layers';
+import { slopeDegrees } from '../lib/slope';
 import { bilinear, upsampleGrid } from '../lib/terrainSmooth';
 
 /** Mesh vertices per source cell interval. Source cell centres are always vertices (J-01). */
@@ -13,7 +14,7 @@ export const CONTOUR_MAJOR_M = 50;
 
 /**
  * Cosmetic regolith grain for close views. The terrain data stops at 5-20 m, so walking views
- * look flat; this adds procedural sand ripples, grit and pebble speckle from the ground
+ * look flat; this adds procedural grit and pebble speckle from the ground
  * position. It is NOT measured detail: it is labelled in the view options, can be turned off,
  * and vanishes beyond ~220 m of camera distance, so it never changes the map at mission scale.
  */
@@ -48,17 +49,6 @@ vec2 gStones(vec2 p, float sizeMin, float sizeMax, float presence) {
   }
   return vec2(cover, tone);
 }
-// Ripple field whose direction, spacing and strength wander across the ground (domain warping),
-// so no two patches repeat.
-float gRipples(vec2 g) {
-  vec2 warp = vec2(gFbm(g * 0.05), gFbm(g * 0.05 + 9.2)) * 6.2831;
-  float ang = warp.x * 0.35 + 0.6;
-  vec2 dir = vec2(cos(ang), sin(ang));
-  float spacing = mix(2.5, 4.2, gNoise(g * 0.03)); // 1.5-2.5 m wavelength
-  float phase = dot(g, dir) * spacing + gFbm(g * 0.35) * 1.6 + warp.y;
-  float crest = pow(0.5 + 0.5 * sin(phase), 2.0);
-  return crest * smoothstep(0.5, 0.78, gFbm(g * 0.03 + 3.1)); // ripples only in patches
-}
 // Stones at three independent scales, clustered by a low-frequency density field and sampled
 // through a warped domain so neither spacing nor shape repeats. Returns (coverage, tone).
 vec2 gPebbles(vec2 g) {
@@ -72,21 +62,20 @@ vec2 gPebbles(vec2 g) {
   if (c.x * 0.5 > best.x) best = vec2(c.x * 0.5, c.y);
   return best;
 }
-// Relief in metres-like units: metre-scale undulation, irregular ripples, grit, pebbles.
+// Relief in metres-like units: metre-scale undulation, grit, pebbles. No ripples: their
+// parallel crests read as lines on the ground and alias into moire at grazing angles.
 float groundHeight(vec2 g) {
   float undulation = gFbm(g * 0.3 + gFbm(g * 0.07) * 2.0) * 0.4;
-  float ripples = gRipples(g) * 0.02 * gKeep(0.2, 0.6);
   float grit = gFbm(g * 7.0) * 0.035 * gKeep(0.015, 0.05);
-  return undulation + ripples + grit + gPebbles(g).x * 0.07;
+  return undulation + grit + gPebbles(g).x * 0.07;
 }
-// Brightness modulation: dust patches, darker grit, ripple crests catching dust, pebble speckle.
+// Brightness modulation: dust patches, darker grit, pebble speckle.
 float groundAlbedo(vec2 g) {
   float patches = gFbm(g * 0.06 + gFbm(g * 0.02) * 3.0) * 0.3 + 0.86;
   float grit = mix(1.0, 0.9 + gFbm(g * 9.0) * 0.18, gKeep(0.012, 0.04));
-  float crests = 1.0 + gRipples(g) * 0.05 * gKeep(0.2, 0.6);
   vec2 st = gPebbles(g);
   float pebbles = 1.0 + st.x * (st.y * 0.35 - 0.12); // some stones darker, some lighter than the dust
-  return patches * grit * crests * pebbles;
+  return patches * grit * pebbles;
 }
 // Bump mapping from screen-space derivatives (same method as three.js bumpmap_pars).
 vec3 groundNormal(vec3 surfPos, vec3 surfNorm, float h, float faceDir) {
@@ -130,7 +119,9 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
   const imageTexture = useImageryTexture(imagery?.url ?? null);
   const texture = overlay?.texture ?? imageTexture;
   // Drape only once the image has loaded, so a missing image leaves the height colours.
-  const draped = !!texture && (layer !== 'sigma' || !!overlay);
+  const draped = !!texture && ((layer !== 'sigma' && layer !== 'slope') || !!overlay);
+  // Slope of the measured orbital DTM, computed once per run.
+  const slope = useMemo(() => slopeDegrees(rasters.prior, meta.rows, meta.cols, meta.resolution_m), [rasters.prior, meta]);
   const ext = overlay?.extent ?? imagery?.extent;
 
   const geometry = useMemo(() => {
@@ -165,6 +156,10 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
         if (h == null) rgb = [0, 0, 0];
         else if (draped) rgb = [1, 1, 1]; // the image gives the colour; observed cells are still tinted below
         else if (layer === 'sigma') rgb = sigmaColor(bilinear(version.sigma, rows, cols, c / f, r / f));
+        else if (layer === 'slope') {
+          const s = slope[Math.min(rows - 1, Math.round(r / f)) * cols + Math.min(cols - 1, Math.round(c / f))];
+          rgb = s == null ? [0.25, 0.25, 0.25] : slopeColor(s); // grey = border cells without a full 3x3 window
+        }
         else rgb = elevationColor(h, lo, hi);
         if (observed.has(Math.round(r / f) * cols + Math.round(c / f))) rgb = [rgb[0] * 0.7 + 0.04, rgb[1] * 0.7 + 0.2, rgb[2] * 0.7 + 0.24];
         colors.set(rgb, i * 3);
@@ -191,7 +186,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     g.setIndex(index);
     g.computeVertexNormals();
     return g;
-  }, [meta, rasters, heights, version, layer, highlightObserved, draped, ext]);
+  }, [meta, rasters, heights, version, layer, highlightObserved, draped, ext, slope]);
 
   const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 }, uTint: { value: 1 }, uDetail: { value: 1 } }), []);
   useEffect(() => {
@@ -199,7 +194,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     uniforms.uOffset.value = zOffsetM;
     uniforms.uTint.value = overlay ? 0 : 1; // only the panchromatic image is tinted
     // Cosmetic grain only on the real-surface views, never on the geologic map or uncertainty colours.
-    uniforms.uDetail.value = surfaceDetail && !overlay && layer !== 'sigma' ? 1 : 0;
+    uniforms.uDetail.value = surfaceDetail && !overlay && layer !== 'sigma' && layer !== 'slope' ? 1 : 0;
   }, [uniforms, contours, zOffsetM, overlay, surfaceDetail, layer]);
 
   const material = useMemo(() => {
@@ -269,7 +264,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
 }
 
 /** Loads the draped image once per URL (sRGB, mipmapped, sharp at grazing angles). */
-function useImageryTexture(url: string | null): THREE.Texture | null {
+export function useImageryTexture(url: string | null): THREE.Texture | null {
   const gl = useThree((st) => st.gl);
   const [tex, setTex] = useState<THREE.Texture | null>(null);
   useEffect(() => {
