@@ -8,6 +8,13 @@
     {
       "tool": "OpenAI Codex",
       "kind": "code_and_configuration",
+      "generation": "AI-assisted edit requested by the repository owner",
+      "paths": [".github/workflows/ci.yml"],
+      "use": "Rename the workflow display name from Scaffold checks to CI checks; preserve triggers, jobs and commands."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "code_and_configuration",
       "generation": "AI-assisted generation, pending human review",
       "paths": [
         "src",

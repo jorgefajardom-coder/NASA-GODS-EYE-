@@ -3,6 +3,11 @@
 Competition-required disclosure; not optional credit or AI authorship. Human
 owners remain responsible for reviewing the work.
 
+## CI workflow display name, 14 November 2026
+
+OpenAI Codex assisted renaming the GitHub Actions workflow from `Scaffold checks`
+to `CI checks` in `.github/workflows/ci.yml`. Triggers, jobs and commands are unchanged.
+
 ## Experimental scenario approval recording, 14 November 2026
 
 OpenAI Codex assisted recording David's explicit approval of JZ-P01..JZ-P07,
