@@ -64,3 +64,35 @@ Review `git status`, `git diff` and `git diff --check`. Keep commits atomic and 
 Jesus reviews integration; David approves scientific assumptions/success.
 Software tests, replay and synthetic fixtures do not establish a validated
 LIVE mission. No push, merge or release is implied by this handoff alone.
+
+## PR #3 correction and reconciliation cut
+
+The repository owner explicitly requested the two review fixes and conditional
+merge of PR #3. Input fixes `f46b3fc` and `ddc6f36` reject non-finite goal/base
+coordinates and invalid explicit float32 budgets/reserves with JSON-safe HTTP
+422 before ROS forwarding. Replay fix `a8482c8` retains late events in receipt
+order, compares snapshots in logical sequence order, and rejects conflicting or
+invalid event sequences. Regression requests/events are illustrative test inputs.
+
+This cut reconciles that tested head `ddc6f3665d96b93b9cca1bd6715d3df50da35136`
+with published main `b76c44f6f2386a810b4abc255d8f7945b81fb7a6` (PRs #7 and #4
+already merged). No open planner, mission, data or viewer branch is imported.
+ROS remains ICD-ROS2-V1/package 1.0.0; canonical JSON/replay remains 1.0.0 and
+baseline review remains 1.0.0-rc.1, not frozen. The strict replay oracle follows
+the same late-event policy and is exercised through the actual ReplayWriter
+and viewer conversion. Source/arrival timestamps, run identity, duplicate guards,
+public-raster requirements and evaluator isolation checks are preserved.
+
+Local validation: Python 3.12.14 `python -m pytest --basetemp
+tmp/pr3-merge-pytest-20261114-01` passed 354 tests; seven ROS-dependent modules
+skip on Windows. A fresh workspace temporary directory avoids the machine's
+existing inaccessible pytest temp root. `python scripts/check_repository.py`,
+`git diff --check`, web `npm test` (4 tests) and `npm run build` passed. Existing
+Starlette deprecation and web bundle-size warnings remain. Ubuntu 24.04/Jazzy
+build, generated-interface inspection and ROS integration execution are CI gates
+on the final PR head before merge; consult PR #3's checks for that exact SHA.
+
+Remaining real acceptance is unchanged: public rasters/dataset, source provenance,
+strict output serializer adoption, scientific model agreement, real mission
+provider/current-pose binding and stop acknowledgement. These fixes establish
+input/replay regression behavior, not scientific or validated LIVE acceptance.

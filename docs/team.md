@@ -1,5 +1,12 @@
 # Team branches and ownership
 
+The owner-selected working baseline is the [probable minimum mission
+checklist](mission_checklist.md), with priorities, dependencies, acceptance cases
+and desired coordination cuts. Follow its [NASA traceability
+register](nasa_traceability.md). Detailed expected/desired effort forecasts and
+thread snapshots are internal local records under Git-ignored `.local/planning/`;
+they are estimates, not evidence of completion or a public submission artifact.
+
 The active branch inventory was inspected against remote main
 `004b3b2c59a27794a1e49a61f48d0569bad020b2` at the final refresh on
 2026-11-14; initial audit main was `f75c54e`. PR #2 merged externally during

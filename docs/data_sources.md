@@ -1,10 +1,15 @@
 # Data source register (Daniel)
 
-No verified NASA dataset manifest is included yet. Templates are not verified manifests.
-Provisional exception: the web viewer carries a 2 km crop of the Mars 2020 TRN CTX DTM
+Daniel's final terrain release remains pending. A newly processed provisional
+CTX prior is now included on feat/planner; a separate HiRISE evaluator crop stays
+local and isolated. See [actual processing provenance](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/34c515b6b86f73336844e8b3614c70b144574ec3/docs/planner_provenance.md),
+the [provisional manifest](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/34c515b6b86f73336844e8b3614c70b144574ec3/data/planner_provisional/manifest.json), and the
+[resource-to-result register](nasa_traceability.md). Templates remain templates;
+an imported orbital product is not a locally verified corridor. Standalone
+MGS/MOLA selection and meaningful use remain pending.
+Provisional web exception: the viewer carries a 2 km crop of the Mars 2020 TRN CTX DTM
 (`web/scripts/data/ctx_crop.json`; source file and SHA-256 in `THIRD_PARTY_NOTICES.md`)
 until the processed package replaces it.
-Product selection, license, precise CRS/datum, crop and checksums are pending.
 
 | Candidate from team guides | Role | Next action / limitation |
 | --- | --- | --- |

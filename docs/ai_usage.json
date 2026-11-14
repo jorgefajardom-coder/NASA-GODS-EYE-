@@ -110,6 +110,117 @@
       "use": "Audit owner branches; reconcile contracts without replacing implementations; add offline adapters, fail-closed guards, source locks, schema, deterministic synthetic contract cases, handoffs and actual validation records. No scientific observations generated."
     },
     {
+      "tool": "OpenAI Codex",
+      "kind": "documentation_and_internal_planning",
+      "generation": "AI-assisted planning; forecasts are assumptions pending owner review",
+      "paths": [
+        "docs/mission_checklist.md",
+        "docs/nasa_traceability.md",
+        "docs/data_sources.md",
+        "docs/team.md",
+        "README.md",
+        ".gitignore"
+      ],
+      "use": "Document the owner-selected probable mission, per-owner checklists, dependencies, acceptance cases and NASA source-to-result lineage. Keep detailed hours and compact thread observations in a locally ignored planning register with separate metadata. No new mission execution or scientific observation is claimed."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "research_hypothesis_documentation",
+      "generation": "AI-assisted documentation of the project owner's proposed experiment; unimplemented and untested",
+      "paths": [
+        "docs/research_hypotheses.md",
+        "docs/mission_checklist.md",
+        "docs/nasa_traceability.md"
+      ],
+      "use": "Record optional H-DAN-01 for Daniel: orbital-prior-anchored informed synthetic terrain, rover-image reference limits, reproducible scenario/seed diversity, held-out world isolation and planner-adaptation pilot criteria. No image import, generator, synthetic terrain or experiment result was produced."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "code_configuration_and_documentation",
+      "generation": "AI-assisted generation, directed and reviewed by the integration owner",
+      "paths": [
+        "src/mge_interfaces",
+        "src/mge_sim",
+        "src/mge_bringup",
+        "src/mge_gateway",
+        "tests/contract",
+        "tests/unit",
+        "tests/integration",
+        "tests/contracts/test_gateway.py",
+        "scripts/dev.sh",
+        "scripts/record_sample_replay.py",
+        "docker",
+        "data/sample/replay",
+        "docs/ICD.md",
+        "docs/integration_log.md",
+        "README.md"
+      ],
+      "use": "Canonical ROS interfaces, mock agents/terrain/planner/mission, launch files, ROS-backed gateway, replay recorder and validator, tests, development image, and related documentation. The sample replay is a recording of mock nodes, not a mission result."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "gateway_validation_and_regression_tests",
+      "generation": "AI-assisted code and illustrative test requests; no scientific observation generated",
+      "paths": [
+        "src/mge_gateway/mge_gateway/app.py",
+        "tests/contracts/test_gateway.py",
+        "docs/ICD.md"
+      ],
+      "use": "Reject non-finite base/goal coordinates and explicitly supplied invalid float32 resource values before ROS forwarding; sanitize validation-error details for raw non-finite JSON and numeric overflow, verify JSON-safe HTTP 422 without a bridge call, and retain valid finite requests."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "replay_ordering_and_regression_tests",
+      "generation": "AI-assisted code and illustrative event fixtures; no scientific observation generated",
+      "paths": [
+        "src/mge_gateway/mge_gateway/store.py",
+        "src/mge_gateway/mge_gateway/replay.py",
+        "src/mge_gateway/mge_gateway/replay_check.py",
+        "tests/unit/test_store.py",
+        "tests/unit/test_replay.py",
+        "docs/ICD.md",
+        "src/mge_gateway/mge_gateway/contract_replay.py",
+        "tests/contract/test_replay_conversion.py",
+        "docs/REPLAY_CONTRACT.md",
+        "docs/handoffs/jesus.md",
+        ".github/workflows/ci.yml",
+        "docs/integration_log.md"
+      ],
+      "use": "Retain late event arrivals while validating the sequence-ordered logical history, reject conflicting or invalid event sequences, and test valid delayed events plus tampered packages. Existing replay schema and data attribution remain unchanged. Reconcile the approved main consumer with the same late-event policy; test the recorder-to-viewer oracle round trip and preserve both CI dependency/test sets."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "code_configuration_documentation_and_synthetic_contract_tests",
+      "generation": "AI-assisted generation; owner integration/science review pending",
+      "paths": [
+        "src/mge_gateway/mge_gateway/contract_replay.py",
+        "src/mge_bringup/mge_bringup/contract_guard.py",
+        "src/mge_bringup/mge_bringup/launch_profiles.py",
+        "src/mge_bringup/launch/profile.launch.py",
+        "src/mge_bringup/package.xml",
+        "src/mge_data/mge_data/dataset_contract.py",
+        "data/dataset.schema.json",
+        "tests/contract/test_baseline_guards.py",
+        "tests/contract/test_generated_conversion.py",
+        "tests/contract/test_replay_conversion.py",
+        "tests/contract/test_dataset.py",
+        "tests/contract/test_configuration.py",
+        "tests/contract/test_profile_launch.py",
+        "tests/integration/test_provider_substitution.py",
+        "tests/fixtures/replay/provenance.json",
+        "web/src/lib/provenance.ts",
+        "web/tests/provenance.test.ts",
+        "scripts/validate_contract_baseline.sh",
+        "AGENTS.md",
+        ".gitignore",
+        "docs",
+        "scripts/check_repository.py",
+        ".github/workflows/ci.yml",
+        "evidence/contract-baseline-20261114"
+      ],
+      "use": "Audit owner branches; reconcile contracts without replacing implementations; add offline adapters, fail-closed guards, source locks, schema, deterministic synthetic contract cases, handoffs and actual validation records. No scientific observations generated."
+    },
+    {
       "tool": "Claude (Anthropic) through Claude Code",
       "kind": "code_and_data",
       "generation": "AI-assisted generation, reviewed and directed by the module owner",
@@ -150,7 +261,7 @@
         "tests/contract",
         "scripts/dev.sh"
       ],
-      "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
+      "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use confirmed: Claude Code (Anthropic), see uses."
     },
     {
       "source_ref": "feat/integration",
@@ -160,6 +271,18 @@
       ],
       "tool_declared_by_original_contributor": "Claude Code (Anthropic)",
       "use": "Retain byte-for-byte MOCK recorder fixture for adapter conformance, with original source/hash/AI disclosure metadata. No actual Mars measurements."
+    },
+    {
+      "source_ref": "dev/jesus",
+      "commit": "00c8e44b8b50a6f893c122fff1818eeaf48825bb",
+      "scope": [
+        "src/mge_interfaces",
+        "src/mge_sim/mge_sim/mock_agents.py",
+        "src/mge_bringup/launch/smoke.launch.py",
+        "tests/contract",
+        "scripts/dev.sh"
+      ],
+      "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
     }
   ],
   "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements"

@@ -10,6 +10,7 @@ from mge_gateway.contract_replay import (
     GEOMETRY, PUBLIC_RASTER_SCHEMA, ReplayContractError, read_package,
     to_viewer, validate_package, write_package,
 )
+from mge_gateway.replay import ReplayWriter
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "replay"
 
@@ -123,6 +124,50 @@ def test_duplicate_event_conflict_rejected(package):
     events = [r for r in package[1] if r["type"] == "event"]
     events[1]["event"]["event_id"] = events[0]["event"]["event_id"]
     with pytest.raises(ReplayContractError, match="DUPLICATE_EVENT_ID"):
+        validate_package(*package)
+
+
+def test_late_writer_events_roundtrip_through_viewer_oracle(package, tmp_path):
+    manifest, records, _ = package
+    first, second = [r for r in records if r["type"] == "event"][:2]
+    writer = ReplayWriter(str(tmp_path), manifest["run_id"], manifest["clock_source"])
+    for record in records:
+        if record is first:
+            continue
+        assert writer.record(record["type"], record[record["type"]])
+        if record is second:
+            assert writer.record("event", first["event"])
+    writer.close()
+
+    replay = read_package(writer.dir)
+    arrivals = [r for r in replay[1] if r["type"] == "event"]
+    assert [r["event"]["seq"] for r in arrivals[:2]] == [2, 1]
+    assert arrivals[1]["event"] == first["event"]  # original source stamp retained
+    assert arrivals[1]["timestamp_sim_s"] >= arrivals[0]["timestamp_sim_s"]
+    assert replay[2]["events"] == sorted(
+        [r["event"] for r in arrivals], key=lambda event: event["seq"])
+    converted = to_viewer(*replay)
+    assert converted["reason_code"] == "PUBLIC_RASTERS_REQUIRED"
+    events = converted["timeline"]["events"]
+    assert [event["seq"] for event in events[:2]] == [2, 1]
+    assert events[1]["timestamp_sim_s"] >= events[0]["timestamp_sim_s"]
+    assert events[1]["timestamp_source_s"] == (
+        first["event"]["header"]["stamp"]["sec"]
+        + first["event"]["header"]["stamp"]["nanosec"] / 1e9)
+
+
+def test_duplicate_event_sequence_with_distinct_ids_rejected(package):
+    events = [r for r in package[1] if r["type"] == "event"]
+    events[1]["event"]["seq"] = events[0]["event"]["seq"]
+    with pytest.raises(ReplayContractError, match="DUPLICATE_EVENT_SEQ"):
+        validate_package(*package)
+
+
+@pytest.mark.parametrize("seq", [0, -1, True, "1", None, 2**64])
+def test_invalid_event_sequence_rejected(package, seq):
+    event = next(r["event"] for r in package[1] if r["type"] == "event")
+    event["seq"] = seq
+    with pytest.raises(ReplayContractError, match="INVALID_EVENT_SEQ"):
         validate_package(*package)
 
 
