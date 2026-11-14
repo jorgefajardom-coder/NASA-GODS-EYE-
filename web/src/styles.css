@@ -1772,7 +1772,12 @@ input[type='checkbox'] {
   pointer-events: none;
 }
 
+/* Pinned to the screen box rather than sized by the grid track: in a window wider than 16:9 the
+   track took the clip's intrinsic height at full width, overflowed the screen and pushed the clip
+   (and its burned-in watermark) below the centre. object-fit centres it at any aspect ratio. */
 .intro__video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
