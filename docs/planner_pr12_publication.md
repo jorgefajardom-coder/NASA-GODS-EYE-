@@ -1,5 +1,23 @@
 # PR12 remote reconciliation and publication cut
 
+## Final main synchronization
+
+The owner authorized updating and merging PR12 after green validation. Reconcile
+planner `a959d25` with main `3a9032b`, which includes PR17's callback scheduling,
+replay corrections and MOCK executor. Preserve both histories and all mandatory
+disclosures; the only manual conflicts are disclosure additions. The planner's
+default-off continuous-start gate and main's separate map/service callback groups
+are both retained. ROS messages, services and baseline versions are unchanged.
+
+On this combined source, Windows Python validation passed 935 tests with 19
+environment/optional-input skips and one existing Starlette/httpx deprecation
+warning. ROS consumer validation runs in PR CI before merging. Historical replay
+failures below remain evidence of earlier source cuts, not current failures;
+software checks do not establish general recorder reliability or a LIVE mission.
+Profiles, datum/tolerance, physical stop feedback and F03.4 mission wiring retain
+their existing owner-review gates. The final PR description records the tested
+head, CI run and consumer outcomes. Next deliverable: the reviewed merge to main.
+
 2026-11-14. Branch: feat/planner. Owner-authorized normal merges and publication
 to existing PR12; no force-push, history rewrite or merge to main.
 

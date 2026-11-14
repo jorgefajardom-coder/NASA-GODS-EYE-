@@ -146,18 +146,24 @@ class Probe:
         return future.result().decision
 
 
-@pytest.fixture(scope='module')
-def probe():
+@pytest.fixture(scope='module', params=[1.0, 0.01], ids=['1Hz', '100Hz'])
+def probe(request, tmp_path_factory):
+    logs = tmp_path_factory.mktemp('terrain-nodes')
+    handles = []
     def run(package, executable, **parameters):
         args = [item for key, value in {'run_id': RUN_ID, **parameters}.items()
                 for item in ('-p', f'{key}:={value}')]
+        output = (logs / f'{executable}.log').open('w')
+        handles.append(output)
         return subprocess.Popen(
             ['ros2', 'run', package, executable, '--ros-args', *args],
-            cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
+            cwd=ROOT, stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
 
     processes = [
         run('mge_data', 'data_node'),
-        run('mge_mapping', 'mapping_node', repeat_period_s=1.0),
+        # Keep the original case and reproduce callback pressure without
+        # increasing the service deadline or relaxing FEASIBLE assertions.
+        run('mge_mapping', 'mapping_node', repeat_period_s=request.param),
         # This checks coherent-batch routing, not the production latency limit.
         # Keep search bounded while allowing shared CI runners scheduling slack.
         run('mge_planning', 'planning_node', profiles_file=PROFILES,
@@ -172,12 +178,18 @@ def probe():
         probe.node.destroy_node()
         rclpy.shutdown()
         for proc in processes:
-            os.killpg(proc.pid, signal.SIGINT)
+            if proc.poll() is None:
+                os.killpg(proc.pid, signal.SIGINT)
         for proc in processes:
             try:
                 proc.wait(timeout=10)
             except subprocess.TimeoutExpired:
                 os.killpg(proc.pid, signal.SIGKILL)
+                proc.wait(timeout=10)
+        for handle in handles:
+            handle.close()
+        for path in logs.iterdir():
+            print(f'--- {path.name} ---\n{path.read_text()}')
 
 
 def test_one_metadata_publisher_and_one_stamp_per_batch(probe):

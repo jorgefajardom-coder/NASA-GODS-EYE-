@@ -25,7 +25,8 @@ def context(mission='real', planner='real', **changes):
     value = LaunchContext()
     value.launch_configurations.update({
         'run_id': 'mission-launch-contract', 'use_sim_time': 'true',
-        'mission': mission, 'planner': planner, 'terrain': 'mock', 'host': '127.0.0.1', 'port': '8769',
+        'mission': mission, 'planner': planner, 'terrain': 'mock', 'agents': 'static',
+        'host': '127.0.0.1', 'port': '8769',
         'agents_file': str(ROOT / 'src/mge_bringup/config/agents.yaml'),
         'profiles_file': str(ROOT / 'config/planner_profiles.illustrative.json'),
         'mission_profiles_path': str(ROOT / 'config/scenario_demo.yaml'),
@@ -37,10 +38,11 @@ def context(mission='real', planner='real', **changes):
     return value
 
 
+@pytest.mark.parametrize('agents', ['static', 'kinematic'])
 @pytest.mark.parametrize('terrain', ['mock', 'real'])
 @pytest.mark.parametrize('mission', ['mock', 'real'])
 @pytest.mark.parametrize('planner', ['mock', 'real'])
-def test_selected_mission_and_planner_are_exclusive(monkeypatch, mission, planner, terrain):
+def test_selected_mission_and_planner_are_exclusive(monkeypatch, mission, planner, terrain, agents):
     module = load_launch()
     original = module.Node
     nodes = []
@@ -51,13 +53,17 @@ def test_selected_mission_and_planner_are_exclusive(monkeypatch, mission, planne
     monkeypatch.setattr(module, 'Node', capture)
     module.generate_launch_description()
     selected = [kwargs['executable'] for node, kwargs in nodes
-                if node.condition is None or node.condition.evaluate(context(mission, planner, terrain=terrain))]
+                if node.condition is None or node.condition.evaluate(
+                    context(mission, planner, terrain=terrain, agents=agents))]
     assert set(selected) & {'mock_mission', 'mission_node'} == {
         'mock_mission' if mission == 'mock' else 'mission_node'}
     assert set(selected) & {'mock_planner', 'planning_node'} == {
         'mock_planner' if planner == 'mock' else 'planning_node'}
     assert set(selected) & {'mock_terrain', 'data_node', 'mapping_node'} == (
         {'mock_terrain'} if terrain == 'mock' else {'data_node', 'mapping_node'})
+    # Exactly one publisher per agent state topic.
+    assert set(selected) & {'mock_agents', 'kinematic_executor'} == {
+        'mock_agents' if agents == 'static' else 'kinematic_executor'}
 
 
 def test_real_owner_parameters_forward_without_autoagreement(monkeypatch):

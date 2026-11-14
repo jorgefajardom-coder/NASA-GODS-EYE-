@@ -7,6 +7,26 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "integration_reconciliation",
+      "generation": "AI-assisted reconciliation requested by the repository owner",
+      "paths": ["docs/AI_USAGE.md", "docs/ai_usage.json", "docs/planner_pr12_publication.md"],
+      "use": "Reconcile planner a959d25 with main 3a9032b, preserving both histories, disclosures, planner corrections and callback scheduling/replay/executor changes. No scientific or operational approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "code_tests_and_documentation",
+      "generation": "AI-assisted timeout diagnosis and correction requested by the repository owner",
+      "paths": [
+        "src/mge_planning/mge_planning/node.py",
+        "tests/integration/test_planner_concurrency.py",
+        "tests/integration/test_terrain_batch.py",
+        "docs/handoffs/jesus.md",
+        "docs/integration_log.md"
+      ],
+      "use": "Separate serialized map ingestion from serialized planning callbacks to prevent executor worker starvation; test bounded service availability and stale-search rejection over ROS, repeat Jezero batches at 1 and 100 Hz, and retain child logs. Delayed callbacks and flat grids are synthetic test fixtures, not scientific observations or mission results."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "code_and_configuration",
       "generation": "AI-assisted generation, pending human review",
       "paths": [
@@ -344,6 +364,49 @@
         "docs/handoffs/jesus.md"
       ],
       "use": "Select the real public terrain providers in the vertical behind the MOCK mission, with agents on Jezero cell centres, and test unknown terrain, replan on a new map version and the recorded package end to end. Agent positions and budgets are placeholders; no terrain array, scientific observation or mission result is generated."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "public_raster_recording",
+      "generation": "AI-assisted code, tests and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_gateway/mge_gateway/public_rasters.py",
+        "src/mge_gateway/mge_gateway/recorder.py",
+        "src/mge_gateway/mge_gateway/replay.py",
+        "src/mge_gateway/mge_gateway/replay_check.py",
+        "src/mge_gateway/mge_gateway/contract_replay.py",
+        "src/mge_mapping/mge_mapping/node.py",
+        "src/mge_sim/mge_sim/mock_terrain.py",
+        "tests/unit/test_public_rasters.py",
+        "tests/integration/test_vertical_terrain.py",
+        "tests/integration/test_replay_package.py",
+        "tests/integration/test_terrain_batch.py",
+        "docs/ICD.md",
+        "docs/REPLAY_CONTRACT.md",
+        "docs/integration_log.md",
+        "docs/handoffs/jesus.md"
+      ],
+      "use": "Publish the observed mask in the stamped map batch and record the public prior and per-version belief, sigma and observed cells as the replay raster attachment, validated offline. Recorded rasters copy public layers and SIMULATED test observations; no terrain, scientific observation or mission result is generated."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "mock_kinematic_execution",
+      "generation": "AI-assisted code, tests and documentation, directed and reviewed by the integration owner; illustrative test inputs only",
+      "paths": [
+        "src/mge_sim/mge_sim/kinematics.py",
+        "src/mge_sim/mge_sim/executor.py",
+        "src/mge_sim/setup.py",
+        "src/mge_sim/README.md",
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "tests/unit/test_kinematics.py",
+        "tests/integration/test_vertical_execution.py",
+        "tests/integration/README.md",
+        "tests/contract/test_mission_launch.py",
+        "README.md",
+        "docs/integration_log.md",
+        "docs/handoffs/jesus.md"
+      ],
+      "use": "MOCK executor that moves the primary agent along the authorized active path at the rates implied by the route's own estimates and halts in place, reported through AgentState, when the route is invalidated. No dynamics, resource model, scientific observation or mission result is generated."
     },
     {
       "tool": "OpenAI Codex",

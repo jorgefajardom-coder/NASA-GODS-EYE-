@@ -175,6 +175,12 @@ echo rejected HTTP input in 422 details. Unlike `ros_json`, the gateway does
 not reject a finite oxygen value on a non-human agent: that is a producer
 check, and the offline oracle still reports it.
 
+A recorded MissionState may lag the newest map version the package recorded,
+because topics arrive in any order (for example map version 0 before the
+mission receives the map). The oracle accepts that lag and rejects a state
+ahead of the recorded map (`STATE_AHEAD_OF_MAP`), a decreasing state version
+and an active route of another version than its state.
+
 The oracle is deliberately strict about shared run identity, monotonic record
 clocks/map envelopes/state sequences, unique event IDs/sequences, route
 identity/current map, final snapshot consistency and standard JSON. Unsupported
