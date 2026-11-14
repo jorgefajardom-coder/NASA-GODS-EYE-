@@ -586,6 +586,19 @@ const manifest = {
   },
   duration_s: T_END,
   local_z_offset_m: ZOFF,
+  // Orbital image draped on the terrain (scripts/extract-ctx-ortho.mjs). Same CTX soc_008
+  // production as the DTM, so it is part of the orbital prior, not of the hidden reference.
+  imagery: {
+    file: 'ctx_ortho.png',
+    title: 'MRO CTX Jezero orthomosaic, controlled (Mars 2020 TRN)',
+    source: 'JPL Mars Trek WMTS layer JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0, https://trek.nasa.gov/mars/',
+    credit: 'NASA/JPL-Caltech/MSSS/USGS',
+    native_resolution_m: 6,
+    resolution_m: 5,
+    extent: { origin_x_m: OX, origin_y_m: OY, width_m: COLS * RES, height_m: ROWS * RES },
+    row0: 'north',
+    processing: 'Bilinear resampling onto the crop ENU grid; display contrast stretched linearly between the 1st and 99th percentile. Panchromatic; the viewer tints it for display only.',
+  },
   terrain_meta: {
     run_id: RUN_ID, dataset_id: 'mars2020-trn-ctx-dtm-20m', frame_id: 'map', map_version: 1,
     origin_x_m: OX, origin_y_m: OY, resolution_m: RES, rows: ROWS, cols: COLS,

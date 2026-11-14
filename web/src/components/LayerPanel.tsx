@@ -53,6 +53,10 @@ interface OptionsProps {
   onContours: (v: boolean) => void;
   cameraSmoothing: CameraSmoothing;
   onCameraSmoothing: (v: CameraSmoothing) => void;
+  /** The run's orbital image, if it has one. */
+  imagery: { title: string; resolutionM: number } | null;
+  showImagery: boolean;
+  onShowImagery: (v: boolean) => void;
 }
 
 /** View options and legend, collapsed by default so they do not cover the terrain. */
@@ -88,6 +92,11 @@ export function ViewOptions(p: OptionsProps) {
         </select>
       </label>
       {p.exaggeration !== 1 && <p className="note note--warn">Heights exaggerated {p.exaggeration}× for readability (visual only).</p>}
+      {p.imagery && (
+        <label className="check">
+          <input type="checkbox" checked={p.showImagery} onChange={(e) => p.onShowImagery(e.target.checked)} /> CTX image on terrain ({p.imagery.resolutionM} m; not on the uncertainty layer)
+        </label>
+      )}
       <label className="check">
         <input type="checkbox" checked={p.contours} onChange={(e) => p.onContours(e.target.checked)} /> Contour lines (10 m, bold every 50 m)
       </label>

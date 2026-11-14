@@ -28,9 +28,11 @@ interface Props {
   contours: boolean;
   /** Camera easing for the follow view and the orbit controls. */
   cameraSmoothing: CameraSmoothing;
+  /** URL of the run's orbital image to drape on the terrain, or null for height colours. */
+  imageryUrl: string | null;
 }
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, selectedAgentId, contours, cameraSmoothing, imageryUrl }: Props) {
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
   const grid = heightGrid(bundle.rasters, layer, mapVersion);
@@ -61,6 +63,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         highlightObserved
         contours={contours}
         zOffsetM={bundle.manifest.local_z_offset_m ?? 0}
+        imagery={imageryUrl && bundle.manifest.imagery ? { url: imageryUrl, extent: bundle.manifest.imagery.extent } : null}
       />
       <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />
       <SiteMarkers

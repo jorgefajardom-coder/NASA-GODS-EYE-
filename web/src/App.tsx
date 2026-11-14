@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from './types/replay';
-import { loadReplay } from './data/replayAdapter';
+import { assetUrl, loadReplay } from './data/replayAdapter';
 import { REFERENCE_SOURCES } from './data/referenceSources';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from './lib/smoothing';
 import { viewAt } from './lib/replay';
@@ -73,6 +73,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showLabels, setShowLabels] = useState(true);
   const [follow, setFollow] = useState(false);
   const [contours, setContours] = useState(true);
+  const [showImagery, setShowImagery] = useState(true);
+  const imageryUrl = m.imagery && showImagery ? assetUrl(`${RUN_DIR}/${m.imagery.file}`) : null;
   const [cameraSmoothing, setCameraSmoothingState] = useState<CameraSmoothing>(() => {
     try {
       const v = localStorage.getItem('mge.cameraSmoothing');
@@ -167,6 +169,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         selectedAgentId={agentId}
         contours={contours}
         cameraSmoothing={cameraSmoothing}
+        imageryUrl={imageryUrl}
       />
       <div className="vignette" aria-hidden />
 
@@ -201,6 +204,9 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             onContours={setContours}
             cameraSmoothing={cameraSmoothing}
             onCameraSmoothing={setCameraSmoothing}
+            imagery={m.imagery ? { title: m.imagery.title, resolutionM: m.imagery.resolution_m } : null}
+            showImagery={showImagery}
+            onShowImagery={setShowImagery}
           />
         </div>
 
@@ -242,7 +248,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           {m.disclaimer} Agents are drawn larger than life (visual only).{' '}
           <details className="credits">
             <summary>Credits</summary>
-            Terrain: NASA/USGS Mars 2020 TRN CTX DTM mosaic, USGS Astrogeology Science Center (provisional 2 km crop). "Animated Astronaut Character in Space Suit Loop" (
+            Terrain: NASA/USGS Mars 2020 TRN CTX DTM mosaic, USGS Astrogeology Science Center (provisional 2 km crop).
+            {m.imagery && <> Surface image: {m.imagery.title}, {m.imagery.credit}, via JPL Mars Trek (resampled to {m.imagery.resolution_m} m).</>} "Animated Astronaut Character in Space Suit Loop" (
             <a href="https://skfb.ly/o9nHu" target="_blank" rel="noreferrer">
               https://skfb.ly/o9nHu
             </a>

@@ -41,6 +41,19 @@ export interface ReplayManifest {
   /** Local z = source elevation - this offset (m). Lets the viewer draw contour lines at true elevations. */
   local_z_offset_m?: number;
   terrain_meta: TerrainMeta;
+  /** Orbital image draped on the terrain (part of the orbital prior). Image row 0 = north edge. */
+  imagery?: {
+    file: string;
+    title: string;
+    source: string;
+    credit: string;
+    native_resolution_m: number;
+    resolution_m: number;
+    extent: { origin_x_m: number; origin_y_m: number; width_m: number; height_m: number };
+    row0: 'north';
+    /** How the stored image was derived from the source, shown in the credits. */
+    processing: string;
+  };
   vertical_exaggeration_default: number;
   control_points: ControlPoint[];
   pois: PointOfInterest[];

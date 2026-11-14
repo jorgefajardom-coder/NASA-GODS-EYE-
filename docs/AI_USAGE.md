@@ -24,7 +24,7 @@ tool; it does not attribute authorship.
 | Area | Paths |
 |---|---|
 | Viewer source | `web/src/**` |
-| Data scripts | `web/scripts/extract-ctx-crop.mjs`, `web/scripts/extract-hirise-crop.mjs`, `web/scripts/inspect-geotiff.mjs`, `web/scripts/make-demo-fixture.mjs` |
+| Data scripts | `web/scripts/extract-ctx-ortho.mjs`, `web/scripts/extract-ctx-crop.mjs`, `web/scripts/extract-hirise-crop.mjs`, `web/scripts/inspect-geotiff.mjs`, `web/scripts/make-demo-fixture.mjs` |
 | Tests | `web/tests/**` |
 | Build and configuration | `web/package.json`, `web/tsconfig.json`, `web/vite.config.ts`, `web/index.html` |
 | Documentation | `web/README.md`, `THIRD_PARTY_NOTICES.md`, this section |
@@ -35,6 +35,9 @@ synthetic scarp in the hidden evaluator reference). It is labelled simulated or
 fictitious in its manifest and is not a NASA observation.
 `web/scripts/data/ctx_crop.json` holds real NASA/USGS CTX DTM heights; only the
 resampling script was AI-assisted.
+`web/public/replay/demo/ctx_ortho.png` holds real CTX orthomosaic pixels from JPL Mars
+Trek (NASA/JPL-Caltech/MSSS/USGS); only `extract-ctx-ortho.mjs`, which resamples and
+contrast-stretches it, was AI-assisted.
 
 Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
 by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).

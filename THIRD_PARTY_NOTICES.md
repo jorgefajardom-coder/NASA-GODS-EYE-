@@ -40,3 +40,12 @@ License 1.1 (https://openfontlicense.org); the licence texts ship in `web/public
 - Rajdhani. Copyright (c) 2014 Indian Type Foundry.
 - Barlow Condensed. Copyright 2017 The Barlow Project Authors.
 - IBM Plex Mono. Copyright 2017 IBM Corp.
+
+## Terrain image
+
+MRO CTX Jezero orthomosaic, controlled (Mars 2020 Terrain Relative Navigation), NASA/JPL-Caltech/MSSS/USGS, served by JPL Mars Trek.
+
+- WMTS layer: `JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0` (https://trek.nasa.gov/mars/), native 6 m, same `soc_008` production as the CTX DTM above.
+- `web/public/replay/demo/ctx_ortho.png`: 400 × 400 px over the 2 km crop (5 m/px), made by `web/scripts/extract-ctx-ortho.mjs` from nine level-13 tiles (tiles SHA-256 `f2ad4cdaf747f36b508cb063ee904d60204c5f3c5dcb77284ab201812369e527`). Bilinear resampling onto the crop's ENU grid and a 1st–99th percentile contrast stretch; no detail is added. The viewer tints the panchromatic image for display.
+- Usage terms not verified here: NASA planetary data, see the Mars Trek and USGS product pages.
+

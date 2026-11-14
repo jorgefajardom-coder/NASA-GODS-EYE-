@@ -53,6 +53,8 @@ Selectable list of agents, tasks and routes (left), contextual details (right), 
 and route status (bottom left), replay timeline (bottom). Modes: Exploration and Mission
 replay; Tactical map and Atmos are disabled until they exist.
 
+The demo terrain is draped with the real CTX orthomosaic of Jezero from JPL Mars Trek (6 m source, 5 m image, same production as the DTM; regenerate with `node scripts/extract-ctx-ortho.mjs`). The panchromatic image is contrast-stretched and tinted for display only; it can be turned off in the view options and is not used on the uncertainty layer. Site marker masts hide when the camera is closer than 70 m so they do not cut through agents standing on a site.
+
 The terrain is drawn smoothed between the 20 m cells, with contour lines every 10 m (bold every 50 m) at true elevation. Contours can be turned off in the view options.
 
 Agents are drawn at an eased copy of their pose (about 0.1 s, display only) so they do not tremble when the camera is close; the follow camera reads that drawn pose in the same frame. **Camera smoothing** in the view options sets the follow and orbit easing: Off (rigid), Soft (default) or Cinematic; the choice is remembered in this browser.

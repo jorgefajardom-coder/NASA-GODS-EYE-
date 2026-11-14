@@ -1,4 +1,5 @@
-import { useEffect, useMemo } from 'react';
+import { useThree } from '@react-three/fiber';
+import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import type { TerrainMeta } from '../types/icd';
 import type { RasterSet } from '../types/replay';
@@ -20,6 +21,8 @@ interface Props {
   contours: boolean;
   /** Local z = elevation - offset, so contour lines can be drawn at true elevations. */
   zOffsetM: number;
+  /** Orbital image to drape on the terrain (null = height colours only). Not used on the sigma layer. */
+  imagery: { url: string; extent: { origin_x_m: number; origin_y_m: number; width_m: number; height_m: number } } | null;
 }
 
 /**
@@ -29,9 +32,13 @@ interface Props {
  * same ENU point coincide. Triangles touching NoData are not drawn. Contour lines are drawn
  * in the shader from the true height of each fragment.
  */
-export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM }: Props) {
+export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery }: Props) {
   const heights = heightGrid(rasters, layer, mapVersion);
   const version = rasters.versions[versionKey(rasters, mapVersion)];
+  const texture = useImageryTexture(imagery?.url ?? null);
+  // Drape only once the image has loaded, so a missing image leaves the height colours.
+  const draped = !!texture && layer !== 'sigma';
+  const ext = imagery?.extent;
 
   const geometry = useMemo(() => {
     const { rows, cols } = meta;
@@ -47,6 +54,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
 
     const positions = new Float32Array(R * C * 3);
     const colors = new Float32Array(R * C * 3);
+    const uvs = new Float32Array(R * C * 2);
     for (let r = 0; r < R; r++) {
       for (let c = 0; c < C; c++) {
         const i = r * C + c;
@@ -55,8 +63,14 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
         positions[i * 3] = x0 + c * step;
         positions[i * 3 + 1] = h ?? 0;
         positions[i * 3 + 2] = -(y0 + r * step);
+        // Image coordinates: u east, v north (texture flipY puts image row 0, the north edge, at v = 1).
+        if (ext) {
+          uvs[i * 2] = (x0 + c * step - ext.origin_x_m) / ext.width_m;
+          uvs[i * 2 + 1] = (y0 + r * step - ext.origin_y_m) / ext.height_m;
+        }
         let rgb: [number, number, number];
         if (h == null) rgb = [0, 0, 0];
+        else if (draped) rgb = [1, 1, 1]; // the image gives the colour; observed cells are still tinted below
         else if (layer === 'sigma') rgb = sigmaColor(bilinear(version.sigma, rows, cols, c / f, r / f));
         else rgb = elevationColor(h, lo, hi);
         if (observed.has(Math.round(r / f) * cols + Math.round(c / f))) rgb = [rgb[0] * 0.7 + 0.04, rgb[1] * 0.7 + 0.2, rgb[2] * 0.7 + 0.24];
@@ -80,10 +94,11 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     g.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    g.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
     g.setIndex(index);
     g.computeVertexNormals();
     return g;
-  }, [meta, rasters, heights, version, layer, highlightObserved]);
+  }, [meta, rasters, heights, version, layer, highlightObserved, draped, ext]);
 
   const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 } }), []);
   useEffect(() => {
@@ -101,6 +116,16 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
         .replace('#include <begin_vertex>', '#include <begin_vertex>\nvRealH = position.y;');
       shader.fragmentShader = shader.fragmentShader
         .replace('#include <common>', '#include <common>\nvarying float vRealH;\nuniform float uContour;\nuniform float uOffset;')
+        // The draped CTX image is panchromatic: map its grey level onto a basalt-to-dust ramp
+        // (display only). The vertex colour (observed-cell tint) is applied next by color_fragment.
+        .replace(
+          '#include <map_fragment>',
+          `#include <map_fragment>
+          #ifdef USE_MAP
+            float lum = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
+            diffuseColor.rgb = mix(vec3(0.05, 0.025, 0.015), vec3(0.72, 0.42, 0.24), pow(lum, 0.85));
+          #endif`,
+        )
         .replace(
           '#include <dithering_fragment>',
           `#include <dithering_fragment>
@@ -117,12 +142,49 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
           }`,
         );
     };
-    m.customProgramCacheKey = () => 'terrain-contours-v1';
+    m.customProgramCacheKey = () => 'terrain-contours-v2';
     return m;
   }, [uniforms]);
+
+  useEffect(() => {
+    material.map = draped ? texture : null;
+    material.needsUpdate = true;
+  }, [material, texture, draped]);
 
   useEffect(() => () => geometry.dispose(), [geometry]);
   useEffect(() => () => material.dispose(), [material]);
 
   return <mesh geometry={geometry} material={material} scale={[1, verticalExaggeration, 1]} name="terrain" />;
+}
+
+/** Loads the draped image once per URL (sRGB, mipmapped, sharp at grazing angles). */
+function useImageryTexture(url: string | null): THREE.Texture | null {
+  const gl = useThree((st) => st.gl);
+  const [tex, setTex] = useState<THREE.Texture | null>(null);
+  useEffect(() => {
+    if (!url) {
+      setTex(null);
+      return;
+    }
+    let disposed = false;
+    let loaded: THREE.Texture | null = null;
+    new THREE.TextureLoader().load(
+      url,
+      (t) => {
+        if (disposed) return t.dispose();
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = gl.capabilities.getMaxAnisotropy();
+        t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
+        loaded = t;
+        setTex(t);
+      },
+      undefined,
+      () => !disposed && setTex(null), // no image: height colours stay
+    );
+    return () => {
+      disposed = true;
+      loaded?.dispose();
+    };
+  }, [url, gl]);
+  return tex;
 }

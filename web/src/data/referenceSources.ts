@@ -15,8 +15,8 @@ export const REFERENCE_SOURCES: ReadonlyArray<ReferenceSource> = [
   {
     name: 'JPL Mars Trek',
     url: 'https://trek.nasa.gov/mars/',
-    use: 'WMTS layers over Jezero: controlled CTX orthomosaic 6 m (same production as the CTX DTM used here) and HiRISE orthomosaic 25 cm (evaluator only).',
-    status: 'candidate',
+    use: 'Controlled CTX orthomosaic of Jezero (6 m, same production as the CTX DTM) draped on the demo terrain. The HiRISE 25 cm orthomosaic stays evaluator only.',
+    status: 'used',
   },
   {
     name: 'USGS-NASA Planetary Geologic Mapping Program',
