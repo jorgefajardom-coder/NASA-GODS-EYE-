@@ -1,6 +1,6 @@
 # mge_planning
 
-Owner: Diego. Status: **scaffold; operational implementation pending**.
+Owner: Diego; temporary coverage by the team. Status: **P0 kernel and guarded ROS service implemented; full mission integration pending**.
 
 | Layer | Responsibility |
 | --- | --- |
@@ -11,25 +11,26 @@ Owner: Diego. Status: **scaffold; operational implementation pending**.
 | V&V | Guide acceptance cases remain pending; record actual runs under `evidence/` |
 
 Run after a ROS 2 Jazzy workspace build: `ros2 run mge_planning planning_node`.
-This only starts a warning-only node; it does not claim to provide the planned ROS services or topics.
-`core.py` imports without ROS so future unit tests can run independently.
+This starts the PlanRoute service; explicit profiles and a coherent map batch
+are required before it can return a candidate. It never publishes an active route.
+`core.py` imports without ROS; NumPy and SciPy are required.
 The package maintainer email is a placeholder and the distribution license is not yet assigned; the team must decide both before redistribution.
 
 ## Input/output contract and next work
 
-Input: public belief, sigma, NoData/traversability masks, TerrainMeta, current pose,
+Input: public belief, sigma, NoData/traversability masks, TerrainMeta, current cell-centre pose,
 goal, base, run/request IDs, map version, route mode and per-agent budget. Output
-(pending): RouteDecision with outbound/return paths, costs, reserves, version,
+RouteDecision with outbound/return paths, costs, reserves, version,
 status and reason. SI fields use snake_case (`energy_est_wh`, `oxygen_est_l`).
-`plan_route` deliberately raises `NotImplementedError`; no route is fabricated.
+FAST and SAFE are implemented; EFFICIENT explicitly returns MODE_NOT_SUPPORTED.
 
 Unknown terrain is not free space. `UNKNOWN` and `NO_PATH` are distinct outcomes.
 Humans alone have a separate oxygen budget; all profiles have hypothetical time
 and energy constraints. Validate outbound + service + return + reserve for every
 resource. Never read evaluator reference or undiscovered POIs.
 
-Diego's first tasks: A* against Dijkstra on small nonnegative-cost grids, block
-diagonal corner cutting, honor profile-specific slope/step limits, calculate the
-directional return cost, reject stale versions and replan from the current pose.
-Implement FAST and SAFE before adding EFFICIENT or D* Lite. All individual guide
-D-01 through D-10 remain pending, including real TerrainMeta consumer integration.
+The new D-01..D-10 tests cover independent Dijkstra comparison, corners, profiles,
+directional return, oxygen, stale maps, replan and bottleneck clearance. Full
+integration with Daniel's final products and David's reviewed profiles is pending.
+Read [MODEL.md](MODEL.md) and [handoff](../../docs/planner_handoff.md) for commands,
+strict batch assembly, illustrative opt-in and the next consumer dependency.

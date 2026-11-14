@@ -9,10 +9,10 @@ import math
 
 import rclpy
 from rclpy.node import Node
-from rclpy.qos import QoSProfile, ReliabilityPolicy
 import yaml
 
 from mge_interfaces.msg import AgentState
+from mge_sim.common import agent_state_topic, RELIABLE
 
 KINDS = {AgentState.KIND_HUMAN, AgentState.KIND_DRONE, AgentState.KIND_ROVER}
 
@@ -38,9 +38,8 @@ class MockAgents(Node):
         rate_hz = self.declare_parameter('rate_hz', 1.0).value
         self.agents = load_agents(agents_file)
 
-        qos = QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
         self.pubs = {
-            a['id']: self.create_publisher(AgentState, f"/mge/agents/{a['id']}/state", qos)
+            a['id']: self.create_publisher(AgentState, agent_state_topic(a['id']), RELIABLE)
             for a in self.agents
         }
         self.create_timer(1.0 / rate_hz, self.publish)

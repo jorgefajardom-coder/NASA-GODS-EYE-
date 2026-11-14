@@ -1,3 +1,41 @@
+# Current contract reconciliation verification
+
+Source `f2af4b23b57e0ef28c245cca0ad64a886ded039e`, based on updated main
+`004b3b2`; baseline `1.0.0-rc.1`, 2026-11-14 (America/Bogota).
+
+| Command / platform | Actual result |
+| --- | --- |
+| python -m pytest (Python 3.12.14, Windows) | 263 passed; four ROS-only modules skipped |
+| python scripts/check_repository.py | Passed including nested handoff links |
+| web: npm ci; npm test; npm run build (Node24.18.0) | Passed; 4 tests; build passed |
+| Ubuntu24.04/Jazzy colcon build --symlink-install | All 8 packages built |
+| ros2 interface show | All six messages/two services inspected |
+| Jazzy: python3 -m pytest tests/contract tests/integration | 129 passed, no skips |
+| git diff --check | Passed |
+
+[Immutable source hashes, JUnit and full target log](../evidence/contract-baseline-20261114/README.md).
+The real planner/provider seam now passes after PR #2 was merged externally.
+The generated tests cover actual ROS arrays/NaN plus the real planner failure
+serializer; generated PlanRoute service tests are included on target. These
+checks do not imply real MissionManager/data/gateway/viewer execution together.
+
+The initial native-path ROS attempt failed in rosidl/CMake on spaces/non-ASCII;
+the successful script uses an exact source copy under a fresh ASCII temporary
+path. Native Python required an isolated basetemp due local Temp permissions.
+Earlier setup errors were corrected before the final recorded passes. Existing
+Starlette TestClient deprecation and >500kB web bundle warnings remain.
+
+Not executed: Gazebo Harmonic E2E, complete mission/executor stop feedback,
+scientific model agreement, canonical georeferenced data acceptance and a fresh
+combined run of unmerged PR #3/#5 stacks. All R01-R18 system acceptance remains
+pending/blocked as detailed in the matrix. Branch-owner reports retain their
+original source/revision and are not substituted for these fresh results.
+
+## Historical records retained below
+
+The following scaffold/planner records describe earlier snapshots; the current
+result above supersedes their environment/availability statements.
+
 # Scaffold verification
 
 Date: 14 November 2026. Scope: repository structure and implemented contract
@@ -7,7 +45,7 @@ guards only. These results are not evidence of a Mars mission or EVA safety.
 
 - Python 3.12: `python -m pytest` (93 local test cases across contracts, mapping,
   mission and planning). The HTTP TestClient requires an unrestricted local
-  execution environment on this Windows host; the sandbox attempt stalled.
+  execution environment on this Windows host; the restricted attempt stalled.
 - `python scripts/check_repository.py`: package XML, Python syntax, JSON,
   declared AI paths and local documentation links.
 - Frontend: `npm test` (2 tests); `npm run build` (TypeScript + Vite).
@@ -50,3 +88,18 @@ compiled all eight packages, inspected the eight definitions and passed all ten
 ROS contract tests. Python/web jobs passed. Its final empty package-local test
 discovery step exited with code 5; CI now explicitly uses the actual root
 pytest suites and ROS contract tests rather than claiming package-local tests.
+
+## Planner branch verification
+
+The P0 planner at code commit `6e4984d` passes 154 local Python cases, including
+new D-01..D-10 scenarios, batch/provenance guards and a fresh-prior check. Two
+ROS-only test modules skip on native Windows; Jazzy CI runs them with generated
+messages and a real request/publisher/service/client flow. The tests include
+missing data, stale map and invalidation during search.
+
+New measured artifacts are in evidence/planner-p0-20261114. Nine illustrative
+FAST round-trip queries across three seeds matched independent Dijkstra. The
+fresh CTX check correctly returned UNKNOWN rather than inventing local corridor
+verification. These checks replace the initial planner placeholder only; the
+full mission, final science products, approved rates and public live demo remain
+unvalidated. This branch leaves the existing ROS message/service schema intact.

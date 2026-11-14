@@ -2,6 +2,13 @@
 
 Status: **Validated public multi-mission Jezero package (`status: "ready"`)** in [manifest.json](../data/sample/manifest.json) and [provenance_details.json](../data/sample/provenance_details.json).
 
+This package supersedes the provisional CTX prior that `feat/planner` processed
+for its own tests ([processing provenance](planner_provenance.md),
+`data/planner_provisional/manifest.json`). The two crops share the origin and
+the 4 m grid but are separate artifacts: never combine them by version alone.
+See the [resource-to-result register](nasa_traceability.md). An imported
+orbital product is not a locally verified corridor.
+
 ## 1. Multi-mission NASA / USGS sources ingested
 
 All three sources were acquired via bounded HTTP 206 partial-content reads (`scripts/prepare_jezero_terrain.py`) and reprojected onto a Mars-local Equirectangular ENU grid (`frame_id: "map"`, `x = east`, `y = north`, `z = up`) on the `Mars_2000_Sphere` (`R = 3,396,190 m`) centered at `18.45° N, 77.45° E` (`32 × 32` cells at `4.0 m`, southwest origin `(-64.0, -64.0) m`, `row_orientation: "south_to_north"`). No terrestrial `EPSG:4326` / `WGS84` datum is used.

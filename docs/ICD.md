@@ -1,6 +1,7 @@
 # ICD-ROS2-V1 — Interface Control Document
 
-Status: **DRAFT, not frozen.** It becomes binding once Daniel, Diego, Jorge and
+Status: **contract baseline `1.0.0-rc.1`, candidate, not frozen.** See
+[configuration and publication state](CONTRACT_BASELINE.md). It becomes binding once Daniel, Diego, Jorge and
 David confirm units, semantics and fields. After the freeze, no interface,
 frame, unit, enum or meaning changes without updating this document, the
 consumers, the contract test and the version.
@@ -26,8 +27,9 @@ field names and types; this document records the conventions around them.
   ROS field names are lower case, so the guide's `energy_est_Wh` is
   `energy_est_wh`.
 - Oxygen fields are `NaN` for agents that are not `HUMAN` in the canonical ROS
-  wire definitions. The future gateway adapter must map non-applicable NaN to JSON
-  `null` (never a JSON NaN token). This explicit conversion is not implemented yet.
+  wire definitions. Adapters must map non-applicable NaN to JSON `null`, never a JSON NaN token.
+  This baseline tests that conversion; PR #3 implements its own ROS bridge.
+  The ROS-backed HTTP boundary stays NOT_READY until a configured mission state arrives.
 - ROS wire kinds are uppercase `HUMAN`/`DRONE`/`ROVER`; pure Python/configuration
   may use lowercase. Adapters must map these intentionally and reject unknown
   values. Do not assume Python models are already the ROS wire representation.
@@ -45,7 +47,9 @@ field names and types; this document records the conventions around them.
   unique, applying one twice has no effect.
 - `route_id`: unique per route version. One route is in force at a time; an
   answer computed on an older `map_version` returns `STALE_MAP` or is dropped.
-- `MissionEvent.seq`: strictly increasing within a run.
+- `MissionEvent.seq`: allocated strictly increasing within a run; positive uint64,
+  unique independently of event ID. Transport delivery may arrive out of order.
+  Retain late events and sort by sequence only when reconstructing logical history.
 
 ## 3. Channels
 
@@ -89,7 +93,7 @@ in `ros2 topic echo`, in logs and in the web JSON is the same.
 
 ## 5. Canonical wire fields
 
-The existing integration-branch `.msg`/`.srv` definitions are preserved as the
+The existing main `.msg`/`.srv` definitions (package `1.0.0`) are preserved as the
 canonical draft. Unlike the JSON envelope, ROS messages do **not** carry
 `schema_version`; the ROS package/ICD versions identify their schema. All six
 messages have `header` and `run_id`; not all service requests have a Header.
@@ -108,8 +112,10 @@ resolution are `float64`; resource estimates are `float32`. Exact generated type
 and constants remain in the ROS definitions. Parallel observation arrays must
 have equal length; indices are row-major grid cells. Reject invalid bounds,
 non-finite elevations, invalid sigma, stale runs and duplicate observation IDs
-before changing belief. Non-human oxygen NaN is the explicit exception to finite
-resource values. An accepted observation changes its footprint and increments the
+before changing belief. Non-human oxygen NaN is the explicit non-applicable sentinel. The integrated
+planner also emits NaN unavailable metrics on non-FEASIBLE RouteDecision; typed
+status-conditioned serialization maps only those unavailable fields to null.
+Never replace invalid FEASIBLE metrics or infinities with null silently. An accepted observation changes its footprint and increments the
 map version once. Defining fields does not implement these checks.
 
 | Service | Request fields | Response fields |
@@ -119,9 +125,10 @@ map version once. Defining fields does not implement these checks.
 
 Service positions and RouteDecision paths are `geometry_msgs/Point` values in
 `map`, not Pose or nav_msgs/Path. The active-path topic remains `nav_msgs/Path`.
-SetMissionGoal permits an empty run ID to mean the current run; the eventual
-adapter must resolve that before crossing into stored events or replay. Current
-ROS planning/mission services are not implemented by the scaffold.
+SetMissionGoal permits an empty run ID to mean the current run; adapters must
+resolve it before recording or replay. Main advanced concurrently to `004b3b2` when Jesus merged PR #2; the real
+planner is now integrated unchanged. Mission service remains on `feat/mission`.
+This reconciliation incorporates reviewed main without merging other owner PRs. See the [implementation inventory](INTEGRATION_MATRIX.md).
 
 MissionManager alone authorizes and publishes the active route. Only FEASIBLE
 candidates may be considered after current-run/map and return-budget checks.
@@ -129,63 +136,162 @@ candidates may be considered after current-run/map and return-budget checks.
 is in force. Do not treat default numeric values as measurements or outcomes.
 Native Image/OccupancyGrid/Path lack custom run/version fields: consumers need an
 unambiguous association with metadata/state by frame, timestamp and run context.
-That association is pending integration and cannot be assumed from a topic name.
+The compatible planner protocol is metadata plus belief, sigma and the applicable
+mask with exactly the same frame and (sec,nanosec) snapshot stamp. One stamp
+identifies one run/map version for the process lifetime; reused stamps across
+versions/runs, mutated duplicates and reactivation of retired runs are rejected.
+Layers arriving before metadata are discarded by the planner; producers must
+repeat complete batches because DDS cross-topic ordering is not guaranteed.
+Changing geometry, CRS, datum, mask or raster requires a new version/stamp.
+The planner's Missing profiles keep planner results UNKNOWN/PROFILE_NOT_READY; illustrative
+profiles require explicit allow_illustrative_profiles. Changes during search
+invalidate the snapshot token and discard stale candidates. Rejected immutable
+batches require a fresh version/stamp. `snapshot_contract_confirmed` defaults false. Daniel/Jesus must
+confirm the producer protocol before enabling it. Contract harness checks do
+not implement native topic association or the real mapping publisher.
 
-## 6. Web contract and current availability behavior
+## 6. JSON, replay and display contract
 
-The implemented gateway surface and `web/src/lib/contracts.ts` share the following
-inactive envelope (`schema_version` applies to JSON, not the ROS wire messages):
+The canonical JSON/replay schema stays `1.0.0` from the gateway at the pinned
+integration SHA. It is independent of the unchanged ROS schema. Canonical files
+are `manifest.json`, `timeline.jsonl`, `snapshot.json` plus explicitly associated
+public rasters when available. [Replay contract](REPLAY_CONTRACT.md) defines
+validation, timestamp/order rules, attachments and deterministic viewer conversion.
+Jorge's `mge-web-0.1-draft` manifest/timeline.json/routes.json/rasters.json format
+is an adapter target, not a second canonical producer contract. Preserve his
+scene/assets/timeline and fixtures until consumer acceptance proves conversion.
 
-```json
-{
-  "schema_version": "1.0.0",
-  "run_id": null,
-  "mode": null,
-  "map_version": null,
-  "timestamp_sim_s": null,
-  "status": "NOT_READY",
-  "reason_code": "ROS_NOT_CONNECTED"
-}
-```
+The ROS-backed gateway and recorder below are implemented in PR #3. Until a
+mission state arrives, inactive identifiers, mode, map version and timestamp
+are null with status NOT_READY and reason NO_ACTIVE_RUN. No running process
+alone establishes a mission.
+Preserve canonical ROS names and kind casing. A transport `mode=LIVE` in the
+existing gateway is not proof of validated live provenance: its MOCK sample
+reports recorded_from LIVE. Display REPLAY for every recorded package and MOCK
+for synthetic producers, including `REPLAY · MOCK` together. Reject incomplete
+packages with NOT_READY; show ERROR with reasons for invalid ones. LIVE requires
+an actual connected and validated real source. Simulation stays visibly labelled.
+The additive web provenance helper tests these semantics; it is a handoff for
+Jorge's existing UI, not a replacement UI or a claim it is already wired there.
 
-Null means that no active run/map/clock is loaded. Only a real loaded run may
-show `mode=LIVE|REPLAY`; process availability alone does not establish either.
-A snapshot error may echo a requested run ID without claiming that run exists.
-`UnavailableResponse` permits `NOT_READY|ERROR`; the scaffold emits NOT_READY.
+No snapshot/raster join may use only the topic or file name. Bind run, dataset,
+map version, geometry, frame, stamp and public-layer role. Current PR #3 recordings
+lack raster arrays; the adapter must not borrow the different web dataset or
+fabricate missing terrain. Full 3D replay is NOT_READY until aligned public
+attachments exist. See [dataset delivery](DATASET_CONTRACT.md).
 
-| Endpoint | Current behavior |
-| --- | --- |
-| `GET /api/health` | HTTP 200, inactive envelope, `ros_connected=false`, `implementation_status=scaffold` |
-| `GET /api/manifest` | HTTP 503, inactive envelope |
-| `GET /api/run/{run_id}/snapshot` | HTTP 503, inactive envelope with requested run ID |
-| `POST /api/mission/goal` | Accepts a JSON object at the draft surface; always HTTP 503, no command accepted or forwarded |
-| `WS /api/events` | Accepts, sends inactive envelope, closes with 1013 |
+### 6.1 HTTP gateway
 
-The web scaffold sends no API requests and renders no fabricated terrain, route
-or results. Operational manifest/snapshot/goal models, ROS executor, serializer,
-event recorder and polling/reconnect logic are pending. Do not infer operational
-goal fields from the permissive starter JSON body. Typed adapters must preserve
-ROS field names, convert non-human oxygen NaN to JSON null, and map kind casing.
-Before enabling control, validate request IDs, active run/map, resource assumptions
-and supported cost modes. Bind control locally until a secured remote deployment
-with authentication, origin restrictions and HTTPS/WSS is explicitly designed.
 
-The gateway remains unavailable even if the independent static MOCK publisher is
-running; there is no ROS-to-HTTP state flow yet. Tests in
-`tests/contracts/test_gateway.py` verify this truthful unavailable boundary only.
+Served by `mge_gateway`. It binds to `127.0.0.1` by default and holds no
+planning or mission logic. Every JSON response and WebSocket message is an
+envelope with `schema_version` (`"1.0.0"`; it applies to JSON, not to the ROS
+wire messages), `run_id`, `mode` (`LIVE` | `REPLAY`), `map_version` and
+`timestamp_sim_s`, plus the payload. Payloads use the ROS
+field names unchanged. The typed non-finite conversion requirements in
+section 5 remain the target; the broad existing output serializer still needs
+the hardening identified in REPLAY_CONTRACT.md. The input checks below do not
+claim that output-side gate is resolved.
 
-## 7. Reference separation, replay and verification gates
+| Route | Payload |
+|---|---|
+| `GET /api/health` | `status` (`READY`), `ros_connected`, `terrain_meta_received` |
+| `GET /api/manifest` | `terrain_meta`, `agents` (`agent_id`, `agent_kind`), `endpoints` |
+| `GET /api/run/{run_id}/snapshot` | `mission_state`, `terrain_meta`, `events` (all so far) |
+| `GET /api/run/{run_id}/events?after_seq=N` | `events` with `seq > N`; polling fallback |
+| `POST /api/mission/goal` | Body: `request_id` (optional), `primary_agent_id`, `base`, `goal`, `mode`, budgets and reserves. Answer: the `SetMissionGoal` response fields |
+| `WS /api/events?after_seq=N` | Backlog of events with `seq > N`, then the current state, then live messages |
 
-Only prior/belief/observed layers reach Planner and the normal web map; the hidden
-evaluator reference and future tasks never enter these contracts. Prior is
-immutable within a run. Simulated observations use source SIMULATED, not a claim
-of real perception. No real Mars data, mission benchmark or complete replay is
-included by this scaffold.
+- WebSocket messages carry `type`: `"event"` with an `event` object
+  (`MissionEvent`) or `"state"` with a `state` object (`MissionState`).
+- **No active run.** Until a mission state of the configured run has been
+  received, the gateway invents no run, map, clock or mode. It answers with
+  the inactive envelope below: `GET /api/health` with HTTP 200 plus
+  `ros_connected: false`; manifest, snapshot, events and `POST` with HTTP 503
+  (snapshot and events echo the requested run ID without claiming it exists);
+  the WebSocket sends it once and closes with code 1013. A running process
+  alone is never `LIVE`. `web/src/lib/contracts.ts` types this as
+  `UnavailableResponse`.
 
-Target replay layout is `run_id/manifest.json`, `timeline.jsonl`, `snapshot.json`
-and referenced rasters. Offline playback must consume recorded events without
-new ROS state and display REPLAY. GitHub Pages serves static web/replay only;
-ROS and FastAPI require a separate host for remote LIVE operation.
+  ```json
+  {
+    "schema_version": "1.0.0",
+    "run_id": null,
+    "mode": null,
+    "map_version": null,
+    "timestamp_sim_s": null,
+    "status": "NOT_READY",
+    "reason_code": "NO_ACTIVE_RUN"
+  }
+  ```
+
+- An unknown `run_id` answers `404`. A malformed body answers `422`. A goal
+  the mission refuses answers `200` with `accepted: false` and a
+  `reason_code`. If the mission service does not answer, the reply is `503`
+  with the inactive envelope, `status: "ERROR"` and
+  `reason_code: "MISSION_SERVICE_UNAVAILABLE"`.
+- Base/goal coordinates must be finite. Explicit resource budgets/reserves must
+  be finite, nonnegative and fit the ROS float32 fields. Invalid values answer
+  `422` before any ROS request is sent. Omitted oxygen retains the existing
+  internal NaN sentinel; mission still checks applicability to the selected agent.
+  Validation-error details are JSON-safe: a non-finite rejected input is rendered
+  as `null` in the error payload, retaining the field location and error type.
+- Repeating a `request_id` returns the first answer and creates no events.
+- A planning failure is not an HTTP error: the goal is accepted, the mission
+  goes to `BLOCKED`, and `mission_state.active_route` carries the `status`,
+  `reason_code` and `detail`, with empty paths and an empty `route_id`.
+- If the environment variable `MGE_CONTROL_TOKEN` is set, `POST` requires
+  `Authorization: Bearer <token>`. Set it before binding to anything other
+  than localhost.
+- Allowed browser origins come from the `cors_origins` parameter
+  (default `http://localhost:5173`).
+
+`tests/contracts/test_gateway.py` checks this contract without ROS;
+`tests/integration` checks the ROS-to-HTTP flow against MOCK producers.
+
+### 6.2 Recorded packages
+
+A recorded run is a directory of static files that a web client reads with
+plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
+`replay_recorder` node (`record:=true` on the launch file).
+
+| File | Content |
+|---|---|
+| `<run_id>/manifest.json` | Envelope plus `recorded_from`, `clock_source`, `time_start_sim_s`, `record_count`, `event_count`, `terrain_meta`, `agents`, `files` |
+| `<run_id>/timeline.jsonl` | One record per line, in arrival order |
+| `<run_id>/snapshot.json` | Final state, same shape as `GET /api/run/{run_id}/snapshot` |
+
+- Every file and every record says `mode: "REPLAY"`. A client must show
+  `REPLAY` for this data and must not present it as a live computation.
+- A timeline record has the shape of a WebSocket message: the envelope,
+  `type` (`event` | `state` | `terrain_meta`) and an object of that name, so
+  live messages and replay records can share one handler.
+- `timestamp_sim_s` is the running maximum of accepted message stamps, so it
+  never decreases along the arrival-ordered file. Each payload retains its
+  original `header.stamp`, including for late messages. Replay time is
+  `timestamp_sim_s - time_start_sim_s`.
+- `clock_source` is `sim` when the run used `/clock` and `system` when no
+  simulator was running; in that case the stamps are wall-clock seconds.
+- Events and states travel on different topics, so a state may be recorded
+  slightly before the event that caused it. Late events are retained in arrival
+  order; reconstruct the logical history by `seq`, as in `snapshot.events`.
+  Event IDs and positive uint64 sequences must both be unique within a run.
+  The store rejects conflicting/reused sequences, and the offline validator
+  detects them in altered packages without rejecting valid late deliveries.
+- A mission state identical to the previous one, apart from stamps, is not
+  recorded again. Duplicates, older states and data of another run are
+  dropped, as in the gateway.
+- An existing run directory is never overwritten.
+- `ros2 run mge_gateway check_replay <dir>` validates a package offline.
+
+`data/sample/replay/mock-vertical-001` is a sample package recorded from the
+mock vertical (goal, route, simulated observation, replan). It contains mock
+data only.
+
+The advanced viewer consumer remains on Jorge's separate branch; this PR
+adds no viewer implementation or public raster recording. GitHub Pages serves
+static web/replay only; ROS and FastAPI require a separate host. Transport
+availability never establishes validated LIVE mission provenance.
 
 Build all eight ROS definitions on Jazzy, run the imported ROS contract checks,
 and then verify grid/frame alignment, stale responses, duplicate observations,
@@ -194,15 +300,102 @@ these types and passing static checks is not evidence of an E2E mission or
 physical safety. Preserve commands, run IDs and outcomes in evidence records.
 Interface changes update this ICD, consumers, tests and versions together.
 
-## 8. Open points for the freeze meeting
+## 7. Mission, resources, positions and return
 
-1. Row order of the `32FC1` rasters: this draft uses row 0 = south so that
-   rasters and `OccupancyGrid` share one index. GeoTIFF sources are usually
-   north-up (row 0 = north), so the data provider flips on load. (Daniel)
-2. Paths are `geometry_msgs/Point[]` in `RouteDecision`; `nav_msgs/Path` is
-   used only on `/mge/planner/active_path`. (Diego)
-3. `MissionState` embeds the full `RouteDecision` and `AgentState[]` so a
-   single message is a complete snapshot. (David)
-4. Oxygen unit: litres, as `_l`. (David)
-5. Event type and reason code vocabularies. (David)
-6. `ROS_DOMAIN_ID` for team rehearsals; `scripts/dev.sh` defaults to 42.
+MissionManager alone owns scientific primary/secondary goals, reconnaissance ->
+inspection -> sampling precedence, capability allocation, rejection reasons and
+return priority. Planner computes candidate geometry/costs only; Gateway stores
+and forwards authoritative state and never creates a second mission state.
+One authorized active route exists for the primary agent at a time. Recheck
+run/request/agent/mode/map identity, complete itinerary, resources and reserves
+before authorization. On a changed map invalidate the old route immediately,
+clear authorized route/path, emit the logical stop/replan reason and reject old
+responses. An empty Path is a logical stop, not proof the executor stopped;
+Jesus must validate acknowledgement with current agent state before execution.
+
+The existing planner requires XY cell centres with 1e-6 m tolerance. Continuous
+poses fail explicitly NON_CELL_CENTER; never silently round. A future connector
+must check the swept geometry/public uncertainty and charge its time, energy and
+oxygen before changing that policy. Surface z is belief elevation, not validated
+drone flight altitude. EFFICIENT is an enum but current planner returns
+ERROR/MODE_NOT_SUPPORTED. Search bounds and unverified terrain return UNKNOWN.
+
+David's proposed science model `mge-science-1.0.0` governs scientific audit of
+complete outbound + service + optional work + return itineraries. Diego's
+MotionProfile model governs current search estimates. **They are not equivalent.**
+Planner uses 3-D distance with directed slope multipliers, energy per metre and
+constant human oxygen per second. Science human time uses horizontal distance
+and absolute grade; metabolic power and positive climb govern energy/O2, while
+rover traction/slip and drone activity powers have different equations. Exported
+parameter projections do not establish agreement. The models remain
+pending_model_agreement; operational authorization remains blocked until David,
+Diego and Jesus record compatible behavior and an independent itinerary audit.
+
+Shared inputs are agent kind/capabilities, public grid/grade limits, speed,
+service durations, capacities and reserves with explicit SI units. Proposed
+science oxygen litres mean equivalent dry O2 at 273.15 K and 101.325 kPa; this
+clarification still needs consumer confirmation. Estimates are experimental,
+never certified EVA or hardware limits. Record model ID/version, profile/config
+SHA-256, projection version, approval state, dataset/run/map and code SHA in the
+run manifest/evidence. Existing ROS types need no new fields: provenance belongs
+in replay/config metadata keyed by run/request/route IDs.
+
+Numerical agreement requires flat/uphill/downhill/zero/invalid vertical edges,
+service and wait, human/rover/drone, complete return, budget boundaries and
+sensitivity cases. Audit the full path once; do not sum overlapping round trips
+for optional tasks. The boundary harness uses rel=1e-5/abs=1e-3 for transport
+float rounding, not as scientific model equivalence. David must approve model
+error bounds and conservatism using exact-source numerical results.
+
+## 8. Data isolation, profiles and verification
+
+Only immutable prior, public belief/sigma/observed/traversability reach planner
+and ordinary web. The hidden evaluator reference and future task catalogue
+must remain outside their filesystem mounts, JSON, web/public and final build.
+The audited Jorge fixture bundles reference arrays with an evaluator toggle;
+that is a publication blocker even though the toggle defaults off. Preserve
+his branch work while removing/quarantining those values from public exports.
+NoData padding for legacy shape compatibility is not evaluator truth.
+
+Independent profiles are `mock`, `integration`, `simulation` and `live` in
+`profile.launch.py`. Exactly one planner and one mission service provider may
+run. MOCK uses deterministic interface-conforming producers; integration uses
+real planner/mission with labelled simulated agents; simulation additionally
+needs the real Gazebo backend. Live is unavailable. Launch requires explicit
+owner-reviewed receipt/configuration and executable/service preflight; main
+scaffolds cannot become approved providers merely by starting. See
+[launch profile gates](LAUNCH_PROFILES.md). A service-availability race still
+requires a dedicated ROS_DOMAIN_ID and a single launcher per run.
+
+See [baseline test ledger](CONTRACT_BASELINE.md) for all twelve requested checks.
+Generated interfaces must compile and be inspected on Ubuntu 24.04/Jazzy;
+Gazebo Harmonic execution and actual producer replacement are separate pending
+acceptances. No successful build, contract harness, MOCK or replay is a complete
+mission demonstration. Freeze remains pending Daniel/Diego/Jorge/David/Jesus
+review of units, snapshots, resources, event/reason vocabulary and consumer evidence.
+
+## Latest concurrent integration observations
+
+Final audit incorporates main `004b3b2` (PR #2 merged by Jesus), integration
+`45a4590` and the advanced web continuation `feat/ux` at `d649e2e`.
+`feature/web-replay-viewer` at `73f22db` is its verified ancestor; the newer UX
+branch is no longer the old scaffold. Preserve both histories and latest work.
+Jesus already has a real-planner/MOCK-mission vertical with coherent synthetic
+batches; Jorge already has a gateway replay adapter/run selector. Harden those
+existing consumers against these contracts, rather than reimplementing them.
+
+The new web adapter synthesizes flat 0m arrays from a name/source containing
+"flat". Such a display may only be an explicit illustrative MOCK fallback,
+never recorded terrain or scientific observation. Canonical strict replay still
+returns NOT_READY without actual matching public raster attachments. The new
+web consumer must validate snapshot/counts/identities/versions and duplicate
+route content. The demo still publishes 10,000 evaluator reference values;
+that final-bundle isolation blocker remains unresolved.
+
+Integration-owner observations report callback starvation with 1Hz repeated
+batches on grids >=60x60, default2s SEARCH_LIMIT on long queries, and short-budget
+searches returning UNKNOWN/SEARCH_LIMIT before proving insufficiency. Preserve
+UNKNOWN semantics and validate latency/load before asserting resource proof.
+The current mock mission/terrain do not implement full scientific audit,
+conflicting-request payload checks or real footprint fusion. Their tests are
+integration harness evidence only. Latest source/evidence is in the matrix.
