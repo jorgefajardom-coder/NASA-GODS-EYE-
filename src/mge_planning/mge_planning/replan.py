@@ -351,7 +351,8 @@ class ReplanPolicy:
             if actual is not None and actual < reserve:
                 return decision(ReplanAction.STOP_REQUIRED, reason, True)
         try:
-            if _start_z_mismatch(terrain, state.pose, m.agent_kind, profile):
+            if _start_z_mismatch(terrain, state.pose, m.agent_kind, profile,
+                                 allow_continuous_start=True):
                 return decision(ReplanAction.UNKNOWN, "INVALID_START_Z", True)
         except ValueError:
             return decision(ReplanAction.UNKNOWN, "INVALID_POSITION", True)

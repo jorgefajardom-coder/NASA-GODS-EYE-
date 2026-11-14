@@ -1,5 +1,25 @@
 # Required AI-use declaration
 
+## Experimental continuous recovery
+
+OpenAI Codex assisted the owner-requested NON_CELL_CENTER recovery. The opted-in
+connector preserves supplied XYZ and charges profile-bounded 3-D movement. The
+MOCK mission waits for fresh stop feedback, rejects stale results and retains
+spent allocations and required reserves. Tests use synthetic inputs and a MOCK
+software execution/recorder package. This does not approve a scientific model,
+physical traversal or LIVE mission. Affected paths are in ai_usage.json.
+The terrain batch test also waits for planner-side assembly within its existing
+readiness deadline; substantive results and search limits are not retried.
+
+## Strict recorded replay
+
+OpenAI Codex assisted the owner-requested replay validation corrections. The web
+loader validates counts, immutable routes, recorded raster versions and closing
+snapshots. Regression tests use synthetic inputs and an actual MOCK software
+recorder package; they do not approve a scientific model, physical traversal or
+LIVE mission. Existing contributor work and disclosures remain intact. Affected
+paths are in ai_usage.json.
+
 ## Estimated-terrain scope decision
 
 OpenAI Codex assisted recording the owner's accepted D-EST-01 decision to permit

@@ -7,6 +7,32 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "experimental_continuous_recovery",
+      "generation": "AI-assisted code, tests and documentation requested by the repository owner",
+      "paths": [
+        "src/mge_planning/mge_planning/core.py", "src/mge_planning/mge_planning/replan.py",
+        "src/mge_sim/mge_sim/mock_mission.py", "src/mge_sim/mge_sim/recovery.py",
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "tests/planning/test_continuous_recovery.py", "tests/planning/test_simulated_ground_initialization.py",
+        "tests/unit/test_recovery.py", "tests/contract/test_mock_recovery.py",
+        "tests/contract/test_mission_launch.py", "tests/integration/test_vertical_execution.py",
+        "tests/integration/test_terrain_batch.py",
+        "docs/ICD.md", "docs/mission_replay_recovery.md"
+      ],
+      "use": "Preserve bounded continuous XYZ, wait for stop acknowledgement, reject stale or resource-invalid candidates and retain spent allocations/reserves. Validate reauthorized motion, return and the same closed MOCK recorder package. No scientific or LIVE approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "strict_replay_validation",
+      "generation": "AI-assisted code, tests and documentation requested by the repository owner",
+      "paths": [
+        "web/src/data/gatewayReplay.ts", "web/src/data/replayAdapter.ts",
+        "web/tests/gatewayReplay.test.ts", "web/tests/gatewayIntegrity.test.ts"
+      ],
+      "use": "Validate replay counts, route identity, recorded raster versions and snapshot closure, and test the same MOCK recorder package in the existing web consumer. No scientific or LIVE approval."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "documentation_and_planning",
       "generation": "AI-assisted continuation plan requested by the repository owner",
       "paths": [

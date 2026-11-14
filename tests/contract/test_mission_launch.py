@@ -33,6 +33,7 @@ def context(mission='real', planner='real', **changes):
         'mission_path': str(ROOT / 'config/scenario_demo.yaml'),
         'base_enu_m': '[2.5, 2.5, 0.0]', 'allow_illustrative': 'true',
         'model_agreement_confirmed': 'false', 'approved_model_id': '',
+        'allow_continuous_starts': 'false',
         'record': 'false', 'record_dir': 'evidence', **changes,
     })
     return value
@@ -118,3 +119,44 @@ def test_real_terrain_rejects_mock_planner_before_startup():
     with pytest.raises(RuntimeError,match='REAL_TERRAIN_REQUIRES_REAL_PLANNER'):
         module._check_terrain_selection(context(terrain='real',planner='mock'))
     assert module._check_terrain_selection(context(terrain='real',planner='real')) == []
+
+
+@pytest.mark.parametrize('enabled', ['false', 'true'])
+def test_continuous_start_opt_in_is_forwarded_only_to_the_real_planner(monkeypatch, enabled):
+    module = load_launch()
+    original, nodes = module.Node, []
+    def capture(**kwargs):
+        node = original(**kwargs)
+        nodes.append(kwargs)
+        return node
+    monkeypatch.setattr(module, 'Node', capture)
+    description = module.generate_launch_description()
+    ctx = context(allow_continuous_starts=enabled)
+    defaults = {item.name: perform_substitutions(ctx, item.default_value)
+                for item in description.entities if isinstance(item, DeclareLaunchArgument)}
+    assert defaults['allow_continuous_starts'] == 'false'
+    for item in nodes:
+        values = evaluate_parameters(ctx, normalize_parameters(item.get('parameters', [])))
+        if item['executable'] == 'planning_node':
+            assert values[0]['allow_continuous_starts'] is (enabled == 'true')
+        else:
+            assert all('allow_continuous_starts' not in value for value in values)
+
+
+@pytest.mark.parametrize('agents', ['static', 'kinematic'])
+def test_only_kinematic_mock_mission_requires_stop_acknowledgement(monkeypatch, agents):
+    module = load_launch()
+    original, nodes = module.Node, []
+    def capture(**kwargs):
+        node = original(**kwargs)
+        nodes.append(kwargs)
+        return node
+    monkeypatch.setattr(module, 'Node', capture)
+    module.generate_launch_description()
+    ctx = context(mission='mock', agents=agents)
+    for item in nodes:
+        values = evaluate_parameters(ctx, normalize_parameters(item.get('parameters', [])))
+        if item['executable'] == 'mock_mission':
+            assert values[0]['require_stop_ack'] is (agents == 'kinematic')
+        else:
+            assert all('require_stop_ack' not in value for value in values)
