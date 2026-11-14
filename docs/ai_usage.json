@@ -906,6 +906,21 @@
       "use": "Record D-EST-01 superseding the blanket observation prerequisite for hypothetical planning over valid orbital estimates. Preserve NoData/obstacle distinctions, provenance/uncertainty, contradiction-driven invalidation/stop/replan and ownership. Keep integration steps 4/5 open and scene/size/domain-randomization extensions optional. No implementation, generated terrain, media, experiment or mission result claimed."
     },
     {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "integration_test_isolation",
+      "generation": "AI-assisted test fixtures and documentation, directed and reviewed by the integration owner",
+      "paths": [
+        "tests/integration/conftest.py",
+        "tests/integration/test_replay_package.py",
+        "tests/integration/test_vertical_execution.py",
+        "tests/integration/test_vertical_mock.py",
+        "tests/integration/test_vertical_planner.py",
+        "tests/integration/test_vertical_terrain.py",
+        "docs/integration_log.md"
+      ],
+      "use": "Isolate each integration module in its own ROS domain and wait for the planner service, the mission's map and recorded rasters before acting. No scientific observation or mission result is generated."
+    },
+    {
       "tool": "OpenAI Codex (source model, owner-confirmed); Claude (Anthropic) through Claude Code (preparation script, realism pass, viewer code and tests)",
       "kind": "ai_generated_3d_model_and_preparation_code",
       "generation": "Source 3D model generated with OpenAI Codex by the owner; edited by a deterministic AI-assisted Blender script",
@@ -1020,19 +1035,14 @@
       "sha256": "7d0b020623f6c864c1486a7320961ad62e5361e8d7bfc11d63db85cfcbf24e3e"
     },
     {
-      "tool": "Claude Code (Anthropic)",
-      "kind": "integration_test_isolation",
-      "generation": "AI-assisted test fixtures and documentation, directed and reviewed by the integration owner",
-      "paths": [
-        "tests/integration/conftest.py",
-        "tests/integration/test_replay_package.py",
-        "tests/integration/test_vertical_execution.py",
-        "tests/integration/test_vertical_mock.py",
-        "tests/integration/test_vertical_planner.py",
-        "tests/integration/test_vertical_terrain.py",
-        "docs/integration_log.md"
-      ],
-      "use": "Isolate each integration module in its own ROS domain and wait for the planner service, the mission's map and recorded rasters before acting. No scientific observation or mission result is generated."
+      "path": "web/public/assets/intro/mars-gods-eye-intro.webm",
+      "kind": "ai_generated_video_with_audio_track",
+      "tool": "Kling (Kuaishou) video generation, supplied by the owner; the file's AIGC metadata names ContentProducer 'kling' (ProduceID KLingMuse_f3500bd8-5e38-45c9-b8ab-e8ab688814eb)",
+      "editing": "A visible 'AI-generated' label burned into the bottom-right corner of every frame with ffmpeg drawtext (VP9 re-encode); audio track and AIGC metadata copied unchanged (5.0 s, 1920 x 1080, VP9 video, Opus audio track)",
+      "watermark": "AI-generated (burned into the pixels of every frame, bottom-right; stays in downloads and captures of the file). The viewer also shows an 'AI-generated \u00b7 Kling' label over the clip (web/src/components/Intro.tsx)",
+      "audio": "The audio track is treated as AI-generated; it is declared here and in the AIGC metadata of the file; the viewer plays the clip muted",
+      "use": "Opening intro screen of the viewer (skippable). Project emblem only; no NASA logos, flags or mission marks. Not data.",
+      "sha256": "4897e14fcfc185e9ec623d1f4401807706193e1614eb780431675b8641f73581"
     }
   ],
   "scientific_datasets_generated": false,
