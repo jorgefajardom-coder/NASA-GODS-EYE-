@@ -1,0 +1,231 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { ReplayBundle } from './types/replay';
+import { loadReplay } from './data/replayAdapter';
+import { viewAt } from './lib/replay';
+import type { TerrainLayer } from './lib/layers';
+import {
+  agentStats,
+  AGENT_NAME,
+  detailsFor,
+  initialBudgets,
+  managementGroups,
+  missionAlert,
+  resolveSelection,
+  type Selection,
+} from './lib/management';
+import { MissionScene } from './components/MissionScene';
+import { ManagementList } from './components/ManagementList';
+import { DetailsPanel } from './components/DetailsPanel';
+import { Vitals } from './components/Vitals';
+import { EventInspector } from './components/EventInspector';
+import { Timeline } from './components/Timeline';
+import { LayerStrip, ViewOptions } from './components/LayerPanel';
+import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './components/Frame';
+
+const params = new URLSearchParams(window.location.search);
+/** Evaluator view shows the hidden reference DEM. Off by default; enable with ?evaluator=1. */
+const EVALUATOR = params.get('evaluator') === '1';
+const RUN_DIR = `replay/${params.get('run') ?? 'demo'}`;
+
+type Load = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; bundle: ReplayBundle };
+
+export function App() {
+  const [load, setLoad] = useState<Load>({ status: 'loading' });
+
+  useEffect(() => {
+    let cancelled = false;
+    loadReplay(RUN_DIR)
+      .then((bundle) => !cancelled && setLoad({ status: 'ready', bundle }))
+      .catch((err: unknown) => !cancelled && setLoad({ status: 'error', message: err instanceof Error ? err.message : String(err) }));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (load.status === 'loading') return <Splash title="Loading saved run…" detail={`Reading ${RUN_DIR}/manifest.json`} />;
+  if (load.status === 'error') return <Splash title="Could not open the saved run" detail={load.message} error />;
+  return <Viewer bundle={load.bundle} />;
+}
+
+function Splash({ title, detail, error }: { title: string; detail: string; error?: boolean }) {
+  return (
+    <main className={`splash ${error ? 'splash--error' : ''}`} role={error ? 'alert' : 'status'}>
+      <h1>Mars Gods Eye</h1>
+      <p>{title}</p>
+      <p className="muted small">{detail}</p>
+    </main>
+  );
+}
+
+function Viewer({ bundle }: { bundle: ReplayBundle }) {
+  const m = bundle.manifest;
+  const duration = m.duration_s;
+  const [t, setT] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const [speed, setSpeed] = useState(10);
+  const [layer, setLayer] = useState<TerrainLayer>('belief');
+  const [exaggeration, setExaggeration] = useState(m.vertical_exaggeration_default);
+  const [showControlPoints, setShowControlPoints] = useState(false);
+  const [showLabels, setShowLabels] = useState(true);
+  const [follow, setFollow] = useState(false);
+  const [mode, setMode] = useState<UiMode>('exploration');
+  const [selection, setSelection] = useState<Selection>({ kind: 'agent', id: '' });
+
+  const view = useMemo(() => viewAt(bundle, t), [bundle, t]);
+  const budgets = useMemo(() => initialBudgets(bundle), [bundle]);
+  const groups = useMemo(() => managementGroups(view), [view]);
+  const sel = resolveSelection(selection, view);
+  const details = useMemo(() => detailsFor({ kind: sel.kind, id: sel.id }, view, bundle, budgets), [sel.kind, sel.id, view, bundle, budgets]);
+
+  // The telemetry block follows the selected agent; for a task or route it shows the primary agent.
+  const primaryId = view.state?.primary_agent_id ?? '';
+  const agentId = sel.kind === 'agent' ? sel.id : primaryId;
+  const agent = view.state?.agents.find((a) => a.agent_id === agentId) ?? null;
+  const alert = useMemo(() => missionAlert(view), [view]);
+
+  // Replay clock: advances simulated time by wall time x speed.
+  const last = useRef<number | null>(null);
+  useEffect(() => {
+    if (!playing) {
+      last.current = null;
+      return;
+    }
+    let raf = 0;
+    const tick = (now: number) => {
+      const dt = last.current == null ? 0 : (now - last.current) / 1000;
+      last.current = now;
+      setT((prev) => {
+        const next = Math.min(duration, prev + dt * speed);
+        if (next >= duration) setPlaying(false);
+        return next;
+      });
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [playing, speed, duration]);
+
+  const seek = useCallback((v: number) => setT(Math.max(0, Math.min(duration, v))), [duration]);
+  const restart = useCallback(() => {
+    setT(0);
+    setPlaying(false);
+  }, []);
+  const playPause = useCallback(() => {
+    setT((prev) => (prev >= duration ? 0 : prev));
+    setPlaying((p) => !p);
+  }, [duration]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+      if (e.code === 'Space' && tag !== 'BUTTON') {
+        e.preventDefault();
+        playPause();
+      } else if (e.code === 'ArrowRight' && tag !== 'BUTTON') seek(t + 5);
+      else if (e.code === 'ArrowLeft' && tag !== 'BUTTON') seek(t - 5);
+      else if (e.code === 'Home') restart();
+      else if (e.code === 'KeyF') setFollow((f) => !f);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [playPause, seek, restart, t]);
+
+  return (
+    <div className="app">
+      <MissionScene
+        bundle={bundle}
+        view={view}
+        layer={layer}
+        exaggeration={exaggeration}
+        showControlPoints={showControlPoints}
+        showLabels={showLabels}
+        playing={playing}
+        replaySpeed={speed}
+        followAgentId={follow ? agentId : null}
+        selectedAgentId={agentId}
+      />
+      <div className="vignette" aria-hidden />
+
+      <div className="overlay">
+        <div className="left">
+          <TitleBlock manifest={m} />
+          <ModeTabs mode={mode} onMode={setMode} />
+          <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR} />
+          <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
+          <div className="prompts">
+            <button type="button" className="chip" aria-pressed={follow} onClick={() => setFollow((f) => !f)}>
+              <kbd>F</kbd> Follow camera
+            </button>
+            <button type="button" className="chip" onClick={playPause}>
+              <kbd>Space</kbd> {playing ? 'Pause' : 'Play'}
+            </button>
+            <span className="chip chip--static">
+              <kbd>←</kbd>
+              <kbd>→</kbd> ±5 s
+            </span>
+          </div>
+          <ViewOptions
+            exaggeration={exaggeration}
+            onExaggeration={setExaggeration}
+            showControlPoints={showControlPoints}
+            onShowControlPoints={setShowControlPoints}
+            showLabels={showLabels}
+            onShowLabels={setShowLabels}
+            follow={follow}
+            onFollow={setFollow}
+          />
+        </div>
+
+        <aside className="right">
+          <StatusBlock
+            manifest={m}
+            missionState={view.state?.mission_state ?? 'IDLE'}
+            mapVersion={view.state?.map_version ?? 1}
+            t={t}
+            agent={agent}
+            evaluator={EVALUATOR}
+          />
+          {mode === 'replay' ? <EventInspector view={view} onSeek={seek} /> : details && <DetailsPanel data={details} />}
+        </aside>
+
+        <AlertBanner alert={alert} />
+
+        <Vitals
+          who={agent ? `${AGENT_NAME[agent.agent_kind]} · ${agent.agent_id}` : 'No agent'}
+          stats={agent ? agentStats(agent, budgets[agent.agent_id]) : []}
+          route={view.activeRoute}
+          replanning={view.state?.mission_state === 'REPLAN'}
+        />
+
+        <Timeline
+          t={t}
+          duration={duration}
+          playing={playing}
+          speed={speed}
+          events={bundle.timeline.events}
+          onPlayPause={playPause}
+          onRestart={restart}
+          onSeek={seek}
+          onSpeed={setSpeed}
+        />
+
+        <footer className="disclaimer">
+          {m.disclaimer} Agents are drawn larger than life (visual only).{' '}
+          <details className="credits">
+            <summary>Credits</summary>
+            "Animated Astronaut Character in Space Suit Loop" (
+            <a href="https://skfb.ly/o9nHu" target="_blank" rel="noreferrer">
+              https://skfb.ly/o9nHu
+            </a>
+            ) by LasquetiSpice is licensed under Creative Commons Attribution (
+            <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">
+              http://creativecommons.org/licenses/by/4.0/
+            </a>
+            ). Materials converted to metallic-roughness for this viewer. Fonts: Rajdhani, Barlow Condensed and IBM Plex Mono (SIL OFL 1.1).
+          </details>
+        </footer>
+      </div>
+    </div>
+  );
+}
