@@ -2,7 +2,8 @@
 
 Owner: David. Integration/review: Jesus. This PR starts from the published
 `feat/mission` revision `8f69f62bb65f6fdd0151580901b81c22049dfaed` and incorporates
-main `8afc7bfda5a012bdfe0f27ba876aedbd555540b2`. It preserves the real manager,
+main `8afc7bfda5a012bdfe0f27ba876aedbd555540b2`, then refreshed to
+`6ec9b84de0034a940cfe7e3491308fc4957810ca` after the external data PR merge. It preserves the real manager,
 science models, task logic, ROS adapter and existing tests. At that main revision,
 `mission_node` was still a startup placeholder without a SetMissionGoal server;
 starting it could not replace `mock_mission`. Publication is the reviewed PR
@@ -136,7 +137,9 @@ tolerances. David and Diego must reconcile the formulations, with Jesus
 validating the consumer and deployment configuration, before operational route
 authorization. No model flag, parameter projection or ID can substitute for this.
 
-Still pending: Daniel's coherent public dataset and controls, real execution and
+Main now also contains Daniel's data/mapping implementation from PR #8. Its
+scientific/grid acceptance and real-agent wiring remain separate from this
+synthetic smoke. Still pending: real execution and
 stop acknowledgement, ROS bindings for discovery/work/traversal evidence,
 scientific profile approval, agreed resource estimates and an actual end-to-end
 mission/benchmark. The [public evidence recorder](mission_recording.md) already

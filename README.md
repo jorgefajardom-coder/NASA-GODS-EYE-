@@ -80,7 +80,8 @@ ros2 interface show mge_interfaces/srv/PlanRoute
 ros2 launch mge_bringup demo.launch.py
 ```
 
-`demo.launch.py` starts placeholder processes, not an E2E mission. Read package READMEs.
+`demo.launch.py` starts package entrypoints with incomplete default mission
+configuration, not an accepted E2E mission. Read package READMEs.
 The dedicated CI job compiles ROS; Windows Python checks cannot replace that.
 
 ## Collaboration and licensing

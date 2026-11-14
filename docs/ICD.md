@@ -60,7 +60,7 @@ field names and types; this document records the conventions around them.
 | Channel | Type | Direction | QoS |
 |---|---|---|---|
 | `/clock` | `rosgraph_msgs/msg/Clock` | Gazebo → ROS | default clock |
-| `/mge/terrain/meta` | `mge_interfaces/msg/TerrainMeta` | DataProvider → all | reliable, transient_local |
+| `/mge/terrain/meta` | `mge_interfaces/msg/TerrainMeta` | Mapping → all | reliable, transient_local |
 | `/mge/terrain/prior` | `sensor_msgs/msg/Image` `32FC1`, m | DataProvider → Mapping | reliable, transient_local |
 | `/mge/terrain/belief` | `sensor_msgs/msg/Image` `32FC1`, m | Mapping → Planner/UI | reliable, transient_local |
 | `/mge/terrain/sigma` | `sensor_msgs/msg/Image` `32FC1`, m | Mapping → Planner/UI | reliable, transient_local |
@@ -74,6 +74,9 @@ field names and types; this document records the conventions around them.
 | `/mge/mission/set_goal` | `mge_interfaces/srv/SetMissionGoal` | Gateway → Mission | service |
 
 `{kind}` is the lower-case agent kind (`human`, `drone`, `rover`).
+Metadata has exactly one publisher per run: the node that owns `map_version`
+(`mapping_node`, or `mock_terrain` in the mock vertical), because metadata is
+part of the stamped batch of section 5. `data_node` publishes the prior only.
 OccupancyGrid values: `-1` unknown, `0` admissible, `100` forbidden. Unknown is
 not free. The prior is immutable within a run; the belief is never the hidden
 reference DEM. Publisher and subscriber declare the same QoS explicitly.
