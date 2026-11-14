@@ -606,3 +606,13 @@ Claude Code (Anthropic) assisted the integration owner with per-module ROS
 domain isolation and readiness waits in the integration test fixtures and the
 related log entry. No data, mission result, image, video or audio was
 generated. The affected paths are listed in ai_usage.json.
+
+## Root README overview
+
+Claude Code (Anthropic) assisted the integration owner in rewriting the root
+README from a review of the repository, its branches and pull requests and the
+merged web viewer: system overview, branch and PR state, viewer features,
+launch arguments, gateway API, CI jobs and open milestones. The data
+provenance table and the AI declarations already on main are kept unchanged.
+No code, data, mission result, image, video or audio was generated. The
+affected paths are listed in ai_usage.json.
