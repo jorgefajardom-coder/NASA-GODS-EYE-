@@ -157,6 +157,13 @@ than rewriting historical runs.
 - [ ] **JES-06 / P0 / M00, M07-M09**: confirm the official local deadline and
   submission rules, coordinate source/license/AI audit, public links and final
   submission. **Acceptance:** AC-10 and submission confirmation, not merely a push.
+- [ ] **JES-07 / P0 / M07-M09**: notify the local organizer when the reviewable
+  submission package is ready and obtain explicit endorsement before final
+  submission. Jesus coordinates; David is backup; everyone checks the gate.
+  **Depends on:** JES-06, reviewable links/revision and source/AI audit.
+  **Acceptance:** notification timestamp, exact package revision/links,
+  organizer's explicit endorsement and closure of requested corrections retained
+  in delivery evidence. Silence is not endorsement. See the coordination margin below.
 
 ### Jorge: explainable view and backend-independent replay
 
@@ -191,7 +198,7 @@ new automated tests or runs already exist. Existing module tests are reusable.
 | AC-07 reference isolation | R05/R06/R13; Daniel, Jesus | With identical public prior/observations, changing the held-out reference does not affect planner decisions. Runtime/public package has no reference raster/path access or hidden future-task list. Only explicitly simulated footprint evidence may update belief. |
 | AC-08 public replay | R14/R15; Jorge, Jesus | Private-browser replay works with all backends off, matches recorded IDs/decisions/results and explains changes. Label REPLAY and simulation; preserve permitted source metadata and exclude hidden assets. |
 | AC-09 comparison | R16; David | Protocol fixed first; identical scenarios/budgets/seeds for A/B/C; publish N, failures and success/return metrics. Computational planner benchmark alone does not close this case. |
-| AC-10 submission | R17; everyone, Jesus coordinates | Public links and English material work; sources/licenses and required AI text/metadata/watermarks audited; official cutoff confirmed; explicit submission completed and confirmation retained. |
+| AC-10 submission | R17; everyone, Jesus coordinates | Public links and English material work; sources/licenses and required AI text/metadata/watermarks audited; official cutoff confirmed; local organizer notified with review margin and explicit endorsement recorded (JES-07); requested corrections closed; explicit submission completed and confirmation retained. |
 
 ## Milestones, dependencies and cuts (America/Bogota)
 
@@ -210,7 +217,7 @@ register. It is internal local planning, not a competition artifact or shared cl
 | M05 | Sat 14 Nov 22:00 | David / Jesus | AC-04/06/07 adversarial and negative evidence; may develop fixtures before M04. |
 | M06 | Sun 15 Nov 12:00 | Jorge / Jesus | AC-08 accepted public replay; M04/M05 evidence. Prepare UI/loader before those runs. |
 | M07 | Sun 15 Nov 14:00 | Jesus; everyone reviews | Traceability, license, claims and AI audit; M01-M06. |
-| M08 | Sun 15 Nov 16:00 | Jesus | Scope freeze; corrective work and delivery only. |
+| M08 | Sun 15 Nov 16:00 | Jesus / David backup | Scope freeze; reviewable package notified to local organizer for endorsement (JES-07); corrective work and delivery only. |
 | M09 | Sun 15 Nov 20:00 | Jesus | Desired completed submission; applicable official cutoff takes precedence. |
 | M10 / P1 | Sun 15 Nov 10:00 | David | A/B/C pilot only after M04/M05 and only if M06-M09 remain protected. |
 
@@ -228,6 +235,26 @@ A recording can back up a demo but does not close a failed offline-replay case.
 
 The team deadline is 15 November 2026 23:59; this is not verification of the
 organizer's local cutoff. Advance all cuts if that cutoff is earlier.
+
+### Local organizer coordination gate
+
+Notify the local organizer as soon as the package is ready for review. Reserve
+at least **four hours before the intended submission**, or the organizer's
+requested lead time if longer. For the desired Sunday 15 November 20:00
+submission, the notification target is **16:00 America/Bogota or earlier**.
+Confirm organizer availability and any earlier local cutoff at M00/JES-06;
+advance readiness/contact accordingly. This margin is a team planning assumption,
+not a verified official deadline or a promise of organizer availability.
+
+If readiness slips, contact promptly and flag the reduced review margin; do not
+wait until the final upload. An unanswered request is still pending: Jesus, or
+David as backup, follows up through the agreed channel and resolves the gate
+with the organizer before final submission. Retain revision/links, notification,
+endorsement and correction evidence; keep personal contact details private.
+
+Every member's agent must remind its member at scope freeze/delivery handoff,
+when reporting readiness, and before submission until JES-07 evidence is
+recorded. These are contextual work reminders, not an unattended scheduled alert.
 
 ## Required validation and closeout
 
