@@ -30,11 +30,6 @@ export function DetailsPanel({ data }: { data: DetailData }) {
 
       <p className="details__body">{data.body}</p>
 
-      <div className="source">
-        {data.source.map((l) => (
-          <span key={l}>{l}</span>
-        ))}
-      </div>
     </section>
   );
 }

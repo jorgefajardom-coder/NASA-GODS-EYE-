@@ -655,6 +655,8 @@ input[type='checkbox'] {
 
 .details {
   flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto; /* scroll inside the column instead of running into the HUD below */
 }
 
 .portrait {
