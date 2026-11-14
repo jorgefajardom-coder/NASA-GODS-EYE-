@@ -9,11 +9,11 @@ setup(
         ("share/ament_index/resource_index/packages", ["resource/" + package_name]),
         ("share/" + package_name, ["package.xml"]),
     ],
-    install_requires=["setuptools"],
+    install_requires=["setuptools", "PyYAML"],
     zip_safe=True,
     maintainer="MARS GODS EYE team",
     maintainer_email="team@example.invalid",
-    description="P0 scaffold for mge_mission; implementation pending",
+    description="Mission authority, task decisions and resource-model audit",
     license="LicenseRef-UNSPECIFIED",
     entry_points={"console_scripts": ["mission_node = mge_mission.node:main"]},
 )

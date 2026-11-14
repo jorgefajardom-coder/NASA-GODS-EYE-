@@ -28,6 +28,10 @@ field names and types; this document records the conventions around them.
 - Oxygen fields are `NaN` for agents that are not `HUMAN` in the canonical ROS
   wire definitions. The future gateway adapter must map non-applicable NaN to JSON
   `null` (never a JSON NaN token). This explicit conversion is not implemented yet.
+- Proposed quantitative clarification from the mission model: `_l` denotes dry
+  ideal-gas-equivalent oxygen at 273.15 K and 101.325 kPa, not tank volume. This
+  convention remains pending consumer confirmation; proposed profiles are not
+  operational approval and a planner projection is not model agreement.
 - ROS wire kinds are uppercase `HUMAN`/`DRONE`/`ROVER`; pure Python/configuration
   may use lowercase. Adapters must map these intentionally and reject unknown
   values. Do not assume Python models are already the ROS wire representation.
@@ -121,7 +125,10 @@ Service positions and RouteDecision paths are `geometry_msgs/Point` values in
 `map`, not Pose or nav_msgs/Path. The active-path topic remains `nav_msgs/Path`.
 SetMissionGoal permits an empty run ID to mean the current run; the eventual
 adapter must resolve that before crossing into stored events or replay. Current
-ROS planning/mission services are not implemented by the scaffold.
+ROS planning service is not implemented by the scaffold on this mission branch.
+The mission service and authority are implemented behind explicit configuration,
+profile approval, simulation-clock and model-agreement gates; see the
+[mission package](../src/mge_mission/README.md) and [handoff](mission_handoff.md).
 
 MissionManager alone authorizes and publishes the active route. Only FEASIBLE
 candidates may be considered after current-run/map and return-budget checks.

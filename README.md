@@ -3,9 +3,12 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
-**Status: base scaffold.** No validated mission, NASA terrain, working planner,
-Gazebo world, live ROS-to-web flow or published demo is included yet. The empty
-viewer and unavailable API responses are intentional, not mission evidence.
+**Status: mission module implemented; system integration pending.** This branch
+adds proposed scientific profiles, activity/grade cost models, a tested Python
+mission authority and a ROS service/topic adapter. No validated end-to-end
+mission, NASA terrain, working planner, Gazebo world, live ROS-to-web flow or
+published demo is included in this branch. The empty viewer and unavailable API
+responses are intentional, not mission evidence.
 
 Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
 Confirm any earlier local judging cutoff separately.
@@ -16,6 +19,9 @@ Confirm any earlier local judging cutoff separately.
 - [Proposed shared interface contract](docs/ICD.md), pending team confirmation
 - [Requirements and acceptance](docs/requirements.md)
 - [Scientific decisions](docs/science_decisions.md)
+- [Scientific models and proposed coefficients](docs/science_models.md)
+- [Mission integration handoff](docs/mission_handoff.md)
+- [A/B/C protocol, awaiting integrated runs](docs/science_benchmark.md)
 - [Competition checklist](docs/competition.md)
 - [Required AI declaration](docs/AI_USAGE.md) and [metadata](docs/ai_usage.json)
 - [Integration status](docs/integration_log.md) and [verification](docs/verification.md)
@@ -101,3 +107,19 @@ This publishes static MOCK agent states with explicitly illustrative positions
 and budgets from src/mge_bringup/config/agents.yaml. It is not a moving mission
 or a NASA measurement. `demo.launch.py` starts the other scaffold processes;
 neither launch establishes E2E acceptance. See docs/ICD.md for the wire mapping.
+
+## Mission module checks
+
+The proposed profiles are available for formula inspection and sensitivity
+checks. They are not silently promoted to operational approval. The ROS node
+requires explicit configuration, simulation time and model agreement; see
+[the mission package](src/mge_mission/README.md) for startup and boundaries.
+
+To record standalone, synthetic formula estimates in a new evidence directory:
+
+```sh
+python scripts/check_mission_models.py --run-id my-model-check --output-dir evidence/my-model-check
+```
+
+Existing evidence files are not overwritten. MODEL_CHECK outputs do not establish
+actual agent traversal, completed tasks, mission success or an A/B/C result.

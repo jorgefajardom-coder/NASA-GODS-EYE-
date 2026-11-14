@@ -15,7 +15,21 @@ No NASA scientific dataset, measured result or benchmark was generated or
 claimed. No generated image/video/audio asset is included. The empty Three.js
 grid is a code-rendered placeholder, not a terrain product or mission run.
 
-## Before delivery
+## Mission profiles and authority, 14 November 2026
+
+OpenAI Codex assisted with the activity/grade cost models, proposed profile
+registry and provenance records, illustrative test configuration, pure mission
+authority and task/evidence types, ROS boundary, regression/contract tests,
+reproducible formula-check script, scientific model documentation, benchmark
+protocol and integration handoff. David selected the modeling approach and task
+policy; numerical coefficients remain proposed unless separately approved.
+
+NASA/JPL and NIST references are cited as technical sources, not authors of the
+adapted engineering model. Synthetic formula outputs are marked MODEL_CHECK;
+they are not NASA observations, live missions, physical tests or an A/B/C result.
+No generated image, video or audio is part of this change.
+
+## Delivery checks
 
 - Record actual tool uses and affected code/data/assets in text and metadata.
 - Keep a visible `AI-generated` watermark on generated images/videos and submitted

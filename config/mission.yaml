@@ -10,6 +10,7 @@ primary_agent_id: human_1
 return_tolerance_m: null
 budgets: null
 optional_tasks: []
+optional_human_sampling: after_primary_goal
 connectivity: ideal_global_p0
 success_requires:
   - primary_goal_completed

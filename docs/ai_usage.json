@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
   "recorded_on": "2026-11-14",
-  "status": "initial_scaffold",
+  "status": "scaffold_and_mission_module",
   "policy_url": "https://github.com/nasa/spaceapps/discussions/1849",
   "human_review": "pending module owners",
   "uses": [
@@ -38,6 +38,53 @@
         "evidence/README.md"
       ],
       "use": "Document team-supplied specification, competition requirements, source manifest templates and required disclosures; no scientific results or NASA datasets generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "mission_code_configuration_and_documentation",
+      "generation": "AI-assisted generation; source-derived parameters and engineering assumptions pending scientific review",
+      "paths": [
+        "src/mge_mission",
+        "tests/mission",
+        "tests/contract/test_mission_service.py",
+        "config/science_profiles.proposed.json",
+        "config/scenario_demo.yaml",
+        "config/agents.yaml",
+        "config/mission.yaml",
+        "config/README.md",
+        "docs/science_models.md",
+        "docs/science_decisions.md",
+        "docs/science_benchmark.md",
+        "docs/mission_handoff.md",
+        "scripts/check_mission_models.py",
+        "README.md",
+        "docs/ICD.md",
+        "docs/verification.md",
+        "scripts/validate_mission_ros.sh",
+        "config/planner_profiles.proposed.json"
+      ],
+      "use": "Implement activity/grade resource estimates, source-traced proposed profiles, mission authority, task/evidence boundaries, ROS adapter and tests; document model limitations and benchmark protocol. No physical or integrated mission result is asserted."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "synthetic_model_estimates",
+      "generation": "Deterministic outputs of AI-assisted code on explicitly synthetic geometry and durations",
+      "paths": [
+        "evidence/mission-models-20261114",
+        "evidence/mission-models-20261114-final",
+        "evidence/mission-models-20261114-v2"
+      ],
+      "use": "Record 15 reproducible formula estimates with profile hash and MODEL_CHECK label. These are not observational NASA data, physical measurements or a verified mission. Final record embeds exact profile inputs and model/checker source hashes; initial smoke record is retained and identified as preliminary."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "software_validation_records",
+      "generation": "AI-assisted orchestration of actual test/build commands and descriptive metadata",
+      "paths": [
+        "evidence/mission-validation-20261114",
+        "evidence/mission-validation-20261114-v2"
+      ],
+      "use": "Preserve actual Windows/Jazzy JUnit reports and build/test logs, exact source hashes, corrected failures and limits; no scientific acceptance, physical execution or NASA observations asserted."
     }
   ],
   "generated_media": [],
@@ -46,7 +93,8 @@
   "notes": [
     "Project idea and science specifications supplied by the human team.",
     "Update this register and descriptive disclosure when generated artifacts change.",
-    "No generated bitmap, video or audio asset is included at scaffold time."
+    "No generated bitmap, video or audio asset is included at scaffold time.",
+    "Mission coefficients remain proposed; accepting a lunar analog approach does not approve quantitative Mars EVA limits."
   ],
   "retained_contributions": [
     {

@@ -1,4 +1,4 @@
-"""Mission vocabulary and success criterion; no mission authority is running yet."""
+"""Mission vocabulary, strict success criterion and optional allocation facade."""
 
 from enum import Enum
 
@@ -38,5 +38,12 @@ def mission_success(*, primary_goal_completed: bool,
 
 
 def assign_optional_task(*, mission_state, discovered_task, feasibility):
-    """Pending: precedences, capability, incremental costs, primary goal and return."""
-    raise NotImplementedError("David and Jesus must implement mission task authority")
+    """Delegate to the authoritative manager; never allocate from a bare snapshot.
+
+    ``discovered_task`` is the previously registered task ID. Call
+    ``prepare_optional`` first to obtain the matching planner request.
+    """
+    allocator = getattr(mission_state, "assign_optional_task", None)
+    if allocator is None:
+        raise TypeError("optional allocation requires an authoritative MissionManager")
+    return allocator(discovered_task, feasibility)

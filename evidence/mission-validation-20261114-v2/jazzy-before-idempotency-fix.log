@@ -1,0 +1,53 @@
+VALIDATION_LOG=/mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.Wq8w4J.log
+VALIDATION_ROOT=/tmp/mge-mission-jazzy.Oj2DsH
+Starting >>> mge_interfaces
+Finished <<< mge_interfaces [14.4s]
+Starting >>> mge_data
+Starting >>> mge_gateway
+Starting >>> mge_mapping
+Starting >>> mge_mission
+Starting >>> mge_planning
+Starting >>> mge_sim
+Finished <<< mge_sim [2.11s]
+Finished <<< mge_gateway [2.13s]
+Finished <<< mge_data [2.14s]
+Finished <<< mge_mapping [2.14s]
+Finished <<< mge_planning [2.14s]
+Finished <<< mge_mission [2.16s]
+Starting >>> mge_bringup
+Finished <<< mge_bringup [3.44s]
+
+Summary: 8 packages finished [20.1s]
+Inspected six messages and two services.
+........................................................................ [ 48%]
+....................................................................FF.F [ 97%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+__________________ test_goal_requires_actual_simulation_clock __________________
+tests/contract/test_mission_service.py:162: in test_goal_requires_actual_simulation_clock
+    assert duplicate.result().reason_code == "CLOCK_NOT_READY"
+E   AssertionError: assert 'REQUEST_ID_CONFLICT' == 'CLOCK_NOT_READY'
+E     - CLOCK_NOT_READY
+E     + REQUEST_ID_CONFLICT
+__________ test_ros_goal_plan_topics_idempotency_and_map_invalidation __________
+tests/contract/test_mission_service.py:182: in test_ros_goal_plan_topics_idempotency_and_map_invalidation
+    assert duplicate.result().accepted is True
+E   AssertionError: assert False is True
+E    +  where False = mge_interfaces.srv.SetMissionGoal_Response(accepted=False, request_id='goal-1', run_id='contract-run', mission_state='READY', reason_code='REQUEST_ID_CONFLICT', detail='The request ID already identifies another payload.').accepted
+E    +    where mge_interfaces.srv.SetMissionGoal_Response(accepted=False, request_id='goal-1', run_id='contract-run', mission_state='READY', reason_code='REQUEST_ID_CONFLICT', detail='The request ID already identifies another payload.') = <bound method Future.result of <rclpy.task.Future object at 0x7b189cc2a000>>()
+E    +      where <bound method Future.result of <rclpy.task.Future object at 0x7b189cc2a000>> = <rclpy.task.Future object at 0x7b189cc2a000>.result
+______ test_clock_reset_clears_retained_route_and_blocks_further_commands ______
+tests/contract/test_mission_service.py:224: in test_clock_reset_clears_retained_route_and_blocks_further_commands
+    assert duplicate.result().accepted is True  # Idempotent answer; no command is executed again.
+E   AssertionError: assert False is True
+E    +  where False = mge_interfaces.srv.SetMissionGoal_Response(accepted=False, request_id='goal-1', run_id='contract-run', mission_state='BLOCKED', reason_code='REQUEST_ID_CONFLICT', detail='The request ID already identifies another payload.').accepted
+E    +    where mge_interfaces.srv.SetMissionGoal_Response(accepted=False, request_id='goal-1', run_id='contract-run', mission_state='BLOCKED', reason_code='REQUEST_ID_CONFLICT', detail='The request ID already identifies another payload.') = <bound method Future.result of <rclpy.task.Future object at 0x7b1894569250>>()
+E    +      where <bound method Future.result of <rclpy.task.Future object at 0x7b1894569250>> = <rclpy.task.Future object at 0x7b1894569250>.result
+----------------------------- Captured stderr call -----------------------------
+[ERROR] [1794672190.041032706] [mission_node]: Simulation clock moved backwards; restart with a new run ID
+- generated xml file: /mnt/c/Users/User/.codex/worktrees/david-mission/Hacktón NASA/tmp/mission-ros.Wq8w4J.log.junit.xml -
+=========================== short test summary info ============================
+FAILED tests/contract/test_mission_service.py::test_goal_requires_actual_simulation_clock
+FAILED tests/contract/test_mission_service.py::test_ros_goal_plan_topics_idempotency_and_map_invalidation
+FAILED tests/contract/test_mission_service.py::test_clock_reset_clears_retained_route_and_blocks_further_commands
+3 failed, 144 passed in 0.71s

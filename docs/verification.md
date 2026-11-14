@@ -50,3 +50,47 @@ compiled all eight packages, inspected the eight definitions and passed all ten
 ROS contract tests. Python/web jobs passed. Its final empty package-local test
 discovery step exited with code 5; CI now explicitly uses the actual root
 pytest suites and ROS contract tests rather than claiming package-local tests.
+
+## Mission module verification, 14 November 2026
+
+The mission branch now has implementation and software-contract evidence, not
+an accepted end-to-end mission. Operational scientific parameters remain
+proposed and S-01 through S-08 reviews remain pending.
+
+| Check | Observed outcome |
+| --- | --- |
+| Windows Python 3.12.14, `python -m pytest -q` | 226 passed; 2 ROS-dependent modules skipped |
+| Ubuntu 24.04 / ROS 2 Jazzy, `colcon build --symlink-install` | All 8 packages compiled |
+| `ros2 interface show` | All 6 messages and 2 services inspected |
+| Jazzy mission and contract suites | 162 passed; no skips or failures |
+| `python scripts/check_repository.py` | Passed, 8 package manifests |
+| Pinned Node 24.18.0, `npm test` | 2 passed |
+| `npm run build` | Passed, TypeScript and Vite |
+| `git diff --check` | Passed |
+
+The [machine-readable record](../evidence/mission-validation-20261114-v2/validation.json)
+contains JUnit reports, the build/test log and SHA-256 hashes for 93 exact files
+copied to the tested ROS workspace. Three idempotency failures from the prior ROS
+attempt are preserved with their correction and passing regressions. Raw CDR
+serialization is not a canonical equality key; the adapter now compares request
+field values explicitly.
+
+Native Windows Python requires the existing virtual environment on this host;
+the Store launcher is inaccessible. The installed ROSIDL tooling failed with the
+Windows source path containing spaces/accented characters. Run
+`bash scripts/validate_mission_ros.sh` on Jazzy to build an ASCII-path Linux
+snapshot instead. The script retains logs/source hashes/JUnit XML in ignored
+`tmp/`, and uses ROS domain 83 unless `MGE_TEST_ROS_DOMAIN_ID` is supplied.
+
+The ROS smoke uses a controlled planner and synthetic inputs. It verifies actual
+services, state/events/path publications, run/time/version guards, idempotency
+and invalidation. It establishes no Gazebo movement, NASA terrain processing,
+physical stop acknowledgement or complete optional-task/mission execution.
+Scientific-model agreement with `feat/planner` and ROS inputs for discovery,
+work completion and traversal evidence remain integration work.
+
+The standalone [final model check](../evidence/mission-models-20261114-v2/model_checks.json)
+records 15 synthetic formula estimates, input profiles and code/configuration
+hashes. It is labelled MODEL_CHECK and does not establish NASA observations,
+scientific acceptance or an A/B/C benchmark. Existing Starlette/httpx deprecation
+and frontend bundle-size warnings remain outside this module's changes.
