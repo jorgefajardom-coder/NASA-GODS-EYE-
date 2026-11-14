@@ -3,12 +3,13 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
-**Status: mission module implemented; system integration pending.** This branch
-adds proposed scientific profiles, activity/grade cost models, a tested Python
-mission authority and a ROS service/topic adapter. No validated end-to-end
-mission, NASA terrain, working planner, Gazebo world, live ROS-to-web flow or
-published demo is included in this branch. The empty viewer and unavailable API
-responses are intentional, not mission evidence.
+**Status: mission core, P0 planner and public terrain providers implemented; integrated mission acceptance pending.**
+This branch combines proposed scientific profiles and a Python/ROS mission authority
+with the published planner, Daniel's public CTX terrain/mapping providers and the
+gateway/replay baseline. Existing mock integration launches remain explicitly
+MOCK. Scientific model agreement, execution evidence inputs, Gazebo movement
+and verified end-to-end mission completion remain pending. The web on main is
+a scaffold; Jorge's advanced viewer remains on its own branch.
 
 Team deadline: **2026-11-15 23:59 America/Bogota (UTC-05:00)**.
 Confirm any earlier local judging cutoff separately.
@@ -16,6 +17,8 @@ Confirm any earlier local judging cutoff separately.
 ## Start here
 
 - [Team branches and first tasks](docs/team.md)
+- [Probable roadmap and owner checklists](docs/mission_checklist.md)
+- [NASA resource-to-result traceability](docs/nasa_traceability.md)
 - [Proposed shared interface contract](docs/ICD.md), pending team confirmation
 - [Requirements and acceptance](docs/requirements.md)
 - [Scientific decisions](docs/science_decisions.md)
@@ -27,6 +30,7 @@ Confirm any earlier local judging cutoff separately.
 - [Competition checklist](docs/competition.md)
 - [Required AI declaration](docs/AI_USAGE.md) and [metadata](docs/ai_usage.json)
 - [Integration status](docs/integration_log.md) and [verification](docs/verification.md)
+- [Planner handoff for Diego](docs/planner_handoff.md) and [temporary data provenance](docs/planner_provenance.md)
 
 ## Layout and owners
 
@@ -81,7 +85,7 @@ ros2 interface show mge_interfaces/srv/PlanRoute
 ros2 launch mge_bringup demo.launch.py
 ```
 
-Launch starts placeholder processes, not an E2E mission. Read package READMEs.
+`demo.launch.py` starts placeholder processes, not an E2E mission. Read package READMEs.
 The dedicated CI job compiles ROS; Windows Python checks cannot replace that.
 
 ## Collaboration and licensing
@@ -96,19 +100,68 @@ metadata. New packages use `LicenseRef-UNSPECIFIED` and `team@example.invalid`
 as explicit placeholders to replace before distribution. The team still needs
 to choose and supply the overall project license; dataset licenses are separate.
 
-## Existing integration smoke test
+## Docker alternative for ROS
 
-The team work on dev/jesus is included with its original history and canonical
-ROS definitions. After colcon build/source on Jazzy, run:
+`scripts/dev.sh` runs any command in a ROS 2 Jazzy container with the
+repository mounted. Build the image once; `--build-arg BASE=<image>` selects
+another Jazzy base image.
 
 ```sh
-ros2 launch mge_bringup smoke.launch.py
+docker build -t mge-dev docker/
+scripts/dev.sh colcon build --symlink-install
+scripts/dev.sh python3 -m pytest tests/contract tests/unit tests/integration
 ```
 
-This publishes static MOCK agent states with explicitly illustrative positions
-and budgets from src/mge_bringup/config/agents.yaml. It is not a moving mission
-or a NASA measurement. `demo.launch.py` starts the other scaffold processes;
-neither launch establishes E2E acceptance. See docs/ICD.md for the wire mapping.
+## Mock integration vertical
+
+After building and sourcing the workspace (or through `scripts/dev.sh`):
+
+```sh
+ros2 launch mge_bringup vertical_mock.launch.py run_id:=demo-001
+```
+
+This starts the gateway with MOCK agents, terrain, planner and mission from
+`mge_sim`. In a second terminal:
+
+```sh
+curl http://127.0.0.1:8000/api/manifest
+curl -X POST http://127.0.0.1:8000/api/mission/goal \
+  -H 'Content-Type: application/json' \
+  -d '{"request_id": "req-1", "primary_agent_id": "human_1",
+       "base": {"x": 2.5, "y": 2.5}, "goal": {"x": 152.5, "y": 202.5},
+       "time_budget_s": 14400, "energy_budget_wh": 1000, "oxygen_budget_l": 1000}'
+curl http://127.0.0.1:8000/api/run/demo-001/snapshot
+```
+
+Interactive API documentation is at `http://127.0.0.1:8000/docs`; the web
+contract is in [docs/ICD.md](docs/ICD.md), section 6. Agent positions and
+budgets come from `src/mge_bringup/config/agents.yaml` and are explicitly
+illustrative. Routes are straight lines that ignore terrain. Nothing here is a
+moving mission or a NASA measurement.
+
+Add `planner:=real profiles_file:=$PWD/config/planner_profiles.illustrative.json`
+to route through `mge_planning` instead of the mock planner. Terrain and mission
+stay MOCK, positions must be cell centres of the 5 m grid (for example
+`2.5, 2.5`), and the profiles are illustrative.
+
+`smoke.launch.py` starts only the static MOCK agent publisher, and
+`demo.launch.py` starts the scaffold processes of every package; with the
+latter the gateway reports `NOT_READY`, because no mission state is published.
+Neither launch establishes E2E acceptance.
+
+## Replay package
+
+Add `record:=true` to write a replay package to `evidence/<run_id>` (or to
+`record_dir:=<dir>`). A package is a set of static files that can be read
+without ROS or the gateway; see [docs/ICD.md](docs/ICD.md), section 7.
+
+```sh
+ros2 launch mge_bringup vertical_mock.launch.py run_id:=demo-002 record:=true
+ros2 run mge_gateway check_replay evidence/demo-002
+```
+
+`data/sample/replay/mock-vertical-001` is a sample recorded from the mock
+vertical with `scripts/record_sample_replay.py`. It holds MOCK data only.
 
 ## Mission module checks
 

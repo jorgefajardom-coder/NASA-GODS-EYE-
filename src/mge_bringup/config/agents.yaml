@@ -1,25 +1,26 @@
 # Agents of the run. Add entries to scale (R02); contracts do not change.
-# Positions are in the local "map" frame (x east, y north, z up, metres).
+# Positions are in the local "map" frame (x east, y north, z up, metres) and
+# must be cell centres of the terrain grid: the planner rejects other poses.
 # PLACEHOLDER VALUES: positions and budgets are not mission assumptions yet.
 # David owns the real numbers; they are assumptions of a simulated mission,
 # never certified EVA limits.
 agents:
   - id: human_1
     kind: HUMAN
-    x_m: 0.0
-    y_m: 0.0
+    x_m: 2.5
+    y_m: 2.5
     time_budget_s: 14400.0
     energy_budget_wh: 1000.0
     oxygen_budget_l: 1000.0
   - id: drone_1
     kind: DRONE
-    x_m: 2.0
-    y_m: 0.0
+    x_m: 7.5
+    y_m: 2.5
     time_budget_s: 600.0
     energy_budget_wh: 100.0
   - id: rover_1
     kind: ROVER
-    x_m: 0.0
-    y_m: 2.0
+    x_m: 2.5
+    y_m: 7.5
     time_budget_s: 14400.0
     energy_budget_wh: 2000.0
