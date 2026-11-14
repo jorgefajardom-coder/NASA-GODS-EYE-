@@ -330,3 +330,22 @@ unchanged. No open planner PR or pending local replay work was imported.
   Node 24.18.0 `npm test` passed 84 and `npm run build` passed. A FastAPI/httpx
   deprecation warning is unrelated. CI of the final pushed head remains the
   merge gate; these local checks do not establish LIVE mission acceptance.
+
+## Integration test isolation, 2026-11-14
+
+- Base: main `5ab1387` (PRs #12 and #17 merged). Owner: Jesus.
+- Finding: every integration module launched its graph in one ROS domain, so
+  a module could start while DDS still listed the previous module's nodes;
+  with fewer CPUs, launch tests of several owners failed in sequence but not
+  alone. Fixtures also sent goals before the planner service existed
+  (`PLANNER_UNAVAILABLE`) and before the mission held the map (`NO_MAP`).
+- Change: `tests/integration/conftest.py` gives each module its own
+  `ROS_DOMAIN_ID` (from 60; explicit domains such as 173 are kept) and a
+  `planner_ready` fixture; the five launch fixtures of the integration owner
+  wait for the planner service, the mission's map and, before observing,
+  for version 1 rasters to be recorded.
+- Evidence (`mge-dev`, CPUs pinned to two): before, almost every run of
+  `tests/integration` failed somewhere; after, 47 passed in normal runs and
+  most pinned runs. Still intermittent under two pinned CPUs: the fixture of
+  `test_vertical_mission.py` (David) and `test_vertical_planner.py` on the
+  200 x 200 MOCK grid (planner load; Diego). Not seen with all CPUs.

@@ -854,6 +854,21 @@
         "docs/ai_usage.json"
       ],
       "use": "Record D-EST-01 superseding the blanket observation prerequisite for hypothetical planning over valid orbital estimates. Preserve NoData/obstacle distinctions, provenance/uncertainty, contradiction-driven invalidation/stop/replan and ownership. Keep integration steps 4/5 open and scene/size/domain-randomization extensions optional. No implementation, generated terrain, media, experiment or mission result claimed."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "integration_test_isolation",
+      "generation": "AI-assisted test fixtures and documentation, directed and reviewed by the integration owner",
+      "paths": [
+        "tests/integration/conftest.py",
+        "tests/integration/test_replay_package.py",
+        "tests/integration/test_vertical_execution.py",
+        "tests/integration/test_vertical_mock.py",
+        "tests/integration/test_vertical_planner.py",
+        "tests/integration/test_vertical_terrain.py",
+        "docs/integration_log.md"
+      ],
+      "use": "Isolate each integration module in its own ROS domain and wait for the planner service, the mission's map and recorded rasters before acting. No scientific observation or mission result is generated."
     }
   ],
   "generated_media": [],

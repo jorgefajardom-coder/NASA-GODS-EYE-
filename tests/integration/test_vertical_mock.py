@@ -63,7 +63,7 @@ def mission_in(*states):
 
 
 @pytest.fixture(scope='module')
-def stack():
+def stack(planner_ready):
     proc = subprocess.Popen(
         ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py',
          f'run_id:={RUN_ID}', f'port:={PORT}'],
@@ -73,6 +73,7 @@ def stack():
                  and h['status'] == 'READY' and h['terrain_meta_received']
                  and len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,
                  what='gateway, mission state and 3 agents')
+        planner_ready()
         yield
     finally:
         os.killpg(proc.pid, signal.SIGINT)

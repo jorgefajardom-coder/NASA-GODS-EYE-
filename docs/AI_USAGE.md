@@ -537,3 +537,10 @@ estimates and observations in the tests are illustrative inputs; motion and
 consumption derive from planner estimates and are not a model. No scientific
 dataset, mission result, image, video or audio was generated. The affected
 paths are listed in ai_usage.json.
+
+## Integration test isolation
+
+Claude Code (Anthropic) assisted the integration owner with per-module ROS
+domain isolation and readiness waits in the integration test fixtures and the
+related log entry. No data, mission result, image, video or audio was
+generated. The affected paths are listed in ai_usage.json.

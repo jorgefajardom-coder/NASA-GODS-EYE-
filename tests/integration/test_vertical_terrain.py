@@ -79,6 +79,19 @@ def mission():
     return get(f'/api/run/{RUN_ID}/snapshot')['mission_state']
 
 
+def rasters_cover(package, versions):
+    """True once the package's raster attachment holds these map versions."""
+    try:
+        with open(os.path.join(package, 'manifest.json'), encoding='utf-8') as f:
+            name = json.load(f)['files'].get('public_rasters')
+        if name is None:
+            return False
+        with open(os.path.join(package, name), encoding='utf-8') as f:
+            return set(versions) <= set(json.load(f)['versions'])
+    except (OSError, ValueError):
+        return False
+
+
 class Stack:
     """The launched vertical plus a test-side node that plays the drone sensor."""
 
@@ -160,12 +173,18 @@ def test_real_terrain_refuses_the_mock_planner():
 
 
 @pytest.fixture(scope='module')
-def stack(tmp_path_factory):
+def stack(tmp_path_factory, planner_ready):
     stack = Stack(str(tmp_path_factory.mktemp('replay')))
     try:
         wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3
                  and get('/api/manifest').get('terrain_meta'),
                  timeout_s=30.0, what='gateway, 3 agents and terrain metadata')
+        # The mission, not only the gateway, must hold the map; and version 1
+        # must be recorded before an observation supersedes its latched batch.
+        wait_for(lambda: mission()['map_version'] >= 1, timeout_s=30.0, what='mission map')
+        wait_for(lambda: rasters_cover(stack.package, {'1'}), timeout_s=30.0,
+                 what='public rasters of map version 1')
+        planner_ready()
         yield stack
     finally:
         stack.stop()
