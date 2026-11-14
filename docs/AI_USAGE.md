@@ -201,8 +201,12 @@ portrait shown beside astronaut human_1 in the viewer's details panel. It was ge
 with ChatGPT (OpenAI) and supplied by the owner; it was cropped and resized with Pillow and
 carries a visible `AI-generated` band burned into the image, legible at its 80 px display
 size and in any capture. It is an illustration, not a photograph of a crew member or NASA
-data, and contains no NASA logos, flags or mission marks. No AI-generated video or audio is
-included. Machine-readable metadata:
+data, and contains no NASA logos, flags or mission marks. One AI-generated video is included: `web/public/assets/intro/mars-gods-eye-intro.webm`,
+the skippable intro screen (5 s, project emblem, no NASA marks). It was generated with Kling
+and supplied by the owner (the file's AIGC metadata names Kling as content producer) and is
+used as supplied. A visible `AI-generated` mark stays over the clip while the intro shows.
+Its audio track is treated as AI-generated and declared here and in the file metadata; the
+viewer plays the clip muted. Machine-readable metadata:
 [ai_usage.json](ai_usage.json), the `aiDisclosure` field in `web/package.json` and
 the `ai_disclosure` object in `web/public/replay/demo/manifest.json`.
 

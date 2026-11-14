@@ -1,16 +1,18 @@
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { TerrainLayer } from '../lib/layers';
-import { heightGrid } from '../lib/layers';
+import { finiteRange, heightGrid } from '../lib/layers';
+import { CUT_DEPTH_M } from '../lib/strata';
 import { smoothHeightAt } from '../lib/terrainSmooth';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
 import * as THREE from 'three';
 import { FollowCamera, type Framing } from './FollowCamera';
 import { ViewRotator } from './ViewRotator';
+import { TerrainGrowth } from './TerrainGrowth';
 import { SUN_FROM } from '../lib/sun';
 import { enuToThree } from '../lib/coords';
 import { CutawayBlock } from './CutawayBlock';
@@ -28,6 +30,8 @@ interface Props {
   exaggeration: number;
   showControlPoints: boolean;
   showLabels: boolean;
+  /** The intro has ended: the terrain grows in, layer by layer, once. */
+  reveal: boolean;
   playing: boolean;
   replaySpeed: number;
   /** Agent followed by the third-person camera, or null for the free orbital view. */
@@ -59,7 +63,7 @@ interface Props {
 /** Horizon haze colour: dusty Martian daytime sky, darkened so the panels stay readable. */
 const SKY = '#6e5242';
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
@@ -68,6 +72,12 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const groundHeight = useCallback((x: number, y: number) => smoothHeightAt(meta, grid, x, y), [meta, grid]);
   const followed = view.state?.agents.some((a) => a.agent_id === followAgentId) ? followAgentId : null;
   const smoothing = CAMERA_SMOOTHING[cameraSmoothing];
+  // Opening growth: from the base of the block (lowest ground minus the block depth) to above the
+  // highest relief plus room for the flying drone. Labels show once it has finished.
+  const [grown, setGrown] = useState(false);
+  const [growLo, growHi] = useMemo(() => finiteRange(grid), [grid]);
+  const growBottom = (growLo - CUT_DEPTH_M) * exaggeration - 1;
+  const growTop = growHi * exaggeration + 80;
   // Base camera anchor: on the drawn ground at the centre of the habitat cluster.
   const base = bundle.manifest.pois.find((p) => p.kind === 'base');
   const baseAnchor = useMemo(() => {
@@ -125,23 +135,26 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       {/* Always a solid block; schematic strata only in the Ground layers tab. Hidden under the surroundings. */}
       {!ctx && <CutawayBlock meta={meta} heights={grid} geology={cutaway} verticalExaggeration={exaggeration} />}
       {/* The route is a map overlay: hidden in the follow view, where it reads as a line painted on the ground. */}
-      {!followed && <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />}
+      {/* Route lines and site markers ignore the growth clipping, so they appear once the terrain has grown. */}
+      {grown && !followed && <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />}
       {bundle.manifest.pois.filter((p) => p.kind === 'base').map((p) => (
         <BaseModel key={p.id} site={p.position} verticalExaggeration={exaggeration} groundHeight={groundHeight} />
       ))}
-      <SiteMarkers
-        pois={bundle.manifest.pois}
-        controlPoints={bundle.manifest.control_points}
-        showControlPoints={showControlPoints}
-        tasks={view.tasks}
-        t={view.t}
-        verticalExaggeration={exaggeration}
-      />
+      {grown && (
+        <SiteMarkers
+          pois={bundle.manifest.pois}
+          controlPoints={bundle.manifest.control_points}
+          showControlPoints={showControlPoints}
+          tasks={view.tasks}
+          t={view.t}
+          verticalExaggeration={exaggeration}
+        />
+      )}
       <AgentLayer
         agents={view.state?.agents ?? []}
         t={view.t}
         verticalExaggeration={exaggeration}
-        showLabels={showLabels}
+        showLabels={showLabels && grown}
         playing={playing}
         replaySpeed={replaySpeed}
         speeds={view.speeds}
@@ -165,6 +178,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         touches={freePan ? { ONE: THREE.TOUCH.PAN, TWO: THREE.TOUCH.DOLLY_ROTATE } : { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
       />
       <ViewRotator />
+      {!grown && <TerrainGrowth start={reveal} bottom={growBottom} top={growTop} onDone={() => setGrown(true)} />}
       {/* Mounted after the controls and the follow camera so it corrects their result in the same frame. */}
       <CameraGroundClamp meta={meta} groundHeight={groundHeight} verticalExaggeration={exaggeration} />
     </Canvas>

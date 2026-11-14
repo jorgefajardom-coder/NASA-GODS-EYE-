@@ -29,6 +29,7 @@ import { AtmosDetails, AtmosList } from './components/AtmosPanel';
 import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
 import { CameraBar } from './components/CameraBar';
+import { Intro, introWanted } from './components/Intro';
 import { PORTRAITS } from './lib/portraits';
 import { rotateView, ROTATE_STEP_RAD } from './components/ViewRotator';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
@@ -89,6 +90,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [exaggeration, setExaggeration] = useState(m.vertical_exaggeration_default);
   const [showControlPoints, setShowControlPoints] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
+  // Intro clip first (unless reduced motion or ?nointro=1); the terrain grows in once it ends.
+  const [introDone, setIntroDone] = useState(() => !introWanted());
   // Camera: 'free' (map), 'base', or the id of the agent it follows.
   const [camView, setCamView] = useState<string>('free');
   const follow = camView !== 'free' && camView !== 'base';
@@ -248,6 +251,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         exaggeration={exaggeration}
         showControlPoints={showControlPoints}
         showLabels={showLabels}
+        reveal={introDone}
         playing={playing}
         replaySpeed={speed}
         followAgentId={follow ? camView : null}
@@ -265,6 +269,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         cutaway={mode === 'geology' && showCut && bundle.geology ? bundle.geology : null}
       />
       <div className="vignette" aria-hidden />
+      {!introDone && <Intro onDone={() => setIntroDone(true)} />}
 
       <div className="overlay">
         <div className="left">
