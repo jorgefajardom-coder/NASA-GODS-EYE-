@@ -29,7 +29,7 @@ import { AtmosDetails, AtmosList } from './components/AtmosPanel';
 import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
 import { CameraBar } from './components/CameraBar';
-import { FirstPersonHud } from './components/FirstPersonHud';
+import { FirstPersonHud, POV_MINIMAP_PX } from './components/FirstPersonHud';
 import type { ScanRequest } from './components/DroneScan';
 import { scanCells, scanSummary, type ScanClass } from './lib/scan';
 import { slopeDegrees } from './lib/slope';
@@ -103,6 +103,24 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   // First or third person while following an agent (V toggles; no effect on the free/base cameras).
   const [firstPerson, setFirstPerson] = useState(false);
   const pov = follow && firstPerson;
+  // First-person camera sway: a per-viewer preference, off by default with reduced motion.
+  const [povSway, setPovSwayState] = useState<boolean>(() => {
+    try {
+      const v = localStorage.getItem('mge.povSway');
+      if (v === '1' || v === '0') return v === '1';
+    } catch {
+      /* per-viewer convenience only */
+    }
+    return !(typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  });
+  const setPovSway = useCallback((v: boolean) => {
+    setPovSwayState(v);
+    try {
+      localStorage.setItem('mge.povSway', v ? '1' : '0');
+    } catch {
+      /* per-viewer convenience only */
+    }
+  }, []);
   // Drone-camera scan (display only): orbital slope bands around the drone, see lib/scan.
   const slope = useMemo(() => slopeDegrees(bundle.rasters.prior, m.terrain_meta.rows, m.terrain_meta.cols, m.terrain_meta.resolution_m), [bundle, m.terrain_meta]);
   const [scan, setScan] = useState<(ScanRequest & { counts: Record<ScanClass, number>; fromId: string }) | null>(null);
@@ -243,13 +261,14 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'KeyF') setFollow(!follow);
       else if (e.code === 'KeyG') setFreePan((g) => !g);
       else if (e.code === 'KeyV') setFirstPerson((v) => !v);
+      else if (e.code === 'KeyB' && pov) setPovSway(!povSway);
       else if (e.code === 'KeyR') runScan();
       else if (e.code === 'KeyQ') rotateView(-ROTATE_STEP_RAD);
       else if (e.code === 'KeyE') rotateView(ROTATE_STEP_RAD);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [playPause, seek, restart, t, follow, setFollow, runScan]);
+  }, [playPause, seek, restart, t, follow, setFollow, runScan, pov, povSway, setPovSway]);
 
   // The footer wraps to more lines on narrow screens; the panels above it sit on its measured height.
   const appRef = useRef<HTMLDivElement>(null);
@@ -289,6 +308,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         cutaway={mode === 'geology' && showCut && bundle.geology ? bundle.geology : null}
         firstPerson={firstPerson}
         scan={scan}
+        povSway={povSway}
       />
       <div className="vignette" aria-hidden />
       {pov && agent && (
@@ -302,6 +322,10 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           canScan={!!drone}
           onScan={runScan}
           onExit={() => setFirstPerson(false)}
+          route={view.activeRoute}
+          minimap={<Minimap bundle={bundle} view={view} agentId={camView} size={POV_MINIMAP_PX} />}
+          sway={povSway}
+          onSway={setPovSway}
         />
       )}
       {!introDone && <Intro onDone={() => setIntroDone(true)} />}
