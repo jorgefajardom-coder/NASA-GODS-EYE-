@@ -7,6 +7,68 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
+## For judges: the project in one minute
+
+**The problem.** Mars maps from orbit are built for regions, not for a walk.
+MOLA altimetry has 463 m pixels; even the CTX stereo terrain model at Jezero has
+one height every 20 m. A crew going out on foot with a rover and a drone needs
+to know which ground is only *estimated* from orbit, what a route costs in time,
+energy and oxygen, and what to do when the ground turns out to differ from the
+map.
+
+**What we built.** A prototype planner and 3D replay viewer for a small crew
+(astronaut, rover and drone) at Jezero crater:
+
+1. Load public NASA orbital terrain as an estimated map, keeping its uncertainty
+   and its source.
+2. Propose routes (FAST or SAFE) that check time, energy and oxygen for the way
+   out, the work at the stop and the way back, with a reserve.
+3. When an observation contradicts the orbital estimate, stop the affected
+   crew member, cancel the route and plan a new one from where they actually are,
+   with the resources they have left.
+4. Record every decision and replay it in a web browser, with no server.
+
+**See it.** [Open the web viewer](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/).
+The default run, *Recorded recovery · MOCK*, is a recording of the real planner
+on public Jezero terrain: the astronaut follows an estimated route, a simulated
+observation contradicts the map, the astronaut stops, receives a new route and
+returns. Video and project page: links will be added here before submission.
+
+**NASA data in the project.**
+
+| Resource | What it does here |
+| --- | --- |
+| MRO/CTX stereo terrain model, Mars 2020 TRN mosaic (USGS) | Terrain the planner routes over; elevation, slope and contours in the viewer |
+| MGS/MOLA global elevation model (NASA PDS) | Regional context: places the study area and checks the vertical alignment of the CTX tile |
+| MRO/CTX orthomosaic via [JPL Mars Trek](https://trek.nasa.gov/mars/) | Surface image draped over the terrain (display) |
+| USGS SIM 3464 geologic map of Jezero | Geologic units in the viewer (display; boundaries approximate to 100–200 m) |
+| Perseverance MEDA, Curiosity REMS, MSL RAD | Weather and radiation context in the viewer (display; the radiation values come from Gale crater, not Jezero) |
+| MRO/HiRISE terrain model (USGS) | Held back as a reference for evaluating results; never given to the planner or the viewer |
+| Perseverance and Ingenuity 3D models (NASA/JPL-Caltech) | Rover and drone models in the viewer |
+
+Sources, versions and file hashes are in [data sources](docs/data_sources.md)
+and [NASA traceability](docs/nasa_traceability.md).
+
+**Limits, stated plainly.**
+
+- This is a prototype that replays recorded runs. It is not a live mission or a
+  safety system, and it does not certify that any route is safe to walk.
+- In the featured recording only the astronaut moves; the rover and drone stay
+  idle and the mission ends in READY. A full three-member science mission is not
+  yet demonstrated.
+- The contradicting observation is simulated, not a real measurement. Time,
+  energy and oxygen costs are model estimates pending scientific review.
+- Orbital data cannot show rocks or hazards smaller than its 20 m spacing;
+  the 4 m planning grid adds no detail.
+- The wider 2 km scene with geology, weather and points of interest is a
+  scripted illustration; its points of interest are fictitious.
+- AI-generated media carry a visible `AI-generated` mark; all AI use is declared
+  in [docs/AI_USAGE.md](docs/AI_USAGE.md).
+
+Evidence for the featured recording: [source, test and browser record](evidence/audit-reconciliation-20261115/runtime-v1/README.md).
+
+## Project status for the team
+
 Mars Gods Eye plans and replays crewed surface missions (astronaut, rover and
 drone) over real Mars terrain at Jezero crater: orbital terrain priors, a
 resource-aware route planner, a mission authority, a ROS 2 simulation vertical
@@ -17,17 +79,8 @@ offline.
 viewer are implemented and on `main`; integrated mission acceptance is pending.** Nothing in
 this repository is a validated LIVE mission. MOCK providers, synthetic
 observations, replays and successful builds are labelled as such and are not
-mission evidence.
-
-**For judges:** this prototype connects orbital terrain estimates with route
-proposals and recorded decision changes when simulated observations contradict
-them. The featured `Recorded recovery · MOCK` uses public Jezero terrain and the
-real planner: a human stops, receives a revised route and returns. Its closing
-state is READY; it does not demonstrate a scientifically accepted three-role
-mission or certified safety. The broader scripted demo is a separate illustration.
-See [recorded source and browser evidence](evidence/audit-reconciliation-20261115/runtime-v1/README.md).
-Final English video/project-page links and acceptance remain tracked in the
-[delivery closure plan](docs/delivery_closure_plan.md) and
+mission evidence. Final English video/project-page links and acceptance remain
+tracked in the [delivery closure plan](docs/delivery_closure_plan.md) and
 [submission checklist](docs/competition.md).
 
 - **Web viewer (public preview):** <https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/>
@@ -38,8 +91,9 @@ Final English video/project-page links and acceptance remain tracked in the
   for language models and readers without WebGL is at
   [`llms.txt`](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/llms.txt) and
   [`about.html`](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/about.html).
-- **Team deadline:** 2026-11-15 23:59 America/Bogota (UTC-05:00). Confirm any
-  earlier local judging cutoff separately.
+- **Intended submission:** 2026-11-15 20:00 America/Bogota (UTC-05:00), per
+  [D-DEL-03](docs/decisions/2026-11-14-delivery-freeze.md); 23:59 is the team
+  backstop only. An earlier local cutoff or longer organizer review takes precedence.
 - **Delivery gate pending:** local organizer notification and explicit
   endorsement (JES-07 / AC-10 in [the mission checklist](docs/mission_checklist.md))
   are not yet recorded. Reserve at least four hours before final submission;

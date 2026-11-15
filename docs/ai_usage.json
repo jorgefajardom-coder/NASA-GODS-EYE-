@@ -6,6 +6,17 @@
   "human_review": "pending module owners",
   "uses": [
     {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "readme_judge_summary",
+      "generation": "AI-assisted documentation from existing repository records, directed and reviewed by the integration owner",
+      "paths": [
+        "README.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Write a one-screen English summary for judges at the top of the root README (problem, approach, public viewer link, NASA resources and their actual role, stated limitations), drawn only from the existing data-source register, viewer source table and recorded-recovery evidence; move the team status below it and state the 20:00 submission target from D-DEL-03. Documentation only; no code, data, observation, mission result, approval, image, video or audio was generated."
+    },
+    {
       "tool": "OpenAI Codex",
       "kind": "science_extension_tree_and_diagram",
       "generation": "AI-assisted proposed research guide, structured source and reproducible diagram code",
