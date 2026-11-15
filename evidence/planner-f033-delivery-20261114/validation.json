@@ -1,0 +1,196 @@
+{
+  "recorded_at": "2026-11-15T00:42:40.708952+00:00",
+  "branch": "feat/planner",
+  "base_main": "b5dc681bb51f8c5f1028e75581c14a1d5c61bb71",
+  "previous_guard_baseline": "0339bbddaa8e68704b8a56861a7f6694953b3e9f",
+  "synchronization": "Fast-forward to published origin/main only; no new commit or PR implementation imported. Intervening changes: web/Pages/disclosures only.",
+  "backup": {
+    "manifest": "tmp/f033-delivery-backup/manifest.json",
+    "file_count": 20,
+    "historical_evidence_and_guard_bytes_preserved": true
+  },
+  "new_parameterized_cases": 26,
+  "results": {
+    "planning": {
+      "tests": 309,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 309,
+      "omissions": []
+    },
+    "focused": {
+      "tests": 123,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 123,
+      "omissions": []
+    },
+    "windows_full": {
+      "tests": 1045,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 20,
+      "passed": 1025,
+      "omissions": [
+        {
+          "name": "tests.contract.test_generated_conversion",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_interfaces",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mission_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mission_service",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mock_recovery",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_planner_service",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_profile_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_planner_concurrency",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_replay_package",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_terrain_batch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_execution",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_mission",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_mock",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_planner",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_terrain",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[outside]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-delivery-full\\\\test_symlinks_cannot_open_exte0\\\\outside.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-delivery-full\\\\test_symlinks_cannot_open_exte0\\\\run\\\\public.json'"
+        },
+        {
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[reference]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-delivery-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\reference\\\\hidden.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-delivery-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\public.json'"
+        },
+        {
+          "name": "test_package_symlink_escape_is_rejected",
+          "reason": "Host does not permit creating symlink fixtures"
+        },
+        {
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        },
+        {
+          "name": "test_symlinked_public_archive_cannot_escape_package",
+          "reason": "Host does not allow symlink fixture: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-delivery-full\\\\test_symlinked_public_archive_0\\\\outside.npz' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-delivery-full\\\\test_symlinked_public_archive_0\\\\public\\\\terrain.npz'"
+        }
+      ]
+    },
+    "guard_only": {
+      "tests": 26,
+      "passed": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "web": {
+    "passed": 170,
+    "skipped": 1,
+    "failed": 0,
+    "build": "passed",
+    "node": "24.18.1",
+    "pinned_node": "24.18.0",
+    "note": "Existing host patch version differs from pin; no install or pin change"
+  },
+  "python": "3.12.3 (.venv)",
+  "warnings": [
+    "One pre-existing Starlette/httpx deprecation warning in full Python run"
+  ],
+  "fresh_ros": {
+    "status": "BLOCKED_BEFORE_EXECUTION",
+    "error": "HCS/ERROR_NO_SYSTEM_RESOURCES",
+    "attempts": 2,
+    "colcon_executed": false,
+    "pytest_executed": false,
+    "full_integration_executed": false
+  },
+  "historical_jazzy": {
+    "evidence": "evidence/planner-f033-guard-20261114/validation.json",
+    "passed": 946,
+    "skipped": 1,
+    "packages_built": 8,
+    "messages_inspected": 6,
+    "services_inspected": 2,
+    "source_hash_matches": {
+      "src/mge_planning/mge_planning/replan.py": true,
+      "tests/planning/test_f033_resource_guard.py": true,
+      "src/mge_planning/mge_planning/core.py": true,
+      "src/mge_planning/mge_planning/adapter.py": true,
+      "src/mge_mission/mge_mission/models.py": true,
+      "src/mge_mission/mge_mission/manager.py": true
+    },
+    "scope": "Historical planning/contracts/mission/unit only, not a fresh run or full integration/Gazebo approval"
+  },
+  "protected_paths_unchanged_from_main": [
+    "src/mge_planning/mge_planning/core.py",
+    "src/mge_planning/mge_planning/adapter.py",
+    "src/mge_planning/mge_planning/node.py",
+    "src/mge_mission",
+    "src/mge_interfaces"
+  ],
+  "source_sha256": {
+    "src/mge_planning/mge_planning/replan.py": "208e5d6d87eca67c2fe78a7c453344a1439479ad649448ab334ced3297e810fe",
+    "tests/planning/test_f033_resource_guard.py": "5f04c333f317986d98bc88fb706e227d0d8213629a3a5ff3bf5f98f9c8ba0fcb",
+    "src/mge_planning/mge_planning/core.py": "f59b51ccdd53218ecaa425b3fc7963fe43f3bfd95d1157a3aa687b9378c950d9",
+    "src/mge_planning/mge_planning/adapter.py": "0df229b7c0bb57fe6d2ecabb1059d210d4f47aff152ef2251b40926c350cd66c",
+    "src/mge_mission/mge_mission/models.py": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "src/mge_mission/mge_mission/manager.py": "e19bf4676f65b8362d47febecffc8a03d2391d441673e5380e2071b5a1b66beb"
+  },
+  "disclosures_preserve_all_main_entries": true,
+  "limitations": [
+    "Strict comparison; callers provide coherent serialized snapshots",
+    "No persistent ledger, replenishment/reset API, authentication or mission authority",
+    "New legitimate mission requires externally controlled new policy instance",
+    "Cost reconciliation and runtime consumer agreement remain separate unimplemented work",
+    "Real integrated execution and same-run replay acceptance remain open per AGENTS.md"
+  ],
+  "checks": {
+    "repository": "passed; 8 ROS package manifests",
+    "git_diff_check": "passed",
+    "unmerged_index_entries": 0,
+    "staged_files": 0,
+    "latest_fetch_main_unchanged": true,
+    "reverse_patch_check": "passed; validates definitive patch against current tree without applying it"
+  }
+}

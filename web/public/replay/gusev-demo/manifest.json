@@ -1,0 +1,209 @@
+{
+  "schema_version": "mge-web-0.1-draft",
+  "icd": "ICD-ROS2-V1 (draft)",
+  "run_id": "gusev-demo-sim-001",
+  "mode": "REPLAY",
+  "source_mode": "SIMULATION",
+  "provenance": [
+    "nasa",
+    "simulated",
+    "fictitious"
+  ],
+  "illustrative": true,
+  "title": "Gusev demo: Columbia Hills corridor survey and replanning",
+  "summary": "The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.",
+  "disclaimer": "Terrain: NASA/USGS Columbia Hills HiRISE/CTX/HRSC DEM mosaic crop over Spirit's traverse from the landing site to the Columbia Hills (real, preliminary, 8 m display grid averaged from its 1 m mosaic). Rover stop markers: real Spirit stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs C and D are real Spirit science sites (NASA), visited here in a simulated story. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
+  "ai_disclosure": {
+    "ai_assisted": true,
+    "scope": "Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.",
+    "tool": "Claude (Anthropic) through Claude Code",
+    "observational_data": "Only the terrain heights come from NASA/USGS data; everything else here is simulated."
+  },
+  "world": "gusev",
+  "duration_s": 11890,
+  "local_z_offset_m": -1935,
+  "imagery": {
+    "file": "ctx_ortho.png",
+    "title": "Columbia Hills visible mosaic (HiRISE/CTX/HRSC)",
+    "source": "JPL Mars Trek WMTS layer CLH_Visible_Mosaic_HiRISE_CTX_HRSC_GCS_MARS_07-10-2018, https://trek.nasa.gov/mars/",
+    "credit": "NASA/JPL-Caltech/USGS/University of Arizona/ESA/DLR/FU Berlin",
+    "native_resolution_m": 1,
+    "resolution_m": 10,
+    "extent": {
+      "origin_x_m": -1700,
+      "origin_y_m": -3800,
+      "width_m": 3400,
+      "height_m": 7600
+    },
+    "row0": "north",
+    "processing": "Bilinear resampling onto the crop ENU grid; display contrast stretched linearly between the 1st and 99th percentile. Panchromatic; the viewer tints it for display only."
+  },
+  "rover_stops": {
+    "file": "rover_stops.json"
+  },
+  "photo_tour": {
+    "agent_id": "rover_1",
+    "start_s": 2888,
+    "end_s": 11880,
+    "stops": 108,
+    "speed_mps": 2,
+    "dwell_s": 40
+  },
+  "terrain_meta": {
+    "run_id": "gusev-demo-sim-001",
+    "dataset_id": "clh-dem-mosaic-8m",
+    "frame_id": "map",
+    "map_version": 1,
+    "origin_x_m": -1700,
+    "origin_y_m": -3800,
+    "resolution_m": 8,
+    "rows": 950,
+    "cols": 425,
+    "crs": "Local tangent ENU grid; source Equirectangular, Mars 2000 sphere IAU (R = 3396190 m)",
+    "origin_lat_deg": -14.5819,
+    "origin_lon_deg": 175.502,
+    "vertical_datum": "datum of the Columbia Hills DEM mosaic; local z = elevation - (-1935 m)",
+    "nodata_value": -32768,
+    "sources": [
+      "Columbia Hills HiRISE/CTX/HRSC DEM mosaic (preliminary, Mars 2020 candidate landing site), NASA JPL Mars Trek (USGS Astrogeology / HiRISE and CTX teams). File CLH_DEM_Mosaic_HiRISE_CTX_HRSC_GCS_MARS_07-10-2018.tif, 2365020753 bytes, SHA-256 8a42cb6f6fe912f46b955317f7e410f68c8bfa70bc1d758f88f0874c33cf8660.",
+      "Product page https://trek.nasa.gov/mars/. Native resolution 1.02 m. Not verified here: NASA planetary data served by JPL Mars Trek, see the Trek product page for usage terms.",
+      "Crop: 950 x 425 cells of 8 m centred at -14.5819 N, 175.502 E, box average of 7 x 7 source pixels, then bilinear resampling onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); 8 m cells. PROVISIONAL, made by the frontend until the data owner delivers the processed package.",
+      "SYNTHETIC: a scarp was added to the hidden evaluator reference to create an adverse case. It does not exist in the NASA terrain data.",
+      "ILLUSTRATIVE: uncertainty (sigma), budgets, speeds and consumption rates are assumptions of a simulated mission."
+    ],
+    "checksum_sha256": "aac25d122b1e04b49d26493739637da7b0a6a7c15166b03c71781619d508a189"
+  },
+  "vertical_exaggeration_default": 2,
+  "control_points": [
+    {
+      "id": "cp-1",
+      "position": {
+        "x": -1216,
+        "y": -3460,
+        "z": -3.5
+      },
+      "description": "Cell centre row 42, col 60 of the CTX crop."
+    },
+    {
+      "id": "cp-2",
+      "position": {
+        "x": -496,
+        "y": -2596,
+        "z": 3.1
+      },
+      "description": "Cell centre row 150, col 150 of the CTX crop."
+    },
+    {
+      "id": "cp-3",
+      "position": {
+        "x": 176,
+        "y": -1780,
+        "z": 0.7
+      },
+      "description": "Cell centre row 252, col 234 of the CTX crop."
+    }
+  ],
+  "pois": [
+    {
+      "id": "A",
+      "label": "Base A",
+      "kind": "base",
+      "position": {
+        "x": -1504,
+        "y": 956,
+        "z": -5
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Spirit stop 0_0, sol 1 (Spirit (MER-A) interpolated traverse, PDS Geosciences Node); the base sits on the nearest walkable cell, within 12 m."
+      },
+      "for_agent": "HUMAN"
+    },
+    {
+      "id": "B",
+      "label": "Goal B",
+      "kind": "primary_goal",
+      "position": {
+        "x": -360,
+        "y": 500,
+        "z": -2.5
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Spirit stop 44_178, sol 124 (Spirit (MER-A) interpolated traverse, PDS Geosciences Node); the goal sits on the nearest walkable cell, within 12 m."
+      },
+      "for_agent": "HUMAN"
+    },
+    {
+      "id": "C",
+      "label": "C · Snowboard",
+      "kind": "poi",
+      "position": {
+        "x": -1264,
+        "y": 1076,
+        "z": -3.4
+      },
+      "revealed_at_s": 310,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Spirit science site: Snowboard, contact science on the rock target Shredder, Bonneville Crater Rim, sol 89. Placed at the rover's published position at the time (stop 24_0), on the nearest drivable cell within 12 m. Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
+      },
+      "for_agent": "ROVER"
+    },
+    {
+      "id": "D",
+      "label": "D · Mohave",
+      "kind": "poi",
+      "position": {
+        "x": 472,
+        "y": -12,
+        "z": -0.1
+      },
+      "revealed_at_s": 312,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Spirit science site: Mohave, contact science on the rock target Joshua, Plains, sol 150. Placed at the rover's published position at the time (stop 61_4), on the nearest drivable cell within 12 m. Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
+      },
+      "for_agent": "ROVER"
+    },
+    {
+      "id": "SCI",
+      "label": "Science stop · Truckin Flats",
+      "kind": "science",
+      "position": {
+        "x": -272,
+        "y": 396,
+        "z": -1.6
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Spirit science site nearest to goal B that the astronaut can walk to: Truckin Flats, contact science on the soil target Accelerator, Plains, sol 126, at the rover's published position (stop 46_0). 0.14 km on foot from goal B (project slope limit 20 degrees). Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
+      },
+      "for_agent": "HUMAN"
+    },
+    {
+      "id": "HAB",
+      "label": "Habitat area (flattest 1 km)",
+      "kind": "habitat",
+      "position": {
+        "x": -396,
+        "y": 304,
+        "z": -1.65
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "chosen",
+        "text": "Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: 0.2 degrees; within 5 km of the landing site, here base A: 1.29 km). Mean 8 m slope 1.3 degrees, 0 % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed here (see the water, ice and radiation section of docs/science_poi_dossier.md)."
+      },
+      "for_agent": "HUMAN"
+    }
+  ],
+  "files": {
+    "rasters": "rasters.json",
+    "timeline": "timeline.json",
+    "routes": "routes.json"
+  }
+}

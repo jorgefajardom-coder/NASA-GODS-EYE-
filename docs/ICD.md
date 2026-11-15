@@ -1,8 +1,16 @@
 # ICD-ROS2-V1 — Interface Control Document
 
-Status: **contract baseline `1.0.0-rc.1`, candidate, not frozen.** See
-[configuration and publication state](CONTRACT_BASELINE.md). It becomes binding once Daniel, Diego, Jorge and
-David confirm units, semantics and fields. After the freeze, no interface,
+Status: **contract reconciliation `1.0.0-rc.2`, published by PR28 at main9198b3d,
+not frozen or scientifically approved.** Original audit input:
+`main@6bcf208868e37b7e15e9189fac11de96e7414eff`; reviewed source `7f0ebaa`.
+Remaining candidate/owner-review wording concerns semantic approval, not absence
+of the merged F/E implementation. No ROS package or JSON/replay version is
+bumped by this record. [Runtime-v1 validation](../evidence/audit-reconciliation-20261115/runtime-v1/README.md)
+records the fresh F/E ROS consumer and ordinary-Chrome backend-off replay;
+owner freeze, private-browser and scientific acceptance remain separate. See
+[configuration and publication state](CONTRACT_BASELINE.md). It becomes binding
+once Daniel, Diego, Jorge, David and Jesus confirm units, semantics and fields.
+After the freeze, no interface,
 frame, unit, enum or meaning changes without updating this document, the
 consumers, the contract test and the version.
 
@@ -28,7 +36,7 @@ field names and types; this document records the conventions around them.
   `energy_est_wh`.
 - Oxygen fields are `NaN` for agents that are not `HUMAN` in the canonical ROS
   wire definitions. Adapters must map non-applicable NaN to JSON `null`, never a JSON NaN token.
-  This baseline tests that conversion; PR #3 implements its own ROS bridge.
+  The published gateway/recorder implement status- and agent-aware conversion.
   The ROS-backed HTTP boundary stays NOT_READY until a configured mission state arrives.
 - Proposed quantitative clarification from the mission model: `_l` denotes dry
   ideal-gas-equivalent oxygen at 273.15 K and 101.325 kPa, not tank volume. This
@@ -83,18 +91,32 @@ not free. `observed` marks the cells an applied local observation covered; it
 is coverage, not knowledge: an observed cell stays unknown (`-1`) when it is
 NoData or its sigma is too high. It travels in the stamped batch of section 5,
 after sigma, so the recorder can associate it with its map version; the planner
-does not subscribe to it. This topic is a proposed additive change (no message
-or field changes) pending Daniel's producer review and Jorge's consumer review. The prior is immutable within a run; the belief is never the hidden
+does not subscribe to it. The observed topic and public-raster recording are
+published on main without custom message-field changes. The candidate exploration
+and observation semantics below still need producer/consumer owner review. The
+prior is immutable within a run; the belief is never the hidden
 reference DEM. Publisher and subscriber declare the same QoS explicitly.
 
-**Accepted owner scope update, implementation pending:**
-[D-EST-01](decisions/2026-11-14-estimated-terrain-planning.md) removes prior local
-observation as a blanket prerequisite for proposing routes over valid orbital
-estimates. Do not equate estimated with verified/observed, redefine these numeric
-wire codes silently or close this decision by changing a display label alone.
-Daniel/Diego/Jesus must reconcile masks, exploration policy, consumers and tests;
-David reviews illustrative inspection/stop/resource assumptions. NoData and
-confirmed obstacles retain separate treatment; planner UNKNOWN remains valid.
+**D-EST-01 experimental candidate in this rc.2 worktree:**
+The [accepted scope](decisions/2026-11-14-estimated-terrain-planning.md) permits
+hypothetical routes over valid orbital estimates without a blanket observation
+prerequisite. Mapping startup remains legacy `observed_only` unless an explicit
+`exploration_policy_file` is supplied. The illustrative file
+`config/exploration_policy.illustrative.json` uses schema
+`mge-exploration-policy-1.0.0`, policy ID `estimated-prior-illustrative-01`, mode
+`estimated_or_observed` and per-kind max sigma 3 m. Its policy ID/schema/mode,
+candidate-only meaning and exact file SHA-256 are appended to TerrainMeta.sources.
+
+Under this explicit policy, mask 0 means proposal-admissible under the declared
+limits; it does not assert local observation, verification or authorized passage.
+`observed` remains coverage. NoData, confirmed obstacles, finite uncertainty,
+slope/footprint and the planner's independent profile remain enforced. An
+independent profile capped at sigma 1 m may reject the unchanged 2.5 m prior even
+when mapping admits estimates up to 3 m. Missing/invalid selected policy is an
+explicit startup error; policy absence preserves the legacy mode. Numeric wire
+codes and JSON/ROS schemas are unchanged. Candidate semantics and target-platform
+consumer acceptance need Daniel/Diego/Jesus review, with David's threshold and
+inspection/stop/resource review; new ROS validation is not claimed here.
 `mge_interfaces` types stay inside ROS; `ros_gz_bridge` is only used for types
 it supports.
 
@@ -131,25 +153,58 @@ messages have `header` and `run_id`; not all service requests have a Header.
 
 Map versions are `uint32`; event sequences are `uint64`. The metadata origin and
 resolution are `float64`; resource estimates are `float32`. Exact generated types
-and constants remain in the ROS definitions. Parallel observation arrays must
-have equal length; indices are row-major grid cells. Reject invalid bounds,
-non-finite elevations, invalid sigma, stale runs and duplicate observation IDs
-before changing belief. Non-human oxygen NaN is the explicit non-applicable sentinel. The integrated
+and constants remain in the ROS definitions. Nonempty parallel observation arrays must
+match the cell-index length; an omitted optional sigma/obstacle vector follows
+the explicit adapter rules below. Indices are row-major grid cells. Reject invalid bounds,
+non-finite elevations, invalid sigma and stale runs; deduplicate applied observation
+IDs before changing belief. Non-human oxygen NaN is the explicit non-applicable sentinel. The integrated
 planner also emits NaN unavailable metrics on non-FEASIBLE RouteDecision; typed
 status-conditioned serialization maps only those unavailable fields to null.
 Never replace invalid FEASIBLE metrics or infinities with null silently. An accepted observation changes its footprint and increments the
-map version once. Defining fields does not implement these checks.
+map version once. Mapping implements these checks; the candidate causal rules
+below add causal freshness protection with fresh consumer proof in runtime-v1.
 
 | Service | Request fields | Response fields |
 | --- | --- | --- |
 | `PlanRoute` | `run_id`, `request_id`, `agent_id`, `agent_kind`, `start`, `goal`, `return_to`, `require_return`, `mode`, `map_version`, `service_time_s`, `time_budget_s`, `energy_budget_wh`, `oxygen_budget_l`, `reserve_time_s`, `reserve_wh`, `reserve_oxygen_l` | `decision` (`RouteDecision`) |
 | `SetMissionGoal` | `request_id`, `run_id`, `primary_agent_id`, `base`, `goal`, `mode`, `time_budget_s`, `energy_budget_wh`, `oxygen_budget_l`, `reserve_time_s`, `reserve_wh`, `reserve_oxygen_l` | `accepted`, `request_id`, `run_id`, `mission_state`, `reason_code`, `detail` |
 
+### Observation conversion and causal fusion (candidate F)
+
+The mapping adapter requires frame `map`, nonnegative int32 seconds and
+nanoseconds in `[0, 1e9)`. Invalid times are rejected without clamping. It keeps
+SIMULATED source identity, current `base_map_version` and the received footprint.
+For a new ID, base version must equal current belief version; a stale or future
+base is rejected. The stamp must be no earlier than the globally last accepted
+observation, including across disjoint footprints. Equal timestamps may apply
+distinct current-base observations. This is a conservative global high-water
+mark for accepted observations, not a claim that a delayed measurement was
+retaken. Reobserve against the new base instead of relabelling stale data.
+
+ROS ordering uses the exact integer key `sec*1e9 + nanosec` throughout fusion;
+descriptive float seconds never decide freshness. This prevents an older FREE
+measurement from erasing a newer obstacle when large-epoch float seconds collide.
+Pure Python callers may supply the exact nanosecond key; seconds-only legacy
+input is explicitly quantized to nearest nanosecond, ties to even, with checked
+range/consistency. The internal key adds no ROS field or replay format.
+
+An already-applied observation ID is a no-op without another version increment
+or clock/cell mutation. Reject invalid footprint/NoData/source/run/conversion
+inputs atomically. The legacy optional empty sigma vector uses its explicit
+configured fallback. An empty obstacle vector carries no new obstacle evidence;
+UNKNOWN `-1` or omitted obstacle data cannot clear an existing confirmed `100`.
+Only explicit current, nonolder FREE `0` evidence may supersede that obstacle.
+All accepted updates remain inside the footprint and increment the version once.
+
+These rules are implemented as an rc.2 candidate with contract/core tests.
+The current ROS integration results must be recorded separately before review;
+older recovery CI cannot establish these new fusion semantics.
+
 Service positions and RouteDecision paths are `geometry_msgs/Point` values in
 `map`, not Pose or nav_msgs/Path. The active-path topic remains `nav_msgs/Path`.
 SetMissionGoal permits an empty run ID to mean the current run; resolve it
-before events/replay. This candidate integrates the real MissionNode from
-feat/mission at8f69f62 beside main's real planner and gateway. The real manager
+before events/replay. Main already integrates the real MissionNode beside the
+real planner and gateway; original owner implementation/history is retained. The real manager
 replaces mock_mission by configuration; it must never share the mission service
 or state/path publishers with the MOCK provider. Missing configuration/clock
 or unapproved models remain explicit rejection reasons, not MOCK fallback.
@@ -180,17 +235,17 @@ versions/runs, mutated duplicates and reactivation of retired runs are rejected.
 Layers arriving before metadata are discarded by the planner; producers must
 repeat complete batches because DDS cross-topic ordering is not guaranteed.
 Changing geometry, CRS, datum, mask or raster requires a new version/stamp.
-The planner's Missing profiles keep planner results UNKNOWN/PROFILE_NOT_READY; illustrative
+Missing profiles keep planner results UNKNOWN/PROFILE_NOT_READY; illustrative
 profiles require explicit allow_illustrative_profiles. Changes during search
 invalidate the snapshot token and discard stale candidates. Rejected immutable
-batches require a fresh version/stamp. `snapshot_contract_confirmed` defaults false. Daniel/Jesus must
-confirm the producer protocol before enabling it. Contract harness checks do
-not implement native topic association or the real mapping publisher.
+batches require a fresh version/stamp. `snapshot_contract_confirmed` defaults
+false. Daniel/Jesus confirm the producer protocol before enabling it. Main's
+mapping publisher and planner implement native stamped-batch association;
+current candidate acceptance still requires the actual consumer tests.
 
 ## 6. JSON, replay and display contract
 
-The canonical JSON/replay schema stays `1.0.0` from the gateway at the pinned
-integration SHA. It is independent of the unchanged ROS schema. Canonical files
+The canonical JSON/replay schema stays `1.0.0` from the published gateway. It is independent of the unchanged ROS schema. Canonical files
 are `manifest.json`, `timeline.jsonl`, `snapshot.json` plus explicitly associated
 public rasters when available. [Replay contract](REPLAY_CONTRACT.md) defines
 validation, timestamp/order rules, attachments and deterministic viewer conversion.
@@ -198,7 +253,7 @@ Jorge's `mge-web-0.1-draft` manifest/timeline.json/routes.json/rasters.json form
 is an adapter target, not a second canonical producer contract. Preserve his
 scene/assets/timeline and fixtures until consumer acceptance proves conversion.
 
-The ROS-backed gateway and recorder below are implemented in PR #3. Until a
+The ROS-backed gateway and recorder below are implemented on main. Until a
 mission state arrives, inactive identifiers, mode, map version and timestamp
 are null with status NOT_READY and reason NO_ACTIVE_RUN. No running process
 alone establishes a mission.
@@ -208,14 +263,14 @@ reports recorded_from LIVE. Display REPLAY for every recorded package and MOCK
 for synthetic producers, including `REPLAY · MOCK` together. Reject incomplete
 packages with NOT_READY; show ERROR with reasons for invalid ones. LIVE requires
 an actual connected and validated real source. Simulation stays visibly labelled.
-The additive web provenance helper tests these semantics; it is a handoff for
-Jorge's existing UI, not a replacement UI or a claim it is already wired there.
+The existing viewer/adapter retain explicit replay/source labels. Consumer and
+browser evidence must establish the labels for each exported package.
 
 No snapshot/raster join may use only the topic or file name. Bind run, dataset,
-map version, geometry, frame, stamp and public-layer role. Current PR #3 recordings
-lack raster arrays; the adapter must not borrow the different web dataset or
-fabricate missing terrain. Full 3D replay is NOT_READY until aligned public
-attachments exist. See [dataset delivery](DATASET_CONTRACT.md).
+map version, geometry, frame, stamp and public-layer role. Main's recorder writes
+public raster attachments and the viewer consumes them with the closing snapshot.
+The adapter cannot borrow another dataset or fabricate absent terrain. A missing
+required attachment remains NOT_READY. See [dataset delivery](DATASET_CONTRACT.md).
 
 ### 6.1 HTTP gateway
 
@@ -350,10 +405,14 @@ plain HTTP `GET`, with no gateway and no ROS graph. It is written by the
 mock vertical (goal, route, simulated observation, replan). It contains mock
 data only.
 
-The recorder writes the public raster attachment; the viewer does not read it
-yet (it still rejects non-flat terrain packages), which is Jorge's next step. GitHub Pages serves
-static web/replay only; ROS and FastAPI require a separate host. Transport
-availability never establishes validated LIVE mission provenance.
+The recorder writes the public raster attachment and the web loader reads it
+plus the closing snapshot. Strict conversion checks identities, counts, versions,
+route immutability and closing history; recorded non-flat Jezero packages are
+supported. The candidate highlights `recorded-recovery-001` while preserving its
+recorder run ID and exact files. The scripted demo remains a distinct illustrative
+example. GitHub Pages serves static web/replay; ROS and FastAPI require a separate
+host. Source MOCK/replay and a final READY state remain distinct from a validated
+LIVE or scientific COMPLETE mission.
 
 Build all eight ROS definitions on Jazzy, run the imported ROS contract checks,
 and then verify grid/frame alignment, stale responses, duplicate observations,
@@ -375,31 +434,28 @@ clear authorized route/path, emit the logical stop/replan reason and reject old
 responses. An empty Path is a logical stop, not proof the executor stopped;
 Jesus must validate acknowledgement with current agent state before execution.
 
-**Pre-extension consumer baseline, retained pending owner review:**
-The baseline requires XY cell centres with 1e-6 m tolerance. Continuous
-poses fail explicitly NON_CELL_CENTER; never silently round. A future connector
-must check the swept geometry/public uncertainty and charge its time, energy and
-oxygen before changing that policy. Surface z is belief elevation, not validated
-drone flight altitude. EFFICIENT is an enum but current planner returns
-ERROR/MODE_NOT_SUPPORTED. Search bounds and unverified terrain return UNKNOWN.
+**Default compatibility and published experimental recovery:**
+The default planner requires XY cell centres with 1e-6 m tolerance and rejects
+continuous starts with NON_CELL_CENTER. Main also contains the explicit
+experimental connector/recovery integrated through PR12/PR21; it never silently
+rounds telemetry. EFFICIENT remains ERROR/MODE_NOT_SUPPORTED. Search effort and
+unresolved terrain may return UNKNOWN. Surface z does not certify drone altitude.
 
-### Proposed ground-start extension — review required, not approved or frozen
+### Opted-in ground-start connector — published implementation, owner gates retained
 
-The cell-centre-only wording above and in CONTRACT_BASELINE.md / handoffs/diego.md
-records the pre-extension consumer baseline. It does not require removing the
-newer working implementation on feat/planner. The following is a proposed shared
-consumer extension, implemented/tested in that branch at 2d9f416, not an approved
-operational contract. Existing baseline gates remain in force until owner review.
-The PR12 review corrections restore opt-in gating: Python
-allow_continuous_start=False and ROS startup allow_continuous_starts=false by
-default. An explicit experimental opt-in does not constitute contract approval.
+Python `allow_continuous_start=False` and ROS/launch
+`allow_continuous_starts=false` remain the defaults. An explicitly selected
+experimental recovery retains the supplied continuous human/rover XYZ through
+a validated connector. This software implementation and its recorded MOCK
+consumer evidence do not approve scientific coefficients, physical safety or
+contract freeze. See [continuous recovery](mission_replay_recovery.md).
 
-- Previous behavior: non-centred starts/goals/bases failed NON_CELL_CENTER (XY
-  tolerance 1e-6 m). Proposed behavior: human/rover START only may be continuous;
+- With the opt-in, human/rover START only may be continuous;
   goals/bases stay centred. Required return from a continuous start needs an
   explicit centred base; drone continuous starts remain unsupported.
 - Connect only to the containing cell centre. No nearest-free-cell escape or
-  uncosted snapping is permitted. The full segment stays in a convex known cell.
+  uncosted snapping is permitted. The full segment stays in its convex cell,
+  admissible under the selected public-map policy and independent profile.
   Swept footprint checks include forbidden/unknown/NoData/sigma cells, agent radius
   plus localization allowance, map bounds, blocked corner contact and directed
   slope/step limits. At least five distance samples (spacing <= resolution/4), minus half sample spacing and obstacle
@@ -423,9 +479,11 @@ default. An explicit experimental opt-in does not constitute contract approval.
   Existing cost fields include that segment. start_connector metadata is Python-only.
 - Affected consumers: MissionManager/current-pose request generation, executor/
   supervisor path following, gateway/replay serializers and viewer route display.
-  ROS service checks do not establish combined continuous-pose mission/executor
-  acceptance. Exact current and prior execution results, including the independent
-  replay failure, are recorded in [PR12 review audit](pr12_review_corrections.md).
+  Published recovery evidence covers the actual MOCK executor/planner/recorder
+  stop/replan/resume/return path. The older [PR12 review audit](pr12_review_corrections.md)
+  preserves historical failures; [the recovery handoff](mission_replay_recovery.md)
+  identifies the later software cut. Three-role scientific mission acceptance
+  remains pending; rc.2 F/E consumer proof is recorded in runtime-v1.
 - F03.4 is a ROS-independent recommendation policy, not MissionManager authority.
   A contingency RETURN candidate uses goal=base, require_return=False, service=0
   and outbound_path for that one leg. Contingency may abandon unfinished SERVICE
@@ -458,8 +516,11 @@ science oxygen litres mean equivalent dry O2 at 273.15 K and 101.325 kPa; this
 clarification still needs consumer confirmation. Estimates are experimental,
 never certified EVA or hardware limits. Record model ID/version, profile/config
 SHA-256, projection version, approval state, dataset/run/map and code SHA in the
-run manifest/evidence. Existing ROS types need no new fields: provenance belongs
-in replay/config metadata keyed by run/request/route IDs.
+run manifest/evidence. Current types remain unchanged in this cut. The existing
+service cannot distinguish equal-duration activities or carry the complete waiting/
+remaining-service/model context; the [context/evidence proposal](audit_cost_execution_gaps.md)
+records the justified additive interface decision still required with all consumers.
+Neither provenance text nor a model-agreement flag supplies that missing binding.
 
 Numerical agreement requires flat/uphill/downhill/zero/invalid vertical edges,
 service and wait, human/rover/drone, complete return, budget boundaries and
@@ -473,9 +534,10 @@ error bounds and conservatism using exact-source numerical results.
 Only immutable prior, public belief/sigma/observed/traversability reach planner
 and ordinary web. The hidden evaluator reference and future task catalogue
 must remain outside their filesystem mounts, JSON, web/public and final build.
-The audited Jorge fixture bundles reference arrays with an evaluator toggle;
-that is a publication blocker even though the toggle defaults off. Preserve
-his branch work while removing/quarantining those values from public exports.
+Main's public replay/build excludes reference arrays; evaluator loading is
+restricted to the separate development-only/private source. Earlier rc.1
+publication findings describe the older fixture/history. Continue auditing final
+bundles and network loads; a hidden toggle alone never isolates public data.
 NoData padding for legacy shape compatibility is not evaluator truth.
 
 Independent profiles are `mock`, `integration`, `simulation` and `live` in
@@ -483,8 +545,10 @@ Independent profiles are `mock`, `integration`, `simulation` and `live` in
 run. MOCK uses deterministic interface-conforming producers; integration uses
 real planner/mission with labelled simulated agents; simulation additionally
 needs the real Gazebo backend. Live is unavailable. Launch requires explicit
-owner-reviewed receipt/configuration and executable/service preflight; main
-scaffolds cannot become approved providers merely by starting. See
+owner-reviewed receipt/configuration and executable/service preflight. Published
+provider implementations do not acquire approval merely by starting. The legacy
+profile receipt still identifies baseline 1.0.0-rc.1; this rc.2 record does not
+silently upgrade receipts or promote illustrative models. See
 [launch profile gates](LAUNCH_PROFILES.md). A service-availability race still
 requires a dedicated ROS_DOMAIN_ID and a single launcher per run.
 
@@ -495,31 +559,26 @@ acceptances. No successful build, contract harness, MOCK or replay is a complete
 mission demonstration. Freeze remains pending Daniel/Diego/Jorge/David/Jesus
 review of units, snapshots, resources, event/reason vocabulary and consumer evidence.
 
-## Latest concurrent integration observations
+## Current audit and historical evidence
 
-Final audit incorporates main `004b3b2` (PR #2 merged by Jesus), integration
-`45a4590` and the advanced web continuation `feat/ux` at `d649e2e`.
-`feature/web-replay-viewer` at `73f22db` is its verified ancestor; the newer UX
-branch is no longer the old scaffold. Preserve both histories and latest work.
-Jesus already has a real-planner/MOCK-mission vertical with coherent synthetic
-batches; Jorge already has a gateway replay adapter/run selector. Harden those
-existing consumers against these contracts, rather than reimplementing them.
+This rc.2 audit uses published main `6bcf208` and the refreshed owner refs in
+[the source lock](contract_baseline.json). Main includes the recorder's public
+rasters, strict web package/snapshot consumer, continuous MOCK recovery and
+later owner science/data contributions. The rc.1 audit at `004b3b2`, integration
+`45a4590` and UX `d649e2e` is historical; its missing-raster/public-reference/
+scaffold statements are superseded by those integrations.
 
-The new web adapter synthesizes flat 0m arrays from a name/source containing
-"flat". Such a display may only be an explicit illustrative MOCK fallback,
-never recorded terrain or scientific observation. Canonical strict replay still
-returns NOT_READY without actual matching public raster attachments. The new
-web consumer must validate snapshot/counts/identities/versions and duplicate
-route content. The demo still publishes 10,000 evaluator reference values;
-that final-bundle isolation blocker remains unresolved.
+The PR28 cut publishes causal observation protection and explicit
+estimated-terrain policy, and highlights an exact recorder package. Its fresh
+ROS/browser results are captured in runtime-v1. Published callback
+scheduling/readiness corrections address earlier starvation cases; bounded
+SEARCH_LIMIT remains inconclusive and full-terrain latency is not certified.
 
-Integration-owner observations report callback starvation with 1Hz repeated
-batches on grids >=60x60, default2s SEARCH_LIMIT on long queries, and short-budget
-searches returning UNKNOWN/SEARCH_LIMIT before proving insufficiency. Preserve
-UNKNOWN semantics and validate latency/load before asserting resource proof.
-The current mock mission/terrain do not implement full scientific audit,
-conflicting-request payload checks or real footprint fusion. Their tests are
-integration harness evidence only. Latest source/evidence is in the matrix.
+The [new exact-main cost comparison](../evidence/audit-reconciliation-20261115/cost/README.md)
+retains one agreement and six disagreements with authorization BLOCKED. Typed
+activity/context/progress, opportunistic work, three-role execution and scientific
+success remain open in [the cost/execution proposal](audit_cost_execution_gaps.md).
+No replay, proposed policy, passed build or model diagnostic closes those gates.
 
 ## Mission provider substitution cut
 

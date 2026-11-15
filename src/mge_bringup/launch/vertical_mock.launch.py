@@ -115,6 +115,7 @@ def generate_launch_description():
         DeclareLaunchArgument('port', default_value='8000'),
         DeclareLaunchArgument('planner', default_value='mock', choices=['mock', 'real']),
         DeclareLaunchArgument('profiles_file', default_value=''),
+        DeclareLaunchArgument('exploration_policy_file', default_value=''),
         DeclareLaunchArgument('allow_continuous_starts', default_value='false'),
         DeclareLaunchArgument('mission', default_value='mock', choices=['mock', 'real']),
         DeclareLaunchArgument('mission_profiles_path', default_value=''),
@@ -140,7 +141,8 @@ def generate_launch_description():
         Node(package='mge_data', executable='data_node', output='screen',
              condition=_when('terrain', 'real'), parameters=[common]),
         Node(package='mge_mapping', executable='mapping_node', output='screen',
-             condition=_when('terrain', 'real'), parameters=[common]),
+             condition=_when('terrain', 'real'), parameters=[{
+                 **common, 'exploration_policy_file': LaunchConfiguration('exploration_policy_file')}]),
         Node(package='mge_sim', executable='mock_planner', output='screen',
              condition=IfCondition(EqualsSubstitution(LaunchConfiguration('planner'), 'mock')),
              parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}]),

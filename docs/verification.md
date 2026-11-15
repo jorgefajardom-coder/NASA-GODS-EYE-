@@ -1,5 +1,28 @@
 # Current contract reconciliation verification
 
+Publication note: PR28 source `7f0ebaa` was merged as main `9198b3d` with
+Python/web/ROS CI approved. The runtime-v1 results below are retained evidence
+for that basic software cut, not validation of the later local scientific-cost
+backend or a full three-role mission. See [delivery closure](delivery_closure_plan.md)
+for the PDF disposition, accepted schedule and remaining acceptance.
+
+## Audit reconciliation rc.2
+
+Current input is main6bcf208; see [scope and gaps](audit_reconciliation.md).
+Windows full Python suite after the exact-nanosecond correction: **1054 passed, 22 skipped**, one existing
+Starlette/httpx deprecation warning. Skips cover unsourced ROS/interfaces,
+Windows symlink privileges and an optional materialized planner input.
+This is software validation, not scientific mission acceptance. The new
+[exact-source cost comparison](../evidence/audit-reconciliation-20261115/cost/README.md)
+still has one agreement and six disagreements; authorization remains BLOCKED.
+The [runtime-v1 record](../evidence/audit-reconciliation-20261115/runtime-v1/README.md)
+has eight Jazzy packages/six messages/two services, 1086 module passes/one optional
+skip, 48 integration passes and a fresh recording. Web: 202 passes and production
+build. Ordinary Chrome backend-off QA confirms the exact recording's map/routing
+change and final IDLE return. Private-browser/public deployment and three-role
+mission acceptance remain open. D-COST-02's new backend is a subsequent cut.
+Older records below are historical.
+
 ## Experimental scenario approval validation, 14 November 2026
 
 The human approval of JZ-P01..JZ-P07 is recorded separately from runtime/model

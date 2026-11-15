@@ -1,0 +1,146 @@
+[
+  {
+    "agent": "human_1",
+    "horizontal_m": 2.0,
+    "rise_m": 0.0,
+    "legacy": {
+      "time_s": 2.4000960038401535,
+      "energy_wh": 0.2784778057788978,
+      "oxygen_l": 0.10091150698143883
+    },
+    "science": {
+      "time_s": 2.4000960038401535,
+      "energy_wh": 0.2784778057788978,
+      "oxygen_l": 0.056865925146060085
+    },
+    "note": "Legacy robot oxygen accumulator is zero; public result remains absent"
+  },
+  {
+    "agent": "human_1",
+    "horizontal_m": 2.0,
+    "rise_m": 0.1,
+    "legacy": {
+      "time_s": 2.643403676221153,
+      "energy_wh": 0.38954460601706037,
+      "oxygen_l": 0.11114132438908786
+    },
+    "science": {
+      "time_s": 2.640105604224169,
+      "energy_wh": 0.3890585863567876,
+      "oxygen_l": 0.07944682121907734
+    },
+    "note": "Legacy robot oxygen accumulator is zero; public result remains absent"
+  },
+  {
+    "agent": "human_1",
+    "horizontal_m": 2.0,
+    "rise_m": -0.1,
+    "legacy": {
+      "time_s": 2.643403676221153,
+      "energy_wh": 0.27882568574686245,
+      "oxygen_l": 0.11114132438908786
+    },
+    "science": {
+      "time_s": 2.640105604224169,
+      "energy_wh": 0.3063255863567876,
+      "oxygen_l": 0.0625525176606661
+    },
+    "note": "Legacy robot oxygen accumulator is zero; public result remains absent"
+  },
+  {
+    "agent": "rover_1",
+    "horizontal_m": 2.0,
+    "rise_m": 0.0,
+    "legacy": {
+      "time_s": 55.55555555555555,
+      "energy_wh": 1.8785493827160493,
+      "oxygen_l": 0.0
+    },
+    "science": {
+      "time_s": 55.55555555555555,
+      "energy_wh": 1.8785493827160493,
+      "oxygen_l": null
+    },
+    "note": "Legacy robot oxygen accumulator is zero; public result remains absent"
+  },
+  {
+    "agent": "rover_1",
+    "horizontal_m": 2.0,
+    "rise_m": 0.1,
+    "legacy": {
+      "time_s": 55.62495665139107,
+      "energy_wh": 2.2166545225579344,
+      "oxygen_l": 0.0
+    },
+    "science": {
+      "time_s": 55.62495665139107,
+      "energy_wh": 2.215816697106542,
+      "oxygen_l": null
+    },
+    "note": "Legacy robot oxygen accumulator is zero; public result remains absent"
+  },
+  {
+    "agent": "rover_1",
+    "horizontal_m": 2.0,
+    "rise_m": -0.1,
+    "legacy": {
+      "time_s": 55.62495665139107,
+      "energy_wh": 1.8808961036593987,
+      "oxygen_l": 0.0
+    },
+    "science": {
+      "time_s": 55.62495665139107,
+      "energy_wh": 1.5451376847608629,
+      "oxygen_l": null
+    },
+    "note": "Legacy robot oxygen accumulator is zero; public result remains absent"
+  },
+  {
+    "agent": "drone_1",
+    "horizontal_m": 2.0,
+    "rise_m": 0.0,
+    "legacy": {
+      "time_s": 1.0,
+      "energy_wh": 0.09722222222222222,
+      "oxygen_l": 0.0
+    },
+    "science": {
+      "time_s": 1.0,
+      "energy_wh": 0.09722222222222222,
+      "oxygen_l": null
+    },
+    "note": "Legacy robot oxygen accumulator is zero; public result remains absent"
+  },
+  {
+    "agent": "drone_1",
+    "horizontal_m": 2.0,
+    "rise_m": 0.1,
+    "legacy": {
+      "time_s": 1.1013741416975433,
+      "energy_wh": 0.10744950501444579,
+      "oxygen_l": 0.0
+    },
+    "science": {
+      "time_s": 1.0,
+      "energy_wh": 0.09759322222222222,
+      "oxygen_l": null
+    },
+    "note": "Legacy robot oxygen accumulator is zero; public result remains absent"
+  },
+  {
+    "agent": "drone_1",
+    "horizontal_m": 2.0,
+    "rise_m": -0.1,
+    "legacy": {
+      "time_s": 1.1013741416975433,
+      "energy_wh": 0.09734367413993437,
+      "oxygen_l": 0.0
+    },
+    "science": {
+      "time_s": 1.0,
+      "energy_wh": 0.09722222222222222,
+      "oxygen_l": null
+    },
+    "note": "Legacy robot oxygen accumulator is zero; public result remains absent"
+  }
+]

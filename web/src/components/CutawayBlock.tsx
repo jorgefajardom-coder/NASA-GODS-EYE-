@@ -2,9 +2,9 @@ import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import type { TerrainMeta } from '../types/icd';
 import { rasterizeUnits, type GeologyData } from '../lib/geology';
-import { CUT_DEPTH_M, columnBelow, surfaceSymbolAt } from '../lib/strata';
+import { blockDepthM, columnBelow, surfaceSymbolAt } from '../lib/strata';
 import { smoothHeightAt } from '../lib/terrainSmooth';
-import { SURFACE_DETAIL_GLSL, MESH_SUBDIVISION } from './TerrainView';
+import { SURFACE_DETAIL_GLSL, meshSubdivision } from './TerrainView';
 
 const GEO_GRID = 400;
 
@@ -31,16 +31,17 @@ export function CutawayBlock({ meta, heights, geology, verticalExaggeration }: P
   const grid = useMemo(() => (geology ? rasterizeUnits(geology, GEO_GRID) : null), [geology]);
 
   const geometry = useMemo(() => {
-    const step = meta.resolution_m / MESH_SUBDIVISION;
+    const step = meta.resolution_m / meshSubdivision(meta);
     const x0 = meta.origin_x_m + meta.resolution_m / 2;
     const y0 = meta.origin_y_m + meta.resolution_m / 2;
     const x1 = meta.origin_x_m + (meta.cols - 0.5) * meta.resolution_m;
     const y1 = meta.origin_y_m + (meta.rows - 0.5) * meta.resolution_m;
     let lo = Infinity;
     for (const h of heights) if (h != null && h < lo) lo = h;
-    const bottom = lo - CUT_DEPTH_M;
+    const depth = blockDepthM(Math.max(meta.rows, meta.cols) * meta.resolution_m, !!geology);
+    const bottom = lo - depth;
     const columnAt = (x: number, y: number): Array<{ thicknessM: number; rgb: [number, number, number] }> => {
-      if (!geology || !grid) return [{ thicknessM: CUT_DEPTH_M, rgb: PLAIN_ROCK }];
+      if (!geology || !grid) return [{ thicknessM: depth, rgb: PLAIN_ROCK }];
       const fx = geology.frame;
       return columnBelow(surfaceSymbolAt(geology, grid, GEO_GRID, Math.floor(((y - fx.origin_y_m) / fx.height_m) * GEO_GRID), Math.floor(((x - fx.origin_x_m) / fx.width_m) * GEO_GRID)));
     };
@@ -121,7 +122,7 @@ export function CutawayBlock({ meta, heights, geology, verticalExaggeration }: P
           }`,
         );
     };
-    mat.customProgramCacheKey = () => 'cutaway-strata-v5';
+    mat.customProgramCacheKey = () => 'cutaway-strata-v6';
     return mat;
   }, []);
 

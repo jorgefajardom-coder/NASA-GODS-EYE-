@@ -30,7 +30,7 @@ export function introWanted(): boolean {
  * the screen closes at once so the viewer is never blocked. The clip is AI-generated: an
  * "AI-generated" mark stays on screen the whole time it is visible.
  */
-export function Intro({ onDone }: { onDone: () => void }) {
+export function Intro({ onDone, onLeaving }: { onDone: () => void; onLeaving?: () => void }) {
   const [leaving, setLeaving] = useState(false);
   const done = useRef(false);
   const video = useRef<HTMLVideoElement>(null);
@@ -39,6 +39,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
     if (done.current) return;
     done.current = true;
     setLeaving(true);
+    onLeaving?.(); // what follows the intro can appear under it while it fades
     window.setTimeout(onDone, FADE_MS);
   };
 
@@ -63,8 +64,10 @@ export function Intro({ onDone }: { onDone: () => void }) {
 
   return (
     <div className={`intro${leaving ? ' intro--leaving' : ''}`} style={{ transitionDuration: `${FADE_MS}ms` }} onClick={finish} role="dialog" aria-label="Intro">
-      <video ref={video} className="intro__video" src={INTRO_URL} muted playsInline preload="auto" onEnded={finish} onError={finish} aria-label="Mars Gods Eye intro (AI-generated video)" />
-      <span className="intro__ai">AI-generated · Kling</span>
+      <div className="intro__stage">
+        <video ref={video} className="intro__video" src={INTRO_URL} muted playsInline preload="auto" onEnded={finish} onError={finish} aria-label="Mars Gods Eye intro (AI-generated video)" />
+        {/* The required "AI-GENERATED · KLING" mark is burned into every frame (bottom-right), so it is the only one. */}
+      </div>
       <button
         type="button"
         className="intro__skip"

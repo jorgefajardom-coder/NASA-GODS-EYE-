@@ -12,7 +12,7 @@
     <link rel="alternate" type="text/markdown" href="./llms.txt" />
     <link rel="icon" href="./favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
-    <meta property="og:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.png" />
+    <meta property="og:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.jpg" />
     <style>
       :root {
         --bg: #f7f5f2;
@@ -62,16 +62,19 @@
       <p class="lead">NASA Space Apps 2026 · Interplanetary Survival Guide: Martian Map · team Houston, We Have a Bug!</p>
 
       <p class="status">
-        <strong>Status:</strong> REPLAY of a simulated mission. The terrain heights and the draped image are real NASA/USGS
-        products; the mission, agent motion, budgets, observations and points of interest are simulated or synthetic.
+        <strong>Status:</strong> REPLAY. The featured recorded recovery uses real data, mapping and planner implementations
+        with MOCK mission authority and kinematic execution. The human stops, replans, resumes and returns; rover and
+        drone stay idle. Final READY does not mean scientific COMPLETE. The generated 2 km demo remains separate.
         Not a live mission and not certified for real operations. <a href="./">Open the 3D viewer</a>.
       </p>
 
       <h2>What it shows</h2>
       <p>
-        A saved expedition of an astronaut, a rover and a drone over a 2 km crop of Jezero crater. In the demo run the drone
+        The default <code>recorded-recovery-001</code> entry opens an unchanged recorder package over Daniel's
+        128 m Jezero scene (32×32 cells at 4 m, CTX source spacing 20 m), preserving its internal run ID, datum,
+        routes, resources, events and rasters. A separate illustrative 2 km demo shows a generated story: the drone
         surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around
-        it, reaches goal B and returns to base. The viewer draws what the mission recorded; it never plans routes itself.
+        it, reaches goal B and returns to base. That story is not an integrated mission result. The viewer never plans routes itself.
       </p>
       <ul>
         <li><strong>Terrain layers:</strong> Orbital map (prior), Updated map (prior plus observations, by map version), Slope, Uncertainty.</li>
@@ -80,7 +83,7 @@
         <li><strong>Ground layers tab:</strong> USGS SIM 3464 geologic units draped on the terrain and a schematic cut-away (not measured stratigraphy).</li>
         <li><strong>Atmos tab:</strong> historical MEDA summaries at Jezero and an estimated crew dose from the MSL RAD Gale surface rate; not current weather.</li>
         <li><strong>First person:</strong> the view from the astronaut, rover or drone, with compass, site bearings, resources, the route ahead and the next waypoint.</li>
-        <li><strong>Drone camera scan:</strong> redraws the existing orbital slope around the drone in display bands; not a new observation.</li>
+        <li><strong>Terrain scan:</strong> a visual pulse around the astronaut in first person that redraws prior-derived slope classes and NoData on the surface; no sensor, observation, mission command or map/route change.</li>
       </ul>
 
       <h2>Controls</h2>
@@ -92,19 +95,22 @@
           <tr><td><kbd>Home</kbd></td><td>Restart</td></tr>
           <tr><td><kbd>F</kbd></td><td>Follow the selected agent</td></tr>
           <tr><td><kbd>V</kbd></td><td>Third or first person while following an agent</td></tr>
-          <tr><td><kbd>R</kbd></td><td>Drone camera scan</td></tr>
+          <tr><td><kbd>Q</kbd></td><td>Terrain scan in first person (display only); rotates the view otherwise</td></tr>
           <tr><td><kbd>B</kbd></td><td>Camera sway in first person</td></tr>
           <tr><td><kbd>G</kbd></td><td>Grab-to-drag map</td></tr>
           <tr><td><kbd>Q</kbd> <kbd>E</kbd></td><td>Rotate the view</td></tr>
         </table>
       </div>
-      <p>URL parameters: <code>?run=demo</code> (default) or <code>?run=mock-vertical-001</code>; <code>?nointro=1</code> skips the intro video.</p>
+      <p>URL parameters: <code>?run=recorded-recovery-001</code> (default, intro omitted),
+        <code>?run=demo</code> (illustrative story), or <code>?run=mock-vertical-001</code> (historical flat-MOCK sample).
+        <code>?nointro=1</code> skips the demo intro. The entry folder is separate from the recorded run ID.</p>
 
       <h2>Data sources</h2>
       <div class="table-wrap">
         <table>
           <tr><th>Data</th><th>Source</th><th>Use</th></tr>
-          <tr><td>Terrain heights</td><td>Mars 2020 TRN CTX DTM mosaic, NASA/USGS Astrogeology (provisional 2 km crop, 20 m grid)</td><td>Real</td></tr>
+          <tr><td>Recorded terrain</td><td>Daniel's 128 m public Jezero CTX package, 4 m grid / 20 m native source, separate MGS/MOLA regional context</td><td>Real public source data; remeshing adds no native detail</td></tr>
+          <tr><td>Demo terrain</td><td>Separate provisional 2 km Mars 2020 TRN CTX DTM crop, NASA/USGS Astrogeology, 20 m grid</td><td>Real terrain, generated mission story</td></tr>
           <tr><td>Surface image</td><td>MRO CTX Jezero orthomosaic, controlled (Mars 2020 TRN), NASA/JPL-Caltech/MSSS/USGS, via <a href="https://trek.nasa.gov/mars/">JPL Mars Trek</a></td><td>Real, resampled</td></tr>
           <tr><td>Geology</td><td>USGS SIM 3464, Jezero crater and Nili Planum, 1:75,000 (<a href="https://astrogeology-usgs.hub.arcgis.com/pages/interactive-maps-mars">USGS-NASA Planetary Geologic Mapping</a>)</td><td>Real interpretation; boundaries about 100–200 m accurate</td></tr>
           <tr><td>Environment</td><td>Perseverance MEDA daily summaries (Jezero); MSL RAD surface dose rate (Gale, Hassler et al. 2014)</td><td>Historical references, not live</td></tr>
@@ -115,15 +121,21 @@
 
       <h2>Limits</h2>
       <ul>
-        <li>The slope averages about 60 m of ground per value: a lower bound for local slope, not a hazard map.</li>
+        <li>Slope uses Horn 3×3: a 12 m computational window on the 4 m recording grid, 60 m on the 20 m demo grid. Native source spacing remains 20 m; neither is a local hazard measurement.</li>
         <li>Height uncertainty in the demo is assumed (set by hand), not measured.</li>
-        <li>Vertical exaggeration (2x by default) is visual only.</li>
-        <li>Scan bands and resource thresholds are display choices awaiting science approval.</li>
-        <li>Integrated mission acceptance is still pending; no result here is mission evidence.</li>
+        <li>Vertical exaggeration is visual only and specified per run; absolute coordinates and datum are preserved.</li>
+        <li>Orbital-preview bands and resource thresholds are display choices, not validated safety limits.</li>
+        <li>Geology boundaries have roughly 100–200 m registration uncertainty. Context layers load only for matching scenes; they do not identify an exact sampling cell.</li>
+        <li>Scientific three-role mission acceptance and private-browser/backend-off evidence (AC-08) remain separate open checks. The recorded recovery is scoped MOCK software evidence.</li>
       </ul>
 
       <h2>Machine-readable access</h2>
       <ul>
+        <li>Featured package: <a href="./replay/recorded-recovery-001/manifest.json">manifest</a>,
+          <a href="./replay/recorded-recovery-001/timeline.jsonl">timeline</a>,
+          <a href="./replay/recorded-recovery-001/snapshot.json">closing snapshot</a> and
+          <a href="./replay/recorded-recovery-001/public_rasters.json">public rasters</a>.
+          Counts, snapshot closure, route identity, geometry and consumed versions are validated before rendering.</li>
         <li><a href="./llms.txt">llms.txt</a>: this information in Markdown for language models.</li>
         <li><a href="./replay/demo/manifest.json">replay/demo/manifest.json</a>, <a href="./replay/demo/timeline.json">timeline.json</a> and <a href="./replay/demo/routes.json">routes.json</a>: the demo run.</li>
         <li>In the running viewer, <code>window.mge.state()</code> returns the current replay state as JSON.</li>

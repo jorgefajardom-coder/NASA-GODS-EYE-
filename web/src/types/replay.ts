@@ -22,10 +22,18 @@ export interface ControlPoint {
 export interface PointOfInterest {
   id: string;
   label: string;
-  kind: 'base' | 'primary_goal' | 'poi';
+  kind: 'base' | 'primary_goal' | 'poi' | 'science' | 'landmark' | 'landing' | 'depot' | 'habitat';
   position: Point;
   /** Simulated time at which the POI becomes known. Base and goal are known from t=0. */
   revealed_at_s: number;
+  /**
+   * Where the site comes from: `nasa` (a NASA position: a real rover stop or a published landing site),
+   * `chosen` (picked by the demo generator on NASA terrain, not a NASA site) or `fictitious` (a site of the
+   * simulated story). Older packages have none.
+   */
+  source?: { basis: 'nasa' | 'chosen' | 'fictitious'; text: string };
+  /** The agent the site matters to (the astronaut's base, goal and sites; the rover's inspection targets). */
+  for_agent?: 'HUMAN' | 'ROVER' | 'DRONE';
 }
 
 export interface ReplayManifest {
@@ -68,6 +76,12 @@ export interface ReplayManifest {
   atmosphere?: { file: string };
   /** Surroundings of the crop from the same DTM, coarser (scripts/extract-ctx-context.mjs). Context only. */
   context?: { file: string; image?: string };
+  /** Real Perseverance stops inside the crop (scripts/extract-rover-waypoints.mjs): position and identifiers only. */
+  rover_stops?: { file: string };
+  /** Which world this run is (`jezero`, `gale`): picks the site clocks. */
+  world?: string;
+  /** The rover's photo tour of every real stop, after the story: replay times and illustrative parameters. */
+  photo_tour?: { agent_id: string; start_s: number; end_s: number; stops: number; speed_mps: number; dwell_s: number };
   vertical_exaggeration_default: number;
   control_points: ControlPoint[];
   pois: PointOfInterest[];
@@ -121,11 +135,51 @@ export interface ReplayBundle {
   atmosphere?: AtmosphereData;
   /** Present when the manifest declares a context terrain and it loaded. */
   context?: ContextTerrainData;
+  /** Present when the manifest declares rover stops and they loaded. */
+  roverStops?: RoverStops;
+}
+
+/** A real Perseverance stop (NASA MMGIS waypoint) in the run's local ENU frame. `rmc` is `<site>_<drive>`. */
+export interface RoverStop {
+  rmc: string;
+  site: number;
+  drive: number;
+  sol: number;
+  lat_deg: number;
+  lon_deg: number;
+  x_m: number;
+  y_m: number;
+  z_m: number;
+  /** The rover's heading at the stop as NASA publishes it (deg clockwise from north). */
+  yaw_deg?: number;
+  /** Replay time (s) at which the rover arrives at this stop during the photo tour. */
+  tour_arrival_s?: number;
+}
+
+/** The rover mission a world follows and how its raw images are matched to a stop. */
+export interface RoverMission {
+  id: string;
+  name: string;
+  /** Category of NASA's raw-images feed (`mars2020`, `msl`). */
+  raw_category: string;
+  /** `stop`: the feed labels each image with the rover's site and drive; `sol`: only the sol is known;
+   *  `none`: the feed has no images of this mission (Spirit, Opportunity). */
+  image_match: 'stop' | 'sol' | 'none';
+}
+
+export interface RoverStops {
+  note: string;
+  mission?: RoverMission;
+  source: { title: string; url: string; credit: string; retrieved?: string };
+  base_stop: string | null;
+  goal_stop: string | null;
+  stops: RoverStop[];
 }
 
 /** Context terrain around the crop: local ENU heights (row 0 = south, null = NoData). */
 export interface ContextTerrainData {
   note: string;
-  frame: { origin_x_m: number; origin_y_m: number; resolution_m: number; rows: number; cols: number; local_z_offset_m: number };
+  source?: { sha256?: string };
+  frame: { origin_x_m: number; origin_y_m: number; resolution_m: number; rows: number; cols: number; local_z_offset_m: number; centre_lat_deg?: number; centre_lon_deg?: number; row0?: string };
   heights: (number | null)[];
 }

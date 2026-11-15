@@ -1,5 +1,30 @@
 # Integration log
 
+## Audit reconciliation rc.2 — 14 November 2026, America/Bogota
+
+Input published main6bcf208; candidate branch codex/audit-contract-reconciliation.
+Current-base and exact-nanosecond observation freshness closes the reproduced
+old-FREE-over-new-obstacle defect. Explicit illustrative estimated-prior policy
+preserves sigma/coverage and independent planner constraints. Fresh Jazzy
+execution goes from unobserved prior to one-cell contradiction, acknowledged
+stop, current-XYZ replan and return. The intact 128-record/nine-event package is
+the featured recorded-recovery-001 web entry; the 2 km generated story remains
+separate. Browser QA found/fixed range-end rounding and plain-cutaway scaling.
+
+[Evidence](../evidence/audit-reconciliation-20261115/runtime-v1/README.md): 1054
+Windows Python passes/22 skips; eight Jazzy packages and eight interfaces;
+1086 module passes/one optional skip; 48 integrations; one fresh recording;
+202 web passes/build; ordinary Chrome backend-off replay. READY/MOCK human
+recovery does not close scientific COMPLETE or three-role/optional-task execution.
+NASA source arrays, scenario values, ROS v1 fields and mandatory disclosures are
+preserved. Five handoffs and stale data/MOLA status were reconciled.
+
+Fresh old-model comparison still gives one agreement/six disagreements. The
+owner selected [D-COST-02](decisions/2026-11-14-shared-scientific-cost-api.md),
+reuse of the actual scientific cost API. Its backend/context implementation and
+acceptance are the next cut; the current recording uses labelled legacy
+illustrative costs and does not establish scientific model agreement.
+
 | Cut | Owner | State | Next handoff | Evidence |
 | --- | --- | --- | --- | --- |
 | Initial scaffold, 2026-11-14 | Jesus + team | Structure only | Confirm ICD; crop; profiles; first vertical | verification.md; no mission run |
@@ -355,3 +380,12 @@ unchanged. No open planner PR or pending local replay work was imported.
   most pinned runs. Still intermittent under two pinned CPUs: the fixture of
   `test_vertical_mission.py` (David) and `test_vertical_planner.py` on the
   200 x 200 MOCK grid (planner load; Diego). Not seen with all CPUs.
+
+## Frontend hourly log (Jorge)
+
+| Date | Version | Owner | Evidence | Blockers | Next dependency |
+|---|---|---|---|---|---|
+| 2026-11-14 20:11 | `feat/ux` `476dc55`; `web/` (tab icon, link preview, text descriptions for language models, route guide, terrain formation, AI register) | Jorge | Commits in the last 125 min: `476dc55`, `22a72d7`, `d021ce9`, `238f4a5`, `cb40588`, `ea7b414`, `221fa77`; uncommitted: `web/src/styles.css` (+38/-1, first-person layout on screens up to 900 px); `npm test --prefix web`: 29 files, 181 passed, 1 skipped; `web/README.md` already matched the code, not changed | Only the CTX terrain crop and simulated replay `demo-sim-002`; the gateway replay is a MOCK flat grid; live gateway, planner routes and Daniel's processed terrain package are not consumed; J-06 not done | Planner routes from Diego, processed terrain package from Daniel, live gateway from Jesús |
+| 2026-11-14 23:21 | `feat/ux` `464afa7`; `web/` (drone window hazard report, first-person terrain scan, run selector, sky, lite/2D tiers, README) | Jorge | Commits in the last 125 min: see `git log --author=Jorge` from `eb531fd` to `464afa7` (e.g. `53df93a` first-person terrain scan, `9ce00f9` drone survey map tab, `b0b43a2` demo-only run selector, `83917a7` lite 3D and 2D map). Uncommitted: `DroneCam.tsx`, `DroneMap.tsx`, `styles.css` modified; new `src/lib/droneHazards.ts` and `tests/droneHazards.test.ts` replace the staged-deleted `droneSurvey.ts` and its test. `npm test --prefix web`: 38 files passed, 233 tests passed, 1 skipped. `web/README.md` resynced | Drone hazard changes still uncommitted; untracked `web/imageio_ffmpeg-0.8.1-py3-none-win_amd64.whl` in the tree; demo observations are simulated, no real gateway or LiDAR data; slope bands pending David's science approval; J-06 render not done | Gateway live link from Jesús; science approval of display bands from David; planner-integrated routes from Diego |
+| 2026-11-15 00:12 | `feat/ux` `2cd69c4`; `web/` (Perseverance landing-area demo on a 4 m display grid, real rover stops, raw images panel, site icons, README) | Jorge | Commits in the last 125 min: `2cd69c4`, `9d2a501`, `bea2dcd`, `5afd869`, `b47d451`, `65a184a`, `cee78fe`, `2198f26`, `f5bf918`, `8cd7cb2`, `144bcb1`, `464afa7`, `9ce00f9`; no uncommitted changes to tracked files. `npm test --prefix web`: 42 files passed, 252 tests passed, 1 skipped. `web/README.md` resynced (test counts, stale notes) | Demo routes, agents and observations are simulated; recorded package `recorded-recovery-001` is MOCK and not offered; live gateway, planner-integrated routes and a completed three-role mission not consumed; slope bands pending David's science approval; J-06 render not done | Gateway live link from Jesús; planner routes from Diego; science approval of display bands from David |
+| 2026-11-15 02:10 | `feat/ux` `6bc549b`; `web/` (expanded 8 m demo map, 226 Perseverance stops, Gale world with 166 Curiosity stops and world arrows, rover photo tour from the rover's real cameras, label decluttering, vehicle shadows, minimap trails), docs | Jorge | Commits since the previous row: `2cd69c4`..`6bc549b` (e.g. `c912c51` expanded map, `1cf0425` photo tour, `34d12ea` Gale world, `cbdfc1b` world arrows, `6bc549b` real camera fields of view); 38 commits ahead of main `7ad6050`. `npm test --prefix web`: 47 files passed, 281 tests passed, 1 skipped; `npm run build` passed; `check_repository.py` passed; `python -m pytest` not run (pytest not installed). `web/README.md` already matched the code; `data_sources.md`, `nasa_traceability.md` and Jorge's handoff resynced. Untracked `web/imageio_ffmpeg-0.8.1-py3-none-win_amd64.whl` still in the tree | Mission story, inter-stop routes and photo directions are simulated or approximate; Curiosity images matched by sol only; no PR yet for these commits; J-06 render not done; organizer endorsement evidence missing | Integration review from Jesús; planner routes from Diego; processed terrain package from Daniel |

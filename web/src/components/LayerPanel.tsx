@@ -2,15 +2,18 @@ import { ELEVATION_CSS_GRADIENT, LAYER_INFO, SIGMA_CSS_GRADIENT, SIGMA_SCALE_MAX
 import { ROUTE_STATUS_STYLE } from '../lib/format';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { Info } from './Info';
+import type { TerrainMeta } from '../types/icd';
+import { orbitalSlopeNote, terrainResolutionLabel } from '../lib/terrainPresentation';
 
 interface StripProps {
   layer: TerrainLayer;
   onLayer: (l: TerrainLayer) => void;
   evaluator: boolean;
+  terrainMeta: TerrainMeta;
 }
 
 /** Map layer switch with its colour scale. Always visible: the scale is part of the legend. */
-export function LayerStrip({ layer, onLayer, evaluator }: StripProps) {
+export function LayerStrip({ layer, onLayer, evaluator, terrainMeta }: StripProps) {
   const layers: TerrainLayer[] = evaluator ? ['prior', 'belief', 'slope', 'sigma', 'reference'] : ['prior', 'belief', 'slope', 'sigma'];
   const sigma = layer === 'sigma';
   const slope = layer === 'slope';
@@ -34,9 +37,10 @@ export function LayerStrip({ layer, onLayer, evaluator }: StripProps) {
       <div className="strip__scale">
         <div className="strip__bar" style={{ background: sigma ? SIGMA_CSS_GRADIENT : slope ? SLOPE_CSS_GRADIENT : ELEVATION_CSS_GRADIENT }} />
         <div className="strip__labels mono">
-          <span>{sigma ? '0 m · certain' : slope ? '0° · flat' : 'low'}</span>
-          <span>{sigma ? `≥ ${SIGMA_SCALE_MAX_M} m · uncertain` : slope ? `≥ ${SLOPE_SCALE_MAX_DEG}° · steep (CTX, 60 m window)` : 'high (relative height)'}</span>
+          <span>{sigma ? '0 m · lower σ' : slope ? '0° · flat' : 'low'}</span>
+          <span>{sigma ? `≥ ${SIGMA_SCALE_MAX_M} m · uncertain` : slope ? `≥ ${SLOPE_SCALE_MAX_DEG}° · steep (orbital estimate)` : 'high (relative height)'}</span>
         </div>
+        <p className="muted small">{slope ? orbitalSlopeNote(terrainMeta) : `${terrainResolutionLabel(terrainMeta)}. ${sigma ? 'Reported model uncertainty; not a physical safety guarantee.' : 'Visual smoothing adds no measured detail.'}`}</p>
       </div>
     </div>
   );

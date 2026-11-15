@@ -18,6 +18,35 @@ if TYPE_CHECKING:
     from mge_data.core import TerrainTile
 
 DEFAULT_OBSERVATION_SIGMA_M = 0.25
+NANOSECONDS_PER_SECOND = 1_000_000_000
+MAX_TIMESTAMP_SIM_NS = (2**31) * NANOSECONDS_PER_SECOND - 1
+
+
+def _observation_clock_ns(seconds: float, exact_ns: int | None, *, name: str) -> int:
+    """Keep a canonical ROS clock key alongside descriptive float seconds.
+
+    Wire callers supply sec*1e9+nanosec exactly. Legacy Python callers supplying
+    only seconds derive the nearest integer nanosecond of that float (ties to
+    even); they must supply the exact key when sub-float ordering matters.
+    No nanosecond ordering decision uses the descriptive seconds field.
+    """
+    if isinstance(seconds, bool) or not isfinite(seconds) or seconds < 0:
+        raise ValueError(f"{name} must be finite and nonnegative")
+    numerator, denominator = float(seconds).as_integer_ratio()
+    if exact_ns is None:
+        quotient, remainder = divmod(numerator * NANOSECONDS_PER_SECOND, denominator)
+        exact_ns = quotient + int(2*remainder > denominator
+                                  or (2*remainder == denominator and quotient % 2 == 1))
+    if type(exact_ns) is not int or not 0 <= exact_ns <= MAX_TIMESTAMP_SIM_NS:
+        raise ValueError(f"{name} nanoseconds must fit a nonnegative ROS int32-second stamp")
+    represented = (exact_ns // NANOSECONDS_PER_SECOND
+                   + (exact_ns % NANOSECONDS_PER_SECOND) / NANOSECONDS_PER_SECOND)
+    # Exact rational comparison preserves half-nanosecond ties. The equality
+    # branch permits a wire stamp's descriptive seconds to round at large epochs.
+    if (seconds != represented
+            and 2*abs(numerator*NANOSECONDS_PER_SECOND - exact_ns*denominator) > denominator):
+        raise ValueError(f"{name} seconds and nanoseconds disagree")
+    return exact_ns
 
 
 @dataclass(frozen=True)
@@ -34,6 +63,7 @@ class SimulatedObservation:
     sigmas_m: tuple[float, ...] | None = None
     obstacles: tuple[int, ...] | None = None
     source_kind: str = "SIMULATED"
+    timestamp_sim_ns: int | None = None
 
     def __post_init__(self) -> None:
         if not all((self.observation_id, self.agent_id, self.run_id)):
@@ -42,8 +72,8 @@ class SimulatedObservation:
             raise ValueError("only SIMULATED observations are supported in P0")
         if type(self.source_map_version) is not int or self.source_map_version < 0:
             raise ValueError("source_map_version must be a nonnegative integer")
-        if isinstance(self.timestamp_sim_s, bool) or not isfinite(self.timestamp_sim_s) or self.timestamp_sim_s < 0:
-            raise ValueError("timestamp_sim_s must be finite and nonnegative")
+        object.__setattr__(self, "timestamp_sim_ns", _observation_clock_ns(
+            self.timestamp_sim_s, self.timestamp_sim_ns, name="timestamp_sim_s"))
         if not self.cell_indices or len(self.cell_indices) != len(self.elevations_m):
             raise ValueError("each observed cell needs one elevation")
         if len(set(self.cell_indices)) != len(self.cell_indices):
@@ -84,6 +114,8 @@ class BeliefMap:
     obstacle_grid: np.ndarray
     frame_id: str = "map"
     applied_observations: tuple[str, ...] = field(default_factory=tuple)
+    last_observation_timestamp_sim_s: float = 0.0
+    last_observation_timestamp_sim_ns: int | None = None
 
     def __post_init__(self) -> None:
         if not self.run_id or not self.dataset_id or self.frame_id != "map":
@@ -92,6 +124,9 @@ class BeliefMap:
             raise ValueError("rows and cols must be positive integers")
         if type(self.map_version) is not int or self.map_version < 0:
             raise ValueError("map_version must be a nonnegative integer")
+        object.__setattr__(self, "last_observation_timestamp_sim_ns", _observation_clock_ns(
+            self.last_observation_timestamp_sim_s, self.last_observation_timestamp_sim_ns,
+            name="last observation timestamp"))
         if isinstance(self.resolution_m, bool) or not isfinite(self.resolution_m) or self.resolution_m <= 0:
             raise ValueError("resolution_m must be finite and positive")
         shape = (self.rows, self.cols)
@@ -187,13 +222,25 @@ class BeliefMap:
         *,
         max_slope_deg: float = 20.0,
         max_sigma_m: float = 1.0,
+        allow_estimated: bool = False,
     ) -> np.ndarray:
         """Compute OccupancyGrid (-1 unknown, 0 admissible, 100 forbidden).
 
-        NoData and unobserved cells remain -1 (unknown), never 0 (free).
+        By default unobserved cells remain unknown. An explicit experimental
+        policy may admit finite estimates without changing observed coverage or
+        sigma. Zero then means candidate-admissible, never verified or safe.
         """
+        if type(allow_estimated) is not bool:
+            raise ValueError("allow_estimated must be boolean")
+        if not isfinite(max_sigma_m) or max_sigma_m <= 0:
+            raise ValueError("max_sigma_m must be positive and finite")
+        if not isfinite(max_slope_deg) or not 0 <= max_slope_deg <= 90:
+            raise ValueError("max_slope_deg must be within [0, 90]")
         grid = np.full((self.rows, self.cols), -1, dtype=np.int8)
-        valid_and_observed = (~self.nodata_mask) & self.observed_mask & np.isfinite(self.belief) & (self.sigma <= max_sigma_m)
+        knowledge = np.ones_like(self.observed_mask) if allow_estimated else self.observed_mask
+        valid_and_observed = ((~self.nodata_mask) & knowledge & np.isfinite(self.belief)
+                              & np.isfinite(self.sigma) & (self.sigma >= 0)
+                              & (self.sigma <= max_sigma_m))
         if np.any(valid_and_observed):
             # Estimate conservative local slope magnitude from finite neighbors
             filled = np.where(np.isfinite(self.belief), self.belief, 0.0)
@@ -217,9 +264,12 @@ def fuse_observation(
 ) -> BeliefMap:
     """Apply a validated SIMULATED observation to the belief map.
 
-    - Rejects mismatched run_id, future source_map_version, out-of-bounds cell indices,
+    - Rejects mismatched run_id, noncurrent source_map_version, out-of-bounds cell indices,
       or attempts to turn source NoData cells into observed cells.
     - Deduplicates by observation_id: applying the same observation_id twice is a no-op.
+    - Requires a timestamp no earlier than the last accepted observation globally.
+      This conservative policy also rejects delayed disjoint footprints; reobserve
+      against the current map instead of retagging the old measurement.
     - Updates only the cells in observation.cell_indices and increments map_version by 1.
     """
     if not isinstance(belief, BeliefMap):
@@ -228,9 +278,6 @@ def fuse_observation(
         raise TypeError("observation must be a SimulatedObservation instance")
     if observation.run_id != belief.run_id:
         raise ValueError(f"observation run_id '{observation.run_id}' does not match belief run_id '{belief.run_id}'")
-    if observation.source_map_version > belief.map_version:
-        raise ValueError("observation source_map_version cannot exceed current belief map_version")
-
     total_cells = belief.rows * belief.cols
     for idx in observation.cell_indices:
         if idx < 0 or idx >= total_cells:
@@ -239,6 +286,12 @@ def fuse_observation(
     # Idempotency check (T-06): duplicate observation_id has no effect
     if observation.observation_id in belief.applied_observations:
         return belief
+    if observation.source_map_version > belief.map_version:
+        raise ValueError("observation source_map_version cannot exceed current belief map_version")
+    if observation.source_map_version != belief.map_version:
+        raise ValueError("observation source_map_version must match current belief map_version")
+    if observation.timestamp_sim_ns < belief.last_observation_timestamp_sim_ns:
+        raise ValueError("observation timestamp precedes the last applied observation")
 
     rows_idx = [idx // belief.cols for idx in observation.cell_indices]
     cols_idx = [idx % belief.cols for idx in observation.cell_indices]
@@ -261,14 +314,16 @@ def fuse_observation(
     obstacles = (
         observation.obstacles
         if observation.obstacles is not None
-        else tuple(0 for _ in observation.cell_indices)
+        else tuple(int(belief.obstacle_grid[r, c]) for r, c in zip(rows_idx, cols_idx))
     )
 
     for r, c, elev_m, obs_sigma_m, obs_code in zip(rows_idx, cols_idx, observation.elevations_m, sigmas, obstacles):
         new_belief[r, c] = np.float32(elev_m)
         new_sigma[r, c] = np.float32(obs_sigma_m)
         new_observed[r, c] = True
-        new_obstacles[r, c] = np.int8(obs_code)
+        # Missing/unknown obstacle evidence cannot clear a confirmed obstacle.
+        # An explicit current, nonolder FREE observation may supersede it.
+        new_obstacles[r, c] = np.int8(100 if obs_code == -1 and belief.obstacle_grid[r, c] == 100 else obs_code)
 
     for arr in (new_belief, new_sigma, new_observed, new_obstacles):
         arr.setflags(write=False)
@@ -290,6 +345,8 @@ def fuse_observation(
         obstacle_grid=new_obstacles,
         frame_id=belief.frame_id,
         applied_observations=(*belief.applied_observations, observation.observation_id),
+        last_observation_timestamp_sim_s=observation.timestamp_sim_s,
+        last_observation_timestamp_sim_ns=observation.timestamp_sim_ns,
     )
 
 

@@ -1,0 +1,1131 @@
+{
+  "recorded": {
+    "label": "REPLAY · MOCK",
+    "url": "http://127.0.0.1:40041/?run=recorded-recovery-001",
+    "off_the_record_context": true,
+    "cookies_before": 0,
+    "cookies_after": 0,
+    "request_count": 62,
+    "off_origin_requests": [],
+    "websocket_or_eventsource": [],
+    "non_ok_same_origin": [],
+    "failed_requests": [],
+    "page_exceptions": [],
+    "console_errors": [],
+    "requests": [
+      "200 GET /?run=recorded-recovery-001",
+      "200 GET /assets/index-CH0chMQm.js",
+      "200 GET /assets/index-CqE-wolL.css",
+      "200 GET /assets/models/rover.glb",
+      "200 GET /assets/models/drone.glb",
+      "200 GET /assets/models/base.glb",
+      "200 GET /assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "200 GET /assets/barlow-condensed-latin-400-normal-Dc2u_eUW.woff2",
+      "200 GET /replay/recorded-recovery-001/manifest.json",
+      "200 GET /favicon.ico",
+      "200 GET blob:/1468cd3f-1d8b-49cb-bd7d-6a1ea7ecaaf0",
+      "200 GET blob:/1bce5ffe-4a13-401d-b5a3-270032700789",
+      "200 GET blob:/fbacce0d-62a1-4ed7-8015-48d134378d73",
+      "200 GET blob:/ab14af7d-84c4-4c91-bd84-f6b84b8cd143",
+      "200 GET blob:/b0065994-a75f-4d7b-8dbe-9c05dc77bb46",
+      "200 GET blob:/f0e5ba68-e32b-4d3e-be3c-a76957fc585f",
+      "200 GET blob:/27b43da5-472c-4f49-a574-58328959812d",
+      "200 GET blob:/a23b7ed7-825d-49aa-8810-1a6e9b38b271",
+      "200 GET blob:/a7d445fb-464f-412b-9eaf-0bb77555d8ad",
+      "200 GET /replay/recorded-recovery-001/timeline.jsonl",
+      "200 GET blob:/f2141902-2f48-441c-9cde-af46ad63101e",
+      "200 GET blob:/3200774a-9bea-46e4-a369-af5a83ad08d5",
+      "200 GET blob:/a72934a1-8217-4e8a-a3d4-e9ae48342c18",
+      "200 GET blob:/5ef9b6fc-2634-42d6-bd6b-1a1c7d75c41a",
+      "200 GET blob:/8b3fddef-d6eb-4ddd-a4a9-69708811ae04",
+      "200 GET blob:/bed68ceb-ba30-4b3a-8587-7628d1dc4d3e",
+      "200 GET blob:/87d8d5fc-ba91-4b8b-9d24-8a6d63a014f6",
+      "200 GET blob:/86351c35-65bf-4fa2-8959-3df8b0e8faf6",
+      "200 GET blob:/fa741e0b-9d40-418d-9e73-ae2c23d45960",
+      "200 GET blob:/44d9b3b0-d135-46d4-a9a0-743df122bd4e",
+      "200 GET blob:/0ae0a218-11a0-425f-8156-974ade455fe4",
+      "200 GET blob:/30823545-c136-46dd-bfe6-f394a77f78c1",
+      "200 GET blob:/d55a4c08-dd8c-4b19-bae1-66796cea6ee5",
+      "200 GET blob:/08ad61cc-f867-42df-87bf-257b9e8f55df",
+      "200 GET blob:/c77bf34e-921b-4586-8a57-4c2649848600",
+      "200 GET blob:/7c928522-2a32-4e09-9fac-c6188bf05a70",
+      "200 GET blob:/6fd59669-0126-4cd8-bcaf-6f552f3e4d35",
+      "200 GET blob:/8ecedc8f-1ae8-4f28-ae33-3a3041f61636",
+      "200 GET blob:/722f1e8c-57bb-49b5-9420-051060a18ab2",
+      "200 GET blob:/aafc8421-0d60-4491-9cae-457328f3ed6b",
+      "200 GET blob:/b9fa720f-5912-4b91-9637-055669991681",
+      "200 GET blob:/d071af81-94a0-40cf-bca4-f134f5ea5d29",
+      "200 GET blob:/8b879b1d-167b-4f04-b0bb-0592446362ee",
+      "200 GET /replay/recorded-recovery-001/public_rasters.json",
+      "200 GET /replay/recorded-recovery-001/snapshot.json",
+      "200 GET /assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2",
+      "200 GET /assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2",
+      "200 GET /assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2",
+      "200 GET /assets/portraits/human_1.webp",
+      "200 GET /assets/sky/bright_stars.json",
+      "200 GET /assets/rajdhani-latin-600-normal-CXCVEoA9.woff2",
+      "200 GET /assets/models/astronaut.glb",
+      "200 GET blob:/4161db88-55f5-4ef6-81dc-d81549849a76",
+      "200 GET blob:/d515792f-931f-46c3-9b67-6067ad909b65",
+      "200 GET blob:/15b69ea3-504f-4a7e-bde0-96fd2a2895d4",
+      "200 GET blob:/fd0b8c09-898e-41d5-be8b-d20a60582f84",
+      "200 GET blob:/bf89535d-0b5a-443a-81ab-45a6b0d7f505",
+      "200 GET blob:/c19d560c-0dae-402f-bc13-ea305967a536",
+      "200 GET blob:/f76dd1e9-5595-4af2-8a5d-163c83beced7",
+      "200 GET blob:/a7b1e1ba-bcd6-44f0-bd70-73fe52852af9",
+      "200 GET blob:/9be0e16a-efc2-4722-9e8e-f0697af542bf",
+      "200 GET blob:/aa016ca9-b37c-4c59-9e59-068aac90416d"
+    ],
+    "events_tab_opened": "Mission replay",
+    "storage_at_open": {
+      "local": 0,
+      "session": 0,
+      "cookie": ""
+    },
+    "webgl_renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "disclaimer": "Recorded replay with MOCK providers; agent execution or mission authority may be simulated. Not a validated live mission. Terrain: recorded public rasters (mge-public-rasters-1.0.0). Clock: wall clock (no simulator).",
+    "about": "REPLAY with recorded or simulated producers as declared by each package. The viewer never plans routes or creates observations. Not a live mission; not certified for real operations. Recorded replay with MOCK providers; agent execution or mission authority may be simulated. Not a validated live mission. Terrain: recorded public rasters (mge-public-rasters-1.0.0). Clock: wall clock (no simulator). Dataset jezero_mvp: 128 × 128 m. Grid 4 m · source 20 m native. Datum: MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion. No matched geologic layer is loaded for this run. No matched surrounding terrain is loaded. No environmental layer is loaded.",
+    "title": "Mars Gods Eye — Mission Viewer",
+    "storage_keys_after": [],
+    "phases": [
+      {
+        "checkpoint": "planning",
+        "t_s": 3.139,
+        "slider_value": "3.13900101184845",
+        "matches_package": true,
+        "differences": [],
+        "viewer": {
+          "mission": {
+            "state": "PLANNING",
+            "reason_code": "",
+            "map_version": 1,
+            "primary_agent_id": "human_1",
+            "active_task": "primary (primary, no state)"
+          },
+          "active_route": null,
+          "invalidated_routes": [],
+          "agents": [
+            {
+              "id": "drone_1",
+              "kind": "DRONE",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -10,
+                "y": -14,
+                "z": 0
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 100,
+              "oxygen_l": null,
+              "time_s": 600
+            },
+            {
+              "id": "human_1",
+              "kind": "HUMAN",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -14,
+                "y": -14,
+                "z": -2571.2
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 1000,
+              "oxygen_l": 1000,
+              "time_s": 14400
+            },
+            {
+              "id": "rover_1",
+              "kind": "ROVER",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -14,
+                "y": -10,
+                "z": -2571.33
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 2000,
+              "oxygen_l": null,
+              "time_s": 14400
+            }
+          ],
+          "recent_events": [
+            {
+              "t_s": 1.2,
+              "type": "GOAL_ACCEPTED",
+              "agent_id": "human_1",
+              "detail": "Goal accepted, planning."
+            },
+            {
+              "t_s": 1.2,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state IDLE -> PLANNING."
+            }
+          ],
+          "time": {
+            "sim_s": 3.1,
+            "duration_s": 116.89257955551147,
+            "playing": false,
+            "speed": 1
+          }
+        },
+        "latest_event_detail_visible": true,
+        "text_has": {
+          "replay_label": true,
+          "offline": true,
+          "live_claim": false
+        },
+        "screenshot": null
+      },
+      {
+        "checkpoint": "first-route",
+        "t_s": 6.25,
+        "slider_value": "6.25020492076874",
+        "matches_package": true,
+        "differences": [],
+        "viewer": {
+          "mission": {
+            "state": "READY",
+            "reason_code": "",
+            "map_version": 1,
+            "primary_agent_id": "human_1",
+            "active_task": "primary (primary, no state)"
+          },
+          "active_route": {
+            "id": "route-16d41790d0df8f9f6426fa20",
+            "agent_id": "human_1",
+            "status": "FEASIBLE",
+            "mode": "FAST",
+            "map_version_used": 1,
+            "waypoints": 8,
+            "travel_time_s": 91.14605712890625,
+            "energy_est_wh": 16.684886932373047,
+            "oxygen_est_l": 0.9114605784416199
+          },
+          "invalidated_routes": [],
+          "agents": [
+            {
+              "id": "drone_1",
+              "kind": "DRONE",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -10,
+                "y": -14,
+                "z": 0
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 100,
+              "oxygen_l": null,
+              "time_s": 600
+            },
+            {
+              "id": "human_1",
+              "kind": "HUMAN",
+              "mode": "MOVING",
+              "position_enu_m": {
+                "x": -13.29,
+                "y": -13.29,
+                "z": -2571.23
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 999.8536376953125,
+              "oxygen_l": 999.9920043945312,
+              "time_s": 14399.2001953125
+            },
+            {
+              "id": "rover_1",
+              "kind": "ROVER",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -14,
+                "y": -10,
+                "z": -2571.33
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 2000,
+              "oxygen_l": null,
+              "time_s": 14400
+            }
+          ],
+          "recent_events": [
+            {
+              "t_s": 1.2,
+              "type": "GOAL_ACCEPTED",
+              "agent_id": "human_1",
+              "detail": "Goal accepted, planning."
+            },
+            {
+              "t_s": 1.2,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state IDLE -> PLANNING."
+            },
+            {
+              "t_s": 5.1,
+              "type": "ROUTE_PUBLISHED",
+              "agent_id": "human_1",
+              "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety."
+            },
+            {
+              "t_s": 5.1,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state PLANNING -> READY."
+            }
+          ],
+          "time": {
+            "sim_s": 6.3,
+            "duration_s": 116.89257955551147,
+            "playing": false,
+            "speed": 1
+          }
+        },
+        "latest_event_detail_visible": true,
+        "text_has": {
+          "replay_label": true,
+          "offline": true,
+          "live_claim": false
+        },
+        "screenshot": null
+      },
+      {
+        "checkpoint": "invalidated-replanning",
+        "t_s": 7.484,
+        "slider_value": "7.4844810962677",
+        "matches_package": true,
+        "differences": [],
+        "viewer": {
+          "mission": {
+            "state": "REPLAN",
+            "reason_code": "MAP_UPDATED",
+            "map_version": 2,
+            "primary_agent_id": "human_1",
+            "active_task": "primary (primary, no state)"
+          },
+          "active_route": null,
+          "invalidated_routes": [
+            "route-16d41790d0df8f9f6426fa20"
+          ],
+          "agents": [
+            {
+              "id": "drone_1",
+              "kind": "DRONE",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -10,
+                "y": -14,
+                "z": 0
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 100,
+              "oxygen_l": null,
+              "time_s": 600
+            },
+            {
+              "id": "human_1",
+              "kind": "HUMAN",
+              "mode": "MOVING",
+              "position_enu_m": {
+                "x": -12.53,
+                "y": -12.53,
+                "z": -2571.26
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 999.5606689453125,
+              "oxygen_l": 999.9760131835938,
+              "time_s": 14397.6005859375
+            },
+            {
+              "id": "rover_1",
+              "kind": "ROVER",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -14,
+                "y": -10,
+                "z": -2571.33
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 2000,
+              "oxygen_l": null,
+              "time_s": 14400
+            }
+          ],
+          "recent_events": [
+            {
+              "t_s": 1.2,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state IDLE -> PLANNING."
+            },
+            {
+              "t_s": 5.1,
+              "type": "ROUTE_PUBLISHED",
+              "agent_id": "human_1",
+              "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety."
+            },
+            {
+              "t_s": 5.1,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state PLANNING -> READY."
+            },
+            {
+              "t_s": 7.4,
+              "type": "MAP_UPDATED",
+              "agent_id": "",
+              "detail": "Map updated to version 2."
+            },
+            {
+              "t_s": 7.4,
+              "type": "ROUTE_INVALIDATED",
+              "agent_id": "",
+              "detail": "Route was computed on an older map version."
+            },
+            {
+              "t_s": 7.4,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state READY -> REPLAN."
+            }
+          ],
+          "time": {
+            "sim_s": 7.5,
+            "duration_s": 116.89257955551147,
+            "playing": false,
+            "speed": 1
+          }
+        },
+        "latest_event_detail_visible": true,
+        "text_has": {
+          "replay_label": true,
+          "offline": true,
+          "live_claim": false
+        },
+        "screenshot": null
+      },
+      {
+        "checkpoint": "replacement-route",
+        "t_s": 27.521,
+        "slider_value": "27.5208969116211",
+        "matches_package": true,
+        "differences": [],
+        "viewer": {
+          "mission": {
+            "state": "READY",
+            "reason_code": "",
+            "map_version": 2,
+            "primary_agent_id": "human_1",
+            "active_task": "primary (primary, no state)"
+          },
+          "active_route": {
+            "id": "route-57c75744bdf778e27cc1fa94",
+            "agent_id": "human_1",
+            "status": "FEASIBLE",
+            "mode": "FAST",
+            "map_version_used": 2,
+            "waypoints": 12,
+            "travel_time_s": 109.21807861328125,
+            "energy_est_wh": 19.95041847229004,
+            "oxygen_est_l": 1.092180848121643
+          },
+          "invalidated_routes": [
+            "route-16d41790d0df8f9f6426fa20"
+          ],
+          "agents": [
+            {
+              "id": "drone_1",
+              "kind": "DRONE",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -10,
+                "y": -14,
+                "z": 0
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 100,
+              "oxygen_l": null,
+              "time_s": 600
+            },
+            {
+              "id": "human_1",
+              "kind": "HUMAN",
+              "mode": "MOVING",
+              "position_enu_m": {
+                "x": -10,
+                "y": -0.35,
+                "z": -2571.71
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 996.0352172851562,
+              "oxygen_l": 999.7830200195312,
+              "time_s": 14378.2998046875
+            },
+            {
+              "id": "rover_1",
+              "kind": "ROVER",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -14,
+                "y": -10,
+                "z": -2571.33
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 2000,
+              "oxygen_l": null,
+              "time_s": 14400
+            }
+          ],
+          "recent_events": [
+            {
+              "t_s": 5.1,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state PLANNING -> READY."
+            },
+            {
+              "t_s": 7.4,
+              "type": "MAP_UPDATED",
+              "agent_id": "",
+              "detail": "Map updated to version 2."
+            },
+            {
+              "t_s": 7.4,
+              "type": "ROUTE_INVALIDATED",
+              "agent_id": "",
+              "detail": "Route was computed on an older map version."
+            },
+            {
+              "t_s": 7.4,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state READY -> REPLAN."
+            },
+            {
+              "t_s": 7.5,
+              "type": "ROUTE_PUBLISHED",
+              "agent_id": "human_1",
+              "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety."
+            },
+            {
+              "t_s": 7.5,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state REPLAN -> READY."
+            }
+          ],
+          "time": {
+            "sim_s": 27.5,
+            "duration_s": 116.89257955551147,
+            "playing": false,
+            "speed": 1
+          }
+        },
+        "latest_event_detail_visible": true,
+        "text_has": {
+          "replay_label": true,
+          "offline": true,
+          "live_claim": false
+        },
+        "screenshot": null
+      },
+      {
+        "checkpoint": "final",
+        "t_s": 116.893,
+        "slider_value": "116.892579555511",
+        "matches_package": true,
+        "differences": [],
+        "viewer": {
+          "mission": {
+            "state": "READY",
+            "reason_code": "",
+            "map_version": 2,
+            "primary_agent_id": "human_1",
+            "active_task": "primary (primary, no state)"
+          },
+          "active_route": {
+            "id": "route-57c75744bdf778e27cc1fa94",
+            "agent_id": "human_1",
+            "status": "FEASIBLE",
+            "mode": "FAST",
+            "map_version_used": 2,
+            "waypoints": 12,
+            "travel_time_s": 109.21807861328125,
+            "energy_est_wh": 19.95041847229004,
+            "oxygen_est_l": 1.092180848121643
+          },
+          "invalidated_routes": [
+            "route-16d41790d0df8f9f6426fa20"
+          ],
+          "agents": [
+            {
+              "id": "drone_1",
+              "kind": "DRONE",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -10,
+                "y": -14,
+                "z": 0
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 100,
+              "oxygen_l": null,
+              "time_s": 600
+            },
+            {
+              "id": "human_1",
+              "kind": "HUMAN",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -14,
+                "y": -14,
+                "z": -2571.2
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 979.6102905273438,
+              "oxygen_l": 998.8838500976562,
+              "time_s": 14288.3818359375
+            },
+            {
+              "id": "rover_1",
+              "kind": "ROVER",
+              "mode": "IDLE",
+              "position_enu_m": {
+                "x": -14,
+                "y": -10,
+                "z": -2571.33
+              },
+              "heading_deg_from_north": 90,
+              "energy_wh": 2000,
+              "oxygen_l": null,
+              "time_s": 14400
+            }
+          ],
+          "recent_events": [
+            {
+              "t_s": 5.1,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state PLANNING -> READY."
+            },
+            {
+              "t_s": 7.4,
+              "type": "MAP_UPDATED",
+              "agent_id": "",
+              "detail": "Map updated to version 2."
+            },
+            {
+              "t_s": 7.4,
+              "type": "ROUTE_INVALIDATED",
+              "agent_id": "",
+              "detail": "Route was computed on an older map version."
+            },
+            {
+              "t_s": 7.4,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state READY -> REPLAN."
+            },
+            {
+              "t_s": 7.5,
+              "type": "ROUTE_PUBLISHED",
+              "agent_id": "human_1",
+              "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety."
+            },
+            {
+              "t_s": 7.5,
+              "type": "MISSION_STATE_CHANGED",
+              "agent_id": "",
+              "detail": "Mission state REPLAN -> READY."
+            }
+          ],
+          "time": {
+            "sim_s": 116.9,
+            "duration_s": 116.89257955551147,
+            "playing": false,
+            "speed": 1
+          }
+        },
+        "latest_event_detail_visible": true,
+        "text_has": {
+          "replay_label": true,
+          "offline": true,
+          "live_claim": false
+        },
+        "screenshot": null
+      }
+    ]
+  },
+  "default_entry": {
+    "label": "REPLAY · SIMULATION",
+    "url": "http://127.0.0.1:40041/?nointro=1",
+    "off_the_record_context": true,
+    "cookies_before": 0,
+    "cookies_after": 0,
+    "request_count": 55,
+    "off_origin_requests": [],
+    "websocket_or_eventsource": [],
+    "non_ok_same_origin": [],
+    "failed_requests": [],
+    "page_exceptions": [],
+    "console_errors": [],
+    "requests": [
+      "200 GET /?nointro=1",
+      "200 GET /assets/index-CH0chMQm.js",
+      "200 GET /assets/index-CqE-wolL.css",
+      "200 GET /assets/models/rover.glb",
+      "200 GET /assets/models/drone.glb",
+      "200 GET /assets/models/base.glb",
+      "200 GET /assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "200 GET /assets/barlow-condensed-latin-400-normal-Dc2u_eUW.woff2",
+      "200 GET /replay/demo/manifest.json",
+      "200 GET /favicon.ico",
+      "200 GET blob:/3a440ec5-b860-4716-b97b-04240ca2284b",
+      "200 GET blob:/0647e37b-a04f-4c64-89bf-d0731dbf830a",
+      "200 GET blob:/b67282af-360d-4033-b640-98d5cb8a7a6e",
+      "200 GET blob:/a12a07f0-3a2d-4c0b-b33a-ea90baf40efd",
+      "200 GET blob:/b5c7a7aa-06f1-4b54-96fd-24d4094cc7d6",
+      "200 GET blob:/8d319a86-acac-49f8-8968-38d00b22db64",
+      "200 GET blob:/ca1286e2-902a-4752-acc0-e8cd59f2303f",
+      "200 GET blob:/435054a9-6314-47e3-919b-f66d1f251b11",
+      "200 GET blob:/a24b90b6-6dcf-4cdc-a036-922905bb6c50",
+      "200 GET /replay/demo/rasters.json",
+      "200 GET /replay/demo/timeline.json",
+      "200 GET /replay/demo/routes.json",
+      "200 GET blob:/ea344988-959f-44f9-a624-b9495cf6ca18",
+      "200 GET blob:/bcc5bb35-6914-451d-8c89-91c893f4fa40",
+      "200 GET blob:/cf2dbe87-cbaf-47cd-9674-745cc3ef4702",
+      "200 GET blob:/86517dd8-f8b7-4a9a-afca-15fbd9692bc0",
+      "200 GET blob:/343dd5f7-c401-438a-a441-e8fb34d7f4ab",
+      "200 GET blob:/ba42525b-d829-4b4f-888a-ce8fcec25402",
+      "200 GET blob:/ea540ba1-483c-4ccd-8945-b7fb3a7bf8c3",
+      "200 GET blob:/e6230a9a-e72b-43bd-9068-05973e8d4101",
+      "200 GET blob:/9c436253-9df1-4927-816e-52b492938490",
+      "200 GET blob:/2d984027-d546-4d79-89f8-ad6dd566af31",
+      "200 GET blob:/61021466-850b-4b12-a896-56318d9e76f6",
+      "200 GET blob:/f9df0112-c2f9-4f16-a1c7-61515325af3e",
+      "200 GET blob:/90e5ec19-cc6d-4757-8636-359053c07ca9",
+      "200 GET blob:/89562303-c092-479a-839c-43e82574c802",
+      "200 GET blob:/93975fca-19c0-4323-a2e9-29af5a1cd4d3",
+      "200 GET blob:/b6d9a515-fb25-42f9-b81a-a607d7129f4d",
+      "200 GET blob:/a45a8226-37ab-4db9-9feb-89e0e16077c1",
+      "200 GET blob:/694d5067-eabe-4721-afb7-a9ccfe332faf",
+      "200 GET blob:/0fa24490-ebca-4d26-91c5-0262039f7a3e",
+      "200 GET blob:/2da2a462-9e46-4f73-9983-56b1c3fa53a6",
+      "200 GET blob:/b97f5c11-45a3-4da6-bd88-0b9063f4606a",
+      "200 GET blob:/48f3dad6-3ab8-44ed-a386-9feca6e95c72",
+      "200 GET blob:/c0ea0807-a175-439a-a257-e44bfc16fa1a",
+      "200 GET /replay/demo/geology.json",
+      "200 GET /replay/demo/atmosphere.json",
+      "200 GET /replay/demo/context.json",
+      "200 GET /assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2",
+      "200 GET /assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2",
+      "200 GET /assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2",
+      "200 GET /assets/portraits/human_1.webp",
+      "200 GET /assets/sky/bright_stars.json",
+      "200 GET /replay/demo/ctx_ortho.png",
+      "200 GET /assets/models/astronaut.glb"
+    ],
+    "disclaimer": "Terrain: NASA/USGS CTX DTM crop (real, provisional). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
+    "title": "Mars Gods Eye — Mission Viewer",
+    "run_id": "demo-sim-002",
+    "text_has": {
+      "replay_label": true,
+      "offline": true,
+      "live_claim": false
+    },
+    "plays": {
+      "from_s": 6,
+      "to_s": 32,
+      "playing": true,
+      "waited_ms": 2814
+    },
+    "screenshot": null
+  },
+  "evaluator_probe": {
+    "label": "evaluator-probe",
+    "url": "http://127.0.0.1:40041/?run=recorded-recovery-001&evaluator=1",
+    "off_the_record_context": true,
+    "cookies_before": 0,
+    "cookies_after": 0,
+    "request_count": 51,
+    "off_origin_requests": [],
+    "websocket_or_eventsource": [],
+    "non_ok_same_origin": [
+      {
+        "url": "http://127.0.0.1:40041/evaluator/it-execution/reference.json",
+        "method": "GET",
+        "type": "Fetch",
+        "status": 404
+      }
+    ],
+    "failed_requests": [],
+    "page_exceptions": [],
+    "console_errors": [],
+    "requests": [
+      "200 GET /?run=recorded-recovery-001&evaluator=1",
+      "200 GET /assets/index-CH0chMQm.js",
+      "200 GET /assets/index-CqE-wolL.css",
+      "200 GET /assets/models/rover.glb",
+      "200 GET /assets/models/drone.glb",
+      "200 GET /assets/models/base.glb",
+      "200 GET /assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "200 GET /assets/barlow-condensed-latin-400-normal-Dc2u_eUW.woff2",
+      "200 GET /replay/recorded-recovery-001/manifest.json",
+      "200 GET /favicon.ico",
+      "200 GET blob:/014ccdab-a7db-422f-a5ff-52795b7b20ca",
+      "200 GET blob:/223cfbe6-5746-4794-be28-ed96b89d8441",
+      "200 GET blob:/ab485a54-ddf5-4d19-bab5-f188c6548211",
+      "200 GET blob:/5d0ad9ca-f4e2-4f2c-bcd7-5629d25dc5e4",
+      "200 GET blob:/e21dd9fb-9c44-4bd0-80ba-8baa5f57cc2d",
+      "200 GET blob:/64740859-bd94-4d28-8c39-b1b1caaa5d9f",
+      "200 GET blob:/bc74fa47-2b33-451e-9362-554a9e52a9ff",
+      "200 GET blob:/be07c9ef-4722-4758-a709-6c6f695073d3",
+      "200 GET blob:/0e1361e8-7360-4f60-8dbc-e612a899e8cc",
+      "200 GET /replay/recorded-recovery-001/timeline.jsonl",
+      "200 GET blob:/7e72d2a6-9118-4708-afdb-20bb3082bf38",
+      "200 GET blob:/117ebe89-110c-4221-ad9f-5a7bcabd56ee",
+      "200 GET blob:/9804c3df-791b-40bc-95d2-6b459b91cedd",
+      "200 GET blob:/1ff259fb-548e-4042-aa47-5162eae97dc1",
+      "200 GET blob:/cbff5cf1-45f5-4b16-a7c0-cc0e865659f2",
+      "200 GET blob:/6e14fda6-a1d3-4619-87b5-807a919aaaae",
+      "200 GET blob:/b9edd126-5e88-43e2-8e30-351e7b4e6087",
+      "200 GET blob:/20b6f383-2afc-4e3c-b8c7-0b905ad3cb50",
+      "200 GET blob:/83426ab1-3bb7-4385-9db2-98d59a572521",
+      "200 GET blob:/488672e2-f554-4e3a-8058-3068740adb5d",
+      "200 GET blob:/8d6884bc-0a16-4dab-bb4e-869c9645f507",
+      "200 GET blob:/c45c856a-347e-4dc4-a331-a569550e58c6",
+      "200 GET blob:/960d0271-47e5-4e5d-bac4-f99767fc62e4",
+      "200 GET blob:/d65dd362-daf6-49fd-85c3-c65abd87eedc",
+      "200 GET blob:/24dddb23-e581-469c-a866-1d2cd313bf94",
+      "200 GET blob:/0b67c052-f534-4a0d-860d-891e3b279267",
+      "200 GET blob:/5e79f0eb-8843-4493-8661-1d3e7477523d",
+      "200 GET blob:/52f8f554-a7ba-4aa7-905e-20c7c79bc309",
+      "200 GET blob:/288dda39-2a88-4884-90c2-be84ccc5d3c2",
+      "200 GET blob:/b7c6a462-b622-40b6-a8c5-e4428b4e53b3",
+      "200 GET blob:/00fb8b9a-2b90-4dc6-9491-d9dcf7a22789",
+      "200 GET blob:/a0f29f70-c9d2-46f1-87d5-ecde0ca54de5",
+      "200 GET blob:/fdbf06b8-b793-4f9b-8e3d-35416cd72826",
+      "200 GET /replay/recorded-recovery-001/public_rasters.json",
+      "200 GET /replay/recorded-recovery-001/snapshot.json",
+      "404 GET /evaluator/it-execution/reference.json",
+      "200 GET /assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2",
+      "200 GET /assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2",
+      "200 GET /assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2",
+      "200 GET /assets/portraits/human_1.webp",
+      "200 GET /assets/sky/bright_stars.json"
+    ],
+    "reference_layer_offered": false
+  },
+  "static_server_log": [
+    {
+      "method": "GET",
+      "url": "/?run=recorded-recovery-001",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/index-CH0chMQm.js",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/index-CqE-wolL.css",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/rover.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/drone.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/base.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/barlow-condensed-latin-400-normal-Dc2u_eUW.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/recorded-recovery-001/manifest.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/favicon.ico",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/recorded-recovery-001/timeline.jsonl",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/recorded-recovery-001/public_rasters.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/recorded-recovery-001/snapshot.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/portraits/human_1.webp",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/sky/bright_stars.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/rajdhani-latin-600-normal-CXCVEoA9.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/astronaut.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/?nointro=1",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/index-CH0chMQm.js",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/index-CqE-wolL.css",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/rover.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/drone.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/base.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/barlow-condensed-latin-400-normal-Dc2u_eUW.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/demo/manifest.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/favicon.ico",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/demo/rasters.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/demo/timeline.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/demo/routes.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/demo/geology.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/demo/atmosphere.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/demo/context.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/portraits/human_1.webp",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/sky/bright_stars.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/demo/ctx_ortho.png",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/astronaut.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/?run=recorded-recovery-001&evaluator=1",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/index-CH0chMQm.js",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/index-CqE-wolL.css",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/rover.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/drone.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/models/base.glb",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/barlow-condensed-latin-400-normal-Dc2u_eUW.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/recorded-recovery-001/manifest.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/favicon.ico",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/recorded-recovery-001/timeline.jsonl",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/recorded-recovery-001/public_rasters.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/replay/recorded-recovery-001/snapshot.json",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/evaluator/it-execution/reference.json",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "url": "/assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/portraits/human_1.webp",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "url": "/assets/sky/bright_stars.json",
+      "status": 200
+    }
+  ]
+}

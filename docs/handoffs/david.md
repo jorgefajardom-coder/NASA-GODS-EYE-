@@ -1,5 +1,37 @@
 # David - retain scientific mission authority and approve the model
 
+Future guide: [science extension tree](../science_extension_tree.md). David leads
+scope/science review and the A2/A3, C1 and D1-D3 hypotheses; these are proposed
+contracts, not activated tasks. New unlisted ideas may be assessed in an isolated
+local branch for discussion on 15-Nov-2026 (Bogota), without integration or a
+scope/approval change. Preserve D-DEL-03 and current delivery responsibilities.
+
+## Delivery priority after PR28 — owner-confirmed 14 November 2026
+
+Read [current conclusions and PDF tasks DV-1..4](../delivery_closure_plan.md)
+and [D-DEL-03](../decisions/2026-11-14-delivery-freeze.md) before older cuts.
+Review existing-crop science purpose, honest resource/context labels and final
+media claims; accept only the exact evidenced run scope. D-COST-02 selects the
+shared API, but its later local backend, campaign allocations and scientific
+target/coordinate drafts are not approved or imported here. Preserve the 20 min
+control while reviewing future rover/EVA/sortie horizons separately. Extensions
+are paused; submit target 15 Nov 20:00 Bogota, with organizer endorsement and
+David as contact backup. No new budget or model flag is authorized by this plan.
+
+## Audit reconciliation rc.2 — current candidate over main6bcf208
+
+Read the [current gap/evidence matrix](../audit_reconciliation.md) and
+[cost/context/interval proposal](../audit_cost_execution_gaps.md). PR25's cost,
+duration and success packet is already integrated; do not duplicate it. New
+main6bcf208 comparison again gives 1 agreement / 6 disagreements and BLOCKED
+authorization. Next deliverable with Diego/Jesus: select the cost backend and
+immutable request context, then bind evidence-backed service progress and the
+existing scientific recorder. Review experimental exploration limits separately
+from model/profile approval. Actual accepted/rejected optional work and three
+executed roles remain pending; the featured READY/MOCK replay does not close them.
+Scientific target/purpose work is excluded from this reconciliation and remains
+in the owner's other chat. Historical inventories below retain their dated scope.
+
 ## Current continuation — 14 November 2026, main 5ab1387
 
 Follow [CONT-DAV-01..04](../team_continuation_plan.md#david--mission-authority-and-scientific-acceptance):
@@ -163,3 +195,76 @@ preserves approved experimental values, zero findings and six pending inputs.
 This Git merge does not close scientific or execution gates. Fresh combined
 checks and exact tested source hashes are retained with the
 [reconciliation evidence](../../evidence/mission-reconciliation-20261114/README.md).
+
+## Local science-patch research during the reconciliation audit
+
+At the owner's request, the [17-sector survey](../science_patch_survey.md),
+[prioritized map requests](../science_patch_map_requests.md) and
+[local source/scale records](../../evidence/science-patch-survey-20261114/)
+propose Bright Angel/Neretva, Hawksbill/Hogwallow and Bunsen Peak first, with
+Mawrth as the first alternative outside Jezero. The 128 m control is retained;
+512/1,024 m context and nested 128/256 m windows are proposals, not new missions.
+NASA historical positions provide query anchors with explicit association/CRS
+limitations; they are not current A/B poses or verified crop boundaries.
+
+The owner confirms Daniel can generate crops but has not delivered these new
+packages. Ask him to prepare the specified data, report coverage/registration
+and preserve public/evaluator roles. No silent coordinate adjustment or invented
+observations. Diego/Jesus/Jorge own subsequent performance, capture and display
+checks; this research changes none of their implementations. CONT-DAV-03 stays
+prepared for review, not completed acceptance. See proposed PATCH-P01..05 in
+the scientific register. All new work stays local with no commits, push or merge
+until the owner changes that instruction; model/cost/execution gates remain open.
+
+## Local rover-campaign / human-EVA resource proposal
+
+Source `c3ec4c1f1515dbc981ba82eed2ab1f54e9586264`, ICD candidate
+`1.0.0-rc.1`, science model `mge-science-1.0.0`; no fetch or publication during
+the owner's parallel audit. The [proposal](../agent_campaign_proposal.md) and
+[source/analysis/validation packet](../../evidence/agent-campaign-proposal-20261114/README.md)
+separate Bunsen/Bright Angel/Hawksbill rover episodes, human EVA and drone
+sorties. Source/input/config hashes and analytical run identity are retained.
+
+The proposed nominal allocations are EVA 35/60/85 min, 225/400/550 metabolic Wh
+and 45/80/115 dry O2 L; rover 6.5/10/14.5 h and 800/1,200/1,800 gross electrical
+Wh. They include separate 20% reserves and costed directed return. Workloads
+are analytical design assumptions, not trajectories from unavailable crops.
+All nine nominal envelopes fit by construction; all nine joint adverse cases
+fail. Full drone-campaign energy remains NOT_ESTIMATED; sortie counters never
+reset accumulated use. No physical energy availability or new operational
+authorization is asserted. CAM-P01..07 await David's review.
+
+Next: Daniel supplies registered public crops/uncertainty for real itineraries;
+Diego reconciles exact scientific movement/activity/return costs without changing
+tolerances; Jesús reviews agent release/progress/wait/thermal/SOC/evidence
+bindings against main before any schedule integration. This packet changes
+none of their implementations or contracts and creates no new MOCK. Strict
+success criteria and the original scenario/profile/approval records remain
+unchanged. Software checks and analytical reproduction are not LIVE evidence.
+
+Local organizer notification/explicit endorsement remains a delivery gate:
+remind Jesús at scope freeze/readiness/pre-submission with at least four hours
+of review margin (or longer if requested); David is backup. This proposal is
+not submission readiness and performs no external contact.
+
+Fresh local checks for this proposal: Python 979 passed / 19 environment skips
+(ROS modules and Windows symlink privileges), one existing Starlette warning;
+frontend 161 passed / one optional-package skip; repository check and build
+passed with Python 3.12.14 / Node 24.18.0 / npm 12.0.1. Reproduction, input
+hashes, overwrite refusal, phase sums, causal waiting, cumulative flights and
+original approval/readiness preservation pass. Ubuntu/Jazzy/colcon/ROS exchange
+was not run for this analytical cut; earlier results are not relabelled fresh.
+
+## Publication after reconciliation
+
+The owner authorized integration after reconciliation. Published main9198b3d
+(PR28) is incorporated unchanged. The earlier local-only status describes
+the preparation cut; this publication preserves all proposed/approval states.
+D-COST-02 accepts reuse of the scientific API as implementation direction;
+profile approval, cost-context agreement and execution evidence remain open.
+The rc.2 contract record is not a scientific approval or a semantic freeze.
+Original analysis/report hashes and pinned c3ec4c1 reproduction remain historical.
+
+Publication CI for 6e497a1: Python, web and ROS passed (run43670914573). ROS built/inspected all interfaces and passed the MOCK vertical integration suite. This remains software evidence, not scientific mission acceptance. See evidence/mission-proposal-publication-20261115/ci.json.
+
+Final publication refresh incorporates main99f3e2e (delivery PR30); both sides of AI disclosures retained. Runtime/configuration still matches the earlier CI-passed main9198b3d. Numeric campaign drafts remain proposed research, excluded from the operational delivery freeze.

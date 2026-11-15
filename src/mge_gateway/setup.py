@@ -17,7 +17,7 @@ setup(
     maintainer='MARS GODS EYE team',
     maintainer_email='team@example.invalid',
     description='Mars Gods Eye ROS to web gateway (REST and WebSocket) and replay recorder.',
-    license='LicenseRef-UNSPECIFIED',
+    license='MIT',
     entry_points={
         'console_scripts': [
             'gateway = mge_gateway.main:main',

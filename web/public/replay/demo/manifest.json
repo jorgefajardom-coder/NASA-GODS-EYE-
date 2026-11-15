@@ -12,15 +12,16 @@
   "illustrative": true,
   "title": "Demo run: corridor survey and replanning",
   "summary": "The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.",
-  "disclaimer": "Terrain: NASA/USGS CTX DTM crop (real, provisional). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
+  "disclaimer": "Terrain: NASA/USGS CTX DTM crop of the Perseverance landing area and the terrain north of it (real, provisional, 8 m display grid from a 20 m source). Rover stop markers: real Perseverance stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs C and D are real Perseverance science sites (NASA), visited here in a simulated story. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
   "ai_disclosure": {
     "ai_assisted": true,
     "scope": "Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.",
     "tool": "Claude (Anthropic) through Claude Code",
     "observational_data": "Only the terrain heights come from NASA/USGS data; everything else here is simulated."
   },
-  "duration_s": 4442,
-  "local_z_offset_m": -2495,
+  "world": "jezero",
+  "duration_s": 22646,
+  "local_z_offset_m": -2538,
   "imagery": {
     "file": "ctx_ortho.png",
     "title": "MRO CTX Jezero orthomosaic, controlled (Mars 2020 TRN)",
@@ -29,16 +30,27 @@
     "native_resolution_m": 6,
     "resolution_m": 5,
     "extent": {
-      "origin_x_m": -1000,
-      "origin_y_m": -1000,
-      "width_m": 2000,
-      "height_m": 2000
+      "origin_x_m": -1700,
+      "origin_y_m": -3800,
+      "width_m": 3400,
+      "height_m": 7600
     },
     "row0": "north",
     "processing": "Bilinear resampling onto the crop ENU grid; display contrast stretched linearly between the 1st and 99th percentile. Panchromatic; the viewer tints it for display only."
   },
   "geology": {
     "file": "geology.json"
+  },
+  "rover_stops": {
+    "file": "rover_stops.json"
+  },
+  "photo_tour": {
+    "agent_id": "rover_1",
+    "start_s": 3056,
+    "end_s": 22636,
+    "stops": 226,
+    "speed_mps": 2,
+    "dwell_s": 40
   },
   "atmosphere": {
     "file": "atmosphere.json"
@@ -52,53 +64,53 @@
     "dataset_id": "mars2020-trn-ctx-dtm-20m",
     "frame_id": "map",
     "map_version": 1,
-    "origin_x_m": -1000,
-    "origin_y_m": -1000,
-    "resolution_m": 20,
-    "rows": 100,
-    "cols": 100,
+    "origin_x_m": -1700,
+    "origin_y_m": -3800,
+    "resolution_m": 8,
+    "rows": 950,
+    "cols": 425,
     "crs": "Local tangent ENU grid; source Equirectangular, Mars 2000 sphere IAU (R = 3396190 m)",
-    "origin_lat_deg": 18.53545,
-    "origin_lon_deg": 77.42382,
-    "vertical_datum": "MOLA areoid; local z = elevation - (-2495 m)",
+    "origin_lat_deg": 18.4899,
+    "origin_lon_deg": 77.43461,
+    "vertical_datum": "MOLA areoid; local z = elevation - (-2538 m)",
     "nodata_value": -32768,
     "sources": [
       "Mars 2020 Terrain Relative Navigation CTX DTM mosaic, USGS Astrogeology Science Center / NASA. File JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0.tif, 9662387 bytes, SHA-256 16a1aa66c3f48c1bca252795827db7b417876217aff0f5e1aff18027fab2327b.",
       "Product page https://astrogeology.usgs.gov/search/map/mars_2020_terrain_relative_navigation_ctx_dtm_mosaic (DOI family https://doi.org/10.5066/P906QQT8). Native resolution 20 m. Not verified here: USGS-hosted NASA planetary data, see the product page for usage terms.",
-      "Crop: 100 x 100 cells of 20 m centred at 18.53545 N, 77.42382 E, bilinear resampling onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); same cell size as the source, so no resolution gain. PROVISIONAL, made by the frontend until the data owner delivers the processed package.",
-      "SYNTHETIC: a scarp was added to the hidden evaluator reference to create an adverse case. It does not exist in the CTX data.",
+      "Crop: 950 x 425 cells of 8 m centred at 18.4899 N, 77.43461 E, bicubic (Catmull-Rom) resampling onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); 8 m cells from a 20 m source, so no resolution gain (display resampling). PROVISIONAL, made by the frontend until the data owner delivers the processed package.",
+      "SYNTHETIC: a scarp was added to the hidden evaluator reference to create an adverse case. It does not exist in the NASA terrain data.",
       "ILLUSTRATIVE: uncertainty (sigma), budgets, speeds and consumption rates are assumptions of a simulated mission."
     ],
-    "checksum_sha256": "abb67ccacde4709aeeea10fa0261ef601b56dcf97c0fdfc4c95c016c3a25d5e8"
+    "checksum_sha256": "c5f214aa4b488c3f91f6cfbcac4a9bc9ee8ed3f4148752ed50df7822545db610"
   },
   "vertical_exaggeration_default": 2,
   "control_points": [
     {
       "id": "cp-1",
       "position": {
-        "x": -590,
-        "y": -710,
-        "z": 32.3
+        "x": -1216,
+        "y": -3460,
+        "z": -11.6
       },
-      "description": "Cell centre row 14, col 20 of the CTX crop."
+      "description": "Cell centre row 42, col 60 of the CTX crop."
     },
     {
       "id": "cp-2",
       "position": {
-        "x": 10,
-        "y": 10,
-        "z": -29.8
+        "x": -496,
+        "y": -2596,
+        "z": -14.5
       },
-      "description": "Cell centre row 50, col 50 of the CTX crop."
+      "description": "Cell centre row 150, col 150 of the CTX crop."
     },
     {
       "id": "cp-3",
       "position": {
-        "x": 570,
-        "y": 690,
-        "z": 43.2
+        "x": 176,
+        "y": -1780,
+        "z": -19.9
       },
-      "description": "Cell centre row 84, col 78 of the CTX crop."
+      "description": "Cell centre row 252, col 234 of the CTX crop."
     }
   ],
   "pois": [
@@ -107,44 +119,96 @@
       "label": "Base A",
       "kind": "base",
       "position": {
-        "x": 750,
-        "y": -610,
-        "z": -33.1
+        "x": 912,
+        "y": -2684,
+        "z": -29.3
       },
-      "revealed_at_s": 0
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Perseverance stop 3_0, sol 13 (Mars 2020 Perseverance waypoints (MMGIS M20)); the base sits on the nearest walkable cell, within 12 m."
+      },
+      "for_agent": "HUMAN"
     },
     {
       "id": "B",
       "label": "Goal B",
       "kind": "primary_goal",
       "position": {
-        "x": -770,
-        "y": 690,
-        "z": 67.5
+        "x": 1520,
+        "y": -1508,
+        "z": -29.3
       },
-      "revealed_at_s": 0
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Perseverance stop 15_0, sol 387 (Mars 2020 Perseverance waypoints (MMGIS M20)); the goal sits on the nearest walkable cell, within 12 m."
+      },
+      "for_agent": "HUMAN"
     },
     {
       "id": "C",
-      "label": "POI C",
+      "label": "C · Salette",
       "kind": "poi",
       "position": {
-        "x": 190,
-        "y": -10,
-        "z": -29.5
+        "x": 472,
+        "y": -3316,
+        "z": -27.4
       },
-      "revealed_at_s": 322
+      "revealed_at_s": 278,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Perseverance science site: Salette, rock core sample of the rock Brac, South Séítah, sol 262. Placed at the rover's published position at the time (stop 8_0), on the nearest drivable cell within 12 m. Source: NASA, Mars Rock Samples (Perseverance), sealed sol per sample."
+      },
+      "for_agent": "ROVER"
     },
     {
       "id": "D",
-      "label": "POI D",
+      "label": "D · Swift Run",
       "kind": "poi",
       "position": {
-        "x": -10,
-        "y": -50,
-        "z": -29.7
+        "x": -1600,
+        "y": -1836,
+        "z": 22
       },
-      "revealed_at_s": 324
+      "revealed_at_s": 280,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Perseverance science site: Swift Run, rock core sample of the rock Skinner Ridge, Delta Front, sol 490. Placed at the rover's published position at the time (stop 26_1004), on the nearest drivable cell within 12 m. Source: NASA, Mars Rock Samples (Perseverance), sealed sol per sample."
+      },
+      "for_agent": "ROVER"
+    },
+    {
+      "id": "DEPOT",
+      "label": "Three Forks sample depot",
+      "kind": "depot",
+      "position": {
+        "x": -1484.25,
+        "y": -2197.36,
+        "z": -8.7
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Perseverance sample depot: 10 sealed tubes set down on sols 653-690 (Malay, Mageik, Crosswind Lake, Roubion, Coulettes, Montdenier, Bearwallow, Skyland, Atsah, Amalik Witness) for a later retrieval; marker at the mean of the rover positions during the drops. 2.60 km on foot from base A on a slope-limited route (project model). Source: PDS Geosciences Node, Mars 2020 Three Forks Sample Depot, sample_tube_locations.csv."
+      },
+      "for_agent": "HUMAN"
+    },
+    {
+      "id": "HAB",
+      "label": "Habitat area (flattest 1 km)",
+      "kind": "habitat",
+      "position": {
+        "x": 1204,
+        "y": 2104,
+        "z": 0.25
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "chosen",
+        "text": "Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: 0.9 degrees; within 5 km of the landing site, here base A: 4.80 km). Mean 8 m slope 1.6 degrees, 0 % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed here (see the water, ice and radiation section of docs/science_poi_dossier.md)."
+      },
+      "for_agent": "HUMAN"
     }
   ],
   "files": {

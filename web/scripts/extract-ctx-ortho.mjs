@@ -21,7 +21,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 
-const LAYER = 'JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0';
+// Other worlds: ORTHO_LAYER (e.g. Gale_CTX_BlockAdj_dd, tiles to level 12) and ORTHO_CROP (e.g. gale/ctx_crop.json).
+const LAYER = process.env.ORTHO_LAYER ?? 'JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0';
 const BASE = `https://trek.nasa.gov/tiles/Mars/EQ/${LAYER}/1.0.0`;
 const LEVEL = Number(process.argv[5] ?? 13);
 const TILE = 256;
@@ -30,10 +31,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const outPath = process.argv[2] ?? join(HERE, '..', 'public', 'replay', 'demo', 'ctx_ortho.png');
 const N = Number(process.argv[3] ?? 400);
 
-const crop = JSON.parse(readFileSync(join(HERE, 'data', 'ctx_crop.json'), 'utf8')).crop;
+const crop = JSON.parse(readFileSync(join(HERE, 'data', process.env.ORTHO_CROP ?? 'ctx_crop.json'), 'utf8')).crop;
 const lat0 = (crop.centre_lat_deg * Math.PI) / 180;
 const lon0 = (crop.centre_lon_deg * Math.PI) / 180;
-const EXTENT_ARG = process.argv[4] == null ? null : Number(process.argv[4]);
+const EXTENT_ARG = process.argv[4] ? Number(process.argv[4]) : null; // empty or 0 = the crop itself
 if (EXTENT_ARG != null) {
   // Square centred on the crop centre (ENU origin).
   crop.origin_x_m = -EXTENT_ARG / 2;
@@ -106,10 +107,12 @@ function sample(x, y) {
 }
 
 // Sample every output pixel first; row 0 = north edge (image convention).
-const values = new Float32Array(N * N);
+// Width in pixels is N; the height follows the crop's aspect ratio (the crop may not be square).
+const NY = Math.max(1, Math.round((N * extentY) / extentX));
+const values = new Float32Array(N * NY);
 let missing = 0;
-for (let j = 0; j < N; j++) {
-  const north = crop.origin_y_m + extentY - ((j + 0.5) / N) * extentY;
+for (let j = 0; j < NY; j++) {
+  const north = crop.origin_y_m + extentY - ((j + 0.5) / NY) * extentY;
   for (let i = 0; i < N; i++) {
     const east = crop.origin_x_m + ((i + 0.5) / N) * extentX;
     const g = enuToLatLon(east, north);
@@ -126,9 +129,9 @@ if (missing > 0) throw new Error(`${missing} output pixels have no source data; 
 const sorted = Float32Array.from(values).sort();
 const P_LO = sorted[Math.floor(0.01 * (sorted.length - 1))];
 const P_HI = sorted[Math.floor(0.99 * (sorted.length - 1))];
-const out = new PNG({ width: N, height: N, colorType: 0, inputColorType: 0, bitDepth: 8 });
-out.data = Buffer.alloc(N * N * 4);
-for (let k = 0; k < N * N; k++) {
+const out = new PNG({ width: N, height: NY, colorType: 0, inputColorType: 0, bitDepth: 8 });
+out.data = Buffer.alloc(N * NY * 4);
+for (let k = 0; k < N * NY; k++) {
   const v = Math.round(Math.min(255, Math.max(0, ((values[k] - P_LO) / (P_HI - P_LO)) * 255)));
   out.data[k * 4] = out.data[k * 4 + 1] = out.data[k * 4 + 2] = v;
   out.data[k * 4 + 3] = 255;
@@ -136,6 +139,6 @@ for (let k = 0; k < N * N; k++) {
 console.log(`contrast stretch: source grey ${P_LO.toFixed(1)}..${P_HI.toFixed(1)} -> 0..255 (1st-99th percentile)`);
 const png = PNG.sync.write(out, { colorType: 0 });
 writeFileSync(outPath, png);
-console.log(`written ${outPath}: ${N} x ${N} px, ${(extentX / N).toFixed(2)} m/px, ${png.length} bytes`);
+console.log(`written ${outPath}: ${N} x ${NY} px, ${(extentX / N).toFixed(2)} m/px, ${png.length} bytes`);
 console.log(`tiles sha256 ${hash.digest('hex')}`);
 console.log(`image sha256 ${createHash('sha256').update(png).digest('hex')}`);

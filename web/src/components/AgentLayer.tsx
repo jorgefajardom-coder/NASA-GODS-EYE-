@@ -87,6 +87,7 @@ export function AgentLayer({ agents, t, verticalExaggeration, showLabels, hideLa
             floorY={floorY}
             groundAt={a.agent_kind === 'DRONE' ? groundAtWorld : undefined}
             yaw={yaw}
+            faceTravel={a.agent_kind === 'HUMAN'}
             name={`agent-${a.agent_id}`}
             climbMps={a.agent_kind === 'DRONE' ? DRONE_DRAWN_CLIMB_MPS : undefined}
           >
@@ -109,14 +110,14 @@ export function AgentLayer({ agents, t, verticalExaggeration, showLabels, hideLa
                     ) : (
                       // Landed, the drone sits on its four legs: tilted to the ground under them (level in flight).
                       <TerrainTilt groundHeight={groundHeight} verticalExaggeration={verticalExaggeration} lengthM={DRONE_LEGS_M} widthM={DRONE_LEGS_M} landedOnly>
-                        <VehicleModel url={DRONE_URL} lengthM={DRONE_ROTOR_M} playing={playing} spinning={a.mode !== 'IDLE'} />
+                        <VehicleModel url={DRONE_URL} lengthM={DRONE_ROTOR_M} playing={playing} spinning={a.mode !== 'IDLE'} groundAt={groundAtWorld} />
                       </TerrainTilt>
                     )}
                   </Suspense>
                 </ModelBoundary>
               )}
               {showLabels && a.agent_id !== hideLabelFor && (
-                <Html position={[0, LABEL_HEIGHT_M[a.agent_kind], 0]} center zIndexRange={LABEL_Z} className={`agent-label agent-label--${a.agent_kind.toLowerCase()}`}>
+                <Html position={[0, LABEL_HEIGHT_M[a.agent_kind], 0]} center zIndexRange={LABEL_Z} className={`agent-label agent-label--${a.agent_kind.toLowerCase()}${a.agent_id === selectedId ? ' agent-label--selected' : ''}`}>
                   <strong>{KIND_LABEL[a.agent_kind]}</strong> <span>{a.mode.toLowerCase()}</span>
                 </Html>
               )}
@@ -193,10 +194,25 @@ const CLIMB_OMEGA = 1.6;
  * seconds around take-off and landing. Positions in the data are unchanged.
  * The drawn height above ground is left in userData.agl for the rotors and the tether.
  */
+/** Drawn move (m) after which a walking agent's travel direction is updated. */
+export const TRAVEL_MIN_MOVE_M = 0.05;
+
+/**
+ * Yaw (Three.js, about +y; the model faces +x) of a move between two drawn positions, or null when
+ * the move is shorter than `minMove`. Three.js z points south, so ENU north is -z.
+ */
+export function travelYaw(from: { x: number; z: number }, to: { x: number; z: number }, minMove = TRAVEL_MIN_MOVE_M): number | null {
+  const dx = to.x - from.x;
+  const dz = to.z - from.z;
+  if (Math.hypot(dx, dz) < minMove) return null;
+  return Math.atan2(-dz, dx);
+}
+
 function SmoothedPose({
   position,
   groundY,
   yaw,
+  faceTravel = false,
   name,
   climbMps,
   floorY = null,
@@ -218,6 +234,12 @@ function SmoothedPose({
    */
   groundAt?: (x: number, z: number) => number | null;
   yaw: number;
+  /**
+   * Face the direction of travel while moving (and keep it when stopping) instead of the recorded
+   * yaw: a person does not walk backwards. Display only; used for the astronaut because some
+   * recorded packages carry a constant orientation (identity quaternion) for the human.
+   */
+  faceTravel?: boolean;
   name: string;
   climbMps?: number;
   children: ReactNode;
@@ -235,6 +257,8 @@ function SmoothedPose({
   const time = useRef(t);
   time.current = t;
   const lastT = useRef<number | null>(null);
+  const travelFrom = useRef<THREE.Vector3 | null>(null);
+  const travel = useRef<number | null>(null);
   // Priority -2: eased before the follow camera and the distance scaling read this group.
   useFrame((_, dtRaw) => {
     const g = group.current;
@@ -247,9 +271,23 @@ function SmoothedPose({
     const now = time.current;
     const jumped = lastT.current != null && (now < lastT.current - 1e-3 || now - lastT.current > REPLAY_JUMP_S);
     lastT.current = now;
+    let drawnYaw = yaw;
+    if (faceTravel) {
+      if (!travelFrom.current || jumped) {
+        travelFrom.current = t.clone();
+        if (jumped) travel.current = null;
+      } else {
+        const ty = travelYaw(travelFrom.current, t);
+        if (ty != null) {
+          travel.current = ty;
+          travelFrom.current.copy(t);
+        }
+      }
+      if (travel.current != null) drawnYaw = travel.current;
+    }
     if (!placed.current || jumped || horizontal > SNAP_DISTANCE_M || Math.abs(g.position.y - t.y) > 4 * SNAP_DISTANCE_M) {
       g.position.copy(t);
-      g.rotation.y = yaw;
+      g.rotation.y = drawnYaw;
       vy.current = 0;
       cruising.current = false;
       if (groundAt) {
@@ -294,7 +332,7 @@ function SmoothedPose({
       } else {
         g.position.y += (t.y - g.position.y) * k;
       }
-      if (!pinned) g.rotation.y = dampAngle(g.rotation.y, yaw, dt, AGENT_POSE_TAU_S);
+      if (!pinned) g.rotation.y = dampAngle(g.rotation.y, drawnYaw, dt, AGENT_POSE_TAU_S);
     }
     g.userData.agl = Math.max(0, g.position.y - ground.current);
   }, -2);
@@ -564,7 +602,7 @@ function SelectionRing({ groundHeight, verticalExaggeration }: { groundHeight: (
   });
   useEffect(() => () => geometry.dispose(), [geometry]);
   return (
-    <mesh ref={mesh} geometry={geometry} renderOrder={2} frustumCulled={false}>
+    <mesh ref={mesh} name="selection-ring" geometry={geometry} renderOrder={2} frustumCulled={false}>
       <meshBasicMaterial color="#65CBE8" transparent opacity={0.9} depthWrite={false} side={THREE.DoubleSide} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />
     </mesh>
   );

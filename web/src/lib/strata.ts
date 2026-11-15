@@ -32,6 +32,13 @@ export const STRATA_ORDER: Stratum[] = [
 /** Total schematic depth of the block below the lowest terrain point (m). */
 export const CUT_DEPTH_M = STRATA_ORDER.reduce((s, x) => s + x.thicknessM, 0);
 
+/** Plain walls are a visual backing, not a subsurface measurement. Keep them
+ * proportional to small crops; preserve the existing schematic geology column.
+ */
+export function blockDepthM(extentM: number, hasGeology: boolean): number {
+  return hasGeology ? CUT_DEPTH_M : Math.min(CUT_DEPTH_M, 0.18 * extentM);
+}
+
 /**
  * Layers under a surface point: the column starts with the unit exposed at the surface and
  * continues with every older stratum. Unknown surface units start at the base.

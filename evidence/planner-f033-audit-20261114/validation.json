@@ -1,0 +1,142 @@
+{
+  "main_sha": "c58e7f6bd36411f2fb34e0389c8663ebde355544",
+  "local_head": "a959d25eab17ac063baef5bda178ce494c41d29a",
+  "local_ahead": 0,
+  "local_behind": 135,
+  "implementation_source": "git archive origin/main only; no open PR or other branch source imported",
+  "source_sha256": {
+    "src/mge_planning/mge_planning/core.py": "f59b51ccdd53218ecaa425b3fc7963fe43f3bfd95d1157a3aa687b9378c950d9",
+    "src/mge_planning/mge_planning/replan.py": "8774c55a406a2a5af3c659dc310b6acfdfbead75014ab458960d76f78064ce8a",
+    "src/mge_planning/mge_planning/adapter.py": "0df229b7c0bb57fe6d2ecabb1059d210d4f47aff152ef2251b40926c350cd66c",
+    "src/mge_mission/mge_mission/models.py": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "src/mge_mission/mge_mission/manager.py": "e19bf4676f65b8362d47febecffc8a03d2391d441673e5380e2071b5a1b66beb",
+    "config/science_profiles.proposed.json": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "config/planner_profiles.proposed.json": "4c4d2607db4bda661608b0c18d17c319e9587d8d441b37bd48b7160f86ec54ef",
+    "config/cost_agreement.experimental.json": "d1f5ff02b8381c3e3e8cb44c63f103ac333d0c6f252d55276a1b45c24e5a2148"
+  },
+  "python": "3.12.3",
+  "results": {
+    "baseline_selection": {
+      "tests": 409,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2,
+      "passed": 407,
+      "omissions": [
+        {
+          "name": "test_package_symlink_escape_is_rejected",
+          "reason": "Host does not permit creating symlink fixtures"
+        },
+        {
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        }
+      ]
+    },
+    "characterizations": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 10,
+      "omissions": []
+    },
+    "full_main_plus_audit": {
+      "tests": 1011,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 20,
+      "passed": 991,
+      "omissions": [
+        {
+          "name": "tests.contract.test_generated_conversion",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_interfaces",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mission_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mission_service",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mock_recovery",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_planner_service",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_profile_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_planner_concurrency",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_replay_package",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_terrain_batch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_execution",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_mission",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_mock",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_planner",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_terrain",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[outside]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-main-full\\\\test_symlinks_cannot_open_exte0\\\\outside.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-main-full\\\\test_symlinks_cannot_open_exte0\\\\run\\\\public.json'"
+        },
+        {
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[reference]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-main-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\reference\\\\hidden.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-main-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\public.json'"
+        },
+        {
+          "name": "test_package_symlink_escape_is_rejected",
+          "reason": "Host does not permit creating symlink fixtures"
+        },
+        {
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        },
+        {
+          "name": "test_symlinked_public_archive_cannot_escape_package",
+          "reason": "Host does not allow symlink fixture: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-main-full\\\\test_symlinked_public_archive_0\\\\outside.npz' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-main-full\\\\test_symlinked_public_archive_0\\\\public\\\\terrain.npz'"
+        }
+      ]
+    }
+  },
+  "coefficients": "Existing main science profile and exactly matching exported projection; no invented coefficients",
+  "scope": "Numerical audit/characterizations only, not scientific agreement or production implementation",
+  "reproduction": "Archive the stated main SHA, extract to isolated folder, copy audit_tests.py into tests/planning/test_f033_audit.py, run pytest from snapshot with existing dependencies. Do not run artifact against an unsynchronized branch.",
+  "limitations": [
+    "ROS not executed",
+    "Characterization passes intentionally confirm model mismatches and trusted-input budget reset risk",
+    "No new cost backend or heuristics implemented"
+  ]
+}
