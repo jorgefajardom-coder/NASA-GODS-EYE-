@@ -896,3 +896,7 @@ It also assisted the read-only live gateway panel (`web/src/lib/gatewayLive.ts`,
 against a running MOCK ROS stack in WSL. The tests use synthetic gateway envelopes; no ROS
 output, NASA observation or mission result was generated, and the panel labels a MOCK stack
 MOCK.
+
+## PR37 scientific presentation corrections — 15 November 2026
+
+OpenAI Codex assisted the HUD/context code, source-year corrections, project-page draft and regression tests listed in `ai_usage.json` under `pr37_scientific_presentation_corrections`. RAD dose equivalent is not converted into NASA effective dose or a career-limit percentage. An unavailable CO2 rate remains unavailable. No new measured data, numerical radiation inputs, scientific profile or approval was generated. Owner scientific review remains pending.

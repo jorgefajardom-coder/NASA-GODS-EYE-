@@ -82,12 +82,6 @@ export function excursionDoseMsv(msvPerDay: number, hours: number): number {
 /** NASA DONKI (space weather event database): solar flares and particle events are not in these averages. */
 export const DONKI_URL = 'https://kauai.ccmc.gsfc.nasa.gov/DONKI/';
 
-/**
- * NASA's career limit for astronaut radiation exposure: 600 mSv effective dose (NASA-STD-3001 Volume 1,
- * Revision B, 2022). Used only to put the replay's dose in proportion; not a per-EVA limit.
- */
-export const NASA_CAREER_LIMIT_MSV = 600;
-
 export interface ZoneCrewDose {
   /** Dose equivalent accumulated over `t` simulated seconds at the zone's surface rate (µSv). */
   usv: number;
@@ -95,8 +89,6 @@ export interface ZoneCrewDose {
   msvPerDay: number;
   measuredHere: boolean;
   withinRange: boolean;
-  /** Share of NASA's 600 mSv career limit (0..1). */
-  careerShare: number;
 }
 
 /** The astronaut's dose after `t` simulated seconds outside at this zone (unshielded surface average). */
@@ -111,6 +103,5 @@ export function zoneCrewDose(runId: string, t: number): ZoneCrewDose | null {
     msvPerDay: env.radiation.doseMsvPerDay,
     measuredHere: env.radiation.measuredHere,
     withinRange: env.radiation.withinRange,
-    careerShare: usv / 1000 / NASA_CAREER_LIMIT_MSV,
   };
 }

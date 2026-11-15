@@ -14,7 +14,7 @@
   },
   "radiation": {
    "measurement": "Hassler et al. 2014, Science 343, 1244797, doi:10.1126/science.1244797 (MSL RAD, Gale; <Q> = 3.05 +/- 0.3)",
-   "dependence": "Guo et al. 2018, JGR Planets, doi:10.1002/2016JE005206, section 3.3: -kappa = 0.28 - 2.9e-4 * Phi uGy/day/Pa, measured at 700-950 Pa; Phi = 500 MV used",
+   "dependence": "Guo et al. 2017, JGR Planets, doi:10.1002/2016JE005206, section 3.3: -kappa = 0.28 - 2.9e-4 * Phi uGy/day/Pa, measured at 700-950 Pa; Phi = 500 MV used",
    "insight_pressure": "Lange et al. 2022, JGR Planets 127, e2022JE007190, section 2.2",
    "scale_height": "NASA Mars Fact Sheet, scale height 11.1 km, https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
   },
@@ -56,7 +56,7 @@
     "dose_equivalent_msv_per_day": 0.69,
     "dose_equivalent_sigma_msv_per_day": 0.14,
     "within_rad_pressure_range": true,
-    "note": "from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2018)"
+    "note": "from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2017)"
    }
   },
   "gale": {
@@ -132,7 +132,7 @@
     "dose_equivalent_msv_per_day": 0.7,
     "dose_equivalent_sigma_msv_per_day": 0.14,
     "within_rad_pressure_range": false,
-    "note": "from the RAD dose-pressure relation OUTSIDE its measured 700-950 Pa range: Guo et al. 2018 state this extrapolation is not yet verified"
+    "note": "from the RAD dose-pressure relation OUTSIDE its measured 700-950 Pa range: Guo et al. 2017 state this extrapolation is not yet verified"
    }
   },
   "meridiani": {
@@ -170,7 +170,7 @@
     "dose_equivalent_msv_per_day": 0.71,
     "dose_equivalent_sigma_msv_per_day": 0.14,
     "within_rad_pressure_range": false,
-    "note": "from the RAD dose-pressure relation OUTSIDE its measured 700-950 Pa range: Guo et al. 2018 state this extrapolation is not yet verified"
+    "note": "from the RAD dose-pressure relation OUTSIDE its measured 700-950 Pa range: Guo et al. 2017 state this extrapolation is not yet verified"
    }
   },
   "insight": {
@@ -208,7 +208,7 @@
     "dose_equivalent_msv_per_day": 0.69,
     "dose_equivalent_sigma_msv_per_day": 0.14,
     "within_rad_pressure_range": true,
-    "note": "from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2018)"
+    "note": "from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2017)"
    }
   },
   "melas": {
@@ -246,7 +246,7 @@
     "dose_equivalent_msv_per_day": 0.67,
     "dose_equivalent_sigma_msv_per_day": 0.14,
     "within_rad_pressure_range": true,
-    "note": "from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2018)"
+    "note": "from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2017)"
    }
   }
  }
