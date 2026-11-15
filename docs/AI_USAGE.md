@@ -692,14 +692,14 @@ does not change the map version, and its bands are display thresholds pending
 science approval. No data, measurement, image, video or audio was generated.
 The affected paths are listed in ai_usage.json.
 
-## Team logo, link preview and tab icon
+## Team logo and link preview
 
 The team logo (`web/public/assets/brand/mars-gods-eye-logo.webp`) was generated
 with ChatGPT (OpenAI) and edited by the team. A band with a visible
 `AI-generated logo (ChatGPT, edited)` label is burned into the image, and it
 stays visible in the README, the about page and the link preview
 (`og-image.png`, composed with Pillow). The browser tab icon
-(`web/public/favicon.svg` and its PNG copies) is a simple drawing of Mars (a shaded
-disc with darker regions and a polar cap) made as SVG with Claude Code (Anthropic); at 16-32 px a watermark cannot be
-legible, so it is declared here and in ai_usage.json instead. None of these
+(`web/public/favicon.ico` and its PNG sizes) is an illustration of Mars made by
+the team, not with AI; only its black background was removed and it was resized.
+An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
 images uses NASA logos, flags or mission marks or is presented as NASA data.
