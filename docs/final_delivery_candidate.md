@@ -2,7 +2,7 @@
 
 ## Integrated sources
 
-The candidate is `codex/final-delivery-candidate`, assembled locally over main `9013beb` in this order: PR37 `0f936528b4131fb20c5f7f59525e11d6a2494c02`, PR38 `25dcdab625b15d914f446383d4c33592a905fd7e`, then height/replay `6c137ffbed96c4e881bdb4245f1ffd96c0f04321`. Source integration commit: `f7938f503e8adabcf7cc677e8913cf251096d632`. Main and the owner PRs are not automatically merged by this preparation. Original branch histories, required disclosures and all acquired data bytes are preserved.
+The candidate is `codex/final-delivery-candidate`, assembled locally over runtime base main `9013beb` and reconciled with published Wiki main `2c6ba9e` in this order: PR37 `0f936528b4131fb20c5f7f59525e11d6a2494c02`, followed by its documentation-only main merge `19936484c557a813723143b3e33f9396be4beb80`, PR38 `25dcdab625b15d914f446383d4c33592a905fd7e`, then height/replay `6c137ffbed96c4e881bdb4245f1ffd96c0f04321`. Source integration commit: `f7938f503e8adabcf7cc677e8913cf251096d632`. Main and the owner PRs are not automatically merged by this preparation. Original branch histories, required disclosures and all acquired data bytes are preserved.
 
 Canonical ROS package/messages, replay1.0.0 and public-raster1.0.0 remain unchanged. No contract freeze, scientific parameter approval or validated LIVE mission is asserted. The unfinished cost/PlanItinerary draft remains isolated in its original worktree.
 
@@ -21,7 +21,7 @@ PR39's optional read-only gateway panel is outside this accepted cut. It does no
 
 Separately, `feat/integration` `ef864ae` (retained by `ef8f3ac`) adds a stream filter `event.seq <= sent` that discards a unique late event in the sequence1→3→2. Main9013 and audited PR39 do not contain that filter. Jesus should add a persistent open-socket late-event regression and reconcile the producer before a later live cut. This defect is not attributed to PR39.
 
-The private analytical pilot's publication flag is unchanged. This release's new MOCK software recording and its browser capture do not authorize publishing private pilot worlds, caches or research packages. Full three-role execution, service progress, scientific model agreement and physical validation remain separate open milestones.
+PR40 separately published the owner-authorized bounded scientific Wiki/pilot evidence on main2c6ba9e. Preserve that approved export and its historical local seals; publication is not scientific approval. Unexported private pilot worlds, browser caches and raw research packages remain excluded. This release's MOCK software capture is distinct evidence. Full three-role execution, service progress, scientific model agreement and physical validation remain separate open milestones.
 
 ## Delivery and human acceptance
 
@@ -30,3 +30,7 @@ Use all time before20:00 America/Bogota for isolated pilots and fully validated 
 Remaining human gates: owner authorization for the reviewed merge, final deployed-package review from two machines, explicit organizer endorsement of the exact revision, and submission receipt. Confirmed contact does not close JES-07/AC-10. No external message, organizer endorsement or submission has been performed by this work.
 
 Final same-run browser video:20.916667s, English subtitles and visible AI-generated/SIMULATED/NOT LIVE marks. Metadata separates execution742eed5 from viewerf7938f5 and locks the exact package. Technical capture review is complete; final delivery approval is not implied.
+
+The published [scientific Wiki](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki) and bounded pilot evidence are retained byte-for-byte from main2c6ba9e. The viewer source is unchanged from capturedf7938f5.
+
+Wiki verification uses the original publication audit against the exact frozen2c6ba9e Git export. All Wiki/evidence payload bytes and the original manifest are preserved; the two active AI registers are legitimate continuation files and preserve every original main entry. See `evidence/height-reconciliation-20261115/wiki-continuation-check.json`.

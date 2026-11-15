@@ -38,6 +38,7 @@ rover and parked drone remain idle. It ends READY, not scientific COMPLETE.
 The browser consumes saved files; it is not connected to a live planner/gateway.
 [Source locks, validation and limitations](evidence/height-reconciliation-20261115/README.md)
 accompany this exact package. The historical recording remains unchanged.
+[Scientific foundations and analytical pilot results](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki).
 How each challenge requirement is addressed: [project page draft](docs/project_page.md).
 
 **NASA data in the project.**

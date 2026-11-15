@@ -12,7 +12,9 @@
   },
   "english_subtitles": {
     "file": "height-recovery-002.en.srt",
-    "sha256": "bb182ced2a19d6210735b17d743ada9a2074fe49154fb38fd8beb28443aab24a"
+    "sha256": "ea4ac0aed500f293538a111a7b2b4031aa7715ac829ac004f3c1b9087ef46146",
+    "captured_source_sha256": "bb182ced2a19d6210735b17d743ada9a2074fe49154fb38fd8beb28443aab24a",
+    "encoding": "UTF-8 LF; canonical public subtitle copy"
   },
   "recorded_package": {
     "manifest.json": {

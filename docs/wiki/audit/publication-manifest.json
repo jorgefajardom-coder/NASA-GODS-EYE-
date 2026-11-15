@@ -1,0 +1,556 @@
+{
+  "schema": "mge-scientific-wiki-publication-1.0.0",
+  "prepared_at_utc": "2026-11-15T17:58:10.634390+00:00",
+  "classification": "BOUNDED_ENGLISH_SCIENTIFIC_WIKI_PUBLICATION",
+  "baseline_main_sha": "9013bebf2400d605f5a3d68e79dadbd5d1c57d03",
+  "historical_draft_manifest_sha256": "d23d69bb0e2123947638a597f5be0366189bd65cd84c0c9112429fcc940eaf49",
+  "historical_draft_scope": "Original54-file local first-draft seal; underlying3394-artifact archive remains local",
+  "owner_publication_authorized": true,
+  "scientific_owner_audit": "pending",
+  "published": false,
+  "technical_payload_files": 0,
+  "reader_pages": 14,
+  "chapters": 9,
+  "supporting_linked_records": 39,
+  "additional_public_reproduction_inputs": [
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/public/bunsen-512.npz",
+      "size_bytes": 43394,
+      "sha256": "1040100abd2cf797a96dc3e47d08b29b81047c46aa010beaa9d6255ea983f4ae",
+      "main": false,
+      "kind": "public_terrain"
+    }
+  ],
+  "additional_video_receipts": [
+    "evidence/mission-3d-video-20261115-local/capture-final/video-finalization-final.json",
+    "evidence/mission-3d-video-20261115-local/capture-final/ffprobe-final.json"
+  ],
+  "unchanged_main_AI_use_entries_preserved": 82,
+  "excluded": [
+    "rawcaptureframes",
+    "browserprofiles",
+    "privateworldarrays",
+    "evaluatorreference",
+    "unrelatedtechnicalmodules"
+  ],
+  "sealed_asset_sha256": {
+    "research-loop.png": "15a33586e4e6021f5be7ccf5e30ce4c6aad3faf3b47d82b9b93385478991a1a1",
+    "jezero-evidence-chain.png": "50bad10f443f2bc08e0964ac037217b8e903e8881bcaff3b57da6e5a25ef6793",
+    "terrain-scale.png": "5c5d1250133a1188c74d58ace28019081e86ee6c92efb51a4347a0251dc83b0f",
+    "agent-timescales.png": "2b1787f4887d9929aa4e47a432852a1f052bc42342234c5b4a0b7e1350b31f63",
+    "activity-cycle.png": "aa1bbdf042be0446ce7c601a703470a554f86a210b0dc16eece2c5d8e7a331cb",
+    "task-precedence.png": "e695ca8dd52d23bcc0ed1d969433136f8478a644a3b380519dc60a82255d81d6",
+    "experimental-design.png": "2e43d1e701c038c13468bc912a60a0c6764e7d36686ae029383428a98cb37f66",
+    "evidence-ladder.png": "fe67fb40acd73d5a26e5a5214b86fd68a72819e0f0da8a23ec9cadf4ec85f599",
+    "directed-costs.png": "b7746cef6193ee1b0c36d882cb1b15a23d1ed5a738afdbd2bb8419fe1584ff39",
+    "resource-ledger.png": "0cb95ebcfc386001fb411e29dadf41c838f45709d29c024b9fe17ec8f33096b6",
+    "sensitivity.png": "abecdd6ade1f52aa802d7f9973dbf9077e72ab3a62d0881c34c6ce4406e9b75e",
+    "scale-crop.png": "946f7489bcd2ec14902ff0d0f3245f8e9ae64f621944a4a004d5d0a4abf1a6fc",
+    "case-route.png": "0b943fcd727ae66d979543b712ac01a0c5d63facb6fcab201e7003d15d42b0c8",
+    "case-resources.png": "34d0c08d5032773162a0bf003ebe97840d79ae226128cd6190a0b131da93d342",
+    "adaptation.gif": "95ec6288ff866ffef3df8c604f08892f6c6af9ab62adf993a5d1298e0262e76d",
+    "adaptation-poster.png": "ec98601bbf98b4cfe46ac343b24168ea65c429e6025692529b103f5be0df0528",
+    "prior-observation.gif": "aa51ee231a28fad5477f8ef8689afa3112f35f96916b2425a492cf260e876c28",
+    "prior-observation-poster.png": "b0707b4916641f815fd8eddbec0c31347ed6568e9979cb51810578f9a3260713",
+    "mission-decisions.gif": "2c80c138258e21ef31612cc8bcc3f8745b062e0b5b677d7b8958a0ec04993c58",
+    "mission-decisions-poster.png": "4c02ae4c0fef64197989ce7cd7aa44c97c2ea05909c7febbc7b3f06aaf7c4595",
+    "cooperative-exploration.png": "93860d7d0103ff337488560548073becd80891ef99a0691a3117ad0acf49bef2"
+  },
+  "entries": [
+    {
+      "path": "docs/ai_usage.json",
+      "size_bytes": 105043,
+      "sha256": "2d8b04a912edb5c902cfe01c3f6204ec1c931861fa2d25262ba3517608ba0d39"
+    },
+    {
+      "path": "docs/AI_USAGE.md",
+      "size_bytes": 59621,
+      "sha256": "3c497e34a915d2082c099bb3d2e5506b4823400bf3798b723f2788f3349e646f"
+    },
+    {
+      "path": "docs/handoffs/david.md",
+      "size_bytes": 23458,
+      "sha256": "1ddee8f79a76bcd4bf15c77a8d7c7f651f105d51187e9b5556329086c1b77dea"
+    },
+    {
+      "path": "docs/mission_simulated_verification.md",
+      "size_bytes": 8392,
+      "sha256": "16b61e9a57f13f1e27c6e4b742f88aa31b8c5423fa01d82ede0fdcda9f822da0"
+    },
+    {
+      "path": "docs/wiki/01-Research-Question.md",
+      "size_bytes": 8740,
+      "sha256": "46e507ebf9eed29812c952cb88b92289b44c42e02bf75f891da61f6311cbf49d"
+    },
+    {
+      "path": "docs/wiki/02-Jezero-Science.md",
+      "size_bytes": 9874,
+      "sha256": "f5170ef4995424733ea6e3d97dbcae06c8da952678a82ddf3c1b54bd62b71d5c"
+    },
+    {
+      "path": "docs/wiki/03-Terrain-and-Scale.md",
+      "size_bytes": 8958,
+      "sha256": "e47cd722875c87cd6ba8ff8bba6bd16120deb70b6a05e0fbec8189e1f0e34fbf"
+    },
+    {
+      "path": "docs/wiki/04-Agents-and-Activities.md",
+      "size_bytes": 10791,
+      "sha256": "2e0e2829c246665776c6c2566c416b37f196c3a956676ea79e2743c7250cb5a2"
+    },
+    {
+      "path": "docs/wiki/05-Resource-Models.md",
+      "size_bytes": 10679,
+      "sha256": "e445d865716377ecbdfe894add0c0f41c8b438201baabe93acdefc8876948722"
+    },
+    {
+      "path": "docs/wiki/06-Mission-Decisions.md",
+      "size_bytes": 11808,
+      "sha256": "e8c5dc78e32206ee869abefb6099a2a7c19e769ef6f443c728f28849194158d8"
+    },
+    {
+      "path": "docs/wiki/07-Experimental-Method.md",
+      "size_bytes": 10628,
+      "sha256": "335d945eaa575bf591416f74a0b085d7a5fe1be5db50a171ebc09bb9b039e192"
+    },
+    {
+      "path": "docs/wiki/08-Case-Studies.md",
+      "size_bytes": 9974,
+      "sha256": "689768f8751bc3b1946e3e1ae0443ad38da2e1608944196af7e7f1a44f12f6af"
+    },
+    {
+      "path": "docs/wiki/09-Discussion.md",
+      "size_bytes": 9851,
+      "sha256": "6687d9b7669c9b1d350f24af18d4825ebc45c1bdcdeb8c103150fd5c885b5469"
+    },
+    {
+      "path": "docs/wiki/_Footer.md",
+      "size_bytes": 212,
+      "sha256": "1081d1a7c4b86a035139481219e49abd262659190089a4d46b0ef88013b96661"
+    },
+    {
+      "path": "docs/wiki/_Sidebar.md",
+      "size_bytes": 601,
+      "sha256": "90cff6e19e35dc2251f7630886d3a61816097556488373cb655f61a9150deb81"
+    },
+    {
+      "path": "docs/wiki/assets/activity-cycle.png",
+      "size_bytes": 59160,
+      "sha256": "aa1bbdf042be0446ce7c601a703470a554f86a210b0dc16eece2c5d8e7a331cb"
+    },
+    {
+      "path": "docs/wiki/assets/adaptation-poster.png",
+      "size_bytes": 63598,
+      "sha256": "ec98601bbf98b4cfe46ac343b24168ea65c429e6025692529b103f5be0df0528"
+    },
+    {
+      "path": "docs/wiki/assets/adaptation.gif",
+      "size_bytes": 1719696,
+      "sha256": "95ec6288ff866ffef3df8c604f08892f6c6af9ab62adf993a5d1298e0262e76d"
+    },
+    {
+      "path": "docs/wiki/assets/agent-timescales.png",
+      "size_bytes": 67992,
+      "sha256": "2b1787f4887d9929aa4e47a432852a1f052bc42342234c5b4a0b7e1350b31f63"
+    },
+    {
+      "path": "docs/wiki/assets/case-resources.png",
+      "size_bytes": 77787,
+      "sha256": "34d0c08d5032773162a0bf003ebe97840d79ae226128cd6190a0b131da93d342"
+    },
+    {
+      "path": "docs/wiki/assets/case-route.png",
+      "size_bytes": 73690,
+      "sha256": "0b943fcd727ae66d979543b712ac01a0c5d63facb6fcab201e7003d15d42b0c8"
+    },
+    {
+      "path": "docs/wiki/assets/cooperative-exploration.png",
+      "size_bytes": 2644401,
+      "sha256": "93860d7d0103ff337488560548073becd80891ef99a0691a3117ad0acf49bef2"
+    },
+    {
+      "path": "docs/wiki/assets/directed-costs.png",
+      "size_bytes": 95670,
+      "sha256": "b7746cef6193ee1b0c36d882cb1b15a23d1ed5a738afdbd2bb8419fe1584ff39"
+    },
+    {
+      "path": "docs/wiki/assets/evidence-ladder.png",
+      "size_bytes": 70888,
+      "sha256": "fe67fb40acd73d5a26e5a5214b86fd68a72819e0f0da8a23ec9cadf4ec85f599"
+    },
+    {
+      "path": "docs/wiki/assets/experimental-design.png",
+      "size_bytes": 73389,
+      "sha256": "2e43d1e701c038c13468bc912a60a0c6764e7d36686ae029383428a98cb37f66"
+    },
+    {
+      "path": "docs/wiki/assets/jezero-evidence-chain.png",
+      "size_bytes": 88242,
+      "sha256": "50bad10f443f2bc08e0964ac037217b8e903e8881bcaff3b57da6e5a25ef6793"
+    },
+    {
+      "path": "docs/wiki/assets/manifest.json",
+      "size_bytes": 9646,
+      "sha256": "1f23c172aac6841d54af81f806597e64428840caaa821396e925a13be13e41ad"
+    },
+    {
+      "path": "docs/wiki/assets/mission-decisions-poster.png",
+      "size_bytes": 56509,
+      "sha256": "4c02ae4c0fef64197989ce7cd7aa44c97c2ea05909c7febbc7b3f06aaf7c4595"
+    },
+    {
+      "path": "docs/wiki/assets/mission-decisions.gif",
+      "size_bytes": 213506,
+      "sha256": "2c80c138258e21ef31612cc8bcc3f8745b062e0b5b677d7b8958a0ec04993c58"
+    },
+    {
+      "path": "docs/wiki/assets/prior-observation-poster.png",
+      "size_bytes": 64198,
+      "sha256": "b0707b4916641f815fd8eddbec0c31347ed6568e9979cb51810578f9a3260713"
+    },
+    {
+      "path": "docs/wiki/assets/prior-observation.gif",
+      "size_bytes": 117291,
+      "sha256": "aa51ee231a28fad5477f8ef8689afa3112f35f96916b2425a492cf260e876c28"
+    },
+    {
+      "path": "docs/wiki/assets/research-loop.png",
+      "size_bytes": 74813,
+      "sha256": "15a33586e4e6021f5be7ccf5e30ce4c6aad3faf3b47d82b9b93385478991a1a1"
+    },
+    {
+      "path": "docs/wiki/assets/resource-ledger.png",
+      "size_bytes": 63834,
+      "sha256": "0cb95ebcfc386001fb411e29dadf41c838f45709d29c024b9fe17ec8f33096b6"
+    },
+    {
+      "path": "docs/wiki/assets/scale-crop.png",
+      "size_bytes": 113726,
+      "sha256": "946f7489bcd2ec14902ff0d0f3245f8e9ae64f621944a4a004d5d0a4abf1a6fc"
+    },
+    {
+      "path": "docs/wiki/assets/sensitivity.png",
+      "size_bytes": 102027,
+      "sha256": "abecdd6ade1f52aa802d7f9973dbf9077e72ab3a62d0881c34c6ce4406e9b75e"
+    },
+    {
+      "path": "docs/wiki/assets/task-precedence.png",
+      "size_bytes": 70035,
+      "sha256": "e695ca8dd52d23bcc0ed1d969433136f8478a644a3b380519dc60a82255d81d6"
+    },
+    {
+      "path": "docs/wiki/assets/terrain-scale.png",
+      "size_bytes": 81767,
+      "sha256": "5c5d1250133a1188c74d58ace28019081e86ee6c92efb51a4347a0251dc83b0f"
+    },
+    {
+      "path": "docs/wiki/audit/check.log",
+      "size_bytes": 585,
+      "sha256": "cafb8c8f02f20ca885a21aaaa21f58cdd46d4dd7b773bb47c465b6bd8d8b6ab7"
+    },
+    {
+      "path": "docs/wiki/audit/cover-provenance.json",
+      "size_bytes": 855,
+      "sha256": "459a6f364187ad9d0770c791bf77c6170a602af41513552b8b57323e5638bea5"
+    },
+    {
+      "path": "docs/wiki/audit/inputs.json",
+      "size_bytes": 49207,
+      "sha256": "23ea3b11ee7c789839c1dfbf9fa46b00d79afe22567419f32e09024070bd8a5e"
+    },
+    {
+      "path": "docs/wiki/audit/local-draft-manifest.json",
+      "size_bytes": 10053,
+      "sha256": "d23d69bb0e2123947638a597f5be0366189bd65cd84c0c9112429fcc940eaf49"
+    },
+    {
+      "path": "docs/wiki/audit/previous-document-versions/docs/ai_usage.json.sealed",
+      "size_bytes": 91035,
+      "sha256": "3f64caf6eef69a28f7674198f22760715895721c47a9e222825e1bb4c029f933"
+    },
+    {
+      "path": "docs/wiki/audit/previous-document-versions/docs/AI_USAGE.md.sealed",
+      "size_bytes": 54252,
+      "sha256": "e74a31bbca57454f8d5f131b5efb5c56e6dfd2d8e82d145b19d6fef79d9bbc71"
+    },
+    {
+      "path": "docs/wiki/audit/previous-document-versions/docs/handoffs/david.md.sealed",
+      "size_bytes": 36688,
+      "sha256": "4c6a2381f871e8131285e6ece57b4bc5667e3efa0decbe9fd7669c208acc8c46"
+    },
+    {
+      "path": "docs/wiki/audit/previous-packet-preservation.json",
+      "size_bytes": 1046,
+      "sha256": "7c805b7d37bf89f047c6729ca5e14d3d4b3a920069676ee5c3d95a758ace2f60"
+    },
+    {
+      "path": "docs/wiki/audit/publication-report.json",
+      "size_bytes": 4405,
+      "sha256": "e11500fcdda20493cacac249106e8da0b742f80b627dc09753b3218d37c3e1a3"
+    },
+    {
+      "path": "docs/wiki/audit/report.json",
+      "size_bytes": 6773,
+      "sha256": "88eb9730232a7f64b821feb3a7d4a875643369ed45391139cb754fa265a7b247"
+    },
+    {
+      "path": "docs/wiki/audit/repository-check-initial.log",
+      "size_bytes": 2101,
+      "sha256": "771190ad9421d1438f42003f2b4c5135b84929483270cac7b53590db878015dc"
+    },
+    {
+      "path": "docs/wiki/audit/repository-check.log",
+      "size_bytes": 58,
+      "sha256": "deb9e859f1bb4726aedd18cf923af6ad1b5cc4514668076065124e23548de911"
+    },
+    {
+      "path": "docs/wiki/Bibliography.md",
+      "size_bytes": 9419,
+      "sha256": "bc32161457d0bffae613799b1f25240813373201cda6d8014b3f95a4486a7ee7"
+    },
+    {
+      "path": "docs/wiki/Glossary.md",
+      "size_bytes": 5159,
+      "sha256": "ad9dd2baf3b44184d8ffdd84a3de1a6c1810aa2d4ddd3bc3bcf6d5ae503f18bc"
+    },
+    {
+      "path": "docs/wiki/Home.md",
+      "size_bytes": 6553,
+      "sha256": "8391705b9274ff4a372654639d739303a99acee09254bf1af69a0c03228a7809"
+    },
+    {
+      "path": "docs/wiki/Parameters-and-Decisions.md",
+      "size_bytes": 8180,
+      "sha256": "d2858c257da712ae916da99e9fffa938616411dd13cd75a47d0c5496b5d52fd0"
+    },
+    {
+      "path": "docs/wiki/README.md",
+      "size_bytes": 1640,
+      "sha256": "9c135b3a5b90fb5997fb52bcc1e502ae75e109e5c742df8f5e02d1b2366bc77a"
+    },
+    {
+      "path": "docs/wiki/Reproducibility.md",
+      "size_bytes": 8639,
+      "sha256": "8da62ad18582222c4272ec3aebd3123fbc46ad01bd85b5a3a5496a199c1a3906"
+    },
+    {
+      "path": "docs/wiki/tools/audit_publication.py",
+      "size_bytes": 7019,
+      "sha256": "42d0df7d32ab82b2707ce5c9d7127d0c0a500d575e3bf38203770301a7e336f4"
+    },
+    {
+      "path": "docs/wiki/tools/audit_wiki.py",
+      "size_bytes": 10377,
+      "sha256": "d4e67f2d423d61394b8edbf3dc572b6f4455f447ace668773a6788a076a9ac1f"
+    },
+    {
+      "path": "docs/wiki/tools/build_figures.py",
+      "size_bytes": 25754,
+      "sha256": "ecb05930d0e2bd98bd5c76c8603be91526e6dc095e353b0903401d01b8191aa3"
+    },
+    {
+      "path": "evidence/mission-3d-video-20261115-local/capture-final/ffprobe-final.json",
+      "size_bytes": 2668,
+      "sha256": "2f6541b7614d401d601f33a3dc6b0b48a5397584e32489957781ce59dd62b85f"
+    },
+    {
+      "path": "evidence/mission-3d-video-20261115-local/capture-final/mission-web-3d-final.mp4",
+      "size_bytes": 12178911,
+      "sha256": "1b4817c648e6e4b9d040755a98180a72609c27f4329b06ad3a86d84f94807cdb"
+    },
+    {
+      "path": "evidence/mission-3d-video-20261115-local/capture-final/video-finalization-final.json",
+      "size_bytes": 5097,
+      "sha256": "337e8c0bddeed670b57b159de428a425304c23aacc68c52bbe9add21721ae73c"
+    },
+    {
+      "path": "evidence/mission-3d-video-20261115-local/map-analysis/crop-comparison.json",
+      "size_bytes": 36843,
+      "sha256": "f0e2fbd45b02ee358d90aea87b7a04226014d2fc6cee22c46ddf668df05e9180"
+    },
+    {
+      "path": "evidence/mission-3d-video-20261115-local/map-analysis/README.md",
+      "size_bytes": 4129,
+      "sha256": "f6947ee78d96581d399b2810549694062059fb619e1d6a97a5d3fc4725dbd7f0"
+    },
+    {
+      "path": "evidence/mission-3d-video-20261115-local/README.md",
+      "size_bytes": 8073,
+      "sha256": "d399a8b77b915d6d6be0f81fd54f9bfcb8f445caf7059a2d5e6b4af8211e6f5f"
+    },
+    {
+      "path": "evidence/mission-cost-experiment-20261115-local-v2/analytical-audit.json",
+      "size_bytes": 1145,
+      "sha256": "16f69f0d2cb67ce789948a324dc2286143b054248da52969a510d510c24da916"
+    },
+    {
+      "path": "evidence/mission-cost-experiment-20261115-local-v2/bunsen-eva-simulated.mp4",
+      "size_bytes": 448379,
+      "sha256": "12eefa8d821015c73a3d2fe81b396de29a2018fb328c00fc8c91a43cf2b4c2c0"
+    },
+    {
+      "path": "evidence/mission-cost-experiment-20261115-local-v2/experiment.json",
+      "size_bytes": 602016,
+      "sha256": "553dd7b4abd855830bd913f77233d2b9f1e26bb0d91ac32f9d5784290c37692b"
+    },
+    {
+      "path": "evidence/mission-cost-experiment-20261115-local-v2/README.md",
+      "size_bytes": 7779,
+      "sha256": "152133aa04d1d4552cc5eae1b9310d1bab7dd61edc3975eba36c823bb6663817"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/approved-control-check.json",
+      "size_bytes": 11698,
+      "sha256": "0c3be667de6cc0091bc363789f1c138398ff708d36d4e4e7f5981467a4dc2952"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/balanced-access.csv",
+      "size_bytes": 4741,
+      "sha256": "96dda562f6a8a5c8bfbf55345ee9c288b7c94ff0a5eb3bb9aa811f70fb1dd809"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/broad-delay-cases.json",
+      "size_bytes": 554767,
+      "sha256": "eb9380e1cfa57d775c1fe3215442a7557129cbde1fb9ce134810ef1533827446"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/case-catalogue-114730.csv",
+      "size_bytes": 271286,
+      "sha256": "66f68e3f22cabe1acb7b2e58574d5e06c2b6033a9753850fbf4f94240e2581a4"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/closure-recovery.json",
+      "size_bytes": 1058,
+      "sha256": "6535b0a220930e7ffa96bb547f945c4f60f90edb929264204be7020622aa8a0f"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/curated-cases.json",
+      "size_bytes": 351441,
+      "sha256": "28987ff6ba21b3d30cf7bb703c7f38a95cf5e032d38ec3d4ea11a428f9dd3110"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/decision-tree-114730.jsonl",
+      "size_bytes": 5086800,
+      "sha256": "dcdf06453ba19e190114a677a5c1346a17a03298f7235ed2445d29b066118027"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/endpoint-geometry-diagnostic.json",
+      "size_bytes": 84253,
+      "sha256": "0710c02d533d1de1a10c320f95d7b29d9ab3b992992e108beb26207de1877f1e"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/episodes-114729.csv",
+      "size_bytes": 1683193,
+      "sha256": "8432a512c3125a5d90a7b75aa957c9700b9440bfe1e2ac00ad9b643801ec690e"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/execution-snapshot.json",
+      "size_bytes": 1271,
+      "sha256": "ecdba45e81630f2d4500768fbf9a70b352bf89bece84292a349ddacd420ccf08"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/final-analysis.json",
+      "size_bytes": 155199,
+      "sha256": "8fdd20055d9d0adf767949984fce40267e361910052d59dbc0390d98cbb206dd"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/FINAL_MANIFEST.json",
+      "size_bytes": 294709,
+      "sha256": "ace12601e85df107c15a4e67b90d598f109bdae757f6da6b402491bacf8980be"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/input-lock.json",
+      "size_bytes": 4485,
+      "sha256": "619ea6cde125cb3c4769bd0138382604cda6b3fa5f40c13a1953b3f7f5d02390"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/inventory-114730.json",
+      "size_bytes": 14306,
+      "sha256": "42f9b2729b41bbc1476edf8d5dfa04acc11bb0950ae6199b1ad8a45a559a3723"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/isolated-memory.jsonl",
+      "size_bytes": 70429,
+      "sha256": "477330f5b0e50c3fdaffc9cff05200b97c3fb3cdcea7c204abd4ddf3c36b0b8f"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/margin-thresholds.jsonl",
+      "size_bytes": 219175,
+      "sha256": "4ed635fecd80a93178ddf2dac899bb8a6c3a2c78f9ca72d2664fb4ca5900471b"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/policy-pairs.csv",
+      "size_bytes": 20485,
+      "sha256": "e067765c84b7b000c84a948d70324c4ae29c8aa7a0b79a7a4a79819a34715290"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/post-analysis/itinerary-audit-summary.json",
+      "size_bytes": 1823,
+      "sha256": "3d5a0baa317ae9b243e83bae5c04276e844ec43732df465d470187471eda6690"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/post-analysis/itinerary-audits.jsonl",
+      "size_bytes": 3891072,
+      "sha256": "9e65fdedffc4ccf2557d5c4a643a453fd12437b7d980622789ab62df791f12c2"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/protocol-deviations.json",
+      "size_bytes": 2093,
+      "sha256": "277260616057ff70e75336aba8c060b05d474c2dbc11b7ef9764b4b83e8b03dc"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/protocol.json",
+      "size_bytes": 3024,
+      "sha256": "bd5257b4422376dd733e6779a45b8d6d7b3fbc1b9c3527377673cfd59a1ab70e"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/public/bunsen-512.npz",
+      "size_bytes": 43394,
+      "sha256": "1040100abd2cf797a96dc3e47d08b29b81047c46aa010beaa9d6255ea983f4ae"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/README.md",
+      "size_bytes": 19985,
+      "sha256": "9a32f75082a766f7fb5d8a3b76ee6f88dbfec05d171ddbdddea45d248c6bc0a9"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/report-metrics.json",
+      "size_bytes": 29441,
+      "sha256": "8108fbbd32cf47120619cf8c798292fbcc2467adf3b25ca98fda80db535c8746"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/research-code-lock.json",
+      "size_bytes": 949,
+      "sha256": "a4f8e23c85820da175cffefb540f45fbafeb7f134f641b6cfc4bdf43d1c7390c"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/revision-provenance.json",
+      "size_bytes": 3916,
+      "sha256": "053bf8685f628818bf4c65cde75e285712ed801fd61d576bb84c5068456268cb"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/source-lock.json",
+      "size_bytes": 10458,
+      "sha256": "758e101ba00b3f773358223b06fe6b2a80959d9ef8b38229e6650d720f63672c"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/summary-114730.json",
+      "size_bytes": 470203,
+      "sha256": "77ff6ad6c2fe898736f08a0e1fd7ffc864c9f3083ed6bf7c8bdbb6d80898a799"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/supplemental-context.json",
+      "size_bytes": 3948,
+      "sha256": "cd82e17a17d9f2a65a799edcdbe31486aa51cb440b4e96a9c06370419263b33e"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/validation/checks.json",
+      "size_bytes": 6012,
+      "sha256": "a627ce3f1cd6e038e09a6177d3349d3112c35a61a3b5e66ef3feea3837dc9a39"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/verification-114728.json",
+      "size_bytes": 93251,
+      "sha256": "20bc0f652ed75006eeb2c81b15926a3ff210a9025bc0f7282524a62967bf473d"
+    }
+  ]
+}
