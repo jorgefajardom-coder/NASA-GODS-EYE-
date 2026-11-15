@@ -85,8 +85,10 @@ resource-aware route planner, a mission authority, a ROS 2 simulation vertical
 with a gateway and replay recorder, and a 3D web viewer that plays saved runs
 offline.
 
-**Status (2026-11-14): mission authority, planner, data/mapping, gateway and web
-viewer are implemented and on `main`; integrated mission acceptance is pending.** Nothing in
+**Status (2026-11-15): mission authority, planner, data/mapping, gateway and web
+viewer are implemented and on `main`, and the public site shows the six Mars zones (PR #36);
+PRs #37 (viewer and submission texts) and #38 (auxiliary data layers) are open for review;
+integrated mission acceptance is pending.** Nothing in
 this repository is a validated LIVE mission. MOCK providers, synthetic
 observations, replays and successful builds are labelled as such and are not
 mission evidence. Final English video/project-page links and acceptance remain
@@ -182,20 +184,24 @@ sequenceDiagram
 
 ## Branches and pull requests
 
-Snapshot of the remote on 2026-11-14 (`origin/main` = `b5dc681`). See
-[docs/team.md](docs/team.md) for the authoritative ownership record.
+Snapshot of the remote on 2026-11-15 (`origin/main` = `9013beb`). See
+[docs/team.md](docs/team.md) for the authoritative ownership record. Open pull
+requests are pending review: their features are not on `main` or the public site
+until they are merged.
 
 | Branch | Owner | State |
 | --- | --- | --- |
-| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#26 merged |
-| `feat/ux` | Jorge | Web viewer; PRs #5, #19, #23 and #27 are merged in main (offline viewer, public raster input, intro, first person, orbital preview (since replaced by the terrain scan), route guide and text access). PR #29 open: first-person rework, drone camera, helmet and artificial light, Mars sky, route sufficiency alerts, render tiers, demo-only run selector |
-| `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI; last merged in PR #18 |
-| `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service; merged in PRs #2 and #12 |
-| `feat/data` | Daniel | Public terrain data, mapping, provenance and control points; merged in PRs #8 and #24 (configurable terrain region) |
-| `feat/mission` | David | Mission authority, resource profiles and acceptance; merged in PRs #10, #14 and #25 (activity cost evidence) |
+| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#36 merged |
+| `feat/ux` | Jorge | Web viewer. Merged: #5, #19, #23, #27 (route guide, interface entrance, text access), #29 (first-person rework, drone camera, helmet and artificial light, Mars sky, route sufficiency alerts, render tiers) and #36 (Mars globe zone selector, six Mars zones, real NASA science sites, astronaut sites, rover cameras and photo tour, terrain-fitted arrival, MIT License, no-WebGL selector and image provenance fixes) |
+| `feat/challenge-gaps` | Jorge | **PR #37 open:** water and radiation for every zone, exhaled CO₂ and per-zone dose in the astronaut HUD, smoother rover camera in the photo tour, the project page in the official form order, the astronaut resources proposal and README updates |
+| `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI. Merged: #18, #32 (one-minute summary for judges) and #35 (private-browser replay record for AC-08) |
+| `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service. Merged: #2, #12 and #33 (resource safety and scientific cost validation) |
+| `feat/data` | Daniel | Public terrain data, mapping, provenance and control points. Merged: #8 and #24. **PR #38 open:** auxiliary Jezero layers (CTX orthoimage and geology) in the data package, published by the data node, with HTTP range caching |
+| `feat/mission` | David | Mission authority, resource profiles and acceptance. Merged: #10, #14, #25 (activity cost evidence) and #31 (patch-specific agent campaign proposal) |
+| `codex/audit-contract-reconciliation`, `codex/docs-delivery-reconciliation`, `codex/docs-science-extension-tree` | Jesus / David | Merged: #28 (estimated terrain and replay contract reconciliation), #30 (delivery conclusions and scope freeze) and #34 (science extension tree) |
 | `codex/mission-replay-recovery` | Jesus (with Jorge's history) | Continuous-pose replan recovery after a stop and strict web replay validation; merged in PR #21 |
 | `fix/recorder-shutdown` | Jesus | Recorder shutdown and replanning on new maps; merged in PR #26 |
-| `gh-pages` | Jorge + Jesus | Static viewer build from `main`, published by the Pages workflow |
+| `gh-pages` | Jorge + Jesus | Static viewer build from `main`, published by the Pages workflow (last publish: `main` `9013beb`, PR #36) |
 | `feature/web-replay-viewer` | Jorge | Historical viewer branch, ancestor of `feat/ux`; PR #6 closed, preserved |
 | `docs/agents-policy`, `codex/*` (other) | Owner / Jesus | Merged documentation and reconciliation branches, kept for traceability |
 
@@ -292,7 +298,8 @@ flowchart LR
   Spirit and Opportunity have no images in the feed, and the viewer says so.
 - Rover cameras and arm (`1`–`5` while following the rover): Navcam, Mastcam-Z with its zoom,
   front and rear Hazcam and WATSON, drawn from the camera nodes of the 3D model with published
-  fields of view; an arm close-up.
+  fields of view; an arm close-up. Camera changes ease over about a third of a second instead of jumping, the
+  view is stabilised relative to the rover, and the photo tour plays at 5× (10× can be chosen).
 - Real images (*Mars now*, `M` in first person, and the Atmos tab): Perseverance and Curiosity
   raw images from NASA's public feed, loaded only on request. Images keep their mission and stop:
   a rover's tour photos are never shown as another rover's latest images.
