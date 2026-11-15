@@ -33,6 +33,8 @@ The default run, *Recorded recovery · MOCK*, is a recording of the real planner
 on public Jezero terrain: the astronaut follows an estimated route, a simulated
 observation contradicts the map, the astronaut stops, receives a new route and
 returns. Video and project page: links will be added here before submission.
+How each part of the challenge is answered, and what is still future work:
+[project page draft](docs/project_page.md).
 
 **NASA data in the project.**
 

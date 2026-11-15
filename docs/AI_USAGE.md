@@ -872,3 +872,14 @@ the jsdom navigation regressions, and the validation record under
 software evidence; no image, video, NASA observation or mission result was
 generated. Existing asset declarations and watermarks remain intact. This cut
 does not close AC-08, steps 4/5, scientific approvals or organizer endorsement.
+
+## Zone water and radiation display and project page text
+
+Claude Code (Anthropic) assisted the display of the existing per-zone water and
+radiation context (`web/src/lib/zoneEnvironment.ts`, the Atmos panel and zone
+cards, with tests) and the English project-page draft `docs/project_page.md`.
+The values come unchanged from `web/scripts/data/zone_environment.json` (Mars
+Odyssey GRS, MSL RAD, Guo et al. 2018); the 4 h Marswalk dose is a linear
+display estimate without shielding or solar particle events. No image, video,
+audio or NASA observation was generated; scientific review of the wording and
+organizer endorsement remain open.

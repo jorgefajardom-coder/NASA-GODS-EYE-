@@ -1543,6 +1543,21 @@
         "evidence/pr36-viewer-regressions-20261115"
       ],
       "use": "Keep zone selection available in 2D and after failed WebGL context allocation; validate navigation and the existing recorded MOCK replay. Software check outputs are not generated NASA observations or mission results; no media generated, scientific approval or milestone closure."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "viewer_zone_environment_and_project_page_text",
+      "generation": "AI-assisted code, tests and English documentation text requested by the repository owner",
+      "paths": [
+        "web/src/lib/zoneEnvironment.ts",
+        "web/tests/zoneEnvironment.test.ts",
+        "web/src/components/AtmosPanel.tsx",
+        "web/src/components/ZoneSelector.tsx",
+        "web/src/App.tsx",
+        "web/src/styles.css",
+        "docs/project_page.md"
+      ],
+      "use": "Display the existing per-zone water (Mars Odyssey GRS) and radiation (MSL RAD and RAD's dose-pressure relation) context from web/scripts/data/zone_environment.json in the Atmos tab of every zone and on the zone cards, with a 4 h Marswalk example dose; draft the English project-page text that maps the challenge to delivered and pending items. The numeric values and their sources are unchanged NASA-derived data, not generated; the example dose is a linear display estimate without shielding or solar events. No media generated; no scientific approval or milestone closure."
     }
   ],
   "generated_media": [
