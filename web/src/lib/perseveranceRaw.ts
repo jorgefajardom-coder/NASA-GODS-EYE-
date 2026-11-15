@@ -1,0 +1,70 @@
+/**
+ * Mars Perseverance Raw Images (AGENTS.md section 10): the public NASA JSON feed behind
+ * https://mars.nasa.gov/mars2020/multimedia/raw-images/ . The viewer reads it only when the person
+ * asks, never at start-up, so the saved replay still works offline. The images are real and
+ * unprocessed but come from wherever the rover is now: they are not the replay's site, not terrain
+ * data and never reach the agents' map or the planner. Display only.
+ */
+export const RAW_FEED_URL = 'https://mars.nasa.gov/rss/api/?feed=raw_images&category=mars2020&feedtype=json&ver=1.2';
+export const RAW_GALLERY_URL = 'https://mars.nasa.gov/mars2020/multimedia/raw-images/';
+
+export interface RawImage {
+  id: string;
+  sol: number;
+  site: number | null;
+  instrument: string;
+  takenUtc: string;
+  credit: string;
+  /** 320 px browse image. */
+  thumbUrl: string;
+  /** 800 px browse image. */
+  mediumUrl: string;
+  /** NASA gallery page of the image. */
+  pageUrl: string;
+}
+
+export function rawFeedUrl(num: number): string {
+  return `${RAW_FEED_URL}&num=${num}&page=0&order=sol+desc`;
+}
+
+const NASA_HOST = /^https:\/\/mars\.nasa\.gov\//;
+const str = (v: unknown): string | null => (typeof v === 'string' && v ? v : null);
+
+/** Keeps only well-formed entries whose links stay on mars.nasa.gov over https. */
+export function parseRawImages(json: unknown): RawImage[] {
+  const list = (json as { images?: unknown } | null)?.images;
+  if (!Array.isArray(list)) return [];
+  const out: RawImage[] = [];
+  for (const raw of list as Array<Record<string, unknown> | null>) {
+    if (!raw) continue;
+    const files = (raw.image_files ?? {}) as Record<string, unknown>;
+    const thumb = str(files.small);
+    const medium = str(files.medium) ?? thumb;
+    const page = str(raw.link);
+    const id = str(raw.imageid);
+    const sol = typeof raw.sol === 'number' ? raw.sol : null;
+    if (!thumb || !medium || !page || !id || sol == null) continue;
+    if (![thumb, medium, page].every((u) => NASA_HOST.test(u))) continue;
+    const cam = (raw.camera ?? {}) as Record<string, unknown>;
+    out.push({
+      id,
+      sol,
+      site: typeof raw.site === 'number' ? raw.site : null,
+      instrument: str(cam.instrument) ?? 'UNKNOWN',
+      takenUtc: str(raw.date_taken_utc) ?? '',
+      credit: str(raw.credit) ?? 'NASA/JPL-Caltech',
+      thumbUrl: thumb,
+      mediumUrl: medium,
+      pageUrl: page,
+    });
+  }
+  return out;
+}
+
+/** Ground-view cameras first; SuperCam micro-images are close-ups of a single rock. */
+const isGroundView = (i: RawImage) => /NAVCAM|HAZCAM|MCZ|MASTCAM/i.test(i.instrument);
+
+/** The newest `n` images, ground-view cameras first, feed order kept inside each group. */
+export function pickRawImages(images: RawImage[], n: number): RawImage[] {
+  return [...images.filter(isGroundView), ...images.filter((i) => !isGroundView(i))].slice(0, n);
+}

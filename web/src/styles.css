@@ -2883,3 +2883,47 @@ input[type='checkbox'] {
 .sites__row--hidden {
   opacity: 0.45;
 }
+
+/* ---------------------------------------------------------------- Perseverance raw images (Atmos tab) */
+.rawimg__load,
+.rawimg__link {
+  font: inherit;
+  cursor: pointer;
+  color: var(--blue);
+  background: none;
+  border: 1px solid var(--blue);
+  padding: 3px 10px;
+}
+.rawimg__link {
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+}
+.rawimg__load:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.rawimg__err {
+  color: var(--amber);
+}
+.rawimg__grid {
+  list-style: none;
+  margin: 6px 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.rawimg__grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #05080b;
+  border: 1px solid var(--line-soft);
+}
+.rawimg__grid span {
+  display: block;
+  color: var(--gray);
+}

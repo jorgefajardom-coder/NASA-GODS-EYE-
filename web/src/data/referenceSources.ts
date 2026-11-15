@@ -39,7 +39,7 @@ export const REFERENCE_SOURCES: ReadonlyArray<ReferenceSource> = [
   {
     name: 'Mars Perseverance Raw Images',
     url: 'https://mars.nasa.gov/mars2020/multimedia/raw-images/',
-    use: 'Ground-level Jezero images by sol, camera, site and drive (public JSON feed) to illustrate what the surface looks like at a waypoint.',
-    status: 'candidate',
+    use: 'Latest Perseverance raw images from the public JSON feed, loaded only when asked in the Atmos tab (needs a network; they show where the rover is now, not the replay site, and never reach the map or planner).',
+    status: 'used',
   },
 ];
