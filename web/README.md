@@ -84,7 +84,8 @@ layers, Atmos and Mission replay. The 3D labels always stay under the panels.
 The **agent HUD** (bottom right) is a circle with six buttons on its rim: oxygen, energy, time,
 route, atmosphere and radiation dose. With no option, or with Route, the circle is the minimap:
 heading up (it turns with the selected agent, the N moves round the rim), 450 m around the agent,
-with route, coverage, sites and other agents. Each other option fills the circle with its own gauge,
+with route, coverage, sites, other agents and a fading trail of where each agent was in the last 4 minutes
+(the rover's drive shows behind it). Its elevation bands hold equal shares of the map and its shading adapts to the relief, so a flat area still shows its shape. Each other option fills the circle with its own gauge,
 and its button glows while active:
 
 | Option | Gauge |
@@ -138,7 +139,7 @@ Poses between received samples follow a monotone cubic (PCHIP) through the sampl
 
 **Opening and transitions.** The featured recorder entry omits the video intro.
 The illustrative demo retains it (`?nointro=1` skips it). Terrain relief rises
-visually over 2.5 s, zone by zone; map-version/layer changes morph heights over
+visually over 1.4 s, zone by zone; map-version/layer changes morph heights over
 1.8 s. These animations and the panel entrances are display only; reduced motion
 skips them. Recorded heights, poses and mission time are not altered.
 
