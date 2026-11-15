@@ -1,0 +1,13 @@
+warning: in the working copy of 'docs/AI_USAGE.md', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'docs/ai_usage.json', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'docs/handoffs/david.md', CRLF will be replaced by LF the next time Git touches it
+{
+  "status": "PASS",
+  "chapters": 9,
+  "english_reader_pages": 14,
+  "generated_assets": 21,
+  "GIFs": 3,
+  "local_links_checked": 243,
+  "decoded_GIF_frames_watermark_checked": 57,
+  "technical_tree_unchanged_from_task_start": true
+}

@@ -1,0 +1,2382 @@
+{
+  "classification": "PUBLIC_MODEL_DIAGNOSTIC_NOT_ROCK_STEP_MEASUREMENT",
+  "source_sha": "7ad605039a524d5b5cbe2c983f2da9113f8b1ce9",
+  "meaning": "Count endpoint rise/slope tests on public adjacent-cell pairs after the published mapping cell mask. This omits footprint clearance, diagonal corner admission and graph connectivity; it is not a route-feasibility oracle.",
+  "causal_limit": "A step-only exclusion demonstrates that endpoint rise can reject a pair allowed by its slope limit. Counts do not prove it is the sole cause of any complete route rejection.",
+  "native_resolution_m": 20,
+  "computational_resolution_m": 4,
+  "profiles_approved": false,
+  "parameters_modified": false,
+  "rows": [
+    {
+      "map_id": "bright-1024",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 39298,
+      "total_cells": 65536,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 38842,
+          "endpoint_admissible_but_step_rejected": 14463,
+          "endpoint_admissible_step_only_rejected": 14463,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 24379,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 38436,
+          "endpoint_admissible_but_step_rejected": 21631,
+          "endpoint_admissible_step_only_rejected": 21631,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 16805,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 38197,
+          "endpoint_admissible_but_step_rejected": 23134,
+          "endpoint_admissible_step_only_rejected": 23132,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 15063,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 38139,
+          "endpoint_admissible_but_step_rejected": 26290,
+          "endpoint_admissible_step_only_rejected": 26283,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 11849,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bright-1024",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 59982,
+      "total_cells": 65536,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 59621,
+          "endpoint_admissible_but_step_rejected": 26549,
+          "endpoint_admissible_step_only_rejected": 26549,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 33072,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 59373,
+          "endpoint_admissible_but_step_rejected": 42316,
+          "endpoint_admissible_step_only_rejected": 42316,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 17057,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 59086,
+          "endpoint_admissible_but_step_rejected": 42347,
+          "endpoint_admissible_step_only_rejected": 42347,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 16739,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 59088,
+          "endpoint_admissible_but_step_rejected": 47013,
+          "endpoint_admissible_step_only_rejected": 47013,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 12075,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bright-128",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 501,
+      "total_cells": 1024,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 483,
+          "endpoint_admissible_but_step_rejected": 0,
+          "endpoint_admissible_step_only_rejected": 0,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 483,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 469,
+          "endpoint_admissible_but_step_rejected": 460,
+          "endpoint_admissible_step_only_rejected": 460,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 9,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 455,
+          "endpoint_admissible_but_step_rejected": 455,
+          "endpoint_admissible_step_only_rejected": 455,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 452,
+          "endpoint_admissible_but_step_rejected": 421,
+          "endpoint_admissible_step_only_rejected": 421,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 31,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bright-128",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 849,
+      "total_cells": 1024,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 817,
+          "endpoint_admissible_but_step_rejected": 19,
+          "endpoint_admissible_step_only_rejected": 19,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 798,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 817,
+          "endpoint_admissible_but_step_rejected": 808,
+          "endpoint_admissible_step_only_rejected": 808,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 9,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 793,
+          "endpoint_admissible_but_step_rejected": 793,
+          "endpoint_admissible_step_only_rejected": 793,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 786,
+          "endpoint_admissible_but_step_rejected": 755,
+          "endpoint_admissible_step_only_rejected": 755,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 31,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bright-2048",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 151773,
+      "total_cells": 262144,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 150603,
+          "endpoint_admissible_but_step_rejected": 95237,
+          "endpoint_admissible_step_only_rejected": 95237,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 55366,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 149894,
+          "endpoint_admissible_but_step_rejected": 71674,
+          "endpoint_admissible_step_only_rejected": 71674,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 78220,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 149333,
+          "endpoint_admissible_but_step_rejected": 96505,
+          "endpoint_admissible_step_only_rejected": 96501,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 52828,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 149115,
+          "endpoint_admissible_but_step_rejected": 102585,
+          "endpoint_admissible_step_only_rejected": 102576,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 46530,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bright-2048",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 232585,
+      "total_cells": 262144,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 231560,
+          "endpoint_admissible_but_step_rejected": 156164,
+          "endpoint_admissible_step_only_rejected": 156164,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 75396,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 230790,
+          "endpoint_admissible_but_step_rejected": 150185,
+          "endpoint_admissible_step_only_rejected": 150185,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 80605,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 230053,
+          "endpoint_admissible_but_step_rejected": 168325,
+          "endpoint_admissible_step_only_rejected": 168320,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 61728,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 230191,
+          "endpoint_admissible_but_step_rejected": 179624,
+          "endpoint_admissible_step_only_rejected": 179623,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 50567,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bright-256",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 1984,
+      "total_cells": 4096,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 1949,
+          "endpoint_admissible_but_step_rejected": 27,
+          "endpoint_admissible_step_only_rejected": 27,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 1922,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 1920,
+          "endpoint_admissible_but_step_rejected": 1009,
+          "endpoint_admissible_step_only_rejected": 1009,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 911,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 1892,
+          "endpoint_admissible_but_step_rejected": 1269,
+          "endpoint_admissible_step_only_rejected": 1269,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 623,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 1886,
+          "endpoint_admissible_but_step_rejected": 855,
+          "endpoint_admissible_step_only_rejected": 855,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 1031,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bright-256",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 2954,
+      "total_cells": 4096,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 2890,
+          "endpoint_admissible_but_step_rejected": 327,
+          "endpoint_admissible_step_only_rejected": 327,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 2563,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 2827,
+          "endpoint_admissible_but_step_rejected": 1916,
+          "endpoint_admissible_step_only_rejected": 1916,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 911,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 2782,
+          "endpoint_admissible_but_step_rejected": 2159,
+          "endpoint_admissible_step_only_rejected": 2159,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 623,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 2774,
+          "endpoint_admissible_but_step_rejected": 1743,
+          "endpoint_admissible_step_only_rejected": 1743,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 1031,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bright-512",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 11313,
+      "total_cells": 16384,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 11188,
+          "endpoint_admissible_but_step_rejected": 2000,
+          "endpoint_admissible_step_only_rejected": 2000,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 9188,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 11052,
+          "endpoint_admissible_but_step_rejected": 6299,
+          "endpoint_admissible_step_only_rejected": 6299,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 4753,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 10952,
+          "endpoint_admissible_but_step_rejected": 6490,
+          "endpoint_admissible_step_only_rejected": 6490,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 4462,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 10950,
+          "endpoint_admissible_but_step_rejected": 6651,
+          "endpoint_admissible_step_only_rejected": 6650,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 4299,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bright-512",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 13870,
+      "total_cells": 16384,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 13731,
+          "endpoint_admissible_but_step_rejected": 3206,
+          "endpoint_admissible_step_only_rejected": 3206,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 10525,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 13612,
+          "endpoint_admissible_but_step_rejected": 8859,
+          "endpoint_admissible_step_only_rejected": 8859,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 4753,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 13497,
+          "endpoint_admissible_but_step_rejected": 8786,
+          "endpoint_admissible_step_only_rejected": 8786,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 4711,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 13494,
+          "endpoint_admissible_but_step_rejected": 9195,
+          "endpoint_admissible_step_only_rejected": 9195,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 4299,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bunsen-1024",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 59894,
+      "total_cells": 65536,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 59549,
+          "endpoint_admissible_but_step_rejected": 23755,
+          "endpoint_admissible_step_only_rejected": 23755,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 35794,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 59392,
+          "endpoint_admissible_but_step_rejected": 27771,
+          "endpoint_admissible_step_only_rejected": 27771,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 31621,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 59165,
+          "endpoint_admissible_but_step_rejected": 38513,
+          "endpoint_admissible_step_only_rejected": 38513,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 20652,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 59074,
+          "endpoint_admissible_but_step_rejected": 30181,
+          "endpoint_admissible_step_only_rejected": 30181,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 28893,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bunsen-1024",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 65294,
+      "total_cells": 65536,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 65018,
+          "endpoint_admissible_but_step_rejected": 26659,
+          "endpoint_admissible_step_only_rejected": 26659,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 38359,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 65004,
+          "endpoint_admissible_but_step_rejected": 33383,
+          "endpoint_admissible_step_only_rejected": 33383,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 31621,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 64751,
+          "endpoint_admissible_but_step_rejected": 43936,
+          "endpoint_admissible_step_only_rejected": 43936,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 20815,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 64730,
+          "endpoint_admissible_but_step_rejected": 35837,
+          "endpoint_admissible_step_only_rejected": 35837,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 28893,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bunsen-128",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 998,
+      "total_cells": 1024,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 966,
+          "endpoint_admissible_but_step_rejected": 49,
+          "endpoint_admissible_step_only_rejected": 49,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 917,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 966,
+          "endpoint_admissible_but_step_rejected": 966,
+          "endpoint_admissible_step_only_rejected": 966,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 937,
+          "endpoint_admissible_but_step_rejected": 937,
+          "endpoint_admissible_step_only_rejected": 937,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 935,
+          "endpoint_admissible_but_step_rejected": 723,
+          "endpoint_admissible_step_only_rejected": 723,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 212,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bunsen-128",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 1024,
+      "total_cells": 1024,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 992,
+          "endpoint_admissible_but_step_rejected": 49,
+          "endpoint_admissible_step_only_rejected": 49,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 943,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 992,
+          "endpoint_admissible_but_step_rejected": 992,
+          "endpoint_admissible_step_only_rejected": 992,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 961,
+          "endpoint_admissible_but_step_rejected": 961,
+          "endpoint_admissible_step_only_rejected": 961,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 961,
+          "endpoint_admissible_but_step_rejected": 749,
+          "endpoint_admissible_step_only_rejected": 749,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 212,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bunsen-2048",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 244304,
+      "total_cells": 262144,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 243432,
+          "endpoint_admissible_but_step_rejected": 125197,
+          "endpoint_admissible_step_only_rejected": 125197,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 118235,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 242879,
+          "endpoint_admissible_but_step_rejected": 93815,
+          "endpoint_admissible_step_only_rejected": 93815,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 149064,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 242373,
+          "endpoint_admissible_but_step_rejected": 154337,
+          "endpoint_admissible_step_only_rejected": 154335,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 88036,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 242127,
+          "endpoint_admissible_but_step_rejected": 118564,
+          "endpoint_admissible_step_only_rejected": 118559,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 123563,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bunsen-2048",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 260915,
+      "total_cells": 262144,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 260367,
+          "endpoint_admissible_but_step_rejected": 136336,
+          "endpoint_admissible_step_only_rejected": 136336,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 124031,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 260250,
+          "endpoint_admissible_but_step_rejected": 110517,
+          "endpoint_admissible_step_only_rejected": 110517,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 149733,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 259741,
+          "endpoint_admissible_but_step_rejected": 170315,
+          "endpoint_admissible_step_only_rejected": 170315,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 89426,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 259718,
+          "endpoint_admissible_but_step_rejected": 136016,
+          "endpoint_admissible_step_only_rejected": 136016,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 123702,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bunsen-256",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 3674,
+      "total_cells": 4096,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 3610,
+          "endpoint_admissible_but_step_rejected": 869,
+          "endpoint_admissible_step_only_rejected": 869,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 2741,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 3583,
+          "endpoint_admissible_but_step_rejected": 3392,
+          "endpoint_admissible_step_only_rejected": 3392,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 191,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 3530,
+          "endpoint_admissible_but_step_rejected": 3400,
+          "endpoint_admissible_step_only_rejected": 3400,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 130,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 3525,
+          "endpoint_admissible_but_step_rejected": 1951,
+          "endpoint_admissible_step_only_rejected": 1951,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 1574,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bunsen-256",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 4096,
+      "total_cells": 4096,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 4032,
+          "endpoint_admissible_but_step_rejected": 879,
+          "endpoint_admissible_step_only_rejected": 879,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 3153,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 4032,
+          "endpoint_admissible_but_step_rejected": 3841,
+          "endpoint_admissible_step_only_rejected": 3841,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 191,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 3969,
+          "endpoint_admissible_but_step_rejected": 3839,
+          "endpoint_admissible_step_only_rejected": 3839,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 130,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 3969,
+          "endpoint_admissible_but_step_rejected": 2395,
+          "endpoint_admissible_step_only_rejected": 2395,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 1574,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bunsen-512",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 14798,
+      "total_cells": 16384,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 14635,
+          "endpoint_admissible_but_step_rejected": 5170,
+          "endpoint_admissible_step_only_rejected": 5170,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 9465,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 14578,
+          "endpoint_admissible_but_step_rejected": 9882,
+          "endpoint_admissible_step_only_rejected": 9882,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 4696,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 14458,
+          "endpoint_admissible_but_step_rejected": 11175,
+          "endpoint_admissible_step_only_rejected": 11175,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 3283,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 14428,
+          "endpoint_admissible_but_step_rejected": 6582,
+          "endpoint_admissible_step_only_rejected": 6582,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 7846,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "bunsen-512",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 16384,
+      "total_cells": 16384,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 16256,
+          "endpoint_admissible_but_step_rejected": 5812,
+          "endpoint_admissible_step_only_rejected": 5812,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 10444,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 16256,
+          "endpoint_admissible_but_step_rejected": 11560,
+          "endpoint_admissible_step_only_rejected": 11560,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 4696,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 16129,
+          "endpoint_admissible_but_step_rejected": 12846,
+          "endpoint_admissible_step_only_rejected": 12846,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 3283,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 16129,
+          "endpoint_admissible_but_step_rejected": 8283,
+          "endpoint_admissible_step_only_rejected": 8283,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 7846,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "hawksbill-1024",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 54400,
+      "total_cells": 65536,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 53910,
+          "endpoint_admissible_but_step_rejected": 22230,
+          "endpoint_admissible_step_only_rejected": 22230,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 31680,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 53735,
+          "endpoint_admissible_but_step_rejected": 21966,
+          "endpoint_admissible_step_only_rejected": 21966,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 31769,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 53372,
+          "endpoint_admissible_but_step_rejected": 26229,
+          "endpoint_admissible_step_only_rejected": 26229,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 27143,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 53383,
+          "endpoint_admissible_but_step_rejected": 33461,
+          "endpoint_admissible_step_only_rejected": 33458,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 19922,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "hawksbill-1024",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 63981,
+      "total_cells": 65536,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 63663,
+          "endpoint_admissible_but_step_rejected": 29276,
+          "endpoint_admissible_step_only_rejected": 29276,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 34387,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 65280,
+          "endpoint_cells_admissible_pairs": 63589,
+          "endpoint_admissible_but_step_rejected": 30941,
+          "endpoint_admissible_step_only_rejected": 30941,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 32648,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 63310,
+          "endpoint_admissible_but_step_rejected": 35430,
+          "endpoint_admissible_step_only_rejected": 35430,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 27880,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 65025,
+          "endpoint_cells_admissible_pairs": 63307,
+          "endpoint_admissible_but_step_rejected": 42847,
+          "endpoint_admissible_step_only_rejected": 42847,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 20460,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "hawksbill-128",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 586,
+      "total_cells": 1024,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 555,
+          "endpoint_admissible_but_step_rejected": 170,
+          "endpoint_admissible_step_only_rejected": 170,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 385,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 539,
+          "endpoint_admissible_but_step_rejected": 539,
+          "endpoint_admissible_step_only_rejected": 539,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 517,
+          "endpoint_admissible_but_step_rejected": 517,
+          "endpoint_admissible_step_only_rejected": 517,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 514,
+          "endpoint_admissible_but_step_rejected": 514,
+          "endpoint_admissible_step_only_rejected": 514,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "hawksbill-128",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 1014,
+      "total_cells": 1024,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 982,
+          "endpoint_admissible_but_step_rejected": 306,
+          "endpoint_admissible_step_only_rejected": 306,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 676,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 992,
+          "endpoint_cells_admissible_pairs": 982,
+          "endpoint_admissible_but_step_rejected": 982,
+          "endpoint_admissible_step_only_rejected": 982,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 951,
+          "endpoint_admissible_but_step_rejected": 951,
+          "endpoint_admissible_step_only_rejected": 951,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 961,
+          "endpoint_cells_admissible_pairs": 953,
+          "endpoint_admissible_but_step_rejected": 953,
+          "endpoint_admissible_step_only_rejected": 953,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 0,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "hawksbill-2048",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 227616,
+      "total_cells": 262144,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 226093,
+          "endpoint_admissible_but_step_rejected": 85521,
+          "endpoint_admissible_step_only_rejected": 85521,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 140572,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 225978,
+          "endpoint_admissible_but_step_rejected": 83547,
+          "endpoint_admissible_step_only_rejected": 83547,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 142431,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 224903,
+          "endpoint_admissible_but_step_rejected": 116074,
+          "endpoint_admissible_step_only_rejected": 116067,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 108829,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 224948,
+          "endpoint_admissible_but_step_rejected": 113580,
+          "endpoint_admissible_step_only_rejected": 113573,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 111368,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "hawksbill-2048",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 255819,
+      "total_cells": 262144,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 255019,
+          "endpoint_admissible_but_step_rejected": 109323,
+          "endpoint_admissible_step_only_rejected": 109323,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 145696,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 261632,
+          "endpoint_cells_admissible_pairs": 254941,
+          "endpoint_admissible_but_step_rejected": 109760,
+          "endpoint_admissible_step_only_rejected": 109760,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 145181,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 254300,
+          "endpoint_admissible_but_step_rejected": 143414,
+          "endpoint_admissible_step_only_rejected": 143413,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 110886,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 261121,
+          "endpoint_cells_admissible_pairs": 254261,
+          "endpoint_admissible_but_step_rejected": 139794,
+          "endpoint_admissible_step_only_rejected": 139788,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 114467,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "hawksbill-256",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 2322,
+      "total_cells": 4096,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 2250,
+          "endpoint_admissible_but_step_rejected": 406,
+          "endpoint_admissible_step_only_rejected": 406,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 1844,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 2222,
+          "endpoint_admissible_but_step_rejected": 1862,
+          "endpoint_admissible_step_only_rejected": 1862,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 360,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 2165,
+          "endpoint_admissible_but_step_rejected": 1812,
+          "endpoint_admissible_step_only_rejected": 1812,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 353,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 2162,
+          "endpoint_admissible_but_step_rejected": 2148,
+          "endpoint_admissible_step_only_rejected": 2147,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 14,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "hawksbill-256",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 3857,
+      "total_cells": 4096,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 3792,
+          "endpoint_admissible_but_step_rejected": 1042,
+          "endpoint_admissible_step_only_rejected": 1042,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 2750,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 4032,
+          "endpoint_cells_admissible_pairs": 3766,
+          "endpoint_admissible_but_step_rejected": 3406,
+          "endpoint_admissible_step_only_rejected": 3406,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 360,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 3708,
+          "endpoint_admissible_but_step_rejected": 3355,
+          "endpoint_admissible_step_only_rejected": 3355,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 353,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 3969,
+          "endpoint_cells_admissible_pairs": 3712,
+          "endpoint_admissible_but_step_rejected": 3698,
+          "endpoint_admissible_step_only_rejected": 3698,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 14,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "hawksbill-512",
+      "agent_id": "human_1",
+      "nominal_profile_parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 11878,
+      "total_cells": 16384,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 11676,
+          "endpoint_admissible_but_step_rejected": 4569,
+          "endpoint_admissible_step_only_rejected": 4569,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 7107,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 11579,
+          "endpoint_admissible_but_step_rejected": 6538,
+          "endpoint_admissible_step_only_rejected": 6538,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 5041,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 11413,
+          "endpoint_admissible_but_step_rejected": 6376,
+          "endpoint_admissible_step_only_rejected": 6376,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 5037,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 11442,
+          "endpoint_admissible_but_step_rejected": 9277,
+          "endpoint_admissible_step_only_rejected": 9274,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 2165,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    },
+    {
+      "map_id": "hawksbill-512",
+      "agent_id": "rover_1",
+      "nominal_profile_parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "sigma_policy_override_m": 3.0,
+      "admissible_estimated_cells": 15554,
+      "total_cells": 16384,
+      "edge_directions": [
+        {
+          "delta_row_col": [
+            0,
+            1
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 15398,
+          "endpoint_admissible_but_step_rejected": 6684,
+          "endpoint_admissible_step_only_rejected": 6684,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 8714,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            0
+          ],
+          "horizontal_distance_m": 4.0,
+          "finite_pairs": 16256,
+          "endpoint_cells_admissible_pairs": 15355,
+          "endpoint_admissible_but_step_rejected": 10304,
+          "endpoint_admissible_step_only_rejected": 10304,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 5051,
+          "effective_grade_limit_from_step_deg": 2.862405226111748
+        },
+        {
+          "delta_row_col": [
+            1,
+            1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 15211,
+          "endpoint_admissible_but_step_rejected": 10145,
+          "endpoint_admissible_step_only_rejected": 10145,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 5066,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        },
+        {
+          "delta_row_col": [
+            1,
+            -1
+          ],
+          "horizontal_distance_m": 5.656854249492381,
+          "finite_pairs": 16129,
+          "endpoint_cells_admissible_pairs": 15219,
+          "endpoint_admissible_but_step_rejected": 12617,
+          "endpoint_admissible_step_only_rejected": 12617,
+          "endpoint_admissible_slope_only_rejected": 0,
+          "endpoint_admissible_and_step_slope_pass": 2602,
+          "effective_grade_limit_from_step_deg": 2.02486829727734
+        }
+      ]
+    }
+  ]
+}

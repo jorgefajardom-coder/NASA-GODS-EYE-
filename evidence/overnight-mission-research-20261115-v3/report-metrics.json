@@ -1,0 +1,1123 @@
+{
+  "created_at_utc": "2026-11-15T11:51:04.227166+00:00",
+  "summary": "summary-114730.json",
+  "analysis_code_sha256": "66adb2ce54aa10f35beeb9df5e62dea39f1d2d20e60b26c9966d04520e065824",
+  "balanced_FAST_none": [
+    {
+      "map_id": "bright-1024",
+      "agent_id": "human_1",
+      "episodes": "65",
+      "B_candidate_fits": "2",
+      "full_pending_service_fits": "0",
+      "information_changes": "0",
+      "information_censored": "7",
+      "delay_changes": "0",
+      "UNKNOWN": "5"
+    },
+    {
+      "map_id": "bright-1024",
+      "agent_id": "rover_1",
+      "episodes": "65",
+      "B_candidate_fits": "2",
+      "full_pending_service_fits": "2",
+      "information_changes": "0",
+      "information_censored": "14",
+      "delay_changes": "0",
+      "UNKNOWN": "14"
+    },
+    {
+      "map_id": "bright-512",
+      "agent_id": "human_1",
+      "episodes": "65",
+      "B_candidate_fits": "14",
+      "full_pending_service_fits": "1",
+      "information_changes": "0",
+      "information_censored": "0",
+      "delay_changes": "0",
+      "UNKNOWN": ""
+    },
+    {
+      "map_id": "bright-512",
+      "agent_id": "rover_1",
+      "episodes": "65",
+      "B_candidate_fits": "15",
+      "full_pending_service_fits": "15",
+      "information_changes": "1",
+      "information_censored": "6",
+      "delay_changes": "0",
+      "UNKNOWN": "6"
+    },
+    {
+      "map_id": "bunsen-1024",
+      "agent_id": "human_1",
+      "episodes": "65",
+      "B_candidate_fits": "2",
+      "full_pending_service_fits": "0",
+      "information_changes": "0",
+      "information_censored": "38",
+      "delay_changes": "0",
+      "UNKNOWN": "36"
+    },
+    {
+      "map_id": "bunsen-1024",
+      "agent_id": "rover_1",
+      "episodes": "65",
+      "B_candidate_fits": "2",
+      "full_pending_service_fits": "1",
+      "information_changes": "0",
+      "information_censored": "42",
+      "delay_changes": "0",
+      "UNKNOWN": "41"
+    },
+    {
+      "map_id": "bunsen-512",
+      "agent_id": "human_1",
+      "episodes": "65",
+      "B_candidate_fits": "10",
+      "full_pending_service_fits": "0",
+      "information_changes": "0",
+      "information_censored": "12",
+      "delay_changes": "0",
+      "UNKNOWN": "9"
+    },
+    {
+      "map_id": "bunsen-512",
+      "agent_id": "rover_1",
+      "episodes": "65",
+      "B_candidate_fits": "3",
+      "full_pending_service_fits": "3",
+      "information_changes": "0",
+      "information_censored": "1",
+      "delay_changes": "1",
+      "UNKNOWN": "1"
+    },
+    {
+      "map_id": "hawksbill-1024",
+      "agent_id": "human_1",
+      "episodes": "65",
+      "B_candidate_fits": "10",
+      "full_pending_service_fits": "1",
+      "information_changes": "0",
+      "information_censored": "23",
+      "delay_changes": "0",
+      "UNKNOWN": "16"
+    },
+    {
+      "map_id": "hawksbill-1024",
+      "agent_id": "rover_1",
+      "episodes": "65",
+      "B_candidate_fits": "10",
+      "full_pending_service_fits": "7",
+      "information_changes": "1",
+      "information_censored": "22",
+      "delay_changes": "0",
+      "UNKNOWN": "19"
+    },
+    {
+      "map_id": "hawksbill-512",
+      "agent_id": "human_1",
+      "episodes": "65",
+      "B_candidate_fits": "14",
+      "full_pending_service_fits": "1",
+      "information_changes": "0",
+      "information_censored": "1",
+      "delay_changes": "0",
+      "UNKNOWN": "1"
+    },
+    {
+      "map_id": "hawksbill-512",
+      "agent_id": "rover_1",
+      "episodes": "65",
+      "B_candidate_fits": "12",
+      "full_pending_service_fits": "12",
+      "information_changes": "2",
+      "information_censored": "0",
+      "delay_changes": "0",
+      "UNKNOWN": ""
+    }
+  ],
+  "public_scale_FAST_sigma3": [
+    {
+      "map_id": "bright-1024",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 129175552,
+      "wall_p50_s": 0.1289734000001772,
+      "wall_p95_s": 0.13124185000033323,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "bright-1024",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 129175552,
+      "wall_p50_s": 1.995665999999801,
+      "wall_p95_s": 2.0038255800000115,
+      "statuses": [
+        "UNKNOWN",
+        "UNKNOWN",
+        "UNKNOWN"
+      ],
+      "reasons": [
+        "SEARCH_LIMIT",
+        "SEARCH_LIMIT",
+        "SEARCH_LIMIT"
+      ]
+    },
+    {
+      "map_id": "bright-128",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 129175552,
+      "wall_p50_s": 0.0011288000005151844,
+      "wall_p95_s": 0.001135550000344665,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "bright-128",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 129175552,
+      "wall_p50_s": 0.005027700000027835,
+      "wall_p95_s": 0.005827799999951822,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "bright-2048",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 167124992,
+      "wall_p50_s": 0.7192381000004389,
+      "wall_p95_s": 0.7300547500000902,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "bright-2048",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 167124992,
+      "wall_p50_s": 1.9909990999994989,
+      "wall_p95_s": 2.0113743799998702,
+      "statuses": [
+        "UNKNOWN",
+        "UNKNOWN",
+        "UNKNOWN"
+      ],
+      "reasons": [
+        "SEARCH_LIMIT",
+        "SEARCH_LIMIT",
+        "SEARCH_LIMIT"
+      ]
+    },
+    {
+      "map_id": "bright-256",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 167124992,
+      "wall_p50_s": 0.004828599999200378,
+      "wall_p95_s": 0.006151329999738664,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "bright-256",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 167124992,
+      "wall_p50_s": 0.5273501000001488,
+      "wall_p95_s": 0.5565616699999737,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "bright-512",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 167124992,
+      "wall_p50_s": 0.027783399999862013,
+      "wall_p95_s": 0.02916012999985469,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "bright-512",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 167124992,
+      "wall_p50_s": 1.996669600000132,
+      "wall_p95_s": 2.0108773600003587,
+      "statuses": [
+        "UNKNOWN",
+        "UNKNOWN",
+        "UNKNOWN"
+      ],
+      "reasons": [
+        "SEARCH_LIMIT",
+        "SEARCH_LIMIT",
+        "SEARCH_LIMIT"
+      ]
+    },
+    {
+      "map_id": "bunsen-1024",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 167124992,
+      "wall_p50_s": 0.17245660000025964,
+      "wall_p95_s": 0.18214393000034762,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "bunsen-1024",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 167124992,
+      "wall_p50_s": 0.1308683999995992,
+      "wall_p95_s": 0.1347298500004399,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "bunsen-128",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 167124992,
+      "wall_p50_s": 0.05367699999987963,
+      "wall_p95_s": 0.0638468200002535,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "bunsen-128",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 167124992,
+      "wall_p50_s": 0.0414944000003743,
+      "wall_p95_s": 0.04577669000027527,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "bunsen-2048",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.47384130000045843,
+      "wall_p95_s": 0.49185353999992004,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "bunsen-2048",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.3417323000003307,
+      "wall_p95_s": 0.3569052200000442,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "bunsen-256",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.11189030000059574,
+      "wall_p95_s": 0.132539270000143,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "bunsen-256",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.058787500000107684,
+      "wall_p95_s": 0.07005865000055564,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "bunsen-512",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.1363652000000002,
+      "wall_p95_s": 0.13805306000022027,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "bunsen-512",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.06578449999960867,
+      "wall_p95_s": 0.07039844000046287,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "control-128",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.025964200000089477,
+      "wall_p95_s": 0.027237970000260247,
+      "statuses": [
+        "FEASIBLE",
+        "FEASIBLE",
+        "FEASIBLE"
+      ],
+      "reasons": [
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL",
+        "FEASIBLE_UNDER_MODEL"
+      ]
+    },
+    {
+      "map_id": "control-128",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.09805099999994127,
+      "wall_p95_s": 0.12270200000011755,
+      "statuses": [
+        "INSUFFICIENT_BUDGET",
+        "INSUFFICIENT_BUDGET",
+        "INSUFFICIENT_BUDGET"
+      ],
+      "reasons": [
+        "BUDGET_EXCEEDED",
+        "BUDGET_EXCEEDED",
+        "BUDGET_EXCEEDED"
+      ]
+    },
+    {
+      "map_id": "hawksbill-1024",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.18648649999977351,
+      "wall_p95_s": 0.19453033999943728,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "hawksbill-1024",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.11291290000008303,
+      "wall_p95_s": 0.1297252599996682,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "hawksbill-128",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.0012010000000373111,
+      "wall_p95_s": 0.001871499999469961,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "hawksbill-128",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 168230912,
+      "wall_p50_s": 0.0026864999999816064,
+      "wall_p95_s": 0.004225049999422481,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "hawksbill-2048",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 171651072,
+      "wall_p50_s": 0.6500045000002501,
+      "wall_p95_s": 0.6539670200004366,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "hawksbill-2048",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 171651072,
+      "wall_p50_s": 0.5052622000002884,
+      "wall_p95_s": 0.5165196699997068,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "hawksbill-256",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 171651072,
+      "wall_p50_s": 0.0048882000000958215,
+      "wall_p95_s": 0.0051934799999799,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "hawksbill-256",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 171651072,
+      "wall_p50_s": 0.009657799999331473,
+      "wall_p95_s": 0.009894139999778418,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "hawksbill-512",
+      "surface": "public_2_5d",
+      "agent_id": "human_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 171651072,
+      "wall_p50_s": 0.022239199999603443,
+      "wall_p95_s": 0.025167619999228917,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    },
+    {
+      "map_id": "hawksbill-512",
+      "surface": "public_2_5d",
+      "agent_id": "rover_1",
+      "strict_sigma": false,
+      "mode": "FAST",
+      "planner_process_peak_memory_bytes": 171651072,
+      "wall_p50_s": 0.024722299999666575,
+      "wall_p95_s": 0.03684485000021596,
+      "statuses": [
+        "NO_PATH",
+        "NO_PATH",
+        "NO_PATH"
+      ],
+      "reasons": [
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH",
+        "NO_ADMISSIBLE_PATH"
+      ]
+    }
+  ],
+  "isolated_peak_MiB": [
+    {
+      "side_m": 128,
+      "n": 6,
+      "min": 91.421875,
+      "max": 91.96484375
+    },
+    {
+      "side_m": 256,
+      "n": 6,
+      "min": 91.58203125,
+      "max": 93.0
+    },
+    {
+      "side_m": 512,
+      "n": 6,
+      "min": 93.36328125,
+      "max": 100.65625
+    },
+    {
+      "side_m": 1024,
+      "n": 6,
+      "min": 99.75,
+      "max": 111.3046875
+    },
+    {
+      "side_m": 2048,
+      "n": 6,
+      "min": 127.9921875,
+      "max": 140.88671875
+    }
+  ],
+  "balanced_policy_pairs": [
+    {
+      "agent": "human_1",
+      "mode": "FAST",
+      "policy": "alternatives",
+      "pairs": 390,
+      "B_fit_none": 52,
+      "full_service_fit_none": 3,
+      "return_fit_none": 0,
+      "B_fit_policy": 52,
+      "full_service_fit_policy": 3,
+      "return_fit_policy": 0,
+      "recommendations_differ": 4,
+      "sorties_performed": 91,
+      "sorties_cap_rejected": 299,
+      "target_unavailable": 0,
+      "total_drone_energy_wh": 1005.6356234908986,
+      "total_drone_time_s": 12738.90271454478
+    },
+    {
+      "agent": "human_1",
+      "mode": "FAST",
+      "policy": "corridor",
+      "pairs": 390,
+      "B_fit_none": 52,
+      "full_service_fit_none": 3,
+      "return_fit_none": 0,
+      "B_fit_policy": 52,
+      "full_service_fit_policy": 3,
+      "return_fit_policy": 0,
+      "recommendations_differ": 2,
+      "sorties_performed": 99,
+      "sorties_cap_rejected": 291,
+      "target_unavailable": 0,
+      "total_drone_energy_wh": 1085.7006078711559,
+      "total_drone_time_s": 13774.655822369501
+    },
+    {
+      "agent": "human_1",
+      "mode": "SAFE",
+      "policy": "alternatives",
+      "pairs": 390,
+      "B_fit_none": 44,
+      "full_service_fit_none": 2,
+      "return_fit_none": 0,
+      "B_fit_policy": 43,
+      "full_service_fit_policy": 2,
+      "return_fit_policy": 0,
+      "recommendations_differ": 4,
+      "sorties_performed": 91,
+      "sorties_cap_rejected": 299,
+      "target_unavailable": 0,
+      "total_drone_energy_wh": 1005.6356234908986,
+      "total_drone_time_s": 12738.90271454478
+    },
+    {
+      "agent": "human_1",
+      "mode": "SAFE",
+      "policy": "corridor",
+      "pairs": 390,
+      "B_fit_none": 44,
+      "full_service_fit_none": 2,
+      "return_fit_none": 0,
+      "B_fit_policy": 43,
+      "full_service_fit_policy": 2,
+      "return_fit_policy": 0,
+      "recommendations_differ": 4,
+      "sorties_performed": 99,
+      "sorties_cap_rejected": 291,
+      "target_unavailable": 0,
+      "total_drone_energy_wh": 1085.7006078711559,
+      "total_drone_time_s": 13774.655822369501
+    },
+    {
+      "agent": "rover_1",
+      "mode": "FAST",
+      "policy": "alternatives",
+      "pairs": 390,
+      "B_fit_none": 44,
+      "full_service_fit_none": 40,
+      "return_fit_none": 1,
+      "B_fit_policy": 44,
+      "full_service_fit_policy": 40,
+      "return_fit_policy": 1,
+      "recommendations_differ": 2,
+      "sorties_performed": 92,
+      "sorties_cap_rejected": 298,
+      "target_unavailable": 0,
+      "total_drone_energy_wh": 1024.905145384791,
+      "total_drone_time_s": 12963.666022046582
+    },
+    {
+      "agent": "rover_1",
+      "mode": "FAST",
+      "policy": "corridor",
+      "pairs": 390,
+      "B_fit_none": 44,
+      "full_service_fit_none": 40,
+      "return_fit_none": 1,
+      "B_fit_policy": 43,
+      "full_service_fit_policy": 39,
+      "return_fit_policy": 1,
+      "recommendations_differ": 3,
+      "sorties_performed": 96,
+      "sorties_cap_rejected": 294,
+      "target_unavailable": 0,
+      "total_drone_energy_wh": 1060.6928886611172,
+      "total_drone_time_s": 13437.815591290018
+    },
+    {
+      "agent": "rover_1",
+      "mode": "SAFE",
+      "policy": "alternatives",
+      "pairs": 390,
+      "B_fit_none": 41,
+      "full_service_fit_none": 38,
+      "return_fit_none": 1,
+      "B_fit_policy": 41,
+      "full_service_fit_policy": 38,
+      "return_fit_policy": 1,
+      "recommendations_differ": 4,
+      "sorties_performed": 92,
+      "sorties_cap_rejected": 298,
+      "target_unavailable": 0,
+      "total_drone_energy_wh": 1024.6295401142584,
+      "total_drone_time_s": 12960.834914275118
+    },
+    {
+      "agent": "rover_1",
+      "mode": "SAFE",
+      "policy": "corridor",
+      "pairs": 390,
+      "B_fit_none": 41,
+      "full_service_fit_none": 38,
+      "return_fit_none": 1,
+      "B_fit_policy": 39,
+      "full_service_fit_policy": 36,
+      "return_fit_policy": 2,
+      "recommendations_differ": 6,
+      "sorties_performed": 96,
+      "sorties_cap_rejected": 294,
+      "target_unavailable": 0,
+      "total_drone_energy_wh": 1060.3316549516353,
+      "total_drone_time_s": 13434.102839485797
+    }
+  ],
+  "reductions": [
+    {
+      "case_id": "bright-256-resource-14",
+      "group": [
+        "bright",
+        "human_1",
+        "holdout"
+      ],
+      "status": "BRACKETED_RECOMMENDATION_TO_DROP_OR_STOP",
+      "threshold_bracket_s": [
+        0.0,
+        10.079127628552472
+      ],
+      "maximum_extra_wait_s": 645.0641682273582
+    },
+    {
+      "case_id": "bright-512-resource-4",
+      "group": [
+        "bright",
+        "rover_1",
+        "exploration"
+      ],
+      "status": "NO_TRANSITION_IN_FROZEN_ENVELOPE",
+      "threshold_bracket_s": null,
+      "maximum_extra_wait_s": 1467.5994920415933
+    },
+    {
+      "case_id": "bright-512-resource-14",
+      "group": [
+        "bright",
+        "rover_1",
+        "holdout"
+      ],
+      "status": "BRACKETED_RECOMMENDATION_TO_DROP_OR_STOP",
+      "threshold_bracket_s": [
+        1384.0752013447718,
+        1419.5643090715607
+      ],
+      "maximum_extra_wait_s": 2271.302894514497
+    },
+    {
+      "case_id": "bunsen-128-resource-11",
+      "group": [
+        "bunsen",
+        "human_1",
+        "exploration"
+      ],
+      "status": "NO_TRANSITION_IN_FROZEN_ENVELOPE",
+      "threshold_bracket_s": null,
+      "maximum_extra_wait_s": 426.8696738322553
+    },
+    {
+      "case_id": "bunsen-1024-resource-5",
+      "group": [
+        "bunsen",
+        "rover_1",
+        "exploration"
+      ],
+      "status": "CENSORED_UNKNOWN_OR_TIME_LIMIT",
+      "threshold_bracket_s": null,
+      "maximum_extra_wait_s": 3352.429224779351
+    },
+    {
+      "case_id": "bunsen-128-resource-12",
+      "group": [
+        "bunsen",
+        "rover_1",
+        "holdout"
+      ],
+      "status": "NO_TRANSITION_IN_FROZEN_ENVELOPE",
+      "threshold_bracket_s": null,
+      "maximum_extra_wait_s": 3096.47980813941
+    },
+    {
+      "case_id": "hawksbill-1024-resource-14",
+      "group": [
+        "hawksbill",
+        "human_1",
+        "holdout"
+      ],
+      "status": "CENSORED_UNKNOWN_OR_TIME_LIMIT",
+      "threshold_bracket_s": null,
+      "maximum_extra_wait_s": 1147.774688028
+    },
+    {
+      "case_id": "hawksbill-512-resource-4",
+      "group": [
+        "hawksbill",
+        "rover_1",
+        "exploration"
+      ],
+      "status": "NO_TRANSITION_IN_FROZEN_ENVELOPE",
+      "threshold_bracket_s": null,
+      "maximum_extra_wait_s": 5528.513267753793
+    },
+    {
+      "case_id": "hawksbill-1024-resource-12",
+      "group": [
+        "hawksbill",
+        "rover_1",
+        "holdout"
+      ],
+      "status": "NO_TRANSITION_IN_FROZEN_ENVELOPE",
+      "threshold_bracket_s": null,
+      "maximum_extra_wait_s": 3335.6541401650047
+    }
+  ],
+  "broad_delay_cases": [
+    {
+      "case_id": "bunsen-512-resource-5",
+      "agent": "rover_1",
+      "mode": "FAST",
+      "policy": "none",
+      "before_delay": "KEEP",
+      "after": "RETURN",
+      "wait_s": 2932.4132932603625
+    },
+    {
+      "case_id": "bunsen-512-resource-5",
+      "agent": "rover_1",
+      "mode": "FAST",
+      "policy": "corridor",
+      "before_delay": "KEEP",
+      "after": "RETURN",
+      "wait_s": 2932.4132932603625
+    },
+    {
+      "case_id": "bunsen-512-resource-5",
+      "agent": "rover_1",
+      "mode": "FAST",
+      "policy": "alternatives",
+      "before_delay": "KEEP",
+      "after": "RETURN",
+      "wait_s": 2932.4132932603625
+    },
+    {
+      "case_id": "bunsen-512-resource-5",
+      "agent": "rover_1",
+      "mode": "SAFE",
+      "policy": "none",
+      "before_delay": "KEEP",
+      "after": "RETURN",
+      "wait_s": 2932.4132932603625
+    },
+    {
+      "case_id": "bunsen-512-resource-5",
+      "agent": "rover_1",
+      "mode": "SAFE",
+      "policy": "corridor",
+      "before_delay": "KEEP",
+      "after": "RETURN",
+      "wait_s": 2932.4132932603625
+    },
+    {
+      "case_id": "bunsen-512-resource-5",
+      "agent": "rover_1",
+      "mode": "SAFE",
+      "policy": "alternatives",
+      "before_delay": "KEEP",
+      "after": "RETURN",
+      "wait_s": 2932.4132932603625
+    }
+  ],
+  "classification": "POST_HOC_DESCRIPTIVE_ANALYSIS_NOT_SCIENTIFIC_APPROVAL"
+}

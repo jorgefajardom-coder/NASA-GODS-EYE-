@@ -1,0 +1,10 @@
+{
+  "scripts/run_mission_research.py": "5c411e5163189639adee3438018295dd0c1d05d03e4f5fa03d2daca42601d5ad",
+  "src/mge_mission/mge_mission/research/__init__.py": "3de22f999a12998df5e9bc28803829c07da94f70589370d9e99e724677db5932",
+  "src/mge_mission/mge_mission/research/cli.py": "0f66f117e0819d5896df05499e6484c9c8d86383abf0c2b01a304d5fae6c97fd",
+  "src/mge_mission/mge_mission/research/design.py": "00157d5b2bd78672fed07b10cc32e30e98373e046735e060cfbb9e2373d8dc58",
+  "src/mge_mission/mge_mission/research/protocol.py": "08373118fc1e9cb20e332c89322f88c242a4a6dab159a4f13e194b12a206d4e8",
+  "src/mge_mission/mge_mission/research/runner.py": "d0ec1b4d72c2663d33a01a2f46d9cb9c9cea0eac49bfc44643d85be762ff6329",
+  "src/mge_mission/mge_mission/research/terrain.py": "df1a302ad83c3015db28898056fdba0460af8a7e6ef303fbe52f53593d391c1a",
+  "src/mge_mission/mge_mission/research/world.py": "56f454a13bfd73eb007b9df5df47dc1ba3c81c34cb8879058c4dd50c7fdb0d02"
+}

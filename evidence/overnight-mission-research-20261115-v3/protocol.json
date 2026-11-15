@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0.0",
+  "study_id": "overnight-mission-research-20261115-v3",
+  "classification": "LOCAL_EXPLORATORY_SIMULATED_NOT_OPERATIONAL",
+  "started_at_utc": "2026-11-15T04:25:01+00:00",
+  "deadline_utc": "2026-11-15T12:25:01+00:00",
+  "new_work_cutoff_utc": "2026-11-15T11:55:01+00:00",
+  "budget_s": 28800,
+  "source_sha": "7ad605039a524d5b5cbe2c983f2da9113f8b1ce9",
+  "source_lock_sha256": "758e101ba00b3f773358223b06fe6b2a80959d9ef8b38229e6650d720f63672c",
+  "root_seed": 20261115,
+  "regions": [
+    {
+      "id": "bright",
+      "candidate_id": "JZ-ROI-01",
+      "name": "Bright Angel–Neretva",
+      "lat": 18.496798465,
+      "lon": 77.3045133,
+      "campaign": "CAM-BRIGHT"
+    },
+    {
+      "id": "hawksbill",
+      "candidate_id": "JZ-ROI-02",
+      "name": "Hawksbill–Hogwallow",
+      "lat": 18.45835024,
+      "lon": 77.40732773,
+      "campaign": "CAM-HAWKSBILL"
+    },
+    {
+      "id": "bunsen",
+      "candidate_id": "JZ-ROI-04",
+      "name": "Bunsen Peak",
+      "lat": 18.491816235,
+      "lon": 77.32719163,
+      "campaign": "CAM-BUNSEN"
+    }
+  ],
+  "families": [
+    "unchanged",
+    "detour",
+    "blocked",
+    "relief",
+    "resource"
+  ],
+  "sizes_m": [
+    128,
+    256,
+    512,
+    1024
+  ],
+  "optional_scale_m": 2048,
+  "resolution_m": 4,
+  "native_resolution_m": 20,
+  "seeds_per_family": 16,
+  "exploration_seed_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "holdout_seed_indices": [
+    12,
+    13,
+    14,
+    15
+  ],
+  "modes": [
+    "FAST",
+    "SAFE"
+  ],
+  "policies": [
+    "none",
+    "corridor",
+    "alternatives"
+  ],
+  "agents": [
+    "human_1",
+    "rover_1"
+  ],
+  "search_limits": {
+    "timeout_s": 2.0,
+    "max_labels": 200000
+  },
+  "max_compute_processes": 2,
+  "download_limit_bytes": 2147483648,
+  "storage_limit_bytes": 10737418240,
+  "research_max_sigma_m": 3.0,
+  "strict_max_sigma_m": 1.0,
+  "prior_sigma_m": 2.5,
+  "budget_factor": [
+    0.8,
+    1.2
+  ],
+  "reserve_fractions": [
+    0.1,
+    0.2,
+    0.3
+  ],
+  "wait_factor": [
+    0.5,
+    1.5
+  ],
+  "sample_workflow_s": [
+    600,
+    900
+  ],
+  "rover_inspection_s": [
+    300,
+    600,
+    900
+  ],
+  "relief_amplitude_m": [
+    0.1,
+    0.2,
+    0.3
+  ],
+  "correlation_length_m": [
+    8,
+    16,
+    32
+  ],
+  "obstacle_cells": [
+    1,
+    2,
+    4
+  ],
+  "footprint_radius_m": [
+    4,
+    8,
+    12
+  ],
+  "block_mean_tolerance_m": 0.001,
+  "endpoint_tries": 64,
+  "endpoint_separation_side_fraction": [
+    0.125,
+    0.5
+  ],
+  "numerical_agreement": {
+    "relative": 1e-05,
+    "absolute": 0.001
+  },
+  "scope_authorization": "Owner explicitly requests local overnight assessment; D-DEL-03 delivery and science gates unchanged",
+  "scientific_approval": false,
+  "cost_agreement": false,
+  "mission_execution_authorized": false,
+  "baseline_input": false,
+  "rendering": false,
+  "new_mock": false,
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.5.4",
+    "platform": "Windows-11-10.0.26200-SP0"
+  }
+}
