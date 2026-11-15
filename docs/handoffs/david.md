@@ -1,5 +1,19 @@
 # David - retain scientific mission authority and approve the model
 
+## Audit reconciliation rc.2 — current candidate over main6bcf208
+
+Read the [current gap/evidence matrix](../audit_reconciliation.md) and
+[cost/context/interval proposal](../audit_cost_execution_gaps.md). PR25's cost,
+duration and success packet is already integrated; do not duplicate it. New
+main6bcf208 comparison again gives 1 agreement / 6 disagreements and BLOCKED
+authorization. Next deliverable with Diego/Jesus: select the cost backend and
+immutable request context, then bind evidence-backed service progress and the
+existing scientific recorder. Review experimental exploration limits separately
+from model/profile approval. Actual accepted/rejected optional work and three
+executed roles remain pending; the featured READY/MOCK replay does not close them.
+Scientific target/purpose work is excluded from this reconciliation and remains
+in the owner's other chat. Historical inventories below retain their dated scope.
+
 ## Current continuation — 14 November 2026, main 5ab1387
 
 Follow [CONT-DAV-01..04](../team_continuation_plan.md#david--mission-authority-and-scientific-acceptance):

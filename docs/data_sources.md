@@ -42,14 +42,16 @@ Four non-collinear cell-center control points are verified at load time by `GeoT
 
 ## 4. Scientific and operational limitations
 
-- **Orbital prior vs. local observation:** Finite pixels in the MRO/CTX prior (`~nodata_mask`) are **not** locally verified ground observations. On initial load, `observed_mask` is all `False`, and `BeliefMap.traversability_grid()` marks unobserved cells as `-1` (`UNKNOWN`), never `0` (`FREE`).
+- **Orbital prior vs. local observation:** Finite pixels in the MRO/CTX prior (`~nodata_mask`) are **estimated**, not locally verified ground observations. On initial load, `observed_mask` is all `False` and sigma remains 2.5 m. The legacy observed-only policy returns `-1`; the explicit illustrative D-EST-01 policy may admit a hypothetical proposal within its configured uncertainty/slope limits. A `0` mask never means locally verified or authorized passage. NoData and confirmed obstacles remain distinct; planner profiles apply independent constraints. See [reconciliation](audit_reconciliation.md).
 - **No synthetic resolution claim:** Resampling 20 m MRO/CTX or 463 m MGS/MOLA onto a 4 m computational grid does not create sub-20 m native topographic detail.
 - **Evaluator reference isolation:** MRO/HiRISE 1 m reference arrays remain isolated in `data/reference/` (gitignored) and are blocked by `mge_data.core.load_public_terrain`.
 - **No physical safety certification:** Even 1 m orbital DTMs do not resolve decimeter-scale hazards, regolith cohesion, or EVA/rover mechanical safety.
 
-The web viewer still carries its own provisional 2 km crop of the Mars 2020 TRN CTX DTM
-(`web/scripts/data/ctx_crop.json`; source file and SHA-256 in `THIRD_PARTY_NOTICES.md`) until
-it consumes this package.
+The web's illustrative `demo` retains its separate provisional 2 km crop
+(`web/scripts/data/ctx_crop.json`; source file/hash in `THIRD_PARTY_NOTICES.md`).
+Recorded runs consume this package's own public raster attachment with geometry,
+datum and versions validated. They must not borrow demo imagery/geology or
+report its metrics as the 128 m experiment.
 
 ## NASA reference resources reviewed for Jezero (14 November 2026)
 

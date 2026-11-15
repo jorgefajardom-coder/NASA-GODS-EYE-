@@ -112,7 +112,7 @@ def on_polyline(p, points, tol=1e-5):
 
 class Stack:
 
-    def __init__(self, record_dir):
+    def __init__(self, record_dir, extra_launch_args=()):
         # Declare initial conditions for this SIMULATED scene in the public
         # terrain datum, using the same observations the fixture publishes below.
         self.surface, self.vertical_datum = observed_public_scene(RUN_ID, BLOCK)
@@ -125,7 +125,7 @@ class Stack:
              f'port:={PORT}', 'terrain:=real', 'planner:=real', f'profiles_file:={PROFILES}',
              f'agents_file:={agents_file}',
              'agents:=kinematic', 'allow_continuous_starts:=true',
-             'record:=true', f'record_dir:={record_dir}'],
+             'record:=true', f'record_dir:={record_dir}', *extra_launch_args],
             cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
         rclpy.init()
         self.node = rclpy.create_node('execution_probe')

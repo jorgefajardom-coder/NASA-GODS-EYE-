@@ -8,7 +8,7 @@ export const LAYER_INFO: Record<TerrainLayer, { label: string; description: stri
   slope: {
     label: 'Slope',
     description:
-      'Slope of the orbital CTX DTM (Horn 3x3 on the 20 m grid, as gdaldem slope). Computed from measured heights only, never from the updated map. Each value averages about 60 m of ground, so shorter steps are smoothed out: a lower bound for local slope, not a hazard map.',
+      'Slope derived from the public orbital prior with Horn 3×3, never from local observations or the updated belief. The computational grid and native source spacing are stated for this run. Sub-grid hazards remain unresolved; this is not a local hazard measurement.',
   },
   sigma: {
     label: 'Uncertainty',

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from './types/replay';
-import { assetUrl, loadEvaluatorReference, loadReplay } from './data/replayAdapter';
+import { assetUrl, DEFAULT_RUN_ENTRY, RECORDED_RECOVERY_ENTRY, loadEvaluatorReference, loadReplay } from './data/replayAdapter';
 import { REFERENCE_SOURCES } from './data/referenceSources';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from './lib/smoothing';
 import { firstMotionTime, viewAt } from './lib/replay';
@@ -34,7 +34,7 @@ import type { ScanRequest } from './components/DroneScan';
 import { scanCells, scanSummary, type ScanClass } from './lib/scan';
 import { slopeDegrees } from './lib/slope';
 import { displayState } from './lib/provenance';
-import { ABOUT_DATA, stateSnapshot } from './lib/stateSnapshot';
+import { aboutData, stateSnapshot } from './lib/stateSnapshot';
 import { Intro, introWanted } from './components/Intro';
 import { PORTRAITS } from './lib/portraits';
 import { rotateView, ROTATE_STEP_RAD } from './components/ViewRotator';
@@ -44,7 +44,8 @@ import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './c
 const params = new URLSearchParams(window.location.search);
 /** Evaluator view shows the hidden reference DEM. Off by default; enable with ?evaluator=1. */
 const EVALUATOR = params.get('evaluator') === '1';
-const RUN_ID = params.get('run') ?? 'demo';
+// The URL/selector identifies a package folder; its recorded run_id is kept intact.
+const RUN_ID = params.get('run') ?? DEFAULT_RUN_ENTRY;
 const RUN_DIR = `replay/${RUN_ID}`;
 
 type Load = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; bundle: ReplayBundle };
@@ -97,7 +98,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showControlPoints, setShowControlPoints] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
   // Intro clip first (unless reduced motion or ?nointro=1); the terrain grows in once it ends.
-  const [introDone, setIntroDone] = useState(() => !introWanted());
+  const [introDone, setIntroDone] = useState(() => RUN_ID === RECORDED_RECOVERY_ENTRY || !introWanted());
   // Camera: 'free' (map), 'base', or the id of the agent it follows.
   const [camView, setCamView] = useState<string>('free');
   const follow = camView !== 'free' && camView !== 'base';
@@ -278,7 +279,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   useEffect(() => {
     const w = window as unknown as { mge?: unknown };
     w.mge = {
-      about: ABOUT_DATA,
+      about: aboutData(bundle),
       docs: { llms: './llms.txt', about: './about.html' },
       state: () => {
         const c = snapshotInput.current;
@@ -334,6 +335,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       {pov && agent && (
         <FirstPersonHud
           agent={view.state?.agents.find((a) => a.agent_id === camView) ?? agent}
+          terrainMeta={m.terrain_meta}
           sourceLabel={displayState({ mode: 'REPLAY', source: m.source_mode ?? 'UNKNOWN' }).label}
           pois={m.pois.filter((p) => p.revealed_at_s <= t)}
           lines={hudLines}
@@ -355,7 +357,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         <div className="left">
           <TitleBlock manifest={m} runId={RUN_ID} />
           <ModeTabs mode={mode} onMode={setMode} />
-          <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR && !!bundle.rasters.reference} />
+          <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR && !!bundle.rasters.reference} terrainMeta={m.terrain_meta} />
           {mode === 'geology' ? (
             <GeologyList data={bundle.geology} selected={geoUnit} onSelect={setGeoUnit} showMap={showGeoMap} onShowMap={setShowGeoMap} showCut={showCut} onShowCut={setShowCut} />
           ) : mode === 'atmos' ? (
@@ -468,7 +470,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           {m.disclaimer} {trueScale ? 'Agents and base at true size.' : 'Agents are enlarged with distance (visual only).'}{' '}
           <details className="credits">
             <summary>Credits</summary>
-            Terrain: NASA/USGS Mars 2020 TRN CTX DTM mosaic, USGS Astrogeology Science Center (provisional 2 km crop).
+            Terrain: {m.terrain_meta.dataset_id}, {m.terrain_meta.cols * m.terrain_meta.resolution_m} × {m.terrain_meta.rows * m.terrain_meta.resolution_m} m in the recorded datum.
+            <ul>{m.terrain_meta.sources.map((source) => <li key={source}>{source}</li>)}</ul>
             {m.imagery && <> Surface image: {m.imagery.title}, {m.imagery.credit}, via JPL Mars Trek (resampled to {m.imagery.resolution_m} m).</>} "Animated Astronaut Character in Space Suit Loop" (
             <a href="https://skfb.ly/o9nHu" target="_blank" rel="noreferrer">
               https://skfb.ly/o9nHu

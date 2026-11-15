@@ -1,4 +1,5 @@
 import type { ReplayBundle } from '../types/replay';
+import { terrainResolutionLabel } from './terrainPresentation';
 import type { ReplayView } from './replay';
 import { displayState } from './provenance';
 import { yawFromQuaternion } from './coords';
@@ -104,4 +105,15 @@ export function stateSnapshot(bundle: ReplayBundle, view: ReplayView, ui: UiStat
 
 /** Plain statement of what is real and what is simulated, exposed beside the state. */
 export const ABOUT_DATA =
-  'REPLAY of a simulated mission. Real: NASA/USGS Mars 2020 TRN CTX DTM terrain heights (2 km crop at Jezero), the MRO CTX orthomosaic via JPL Mars Trek and USGS SIM 3464 geology. Historical references: Perseverance MEDA summaries and the MSL RAD Gale dose rate. Simulated or synthetic: mission, agents, budgets, observations, routes and POIs. The viewer never plans routes. Not a live mission; not certified for real operations.';
+  'REPLAY with recorded or simulated producers as declared by each package. The viewer never plans routes or creates observations. Not a live mission; not certified for real operations.';
+
+/** Describe only this run and the layers actually loaded for it. */
+export function aboutData(bundle: ReplayBundle): string {
+  const m = bundle.manifest;
+  const t = m.terrain_meta;
+  return `${ABOUT_DATA} ${m.disclaimer} Dataset ${t.dataset_id}: ${t.cols * t.resolution_m} × ${t.rows * t.resolution_m} m. ${terrainResolutionLabel(t)}. Datum: ${t.vertical_datum}. ${
+    bundle.geology ? `Geology is approximate regional context: ${bundle.geology.source.registration_note}` : 'No matched geologic layer is loaded for this run.'
+  } ${bundle.context ? 'Matched orbital surroundings are display context only.' : 'No matched surrounding terrain is loaded.'} ${
+    bundle.atmosphere ? 'Atmosphere and radiation are historical context, not measured conditions of this replay.' : 'No environmental layer is loaded.'
+  }`;
+}

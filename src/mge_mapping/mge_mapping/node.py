@@ -15,10 +15,38 @@ from typing import Any
 
 from mge_data.core import default_manifest_path, load_public_terrain
 from mge_mapping.core import BeliefMap, ObservationFusion, SimulatedObservation
+from mge_mapping.policy import load_knowledge_policy
 
 DEFAULT_MANIFEST_PATH = default_manifest_path()
 # PLACEHOLDER slope limits per agent kind, pending David's scientific approval.
 AGENT_SLOPE_LIMITS_DEG = {"human": 10.0, "rover": 20.0, "drone": 90.0}
+
+
+def observation_from_message(msg: Any) -> SimulatedObservation:
+    """Validate wire frame/clock before passing a measurement to fusion.
+
+    Kept ROS-independent so tests can exercise the production conversion. Invalid
+    timestamps are rejected, never clamped or normalized into a different time.
+    """
+    if msg.header.frame_id != "map":
+        raise ValueError("observation frame_id must be map")
+    sec, nanosec = msg.header.stamp.sec, msg.header.stamp.nanosec
+    if (type(sec) is not int or not 0 <= sec < 2**31 or type(nanosec) is not int
+            or not 0 <= nanosec < 1_000_000_000):
+        raise ValueError("observation stamp requires nonnegative int32 seconds and nanoseconds below 1e9")
+    return SimulatedObservation(
+        observation_id=msg.observation_id,
+        agent_id=msg.agent_id,
+        run_id=msg.run_id,
+        source_map_version=msg.base_map_version,
+        timestamp_sim_s=sec + nanosec * 1e-9,
+        timestamp_sim_ns=sec * 1_000_000_000 + nanosec,
+        cell_indices=tuple(msg.cell_indices),
+        elevations_m=tuple(msg.elevation_m),
+        sigmas_m=tuple(msg.sigma_m) if msg.sigma_m else None,
+        obstacles=tuple(msg.obstacle) if msg.obstacle else None,
+        source_kind=msg.source_kind,
+    )
 
 
 def build_mapping_state_summary(belief: BeliefMap) -> dict[str, Any]:
@@ -34,6 +62,7 @@ def build_mapping_state_summary(belief: BeliefMap) -> dict[str, Any]:
         "observed_cell_count": int(belief.observed_mask.sum()),
         "nodata_cell_count": int(belief.nodata_mask.sum()),
         "applied_observations": list(belief.applied_observations),
+        "last_observation_timestamp_sim_s": belief.last_observation_timestamp_sim_s,
     }
 
 
@@ -53,10 +82,14 @@ def main(args=None) -> None:
     run_id_param = str(node.declare_parameter("run_id", "run-1").value)
     # Slow by default: re-ingesting layers at 1 Hz starves the planner service.
     repeat_s = float(node.declare_parameter("repeat_period_s", 5.0).value)
+    policy_path = str(node.declare_parameter("exploration_policy_file", "").value)
 
     try:
         # A provider without valid terrain must not stay up looking healthy.
         tile = load_public_terrain(Path(manifest_param))
+        policy = load_knowledge_policy(policy_path) if policy_path else None
+        if policy is not None:
+            node.get_logger().warning(policy.source_record + "; not execution authorization")
         fusion = ObservationFusion(
             BeliefMap.from_terrain_tile(tile, run_id=run_id_param, initial_map_version=1))
 
@@ -104,6 +137,8 @@ def main(args=None) -> None:
             meta.vertical_datum = tile.metadata.vertical_datum
             meta.nodata_value = float(tile.metadata.nodata_value)
             meta.sources = list(tile.sources.public_sources_summary())
+            if policy is not None:
+                meta.sources.append(policy.source_record)
             meta.checksum_sha256 = tile.metadata.checksum_sha256
             messages = [(meta_pub, meta)]           # metadata first: layers need it
 
@@ -138,7 +173,9 @@ def main(args=None) -> None:
                 occ.info.origin.position.x = float(bmap.origin_x_m)
                 occ.info.origin.position.y = float(bmap.origin_y_m)
                 occ.info.origin.orientation.w = 1.0
-                occ_grid = bmap.traversability_grid(max_slope_deg=max_slope)
+                limits = dict(policy.limits[kind]) if policy else {"max_slope_deg": max_slope}
+                occ_grid = bmap.traversability_grid(
+                    **limits, allow_estimated=policy.allow_estimated if policy else False)
                 occ.data = [int(v) for v in occ_grid.ravel()]
                 messages.append((trav_pubs[kind], occ))
 
@@ -151,19 +188,7 @@ def main(args=None) -> None:
         def on_observation(msg: Any) -> None:
             # A bad observation is dropped; it must not stop the map provider.
             try:
-                stamp_s = float(msg.header.stamp.sec) + float(msg.header.stamp.nanosec) * 1e-9
-                obs = SimulatedObservation(
-                    observation_id=str(msg.observation_id),
-                    agent_id=str(msg.agent_id),
-                    run_id=str(msg.run_id),
-                    source_map_version=int(msg.base_map_version),
-                    timestamp_sim_s=max(0.0, stamp_s),
-                    cell_indices=tuple(int(i) for i in msg.cell_indices),
-                    elevations_m=tuple(float(z) for z in msg.elevation_m),
-                    sigmas_m=tuple(float(s) for s in msg.sigma_m) if msg.sigma_m else None,
-                    obstacles=tuple(int(o) for o in msg.obstacle) if msg.obstacle else None,
-                    source_kind=str(msg.source_kind),
-                )
+                obs = observation_from_message(msg)
                 updated, applied = fusion.apply(obs)
             except (ValueError, TypeError) as exc:
                 node.get_logger().warning(f"Rejected observation '{msg.observation_id}': {exc}")
