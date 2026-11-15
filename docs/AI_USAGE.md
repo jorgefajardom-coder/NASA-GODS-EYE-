@@ -5,6 +5,42 @@
 The repository owner supplied a 20-image ImageGen package for a scientific-Wiki visual refresh. OpenAI Codex assisted the semantic review, captions, provenance and documentation-only validation. Nine selected images were edited with image_gen to remove unsupported numerical, geographic, capability or evidence claims and to improve readability. Eleven originals remain excluded with reasons in `docs/wiki/Editorial-Review.md`. The supplied theses and private research working files were not uploaded as part of this edition.
 
 New PNGs and encoding-only WebP reading copies are stored in `docs/wiki/assets/imagegen-20261115`. Each carries a large visible `AI-generated | Conceptual illustration` footer; prompts and source/output hashes are recorded under `docs/wiki/audit/editorial-20261115`. Original measured/model figures, all 21 existing assets, the three GIFs and historical manifests are preserved. Numerical interpretation remains tied to the original primary sources and run records. The edition introduces no technical or scientific-parameter change. The source package requires owner review before a separate Wiki synchronization; that review remains pending.
+## Submission videos: AI-generated voice-over, 15 November 2026
+
+The English voice-over of the team's 30-second submission videos is
+**AI-generated speech**. It was made with Higgsfield (model Seed Audio 1.0 by
+ByteDance) from text the team wrote, using built-in preset voices, not a cloned
+or recorded human voice:
+
+| Video file | Preset voice | Lines spoken |
+| --- | --- | --- |
+| `mars-gods-eye-demo.mp4` (Mars Gods Eye - Demo) | Andre | "Houston, we have a bug. It's not in our code. It's in the map." / "Explore six Mars zones, built on real NASA terrain." / "It plans the route, checks time, energy and oxygen, and replans when the ground disagrees." / "Follow the rover through its real stops, and see the photos NASA took there." / "Water and radiation for every zone, and a live link to the ROS gateway." / "Mars Gods Eye. Open it in your browser." |
+| `mars-gods-eye-d.mp4` (Houston, we have a bug) | Andre | "Houston, we have a bug. It's not in our code. It's in the map." / "From orbit, Mars gets one height every twenty metres. A crew on foot needs more." / "So we built Mars Gods Eye. It plans the route, checks time, energy and oxygen. When the ground disagrees, it stops and replans." / "Five people. One hackathon. One crater." / "Mars Gods Eye. Open it in your browser." |
+| `mars-gods-eye-a.mp4` (The map was wrong) | Gideon | "Jezero crater. The map says this ground is clear." / "The map was made from orbit. One height, every twenty metres." / "So when the ground disagrees, Mars Gods Eye stops, cancels the route, and plans a new one, with the oxygen that's left." / "Every decision, recorded. Replay it in your browser." / "Mars Gods Eye." |
+
+The voice is also declared in each file's metadata (MP4 `comment` tag, which
+starts "AI use: the voice-over is AI-generated speech (Higgsfield, Seed Audio
+1.0, preset voice ...)"). The spoken words were checked against the script with
+a local speech-to-text model.
+
+Other AI use in the same videos:
+
+- **Music and sound effects**: synthesised by a Python script written with
+  Claude (Anthropic) through Claude Code; no generative audio model and no
+  samples. Declared in the same metadata tag.
+- **Editing**: the shot timing, on-screen type and frame-by-frame capture and
+  render scripts were written with Claude through Claude Code.
+- **Picture**: screen recordings of the project's own web viewer, not
+  AI-generated video. The AI-generated images that appear in them (team logo,
+  astronaut portrait) keep their burned-in `AI-generated` marks.
+- **Not AI-generated**: the three Perseverance photos in the demo video are
+  real NASA/JPL-Caltech raw images (sol 13: Navcam, front and rear Hazcam) from
+  NASA's public raw-image feed, credited on screen.
+
+The videos, voice files and scripts are kept outside the repository (Git-ignored
+`.local/video/`). The videos contain no NASA logos, flags or mission marks, and
+they label the replan as a recorded run with MOCK execution and the gateway
+panel as a MOCK source: no live mission is claimed.
 
 ## English scientific Wiki and pedagogical media
 
