@@ -34,6 +34,7 @@ import type { ScanRequest } from './components/DroneScan';
 import { scanCells, scanSummary, type ScanClass } from './lib/scan';
 import { slopeDegrees } from './lib/slope';
 import { displayState } from './lib/provenance';
+import { ABOUT_DATA, stateSnapshot } from './lib/stateSnapshot';
 import { Intro, introWanted } from './components/Intro';
 import { PORTRAITS } from './lib/portraits';
 import { rotateView, ROTATE_STEP_RAD } from './components/ViewRotator';
@@ -269,6 +270,25 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [playPause, seek, restart, t, follow, setFollow, runScan, pov, povSway, setPovSway]);
+
+  // Machine-readable view of the replay for language models and test agents: window.mge.state()
+  // returns what is on screen as JSON (see public/llms.txt). Read-only; it changes nothing.
+  const snapshotInput = useRef({ view, playing, speed, mode, layer, camView, pov });
+  snapshotInput.current = { view, playing, speed, mode, layer, camView, pov };
+  useEffect(() => {
+    const w = window as unknown as { mge?: unknown };
+    w.mge = {
+      about: ABOUT_DATA,
+      docs: { llms: './llms.txt', about: './about.html' },
+      state: () => {
+        const c = snapshotInput.current;
+        return stateSnapshot(bundle, c.view, { playing: c.playing, speed: c.speed, tab: c.mode, layer: c.layer, camera: c.camView, firstPerson: c.pov });
+      },
+    };
+    return () => {
+      delete w.mge;
+    };
+  }, [bundle]);
 
   // The footer wraps to more lines on narrow screens; the panels above it sit on its measured height.
   const appRef = useRef<HTMLDivElement>(null);
