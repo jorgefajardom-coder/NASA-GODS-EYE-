@@ -190,6 +190,16 @@ flowchart LR
 - Intro screen for the illustrative demo: skippable AI-generated video with one burned-in
   `AI-GENERATED · KLING` mark (`?nointro=1` or reduced motion skips it). The interface then enters: the panels
   slide in, the timeline rises and the agent dial spins into place.
+- Zone selector (`Z` in the map view; opens after the intro): a Mars globe built from the Viking
+  MDIM 2.1 colour mosaic (JPL Mars Trek) with one point per scene at the centre of its crop.
+  The selected zone turns to face the camera and the globe zooms in; a card fitted radially
+  against the planet shows the zone's orbital image, a short synopsis and its coordinates.
+  Six Mars scenes: Jezero (Perseverance), Gale (Curiosity), Gusev (Spirit), Elysium Planitia
+  (InSight), Meridiani Planum (Opportunity) and Valles Marineris (Melas Chasma).
+  *Travel* zooms the card image to fill the screen edge to edge (cover, no black bands); on
+  arrival the same image lays itself down on the terrain it is draped on, a perspective warp
+  onto the projected footprint that follows the camera, then fades into the 3D map. Display
+  only; reduced motion skips the warp and simply fades.
 - Terrain formation: the layer appears flat and its relief rises to the true shape in 2.5 s,
   valleys first and ridges last, with rising ground lit. Switching layers or a new map version
   morphs the heights in 1.8 s instead of jumping. Display only.
@@ -257,7 +267,7 @@ flowchart LR
 
 Keys: `F` follow camera, `V` first person, `Q` terrain scan (first person; rotates the view otherwise), `C` drone camera
 (first person), `L` helmet lights, `I` artificial / real light, `B` camera sway (first person),
-`G` grab map, `Q` / `E` rotate view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
+`G` grab map, `Q` / `E` rotate view, `Z` zone selector (map view), `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 
 ### What is real in the viewer
 
@@ -292,6 +302,8 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Updated map (v2) | CTX prior plus a simulated drone observation over a scarp added to the hidden reference | **Synthetic** adverse case |
 | Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
 | Shadows, footprints, dust, rotor blur, wheel and steering motion | Derived in the viewer from the drawn poses | **Cosmetic display** only |
+| Zone selector globe | Viking MDIM 2.1 colour mosaic, NASA/USGS via [JPL Mars Trek](https://trek.nasa.gov/mars/) (32 level-2 tiles); each zone card shows the orbital image draped on that scene | Real NASA imagery; horizon band from the Melas DEM is decorative, not to scale; synopses are AI-assisted text |
+| Zone arrival transition | The zone's orbital image warped from full screen onto the projected footprint of its terrain | **Cosmetic display**; no data changes |
 | Terrain formation, height morph, interface entrance, camera sway | Viewer animations on the drawn surface and camera | **Cosmetic display**; no height or pose in the data changes |
 | Terrain scan | Prior-derived slope classes and NoData around the astronaut, using the current run's grid | **Display only**: not an observation, sensor or route update; display bands are unvalidated |
 | First-person route | Route in force as recorded, draped on the ground, with the next waypoint and its distance | Drawn from the received route |
