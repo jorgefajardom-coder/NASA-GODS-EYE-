@@ -22,7 +22,7 @@ export interface ControlPoint {
 export interface PointOfInterest {
   id: string;
   label: string;
-  kind: 'base' | 'primary_goal' | 'poi' | 'science' | 'landmark' | 'landing';
+  kind: 'base' | 'primary_goal' | 'poi' | 'science' | 'landmark' | 'landing' | 'depot' | 'habitat';
   position: Point;
   /** Simulated time at which the POI becomes known. Base and goal are known from t=0. */
   revealed_at_s: number;
@@ -32,6 +32,8 @@ export interface PointOfInterest {
    * simulated story). Older packages have none.
    */
   source?: { basis: 'nasa' | 'chosen' | 'fictitious'; text: string };
+  /** The agent the site matters to (the astronaut's base, goal and sites; the rover's inspection targets). */
+  for_agent?: 'HUMAN' | 'ROVER' | 'DRONE';
 }
 
 export interface ReplayManifest {

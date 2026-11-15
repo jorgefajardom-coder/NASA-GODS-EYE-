@@ -106,7 +106,8 @@
       "source": {
         "basis": "chosen",
         "text": "Chosen by the demo generator, not a NASA site: one of the flattest cells of the NASA DEM, paired so that a 1.3-2.3 km walkable route exists between base and goal."
-      }
+      },
+      "for_agent": "HUMAN"
     },
     {
       "id": "B",
@@ -121,7 +122,8 @@
       "source": {
         "basis": "chosen",
         "text": "Chosen by the demo generator, not a NASA site: one of the flattest cells of the NASA DEM, paired so that a 1.3-2.3 km walkable route exists between base and goal."
-      }
+      },
+      "for_agent": "HUMAN"
     },
     {
       "id": "C",
@@ -136,7 +138,8 @@
       "source": {
         "basis": "fictitious",
         "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
-      }
+      },
+      "for_agent": "ROVER"
     },
     {
       "id": "D",
@@ -151,7 +154,24 @@
       "source": {
         "basis": "fictitious",
         "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
-      }
+      },
+      "for_agent": "ROVER"
+    },
+    {
+      "id": "HAB",
+      "label": "Habitat area (flattest 1 km)",
+      "kind": "habitat",
+      "position": {
+        "x": -1196,
+        "y": -1496,
+        "z": 16.55
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "chosen",
+        "text": "Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: 0.2 degrees; within 5 km of the landing site, here base A: 2.43 km). Mean 8 m slope 0.7 degrees, 0 % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed (no such product imported)."
+      },
+      "for_agent": "HUMAN"
     },
     {
       "id": "L",

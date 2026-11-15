@@ -117,7 +117,8 @@
       "source": {
         "basis": "nasa",
         "text": "Real Spirit stop 0_0, sol 1 (Spirit (MER-A) interpolated traverse, PDS Geosciences Node); the base sits on the nearest walkable cell, within 12 m."
-      }
+      },
+      "for_agent": "HUMAN"
     },
     {
       "id": "B",
@@ -132,7 +133,8 @@
       "source": {
         "basis": "nasa",
         "text": "Real Spirit stop 44_178, sol 124 (Spirit (MER-A) interpolated traverse, PDS Geosciences Node); the goal sits on the nearest walkable cell, within 12 m."
-      }
+      },
+      "for_agent": "HUMAN"
     },
     {
       "id": "C",
@@ -147,7 +149,8 @@
       "source": {
         "basis": "nasa",
         "text": "Real Spirit science site: Snowboard, contact science on the rock target Shredder, Bonneville Crater Rim, sol 89. Placed at the rover's published position at the time (stop 24_0), on the nearest drivable cell within 12 m. Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
-      }
+      },
+      "for_agent": "ROVER"
     },
     {
       "id": "D",
@@ -162,7 +165,40 @@
       "source": {
         "basis": "nasa",
         "text": "Real Spirit science site: Mohave, contact science on the rock target Joshua, Plains, sol 150. Placed at the rover's published position at the time (stop 61_4), on the nearest drivable cell within 12 m. Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
-      }
+      },
+      "for_agent": "ROVER"
+    },
+    {
+      "id": "SCI",
+      "label": "Science stop · Truckin Flats",
+      "kind": "science",
+      "position": {
+        "x": -272,
+        "y": 396,
+        "z": -1.6
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Spirit science site nearest to goal B that the astronaut can walk to: Truckin Flats, contact science on the soil target Accelerator, Plains, sol 126, at the rover's published position (stop 46_0). 0.14 km on foot from goal B (project slope limit 20 degrees). Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
+      },
+      "for_agent": "HUMAN"
+    },
+    {
+      "id": "HAB",
+      "label": "Habitat area (flattest 1 km)",
+      "kind": "habitat",
+      "position": {
+        "x": -396,
+        "y": 304,
+        "z": -1.65
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "chosen",
+        "text": "Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: 0.2 degrees; within 5 km of the landing site, here base A: 1.29 km). Mean 8 m slope 1.3 degrees, 0 % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed (no such product imported)."
+      },
+      "for_agent": "HUMAN"
     }
   ],
   "files": {

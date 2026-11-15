@@ -59,4 +59,19 @@ describe('zones', () => {
     }
   });
 
+  it('gives the astronaut its own sites: the real sample depot, a real science stop, a habitat area by the NASA slope criterion', () => {
+    type Poi = { id: string; kind: string; for_agent?: string; source?: { basis: string; text: string } };
+    const pois = (w: { runId: string | null }) => (JSON.parse(readFileSync(join(__dirname, '..', 'public', 'replay', w.runId!, 'manifest.json'), 'utf8')) as { pois: Poi[] }).pois;
+    for (const w of WORLDS.filter((x) => x.status === 'scene')) {
+      const hab = pois(w).find((p) => p.id === 'HAB');
+      expect(hab?.for_agent).toBe('HUMAN');
+      expect(hab?.source?.basis).toBe('chosen');
+      expect(hab?.source?.text).toMatch(/Exploration Zone rubric/);
+      for (const p of pois(w).filter((x) => x.id === 'SCI')) expect(p.source?.basis).toBe('nasa');
+    }
+    const depot = pois(WORLDS.find((w) => w.id === 'jezero')!).find((p) => p.id === 'DEPOT');
+    expect(depot?.kind).toBe('depot');
+    expect(depot?.source?.basis).toBe('nasa');
+    expect(depot?.source?.text).toMatch(/Three Forks/);
+  });
 });

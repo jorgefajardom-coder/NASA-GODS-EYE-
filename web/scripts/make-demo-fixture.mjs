@@ -33,7 +33,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const WORLD = process.env.WORLD ?? 'jezero';
 const WORLDS = {
   jezero: {
-    dir: 'demo', runId: 'demo-sim-002', crop: 'ctx_crop.json', stops: 'rover_waypoints.json', sites: 'science_sites.json', mission: 'Perseverance',
+    dir: 'demo', runId: 'demo-sim-002', crop: 'ctx_crop.json', stops: 'rover_waypoints.json', sites: 'science_sites.json', depot: 'three_forks_depot.json', mission: 'Perseverance',
     datasetId: 'mars2020-trn-ctx-dtm-20m', datum: 'MOLA areoid',
     title: 'Demo run: corridor survey and replanning',
     terrain: (res) => `NASA/USGS CTX DTM crop of the Perseverance landing area and the terrain north of it (real, provisional, ${res} m display grid from a 20 m source)`,
@@ -881,6 +881,92 @@ function siteSource(stop, role) {
   if (stop) return { basis: 'nasa', text: `Real ${WD.mission} stop ${stop.rmc}, sol ${stop.sol} (${stopsFile.source.title}); the ${role} sits on the nearest walkable cell, within 12 m.` };
   return { basis: 'chosen', text: `Chosen by the demo generator, not a NASA site: one of the flattest cells of the NASA DEM, paired so that a 1.3-2.3 km walkable route exists between base and goal.` };
 }
+// ------------------------------------------------------------------ sites of interest for the astronaut
+// Each comes from evidence or from a published NASA criterion applied to the NASA DEM (see
+// docs/science_poi_dossier.md): Perseverance's real sample depot, the nearest real science site to goal B,
+// and a habitat/landing-pad area meeting the slope criterion of NASA's human Exploration Zone rubric.
+const astronautSites = [];
+const walkFrom = (from, to) => {
+  try {
+    const q = nearestFree(belief2, HUMAN.slope, to.x, to.y);
+    const path = search(belief2, sigma2, HUMAN.slope, from, q);
+    return path ? { q, l: len(path) } : null;
+  } catch {
+    return null;
+  }
+};
+const km = (m) => `${(m / 1000).toFixed(2)} km`;
+if (WD.depot) {
+  const depot = JSON.parse(readFileSync(join(HERE, 'data', WD.depot), 'utf8'));
+  const w = walkFrom(A, { x: depot.centre.x_m, y: depot.centre.y_m });
+  astronautSites.push({
+    id: 'DEPOT', label: 'Three Forks sample depot', kind: 'depot', p: { x: depot.centre.x_m, y: depot.centre.y_m },
+    source: { basis: 'nasa', text: `Real Perseverance sample depot: ${depot.tubes.length} sealed tubes set down on sols ${depot.tubes[0].dropoff_sol}-${depot.tubes.at(-1).dropoff_sol} (${depot.tubes.map((x) => x.name).join(', ')}) for a later retrieval; marker at the mean of the rover positions during the drops. ${w ? `${km(w.l)} on foot from base A on a slope-limited route (project model).` : 'No walkable route from base A under the project slope limit.'} Source: ${depot.source.title}.` },
+  });
+}
+if (scienceFile) {
+  const used = new Set([C.site?.id, D.site?.id]);
+  const near = scienceFile.sites.filter((s) => !used.has(s.id)).map((s) => ({ s, d: dist({ x: s.x_m, y: s.y_m }, B) })).filter((k) => k.d <= 1200).sort((a, b) => a.d - b.d);
+  for (const k of near) {
+    const w = walkFrom(B, { x: k.s.x_m, y: k.s.y_m });
+    if (!w) continue;
+    astronautSites.push({
+      id: 'SCI', label: `Science stop · ${k.s.name}`, kind: 'science', p: w.q,
+      source: { basis: 'nasa', text: `Real ${WD.mission} science site nearest to goal B that the astronaut can walk to: ${k.s.name}, ${k.s.detail}, sol ${k.s.sol}, at the rover's published position (stop ${k.s.rover_stop}). ${km(w.l)} on foot from goal B (project slope limit ${HUMAN.slope} degrees). Source: ${scienceFile.source.list}.` },
+    });
+    break;
+  }
+}
+{
+  // Civil-engineering criterion of NASA's 2015 human Exploration Zone rubric: slope under 10 degrees at the
+  // 1-10 km scale, within 5 km of the landing site (base A here). Among 1 km x 1 km windows that pass, the one
+  // with the gentlest mean 8 m slope is kept. The rubric's ~50 km2 area and sparse-rock criterion cannot be
+  // checked in this crop and with these data.
+  const n = Math.round(1000 / RES);
+  const step = Math.max(1, Math.round(n / 5));
+  const b = Math.max(2, Math.round(n / 25));
+  const blockMean = (r0, c0) => {
+    let s = 0;
+    let k = 0;
+    for (let r = r0; r < r0 + b; r++) for (let c = c0; c < c0 + b; c++) { const v = prior[r * COLS + c]; if (v != null) { s += v; k++; } }
+    return k ? s / k : null;
+  };
+  let best = null;
+  for (let r0 = 0; r0 + n <= ROWS; r0 += step) {
+    for (let c0 = 0; c0 + n <= COLS; c0 += step) {
+      const centre = center(r0 + n / 2, c0 + n / 2);
+      const dA = dist(centre, A);
+      if (dA > 5000) continue;
+      let sum = 0;
+      let cnt = 0;
+      let steep = 0;
+      let hole = false;
+      for (let r = r0; r < r0 + n && !hole; r += 2) {
+        for (let c = c0; c < c0 + n; c += 2) {
+          const i = r * COLS + c;
+          if (prior[i] == null) { hole = true; break; }
+          sum += slPrior[i];
+          cnt++;
+          if (slPrior[i] > 10) steep++;
+        }
+      }
+      if (hole) continue;
+      const sw = blockMean(r0, c0), se = blockMean(r0, c0 + n - b), nw = blockMean(r0 + n - b, c0), ne = blockMean(r0 + n - b, c0 + n - b);
+      const span = (n - b) * RES;
+      const kmSlope = (Math.atan(Math.hypot((se + ne - sw - nw) / 2 / span, (nw + ne - sw - se) / 2 / span)) * 180) / Math.PI;
+      if (kmSlope >= 10) continue;
+      const mean = sum / cnt;
+      if (!best || mean < best.mean) best = { centre, mean, steep: steep / cnt, kmSlope, dA };
+    }
+  }
+  if (best) {
+    astronautSites.push({
+      id: 'HAB', label: 'Habitat area (flattest 1 km)', kind: 'habitat', p: best.centre,
+      source: { basis: 'chosen', text: `Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: ${best.kmSlope.toFixed(1)} degrees; within 5 km of the landing site, here base A: ${km(best.dA)}). Mean 8 m slope ${best.mean.toFixed(1)} degrees, ${(best.steep * 100).toFixed(0)} % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed (no such product imported).` },
+    });
+  }
+}
+console.log(`astronaut sites: ${astronautSites.map((s) => s.label).join('; ') || 'none'}`);
 const realLabel = (id, k) => `${id} · ${k.site.name}`;
 const realSource = (k) => ({ basis: 'nasa', text: `Real ${WD.mission} science site: ${k.site.name}, ${k.site.detail}, sol ${k.site.sol}. Placed at the rover's published position at the time (stop ${k.site.rover_stop}), on the nearest drivable cell within 12 m. Source: ${scienceFile.source.list}.` });
 const fictitiousSource = { basis: 'fictitious', text: `Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under ${poiSlope} degrees) inside the area the simulated drone survey saw.` };
@@ -953,11 +1039,12 @@ const manifest = {
   // Every site says where it comes from: a NASA position, a choice of the generator on NASA terrain,
   // or a fictitious site of the simulated story.
   pois: [
-    { id: 'A', label: 'Base A', kind: 'base', position: baseP, revealed_at_s: 0, source: siteSource(stopA, 'base') },
-    { id: 'B', label: 'Goal B', kind: 'primary_goal', position: goalP, revealed_at_s: 0, source: siteSource(stopB, 'goal') },
+    { id: 'A', label: 'Base A', kind: 'base', position: baseP, revealed_at_s: 0, source: siteSource(stopA, 'base'), for_agent: 'HUMAN' },
+    { id: 'B', label: 'Goal B', kind: 'primary_goal', position: goalP, revealed_at_s: 0, source: siteSource(stopB, 'goal'), for_agent: 'HUMAN' },
     // POI heights from the updated map, not from the hidden reference (R05).
-    { id: 'C', label: real ? realLabel('C', C) : 'POI C', kind: 'poi', position: { x: r2d(C.p.x), y: r2d(C.p.y), z: r2d(heightAt(belief2, C.p.x, C.p.y)) }, revealed_at_s: T_MAP, source: real ? realSource(C) : fictitiousSource },
-    { id: 'D', label: real ? realLabel('D', D) : 'POI D', kind: 'poi', position: { x: r2d(D.p.x), y: r2d(D.p.y), z: r2d(heightAt(belief2, D.p.x, D.p.y)) }, revealed_at_s: T_MAP + DT, source: real ? realSource(D) : fictitiousSource },
+    { id: 'C', label: real ? realLabel('C', C) : 'POI C', kind: 'poi', position: { x: r2d(C.p.x), y: r2d(C.p.y), z: r2d(heightAt(belief2, C.p.x, C.p.y)) }, revealed_at_s: T_MAP, source: real ? realSource(C) : fictitiousSource, for_agent: 'ROVER' },
+    { id: 'D', label: real ? realLabel('D', D) : 'POI D', kind: 'poi', position: { x: r2d(D.p.x), y: r2d(D.p.y), z: r2d(heightAt(belief2, D.p.x, D.p.y)) }, revealed_at_s: T_MAP + DT, source: real ? realSource(D) : fictitiousSource, for_agent: 'ROVER' },
+    ...astronautSites.map((s) => ({ id: s.id, label: s.label, kind: s.kind, position: { x: r2d(s.p.x), y: r2d(s.p.y), z: r2d(heightAt(prior, s.p.x, s.p.y)) }, revealed_at_s: 0, source: s.source, for_agent: 'HUMAN' })),
     ...(WD.landmark ? [{ id: 'L', label: WD.landmark.label, kind: 'landing', position: { x: WD.landmark.x, y: WD.landmark.y, z: r2d(heightAt(prior, WD.landmark.x, WD.landmark.y)) }, revealed_at_s: 0, source: { basis: 'nasa', text: WD.landmark.source } }] : []),
   ],
   files: { rasters: 'rasters.json', timeline: 'timeline.json', routes: 'routes.json' },
