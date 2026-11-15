@@ -599,7 +599,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           <StatusBlock
             manifest={m}
             missionState={view.state?.mission_state ?? 'IDLE'}
-            mapVersion={view.state?.map_version ?? 1}
             t={t}
             agent={agent}
             evaluator={EVALUATOR}

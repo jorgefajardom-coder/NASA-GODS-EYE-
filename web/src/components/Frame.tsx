@@ -52,7 +52,6 @@ export function TitleBlock({ manifest, runId }: { manifest: ReplayManifest; runI
 interface StatusProps {
   manifest: ReplayManifest;
   missionState: string;
-  mapVersion: number;
   t: number;
   agent: AgentState | null;
   evaluator: boolean;
@@ -62,7 +61,7 @@ interface StatusProps {
 }
 
 /** Link and replay status, top right (the agent position is in the details panel). The live link is shown as offline: the viewer does not connect to the gateway yet, it only plays recorded replays. */
-export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
+export function StatusBlock({ manifest, missionState, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
   return (
     <section className="status" aria-label="Connection and mission status">
       <div className="status__link">Offline</div>
@@ -75,8 +74,6 @@ export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, 
       <dl className="status__grid mono">
         <dt>Mission</dt>
         <dd>{missionState.toLowerCase()}</dd>
-        <dt>Map</dt>
-        <dd>v{mapVersion}</dd>
         <dt>Sim time</dt>
         <dd>{fmtSimTime(t)}</dd>
         {/* Real present time on Earth (the viewer's) and on Mars; the sim time above is the replay's. */}
