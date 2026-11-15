@@ -1180,6 +1180,18 @@
         "evidence/planner-f033b-20261114"
       ],
       "use": "Delegate to published mission science API, compare stored vectors, strict reserves and pending activities. No scientific approval, search wiring, ROS contract or execution accounting change."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "independent_scientific_itinerary_oracle",
+      "generation": "AI-assisted synthetic tests, graph construction and documentation; actual software outputs",
+      "paths": [
+        "tests/planning/scientific_oracle.py",
+        "tests/planning/test_scientific_oracle.py",
+        "docs/planner_f033c_oracle.md",
+        "evidence/planner-f033c-oracle-20261115"
+      ],
+      "use": "Exhaustive tiny directed itineraries and resource-constrained route selection, without production search changes or copying open PR code. No physical clearance validation or scientific approval."
     }
   ],
   "generated_media": [

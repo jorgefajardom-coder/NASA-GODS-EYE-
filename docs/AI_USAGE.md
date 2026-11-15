@@ -704,3 +704,7 @@ OpenAI Codex assisted the mainb5dc681 delivery comparison, local commit/PR draft
 ## F03.3-B experimental cost adapter
 
 OpenAI Codex assisted planner resource_costs.py, test_resource_costs.py, the F03.3-B technical report and evidence/planner-f033b-20261114. The adapter reuses published mission functions; tests compare stored David vectors. Outputs are software estimates, not observations or model approval. Search, MissionManager and ROS remain unchanged.
+
+## F03.3-C independent oracle
+
+OpenAI Codex assisted tests/planning/scientific_oracle.py, test_scientific_oracle.py, docs/planner_f033c_oracle.md and evidence/planner-f033c-oracle-20261115. Tiny synthetic graphs and clearances are test inputs, not physical data. Costs delegate to published mission functions. Production search, ROS and authorization remain unchanged; PR28 coordination metadata was read without copying its implementation.
