@@ -34,3 +34,5 @@ Final same-run browser video:20.916667s, English subtitles and visible AI-genera
 The published [scientific Wiki](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki) and bounded pilot evidence are retained byte-for-byte from main2c6ba9e. The viewer source is unchanged from capturedf7938f5.
 
 Wiki verification uses the original publication audit against the exact frozen2c6ba9e Git export. All Wiki/evidence payload bytes and the original manifest are preserved; the two active AI registers are legitimate continuation files and preserve every original main entry. See `evidence/height-reconciliation-20261115/wiki-continuation-check.json`.
+
+A scoped `.gitattributes` rule preserves the published Wiki tools' original byte seals. Their CRLF bytes are unchanged; normalizing them under the repository-wide forced Python LF rule would invalidate the existing publication manifest. Other source conventions remain unchanged.

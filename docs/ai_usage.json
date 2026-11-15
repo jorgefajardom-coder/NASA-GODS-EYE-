@@ -1760,9 +1760,10 @@
         "docs/AI_USAGE.md",
         "docs/ai_usage.json",
         "docs/final_delivery_candidate.md",
-        "tests/contracts/test_data_manifest.py"
+        "tests/contracts/test_data_manifest.py",
+        ".gitattributes"
       ],
-      "use": "Combine reviewed PR37/PR38 sources and height/replay fixes in an isolated review candidate, preserving required declarations and original histories. Correct a trailing blank line and document actual checks, deferred gateway work and human delivery gates. No automatic main merge, new scientific approval or external submission."
+      "use": "Combine reviewed PR37/PR38 sources and height/replay fixes in an isolated review candidate, preserving required declarations and original histories. Correct a trailing blank line and document actual checks, deferred gateway work and human delivery gates. No automatic main merge, new scientific approval or external submission. Preserve byte-sealed Wiki Python tools from forced line-ending normalization; the published tool bytes are unchanged."
     },
     {
       "tool": "OpenAI Codex",
