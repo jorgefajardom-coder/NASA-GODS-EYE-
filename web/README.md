@@ -8,8 +8,8 @@ terrain, with a saved-run replay that needs no ROS, Gazebo or network.
 ## Status
 
 **REPLAY mode only**. The live link is shown as offline: the gateway
-is not connected to the viewer. The featured entry is `recorded-recovery-001`;
-the two older examples remain separately selectable
+is not connected to the viewer. For now the viewer opens the simulated `demo`;
+`recorded-recovery-001` (MOCK recorder package) opens when selected
 (see the Run selector below).
 
 | Part | What it is |
@@ -178,12 +178,12 @@ the reference is not available.
 
 The **Run** selector under the title (or `?run=<id>`) opens another saved run:
 
-The run selector offers only the documented standard entry, `recorded-recovery-001` (`OFFERED_RUNS` in `src/data/replayAdapter.ts`). The other entries below stay loadable with `?run=<id>` for tests and review.
+The run selector offers the simulated `demo` (default for now) and `recorded-recovery-001`, which opens when selected (`OFFERED_RUNS` in `src/data/replayAdapter.ts`). `mock-vertical-001` stays loadable with `?run=mock-vertical-001` for tests and review.
 
 | Run | Source |
 |---|---|
-| `recorded-recovery-001` (default) | Four unchanged canonical files from the recovered recorder run; internal `run_id` is retained independently of this entry folder. Real Jezero data/planner with MOCK authority/kinematic execution; recovery of the human, rover/drone idle; final `READY` |
-| `demo` | Simulated mission on the real CTX crop (`public/replay/demo/`) |
+| `recorded-recovery-001` | Four unchanged canonical files from the recovered recorder run; internal `run_id` is retained independently of this entry folder. Real Jezero data/planner with MOCK authority/kinematic execution; recovery of the human, rover/drone idle; final `READY` |
+| `demo` (default) | Simulated mission on the real CTX crop (`public/replay/demo/`) |
 | `mock-vertical-001` | Package recorded by the gateway's `replay_recorder` from the MOCK vertical (Jesús, `../data/sample/replay/`, ICD §7). Flat synthetic grid, straight-line MOCK planner, 5.4 s of wall-clock time |
 
 The featured package lives under `public/replay/recorded-recovery-001/`.

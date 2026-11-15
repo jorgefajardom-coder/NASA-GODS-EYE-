@@ -16,10 +16,11 @@ const manifest = JSON.parse(readFileSync(join(fixture, 'manifest.json'), 'utf8')
 const bundle = fromGatewayPackage(manifest, parseJsonLines(readFileSync(join(fixture, 'timeline.jsonl'), 'utf8')));
 
 describe('recorded recovery entry', () => {
-  it('offers the recorder case first and preserves the illustrative demo separately', () => {
-    expect(DEFAULT_RUN_ENTRY).toBe('recorded-recovery-001');
+  it('opens the illustrative demo by default and keeps the recorder case as its own entry', () => {
+    expect(DEFAULT_RUN_ENTRY).toBe('demo');
     expect(RUNS[0].id).toBe(DEFAULT_RUN_ENTRY);
     expect(RUNS.find((run) => run.id === 'demo')?.label).toMatch(/Illustrative.*generated/);
+    expect(RUNS.find((run) => run.id === RECORDED_RECOVERY_ENTRY)?.label).toMatch(/MOCK/);
   });
 
   it('keeps the entry folder separate from the recorded identity and states its scope', () => {
@@ -49,8 +50,8 @@ describe('recorded recovery entry', () => {
 });
 
 describe('run selector', () => {
-  it('offers only the documented standard entry', async () => {
+  it('offers the simulated demo (default) and the recorded MOCK entry', async () => {
     const { OFFERED_RUNS } = await import('../src/data/replayAdapter');
-    expect(OFFERED_RUNS.map((r) => r.id)).toEqual([DEFAULT_RUN_ENTRY]);
+    expect(OFFERED_RUNS.map((r) => r.id)).toEqual([DEFAULT_RUN_ENTRY, RECORDED_RECOVERY_ENTRY]);
   });
 });

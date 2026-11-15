@@ -10,18 +10,19 @@ import { fromGatewayPackage, isGatewayManifest, parseJsonLines, validateGatewayM
 
 /** Runs offered in the viewer. `dir` is relative to the site under replay/. */
 export const RECORDED_RECOVERY_ENTRY = 'recorded-recovery-001';
-export const DEFAULT_RUN_ENTRY = RECORDED_RECOVERY_ENTRY;
+/** Default for now (owner's choice): the simulated demo on the CTX crop; the recorded MOCK entry is one selection away. */
+export const DEFAULT_RUN_ENTRY = 'demo';
 export const RUNS: ReadonlyArray<{ id: string; label: string; note?: string }> = [
-  { id: RECORDED_RECOVERY_ENTRY, label: 'Recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Not a scientific COMPLETE mission.' },
   { id: 'demo', label: 'Illustrative demo · generated story' },
+  { id: RECORDED_RECOVERY_ENTRY, label: 'Recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Not a scientific COMPLETE mission.' },
   { id: 'mock-vertical-001', label: 'Gateway replay mock-vertical-001 (MOCK)' },
 ];
 
 /**
- * Runs offered in the selector: only the documented standard entry (DEFAULT_RUN_ENTRY). The other
- * catalogue entries stay loadable with ?run=<id> for tests and review, but are not offered.
+ * Runs offered in the selector: the simulated demo (default) and the recorded recovery MOCK, which
+ * opens when selected. The gateway mock-vertical-001 package stays loadable with ?run=<id> only.
  */
-export const OFFERED_RUNS = RUNS.filter((run) => run.id === DEFAULT_RUN_ENTRY);
+export const OFFERED_RUNS = RUNS.filter((run) => run.id === DEFAULT_RUN_ENTRY || run.id === RECORDED_RECOVERY_ENTRY);
 
 export class ReplayLoadError extends Error {}
 

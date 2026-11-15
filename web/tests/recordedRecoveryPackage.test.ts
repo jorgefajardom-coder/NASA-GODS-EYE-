@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PerspectiveCamera, Vector3 } from 'three';
 import { expect, it } from 'vitest';
-import { DEFAULT_RUN_ENTRY, RECORDED_RECOVERY_ENTRY } from '../src/data/replayAdapter';
+import { RECORDED_RECOVERY_ENTRY } from '../src/data/replayAdapter';
 import {
   fromGatewayPackage, parseJsonLines, type GatewayManifest, type GatewaySnapshot, type PublicRasters,
 } from '../src/data/gatewayReplay';
@@ -13,8 +13,8 @@ import { terrainFraming } from '../src/lib/terrainPresentation';
  * substitute and no environment-dependent skip: a broken default must fail CI.
  */
 it('opens the featured recorder package with its recorded decision change and absolute datum', () => {
-  expect(DEFAULT_RUN_ENTRY).toBe(RECORDED_RECOVERY_ENTRY);
-  const dir = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'replay', DEFAULT_RUN_ENTRY);
+  // The recorder package is consumed by name; the viewer's default entry is a separate choice.
+  const dir = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'replay', RECORDED_RECOVERY_ENTRY);
   for (const name of ['manifest.json', 'timeline.jsonl', 'snapshot.json', 'public_rasters.json']) {
     expect(existsSync(join(dir, name)), `Missing featured recording: ${name}`).toBe(true);
   }
