@@ -4,9 +4,9 @@ An interesting route provides an example. An experiment explains why that exampl
 
 This chapter develops the experimental logic used to study scale, uncertainty and reconnaissance. The [case studies](08-Case-Studies.md) then show what the existing local records support. The original integrated comparison is specified in the [A/B/C benchmark protocol](../science_benchmark.md); the larger-map research has its own [frozen protocol](../../evidence/overnight-mission-research-20261115-v3/protocol.json).
 
-![An experimental design begins with a frozen question and inputs, branches into paired strategies on the same world, and reunites at an evidence audit.](assets/experimental-design.png)
+![A shared initial world branches into public-prior and paid-reconnaissance strategies before comparison of geometry, eligibility and margins.](assets/imagegen-20261115/09-experimental-design-reviewed.webp)
 
-Figure 7.1. Conceptual design of a paired planning experiment. The world, resources and initial knowledge are shared inputs. The observation policy is the intervention whose consequences are evaluated.
+Figure 7.1. Conceptual paired planning comparison. Both branches start with the same world and allocation. The comparison accounts for reconnaissance costs and examines route geometry, task eligibility and resource margins. [Full-size PNG](assets/imagegen-20261115/09-experimental-design-reviewed.png).
 
 ## Start with a question that can change a decision
 

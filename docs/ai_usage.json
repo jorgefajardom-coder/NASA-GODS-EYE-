@@ -6,6 +6,48 @@
   "human_review": "pending module owners",
   "uses": [
     {
+      "tool": "Higgsfield (Seed Audio 1.0 by ByteDance) for the voice; Claude (Anthropic) through Claude Code for the music script, editing scripts and this declaration",
+      "kind": "submission_video_voice_over_declaration",
+      "generation": "AI-generated speech from team-written text with preset voices; AI-assisted music synthesis code and video editing scripts, directed by the owner",
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Declare the AI-generated English voice-over of the three 30-second submission videos (kept outside the repository; listed with hashes under generated_media), plus the code-synthesised music and the AI-assisted editing scripts. The picture is screen recordings of the project's viewer; the Perseverance photos shown are real NASA/JPL-Caltech raw images. No data, observation, mission result or NASA branding was generated."
+    },
+    {
+      "tool": "OpenAI Codex and image_gen",
+      "kind": "reviewed_imagegen_wiki_editorial_refresh",
+      "generation": "AI-assisted semantic review and reference-image edits; documentation-only audit code; encoding-only WebP derivatives",
+      "paths": [
+        "docs/wiki/assets/imagegen-20261115",
+        "docs/wiki/Editorial-Review.md",
+        "docs/wiki/audit/editorial-20261115",
+        "docs/wiki/tools/audit_editorial.py",
+        "docs/wiki/Home.md",
+        "docs/wiki/01-Research-Question.md",
+        "docs/wiki/02-Jezero-Science.md",
+        "docs/wiki/03-Terrain-and-Scale.md",
+        "docs/wiki/04-Agents-and-Activities.md",
+        "docs/wiki/04-Agents-and-Activities.md",
+        "docs/wiki/06-Mission-Decisions.md",
+        "docs/wiki/07-Experimental-Method.md",
+        "docs/wiki/09-Discussion.md",
+        "docs/wiki/Home.md",
+        "docs/wiki/README.md",
+        "docs/wiki/Reproducibility.md",
+        "docs/wiki/_Sidebar.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "docs/handoffs/david.md"
+      ],
+      "use": "Use a supplied20-image package as visual references; edit nine selected illustrations to retain correct scientific meaning, readable labels and visible AI watermarks. Exclude11 originals with fabricated values or unsupported capabilities. Preserve the original data figures, GIFs and historical seals.",
+      "metadata": "Source ZIP/manifest hashes, original image hashes, prompts, output hashes, classifications, captions and exclusions are recorded in the edition manifest.",
+      "owner_review": "pending before separate native Wiki synchronization",
+      "scientific_approval_change": false,
+      "technical_implementation_change": false
+    },
+    {
       "tool": "OpenAI Codex and image_gen",
       "kind": "english_scientific_wiki_with_reproducible_graphics",
       "generation": "AI-assisted English explanatory prose, documentation-only drawing/audit code, conceptual illustration, model plots and marked GIFs",
@@ -1629,9 +1671,17 @@
         "web/src/lib/co2.ts",
         "web/tests/co2.test.ts",
         "web/src/components/RadialHud.tsx",
-        "web/src/components/HudGauge.tsx"
+        "web/src/components/HudGauge.tsx",
+        "web/src/lib/gatewayLive.ts",
+        "web/src/components/LiveGatewayPanel.tsx",
+        "web/tests/gatewayLive.test.ts",
+        "web/src/components/Frame.tsx",
+        "web/README.md",
+        "web/src/components/FirstPersonHud.tsx",
+        "web/tests/photoTourExit.test.ts",
+        "web/tests/liveGatewayPanel.test.ts"
       ],
-      "use": "Display the existing per-zone water (Mars Odyssey GRS) and radiation (MSL RAD and RAD's dose-pressure relation) context from web/scripts/data/zone_environment.json in the Atmos tab of every zone and on the zone cards, with a 4 h Marswalk example dose; draft the English project-page text that maps the challenge to delivered and pending items. Add the HUD's exhaled-CO2 gauge on the oxygen button (oxygen used x an assumed respiratory quotient of 0.85, pending review; suit CO2 removal capacity not modelled). Use each zone's surface dose rate in the HUD dose gauge, with NASA's 600 mSv career limit (NASA-STD-3001) as scale context. The numeric values and their sources are unchanged NASA-derived data, not generated; the example dose is a linear display estimate without shielding or solar events. No media generated; no scientific approval or milestone closure."
+      "use": "Display the existing per-zone water (Mars Odyssey GRS) and radiation (MSL RAD and RAD's dose-pressure relation) context from web/scripts/data/zone_environment.json in the Atmos tab of every zone and on the zone cards, with a 4 h Marswalk example dose; draft the English project-page text that maps the challenge to delivered and pending items. Add the HUD's exhaled-CO2 gauge on the oxygen button (oxygen used x an assumed respiratory quotient of 0.85, pending review; suit CO2 removal capacity not modelled). Use each zone's surface dose rate in the HUD dose gauge, with NASA's 600 mSv career limit (NASA-STD-3001) as scale context. Add the opt-in read-only live gateway panel (?gateway=), tested with synthetic gateway envelopes and checked against a running MOCK ROS stack; it labels a MOCK stack MOCK and sends no goals; the redundant fixed Offline headline in the top-right status was removed, so the connection is shown only in the panel. Add an Exit photo tour button (and Esc) to the rover HUD; it changes no data. The gateway panel is one thin line in the top-right status column with a details dropdown, so it does not cover the map. The numeric values and their sources are unchanged NASA-derived data, not generated; the example dose is a linear display estimate without shielding or solar events. No media generated; no scientific approval or milestone closure."
     },
     {
       "tool": "OpenAI Codex",
@@ -1783,6 +1833,33 @@
       "use": "Capture the actual combined viewer replaying height-recovery-20261115-01 without seeks, annotate honestly and preserve visible global/portrait AI marks. Lock source/build/package/video hashes, retain original third-party terms, exclude browser profiles/raw frames, and distinguish review candidate publication from final submission approval."
     },
     {
+      "tool": "OpenAI Codex",
+      "kind": "pr39_gateway_contract_reconciliation",
+      "generation": "AI-assisted read-only gateway validation/recovery code, regression tests, bounded real HTTP/WebSocket consumer harness and review documentation; preserve concurrent main photo-tour/terrain/menu changes during reconciliation; restrict retrospective stable terrain to explicitly illustrative SIMULATION scenes and preserve current-version recorded geometry",
+      "paths": [
+        "web/src/lib/gatewayLive.ts",
+        "web/src/components/LiveGatewayPanel.tsx",
+        "web/tests/gatewayLive.test.ts",
+        "web/tests/liveGatewayPanel.test.ts",
+        "README.md",
+        "web/README.md",
+        "docs/project_page.md",
+        "web/public/about.html",
+        "web/public/llms.txt",
+        "docs/pr39_gateway_review.md",
+        "evidence/pr39-gateway-contract-20261115",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        ".gitattributes",
+        "docs/final_delivery_candidate.md",
+        "web/src/App.tsx",
+        "web/src/lib/layers.ts",
+        "web/src/components/MissionScene.tsx",
+        "web/tests/terrainShape.test.ts"
+      ],
+      "scope": "Software consumer validation only. Actual unchanged gateway/RunStore is fed the existing public MOCK recorded-recovery-002 package; no ROS execution, goals, generated NASA observations, scientific approval or verified LIVE mission in this review."
+    },
+    {
       "tool": "Claude (Anthropic) through Claude Code",
       "kind": "viewer_terrain_shape_and_zone_menu_fix",
       "generation": "AI-assisted code and tests; no data, imagery or NASA observation generated",
@@ -1819,8 +1896,21 @@
     },
     {
       "tool": "OpenAI Codex",
+      "kind": "pr42_delivery_integration_reconciliation",
+      "generation": "AI-assisted disclosure-history reconciliation, editorial continuation hashes, read-only native Wiki verification receipt and review prose",
+      "paths": [
+        ".gitattributes",
+        "docs/wiki/audit/editorial-20261115/manifest.json",
+        "evidence/pr42-native-publication-20261115",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "scope": "Owner approved PR39/42 and native synchronization. Existing native commit82534db is preserved;39 media hashes and18HTTP endpoints verified without repeating publication. No generated media, scientific approval, LIVE mission or organizer endorsement is asserted."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "pr44_late_event_stream_reconciliation",
-      "generation": "AI-assisted minimal event-stream deduplication fix, failing-then-passing WebSocket regressions, real HTTP/WebSocket consumer validation harness and integration handoff",
+      "generation": "AI-assisted minimal event-stream deduplication fix, failing-then-passing WebSocket regressions, real HTTP/WebSocket consumer validation harness and integration handoff; preserve reviewed PR43 ancestry and active editorial metadata seals",
       "paths": [
         "src/mge_gateway/mge_gateway/app.py",
         "tests/contracts/test_gateway.py",
@@ -1828,7 +1918,8 @@
         "evidence/pr44-gateway-stream-20261115",
         "docs/AI_USAGE.md",
         "docs/ai_usage.json",
-        ".gitattributes"
+        ".gitattributes",
+        "docs/wiki/audit/editorial-20261115/manifest.json"
       ],
       "scope": "A fixed after_seq resume floor and per-connection sent-sequence set preserve unique late events without duplicating backlog/queue overlap. Software checks only; public replay-fed MOCK inputs, no new mission execution, scientific observations or LIVE acceptance."
     }
@@ -1873,6 +1964,38 @@
       "watermark": "AI-generated (burned into the pixels; legible at the 280 px README display width)",
       "use": "Team logo at the top of the README and on the about page. Not NASA data; no NASA logos, flags or mission marks.",
       "sha256": "6fbeb71f00e30f11db70da83f2d73af895fd648c868befe55530a6c80e6b3314"
+    },
+    {
+      "kind": "ai_generated_voice_over",
+      "files": [
+        {
+          "name": "mars-gods-eye-demo.mp4",
+          "title": "Mars Gods Eye - Demo",
+          "voice": "Andre (preset)",
+          "sha256": "b27466a439e4e726c44b204563bd2c4776fabed41b994045c8e21a0572c5db1d"
+        },
+        {
+          "name": "mars-gods-eye-d.mp4",
+          "title": "Mars Gods Eye - Houston, we have a bug",
+          "voice": "Andre (preset)",
+          "sha256": "c55b9a6cba9caaabf9c31a016ba22deecbdd1e6ed7575e5bd66e8ff3131ca56e"
+        },
+        {
+          "name": "mars-gods-eye-a.mp4",
+          "title": "Mars Gods Eye - The map was wrong",
+          "voice": "Gideon (preset)",
+          "sha256": "0be1250327d747ece4e74f8b0368e18f27a07a078b6d57faa2aca3ef79a9f4de"
+        }
+      ],
+      "stored": "Outside the repository (Git-ignored .local/video/); submission media",
+      "tool": "Higgsfield text-to-speech, model Seed Audio 1.0 (ByteDance), built-in preset voices; text written by the team; no cloned or recorded human voice",
+      "editing": "Head and tail silence trimmed, pauses shortened, tempo 1.06-1.07x on the Andre cuts, mixed under synthesised music with ffmpeg",
+      "metadata": "MP4 comment tag in each file starting 'AI use: the voice-over is AI-generated speech (Higgsfield, Seed Audio 1.0, preset voice ...)'",
+      "verification": "Spoken words checked against the script with a local speech-to-text model (faster-whisper small.en)",
+      "other_ai_use": "Music and sound effects synthesised by a Python script written with Claude (Anthropic) through Claude Code (no generative audio model, no samples); shot timing, on-screen type and capture/render scripts written with Claude through Claude Code",
+      "picture": "Screen recordings of the project's web viewer, not AI-generated video; the AI-generated logo and astronaut portrait shown keep their burned-in AI-generated marks; the three Perseverance photos in the demo video are real NASA/JPL-Caltech raw images (sol 13), not AI-generated",
+      "use": "Narration of the 30-second submission videos. Not data, not a measurement and not a crew voice; the videos label the replan as a recorded run with MOCK execution and claim no live mission.",
+      "nasa_branding": false
     },
     {
       "path": "web/public/media/height-recovery-002.mp4",

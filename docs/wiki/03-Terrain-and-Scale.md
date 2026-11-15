@@ -6,9 +6,14 @@ A terrain model makes a landscape computable. It assigns elevations, coordinates
 
 The project's public prior comes from a CTX digital terrain model associated with Mars 2020 terrain-relative navigation. The source product has 20 m posts; the delivered planning grid uses 4 m cells. This distinction is central: computational subdivision provides a convenient representation for algorithms, while the original observations and their processing determine the information available about the surface.
 
+![Conceptual source sampling, computational subdivision and a bounded local observation retain a NoData region.](assets/imagegen-20261115/04-terrain-scale-reviewed.webp)
+
+Figure 3.A. Conceptual introduction to source sampling, computational representation and an observation footprint. The colors explain information roles; the reproducible grid comparison below gives the numerical teaching example. A finer computational grid retains the source information limits. [Full-size PNG](assets/imagegen-20261115/04-terrain-scale-reviewed.png).
+
 ![Diagram distinguishing regional terrain context, a 20 m source grid, a 4 m computational grid and a local observation footprint.](assets/terrain-scale.png)
 
 Figure 3. Terrain information across scales. The diagram illustrates the relationship between source sampling and computational representation. Subdividing a source interval produces additional locations at which an interpolated model can be evaluated; it does not create independent observations at those locations.
+
 
 ## Products with different roles
 

@@ -25,3 +25,7 @@ The corrected gateway client can consume terrain metadata independently of missi
 Explicit owner authorization precedes this PR's merge. Approval of PR39/42 does not automatically merge PR44. Preserve stable main and independent pilot evidence. Jesús hands the exact reviewed package to the organizer at20:00 America/Bogota on15 November; explicit endorsement of that revision and submission receipt remain pending delivery gates. No external organizer message or final submission is performed by this reconciliation.
 
 Required AI-use text and metadata cover the changed code/tests/harness/docs, without optional authorship credits or scientific-result claims.
+
+## Final candidate ancestry and disclosure seal
+
+The final review candidate preserves PR43 at2b7266c and approved PR42 at056404c (retaining1c56a70) as separate parents/commits, on top of PR39/current main48db452. Merge PR42 first under its existing authorization. A later PR44 merge requires explicit owner approval for both PR43 and PR44 and closes PR43 through preserved ancestry. All original voice records remain; their external MP4 binaries were unavailable for independent audiovisual acceptance. Retain every disclosure history and update only the editorial manifest's two active global AI-register hash/size records. Runtime changes relative to current main remain the reviewed gateway metadata/event-stream work; no illustrative package or sealed media is regenerated.

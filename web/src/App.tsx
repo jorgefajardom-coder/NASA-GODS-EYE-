@@ -39,6 +39,8 @@ import { ManagementList } from './components/ManagementList';
 import { DetailsPanel } from './components/DetailsPanel';
 import { HUD_MAP_PX, RadialHud, type HudOption } from './components/RadialHud';
 import { co2FromOxygen } from './lib/co2';
+import { gatewayBaseFrom } from './lib/gatewayLive';
+import { LiveGatewayPanel } from './components/LiveGatewayPanel';
 import { zoneCrewDose } from './lib/zoneEnvironment';
 import { HudGauge } from './components/HudGauge';
 import { resourceLines } from './lib/resources';
@@ -66,6 +68,8 @@ const SHOT_MS = 1500;
 const params = new URLSearchParams(window.location.search);
 /** Evaluator view shows the hidden reference DEM. Off by default; enable with ?evaluator=1. */
 const EVALUATOR = params.get('evaluator') === '1';
+/** Opt-in read-only view of a running ROS gateway: `?gateway=http://127.0.0.1:8010` (see LiveGatewayPanel). */
+const GATEWAY = gatewayBaseFrom(params.get('gateway'));
 // The URL/selector identifies a package folder; its recorded run_id is kept intact.
 const RUN_ID = params.get('run') ?? DEFAULT_RUN_ENTRY;
 /** Rendering tier, probed once: full 3D, lite 3D (software / slow GPU) or a 2D map without WebGL. */
@@ -282,6 +286,14 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     setT(photoTour.start_s);
     setPlaying(true);
   };
+  // Leaves the tour from anywhere (HUD button, Esc, the photo window, the camera chip): stops the replay and goes
+  // back to the normal third-person view of the rover.
+  const endTour = useCallback(() => {
+    setTourOn(false);
+    setPlaying(false);
+    setFirstPerson(false);
+    setMarsNow(false);
+  }, []);
   const stepTour = (dir: 1 | -1) => {
     const to = tourStepTime(roverStops, t, dir);
     if (to != null) setT(to);
@@ -291,7 +303,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   useEffect(() => {
     if (tourOn && follow) setSpeed(5);
   }, [tourOn, follow]);
-  const marsNowNode = marsNow ? <MarsNowFrame stop={povStop} mission={bundle.roverStops?.mission} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: () => { setTourOn(false); setPlaying(false); } } : null} /> : null;
+  const marsNowNode = marsNow ? <MarsNowFrame stop={povStop} mission={bundle.roverStops?.mission} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: endTour } : null} /> : null;
   // At each stop the replay holds while the images load, then the rover "takes" them one after another:
   // the view switches to the rover's own camera, which turns to where each photo was taken while the photo
   // lights up in the window. Then the view goes back behind the rover and it drives on.
@@ -450,6 +462,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'Home') restart();
       else if (e.code === 'KeyF') setFollow(!follow);
       else if (e.code === 'KeyG') setFreePan((g) => !g);
+      else if (e.code === 'Escape' && tourOn && !zonesOpen) endTour();
       else if (e.code === 'KeyV') setFirstPerson((v) => !v);
       else if (e.code === 'KeyB' && pov) setPovSway(!povSway);
       else if (e.code === 'KeyC') setDroneCam((c) => !c);
@@ -467,7 +480,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [playPause, seek, restart, t, follow, setFollow, pov, povSway, setPovSway]);
+  }, [playPause, seek, restart, t, follow, setFollow, pov, povSway, setPovSway, tourOn, zonesOpen, endTour]);
 
   // Machine-readable view of the replay for language models and test agents: window.mge.state()
   // returns what is on screen as JSON (see public/llms.txt). Read-only; it changes nothing.
@@ -585,6 +598,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           onArtificialLight={() => setArtificialLight((v) => !v)}
           sway={povSway}
           onSway={setPovSway}
+          onEndTour={tourOn ? endTour : null}
         />
       )}
       {/* The start menu sits under the intro (same layer, earlier in the page) and opens as the intro starts
@@ -646,7 +660,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
               <kbd>G</kbd> Grab map
             </button>
             {photoTour && (
-              <button type="button" className="chip" aria-pressed={tourOn} onClick={tourOn ? () => { setTourOn(false); setPlaying(false); } : startTour} title={photoTourTitle(bundle.roverStops?.mission)}>
+              <button type="button" className="chip" aria-pressed={tourOn} onClick={tourOn ? endTour : startTour} title={photoTourTitle(bundle.roverStops?.mission)}>
                 Photo tour
               </button>
             )}
@@ -684,6 +698,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         </div>
 
         <aside className="right">
+          {/* The running ROS gateway, if any, as one thin line at the top of the status column. */}
+          {GATEWAY && <LiveGatewayPanel base={GATEWAY} />}
           <StatusBlock
             manifest={m}
             missionState={view.state?.mission_state ?? 'IDLE'}

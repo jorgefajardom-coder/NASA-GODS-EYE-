@@ -1,10 +1,10 @@
-import type { RasterSet } from '../types/replay';
+import type { RasterSet, ReplayManifest } from '../types/replay';
 
 export type TerrainLayer = 'prior' | 'belief' | 'slope' | 'sigma' | 'reference';
 
 export const LAYER_INFO: Record<TerrainLayer, { label: string; description: string }> = {
   prior: { label: 'Orbital map', description: 'Prior from orbit. Fixed for the whole run.' },
-  belief: { label: 'Updated map', description: 'Prior plus every agent observation of the run. The ground keeps this shape from the start, so it never jumps when an agent observes it; cells observed up to the current map version are tinted.' },
+  belief: { label: 'Updated map', description: 'Recorded and unclassified runs use the current replay map version. Explicit illustrative SIMULATION demos use the final retrospective surface for visual stability; observed-cell tints still follow the current map version.' },
   slope: {
     label: 'Slope',
     description:
@@ -18,21 +18,26 @@ export const LAYER_INFO: Record<TerrainLayer, { label: string; description: stri
   reference: { label: 'Reference (evaluator)', description: 'Hidden ground truth used only to evaluate. The planner never sees it.' },
 };
 
-/** Map version available at or before `version` (versions may skip numbers). */
-/** Highest map version the run holds: the ground shape drawn on the updated-map layer for the whole replay. */
+/** Highest map version available for an explicitly retrospective illustrative demo. */
 export function latestMapVersion(rasters: RasterSet): number {
   return Math.max(...Object.keys(rasters.versions).map(Number));
 }
 
 /**
- * Heights the terrain mesh is built from. The updated map uses the run's last version at every time, so observed
- * ground (e.g. a scarp seen by the drone) is there all along instead of rising when it is observed; what is known
- * when is shown by the tint of observed cells and the uncertainty layer, which still follow the current version.
+ * Only an explicitly illustrative simulation may use a retrospective surface.
+ * Recorder and unknown sources retain their causal map history by default.
  */
-export function shapeGrid(rasters: RasterSet, layer: TerrainLayer, version: number): (number | null)[] {
-  return heightGrid(rasters, layer, layer === 'belief' ? latestMapVersion(rasters) : version);
+export function retrospectiveShapeAllowed(manifest: Pick<ReplayManifest, 'illustrative' | 'source_mode'>): boolean {
+  return manifest.illustrative === true && manifest.source_mode === 'SIMULATION';
 }
 
+/** Belief and uncertainty share one surface; their tints/values retain the current version. */
+export function shapeGrid(rasters: RasterSet, layer: TerrainLayer, version: number, retrospectiveDemo = false): (number | null)[] {
+  const retrospective = retrospectiveDemo && (layer === 'belief' || layer === 'sigma');
+  return heightGrid(rasters, layer, retrospective ? latestMapVersion(rasters) : version);
+}
+
+/** Map version available at or before `version` (versions may skip numbers). */
 export function versionKey(rasters: RasterSet, version: number): string {
   const keys = Object.keys(rasters.versions)
     .map(Number)

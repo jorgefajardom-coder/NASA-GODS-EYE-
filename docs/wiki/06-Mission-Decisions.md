@@ -24,9 +24,9 @@ FAST seeks minimum complete-mission time while respecting the supplied constrain
 
 A discovered task first enters the public mission record with an identity and supporting source context. Registration does not perform the work. Eligibility then depends on the agent's capabilities, precedences and resources. The current optional-task interface accepts explicitly labeled simulated discoveries from an observing agent; the origin remains part of their interpretation.
 
-![Task precedence from a simulated discovery through rover inspection to human sampling after primary B completion and a feasible return.](assets/task-precedence.png)
+![Four independent questions converge on a joint eligibility gate, with terminal outcomes to admit or defer optional work.](assets/imagegen-20261115/07-task-precedence-reviewed.webp)
 
-Figure 6.1. Task order combines a scientific workflow with mission constraints. A completed inspection provides a prerequisite for sampling at the corresponding position. Primary B completion and current return feasibility are additional requirements for a human sample assignment.
+Figure 6.1. Optional sampling eligibility requires all four conditions together: completed inspection, completed primary B work, compatible capability and sufficient resources for work, directed return and reserves. A failed gate defers the optional activity while the primary mission retains its own state. [Full-size PNG](assets/imagegen-20261115/07-task-precedence-reviewed.png).
 
 The rover may receive an inspection before the human completes B. Human sampling requires completed B work and a completed predecessor inspection at the same location within the declared model tolerance. A cost activity called `inspect` can price B's light work without completing that optional predecessor. The distinction prevents an accounting label from being interpreted as scientific evidence.
 

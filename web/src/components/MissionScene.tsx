@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { TerrainLayer } from '../lib/layers';
-import { finiteRange, shapeGrid } from '../lib/layers';
+import { finiteRange, retrospectiveShapeAllowed, shapeGrid } from '../lib/layers';
 import { createTerrainSurface, terrainSurfaceHeight } from '../lib/terrainSurface';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
@@ -93,8 +93,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const hemiLight = useRef<THREE.HemisphereLight>(null);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
-  // Ground shape is fixed for the run (no jump when an agent observes it); the map version only drives tints.
-  const grid = shapeGrid(bundle.rasters, layer, mapVersion);
+  // Only explicit illustrative simulations have a fixed retrospective surface.
+  // Recorder packages follow the current version, including before an observation.
+  const grid = shapeGrid(bundle.rasters, layer, mapVersion, retrospectiveShapeAllowed(bundle.manifest));
   // Renderer and consumers share the live Float32 vertices, including animation.
   const surface = useMemo(() => createTerrainSurface(meta, grid), [meta, grid]);
   const groundHeight = useCallback((x: number, y: number) => terrainSurfaceHeight(surface, x, y), [surface]);

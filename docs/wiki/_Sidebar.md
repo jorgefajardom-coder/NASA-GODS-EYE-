@@ -13,3 +13,5 @@
 [Glossary](Glossary.md) · [Parameters](Parameters-and-Decisions.md)
 
 [Bibliography](Bibliography.md) · [Reproduction](Reproducibility.md)
+
+[Visual edition: selection and review](Editorial-Review.md).

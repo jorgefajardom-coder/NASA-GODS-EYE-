@@ -1,0 +1,15 @@
+{
+  "tool": "image_gen",
+  "operation": "reference_image_edit",
+  "source_id": 5,
+  "source_asset": "05_agent-timescales.png",
+  "source_png_sha256": "234ae0d9da8d449a1b0838d4cfd0e7a71613cc6092453c14c17f49a1eb5fa465",
+  "prompt": "Edit the supplied three-agent infographic for a scientific Wiki. Preserve its cinematic Mars editorial style, dark orange/cyan palette, three horizontal bands, generic unbranded astronaut, rover and aerial scout. Simplify heavily and eliminate unsupported endurance claims. Remove ALL numerical duration ranges, including 2–8 hours and 5–20 minutes. Also remove every 'days', 'weeks', 'hours', 'minutes', 'sols', endurance or capacity claim and the old detailed timeline paragraphs. Use these exact large readable texts only: main title 'Three agents, three time scales'; band one 'Human EVA — one excursion'; band two 'Rover campaign — several work periods'; band three 'Drone sortie — one flight'; a separate bottom explanatory line 'Each clock is allocated separately'. Simple travel/work/return icons may remain, but do not add words or numbers to them. No labels about sampling execution, measurement results, safety, authorization or verified capacity. No logos, flags, NASA insignia, agency branding or mission identifiers. Add a permanent full-width dark footer with the exact text 'AI-generated | Conceptual illustration' at least 32 pixels high at original output size, with generous padding. Keep landscape16:9, polished image quality, readable text and all content within the frame.",
+  "generation_steps": [
+    "Edit the supplied three-agent infographic for a scientific Wiki. Preserve its cinematic Mars editorial style, dark orange/cyan palette, three horizontal bands, generic unbranded astronaut, rover and aerial scout. Simplify heavily and eliminate unsupported endurance claims. Remove ALL numerical duration ranges, including 2–8 hours and 5–20 minutes. Also remove every 'days', 'weeks', 'hours', 'minutes', 'sols', endurance or capacity claim and the old detailed timeline paragraphs. Use these exact large readable texts only: main title 'Three agents, three time scales'; band one 'Human EVA — one excursion'; band two 'Rover campaign — several work periods'; band three 'Drone sortie — one flight'; a separate bottom explanatory line 'Each clock is allocated separately'. Simple travel/work/return icons may remain, but do not add words or numbers to them. No labels about sampling execution, measurement results, safety, authorization or verified capacity. No logos, flags, NASA insignia, agency branding or mission identifiers. Add a permanent full-width dark footer with the exact text 'AI-generated | Conceptual illustration' at least 32 pixels high at original output size, with generous padding. Keep landscape16:9, polished image quality, readable text and all content within the frame."
+  ],
+  "output_png_sha256": "e3487c1b1794e16c70321af517da260d276e6502654ff8cef65eb78912688710",
+  "webp_conversion": "Pillow encoding only, quality92; visible content and footer retained",
+  "classification": "AI-generated conceptual illustration",
+  "owner_review": "pending"
+}

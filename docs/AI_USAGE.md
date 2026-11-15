@@ -1,5 +1,47 @@
 # Required AI-use declaration
 
+## Reviewed ImageGen Wiki illustrations
+
+The repository owner supplied a 20-image ImageGen package for a scientific-Wiki visual refresh. OpenAI Codex assisted the semantic review, captions, provenance and documentation-only validation. Nine selected images were edited with image_gen to remove unsupported numerical, geographic, capability or evidence claims and to improve readability. Eleven originals remain excluded with reasons in `docs/wiki/Editorial-Review.md`. The supplied theses and private research working files were not uploaded as part of this edition.
+
+New PNGs and encoding-only WebP reading copies are stored in `docs/wiki/assets/imagegen-20261115`. Each carries a large visible `AI-generated | Conceptual illustration` footer; prompts and source/output hashes are recorded under `docs/wiki/audit/editorial-20261115`. Original measured/model figures, all 21 existing assets, the three GIFs and historical manifests are preserved. Numerical interpretation remains tied to the original primary sources and run records. The edition introduces no technical or scientific-parameter change. The source package requires owner review before a separate Wiki synchronization; that review remains pending.
+## Submission videos: AI-generated voice-over, 15 November 2026
+
+The English voice-over of the team's 30-second submission videos is
+**AI-generated speech**. It was made with Higgsfield (model Seed Audio 1.0 by
+ByteDance) from text the team wrote, using built-in preset voices, not a cloned
+or recorded human voice:
+
+| Video file | Preset voice | Lines spoken |
+| --- | --- | --- |
+| `mars-gods-eye-demo.mp4` (Mars Gods Eye - Demo) | Andre | "Houston, we have a bug. It's not in our code. It's in the map." / "Explore six Mars zones, built on real NASA terrain." / "It plans the route, checks time, energy and oxygen, and replans when the ground disagrees." / "Follow the rover through its real stops, and see the photos NASA took there." / "Water and radiation for every zone, and a live link to the ROS gateway." / "Mars Gods Eye. Open it in your browser." |
+| `mars-gods-eye-d.mp4` (Houston, we have a bug) | Andre | "Houston, we have a bug. It's not in our code. It's in the map." / "From orbit, Mars gets one height every twenty metres. A crew on foot needs more." / "So we built Mars Gods Eye. It plans the route, checks time, energy and oxygen. When the ground disagrees, it stops and replans." / "Five people. One hackathon. One crater." / "Mars Gods Eye. Open it in your browser." |
+| `mars-gods-eye-a.mp4` (The map was wrong) | Gideon | "Jezero crater. The map says this ground is clear." / "The map was made from orbit. One height, every twenty metres." / "So when the ground disagrees, Mars Gods Eye stops, cancels the route, and plans a new one, with the oxygen that's left." / "Every decision, recorded. Replay it in your browser." / "Mars Gods Eye." |
+
+The voice is also declared in each file's metadata (MP4 `comment` tag, which
+starts "AI use: the voice-over is AI-generated speech (Higgsfield, Seed Audio
+1.0, preset voice ...)"). The spoken words were checked against the script with
+a local speech-to-text model.
+
+Other AI use in the same videos:
+
+- **Music and sound effects**: synthesised by a Python script written with
+  Claude (Anthropic) through Claude Code; no generative audio model and no
+  samples. Declared in the same metadata tag.
+- **Editing**: the shot timing, on-screen type and frame-by-frame capture and
+  render scripts were written with Claude through Claude Code.
+- **Picture**: screen recordings of the project's own web viewer, not
+  AI-generated video. The AI-generated images that appear in them (team logo,
+  astronaut portrait) keep their burned-in `AI-generated` marks.
+- **Not AI-generated**: the three Perseverance photos in the demo video are
+  real NASA/JPL-Caltech raw images (sol 13: Navcam, front and rear Hazcam) from
+  NASA's public raw-image feed, credited on screen.
+
+The videos, voice files and scripts are kept outside the repository (Git-ignored
+`.local/video/`). The videos contain no NASA logos, flags or mission marks, and
+they label the replan as a recorded run with MOCK execution and the gateway
+panel as a MOCK source: no live mission is claimed.
+
 ## English scientific Wiki and pedagogical media
 
 OpenAI Codex assisted the complete English scientific Wiki in `docs/wiki`: nine chapters, the landing page and supporting glossary, parameter, bibliography and reproduction pages. Private doctoral and master's theses supplied style references only; they were read locally and were not uploaded or copied into the Wiki. Scientific statements cite original articles, NASA/JPL technical reports and public product metadata with locators; project outcomes retain their configuration and run identifiers.
@@ -914,6 +956,20 @@ suit capacity is generated. It also switched the HUD dose gauge to each zone's s
 rate from the existing zone environment data, with NASA's 600 mSv career limit as scale
 context; no dose value was generated.
 
+It also assisted the read-only live gateway panel (`web/src/lib/gatewayLive.ts`,
+`web/src/components/LiveGatewayPanel.tsx`, `web/tests/gatewayLive.test.ts`) and its check
+against a running MOCK ROS stack in WSL. The tests use synthetic gateway envelopes; no ROS
+output, NASA observation or mission result was generated, and the panel labels a MOCK stack
+MOCK.
+The fixed *Offline* link headline in the top-right status (`web/src/components/Frame.tsx`) was
+removed, since the panel already shows the connection; that status now describes only the replay.
+An *Exit photo tour* button (also Esc) in the rover HUD (`web/src/components/FirstPersonHud.tsx`,
+`web/src/App.tsx`, `web/tests/photoTourExit.test.ts`) leaves the photo tour from anywhere; it
+changes no data.
+The gateway panel was then reduced to one thin line at the top of the status column (where
+*Offline* used to be) with a dropdown for the details (`web/tests/liveGatewayPanel.test.ts`, synthetic
+MOCK state), so it no longer covers the map.
+
 ## PR37 scientific presentation corrections — 15 November 2026
 
 OpenAI Codex assisted the HUD/context code, source-year corrections, project-page draft and regression tests listed in `ai_usage.json` under `pr37_scientific_presentation_corrections`. RAD dose equivalent is not converted into NASA effective dose or a career-limit percentage. An unavailable CO2 rate remains unavailable. No new measured data, numerical radiation inputs, scientific profile or approval was generated. Owner scientific review remains pending.
@@ -938,6 +994,10 @@ OpenAI Codex assisted local integration of PR37/PR38 and the height/replay cut, 
 
 OpenAI Codex assisted Chrome capture/edit scripts, English overlays/subtitles, metadata and technical review for `web/public/media/height-recovery-002.mp4`. The actual viewer replays the exact MOCK software run; the edit does not generate NASA observations or mission telemetry. Visible `AI-generated edit | SIMULATED | NOT LIVE` and existing portrait marks remain readable. Capture metadata locks viewerf7938f5, execution742eed5 and all four recorder files. No image-generation model or NASA branding was used to create the capture/edit. Third-party source terms remain; raw frames/browser profiles/caches are excluded. Final owner merge, organizer endorsement and submission approval remain pending.
 
+## PR39 read-only gateway contract reconciliation — 15 November 2026
+
+OpenAI Codex assisted client envelope/payload validation, session recovery, contiguous event cursors, separate mission/terrain versions, regression tests and public status documentation. The exact file scope is registered as `pr39_gateway_contract_reconciliation`. The bounded HTTP/WebSocket consumer evidence uses the actual unchanged gateway with public recorded-recovery-002 inputs, explicitly replay-fed MOCK. It sends no goals and performs no ROS mission execution or scientific acceptance. No recorded package, measured NASA observation, generated media or shared contract was changed. Existing contributor declarations and mandatory watermarks are preserved.
+
 ## Viewer terrain shape and zone menu — 15 November 2026
 
 Claude (Anthropic) through Claude Code assisted a viewer fix registered in `ai_usage.json` as `viewer_terrain_shape_and_zone_menu_fix`: the updated-map layer keeps the ground shape of the run's last public map version from the start (no sudden rise of observed ground near the agents), while observed-cell tints and uncertainty still follow the current map version; the zone menu opens on the Jezero card. Code and tests only; no data or observations were generated.
@@ -945,6 +1005,14 @@ Claude (Anthropic) through Claude Code assisted a viewer fix registered in `ai_u
 ## Crop-edge margins in the demo generator — 15 November 2026
 
 Claude (Anthropic) through Claude Code assisted generator changes registered as `demo_generator_crop_edge_margins`: simulated agents no longer drive along the edge of the terrain crop (Meridiani's base and pads sat 4-12 m from it; Jezero and Gale photo tours ran 4 m from it). The regenerated Jezero, Gale and Meridiani packages remain SIMULATED stories on NASA terrain; rover stop markers keep their real NASA positions, and edge stops are visited from up to 20 m inside, as stated in the tour event. No observations were generated.
+
+PR39 refresh against main798016e preserves the concurrent terrain/menu/crop fixes and combines its per-zone photo-tour title with the reviewed exit handler. OpenAI Codex assisted this narrow conflict resolution; no scene, recording or scientific value was generated by the refresh.
+
+The same PR39 refresh restricts final-story terrain geometry to explicitly illustrative SIMULATION scenes, with a shared stable shape for belief/sigma. Recorded and unknown-source runs keep current-version geometry; no future observation is displayed early. The exact recorded002 cell regression and NoData/layer checks are software tests, not generated NASA measurements.
+
+## PR42 delivery integration continuation — 15 November 2026
+
+OpenAI Codex assisted the metadata/hash continuation and read-only native Wiki verification registered as `pr42_delivery_integration_reconciliation`. The owner explicitly approved PR39/42 merge and native synchronization; native82534db was already published with recorded authorization and is preserved. All39 media match the reviewed edition and18new endpoints return HTTP200. Preparation-time editorial flags remain historical; this continuation does not confer scientific-model, mission or final-delivery acceptance. No new media or observations were generated.
 
 ## PR44 late-event stream reconciliation — 15 November 2026
 

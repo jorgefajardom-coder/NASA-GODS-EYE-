@@ -60,16 +60,17 @@ interface StatusProps {
   exaggeration: number;
 }
 
-/** Link and replay status, top right (the agent position is in the details panel). The live link is shown as offline: the viewer does not connect to the gateway yet, it only plays recorded replays. */
+/**
+ * Replay status, top right (the agent position is in the details panel). The chip, mission and sim time describe the
+ * recorded replay on screen; the connection to a running ROS gateway (`?gateway=`) is shown only in its own panel.
+ */
 export function StatusBlock({ manifest, missionState, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
   return (
-    <section className="status" aria-label="Connection and mission status">
-      <div className="status__link">Offline</div>
+    <section className="status" aria-label="Replay and mission status">
       <div className="status__line">
         <span className="chip-mode" title="Recorded data (REPLAY) and who produced it (source_mode, ICD §6.1)">
           {displayState({ mode: 'REPLAY', source: manifest.source_mode ?? 'UNKNOWN' }).label}
         </span>
-        <span className="muted">live link not available</span>
       </div>
       <dl className="status__grid mono">
         <dt>Mission</dt>

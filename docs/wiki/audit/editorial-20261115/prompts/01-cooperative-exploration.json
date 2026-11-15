@@ -1,0 +1,15 @@
+{
+  "tool": "image_gen",
+  "operation": "reference_image_edit",
+  "source_id": 1,
+  "source_asset": "01_cooperative-exploration.png",
+  "source_png_sha256": "ab9ab80e720a9fb116b0e64e8df3e42786f7b8b28422949ce7e93d464132e318",
+  "prompt": "Edit the supplied conceptual infographic for an English scientific Wiki. Preserve the polished cinematic Mars palette, broad landscape composition, generic unbranded astronaut, rover and aerial scout, and educational clarity. Simplify the text substantially. Remove all fictional site A/B/C letters, site badges, the route-overview inset, mineral-zone claims and geological claims. Do not depict verified sampling or instrument results. Keep only these exact large readable textual elements: title 'Complementary exploration roles'; subtitle 'Conceptual roles, not a recorded mission'; three role labels near the corresponding generic agents: 'Observe: a local view', 'Inspect: visible features', 'Sample: a proposed activity'. Generic route hints may remain without labeled destinations. No other explanatory paragraphs or numerical values. No logos, flags, NASA insignia, agency branding, or mission identifiers. Add a permanent high-contrast full-width dark footer with the exact text 'AI-generated | Conceptual illustration', in a font at least 32 pixels high at the original output size. Ensure the entire footer and all labels are visible and legible with generous padding. Retain landscape 16:9 composition, refined illustration quality and readable text.",
+  "generation_steps": [
+    "Edit the supplied conceptual infographic for an English scientific Wiki. Preserve the polished cinematic Mars palette, broad landscape composition, generic unbranded astronaut, rover and aerial scout, and educational clarity. Simplify the text substantially. Remove all fictional site A/B/C letters, site badges, the route-overview inset, mineral-zone claims and geological claims. Do not depict verified sampling or instrument results. Keep only these exact large readable textual elements: title 'Complementary exploration roles'; subtitle 'Conceptual roles, not a recorded mission'; three role labels near the corresponding generic agents: 'Observe: a local view', 'Inspect: visible features', 'Sample: a proposed activity'. Generic route hints may remain without labeled destinations. No other explanatory paragraphs or numerical values. No logos, flags, NASA insignia, agency branding, or mission identifiers. Add a permanent high-contrast full-width dark footer with the exact text 'AI-generated | Conceptual illustration', in a font at least 32 pixels high at the original output size. Ensure the entire footer and all labels are visible and legible with generous padding. Retain landscape 16:9 composition, refined illustration quality and readable text."
+  ],
+  "output_png_sha256": "74a3dafe967f2e367579771aa2dd168a693c90941cfbaef35374d74d1a1a961d",
+  "webp_conversion": "Pillow encoding only, quality92; visible content and footer retained",
+  "classification": "AI-generated conceptual illustration",
+  "owner_review": "pending"
+}

@@ -15,15 +15,15 @@ The analytical Bunsen experiment used planner source `64985e7b4b69ac9683661db484
 From the repository root, use a Python environment with NumPy, Matplotlib and Pillow, then run:
 
 ```sh
-python docs/wiki/tools/build_figures.py
-python docs/wiki/tools/audit_publication.py
+python docs/wiki/tools/audit_editorial.py --require-pixels
+python scripts/check_repository.py
 ```
 
-The drawing script reads the existing scientific estimator and proposed profile registry. It reads the recorded analytical case and its public terrain crop. It does not invoke ROS, a planner, a simulator or a technical build. The generated-asset manifest records input hashes and actual library versions.
+To rebuild the first-edition deterministic figures, use an isolated copy of the original source revision. The historical drawing script reads the scientific estimator and proposed profile registry. It reads the recorded analytical case and its public terrain crop. It does not invoke ROS, a planner, a simulator or a technical build. The generated-asset manifest records input hashes and actual library versions.
 
 During preparation, missing plotting libraries were installed under the Git-ignored `.local/wiki-figure-deps` directory. This isolated documentation environment leaves the application's dependency declarations unchanged. For a different workstation, a separate virtual environment can provide the three libraries. Exact versions used for this cut are listed in [the asset manifest](assets/manifest.json).
 
-The conceptual cover is an image-generation output. Its saved file, prompt and hash are in [the cover provenance record](audit/cover-provenance.json); it is retained as an authored illustration rather than reconstructed by the plotting script. Generic vehicles and terrain introduce the cooperative roles without incorporating NASA insignia or mission branding.
+The first-edition conceptual cover is an image-generation output. Its saved file, prompt and hash remain in [the historical cover provenance record](audit/cover-provenance.json). The current cover is the reviewed asset01 identified in [the editorial manifest](audit/editorial-20261115/manifest.json); it is retained as an illustration rather than reconstructed by the plotting script. Generic vehicles and terrain introduce the cooperative roles without incorporating NASA insignia or mission branding.
 
 ## Reading the visual material
 
@@ -69,3 +69,11 @@ The [publication manifest](audit/publication-manifest.json) identifies every fil
 The original `audit_wiki.py` verifies the3394-artifact local archive and is retained as that historical procedure. Running it requires the original local raw-capture/research archive; this publication does not upload or claim to contain that archive. Use `audit_publication.py` to verify this exported package. It uses only Python's standard library and resolves unchanged source links against the recorded main baseline when checking a prepared overlay.
 
 Inline reproduction commands in supporting historical reports describe their original local research environment. The Wiki publication adds documentation, public/analytical records and media while leaving application implementations and experimental settings at their published source revisions. Owner scientific review remains pending.
+
+## Reviewed ImageGen visual edition
+
+The [visual editorial review](Editorial-Review.md) documents the supplied 20-image collection and the nine corrected illustrations selected for this edition. New files live under `assets/imagegen-20261115`; the old asset manifest, calculated figures and recorded GIFs are retained unchanged. The artwork explains concepts; the cited literature, model and run records support numerical and scientific claims.
+
+Run `python docs/wiki/tools/audit_editorial.py --require-pixels` for this edition. The original `audit_publication.py` remains the checker for its immutable first-publication payload, and `audit_wiki.py` remains the historical local-archive procedure. Their original reports retain their dates and scope.
+
+The new checker verifies hashes, page and caption links, protected historical assets, metadata and footer presence. Scientific wording is inspected visually rather than inferred from a pixel threshold. Source PNGs are retained, while WebP conversion changes encoding only. The package-required owner review precedes synchronization to the separate Wiki repository.

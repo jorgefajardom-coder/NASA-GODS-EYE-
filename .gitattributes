@@ -10,5 +10,9 @@
 # Published Wiki tools are byte-sealed by their original export manifest.
 docs/wiki/tools/*.py -text
 
-# Preserve original CRLF bytes in byte-hashed PR44 consumer receipts.
-evidence/pr44-gateway-stream-20261115/** -text
+
+# PR39 consumer receipts and harness hashes preserve the recorded bytes.
+evidence/pr39-gateway-contract-20261115/** -text
+
+# Preserve the editorial manifest byte format across reviewed continuation seals.
+docs/wiki/audit/editorial-20261115/manifest.json -text

@@ -6,9 +6,9 @@ A scientifically interesting place is one where observations can help distinguis
 
 This chapter explains why three sectors were prioritized in our scenario research: Bright Angel–Neretva Vallis, Hawksbill Gap–Hogwallow Flats and Bunsen Peak–Margin Unit. The selection emphasizes different questions and scales of context. The resulting mission proposals ask what information a reconnaissance or inspection action would need to provide before a subsequent activity becomes useful.
 
-![Conceptual evidence chain from orbital setting through outcrop context and instrument measurements to geological interpretation and mission questions.](assets/jezero-evidence-chain.png)
+![Six conceptual panels distinguish regional context, orbital products, outcrop context, instrument measurement, interpretation and mission questions.](assets/imagegen-20261115/03-jezero-evidence-chain-reviewed.webp)
 
-Figure 2. Evidence and interpretation across scales. The diagram is a teaching aid: it shows why a regional map, a local view and a compositional measurement answer different questions. The project uses published scientific results to motivate scenarios and public elevation products to support its terrain model.
+Figure 2. Evidence across scales. The illustrative panels separate geological context, the data product, a worksite, instrument measurements and interpretation. Registered products and site-specific findings are identified by the cited publications in this chapter. [Full-size PNG](assets/imagegen-20261115/03-jezero-evidence-chain-reviewed.png).
 
 ## Read the landscape as a set of relationships
 
