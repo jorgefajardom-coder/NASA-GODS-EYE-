@@ -890,3 +890,9 @@ and an assumed respiratory quotient of 0.85, pending scientific review; no CO₂
 suit capacity is generated. It also switched the HUD dose gauge to each zone's surface
 rate from the existing zone environment data, with NASA's 600 mSv career limit as scale
 context; no dose value was generated.
+
+It also assisted the read-only live gateway panel (`web/src/lib/gatewayLive.ts`,
+`web/src/components/LiveGatewayPanel.tsx`, `web/tests/gatewayLive.test.ts`) and its check
+against a running MOCK ROS stack in WSL. The tests use synthetic gateway envelopes; no ROS
+output, NASA observation or mission result was generated, and the panel labels a MOCK stack
+MOCK.

@@ -3248,6 +3248,22 @@ input[type='checkbox'] {
 .zones__flat-title { position: absolute; top: 4vh; left: 0; right: 0; text-align: center; color: var(--zones-ink); }
 .zones__flat-title h2 { margin: 0; font: 600 30px var(--f-title); letter-spacing: 0.2em; text-transform: uppercase; }
 .zones__flat-title p { margin: 6px 0 0; color: var(--zones-accent-2); }
+/* Live ROS gateway panel (?gateway=): read-only, top centre under the Zones button. */
+.live-gw { position: fixed; top: 64px; left: 50%; transform: translateX(-50%); z-index: 40; width: min(380px, calc(100vw - 32px)); padding: 10px 12px; border: 1px solid rgba(88, 166, 255, 0.45); border-radius: 6px; background: rgba(6, 14, 26, 0.92); color: #dce8f5; font: 400 13px/1.35 var(--f-ui); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45); }
+.live-gw__head { display: flex; align-items: center; gap: 8px; }
+.live-gw__head strong { font: 600 13px var(--f-title); letter-spacing: 0.08em; text-transform: uppercase; }
+.live-gw__dot { width: 9px; height: 9px; border-radius: 50%; background: #6b7785; }
+.live-gw--connected .live-gw__dot { background: #5bd38a; box-shadow: 0 0 6px #5bd38a; }
+.live-gw--connecting .live-gw__dot, .live-gw--not_ready .live-gw__dot { background: #e8b04a; }
+.live-gw--error .live-gw__dot { background: #e8796a; }
+.live-gw__btn { margin-left: auto; padding: 2px 8px; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 4px; background: none; color: inherit; font: inherit; cursor: pointer; }
+.live-gw__line { margin: 6px 0 0; font-size: 12px; color: #9fb4c8; overflow-wrap: anywhere; }
+.live-gw__mission { margin: 8px 0 4px; }
+.live-gw__agents { width: 100%; border-collapse: collapse; font-size: 12px; }
+.live-gw__agents td { padding: 2px 4px; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+.live-gw__events { margin: 6px 0 0; padding-left: 0; list-style: none; font-size: 12px; max-height: 96px; overflow: auto; }
+.live-gw__events li { padding: 1px 0; }
+.live-gw__note { margin: 6px 0 0; }
 .atmos__zone { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
 .zones--flat .zones__title, .zones--flat .zones__marks { display: none; }
 .zones--flat .zones__card { left: 50%; top: 48%; width: min(360px, calc(100vw - 100px)); max-height: calc(100dvh - 240px); overflow: auto; transform: translate(-50%, -50%); opacity: 1; }

@@ -39,6 +39,8 @@ import { ManagementList } from './components/ManagementList';
 import { DetailsPanel } from './components/DetailsPanel';
 import { HUD_MAP_PX, RadialHud, type HudOption } from './components/RadialHud';
 import { co2FromOxygen } from './lib/co2';
+import { gatewayBaseFrom } from './lib/gatewayLive';
+import { LiveGatewayPanel } from './components/LiveGatewayPanel';
 import { zoneCrewDose } from './lib/zoneEnvironment';
 import { HudGauge } from './components/HudGauge';
 import { resourceLines } from './lib/resources';
@@ -66,6 +68,8 @@ const SHOT_MS = 1500;
 const params = new URLSearchParams(window.location.search);
 /** Evaluator view shows the hidden reference DEM. Off by default; enable with ?evaluator=1. */
 const EVALUATOR = params.get('evaluator') === '1';
+/** Opt-in read-only view of a running ROS gateway: `?gateway=http://127.0.0.1:8010` (see LiveGatewayPanel). */
+const GATEWAY = gatewayBaseFrom(params.get('gateway'));
 // The URL/selector identifies a package folder; its recorded run_id is kept intact.
 const RUN_ID = params.get('run') ?? DEFAULT_RUN_ENTRY;
 /** Rendering tier, probed once: full 3D, lite 3D (software / slow GPU) or a 2D map without WebGL. */
@@ -707,6 +711,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         </aside>
 
         <AlertBanner alert={alert} />
+        {GATEWAY && <LiveGatewayPanel base={GATEWAY} />}
         {camView === 'free' && !pov && !zonesOpen && (
           <button type="button" className="zones-open" onClick={() => setZonesOpen(true)} title="Select zone (Z)">
             <kbd>Z</kbd> Zones
