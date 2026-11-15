@@ -14,7 +14,8 @@ packages are neither offered nor used by the viewer (see the Run selector below)
 | Part | What it is |
 |---|---|
 | Recorded recovery package (`recorded-recovery-001`) | **Not used by the viewer.** Kept in `public/replay/` only for the team's contract and consumer tests; it declares `source_mode` MOCK and ends `READY`, not scientific `COMPLETE` |
-| Demo terrain | **Real**: a separate provisional 2 km crop of the NASA/USGS Mars 2020 TRN CTX DTM (20 m, Jezero), resampled to a local ENU grid |
+| Demo terrain | **Real**: a provisional 2 km crop of the NASA/USGS Mars 2020 TRN CTX DTM at the Perseverance landing area (centre 18.444° N, 77.445° E), drawn on a **4 m display grid** (500 × 500 cells) interpolated from the **20 m** source: finer cells, no new detail |
+| Real Perseverance stops | **Real NASA positions**: 113 rover stops (sol 13 to 402) inside the crop, from NASA's public traverse feed (MMGIS waypoints); position and identifiers only, no image stored. Drawn as camera icons in 3D, on the minimap and the first-person compass. Base A and goal B sit on two of them. Standing still on a stop in first person opens a window that loads, on request, the raw images NASA lists for that exact stop (same sol, site and drive) |
 | Demo mission, agents, routes, events | **Generated illustrative story** (`scripts/make-demo-fixture.mjs`); its routes come from a substitute slope-constrained search, not the integrated planner. Rover/drone speeds and motion are simulated |
 | Demo adverse case | **Synthetic**: a scarp added to the hidden evaluator reference; it is not in the CTX data |
 | Demo POIs C and D | Fictitious |
@@ -38,7 +39,7 @@ packages are neither offered nor used by the viewer (see the Run selector below)
 | Sun and sky | Sun from Mars24 at the real present time and site; sky colours are a display rendering |
 | Stars | **Real catalogue**: Yale Bright Star Catalogue V ≤ 5.5 placed with the IAU 2009 Mars rotation model (`public/assets/sky/bright_stars.json`) |
 | Artificial light (default), night fill, helmet lights | **Display** lighting choices, not sunlight or suit specifications; *Real light* (`I`) shows the hour's real light |
-| Perseverance raw images (Atmos tab) | **Real NASA/JPL-Caltech images**, read from the public raw-images JSON feed **only when the person presses the button** (needs a network; nothing is stored or bundled). They show where the rover is now, not the replay's site; not terrain data, never read by the map or planner |
+| Perseverance raw images (Atmos tab, and `M` in first person) | **Real NASA/JPL-Caltech images**, read from the public raw-images JSON feed **only when the person presses a load button** (needs a network; nothing is stored or bundled). They show where the rover is now, not the replay's site; not terrain data, never read by the map or planner. First person: a *Mars now* window in the dock, the same size as the drone camera window |
 | Drone camera window | The scene drawn again from the replayed drone pose; **not a camera feed**. Its Hazards tab reports steep cells and prior contradictions from the replay's **simulated** observations, not LiDAR |
 | Lite 3D and 2D map tiers | Same replay with reduced 3D settings, or drawn in Canvas 2D without WebGL |
 
@@ -110,11 +111,10 @@ The status block shows `REPLAY` with the run's `source_mode` (`MOCK`, `SIMULATIO
 Agents and the base are drawn at true size by default (astronaut 1.9 m, rover 3.6 m with its arm, drone 1.2 m rotor span); the view option *True-size agents* can be turned off to enlarge agents with camera distance on the 2 km map. The base is `public/assets/models/base.glb`, the team's Blender base (`scripts/blender/source/base-marciana-v2.blend`) prepared by `scripts/blender/prepare_base.py` (own ground and rocks removed, dust film, sandbag berms, radiators, comms mast, power cables). It is placed whole at the median ground height under its footprint; a simple procedural cluster is drawn while it loads or if it fails.
 
 The **Slope** layer uses Horn's 3×3 derivative on the orbital prior, never the
-updated belief. The 20 m demo grid gives a 60 m computational window; the 4 m
-recorded grid gives a 12 m computational window, while its CTX source remains
-20 m native. Resampling adds no source detail, and sub-grid hazards remain
-unresolved. On the separate demo crop the median is 4.8°, the 90th percentile
-13.9° and the maximum 34.2°; cells lacking a complete valid window are grey.
+updated belief. Both the demo grid and the recorded grid are 4 m, which gives a 12 m
+computational window, while their CTX source remains 20 m native. Resampling adds no source detail, and sub-grid hazards remain
+unresolved. On the demo crop (before the synthetic scarp) the median is 2.2°, the 90th percentile
+4.5° and the maximum 12.9°; cells lacking a complete valid window are grey.
 
 The mission area is drawn as a solid block: plain rock-tone walls and a base that claim nothing about the subsurface (the Ground layers tab replaces them with the schematic strata). The view option *Surroundings (20 km)* shows the same CTX DTM around the area, box-averaged to 100 m (`scripts/extract-ctx-context.mjs`, from the same file, SHA-256 checked), draped with the CTX orthomosaic at 40 m (`scripts/extract-ctx-ortho.mjs public/replay/demo/context_ortho.png 500 20000 10`). It is context only and is never read by the planner or the mission.
 
@@ -175,7 +175,7 @@ Short recordings start at 1×; the long demo starts at 10× (choices: 1×, 5×, 
 
 The walk clip is a lunar bounding gait. The viewer plants the lower foot at every keyframe, keeps the pelvis turn and weight shift the legs were animated with (the spine is counter-rotated so the torso stays upright) and re-times the cycle so the stance foot moves backward at constant speed. Played at the ground speed on screen divided by the clip's own walking speed, the planted foot slips about 5 mm per step at 1 m/s (it skated about 35 cm before), checked by a test on the real model; above about 2.5 m/s on screen the rhythm is capped and the feet slide. The astronaut casts a projected shadow along the scene's display sun (not a computed solar position) that walks with the skeleton, is not cut by terrain bumps or the route line, and never covers the model; footprints are boot soles, mirrored per foot.
 
-Keys: `F` follow camera, `V` first person, `Q` terrain scan (first person; rotates the view otherwise), `C` drone camera (first person), `L` helmet lights, `I` artificial / real light, `B` camera sway (first person), `G` grab map, `Q` / `E` rotate the view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
+Keys: `F` follow camera, `V` first person, `Q` terrain scan (first person; rotates the view otherwise), `C` drone camera (first person), `M` Mars now, the latest real Perseverance image (first person), `L` helmet lights, `I` artificial / real light, `B` camera sway (first person), `G` grab map, `Q` / `E` rotate the view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 `?evaluator=1` shows the hidden reference layer, **in the dev server only** (R05). `npm run fixture`
 writes the reference to the repository's Git-ignored `data/reference/<run_id>/`; the dev server
 serves it to the evaluator view and the build never copies it, so `dist/` and GitHub Pages do not
@@ -228,7 +228,7 @@ latitude or longitude. The recovery package carries its recorded Jezero rasters.
 | `src/data/referenceSources.ts` | Status of the mandatory NASA reference resources |
 | `src/lib/scan.ts`, `droneHazards.ts`, `routeProgress.ts`, `routeSufficiency.ts`, `marsSky.ts`, `gpu.ts` | Terrain scan slope bands and bearings; drone hazard report from observed cells; route progress and sufficiency estimate; Mars sky and sun; WebGL tier probe |
 | `src/scanner/`, `src/hooks/useTerrainScanner.ts` | Terrain scan state machine, controller, shaders, indicators and optional sounds |
-| `src/lib/perseveranceRaw.ts`, `components/RawImagesPanel.tsx` | Opt-in reader and panel for the NASA Perseverance raw-images feed (links restricted to https mars.nasa.gov) |
+| `src/lib/perseveranceRaw.ts`, `rawImagesStore.ts`, `components/RawImagesPanel.tsx`, `MarsNow.tsx` | Opt-in reader (links restricted to https mars.nasa.gov), one shared loader, the Atmos panel and the first-person *Mars now* window |
 | `src/lib/siteKinds.ts`, `components/SiteIcon.tsx`, `SitesList.tsx` | One icon and colour per site kind, shared by the 3D markers, first-person compass, dial minimap, flat map and the Sites list |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
 | `src/components/` | 3D scene (`MissionScene`, `TerrainView`, `ContextTerrain`, `CutawayBlock`, `RouteOverlay`, `SiteMarkers`, `AgentLayer`), astronaut, vehicle and base models (wheels, steering joints, rotors, `Downwash`, `FootDust`), cameras (`CameraBar`, `FollowCamera`, `FirstPersonCamera`, `ViewRotator`), first-person HUD (`FirstPersonHud`, `PovRoute`), agent dial (`RadialHud`, `HudGauge`, `Minimap`), drone window (`DroneCam` with its Hazards tab `DroneMap`), `TerrainScanner`, sky (`SkyDome`), panels (`DetailsPanel`, `ManagementList`, `LayerPanel`, `GeologyPanel`, `AtmosPanel`, `EventInspector`), `Timeline`, `LiveClocks`, `Intro`, `FlatMap` and `SceneBoundary` fallbacks |

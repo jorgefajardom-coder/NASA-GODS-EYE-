@@ -27,7 +27,7 @@ Mars 2020 Terrain Relative Navigation CTX DTM mosaic, USGS Astrogeology Science 
 - DOI of the CTX DTM product family: https://doi.org/10.5066/P906QQT8
 - `web/public/replay/demo/context.json`: the same file over a 20 km square centred on the crop, each 100 m cell the mean of 5 × 5 bilinear samples (box average), made by `web/scripts/extract-ctx-context.mjs` after checking the file's SHA-256. Context surroundings only.
 - The full file is not stored in this repository. `web/scripts/data/ctx_crop.json` holds a
-  2 km × 2 km crop (100 × 100 cells of 20 m) resampled by `web/scripts/extract-ctx-crop.mjs`
+  2 km × 2 km crop (500 × 500 cells of 4 m, interpolated from the 20 m source) at the Perseverance landing area, resampled by `web/scripts/extract-ctx-crop.mjs`
   onto a local tangent ENU grid. The resampling adds no resolution.
 - The crop is provisional: it was made by the frontend until the data owner delivers the
   processed package.
@@ -47,8 +47,8 @@ License 1.1 (https://openfontlicense.org); the licence texts ship in `web/public
 MRO CTX Jezero orthomosaic, controlled (Mars 2020 Terrain Relative Navigation), NASA/JPL-Caltech/MSSS/USGS, served by JPL Mars Trek.
 
 - WMTS layer: `JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0` (https://trek.nasa.gov/mars/), native 6 m, same `soc_008` production as the CTX DTM above.
-- `web/public/replay/demo/ctx_ortho.png`: 400 × 400 px over the 2 km crop (5 m/px), made by `web/scripts/extract-ctx-ortho.mjs` from nine level-13 tiles (tiles SHA-256 `f2ad4cdaf747f36b508cb063ee904d60204c5f3c5dcb77284ab201812369e527`). Bilinear resampling onto the crop's ENU grid and a 1st–99th percentile contrast stretch; no detail is added. The viewer tints the panchromatic image for display.
-- `web/public/replay/demo/context_ortho.png`: 500 × 500 px over a 20 km square centred on the crop (40 m/px), made by the same script from nine level-10 tiles (tiles SHA-256 `cd464000d6050216cf1638f836ea5e0523124e87c05735d7f7cd56c3e5a09f5e`), same resampling and contrast stretch. Context surroundings only.
+- `web/public/replay/demo/ctx_ortho.png`: 400 × 400 px over the 2 km crop (5 m/px), made by `web/scripts/extract-ctx-ortho.mjs` from nine level-13 tiles (tiles SHA-256 `8e8eb1cfd216f973350b4a27d3239d6406bed7a940173ea51390555c8ae1c5ce`). Bilinear resampling onto the crop's ENU grid and a 1st–99th percentile contrast stretch; no detail is added. The viewer tints the panchromatic image for display.
+- `web/public/replay/demo/context_ortho.png`: 500 × 500 px over a 20 km square centred on the crop (40 m/px), made by the same script from nine level-10 tiles (tiles SHA-256 `8c6b109a500eb3f7e1c1714ef95d6052f375611718c3e857d691787c09493da1`), same resampling and contrast stretch. Context surroundings only.
 - Usage terms not verified here: NASA planetary data, see the Mars Trek and USGS product pages.
 
 ## Link preview image
@@ -70,7 +70,7 @@ Yale Bright Star Catalogue, 5th revised edition (Hoffleit & Warren 1991), ASCII 
 
 Sun, V., and Stack, K., 2020, Geologic map of Jezero crater and the Nili Planum region, Mars: U.S. Geological Survey Scientific Investigations Map 3464, scale 1:75,000, https://doi.org/10.3133/sim3464 (data release https://doi.org/10.5066/P9CZYIO7). USGS publication, public domain.
 
-- `web/public/replay/demo/geology.json`: unit attributes (name, symbol, description, additional characteristics, interpretation) and polygons of the four units that intersect the demo crop, read from the USGS ArcGIS feature service `Jezero_FeatureServiceFromPro/FeatureServer/8` by `web/scripts/extract-geology.mjs`, reprojected from Mars Transverse Mercator (77.5°E) to the crop's ENU frame and clipped to it. Text is unchanged; display colours are the viewer's own.
+- `web/public/replay/demo/geology.json`: unit attributes (name, symbol, description, additional characteristics, interpretation) and polygons of the units that intersect the demo crop, read from the USGS ArcGIS feature service `Jezero_FeatureServiceFromPro/FeatureServer/8` by `web/scripts/extract-geology.mjs`, reprojected from Mars Transverse Mercator (77.5°E) to the crop's ENU frame and clipped to it. Text is unchanged; display colours are the viewer's own.
 - The map was drawn on a semi-controlled CTX mosaic and has offsets of about 100–200 m against the controlled Mars 2020 CTX terrain. It is not re-registered, and the viewer labels boundaries as approximate.
 
 ## Rover and drone 3D models
@@ -86,3 +86,11 @@ Official 3D models by NASA/JPL-Caltech: "Mars Perseverance Rover, 3D Model" (htt
 - File: `web/public/replay/demo/atmosphere.json` (built by `web/scripts/extract-atmosphere.mjs`).
 - Mars 2020 Perseverance MEDA and MSL Curiosity REMS daily weather summaries from the NASA Mars weather feed (https://mars.nasa.gov/rss/api/?feed=weather&feedtype=json&category=mars2020 and `category=msl`), credit NASA/JPL-Caltech/CAB(CSIC-INTA). CAB provides these summaries for outreach purposes; the science data is archived at PDS. Values are copied (Jezero) or grouped into medians per 15° of solar longitude (Gale).
 - MSL RAD surface dose rates from Hassler, D. M., et al. (2014), Mars' surface radiation environment measured with the Mars Science Laboratory's Curiosity rover, Science 343, 1244797, https://doi.org/10.1126/science.1244797 (published values only).
+
+## Perseverance rover stops
+
+Mars 2020 Perseverance waypoints (MMGIS M20 layer), NASA/JPL-Caltech, https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json.
+
+- `web/scripts/data/rover_waypoints.json` and `web/public/replay/demo/rover_stops.json`: the 113 stops (sol 13 to 402) that fall inside the demo crop, with sol, site, drive, latitude and longitude, converted to the crop's local frame by `web/scripts/extract-rover-waypoints.mjs`. The file records the SHA-256 of the feed it was read from. Positions and identifiers only; no image is stored.
+- The viewer asks NASA's public raw-images feed for the images of a stop only when the person presses the load button; images are shown from NASA's servers, credit NASA/JPL-Caltech, and are never stored or bundled.
+- Usage terms not verified here: NASA mission data, see https://mars.nasa.gov/mars2020/multimedia/raw-images/.
