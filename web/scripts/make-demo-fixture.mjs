@@ -350,13 +350,20 @@ function nearestFreeAt(x, y, lim) {
     return null;
   }
 }
+// Keep the story away from the crop edges, where the drawn terrain ends: base A and goal B at least
+// SITE_EDGE_M inside, the agents' pads at least HOME_EDGE_M inside.
+const SITE_EDGE_M = 150;
+const HOME_EDGE_M = 60;
+const edgeDist = (p) => Math.min(p.x - OX, OX + COLS * RES - p.x, p.y - OY, OY + ROWS * RES - p.y);
+/** The point moved straight inward until it is at least m metres from every crop edge. */
+const inset = (p, m) => ({ x: clamp(p.x, OX + m, OX + COLS * RES - m), y: clamp(p.y, OY + m, OY + ROWS * RES - m) });
 let A = null;
 let B = null;
 let r1Out = null;
 let stopA = null;
 let stopB = null;
-const baseStops = stopsAt(5).filter((k) => slPrior[cellOf(k.p.x, k.p.y).r * COLS + cellOf(k.p.x, k.p.y).c] < 5);
-const goalStops = stopsAt(6).filter((k) => slPrior[cellOf(k.p.x, k.p.y).r * COLS + cellOf(k.p.x, k.p.y).c] < 6);
+const baseStops = stopsAt(5).filter((k) => slPrior[cellOf(k.p.x, k.p.y).r * COLS + cellOf(k.p.x, k.p.y).c] < 5 && edgeDist(k.p) >= SITE_EDGE_M);
+const goalStops = stopsAt(6).filter((k) => slPrior[cellOf(k.p.x, k.p.y).r * COLS + cellOf(k.p.x, k.p.y).c] < 6 && edgeDist(k.p) >= SITE_EDGE_M);
 outer: for (const a of baseStops) {
   for (const b of goalStops) {
     const straight = dist(a.p, b.p);
@@ -464,8 +471,12 @@ if (!crossesForbidden(r1Out)) throw new Error('route r1 does not cross the scarp
 
 // ------------------------------------------------------------------ timeline
 const T_START = 10;
-const DRONE_HOME = nearestFree(prior, 12, A.x - 70, A.y + 40);
-const ROVER_HOME = nearestFree(prior, ROVER.slope, A.x + 40, A.y + 70);
+const droneHomeAt = inset({ x: A.x - 70, y: A.y + 40 }, HOME_EDGE_M);
+const roverHomeAt = inset({ x: A.x + 40, y: A.y + 70 }, HOME_EDGE_M);
+const DRONE_HOME = nearestFree(prior, 12, droneHomeAt.x, droneHomeAt.y);
+const ROVER_HOME = nearestFree(prior, ROVER.slope, roverHomeAt.x, roverHomeAt.y);
+if (edgeDist(A) < SITE_EDGE_M || edgeDist(B) < SITE_EDGE_M) throw new Error('base A or goal B too close to the crop edge');
+if (edgeDist(DRONE_HOME) < HOME_EDGE_M - RES || edgeDist(ROVER_HOME) < HOME_EDGE_M - RES) throw new Error('drone or rover pad too close to the crop edge');
 const droneOut = [DRONE_HOME, S0];
 const strip = [S0, S1];
 const droneBack = [S1, DRONE_HOME];
@@ -620,10 +631,16 @@ const TOUR = { speed: 2.0, dwell_s: 40 };
 const T_TOUR = even(Math.max(T_HOME, T_ROVER_HOME) + (HAS_STOPS ? 20 : 0));
 const tourStops = stopsFile.stops;
 const snapStop = (p) => nearestFreeAt(p.x, p.y, ROVER.slope);
+// Stops at the crop edge: the rover stops TOUR_STOP_EDGE_M inside (still within the viewer's 25 m arrival radius,
+// so the stop's images show) and drives between stops outside a TOUR_BAND_M band along the edge.
+const TOUR_STOP_EDGE_M = 20;
+const TOUR_BAND_M = 30;
+const TOUR_LEG_EDGE_M = 40;
+const tourGrid = belief2.map((h, i) => (edgeDist(center(Math.floor(i / COLS), i % COLS)) < TOUR_BAND_M ? null : h));
 function tourLeg(a, b) {
-  const sa = snapStop(a);
-  const sb = snapStop(b);
-  const path = sa && sb ? search(belief2, sigma2, ROVER.slope, sa, sb) : null;
+  const sa = snapStop(inset(a, TOUR_LEG_EDGE_M));
+  const sb = snapStop(inset(b, TOUR_LEG_EDGE_M));
+  const path = sa && sb ? search(tourGrid, sigma2, ROVER.slope, sa, sb) : null;
   return dropCollinear(path ? [a, ...path.slice(1, -1), b] : [a, b]);
 }
 const tourSegs = [];
@@ -632,8 +649,10 @@ let tourT = T_TOUR;
 let tourHeading = roverBackPlan.heading;
 let tourHere = { x: ROVER_HOME.x, y: ROVER_HOME.y };
 let tourStraightLegs = 0;
+let tourInset = 0;
 for (const st of tourStops) {
-  const to = { x: st.x_m, y: st.y_m };
+  const to = inset({ x: st.x_m, y: st.y_m }, TOUR_STOP_EDGE_M);
+  if (dist(to, { x: st.x_m, y: st.y_m }) > 0.01) tourInset += 1;
   const pts = tourLeg(tourHere, to);
   if (pts.length === 2 && dist(tourHere, to) > 60) tourStraightLegs += 1;
   const plan = drivePlan(pts, tourT, tourHeading, 'MOVING', TOUR.speed, { tour: true });
@@ -834,7 +853,7 @@ ev(T_B_DONE, 'TASK_STATE_CHANGED', { causality_id: goalOk, task_id: 'main:reach'
 ev(T_B_DONE, 'MISSION_STATE_CHANGED', { causality_id: goalOk, previous_state: 'ACTIVE', new_state: 'RETURNING', reason_code: 'PRIMARY_GOAL_COMPLETE', detail: 'Returning to base A on the return leg of r2.' });
 ev(T_HOME, 'MISSION_STATE_CHANGED', { causality_id: r2Pub, previous_state: 'RETURNING', new_state: 'COMPLETE', reason_code: 'RETURNED_TO_BASE', detail: 'Astronaut back at base A. Goal completed, return verified under the model, no budget violation.' });
 if (HAS_STOPS) {
-const tourReq = ev(T_TOUR, 'TASK_DISCOVERED', { causality_id: 'tour-req', task_id: 'tour:stops', agent_id: ROVER.id, new_state: 'DISCOVERED', reason_code: 'PHOTO_TOUR', detail: `Photo tour: the rover will visit all ${tourStops.length} real ${WD.mission} stops of this map (sol ${tourStops[0].sol} to ${tourStops.at(-1).sol}), in the order NASA's rover visited them. Illustrative speed; resource use is not modelled during the tour.` });
+const tourReq = ev(T_TOUR, 'TASK_DISCOVERED', { causality_id: 'tour-req', task_id: 'tour:stops', agent_id: ROVER.id, new_state: 'DISCOVERED', reason_code: 'PHOTO_TOUR', detail: `Photo tour: the rover will visit all ${tourStops.length} real ${WD.mission} stops of this map (sol ${tourStops[0].sol} to ${tourStops.at(-1).sol}), in the order NASA's rover visited them. Illustrative speed; resource use is not modelled during the tour.${tourInset ? ` ${tourInset} stop${tourInset === 1 ? '' : 's'} at the crop edge ${tourInset === 1 ? 'is' : 'are'} visited from ${TOUR_STOP_EDGE_M} m inside it.` : ''}` });
 ev(T_TOUR + DT, 'TASK_STATE_CHANGED', { causality_id: tourReq, task_id: 'tour:stops', agent_id: ROVER.id, previous_state: 'DISCOVERED', new_state: 'EXECUTING', reason_code: 'PHOTO_TOUR_STARTED', detail: 'Rover leaves base for the first real stop.' });
 ev(T_TOUR_END, 'TASK_STATE_CHANGED', { causality_id: tourReq, task_id: 'tour:stops', agent_id: ROVER.id, previous_state: 'EXECUTING', new_state: 'DONE', reason_code: 'PHOTO_TOUR_COMPLETE', detail: `Rover visited all ${tourStops.length} real stops.` });
 }
@@ -1091,5 +1110,5 @@ console.log(`A->B route r1 ${Math.round(L1)} m, r2 out ${Math.round(len(r2Out))}
 console.log(`scarp: ${forbidden2.length} forbidden cells, max observed slope ${maxSlopeObserved.toFixed(1)} deg, ${observed.length} observed cells`);
 console.log(real ? `POIs: real sites C ${C.site.name}, D ${D.site.name}` : 'POIs: fictitious');
 console.log(`rover budget ${ROVER.energy_budget_wh} Wh; C ${Math.round(C.l)} m (${wh(roverRoundTrip(C.l))}), D ${Math.round(D.l)} m (${wh(roverRoundTrip(D.l))}), usable ${wh(usable)}`);
-console.log(`photo tour: ${tourStops.length} stops, ${T_TOUR}s to ${T_TOUR_END}s, ${tourStraightLegs} long legs without a search path`);
+console.log(`photo tour: ${tourStops.length} stops (${tourInset} visited ${TOUR_STOP_EDGE_M} m inside the crop edge), ${T_TOUR}s to ${T_TOUR_END}s, ${tourStraightLegs} long legs without a search path`);
 console.log(`times: obs ${T_OBS}s, invalid ${T_INVALID}s, replanned ${T_R2}s, at B ${T_AT_B}s, home ${T_HOME}s, end ${T_END}s, ${frames.length} frames, ${events.length} events`);

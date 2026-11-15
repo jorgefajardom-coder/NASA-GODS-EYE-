@@ -31,3 +31,9 @@ Owner review and explicit merge approval precede integration; final CI is record
 Jesús hands the reviewed package to the organizer at **20:00 America/Bogota, 15 November 2026**. Preserve stable main while isolated pilots continue before that cut. Explicit organizer endorsement of the exact package revision, any corrections and final submission receipt remain delivery gates; contact confirmation is not endorsement. No external notification or submission is performed by this review.
 
 AI assistance for changed code/tests/docs and this software evidence is declared in `AI_USAGE.md`, `ai_usage.json` and the evidence manifest. No new media was generated here.
+
+## Concurrent main refresh
+
+Before authorized integration, main advanced to `798016eda88d33f4fdd8595e3328d091b4ba7308` through PR45. Preserve that terrain/menu/crop implementation and regenerated illustrative packages. Resolve the photo-tour button by keeping both the existing `endTour` behavior and main's per-zone `photoTourTitle`; retain both mandatory disclosure histories. The gateway client source remains the exact c8 SHA above and backend/interfaces remain unchanged. Rerun web checks and exact-head CI after this refresh.
+
+The main45 refresh also exposed future geometry in recorder-backed runs: at map1, cell528 of recorded002 was displayed with the map2 +3 m contradiction before its observation (~4.1 s). Restrict final-story geometry to `illustrative === true` with source SIMULATION; all other runs use the current map version. Illustrative belief/sigma share their stable display shape, while recorded belief/sigma retain causal geometry. Preserve prior/NoData and all input bytes. The exact-package regression proves both sides of the change. This is a consumer correction, with no shared schema change or alteration of sealed evidence.

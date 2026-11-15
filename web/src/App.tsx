@@ -27,7 +27,7 @@ import { yawFromQuaternion } from './lib/coords';
 import { headingFromNorth } from './lib/management';
 import type { RawImage } from './lib/perseveranceRaw';
 import type { RoverStop } from './types/replay';
-import { stopUnderAgent, tourStepTime } from './lib/roverStops';
+import { photoTourTitle, stopUnderAgent, tourStepTime } from './lib/roverStops';
 import { startLabelDeclutter } from './lib/labelDeclutter';
 import { ZoneArrival, ZoneSelector, arrivalPending } from './components/ZoneSelector';
 import { resourceAlert } from './lib/resourceAlert';
@@ -660,7 +660,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
               <kbd>G</kbd> Grab map
             </button>
             {photoTour && (
-              <button type="button" className="chip" aria-pressed={tourOn} onClick={tourOn ? endTour : startTour} title="The rover drives through every real Perseverance stop of this map and shows NASA's images of each (needs a network; illustrative speed)">
+              <button type="button" className="chip" aria-pressed={tourOn} onClick={tourOn ? endTour : startTour} title={photoTourTitle(bundle.roverStops?.mission)}>
                 Photo tour
               </button>
             )}
