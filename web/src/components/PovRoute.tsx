@@ -2,6 +2,8 @@ import { Html, Line } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import type * as THREE from 'three';
+import type { Line2 } from 'three-stdlib';
+import { scanUniforms } from '../scanner/shaders';
 import type { Point, RouteDecision } from '../types/icd';
 import { LABEL_Z } from '../lib/labels';
 import { ROUTE_STATUS_STYLE } from '../lib/format';
@@ -43,9 +45,15 @@ export function PovRoute({ route, position, groundHeight, verticalExaggeration }
   }, [progress?.nextIndex, position, path, drape]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const beacon = useRef<THREE.Group>(null);
+  const aheadLine = useRef<Line2>(null);
+  const allLine = useRef<Line2>(null);
   useFrame(({ clock }) => {
     const b = beacon.current;
     if (b) b.position.y = Math.sin(clock.elapsedTime * 1.6) * 0.15;
+    // Terrain scan: the route in force is emphasised while the scan effects last.
+    const glow = scanUniforms.uScanIntensity.value;
+    if (aheadLine.current) aheadLine.current.material.linewidth = 4 + 3 * glow;
+    if (allLine.current) allLine.current.material.opacity = 0.35 + 0.45 * glow;
   });
 
   if (!progress || drape.all.length < 2) return null;
@@ -53,8 +61,8 @@ export function PovRoute({ route, position, groundHeight, verticalExaggeration }
   const last = progress.nextIndex === path.length - 1;
   return (
     <group name="pov-route">
-      <Line points={drape.all} color={style.color} lineWidth={2} transparent opacity={0.35} dashed={style.dashed} dashSize={3} gapSize={3} />
-      {ahead.length > 1 && <Line points={ahead} color={style.color} lineWidth={4} dashed={style.dashed} dashSize={3} gapSize={3} />}
+      <Line ref={allLine} points={drape.all} color={style.color} lineWidth={2} transparent opacity={0.35} dashed={style.dashed} dashSize={3} gapSize={3} />
+      {ahead.length > 1 && <Line ref={aheadLine} points={ahead} color={style.color} lineWidth={4} dashed={style.dashed} dashSize={3} gapSize={3} />}
       <group position={[wx, wy, wz]}>
         <group ref={beacon}>
           <mesh position={[0, BEACON_M / 2, 0]}>

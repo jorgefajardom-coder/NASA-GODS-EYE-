@@ -380,3 +380,9 @@ unchanged. No open planner PR or pending local replay work was imported.
   most pinned runs. Still intermittent under two pinned CPUs: the fixture of
   `test_vertical_mission.py` (David) and `test_vertical_planner.py` on the
   200 x 200 MOCK grid (planner load; Diego). Not seen with all CPUs.
+
+## Frontend hourly log (Jorge)
+
+| Date | Version | Owner | Evidence | Blockers | Next dependency |
+|---|---|---|---|---|---|
+| 2026-11-14 20:11 | `feat/ux` `476dc55`; `web/` (tab icon, link preview, text descriptions for language models, route guide, terrain formation, AI register) | Jorge | Commits in the last 125 min: `476dc55`, `22a72d7`, `d021ce9`, `238f4a5`, `cb40588`, `ea7b414`, `221fa77`; uncommitted: `web/src/styles.css` (+38/-1, first-person layout on screens up to 900 px); `npm test --prefix web`: 29 files, 181 passed, 1 skipped; `web/README.md` already matched the code, not changed | Only the CTX terrain crop and simulated replay `demo-sim-002`; the gateway replay is a MOCK flat grid; live gateway, planner routes and Daniel's processed terrain package are not consumed; J-06 not done | Planner routes from Diego, processed terrain package from Daniel, live gateway from Jesús |

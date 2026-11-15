@@ -1,5 +1,11 @@
 # Diego - preserve the advanced planner and reconcile resource costs
 
+Future guide: [science extension tree](../science_extension_tree.md). Diego
+leads G1, B2/B3 and E1-E3 proposals, with all cross-branch prerequisites and
+scientific review intact. No task is activated by the diagram. New unlisted
+ideas may be assessed locally for discussion on 15-Nov-2026 (Bogota); no
+extension push/merge/deployment or frozen-baseline change is authorized.
+
 ## Delivery priority after PR28 — owner-confirmed 14 November 2026
 
 Follow [PDF tasks DI-1..3](../delivery_closure_plan.md) and

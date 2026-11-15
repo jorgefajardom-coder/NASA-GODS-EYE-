@@ -1,5 +1,11 @@
 # Jorge - preserve and adapt the existing 3D viewer
 
+Future guide: [science extension tree](../science_extension_tree.md). Jorge
+leads G3 reproduction and reviews map-scale/decision-display evidence. The
+guide/image do not reopen implementation. New unlisted ideas may be assessed
+in an isolated local branch for discussion on 15-Nov-2026 (Bogota), without
+extension push/merge/deployment or displacement of delivery work.
+
 ## Delivery priority after PR28 — owner-confirmed 14 November 2026
 
 Follow [PDF tasks JO-1..4](../delivery_closure_plan.md) and

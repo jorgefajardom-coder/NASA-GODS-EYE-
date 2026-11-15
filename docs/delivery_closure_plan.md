@@ -1,5 +1,12 @@
 # Delivery closure — reconciliation, science conclusions and PDF disposition
 
+The [science extension tree](science_extension_tree.md) documents future
+capabilities and verifiable prerequisites without lifting this freeze. Per the
+owner's 14-Nov clarification, a new unlisted idea may be assessed in an isolated
+local branch for discussion on 15-Nov-2026 (America/Bogota). Keep delivery work
+protected; no extension push, integration, deployment or milestone approval is
+implied. See the clarification in D-DEL-03.
+
 Updated 14 November 2026 (America/Bogota), from main
 `9198b3d8b3257dfd452d240ee9708cb038c3bb42`, the Conciliación and Rama David
 chats, and the owner's explicit replies on scope and submission time.

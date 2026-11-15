@@ -1,0 +1,36 @@
+/* Terrain-scan key: same look as the other first-person keys (.pov__key), plus a thin progress
+   line driven by the scan state (cyan while scanning, amber while recharging). */
+.tscan-key {
+  position: relative;
+  overflow: hidden;
+}
+.tscan-key__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #65cbe8;
+  transform-origin: left center;
+  pointer-events: none;
+}
+.tscan-key--scanning {
+  border-color: #65cbe8;
+  color: #e8f4ff;
+  box-shadow: 0 0 10px rgba(101, 203, 232, 0.35);
+}
+.tscan-key--cooldown {
+  color: #d8ad66;
+  border-color: rgba(216, 173, 102, 0.6);
+}
+.tscan-key--cooldown .tscan-key__bar {
+  background: #d8ad66;
+}
+.pov__key.tscan-key:disabled {
+  opacity: 1;
+  cursor: default;
+}
+.pov__key.tscan-key--disabled:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

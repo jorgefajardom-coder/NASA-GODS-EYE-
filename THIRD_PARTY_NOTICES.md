@@ -51,6 +51,21 @@ MRO CTX Jezero orthomosaic, controlled (Mars 2020 Terrain Relative Navigation), 
 - `web/public/replay/demo/context_ortho.png`: 500 × 500 px over a 20 km square centred on the crop (40 m/px), made by the same script from nine level-10 tiles (tiles SHA-256 `cd464000d6050216cf1638f836ea5e0523124e87c05735d7f7cd56c3e5a09f5e`), same resampling and contrast stretch. Context surroundings only.
 - Usage terms not verified here: NASA planetary data, see the Mars Trek and USGS product pages.
 
+## Link preview image
+
+"Global Color Views of Mars" (PIA00407), Viking Orbiter global color mosaic, NASA/JPL/USGS, NASA Photojournal (https://science.nasa.gov/photojournal/global-color-views-of-mars/).
+
+- `web/public/assets/brand/og-image.png`: the 6787 × 6787 px JPEG (SHA-256 `fc62a86416794444988338e55591d23290e1de2c7c32f3613b872caa8413ea2f`) scaled to 560 px and centred on black in a 1200 × 630 card with Pillow; no text, no detail added. Colors are as published (NASA notes they are adjusted for visibility, not natural color).
+- Usage terms: NASA imagery is generally not copyrighted; see NASA's media usage guidelines (https://www.nasa.gov/nasa-brand-center/images-and-media/). No NASA logo or mark is used.
+
+## Star catalogue and Mars sky model
+
+Yale Bright Star Catalogue, 5th revised edition (Hoffleit & Warren 1991), ASCII BSC5 as distributed by the SAO/Harvard Telescope Data Center (http://tdc-www.harvard.edu/catalogs/bsc5.html; same layout as CDS catalogue V/50).
+
+- `web/public/assets/sky/bright_stars.json`: the 2887 stars with V ≤ 5.5 (J2000 right ascension and declination, V magnitude, B−V), copied by `web/scripts/extract_bright_stars.py` from `bsc5.dat.gz` (SHA-256 `0471ced07fc241e625613baa689b2fa5f4b59fd733f731003e57d2d436036cdb`). No values are computed or changed.
+- Mars orientation: IAU/WGCCRE 2009 rotation model (Archinal et al. 2011, Celest. Mech. Dyn. Astr. 109, 101). Sun position: Mars24 algorithm (NASA GISS; Allison & McEwen 2000, Planet. Space Sci. 48, 215).
+- Usage terms not verified here: the BSC5 is a long-standing freely distributed astronomical catalogue; cite Hoffleit & Warren (1991).
+
 ## Geologic units
 
 Sun, V., and Stack, K., 2020, Geologic map of Jezero crater and the Nili Planum region, Mars: U.S. Geological Survey Scientific Investigations Map 3464, scale 1:75,000, https://doi.org/10.3133/sim3464 (data release https://doi.org/10.5066/P9CZYIO7). USGS publication, public domain.

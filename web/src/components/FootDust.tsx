@@ -1,6 +1,7 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { attachScanUniforms, SCAN_PARS_GLSL } from '../scanner/shaders';
 
 const PUFF_PARTICLES = 14;
 const MAX_PARTICLES = 420;
@@ -146,6 +147,34 @@ export function FootDust({ model, active, screenSpeedMps }: Props) {
         polygonOffsetFactor: -4,
         side: THREE.DoubleSide, // the right print is mirrored (negative x scale)
       });
+      // Terrain scan: prints light up cyan as the front passes them and fade with the scan.
+      mat.onBeforeCompile = (shader) => {
+        attachScanUniforms(shader);
+        shader.vertexShader = shader.vertexShader
+          .replace('#include <common>', `#include <common>
+varying vec2 vScanG;`)
+          .replace('#include <project_vertex>', `#include <project_vertex>
+#ifdef USE_INSTANCING
+vScanG = (modelMatrix * instanceMatrix * vec4(transformed, 1.0)).xz;
+#else
+vScanG = (modelMatrix * vec4(transformed, 1.0)).xz;
+#endif`);
+        shader.fragmentShader = shader.fragmentShader
+          .replace('#include <common>', `#include <common>
+varying vec2 vScanG;
+${SCAN_PARS_GLSL}`)
+          .replace(
+            '#include <dithering_fragment>',
+            `#include <dithering_fragment>
+            {
+              float sd = length(vScanG - uScanOrigin);
+              float lit = scanLife(sd) * uScanIntensity * (1.0 - step(uMaxDistance, sd));
+              gl_FragColor.rgb = mix(gl_FragColor.rgb, uScanColor * 1.5, lit * 0.8);
+              gl_FragColor.a = min(1.0, gl_FragColor.a * (1.0 + 0.4 * lit));
+            }`,
+          );
+      };
+      mat.customProgramCacheKey = () => 'boot-print-scan-v1';
       const mesh = new THREE.InstancedMesh(geo, mat, MAX_PRINTS);
       mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
       mesh.count = 0;

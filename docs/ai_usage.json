@@ -18,6 +18,21 @@
     },
     {
       "tool": "OpenAI Codex",
+      "kind": "science_extension_tree_and_diagram",
+      "generation": "AI-assisted proposed research guide, structured source and reproducible diagram code",
+      "paths": [
+        "AGENTS.md", "README.md", "docs/science_extension_tree.md",
+        "docs/assets/science-tree/tree.json", "docs/assets/science-tree/render.py",
+        "docs/assets/science-tree/science-tree.png", "docs/assets/science-tree/science-tree.svg",
+        "docs/decisions/2026-11-14-delivery-freeze.md", "docs/delivery_closure_plan.md",
+        "docs/research_hypotheses.md", "docs/team.md", "docs/team_continuation_plan.md",
+        "docs/handoffs/david.md", "docs/handoffs/daniel.md", "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md", "docs/handoffs/jorge.md", "docs/AI_USAGE.md", "docs/ai_usage.json"
+      ],
+      "use": "Document four common gates and eighteen proposed extensions with named leads/reviewers, AND dependencies and verifiable acceptance/stop rules. Generate marked PNG/SVG planning diagrams from the same source and preserve the owner's freeze plus bounded local assessment of unlisted ideas for 15-Nov-2026. Code-rendered with Python/Pillow, no image-generation model or NASA branding; no new terrain, observations, experimental results or approvals."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "local_per_agent_campaign_and_EVA_proposal",
       "generation": "AI-assisted primary-source synthesis, proposed workloads, standalone analytical code and derived model diagnostics",
       "paths": [
@@ -1299,11 +1314,37 @@
         "web/public/sitemap.xml",
         "web/src/lib/stateSnapshot.ts",
         "web/tests/stateSnapshot.test.ts",
-        "web/public/assets/brand/og-image.png",
         "web/src/components/FirstPersonCamera.tsx",
         "web/src/components/FirstPersonHud.tsx",
-        "web/src/components/DroneScan.tsx",
         "web/src/lib/scan.ts",
+        "web/src/lib/gpu.ts",
+        "web/tests/gpu.test.ts",
+        "web/src/components/FlatMap.tsx",
+        "web/src/components/SceneBoundary.tsx",
+        "web/src/components/DroneCam.tsx",
+        "web/src/components/SkyDome.tsx",
+        "web/src/components/HelmetLight.tsx",
+        "web/src/lib/marsSky.ts",
+        "web/tests/marsSky.test.ts",
+        "web/src/lib/resourceAlert.ts",
+        "web/src/lib/routeSufficiency.ts",
+        "web/src/scanner/ScanConfig.ts",
+        "web/src/scanner/ScanStateMachine.ts",
+        "web/src/scanner/ScanController.ts",
+        "web/src/scanner/ScanIndicators.ts",
+        "web/src/scanner/shaders.ts",
+        "web/src/scanner/scanAudio.ts",
+        "web/src/components/TerrainScanner.tsx",
+        "web/src/components/TerrainScanButton.tsx",
+        "web/src/components/TerrainScanButton.css",
+        "web/src/hooks/useTerrainScanner.ts",
+        "web/tests/terrainScanner.test.ts",
+        "web/src/lib/droneSurvey.ts",
+        "web/tests/droneSurvey.test.ts",
+        "web/src/components/DroneMap.tsx",
+        "docs/route_resource_sufficiency.md",
+        "web/tests/resourceAlert.test.ts",
+        "web/scripts/extract_bright_stars.py",
         "web/tests/scan.test.ts",
         "web/src/components/MissionScene.tsx",
         "web/src/components/TerrainView.tsx",
@@ -1318,6 +1359,15 @@
   ],
   "generated_media": [
     {
+      "kind": "code_rendered_planning_diagram",
+      "paths": ["docs/assets/science-tree/science-tree.png", "docs/assets/science-tree/science-tree.svg"],
+      "tool": "OpenAI Codex-assisted Python/Pillow and SVG renderer",
+      "watermark": "Visible AI-generated planning-diagram label in both outputs; embedded source SHA-256 and AI-use metadata",
+      "source": "docs/assets/science-tree/tree.json",
+      "use": "Proposed extension dependencies and leads; not observational data, implemented capabilities, completed milestones or scientific approval",
+      "nasa_branding": false
+    },
+    {
       "path": "web/public/assets/portraits/human_1.webp",
       "kind": "ai_generated_image",
       "tool": "ChatGPT (OpenAI) image generation, supplied by the owner (the source carries a 'Created with ChatGPT' mark)",
@@ -1330,11 +1380,11 @@
       "path": "web/public/assets/intro/mars-gods-eye-intro.webm",
       "kind": "ai_generated_video_with_audio_track",
       "tool": "Kling (Kuaishou) video generation, supplied by the owner; the file's AIGC metadata names ContentProducer 'kling' (ProduceID KLingMuse_f3500bd8-5e38-45c9-b8ab-e8ab688814eb)",
-      "editing": "A visible 'AI-generated' label burned into the bottom-right corner of every frame with ffmpeg drawtext (VP9 re-encode); audio track and AIGC metadata copied unchanged (5.0 s, 1920 x 1080, VP9 video, Opus audio track)",
-      "watermark": "AI-generated (burned into the pixels of every frame, bottom-right; stays in downloads and captures of the file). The viewer also shows an 'AI-generated · Kling' label over the clip (web/src/components/Intro.tsx)",
+      "editing": "Re-made from the owner's original Kling file: one discreet 'AI-GENERATED · KLING' label (30 px monospace, warm grey with a soft dark shadow, rendered with Pillow) overlaid on the bottom-right corner of every frame with ffmpeg (VP9 re-encode); audio track and AIGC metadata copied unchanged (5.0 s, 1920 x 1080, VP9 video, Opus audio track)",
+      "watermark": "AI-GENERATED · KLING (burned into the pixels of every frame, bottom-right; stays in downloads and captures of the file). It is the only mark: the viewer adds no HTML label over the clip (web/src/components/Intro.tsx)",
       "audio": "The audio track is treated as AI-generated; it is declared here and in the AIGC metadata of the file; the viewer plays the clip muted",
       "use": "Opening intro screen of the viewer (skippable). Project emblem only; no NASA logos, flags or mission marks. Not data.",
-      "sha256": "4897e14fcfc185e9ec623d1f4401807706193e1614eb780431675b8641f73581"
+      "sha256": "a77c169c440f6e41e2b2909b9a01398bbf49197928e894dc68930765f02c513a"
     },
     {
       "path": "web/public/assets/brand/mars-gods-eye-logo.webp",
@@ -1344,15 +1394,6 @@
       "watermark": "AI-generated (burned into the pixels; legible at the 280 px README display width)",
       "use": "Team logo at the top of the README and on the about page. Not NASA data; no NASA logos, flags or mission marks.",
       "sha256": "6fbeb71f00e30f11db70da83f2d73af895fd648c868befe55530a6c80e6b3314"
-    },
-    {
-      "path": "web/public/assets/brand/og-image.png",
-      "kind": "ai_generated_image_in_composite",
-      "tool": "The watermarked logo above, composed with Pillow into a 1200 x 630 link preview with the title and a one-line description",
-      "editing": "Logo scaled to 540 px high beside text on black",
-      "watermark": "The logo's 'AI-generated logo (ChatGPT, edited)' band stays visible in the preview",
-      "use": "Link preview image (og:image / twitter:image) of the public viewer.",
-      "sha256": "c81d8c4fbe91cb28056dc316d8353fb15e056c269efc7fb75e7d3f62258f4803"
     }
   ],
   "scientific_datasets_generated": false,
@@ -1366,6 +1407,9 @@
     "data/sample/preview_ctx_prior.png is a deterministic grayscale plot of the observational MRO/CTX DEM array, not an AI-generated image.",
     "The Codex frontend scaffold in web/ was replaced by the mission viewer; its stale-route guard and ICD-WEB-V1 envelope types were moved into web/src/lib/format.ts and web/src/types/icd.ts.",
     "web/public/assets/models/rover.glb and drone.glb are official NASA/JPL-Caltech models. Their branding cleanup is a flat fill or a copy of an already cleaned texture, not generative inpainting, so they contain no AI-generated imagery.",
+    "web/public/assets/brand/og-image.png (link preview) is the NASA/JPL/USGS Viking global color mosaic of Mars (PIA00407, NASA Photojournal), centred on black with Pillow (no text); it is not AI-generated and contains no NASA logos, flags or mission marks.",
+    "web/public/assets/sky/bright_stars.json is copied by web/scripts/extract_bright_stars.py from the Yale Bright Star Catalogue (BSC5); it is catalogue data, not AI-generated data. The sky, Sun and helmet-light visuals are display only.",
+    "The drone orbital slope preview (web/src/components/DroneScan.tsx) was removed and replaced by the first-person terrain scan (web/src/scanner/, TerrainScanner.tsx).",
     "Mission coefficients remain proposed; accepting a lunar analog approach does not approve quantitative Mars EVA limits.",
     "Measured-results flags refer to physical/scientific measurements. Software validation and synthetic model diagnostics are recorded separately; no mission or A/B/C result is asserted.",
     "Main synchronization preserves mission and integrated viewer declarations; the provenance test moved from web/src/lib to web/tests in the viewer merge.",

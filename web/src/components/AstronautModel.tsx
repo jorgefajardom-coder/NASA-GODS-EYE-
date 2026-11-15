@@ -151,7 +151,7 @@ export function AstronautModel({ mode, playing, screenSpeedMps }: Props) {
   // is darkened like the ground instead of cutting through it; a stencil keeps overlapping parts
   // from darkening twice. Display only.
   const shadow = useMemo(() => {
-    const uniforms = { uGround: { value: 0 }, uLight: { value: SUN_DIR.clone() } };
+    const uniforms = { uGround: { value: 0 }, uLight: { value: SUN_DIR } }; // live: SkyDome moves the sun
     const material = new THREE.MeshBasicMaterial({
       color: 0x000000,
       transparent: true,
