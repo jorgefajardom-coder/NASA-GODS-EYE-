@@ -488,3 +488,165 @@ def load_public_terrain(manifest_path: Path | str) -> TerrainTile:
         regional_context_m=regional_context_m,
         control_points=control_points,
     )
+
+
+@dataclass(frozen=True)
+class AuxiliaryTerrainLayers:
+    """Optional NASA/USGS auxiliary layers aligned cell-for-cell with TerrainTile."""
+
+    manifest: dict[str, Any]
+    geology: dict[str, Any]
+    ctx_ortho_dn: np.ndarray
+    ctx_ortho_norm: np.ndarray
+    ctx_ortho_valid_mask: np.ndarray
+    slope_deg: np.ndarray
+    geology_unit_code: np.ndarray
+    geology_rviz_occupancy: np.ndarray
+    surface_zone_code: np.ndarray
+    surface_zone_rviz_occupancy: np.ndarray
+    x_m: np.ndarray
+    y_m: np.ndarray
+    ctx_ortho_png_path: Path | None = None
+
+    def zone_at_row_col(self, row: int, col: int) -> dict[str, Any]:
+        """Return literal surface-facies zone and SIM 3464 geology attributes at (row, col)."""
+        rows, cols = self.ctx_ortho_dn.shape
+        if not (0 <= row < rows and 0 <= col < cols):
+            raise IndexError(f"(row={row}, col={col}) out of bounds for ({rows}, {cols})")
+
+        z_code = int(self.surface_zone_code[row, col])
+        z_defs = {int(d["code"]): d for d in self.manifest.get("surface_zones", {}).get("definitions", [])}
+        z_info = z_defs.get(z_code, {"id": "unknown", "label": "Unknown", "traversable_agents": []})
+
+        g_code = int(self.geology_unit_code[row, col])
+        g_units = {int(u["code"]): u for u in self.geology.get("units", []) if "code" in u}
+        g_info = g_units.get(g_code, {"symbol": "unmapped", "name": "Unmapped", "group": "Unmapped"})
+
+        return {
+            "row": int(row),
+            "col": int(col),
+            "x_east_m": float(self.x_m[col]),
+            "y_north_m": float(self.y_m[row]),
+            "ctx_ortho_dn": int(self.ctx_ortho_dn[row, col]),
+            "ctx_ortho_norm": float(self.ctx_ortho_norm[row, col]),
+            "slope_deg": float(self.slope_deg[row, col]),
+            "surface_zone_code": z_code,
+            "surface_zone_id": str(z_info.get("id", "unknown")),
+            "surface_zone_label": str(z_info.get("label", "Unknown")),
+            "surface_zone_rviz_occupancy": int(self.surface_zone_rviz_occupancy[row, col]),
+            "traversable_agents": list(z_info.get("traversable_agents", [])),
+            "geology_unit_code": g_code,
+            "geology_symbol": str(g_info.get("symbol", "unmapped")),
+            "geology_name": str(g_info.get("name", "Unmapped")),
+            "geology_rviz_occupancy": int(self.geology_rviz_occupancy[row, col]),
+        }
+
+
+def load_auxiliary_terrain_layers(
+    manifest_path: Path | None = None,
+    *,
+    tile: TerrainTile | None = None,
+    strict: bool = False,
+) -> AuxiliaryTerrainLayers | None:
+    """Load optional NASA/USGS auxiliary terrain layers if present; return None cleanly if absent."""
+    target_manifest = Path(manifest_path) if manifest_path is not None else default_manifest_path()
+    resolved = target_manifest.resolve()
+    if "reference" in [part.lower() for part in resolved.parts]:
+        raise PermissionError("Refusing to load evaluator reference data in public auxiliary loader")
+
+    sample_dir = resolved.parent if resolved.name.endswith(".json") else resolved
+    aux_manifest_path = (
+        resolved if resolved.name == "aux_layers_manifest.json" else sample_dir / "aux_layers_manifest.json"
+    )
+    aux_npz_path = sample_dir / "jezero_aux_layers.npz"
+
+    if not aux_manifest_path.is_file() or not aux_npz_path.is_file():
+        if strict:
+            raise FileNotFoundError(f"Auxiliary terrain layers not found in {sample_dir}")
+        return None
+
+    for forbidden_file in sample_dir.glob("*hirise*"):
+        raise PermissionError(f"Forbidden evaluator reference file in public sample directory: {forbidden_file.name}")
+
+    aux_manifest = json.loads(aux_manifest_path.read_text(encoding="utf-8"))
+    files_meta = aux_manifest.get("files") or {}
+
+    expected_npz_sha = (files_meta.get("aux_npz") or {}).get("sha256")
+    if not expected_npz_sha or _sha256_file(aux_npz_path) != expected_npz_sha:
+        raise ValueError("SHA-256 mismatch for jezero_aux_layers.npz against aux_layers_manifest.json")
+
+    geology_json_path = sample_dir / str((files_meta.get("geology_json") or {}).get("path", "geology.json"))
+    expected_geo_sha = (files_meta.get("geology_json") or {}).get("sha256")
+    if not geology_json_path.is_file() or (expected_geo_sha and _sha256_file(geology_json_path) != expected_geo_sha):
+        raise ValueError("SHA-256 mismatch or missing geology.json for auxiliary layers")
+    geology_doc = json.loads(geology_json_path.read_text(encoding="utf-8"))
+
+    ctx_png_name = str((files_meta.get("ctx_ortho_png") or {}).get("path", "ctx_ortho.png"))
+    ctx_png_path = sample_dir / ctx_png_name
+    expected_png_sha = (files_meta.get("ctx_ortho_png") or {}).get("sha256")
+    if ctx_png_path.is_file() and expected_png_sha and _sha256_file(ctx_png_path) != expected_png_sha:
+        raise ValueError("SHA-256 mismatch for ctx_ortho.png against aux_layers_manifest.json")
+
+    grid = aux_manifest.get("grid") or {}
+    rows = int(grid.get("rows", 0))
+    cols = int(grid.get("cols", 0))
+    if tile is not None:
+        if (rows, cols) != (tile.metadata.rows, tile.metadata.cols):
+            raise ValueError(
+                f"Auxiliary layer grid ({rows}, {cols}) does not match TerrainTile ({tile.metadata.rows}, {tile.metadata.cols})"
+            )
+        if not math.isclose(float(grid.get("resolution_m", 0.0)), tile.metadata.resolution_m, rel_tol=1e-6):
+            raise ValueError("Auxiliary layer resolution_m does not match TerrainTile")
+        if str(aux_manifest.get("row_orientation")) != tile.metadata.row_orientation:
+            raise ValueError("Auxiliary layer row_orientation does not match TerrainTile")
+
+    with np.load(aux_npz_path, allow_pickle=False) as data:
+        keys = set(data.files)
+        forbidden = keys & set(FORBIDDEN_PUBLIC_ARRAY_KEYS)
+        if forbidden or any("hirise" in k.lower() or "reference" in k.lower() for k in keys):
+            raise PermissionError("jezero_aux_layers.npz contains a forbidden reference key")
+
+        ctx_ortho_dn = np.array(data["ctx_ortho_dn"], dtype=np.uint8, copy=True)
+        ctx_ortho_norm = np.array(data["ctx_ortho_norm"], dtype=np.float32, copy=True)
+        ctx_ortho_valid_mask = np.array(data["ctx_ortho_valid_mask"], dtype=bool, copy=True)
+        slope_deg = np.array(data["slope_deg"], dtype=np.float32, copy=True)
+        geology_unit_code = np.array(data["geology_unit_code"], dtype=np.int16, copy=True)
+        geology_rviz_occupancy = np.array(data["geology_rviz_occupancy"], dtype=np.int8, copy=True)
+        surface_zone_code = np.array(data["surface_zone_code"], dtype=np.int8, copy=True)
+        surface_zone_rviz_occupancy = np.array(data["surface_zone_rviz_occupancy"], dtype=np.int8, copy=True)
+        x_m = np.array(data["x_m"], dtype=np.float32, copy=True)
+        y_m = np.array(data["y_m"], dtype=np.float32, copy=True)
+
+    for arr in (
+        ctx_ortho_dn,
+        ctx_ortho_norm,
+        ctx_ortho_valid_mask,
+        slope_deg,
+        geology_unit_code,
+        geology_rviz_occupancy,
+        surface_zone_code,
+        surface_zone_rviz_occupancy,
+    ):
+        if arr.shape != (rows, cols):
+            raise ValueError(f"Auxiliary array shape {arr.shape} does not match grid ({rows}, {cols})")
+        arr.setflags(write=False)
+
+    x_m.setflags(write=False)
+    y_m.setflags(write=False)
+
+    return AuxiliaryTerrainLayers(
+        manifest=aux_manifest,
+        geology=geology_doc,
+        ctx_ortho_dn=ctx_ortho_dn,
+        ctx_ortho_norm=ctx_ortho_norm,
+        ctx_ortho_valid_mask=ctx_ortho_valid_mask,
+        slope_deg=slope_deg,
+        geology_unit_code=geology_unit_code,
+        geology_rviz_occupancy=geology_rviz_occupancy,
+        surface_zone_code=surface_zone_code,
+        surface_zone_rviz_occupancy=surface_zone_rviz_occupancy,
+        x_m=x_m,
+        y_m=y_m,
+        ctx_ortho_png_path=ctx_png_path if ctx_png_path.is_file() else None,
+    )
+
