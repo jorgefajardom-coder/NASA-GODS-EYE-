@@ -1549,7 +1549,6 @@ input[type='checkbox'] {
   gap: 2px;
 }
 
-
 .rhud__dial {
   position: relative;
   max-width: 100%;
@@ -1649,10 +1648,7 @@ input[type='checkbox'] {
   stroke-width: 1.5;
 }
 
-
-
 /* ---------------------------------------------------------------- HUD inner gauges */
-
 
 .hg {
   display: block;
@@ -1775,6 +1771,12 @@ input[type='checkbox'] {
 /* Pinned to the screen box rather than sized by the grid track: in a window wider than 16:9 the
    track took the clip's intrinsic height at full width, overflowed the screen and pushed the clip
    (and its burned-in watermark) below the centre. object-fit centres it at any aspect ratio. */
+.intro__stage {
+  position: relative;
+  width: min(100vw, calc(100vh * 16 / 9));
+  aspect-ratio: 16 / 9;
+}
+
 .intro__video {
   position: absolute;
   inset: 0;
@@ -1782,20 +1784,6 @@ input[type='checkbox'] {
   height: 100%;
   object-fit: contain;
   background: #000;
-}
-
-/* Required visible mark for AI-generated video (AGENTS.md section 11): very discreet (small, no box,
-   bottom-right, in the clip's warm grey) but always visible and legible while the clip shows. */
-.intro__ai {
-  position: absolute;
-  right: 18px;
-  bottom: 14px;
-  font: 500 10px var(--f-mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(232, 214, 200, 0.55);
-  text-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
-  pointer-events: none;
 }
 
 .intro__skip {
@@ -1979,34 +1967,6 @@ input[type='checkbox'] {
   height: 26px;
   border-left: 1px solid var(--blue);
 }
-.pov__id {
-  position: absolute;
-  top: 34px;
-  left: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.pov__id strong {
-  font-family: var(--f-title);
-  font-size: 26px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  line-height: 1;
-}
-.pov__mode,
-.pov__state {
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.pov__mode {
-  color: var(--amber);
-}
-.pov__state {
-  color: var(--gray);
-}
 .pov__reticle {
   position: absolute;
   left: 50%;
@@ -2027,71 +1987,13 @@ input[type='checkbox'] {
   background: var(--titanium);
   border-radius: 50%;
 }
-.pov__vitals {
-  position: absolute;
-  left: 40px;
-  bottom: 112px;
-  width: 260px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.pov__vital {
-  display: grid;
-  grid-template-columns: 62px 1fr auto;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-}
-.pov__vital-label {
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gray);
-}
-.pov__vital-value {
-  font-family: var(--f-mono);
-  font-size: 12px;
-}
-.pov__bar {
-  position: relative;
-  height: 3px;
-  background: var(--line-soft);
-  pointer-events: auto;
-}
-.pov__bar span {
-  position: absolute;
-  inset: 0 auto 0 0;
-  background: var(--titanium);
-}
-.pov__vital--warn .pov__bar span {
-  background: var(--amber);
-}
-.pov__vital--alert .pov__bar span {
-  background: var(--red);
-}
-.pov__vital--unknown .pov__bar span {
-  background: var(--gray);
-}
 .pov__note {
   margin: 4px 0 0;
   font-size: 11px;
   line-height: 1.3;
   color: var(--gray);
 }
-.pov__scan {
-  position: absolute;
-  right: 40px;
-  bottom: 112px;
-  width: 280px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
-}
-.pov__scan-btn,
-.pov__exit {
+.pov__key {
   font: 500 13px var(--f-ui);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2101,17 +2003,15 @@ input[type='checkbox'] {
   padding: 7px 12px;
   cursor: pointer;
 }
-.pov__scan-btn:hover:not(:disabled),
-.pov__exit:hover {
+.pov__key:hover:not(:disabled) {
   border-color: var(--blue);
   color: #fff;
 }
-.pov__scan-btn:disabled {
+.pov__key:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
-.pov__scan-btn:focus-visible,
-.pov__exit:focus-visible {
+.pov__key:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
@@ -2157,25 +2057,12 @@ input[type='checkbox'] {
   white-space: nowrap;
 }
 @media (max-width: 900px) {
-  .pov__id {
-    top: 108px;
-    left: 24px;
-  }
-  .pov__vitals {
-    left: 24px;
-    width: calc(50% - 32px);
-  }
-  .pov__scan {
-    right: 24px;
-    width: calc(50% - 32px);
-  }
   .pov__hints span {
     display: none;
   }
 }
 
-/* First person: route guide (top left, under the agent id) and the heading-up minimap (top right). */
-.pov__nav {
+/* First person: route guide (top left {
   position: absolute;
   top: 128px;
   left: 40px;
@@ -2186,51 +2073,7 @@ input[type='checkbox'] {
   padding: 8px 0 0 10px;
   border-left: 1px solid var(--line);
 }
-.pov__nav-next {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-.pov__nav-next b {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  font-size: 12px;
-  color: var(--gray);
-}
-.pov__nav-next strong {
-  font-family: var(--f-title);
-  font-size: 28px;
-  font-weight: 600;
-  line-height: 1;
-}
-.pov__nav-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--gray);
-}
-.pov__nav-row b {
-  font-family: var(--f-mono);
-  font-weight: 400;
-  font-size: 12px;
-  color: var(--titanium);
-}
-.pov__nav-row--warn {
-  color: var(--amber);
-}
-.pov__minimap {
-  position: absolute;
-  top: 34px;
-  right: 40px;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px var(--line);
-  overflow: hidden;
-  opacity: 0.92;
-}
-.pov__exit[aria-pressed='false'] {
+.pov__key[aria-pressed='false'] {
   color: var(--gray);
 }
 .pov-waypoint {
@@ -2250,28 +2093,6 @@ input[type='checkbox'] {
   font-size: 12px;
 }
 @media (max-width: 900px) {
-  .pov__nav {
-    top: 190px;
-    left: 24px;
-    width: calc(50% - 32px);
-  }
-  .pov__minimap {
-    top: 108px;
-    right: 24px;
-    width: 110px;
-    height: 110px;
-  }
-}
-.pov__minimap canvas,
-.pov__minimap > * {
-  width: 100% !important;
-  height: 100% !important;
-}
-.pov__minimap .minimap {
-  position: static;
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 /* ---------------------------------------------------------------- startup entrance
@@ -2356,5 +2177,647 @@ input[type='checkbox'] {
   .overlay--enter .rhud__map,
   .rhud__rim {
     animation: none;
+  }
+}
+
+/* First person on narrow screens: the stacked layout gives the scene only half the height, so the
+   view goes full screen with the HUD on it and the replay controls docked at the bottom. */
+@media (max-width: 900px) {
+  .app--pov .scene {
+    position: fixed !important;
+    inset: 0;
+    height: 100vh !important;
+    height: 100dvh !important;
+  }
+  .app--pov .overlay {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0 12px 8px;
+    z-index: 4;
+  }
+  .app--pov .disclaimer {
+    display: none;
+  }
+  .app--pov .pov {
+    position: fixed;
+    inset: 0;
+  }
+  .app--pov .pov__frame {
+    inset: 12px 12px 102px;
+  }
+}
+
+/* 2D map shown instead of the 3D view when the browser has no usable WebGL (lib/gpu.ts). */
+.flatmap {
+  background: #0b0705;
+  overflow: hidden;
+}
+
+.flatmap canvas {
+  display: block;
+}
+
+.flatmap__note {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+  z-index: 3;
+  margin: 0;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #e8dccf;
+  background: rgba(10, 6, 4, 0.75);
+  border: 1px solid rgba(232, 160, 90, 0.4);
+  white-space: nowrap;
+}
+
+.flatmap__note a {
+  color: #f0a050;
+}
+
+/* First-person HUD animation (display only). On entering the view the HUD boots: a scan line
+   sweeps the screen, the frame opens from the centre and each instrument arrives from its edge in
+   turn; bars fill, the reticle locks on. Afterwards only quiet ambient motion stays: the reticle
+   breathes, a faint scan line passes every few seconds, alert resources pulse and a new drone scan
+   readout slides in row by row. Individual translate/scale properties are used so the existing
+   centring transforms are untouched. Everything is off with reduced motion. */
+.pov::before,
+.pov::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(101, 203, 232, 0.55) 20%, rgba(159, 227, 255, 0.85) 50%, rgba(101, 203, 232, 0.55) 80%, transparent);
+  box-shadow: 0 0 18px 4px rgba(101, 203, 232, 0.25);
+  opacity: 0;
+}
+.pov::before {
+  animation: pov-boot-sweep 0.75s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.pov::after {
+  height: 1px;
+  box-shadow: 0 0 10px 2px rgba(101, 203, 232, 0.12);
+  animation: pov-ambient-sweep 7s linear 1.6s infinite;
+}
+.pov__frame {
+  animation: pov-frame-open 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+}
+.pov__compass {
+  animation: pov-from-top 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s both;
+}
+.pov__reticle {
+  animation: pov-lock 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s both;
+}
+.pov__reticle span {
+  animation: pov-breathe 2.8s ease-in-out 1.1s infinite;
+}
+.pov__legend {
+  animation: pov-from-right 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.pov__legend-row {
+  animation: pov-row-in 0.3s ease-out both;
+}
+.pov__legend-row:nth-of-type(1) { animation-delay: 0.08s; }
+.pov__legend-row:nth-of-type(2) { animation-delay: 0.14s; }
+.pov__legend-row:nth-of-type(3) { animation-delay: 0.2s; }
+.pov__legend-row:nth-of-type(4) { animation-delay: 0.26s; }
+.pov__hints {
+  animation: pov-from-below 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s both;
+}
+.pov__heading span {
+  animation: pov-flicker 0.6s steps(6) 0.45s both;
+}
+
+@keyframes pov-boot-sweep {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+@keyframes pov-ambient-sweep {
+  0% { top: 0; opacity: 0; }
+  5% { opacity: 0.5; }
+  45% { opacity: 0.5; }
+  50%, 100% { top: 100%; opacity: 0; }
+}
+@keyframes pov-frame-open {
+  from { opacity: 0; clip-path: inset(50% 50%); }
+  to { opacity: 0.45; clip-path: inset(0 0); }
+}
+@keyframes pov-from-top {
+  from { opacity: 0; translate: 0 -28px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes pov-from-left {
+  from { opacity: 0; translate: -32px 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes pov-from-right {
+  from { opacity: 0; translate: 32px 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes pov-from-below {
+  from { opacity: 0; translate: 0 20px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes pov-map-in {
+  from { opacity: 0; scale: 0.5; rotate: -90deg; }
+  to { opacity: 1; scale: 1; rotate: 0deg; }
+}
+@keyframes pov-lock {
+  from { opacity: 0; scale: 2.4; }
+  70% { opacity: 1; scale: 0.9; }
+  to { opacity: 1; scale: 1; }
+}
+@keyframes pov-breathe {
+  0%, 100% { opacity: 1; scale: 1; }
+  50% { opacity: 0.55; scale: 1.6; }
+}
+@keyframes pov-bar-fill {
+  from { scale: 0 1; }
+  to { scale: 1 1; }
+}
+@keyframes pov-alert {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+@keyframes pov-row-in {
+  from { opacity: 0; translate: 12px 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes pov-flicker {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  40% { opacity: 0.2; }
+  60% { opacity: 1; }
+  80% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pov::before,
+  .pov::after,
+  .pov__frame,
+  .pov__compass,
+  .pov__reticle,
+  .pov__reticle span,
+  .pov__legend,
+  .pov__legend-row,
+  .pov__hints,
+  .pov__heading span {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* First person: the shared agent dial (menu + map) top right, as in the third-person view. */
+.pov__dial {
+  position: absolute;
+  top: 64px;
+  right: 24px;
+  pointer-events: auto;
+  animation: pov-from-right 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.32s both;
+}
+@media (max-width: 900px), (max-height: 760px) {
+  .pov__dial {
+    scale: 0.72;
+    transform-origin: top right;
+  }
+}
+
+/* Drone camera window (DroneCam.tsx): transparent inside, the canvas draws the drone's view there.
+   Third person: above the timeline, right of the left column. First person: bottom left. */
+.dronecam {
+  position: absolute;
+  z-index: 3;
+  left: calc(var(--col-left) + 2 * var(--gutter));
+  bottom: calc(var(--bottom) + 190px);
+  width: clamp(220px, 21vw, 360px);
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(101, 203, 232, 0.55);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 6px 22px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  font: 500 10px var(--f-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #cfe9ff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  animation: pov-from-below 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.dronecam--pov {
+  left: 40px;
+  bottom: 112px;
+  width: clamp(220px, 24vw, 340px);
+}
+.dronecam__label {
+  position: absolute;
+  left: 6px;
+  top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.dronecam__label i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e0583f;
+  animation: dronecam-rec 1.6s steps(2) infinite;
+}
+.dronecam__src {
+  position: absolute;
+  left: 6px;
+  bottom: 5px;
+  color: rgba(232, 214, 200, 0.75);
+}
+.dronecam__cross {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  translate: -50% -50%;
+  background:
+    linear-gradient(rgba(207, 233, 255, 0.7), rgba(207, 233, 255, 0.7)) center / 1px 100% no-repeat,
+    linear-gradient(rgba(207, 233, 255, 0.7), rgba(207, 233, 255, 0.7)) center / 100% 1px no-repeat;
+}
+.dronecam__close {
+  position: absolute;
+  right: 3px;
+  top: 2px;
+  pointer-events: auto;
+  padding: 0 6px;
+  font: 600 14px/1.2 var(--f-ui);
+  color: #cfe9ff;
+  background: rgba(3, 10, 20, 0.6);
+  border: 1px solid rgba(101, 203, 232, 0.35);
+  cursor: pointer;
+}
+@keyframes dronecam-rec {
+  50% { opacity: 0.2; }
+}
+@media (max-width: 900px) {
+  .dronecam {
+    left: 12px;
+    bottom: calc(var(--bottom) + 200px);
+    width: 44vw;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pov__dial,
+  .dronecam,
+  .dronecam__label i {
+    animation: none;
+  }
+}
+
+/* ---------- First person, revised layout ----------
+   Power-on: the display opens from a bright line like a screen switching on, a short boot log
+   prints in the centre, then the instruments come up (their entry delays start after the power-on).
+   One bottom dock holds the drone camera (left), every key control (centre) and the scan readout
+   (right), so nothing overlaps; the agent dial sits smaller at the top right. */
+.pov__power {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+/* Two black halves cover the view, then part from the centre line. */
+.pov__power::before,
+.pov__power::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: #000;
+}
+.pov__power::before {
+  top: 0;
+  animation: pov-shutter-up 1.95s cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+.pov__power::after {
+  bottom: 0;
+  animation: pov-shutter-down 1.95s cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+.pov__power i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  translate: 0 -50%;
+  z-index: 1;
+  background: #d8f3ff;
+  box-shadow: 0 0 24px 6px rgba(159, 227, 255, 0.7);
+  animation: pov-power-line 1.95s cubic-bezier(0.6, 0, 0.2, 1) both;
+}
+.pov__boot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  pointer-events: none;
+  font: 500 11px var(--f-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9fe3ff;
+  animation: pov-boot-out 0.2s ease-in 1.35s both;
+}
+.pov__boot span {
+  opacity: 0;
+  animation: pov-type 0.12s steps(2) both;
+}
+.pov__boot span:nth-child(1) { animation-delay: 0.3s; color: #e8f4ff; }
+.pov__boot span:nth-child(2) { animation-delay: 0.5s; }
+.pov__boot span:nth-child(3) { animation-delay: 0.7s; }
+.pov__boot span:nth-child(4) { animation-delay: 0.9s; }
+.pov__boot span:nth-child(5) { animation-delay: 1.05s; color: #e8f4ff; }
+@keyframes pov-shutter-up {
+  0%, 72% { translate: 0 0; }
+  100% { translate: 0 -100%; }
+}
+@keyframes pov-shutter-down {
+  0%, 72% { translate: 0 0; }
+  100% { translate: 0 100%; }
+}
+@keyframes pov-power-line {
+  0%, 62% { scale: 0 1; opacity: 0; }
+  72% { scale: 1 1; opacity: 1; }
+  100% { scale: 1 1; opacity: 0; }
+}
+@keyframes pov-type {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pov-boot-out {
+  to { opacity: 0; visibility: hidden; }
+}
+/* Instruments come up after the power-on. */
+.pov__frame { animation-delay: 1.9s; }
+.pov__compass { animation-delay: 2s; }
+.pov__dial { animation-delay: 2.1s; }
+.pov__reticle { animation-delay: 2.25s; }
+.pov__dock { animation: pov-from-below 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 2.15s both; }
+.pov__heading span { animation-delay: 2.1s; }
+.pov::before { animation-delay: 1.95s; }
+
+/* Smaller agent dial in first person. */
+.pov__dial {
+  top: 56px;
+  right: 16px;
+  scale: 0.62;
+  transform-origin: top right;
+}
+@media (max-width: 900px), (max-height: 700px) {
+  .pov__dial {
+    scale: 0.5;
+  }
+}
+
+.pov__dock {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 96px; /* above the timeline */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: 16px;
+  pointer-events: none;
+}
+.pov__dock-cam {
+  justify-self: start;
+  width: min(320px, 100%);
+}
+.pov__dock-scan {
+  justify-self: end;
+  width: min(280px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.pov__keys {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 6px;
+  background: rgba(9, 13, 17, 0.45);
+  border: 1px solid var(--line-soft);
+  pointer-events: auto;
+}
+.pov__keys-row {
+  display: flex;
+  gap: 6px;
+}
+.pov__key {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+.pov__hints {
+  position: static;
+  transform: none;
+  translate: none;
+  animation: none;
+  gap: 14px;
+}
+.pov__dock .dronecam {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  width: 100%;
+  animation: none;
+}
+
+/* Resource alert: pops in under the compass, pulses while critical, leaves when the level recovers. */
+.pov__alert {
+  position: absolute;
+  left: 50%;
+  top: 84px;
+  translate: -50% 0;
+  z-index: 5;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 8px 18px 7px;
+  max-width: min(560px, calc(100% - 48px));
+  text-align: center;
+  background: rgba(40, 10, 6, 0.82);
+  border: 1px solid var(--red);
+  box-shadow: 0 0 22px rgba(224, 88, 63, 0.45);
+  animation: pov-alert-in 0.35s cubic-bezier(0.2, 1.4, 0.4, 1) both, pov-alert-pulse 1.2s ease-in-out 0.4s infinite;
+}
+.pov__alert strong {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font: 700 15px var(--f-ui);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffd9cf;
+}
+.pov__alert strong b {
+  font-family: var(--f-mono);
+  color: #fff;
+}
+.pov__alert span {
+  font-size: 12px;
+  color: #f2d6cc;
+}
+.pov__alert em {
+  font: 600 13px var(--f-ui);
+  font-style: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.pov__alert small {
+  font: 400 9px var(--f-mono);
+  letter-spacing: 0.08em;
+  color: rgba(242, 214, 204, 0.6);
+}
+.pov__alert--low {
+  background: rgba(36, 26, 6, 0.8);
+  border-color: var(--amber);
+  box-shadow: 0 0 16px rgba(227, 194, 90, 0.3);
+  animation: pov-alert-in 0.35s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.pov__alert--low strong {
+  color: #f5e3a8;
+}
+@keyframes pov-alert-in {
+  from { opacity: 0; scale: 0.6; }
+  to { opacity: 1; scale: 1; }
+}
+@keyframes pov-alert-pulse {
+  50% { box-shadow: 0 0 34px rgba(224, 88, 63, 0.8); border-color: #ff8a70; }
+}
+@media (max-width: 900px) {
+  .pov__dock {
+    left: 12px;
+    right: 12px;
+    bottom: 104px;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .pov__dock-scan .pov__legend {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pov__power,
+  .pov__boot,
+  .pov__dock,
+  .pov__alert {
+    animation: none;
+  }
+  .pov__power,
+  .pov__boot {
+    display: none;
+  }
+}
+
+/* Drone window tabs (CAM / MAP) and the drone survey map (DroneMap.tsx). */
+.dronecam__tabs {
+  position: absolute;
+  right: 30px;
+  top: 2px;
+  display: flex;
+  gap: 2px;
+  pointer-events: auto;
+  z-index: 2;
+}
+.dronecam__tabs button {
+  padding: 1px 7px;
+  font: 600 9px var(--f-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(207, 233, 255, 0.7);
+  background: rgba(3, 10, 20, 0.6);
+  border: 1px solid rgba(101, 203, 232, 0.3);
+  cursor: pointer;
+}
+.dronecam__tabs button[aria-selected='true'] {
+  color: #03080c;
+  background: #65cbe8;
+  border-color: #65cbe8;
+}
+.dronecam__label,
+.dronecam__src,
+.dronecam__close {
+  z-index: 2;
+}
+.dronecam--map {
+  background: #03080c;
+}
+.dronemap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.dronemap canvas {
+  display: block;
+}
+/* Cosmetic sweep turning around the drone (the map itself only changes with the replay). */
+.dronemap__sweep {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 4px);
+  width: 200%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: conic-gradient(from 0deg, rgba(101, 203, 232, 0.18), rgba(101, 203, 232, 0) 22%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: dronemap-sweep 4s linear infinite;
+}
+@keyframes dronemap-sweep {
+  to { rotate: 360deg; }
+}
+.dronemap__info,
+.dronemap__legend {
+  position: absolute;
+  left: 6px;
+  font: 500 9px var(--f-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(207, 233, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+.dronemap__info {
+  top: 20px;
+}
+.dronemap__legend {
+  right: 6px;
+  bottom: 18px;
+  left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.dronemap__key {
+  width: 6px;
+  height: 6px;
+  background: rgba(150, 160, 170, 0.5);
+}
+.dronemap__key--obs {
+  background: #65cbe8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dronemap__sweep {
+    animation: none;
+    display: none;
   }
 }

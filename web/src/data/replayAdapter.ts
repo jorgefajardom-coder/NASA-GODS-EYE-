@@ -10,12 +10,20 @@ import { fromGatewayPackage, isGatewayManifest, parseJsonLines, validateGatewayM
 
 /** Runs offered in the viewer. `dir` is relative to the site under replay/. */
 export const RECORDED_RECOVERY_ENTRY = 'recorded-recovery-001';
-export const DEFAULT_RUN_ENTRY = RECORDED_RECOVERY_ENTRY;
+/** Default (owner's choice): the simulated demo on the CTX crop. MOCK entries are not offered. */
+export const DEFAULT_RUN_ENTRY = 'demo';
 export const RUNS: ReadonlyArray<{ id: string; label: string; note?: string }> = [
-  { id: RECORDED_RECOVERY_ENTRY, label: 'Recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Not a scientific COMPLETE mission.' },
   { id: 'demo', label: 'Illustrative demo · generated story' },
+  { id: RECORDED_RECOVERY_ENTRY, label: 'Recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Not a scientific COMPLETE mission.' },
   { id: 'mock-vertical-001', label: 'Gateway replay mock-vertical-001 (MOCK)' },
 ];
+
+/**
+ * Runs offered in the selector: only the simulated demo (owner's decision: no MOCK runs in the
+ * viewer from now on). The MOCK recorder packages stay in the catalogue for the team's contract and
+ * consumer tests and remain loadable with ?run=<id>, but are not offered.
+ */
+export const OFFERED_RUNS = RUNS.filter((run) => run.id === DEFAULT_RUN_ENTRY);
 
 export class ReplayLoadError extends Error {}
 
