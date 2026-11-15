@@ -27,7 +27,7 @@ Mars 2020 Terrain Relative Navigation CTX DTM mosaic, USGS Astrogeology Science 
 - DOI of the CTX DTM product family: https://doi.org/10.5066/P906QQT8
 - `web/public/replay/demo/context.json`: the same file over a 20 km square centred on the crop, each 100 m cell the mean of 5 × 5 bilinear samples (box average), made by `web/scripts/extract-ctx-context.mjs` after checking the file's SHA-256. Context surroundings only.
 - The full file is not stored in this repository. `web/scripts/data/ctx_crop.json` holds a
-  2 km × 2 km crop (500 × 500 cells of 4 m, interpolated from the 20 m source) at the Perseverance landing area, resampled by `web/scripts/extract-ctx-crop.mjs`
+  3.4 km × 7.6 km crop (425 × 950 cells of 8 m, interpolated from the 20 m source) joining the Perseverance landing area with the terrain north of it, resampled by `web/scripts/extract-ctx-crop.mjs`
   onto a local tangent ENU grid. The resampling adds no resolution.
 - The crop is provisional: it was made by the frontend until the data owner delivers the
   processed package.
@@ -47,7 +47,7 @@ License 1.1 (https://openfontlicense.org); the licence texts ship in `web/public
 MRO CTX Jezero orthomosaic, controlled (Mars 2020 Terrain Relative Navigation), NASA/JPL-Caltech/MSSS/USGS, served by JPL Mars Trek.
 
 - WMTS layer: `JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0` (https://trek.nasa.gov/mars/), native 6 m, same `soc_008` production as the CTX DTM above.
-- `web/public/replay/demo/ctx_ortho.png`: 400 × 400 px over the 2 km crop (5 m/px), made by `web/scripts/extract-ctx-ortho.mjs` from nine level-13 tiles (tiles SHA-256 `8e8eb1cfd216f973350b4a27d3239d6406bed7a940173ea51390555c8ae1c5ce`). Bilinear resampling onto the crop's ENU grid and a 1st–99th percentile contrast stretch; no detail is added. The viewer tints the panchromatic image for display.
+- `web/public/replay/demo/ctx_ortho.png`: 680 × 1520 px over the crop (5 m/px), made by `web/scripts/extract-ctx-ortho.mjs` from the level-13 tiles that cover it (28) (tiles SHA-256 `7ab42c4a7898af7ee2d40656eb8f280cd367941ee14b0b2415834f91f8278322`). Bilinear resampling onto the crop's ENU grid and a 1st–99th percentile contrast stretch; no detail is added. The viewer tints the panchromatic image for display.
 - `web/public/replay/demo/context_ortho.png`: 500 × 500 px over a 20 km square centred on the crop (40 m/px), made by the same script from nine level-10 tiles (tiles SHA-256 `8c6b109a500eb3f7e1c1714ef95d6052f375611718c3e857d691787c09493da1`), same resampling and contrast stretch. Context surroundings only.
 - Usage terms not verified here: NASA planetary data, see the Mars Trek and USGS product pages.
 
@@ -91,6 +91,6 @@ Official 3D models by NASA/JPL-Caltech: "Mars Perseverance Rover, 3D Model" (htt
 
 Mars 2020 Perseverance waypoints (MMGIS M20 layer), NASA/JPL-Caltech, https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json.
 
-- `web/scripts/data/rover_waypoints.json` and `web/public/replay/demo/rover_stops.json`: the 113 stops (sol 13 to 402) that fall inside the demo crop, with sol, site, drive, latitude and longitude, converted to the crop's local frame by `web/scripts/extract-rover-waypoints.mjs`. The file records the SHA-256 of the feed it was read from. Positions and identifiers only; no image is stored.
+- `web/scripts/data/rover_waypoints.json` and `web/public/replay/demo/rover_stops.json`: the 226 stops (sol 13 to 708) that fall inside the demo crop, with sol, site, drive, latitude and longitude, converted to the crop's local frame by `web/scripts/extract-rover-waypoints.mjs`. The file records the SHA-256 of the feed it was read from. Positions and identifiers only; no image is stored.
 - The viewer asks NASA's public raw-images feed for the images of a stop only when the person presses the load button; images are shown from NASA's servers, credit NASA/JPL-Caltech, and are never stored or bundled.
 - Usage terms not verified here: NASA mission data, see https://mars.nasa.gov/mars2020/multimedia/raw-images/.

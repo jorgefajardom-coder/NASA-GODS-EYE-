@@ -714,7 +714,7 @@ the first-person terrain scan (state machine, wave/indicator/footprint shaders,
 scan key and synthesised sounds; inspired by Death Stranding's Odradek scanner,
 no game assets), the drone window's Hazards tab (`web/src/lib/droneHazards.ts`,
 `DroneMap.tsx`: steep cells and contradictions of the orbital prior read from the
-replay's simulated observations, not LiDAR; it replaces the earlier survey map tab), the astronaut facing its walking direction, the real Perseverance stop markers and the stop-image window (`roverStops.ts`, `RoverStopMarkers.tsx`, `extract-rover-waypoints.mjs`; the stop positions are NASA data, not generated), the move of the demo to the landing-area crop with a 4 m display grid (`extract-ctx-crop.mjs`, `make-demo-fixture.mjs`; the terrain heights stay NASA/USGS data), the opt-in Perseverance raw-images panel
+replay's simulated observations, not LiDAR; it replaces the earlier survey map tab), the astronaut facing its walking direction, the real Perseverance stop markers and the stop-image window (`roverStops.ts`, `RoverStopMarkers.tsx`, `extract-rover-waypoints.mjs`; the stop positions are NASA data, not generated), the expanded demo crop (landing area plus the earlier demo area, 8 m display grid) (`extract-ctx-crop.mjs`, `make-demo-fixture.mjs`; the terrain heights stay NASA/USGS data), the opt-in Perseverance raw-images panel
 (`perseveranceRaw.ts`, `rawImagesStore.ts`, `RawImagesPanel.tsx`, and the first-person `MarsNow.tsx` window; the images are real NASA/JPL-Caltech files read
 from the public feed on request, not AI-generated and not stored) and the site icons
 (`siteKinds.ts`, `SiteIcon.tsx`, `SitesList.tsx`),

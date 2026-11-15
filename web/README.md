@@ -14,8 +14,8 @@ packages are neither offered nor used by the viewer (see the Run selector below)
 | Part | What it is |
 |---|---|
 | Recorded recovery package (`recorded-recovery-001`) | **Not used by the viewer.** Kept in `public/replay/` only for the team's contract and consumer tests; it declares `source_mode` MOCK and ends `READY`, not scientific `COMPLETE` |
-| Demo terrain | **Real**: a provisional 2 km crop of the NASA/USGS Mars 2020 TRN CTX DTM at the Perseverance landing area (centre 18.444° N, 77.445° E), drawn on a **4 m display grid** (500 × 500 cells) interpolated from the **20 m** source: finer cells, no new detail |
-| Real Perseverance stops | **Real NASA positions**: 113 rover stops (sol 13 to 402) inside the crop, from NASA's public traverse feed (MMGIS waypoints); position and identifiers only, no image stored. Drawn as camera icons in 3D, on the minimap and the first-person compass. Base A and goal B sit on two of them. Standing still on a stop in first person opens a window that loads, on request, the raw images NASA lists for that exact stop (same sol, site and drive) |
+| Demo terrain | **Real**: a provisional 3.4 km × 7.6 km crop of the NASA/USGS Mars 2020 TRN CTX DTM (centre 18.490° N, 77.435° E) that joins the Perseverance landing area (south) with the terrain 5.4 km to its north (the earlier demo area), drawn on an **8 m display grid** (425 × 950 cells) interpolated from the **20 m** source: finer cells, no new detail |
+| Real Perseverance stops | **Real NASA positions**: 226 rover stops (sol 13 to 708) inside the crop, from NASA's public traverse feed (MMGIS waypoints); position and identifiers only, no image stored. Drawn as camera icons in 3D, on the minimap and the first-person compass. Base A and goal B sit on two of them. Standing still on a stop in first person opens a window that loads, on request, the raw images NASA lists for that exact stop (same sol, site and drive) |
 | Demo mission, agents, routes, events | **Generated illustrative story** (`scripts/make-demo-fixture.mjs`); its routes come from a substitute slope-constrained search, not the integrated planner. Rover/drone speeds and motion are simulated |
 | Demo adverse case | **Synthetic**: a scarp added to the hidden evaluator reference; it is not in the CTX data |
 | Demo POIs C and D | Fictitious |
@@ -111,10 +111,10 @@ The status block shows `REPLAY` with the run's `source_mode` (`MOCK`, `SIMULATIO
 Agents and the base are drawn at true size by default (astronaut 1.9 m, rover 3.6 m with its arm, drone 1.2 m rotor span); the view option *True-size agents* can be turned off to enlarge agents with camera distance on the 2 km map. The base is `public/assets/models/base.glb`, the team's Blender base (`scripts/blender/source/base-marciana-v2.blend`) prepared by `scripts/blender/prepare_base.py` (own ground and rocks removed, dust film, sandbag berms, radiators, comms mast, power cables). It is placed whole at the median ground height under its footprint; a simple procedural cluster is drawn while it loads or if it fails.
 
 The **Slope** layer uses Horn's 3×3 derivative on the orbital prior, never the
-updated belief. Both the demo grid and the recorded grid are 4 m, which gives a 12 m
-computational window, while their CTX source remains 20 m native. Resampling adds no source detail, and sub-grid hazards remain
-unresolved. On the demo crop (before the synthetic scarp) the median is 2.2°, the 90th percentile
-4.5° and the maximum 12.9°; cells lacking a complete valid window are grey.
+updated belief. The demo grid is 8 m (a 24 m computational window) and the recorded grid 4 m
+(12 m), while their CTX source remains 20 m native. Resampling adds no source detail, and sub-grid hazards remain
+unresolved. On the demo crop (before the synthetic scarp) the median is 2.9°, the 90th percentile
+10.1° and the maximum 39.1°; cells lacking a complete valid window are grey.
 
 The mission area is drawn as a solid block: plain rock-tone walls and a base that claim nothing about the subsurface (the Ground layers tab replaces them with the schematic strata). The view option *Surroundings (20 km)* shows the same CTX DTM around the area, box-averaged to 100 m (`scripts/extract-ctx-context.mjs`, from the same file, SHA-256 checked), draped with the CTX orthomosaic at 40 m (`scripts/extract-ctx-ortho.mjs public/replay/demo/context_ortho.png 500 20000 10`). It is context only and is never read by the planner or the mission.
 
