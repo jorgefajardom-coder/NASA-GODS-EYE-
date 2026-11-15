@@ -1,9 +1,10 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import type { AgentState, RouteDecision } from '../types/icd';
+import type { AgentState, RouteDecision, TerrainMeta } from '../types/icd';
 import type { PointOfInterest } from '../types/replay';
 import { AGENT_NAME } from '../lib/management';
 import { fmtDuration } from '../lib/format';
 import { angleDiffDeg, bearingDeg, SCAN_CLASS_INFO, SCAN_RADIUS_M, type ScanClass } from '../lib/scan';
+import { ORBITAL_PREVIEW_LABEL, ORBITAL_PREVIEW_LIMIT, orbitalSlopeNote } from '../lib/terrainPresentation';
 import { povState } from './FirstPersonCamera';
 import { remainingTimeS, routeProgress } from '../lib/routeProgress';
 import { ROUTE_STATUS_STYLE } from '../lib/format';
@@ -19,6 +20,7 @@ const POI_LABEL: Record<string, string> = { base: 'BASE', primary_goal: 'GOAL', 
 
 interface Props {
   agent: AgentState;
+  terrainMeta: TerrainMeta;
   /** Mode chip text, e.g. "REPLAY · SIMULATION": never shown as a live mission. */
   sourceLabel: string;
   pois: PointOfInterest[];
@@ -52,7 +54,7 @@ interface Props {
  * and site bearings, the shared agent dial (resources live in its menu), and the drone-camera scan control and readout. Every
  * value comes from the replay or from lib/scan; nothing here is a live measurement.
  */
-export function FirstPersonHud({ agent, sourceLabel, pois, scan, canScan, onScan, onExit, route, dial, alert, droneCam, droneCamOn, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, sway, onSway }: Props) {
+export function FirstPersonHud({ agent, terrainMeta, sourceLabel, pois, scan, canScan, onScan, onExit, route, dial, alert, droneCam, droneCamOn, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, sway, onSway }: Props) {
   const tape = useRef<HTMLDivElement>(null);
   const readout = useRef<HTMLSpanElement>(null);
   const pitch = useRef<HTMLSpanElement>(null);
@@ -187,8 +189,8 @@ export function FirstPersonHud({ agent, sourceLabel, pois, scan, canScan, onScan
         <div className="pov__dock-cam">{droneCam}</div>
         <div className="pov__keys" role="toolbar" aria-label="First-person controls">
           <div className="pov__keys-row">
-            <button type="button" className="pov__key" onClick={onScan} disabled={!canScan} title={canScan ? 'Scan the ground around the drone with its camera (R)' : 'No drone in this run'}>
-              <kbd>R</kbd> Scan
+            <button type="button" className="pov__key" onClick={onScan} disabled={!canScan} title={canScan ? `${ORBITAL_PREVIEW_LIMIT} (R)` : 'No drone in this run'}>
+              <kbd>R</kbd> {ORBITAL_PREVIEW_LABEL}
             </button>
             <button type="button" className="pov__key" aria-pressed={droneCamOn} onClick={onDroneCam} disabled={!canDroneCam} title={canDroneCam ? 'Drone camera window (C)' : 'No drone camera here'}>
               <kbd>C</kbd> Drone cam
@@ -213,7 +215,7 @@ export function FirstPersonHud({ agent, sourceLabel, pois, scan, canScan, onScan
           {scan && (
             <div className="pov__legend" aria-live="polite">
               <span className="pov__kicker">
-                Scan from {scan.fromId} · r {SCAN_RADIUS_M} m
+                Orbital preview at {scan.fromId} · r {SCAN_RADIUS_M} m
               </span>
               {(Object.keys(SCAN_CLASS_INFO) as ScanClass[]).map((c) => (
                 <span key={c} className="pov__legend-row">
@@ -222,7 +224,7 @@ export function FirstPersonHud({ agent, sourceLabel, pois, scan, canScan, onScan
                   <b>{scan.counts[c]}</b>
                 </span>
               ))}
-              <p className="pov__note">Orbital CTX slope (prior, ~60 m smoothing) shown from the drone's position. Display only: not a new observation; map version unchanged. Bands are display thresholds pending science approval.</p>
+              <p className="pov__note">{orbitalSlopeNote(terrainMeta)}</p>
             </div>
           )}
         </div>

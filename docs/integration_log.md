@@ -1,5 +1,30 @@
 # Integration log
 
+## Audit reconciliation rc.2 — 14 November 2026, America/Bogota
+
+Input published main6bcf208; candidate branch codex/audit-contract-reconciliation.
+Current-base and exact-nanosecond observation freshness closes the reproduced
+old-FREE-over-new-obstacle defect. Explicit illustrative estimated-prior policy
+preserves sigma/coverage and independent planner constraints. Fresh Jazzy
+execution goes from unobserved prior to one-cell contradiction, acknowledged
+stop, current-XYZ replan and return. The intact 128-record/nine-event package is
+the featured recorded-recovery-001 web entry; the 2 km generated story remains
+separate. Browser QA found/fixed range-end rounding and plain-cutaway scaling.
+
+[Evidence](../evidence/audit-reconciliation-20261115/runtime-v1/README.md): 1054
+Windows Python passes/22 skips; eight Jazzy packages and eight interfaces;
+1086 module passes/one optional skip; 48 integrations; one fresh recording;
+202 web passes/build; ordinary Chrome backend-off replay. READY/MOCK human
+recovery does not close scientific COMPLETE or three-role/optional-task execution.
+NASA source arrays, scenario values, ROS v1 fields and mandatory disclosures are
+preserved. Five handoffs and stale data/MOLA status were reconciled.
+
+Fresh old-model comparison still gives one agreement/six disagreements. The
+owner selected [D-COST-02](decisions/2026-11-14-shared-scientific-cost-api.md),
+reuse of the actual scientific cost API. Its backend/context implementation and
+acceptance are the next cut; the current recording uses labelled legacy
+illustrative costs and does not establish scientific model agreement.
+
 | Cut | Owner | State | Next handoff | Evidence |
 | --- | --- | --- | --- | --- |
 | Initial scaffold, 2026-11-14 | Jesus + team | Structure only | Confirm ICD; crop; profiles; first vertical | verification.md; no mission run |

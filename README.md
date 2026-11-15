@@ -112,7 +112,7 @@ Snapshot of the remote on 2026-11-14 (`origin/main` = `b5dc681`). See
 | Branch | Owner | State |
 | --- | --- | --- |
 | `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#26 merged |
-| `feat/ux` | Jorge | Web viewer; merged in PRs #5, #19 (offline viewer, agent HUD, public raster input, intro) and #23 (first person, drone scan, Pages publishing); PR #27 open (route guide, interface entrance, text access for models) |
+| `feat/ux` | Jorge | Web viewer; PRs #5, #19, #23 and #27 are merged in main (offline viewer, public raster input, intro, first person, orbital preview, route guide and text access). PR #27 publication baseline: `6bcf208` |
 | `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI; last merged in PR #18 |
 | `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service; merged in PRs #2 and #12 |
 | `feat/data` | Daniel | Public terrain data, mapping, provenance and control points; merged in PRs #8 and #24 (configurable terrain region) |
@@ -165,9 +165,16 @@ flowchart LR
 
 - REPLAY mode only. The status block shows `REPLAY · <source_mode>` (`MOCK`,
   `SIMULATION` or `UNKNOWN`); a package that claims `LIVE` is refused.
-- Run selector (or `?run=<id>`): `demo`, a simulated mission on a provisional
-  real CTX crop of Jezero, and `mock-vertical-001`, a package recorded by the
-  gateway's `replay_recorder` from the MOCK vertical (flat synthetic grid).
+- Featured/default entry: `recorded-recovery-001`, an unchanged recorder package
+  on Daniel's 128 m Jezero crop (32×32 computational cells at 4 m; CTX source
+  spacing 20 m). Real data/mapping/planner providers are paired with MOCK mission
+  and kinematic execution. The human stops, replans, resumes and returns; rover
+  and drone remain idle. Its final `READY` state is not scientific `COMPLETE`.
+- The selector and `?run=<entry>` also retain `demo`, the separate generated
+  story on a provisional 2 km CTX crop at 20 m, and `mock-vertical-001`, the
+  historical recorded flat-MOCK sample. A folder entry can differ from the
+  immutable `run_id` inside its files. Never combine metrics or layers between
+  these scenes. Browser/backend-off acceptance of this cut remains to be recorded.
 - Reads gateway replay packages (ICD §7) and their public raster attachment
   `files.public_rasters` (`mge-public-rasters-1.0.0`), checked against the package;
   mismatches fail with `PUBLIC_RASTERS_INVALID`, and non-MOCK packages without it
@@ -179,8 +186,8 @@ flowchart LR
 
 ### Interface
 
-- Intro screen: skippable AI-generated video with one burned-in `AI-GENERATED · KLING`
-  mark (`?nointro=1` or reduced motion skips it). The interface then enters: the panels
+- Intro screen for the illustrative demo: skippable AI-generated video with one burned-in
+  `AI-GENERATED · KLING` mark (`?nointro=1` or reduced motion skips it). The interface then enters: the panels
   slide in, the timeline rises and the agent dial spins into place.
 - Terrain formation: the layer appears flat and its relief rises to the true shape in 2.5 s,
   valleys first and ridges last, with rising ground lit. Switching layers or a new map version
@@ -206,9 +213,11 @@ flowchart LR
   resources, a heading-up minimap and a route guide: the route in force draped on the ground,
   a beacon on the next waypoint, its distance, the distance left and the time left scaled from
   the route's own estimate. Optional camera sway (`B`) while walking or driving.
-- Drone camera scan (`R`): marks the 20 m cells within 160 m of the drone by their orbital slope
-  in display bands (< 8°, 8–15°, ≥ 15°, NoData). It makes no observation and changes no data;
-  the bands await science approval.
+- Orbital slope preview (`R`): displays prior-derived slope cells within 160 m of
+  the drone position in display bands (< 8°, 8–15°, ≥ 15°, NoData). It is a visual
+  lookup, not a camera observation or mission command; map, sigma and routes do
+  not change. The legend separates the computational grid from native source
+  spacing; the bands are display choices, not validated safety limits.
 - Text access for language models: `llms.txt`, `about.html`, page metadata with JSON-LD, a
   static summary for readers without JavaScript, and `window.mge.state()`, which returns the
   displayed replay state as JSON (always labelled REPLAY).
@@ -225,11 +234,18 @@ Keys: `F` follow camera, `V` first person, `R` drone scan, `B` camera sway (firs
 Everything not listed as real is labelled in the interface as simulated,
 illustrative, synthetic or AI-generated.
 
+The recorded recovery uses Daniel's public 128 m dataset and recorded planner
+output with explicitly simulated observations and MOCK execution. Its four files
+are `manifest.json`, `timeline.jsonl`, `snapshot.json` and `public_rasters.json`.
+The source table below describes the separate 2 km illustrative demo where noted;
+its geology, imagery and environmental layers are not silently attached to the
+recorded scene. Optional layers must match their declared frame and datum.
+
 | Layer or element | Source | Status |
 | --- | --- | --- |
 | Elevation (Orbital map) | MRO/CTX DTM, Mars 2020 TRN mosaic, USGS Astrogeology ([DOI 10.5066/P906QQT8](https://doi.org/10.5066/P906QQT8)), 2 km crop at 20 m | Real, provisional crop |
 | Contour lines | Derived from that elevation every 10 m | Derived from real data |
-| Slope | Horn 3x3 on that elevation (as `gdaldem slope`), 20 m grid, about 60 m window | Derived from real data; lower bound, not a hazard map |
+| Demo slope | Horn 3×3 on that prior, 20 m grid / 60 m computational window | Derived orbital estimate; unresolved local hazards, not a hazard measurement |
 | Surroundings (optional) | Same CTX DTM over 20 km, box-averaged to 100 m, and the CTX orthomosaic at 40 m | Real, context only; not part of the mission map |
 | Block walls | Display of the crop as a solid block | Plain rock tone, no subsurface claim |
 | Surface image | MRO/CTX orthomosaic `JEZ_ctx_B_soc_008`, via [JPL Mars Trek](https://trek.nasa.gov/mars/), 6 m resampled to 5 m | Real, contrast-stretched for display |
@@ -247,7 +263,7 @@ illustrative, synthetic or AI-generated.
 | Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
 | Shadows, footprints, dust, rotor blur, wheel and steering motion | Derived in the viewer from the drawn poses | **Cosmetic display** only |
 | Terrain formation, height morph, interface entrance, camera sway | Viewer animations on the drawn surface and camera | **Cosmetic display**; no height or pose in the data changes |
-| Drone camera scan | Orbital CTX slope (above) around the drone, in display bands | **Display only**: not an observation; bands pending science approval |
+| Orbital slope preview | Prior-derived slope around the drone position, using the current run's grid | **Display only**: not an observation or route update; display bands are unvalidated |
 | First-person route guide | Route in force as recorded; time left = route `travel_time_s` × distance share left | Drawn from the received route; time left is an **estimate**, not a prediction |
 | Rover and drone models | NASA/JPL-Caltech Perseverance and Ingenuity 3D models | Real models, agency branding removed |
 | Astronaut model | Sketchfab, LasquetiSpice, CC BY 4.0 | Third-party asset |

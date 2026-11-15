@@ -1,0 +1,55 @@
+{
+  "baseline": "1.0.0-rc.2 candidate",
+  "source_commit_at_recording": "6bcf208868e37b7e15e9189fac11de96e7414eff",
+  "source_has_uncommitted_changes_at_recording": true,
+  "source_identity": "Exact files/hashes in source-lock.json; final documentation and browser-only follow-ups are separate",
+  "ros": {
+    "platform": "Ubuntu24.04/Jazzy",
+    "packages_built": 8,
+    "messages_inspected": 6,
+    "services_inspected": 2,
+    "contracts": {
+      "tests": 1087,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "integration": {
+      "tests": 48,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "windows": {
+    "tests": 1076,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 22
+  },
+  "featured_package": {
+    "path": "web/public/replay/recorded-recovery-001",
+    "run_id": "it-execution",
+    "record_count": 128,
+    "event_count": 9,
+    "source_mode": "MOCK",
+    "map_versions": [
+      1,
+      2
+    ],
+    "observed_cells": [
+      0,
+      1
+    ]
+  },
+  "scope": "Real public data/mapping/planner and recorder; MOCK mission/kinematic human stop/replan/return; robots idle; READY, not scientific COMPLETE or LIVE",
+  "cost_model": "Legacy illustrative search projection; scientific cost agreement remains blocked. D-COST-02 shared API is a subsequent implementation cut.",
+  "static_check": "Runtime source copy deliberately excludes web/README; full Windows workspace check is used instead",
+  "unexecuted": [
+    "Gazebo/physical acceptance",
+    "three-role execution",
+    "scientific mission COMPLETE",
+    "approved shared scientific costs"
+  ],
+  "prior_cut": "audit-validation-1 remains local only; superseded before publishing by exact-nanosecond correction"
+}

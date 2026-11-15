@@ -1,0 +1,24 @@
+{
+  "recorded_at_utc": "2026-11-15T02:21:33Z",
+  "browser": "Chrome on Windows, ordinary fresh task tab; not an incognito acceptance",
+  "url": "http://127.0.0.1:4190/",
+  "build": "npm run build, Vite 7.0.4; index-BHFw0r-y.js",
+  "web_test_result": "202 passed with the exact package supplied through MGE_REPLAY_PACKAGE, including the mandatory bundled-package consumer",
+  "backend_check": "Host Get-NetTCPConnection for ports 4190 and 8769 showed only the static preview on 127.0.0.1:4190, process 34880; ROS recording process had terminated",
+  "observed": [
+    "Default entry Recorded recovery · MOCK, recorded run it-execution",
+    "jezero_mvp, grid 4 m, source 20 m native, 18.45 N / 77.45 E",
+    "Initial map v1 and planning/idle state; recorded public terrain visible in its absolute negative datum",
+    "At T+25 s, map v2, old v1 route invalidated, new v2 route FEASIBLE, human MOVING with changed resources",
+    "Orbital slope preview is labelled display only before activation",
+    "Final slider endpoint T+01:56 shows READY, map v2 and human IDLE at E=-14, N=-14, U=-2571.2 m; rover/drone remain IDLE",
+    "Final HUD shows recorded remaining resources, including approximately 980 Wh; exact values match the closing frame in the mandatory consumer regression",
+    "REPLAY · MOCK, Offline, LIVE LINK NOT AVAILABLE and no scientific COMPLETE claim remain visible"
+  ],
+  "fixed_during_qa": [
+    "Native range max 116.89257955551147 serialized as 116.892579555511, leaving the earlier MOVING sample; normalize only decimal aliases at the slider boundary, preserving strict replay history",
+    "Plain illustrative cutaway depth scales to 23.04 m for the 128 m scene; recorded datum and terrain are unchanged"
+  ],
+  "not_claimed": ["incognito/private-browser AC-08 closure", "public deployed-site acceptance", "three-role execution", "scientific mission COMPLETE", "LIVE mission"],
+  "media": "Read-only visual QA; no screenshot, video or audio artifact is exported as a deliverable"
+}

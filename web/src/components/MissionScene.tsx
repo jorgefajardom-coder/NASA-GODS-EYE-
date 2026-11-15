@@ -20,6 +20,7 @@ import { JEZERO_LON_E_DEG } from '../lib/marsClock';
 import { PovRoute } from './PovRoute';
 import { DroneScan, type ScanRequest } from './DroneScan';
 import { SUN_FROM } from '../lib/sun';
+import { terrainFraming } from '../lib/terrainPresentation';
 import { enuToThree } from '../lib/coords';
 import { CutawayBlock } from './CutawayBlock';
 import { DETAIL_FAR_M, DETAIL_FAR_POV_M, TerrainView } from './TerrainView';
@@ -114,6 +115,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   }, [base, meta, grid, exaggeration]);
   const cameraTarget = followed ? `agent-${followed}` : baseCamera && baseAnchor ? BASE_ANCHOR : null;
   const extent = Math.max(meta.rows, meta.cols) * meta.resolution_m;
+  // Fit to the public prior once per dataset/exaggeration, not to future frames.
+  // Replaying a map update must not reset the user's free camera.
+  const framing = useMemo(() => terrainFraming(meta, bundle.rasters.prior, exaggeration), [meta, bundle.rasters.prior, exaggeration]);
   // First person always shows the 20 km surroundings, so the ground reaches the horizon wherever the eye looks.
   const ctx = (showContext || pov) && !lite ? bundle.context : undefined;
   // Far plane and haze reach the edge of the context terrain when there is one.
@@ -126,7 +130,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   return (
     <Canvas
       className={`scene${freePan ? ' scene--grab' : ''}`}
-      camera={{ position: [-0.75 * extent, 1.25 * extent, 1.7 * extent], fov: 38, near: 1, far: Math.max(extent * 10, reach * 2) }}
+      camera={{ position: framing.position, fov: 38, near: 1, far: Math.max(framing.far, reach * 2) }}
       dpr={lite ? 1 : [1, 1.75]}
       gl={{ antialias: !lite, powerPreference: lite ? 'default' : 'high-performance', stencil: true /* the astronaut's projected shadow darkens each pixel once */ }}
       aria-label="3D view of the mission area"
@@ -213,12 +217,13 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       )}
       <OrbitControls
         makeDefault
+        target={framing.target}
         enabled={!pov}
         enableDamping
         dampingFactor={smoothing.orbitDamping}
         maxPolarAngle={Math.PI / 2.05}
         minDistance={MIN_ORBIT_DISTANCE_M}
-        maxDistance={extent * 2.5}
+        maxDistance={framing.scale * 2.5}
         zoomToCursor
         // Free pan grabs the ground plane (not the screen plane), so dragging slides the map like a chart.
         screenSpacePanning={!freePan}
