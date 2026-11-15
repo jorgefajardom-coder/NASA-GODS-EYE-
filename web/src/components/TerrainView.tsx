@@ -11,8 +11,11 @@ import { growthClock, zoneDelay, zoneGlow, zoneShare } from './TerrainGrowth';
 
 /** Mesh vertices per source cell interval. Source cell centres are always vertices (J-01). */
 export const MESH_SUBDIVISION = 3;
-/** Mesh subdivision per source cell: 3 for cells up to 6 m, 2 for coarser grids so a large crop stays a few million vertices at most. */
-export const meshSubdivision = (meta: { resolution_m: number }): number => (meta.resolution_m > 6 ? 2 : MESH_SUBDIVISION);
+/** Vertices the terrain mesh aims for: building and lighting more of them freezes the opening for seconds. */
+const MESH_VERTEX_BUDGET = 700_000;
+/** Mesh subdivision per source cell: up to 3, fewer on a large map so it stays within the vertex budget. */
+export const meshSubdivision = (meta: { rows: number; cols: number }): number =>
+  Math.max(1, Math.min(MESH_SUBDIVISION, Math.floor(Math.sqrt(MESH_VERTEX_BUDGET / (meta.rows * meta.cols)))));
 /** Distance (m) at which the cosmetic ground grain has faded out; the first-person view reaches farther. */
 export const DETAIL_FAR_M = 180;
 export const DETAIL_FAR_POV_M = 480;
@@ -376,8 +379,8 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     }
     pos.needsUpdate = true;
     colAttr.needsUpdate = true;
-    geometry.computeVertexNormals();
-    geometry.computeBoundingSphere();
+    // Normals and the bounding sphere stay those of the finished terrain: recomputing them for every
+    // vertex on every frame took long enough on a large map to freeze the animation into a few frames.
     growing.current = growthClock.active;
     if (!growing.current) morph.current = null; // the growth has set the true heights: nothing left to morph
   });

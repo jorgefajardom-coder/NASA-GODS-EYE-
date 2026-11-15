@@ -2,6 +2,9 @@ import type { TerrainMeta } from '../types/icd';
 import type { ReplayManifest, ContextTerrainData } from '../types/replay';
 import type { GeologyData } from './geology';
 
+/** Share of the fitted camera distance used for the opening view (below 1 = closer). */
+export const FRAMING_ZOOM = 0.86;
+
 /** Camera coordinates stay in the recorded datum; only the viewpoint is fitted. */
 export function terrainFraming(meta: TerrainMeta, heights: ReadonlyArray<number | null>, exaggeration = 1) {
   let lo = Infinity, hi = -Infinity;
@@ -18,7 +21,8 @@ export function terrainFraming(meta: TerrainMeta, heights: ReadonlyArray<number 
     (lo + hi) * exaggeration / 2,
     -(meta.origin_y_m + height / 2),
   ];
-  const position: [number, number, number] = [target[0] - .75 * scale, target[1] + 1.25 * scale, target[2] + 1.7 * scale];
+  // A little closer than the full fit (FRAMING_ZOOM): the corners of the map still fall inside the view.
+  const position: [number, number, number] = [target[0] - .75 * scale * FRAMING_ZOOM, target[1] + 1.25 * scale * FRAMING_ZOOM, target[2] + 1.7 * scale * FRAMING_ZOOM];
   return { target, position, scale, far: scale * 12 };
 }
 
