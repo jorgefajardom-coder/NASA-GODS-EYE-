@@ -21,13 +21,25 @@
       "kind": "science_extension_tree_and_diagram",
       "generation": "AI-assisted proposed research guide, structured source and reproducible diagram code",
       "paths": [
-        "AGENTS.md", "README.md", "docs/science_extension_tree.md",
-        "docs/assets/science-tree/tree.json", "docs/assets/science-tree/render.py",
-        "docs/assets/science-tree/science-tree.png", "docs/assets/science-tree/science-tree.svg",
-        "docs/decisions/2026-11-14-delivery-freeze.md", "docs/delivery_closure_plan.md",
-        "docs/research_hypotheses.md", "docs/team.md", "docs/team_continuation_plan.md",
-        "docs/handoffs/david.md", "docs/handoffs/daniel.md", "docs/handoffs/diego.md",
-        "docs/handoffs/jesus.md", "docs/handoffs/jorge.md", "docs/AI_USAGE.md", "docs/ai_usage.json"
+        "AGENTS.md",
+        "README.md",
+        "docs/science_extension_tree.md",
+        "docs/assets/science-tree/tree.json",
+        "docs/assets/science-tree/render.py",
+        "docs/assets/science-tree/science-tree.png",
+        "docs/assets/science-tree/science-tree.svg",
+        "docs/decisions/2026-11-14-delivery-freeze.md",
+        "docs/delivery_closure_plan.md",
+        "docs/research_hypotheses.md",
+        "docs/team.md",
+        "docs/team_continuation_plan.md",
+        "docs/handoffs/david.md",
+        "docs/handoffs/daniel.md",
+        "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md",
+        "docs/handoffs/jorge.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
       ],
       "use": "Document four common gates and eighteen proposed extensions with named leads/reviewers, AND dependencies and verifiable acceptance/stop rules. Generate marked PNG/SVG planning diagrams from the same source and preserve the owner's freeze plus bounded local assessment of unlisted ideas for 15-Nov-2026. Code-rendered with Python/Pillow, no image-generation model or NASA branding; no new terrain, observations, experimental results or approvals."
     },
@@ -1562,12 +1574,37 @@
         "web/src/components/HudGauge.tsx"
       ],
       "use": "Display the existing per-zone water (Mars Odyssey GRS) and radiation (MSL RAD and RAD's dose-pressure relation) context from web/scripts/data/zone_environment.json in the Atmos tab of every zone and on the zone cards, with a 4 h Marswalk example dose; draft the English project-page text that maps the challenge to delivered and pending items. Add the HUD's exhaled-CO2 gauge on the oxygen button (oxygen used x an assumed respiratory quotient of 0.85, pending review; suit CO2 removal capacity not modelled). Use each zone's surface dose rate in the HUD dose gauge, with NASA's 600 mSv career limit (NASA-STD-3001) as scale context. The numeric values and their sources are unchanged NASA-derived data, not generated; the example dose is a linear display estimate without shielding or solar events. No media generated; no scientific approval or milestone closure."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "pr37_scientific_presentation_corrections",
+      "generation": "AI-assisted code, regression tests and documentation reviewed against primary sources",
+      "paths": [
+        "docs/project_page.md",
+        "docs/science_poi_dossier.md",
+        "docs/pr37_science_review.md",
+        "web/README.md",
+        "web/scripts/data/zone_environment.json",
+        "web/scripts/extract-zone-environment.mjs",
+        "web/src/components/AtmosPanel.tsx",
+        "web/src/components/HudGauge.tsx",
+        "web/src/lib/co2.ts",
+        "web/src/lib/zoneEnvironment.ts",
+        "web/tests/zoneEnvironment.test.ts",
+        "web/tests/hudScientificContext.test.ts",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Remove an unsupported RAD dose-equivalent to NASA effective-career-dose percentage, distinguish unavailable CO2 rates, correct Guo 2017 references without changing numerical data, and separate illustrative scenes, recorded MOCK recovery, analytical pilots and pending physical/three-role acceptance. No new observational data, profiles or scientific approval."
     }
   ],
   "generated_media": [
     {
       "kind": "code_rendered_planning_diagram",
-      "paths": ["docs/assets/science-tree/science-tree.png", "docs/assets/science-tree/science-tree.svg"],
+      "paths": [
+        "docs/assets/science-tree/science-tree.png",
+        "docs/assets/science-tree/science-tree.svg"
+      ],
       "tool": "OpenAI Codex-assisted Python/Pillow and SVG renderer",
       "watermark": "Visible AI-generated planning-diagram label in both outputs; embedded source SHA-256 and AI-use metadata",
       "source": "docs/assets/science-tree/tree.json",
@@ -1680,28 +1717,6 @@
         "scripts/dev.sh"
       ],
       "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
-    },
-    {
-      "tool": "OpenAI Codex",
-      "kind": "pr37_scientific_presentation_corrections",
-      "generation": "AI-assisted code, regression tests and documentation reviewed against primary sources",
-      "paths": [
-        "docs/project_page.md",
-        "docs/science_poi_dossier.md",
-        "docs/pr37_science_review.md",
-        "web/README.md",
-        "web/scripts/data/zone_environment.json",
-        "web/scripts/extract-zone-environment.mjs",
-        "web/src/components/AtmosPanel.tsx",
-        "web/src/components/HudGauge.tsx",
-        "web/src/lib/co2.ts",
-        "web/src/lib/zoneEnvironment.ts",
-        "web/tests/zoneEnvironment.test.ts",
-        "web/tests/hudScientificContext.test.ts",
-        "docs/AI_USAGE.md",
-        "docs/ai_usage.json"
-      ],
-      "use": "Remove an unsupported RAD dose-equivalent to NASA effective-career-dose percentage, distinguish unavailable CO2 rates, correct Guo 2017 references without changing numerical data, and separate illustrative scenes, recorded MOCK recovery, analytical pilots and pending physical/three-role acceptance. No new observational data, profiles or scientific approval."
     }
   ],
   "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements",
