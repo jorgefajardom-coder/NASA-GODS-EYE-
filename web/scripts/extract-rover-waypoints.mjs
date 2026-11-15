@@ -18,12 +18,21 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const URL_WAYPOINTS = 'https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json';
+// `WORLD=jezero` (default, Perseverance) or `WORLD=gale` (Curiosity). Gale has 1,389 stops over 12 years, so
+// they are thinned: a stop is kept only if it is at least `spacing` metres from the last one kept (in sol order).
+const WORLD = process.env.WORLD ?? 'jezero';
+const WORLDS = {
+  jezero: { url: 'https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json', title: 'Mars 2020 Perseverance waypoints (MMGIS M20)', mission: { id: 'mars2020', name: 'Perseverance', raw_category: 'mars2020', image_match: 'stop' }, crop: 'ctx_crop.json', out: 'rover_waypoints.json', spacing: 0 },
+  gale: { url: 'https://mars.nasa.gov/mmgis-maps/MSL/Layers/json/MSL_waypoints.json', title: 'Mars Science Laboratory Curiosity waypoints (MMGIS MSL)', mission: { id: 'msl', name: 'Curiosity', raw_category: 'msl', image_match: 'sol' }, crop: 'gale/ctx_crop.json', out: 'gale/rover_waypoints.json', spacing: 80 },
+};
+const WD = WORLDS[WORLD];
+if (!WD) throw new Error(`unknown WORLD ${WORLD}`);
+const URL_WAYPOINTS = WD.url;
 const R = 3396190;
 const HERE = dirname(fileURLToPath(import.meta.url));
-const outPath = process.argv[2] ?? join(HERE, 'data', 'rover_waypoints.json');
+const outPath = process.argv[2] ?? join(HERE, 'data', WD.out);
 
-const { crop } = JSON.parse(readFileSync(join(HERE, 'data', 'ctx_crop.json'), 'utf8'));
+const { crop } = JSON.parse(readFileSync(join(HERE, 'data', WD.crop), 'utf8'));
 const lat0 = crop.centre_lat_deg;
 const lon0 = crop.centre_lon_deg;
 const W = crop.cols * crop.resolution_m;
@@ -57,11 +66,22 @@ for (const f of feed.features) {
   });
 }
 stops.sort((a, b) => a.sol - b.sol || a.drive - b.drive);
+const all = stops.length;
+if (WD.spacing > 0) {
+  const kept = [];
+  for (const st of stops) {
+    const last = kept.at(-1);
+    if (!last || Math.hypot(st.x_m - last.x_m, st.y_m - last.y_m) >= WD.spacing) kept.push(st);
+  }
+  stops.length = 0;
+  stops.push(...kept);
+}
 
 const out = {
-  note: 'Real Perseverance stops inside the crop (position and identifiers only; no image is stored). Positions are the rover stop positions published by NASA.',
+  note: `Real ${WD.mission.name} stops inside the crop${WD.spacing > 0 ? `, thinned to at least ${WD.spacing} m apart (${stops.length} of ${all} in the crop)` : ''} (position and identifiers only; no image is stored). Positions are the rover stop positions published by NASA.`,
+  mission: WD.mission,
   source: {
-    title: 'Mars 2020 Perseverance waypoints (MMGIS M20)',
+    title: WD.title,
     url: URL_WAYPOINTS,
     credit: 'NASA/JPL-Caltech',
     feed_name: feed.name,

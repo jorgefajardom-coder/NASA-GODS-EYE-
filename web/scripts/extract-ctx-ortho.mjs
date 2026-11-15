@@ -21,7 +21,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 
-const LAYER = 'JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0';
+// Other worlds: ORTHO_LAYER (e.g. Gale_CTX_BlockAdj_dd, tiles to level 12) and ORTHO_CROP (e.g. gale/ctx_crop.json).
+const LAYER = process.env.ORTHO_LAYER ?? 'JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0';
 const BASE = `https://trek.nasa.gov/tiles/Mars/EQ/${LAYER}/1.0.0`;
 const LEVEL = Number(process.argv[5] ?? 13);
 const TILE = 256;
@@ -30,10 +31,10 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const outPath = process.argv[2] ?? join(HERE, '..', 'public', 'replay', 'demo', 'ctx_ortho.png');
 const N = Number(process.argv[3] ?? 400);
 
-const crop = JSON.parse(readFileSync(join(HERE, 'data', 'ctx_crop.json'), 'utf8')).crop;
+const crop = JSON.parse(readFileSync(join(HERE, 'data', process.env.ORTHO_CROP ?? 'ctx_crop.json'), 'utf8')).crop;
 const lat0 = (crop.centre_lat_deg * Math.PI) / 180;
 const lon0 = (crop.centre_lon_deg * Math.PI) / 180;
-const EXTENT_ARG = process.argv[4] == null ? null : Number(process.argv[4]);
+const EXTENT_ARG = process.argv[4] ? Number(process.argv[4]) : null; // empty or 0 = the crop itself
 if (EXTENT_ARG != null) {
   // Square centred on the crop centre (ENU origin).
   crop.origin_x_m = -EXTENT_ARG / 2;

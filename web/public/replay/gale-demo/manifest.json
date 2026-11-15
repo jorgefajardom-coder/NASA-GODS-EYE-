@@ -1,0 +1,157 @@
+{
+  "schema_version": "mge-web-0.1-draft",
+  "icd": "ICD-ROS2-V1 (draft)",
+  "run_id": "gale-demo-sim-001",
+  "mode": "REPLAY",
+  "source_mode": "SIMULATION",
+  "provenance": [
+    "nasa",
+    "simulated",
+    "fictitious"
+  ],
+  "illustrative": true,
+  "title": "Gale demo: Mount Sharp corridor survey and replanning",
+  "summary": "The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.",
+  "disclaimer": "Terrain: NASA/USGS MSL Gale crater DEM mosaic crop over Curiosity's traverse and the foot of Mount Sharp (real, provisional, 8 m display grid from its 8 m overview). Rover stop markers: real Curiosity stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
+  "ai_disclosure": {
+    "ai_assisted": true,
+    "scope": "Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.",
+    "tool": "Claude (Anthropic) through Claude Code",
+    "observational_data": "Only the terrain heights come from NASA/USGS data; everything else here is simulated."
+  },
+  "world": "gale",
+  "duration_s": 24588,
+  "local_z_offset_m": -4162,
+  "imagery": {
+    "file": "ctx_ortho.png",
+    "title": "MRO CTX Gale crater mosaic (block adjusted)",
+    "source": "JPL Mars Trek WMTS layer Gale_CTX_BlockAdj_dd, https://trek.nasa.gov/mars/",
+    "credit": "NASA/JPL-Caltech/MSSS",
+    "native_resolution_m": 6,
+    "resolution_m": 10,
+    "extent": {
+      "origin_x_m": -1700,
+      "origin_y_m": -3800,
+      "width_m": 3400,
+      "height_m": 7600
+    },
+    "row0": "north",
+    "processing": "Bilinear resampling onto the crop ENU grid; display contrast stretched linearly between the 1st and 99th percentile. Panchromatic; the viewer tints it for display only."
+  },
+  "rover_stops": {
+    "file": "rover_stops.json"
+  },
+  "photo_tour": {
+    "agent_id": "rover_1",
+    "start_s": 3048,
+    "end_s": 24578,
+    "stops": 166,
+    "speed_mps": 2,
+    "dwell_s": 40
+  },
+  "terrain_meta": {
+    "run_id": "gale-demo-sim-001",
+    "dataset_id": "msl-gale-dem-mosaic-8m",
+    "frame_id": "map",
+    "map_version": 1,
+    "origin_x_m": -1700,
+    "origin_y_m": -3800,
+    "resolution_m": 8,
+    "rows": 950,
+    "cols": 425,
+    "crs": "Local tangent ENU grid; source Equirectangular, Mars 2000 sphere IAU (R = 3396190 m)",
+    "origin_lat_deg": -4.7253,
+    "origin_lon_deg": 137.3865,
+    "vertical_datum": "Mars datum of the MSL Gale DEM mosaic; local z = elevation - (-4162 m)",
+    "nodata_value": -32768,
+    "sources": [
+      "MSL Gale crater DEM mosaic, 1 m, v3 (MRO HiRISE and CTX stereo), USGS Astrogeology Science Center / NASA. File MSL_Gale_DEM_Mosaic_1m_v3.tif (overview level 1, 8 m per pixel, in MSL_Gale_DEM_Mosaic_1m_v3.tif.ovr), MD5 of the full file as published bc4cbabf8b06d24f3b25400f0468933b.",
+      "Product page https://astrogeology.usgs.gov/search/map/mars_msl_gale_merged_dem_mosaic. Native resolution 8 m. Not verified here: USGS-hosted NASA planetary data, see the product page for usage terms.",
+      "Crop: 950 x 425 cells of 8 m centred at -4.7253 N, 137.3865 E, bicubic (Catmull-Rom) resampling of the 8 m overview onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); 8 m cells, so no resolution gain. PROVISIONAL, made by the frontend until the data owner delivers the processed package.",
+      "SYNTHETIC: a scarp was added to the hidden evaluator reference to create an adverse case. It does not exist in the NASA terrain data.",
+      "ILLUSTRATIVE: uncertainty (sigma), budgets, speeds and consumption rates are assumptions of a simulated mission."
+    ],
+    "checksum_sha256": "d387d1ffe28cce8e9f32bef8abba83ccc7f1a16e515ac85c0fc58299fe558721"
+  },
+  "vertical_exaggeration_default": 1,
+  "control_points": [
+    {
+      "id": "cp-1",
+      "position": {
+        "x": -1216,
+        "y": -3460,
+        "z": 260.5
+      },
+      "description": "Cell centre row 42, col 60 of the CTX crop."
+    },
+    {
+      "id": "cp-2",
+      "position": {
+        "x": -496,
+        "y": -2596,
+        "z": 245.2
+      },
+      "description": "Cell centre row 150, col 150 of the CTX crop."
+    },
+    {
+      "id": "cp-3",
+      "position": {
+        "x": 176,
+        "y": -1780,
+        "z": 239.2
+      },
+      "description": "Cell centre row 252, col 234 of the CTX crop."
+    }
+  ],
+  "pois": [
+    {
+      "id": "A",
+      "label": "Base A",
+      "kind": "base",
+      "position": {
+        "x": -552,
+        "y": 3636,
+        "z": -287.8
+      },
+      "revealed_at_s": 0
+    },
+    {
+      "id": "B",
+      "label": "Goal B",
+      "kind": "primary_goal",
+      "position": {
+        "x": -1512,
+        "y": 2764,
+        "z": -264.9
+      },
+      "revealed_at_s": 0
+    },
+    {
+      "id": "C",
+      "label": "POI C",
+      "kind": "poi",
+      "position": {
+        "x": -952,
+        "y": 3308,
+        "z": -279.3
+      },
+      "revealed_at_s": 264
+    },
+    {
+      "id": "D",
+      "label": "POI D",
+      "kind": "poi",
+      "position": {
+        "x": -1176,
+        "y": 3348,
+        "z": -283.1
+      },
+      "revealed_at_s": 266
+    }
+  ],
+  "files": {
+    "rasters": "rasters.json",
+    "timeline": "timeline.json",
+    "routes": "routes.json"
+  }
+}

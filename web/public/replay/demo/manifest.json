@@ -19,6 +19,7 @@
     "tool": "Claude (Anthropic) through Claude Code",
     "observational_data": "Only the terrain heights come from NASA/USGS data; everything else here is simulated."
   },
+  "world": "jezero",
   "duration_s": 22624,
   "local_z_offset_m": -2538,
   "imagery": {
@@ -77,7 +78,7 @@
       "Mars 2020 Terrain Relative Navigation CTX DTM mosaic, USGS Astrogeology Science Center / NASA. File JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0.tif, 9662387 bytes, SHA-256 16a1aa66c3f48c1bca252795827db7b417876217aff0f5e1aff18027fab2327b.",
       "Product page https://astrogeology.usgs.gov/search/map/mars_2020_terrain_relative_navigation_ctx_dtm_mosaic (DOI family https://doi.org/10.5066/P906QQT8). Native resolution 20 m. Not verified here: USGS-hosted NASA planetary data, see the product page for usage terms.",
       "Crop: 950 x 425 cells of 8 m centred at 18.4899 N, 77.43461 E, bicubic (Catmull-Rom) resampling onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); 8 m cells from a 20 m source, so no resolution gain (display resampling). PROVISIONAL, made by the frontend until the data owner delivers the processed package.",
-      "SYNTHETIC: a scarp was added to the hidden evaluator reference to create an adverse case. It does not exist in the CTX data.",
+      "SYNTHETIC: a scarp was added to the hidden evaluator reference to create an adverse case. It does not exist in the NASA terrain data.",
       "ILLUSTRATIVE: uncertainty (sigma), budgets, speeds and consumption rates are assumptions of a simulated mission."
     ],
     "checksum_sha256": "c5f214aa4b488c3f91f6cfbcac4a9bc9ee8ed3f4148752ed50df7822545db610"
