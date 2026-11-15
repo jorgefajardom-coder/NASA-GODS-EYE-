@@ -1,5 +1,12 @@
 # Team branches and ownership
 
+Current priority after PR28: [delivery closure](delivery_closure_plan.md) and
+[D-DEL-03](decisions/2026-11-14-delivery-freeze.md). Basic reconciliation is
+published at main9198b3d; source/parameter freeze and full mission acceptance
+remain separate. Pause expansion, preserve existing studies and target the
+20:00 submission with organizer endorsement. The continuation allocation and
+inventories below retain earlier planning context, not the current freeze policy.
+
 Current next assignments: [continuation plan, 14 November 2026](team_continuation_plan.md),
 based on main `5ab1387` and the Conciliación cuts. Read its per-owner checklists
 before the historical branch inventories below. Daniel continues larger-map
@@ -11,7 +18,9 @@ Execution, same-run replay and delivery acceptance remain separate gates.
 Follow accepted owner decision [D-EST-01](decisions/2026-11-14-estimated-terrain-planning.md):
 plan hypothetical routes over valid orbital estimates before local observation;
 revise on contradictory evidence. The old blanket observation prerequisite is
-superseded in scope, not yet declared removed from the integrated implementation.
+superseded in scope. PR28 implements an explicit illustrative estimated-prior
+path; no-policy callers retain observed-only behavior and independent profile
+limits remain active. Scientific and owner semantic approval remain separate.
 Keep step 4 (integrated execution/roles/stop/replan) and step 5 (same-run offline
 replay and web video) open while independent module work continues. Varied scenes,
 larger maps and H-DAN-01 remain optional and must protect these P0 milestones.

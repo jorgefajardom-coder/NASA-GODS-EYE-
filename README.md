@@ -19,6 +19,17 @@ this repository is a validated LIVE mission. MOCK providers, synthetic
 observations, replays and successful builds are labelled as such and are not
 mission evidence.
 
+**For judges:** this prototype connects orbital terrain estimates with route
+proposals and recorded decision changes when simulated observations contradict
+them. The featured `Recorded recovery · MOCK` uses public Jezero terrain and the
+real planner: a human stops, receives a revised route and returns. Its closing
+state is READY; it does not demonstrate a scientifically accepted three-role
+mission or certified safety. The broader scripted demo is a separate illustration.
+See [recorded source and browser evidence](evidence/audit-reconciliation-20261115/runtime-v1/README.md).
+Final English video/project-page links and acceptance remain tracked in the
+[delivery closure plan](docs/delivery_closure_plan.md) and
+[submission checklist](docs/competition.md).
+
 - **Web viewer (public preview):** <https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/>
   — static build of `main`, published automatically on the `gh-pages` branch by
   `.github/workflows/pages.yml` on every push to `main` that touches the viewer (each publish

@@ -1,5 +1,10 @@
 # Optional research hypotheses
 
+Delivery update: accepted [D-DEL-03](decisions/2026-11-14-delivery-freeze.md)
+pauses H-DAN-01, larger maps, extra agents/layers and varied scenes until after
+submission. Preserve completed studies and local drafts. The optional/time-
+permitting language below is historical and does not authorize pre-delivery work.
+
 These are proposed experiments, not implemented capabilities or acceptance
 results. They do not block the [probable mission](mission_checklist.md).
 
