@@ -38,6 +38,7 @@ packages are neither offered nor used by the viewer (see the Run selector below)
 | Sun and sky | Sun from Mars24 at the real present time and site; sky colours are a display rendering |
 | Stars | **Real catalogue**: Yale Bright Star Catalogue V ≤ 5.5 placed with the IAU 2009 Mars rotation model (`public/assets/sky/bright_stars.json`) |
 | Artificial light (default), night fill, helmet lights | **Display** lighting choices, not sunlight or suit specifications; *Real light* (`I`) shows the hour's real light |
+| Perseverance raw images (Atmos tab) | **Real NASA/JPL-Caltech images**, read from the public raw-images JSON feed **only when the person presses the button** (needs a network; nothing is stored or bundled). They show where the rover is now, not the replay's site; not terrain data, never read by the map or planner |
 | Drone camera window | The scene drawn again from the replayed drone pose; **not a camera feed**. Its Hazards tab reports steep cells and prior contradictions from the replay's **simulated** observations, not LiDAR |
 | Lite 3D and 2D map tiers | Same replay with reduced 3D settings, or drawn in Canvas 2D without WebGL |
 
@@ -227,6 +228,8 @@ latitude or longitude. The recovery package carries its recorded Jezero rasters.
 | `src/data/referenceSources.ts` | Status of the mandatory NASA reference resources |
 | `src/lib/scan.ts`, `droneHazards.ts`, `routeProgress.ts`, `routeSufficiency.ts`, `marsSky.ts`, `gpu.ts` | Terrain scan slope bands and bearings; drone hazard report from observed cells; route progress and sufficiency estimate; Mars sky and sun; WebGL tier probe |
 | `src/scanner/`, `src/hooks/useTerrainScanner.ts` | Terrain scan state machine, controller, shaders, indicators and optional sounds |
+| `src/lib/perseveranceRaw.ts`, `components/RawImagesPanel.tsx` | Opt-in reader and panel for the NASA Perseverance raw-images feed (links restricted to https mars.nasa.gov) |
+| `src/lib/siteKinds.ts`, `components/SiteIcon.tsx`, `SitesList.tsx` | One icon and colour per site kind, shared by the 3D markers, first-person compass, dial minimap, flat map and the Sites list |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
 | `src/components/` | 3D scene (`MissionScene`, `TerrainView`, `ContextTerrain`, `CutawayBlock`, `RouteOverlay`, `SiteMarkers`, `AgentLayer`), astronaut, vehicle and base models (wheels, steering joints, rotors, `Downwash`, `FootDust`), cameras (`CameraBar`, `FollowCamera`, `FirstPersonCamera`, `ViewRotator`), first-person HUD (`FirstPersonHud`, `PovRoute`), agent dial (`RadialHud`, `HudGauge`, `Minimap`), drone window (`DroneCam` with its Hazards tab `DroneMap`), `TerrainScanner`, sky (`SkyDome`), panels (`DetailsPanel`, `ManagementList`, `LayerPanel`, `GeologyPanel`, `AtmosPanel`, `EventInspector`), `Timeline`, `LiveClocks`, `Intro`, `FlatMap` and `SceneBoundary` fallbacks |
 | `scripts/` | Terrain crop, orthomosaic, context terrain, geology and atmosphere extraction, fixture generation, GLB branding strip, Blender base preparation |
@@ -244,7 +247,7 @@ Replay fixture layout (`public/replay/<run_id>/`, demo run `demo-sim-002`, `mode
 
 ## Acceptance tests
 
-Automated suite run on 2026-11-14 23:21 (`npm test`, working tree of `feat/ux` with uncommitted drone hazard changes): 38 files passed (38); 233 tests passed, 1 skipped (234). Build not run in this sync.
+Automated suite run on 2026-11-14 23:49 (`npm test`, working tree of `feat/ux` with uncommitted drone hazard changes): 40 files passed (40); 240 tests passed, 1 skipped (241). Build not run in this sync.
 
 | Test | Status |
 |---|---|
@@ -283,5 +286,5 @@ still frames; the rover over steep relief and the drone climbing over a wall wer
 Astronaut posture (vertical torso, level shoulders) and planted-foot slip are covered by tests on
 the real model and were checked by eye in the follow view, but only in the dev server on one machine. No browser automation tests. Of the candidate NASA layers in
 `../docs/data_sources.md`, the Mars Trek CTX orthomosaic and USGS SIM 3464 geology are
-shown; Perseverance raw images are not yet. The tactical map tab was removed (a minimap
+shown; Perseverance raw images load on request in the Atmos tab. The tactical map tab was removed (a minimap
 remains in the agent HUD); scanner not started.

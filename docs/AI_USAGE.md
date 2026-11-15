@@ -714,7 +714,10 @@ the first-person terrain scan (state machine, wave/indicator/footprint shaders,
 scan key and synthesised sounds; inspired by Death Stranding's Odradek scanner,
 no game assets), the drone window's Hazards tab (`web/src/lib/droneHazards.ts`,
 `DroneMap.tsx`: steep cells and contradictions of the orbital prior read from the
-replay's simulated observations, not LiDAR; it replaces the earlier survey map tab), the astronaut facing its walking direction,
+replay's simulated observations, not LiDAR; it replaces the earlier survey map tab), the astronaut facing its walking direction, the opt-in Perseverance raw-images panel
+(`perseveranceRaw.ts`, `RawImagesPanel.tsx`; the images are real NASA/JPL-Caltech files read
+from the public feed on request, not AI-generated and not stored) and the site icons
+(`siteKinds.ts`, `SiteIcon.tsx`, `SitesList.tsx`),
 their tests, and the workflow that publishes the public viewer to
 GitHub Pages. The scan only redraws the slope already computed from the orbital
 CTX DTM prior around the drone in display bands; it is not an observation, it
