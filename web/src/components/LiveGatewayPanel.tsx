@@ -2,12 +2,50 @@ import { useEffect, useState } from 'react';
 import { gatewayLive, useGatewayLive } from '../lib/gatewayLive';
 
 /**
- * Read-only panel of a running ROS gateway (`?gateway=<url>`): connection, provenance label from the gateway's
+ * Read-only panel of a running ROS gateway (`?gateway=<url>`), always shown: without that parameter it stays
+ * disconnected and never contacts a server. Connected, it shows the connection, provenance label from the gateway's
  * source_mode (a MOCK stack shows MOCK), run, mission state, agents and the newest events. Collapsed to one line by
  * default so it does not cover the map; the toggle shows the details. It never sends goals and is separate from the
  * replay on screen. Display only; not a validated live mission.
  */
-export function LiveGatewayPanel({ base }: { base: string }) {
+export function LiveGatewayPanel({ base }: { base: string | null }) {
+  return base ? <GatewayConnection base={base} /> : <NoGateway />;
+}
+
+/** URL a reader adds to watch a local stack (the gateway's default loopback port). */
+export const GATEWAY_EXAMPLE = '?gateway=http://127.0.0.1:8010';
+
+/**
+ * The same bar when the page was opened without `?gateway=`: always visible, disconnected, and it never tries to
+ * reach any server. The toggle explains how to connect a running stack.
+ */
+function NoGateway() {
+  const [open, setOpen] = useState(false);
+  return (
+    <section className={`live-gw live-gw--off${open ? ' live-gw--open' : ''}`} aria-label="Live ROS gateway" aria-live="polite">
+      <header className="live-gw__head">
+        <span className="live-gw__dot" aria-hidden />
+        <strong>ROS</strong>
+        <span className="chip-mode" title="No gateway is connected: the screen shows the recorded replay only.">NOT CONNECTED</span>
+        <span className="live-gw__summary mono">no live link</span>
+        <button type="button" className="live-gw__btn" aria-expanded={open} onClick={() => setOpen((v) => !v)} title={open ? 'Hide how to connect' : 'Show how to connect'}>
+          {open ? '▴' : '▾'}
+        </button>
+      </header>
+      {open && (
+        <div className="live-gw__body">
+          <p className="live-gw__line mono">disconnected · no gateway configured</p>
+          <p className="live-gw__note muted small">
+            To watch a running ROS stack read-only, start its gateway and open this page with <code>{GATEWAY_EXAMPLE}</code>. The
+            replay on screen is recorded data, not a live mission.
+          </p>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function GatewayConnection({ base }: { base: string }) {
   const s = useGatewayLive();
   const [now, setNow] = useState(() => Date.now());
   const [open, setOpen] = useState(false);

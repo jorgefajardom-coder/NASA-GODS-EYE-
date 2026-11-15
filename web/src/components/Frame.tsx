@@ -17,7 +17,26 @@ function terrainLabel(m: ReplayManifest): string {
 }
 
 /** Opens another saved run (full reload keeps every run's state separate). */
+/** Session flag set by the run selector: the next load of that run opens its scene directly (no intro, no zone menu). */
+const DIRECT_RUN_KEY = 'mge.directRun';
+
+/** True once, on the load that the run selector asked for; the flag is cleared when read. */
+export function consumeDirectRun(runId: string): boolean {
+  try {
+    const v = window.sessionStorage.getItem(DIRECT_RUN_KEY);
+    window.sessionStorage.removeItem(DIRECT_RUN_KEY);
+    return v === runId;
+  } catch {
+    return false;
+  }
+}
+
 function openRun(id: string) {
+  try {
+    window.sessionStorage.setItem(DIRECT_RUN_KEY, id);
+  } catch {
+    /* without storage the start menu shows again; the run still changes */
+  }
   const url = new URL(window.location.href);
   url.searchParams.set('run', id);
   window.location.assign(url.toString());

@@ -1922,6 +1922,21 @@
         "docs/wiki/audit/editorial-20261115/manifest.json"
       ],
       "scope": "A fixed after_seq resume floor and per-connection sent-sequence set preserve unique late events without duplicating backlog/queue overlap. Software checks only; public replay-fed MOCK inputs, no new mission execution, scientific observations or LIVE acceptance."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "live_bar_and_direct_run_switch",
+      "generation": "AI-assisted code and tests; no data or observations generated",
+      "paths": [
+        "web/src/components/LiveGatewayPanel.tsx",
+        "web/src/App.tsx",
+        "web/src/components/Frame.tsx",
+        "web/tests/liveGatewayPanel.test.ts",
+        "web/tests/runSelectorDirect.test.ts",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Keep the read-only ROS gateway bar always visible, disconnected without ?gateway= and never contacting a server then; open a run chosen in the run selector directly, skipping the intro and the zone menu once."
     }
   ],
   "generated_media": [

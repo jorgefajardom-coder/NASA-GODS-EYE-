@@ -60,7 +60,7 @@ import { Intro, introWanted } from './components/Intro';
 import { PORTRAITS } from './lib/portraits';
 import { rotateView, ROTATE_STEP_RAD } from './components/ViewRotator';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
-import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './components/Frame';
+import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, consumeDirectRun, type UiMode } from './components/Frame';
 
 /** Time each photo of a stop is "taken" on the tour (ms): the rover's camera turns to it and the photo lights up. */
 const SHOT_MS = 1500;
@@ -72,6 +72,8 @@ const EVALUATOR = params.get('evaluator') === '1';
 const GATEWAY = gatewayBaseFrom(params.get('gateway'));
 // The URL/selector identifies a package folder; its recorded run_id is kept intact.
 const RUN_ID = params.get('run') ?? DEFAULT_RUN_ENTRY;
+/** Chosen in the run selector: open this run's scene directly instead of the intro and the zone menu. */
+const DIRECT_RUN = consumeDirectRun(RUN_ID);
 /** Rendering tier, probed once: full 3D, lite 3D (software / slow GPU) or a 2D map without WebGL. */
 const RENDER_TIER = detectRenderTier();
 const RUN_DIR = `replay/${RUN_ID}`;
@@ -127,9 +129,9 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showLabels, setShowLabels] = useState(true);
   // Intro clip first (unless reduced motion or ?nointro=1); the terrain grows in once it ends.
   // On load the intro plays first, then the zone selector opens; arriving from it (travel) opens the scene directly.
-  const [startWithZones] = useState(() => !isRecordedRecoveryEntry(RUN_ID) && !arrivalPending(RUN_ID));
+  const [startWithZones] = useState(() => !isRecordedRecoveryEntry(RUN_ID) && !arrivalPending(RUN_ID) && !DIRECT_RUN);
   // Arriving from the zone selector skips the intro: the zone's map image fades straight into its terrain.
-  const [introDone, setIntroDone] = useState(() => isRecordedRecoveryEntry(RUN_ID) || !introWanted() || arrivalPending(RUN_ID));
+  const [introDone, setIntroDone] = useState(() => isRecordedRecoveryEntry(RUN_ID) || !introWanted() || arrivalPending(RUN_ID) || DIRECT_RUN);
   // Without an intro (reduced motion or ?nointro=1) the selector opens at once; otherwise when the intro ends.
   const [zonesOpen, setZonesOpen] = useState(() => startWithZones && introDone);
   // The terrain grows in and the panels enter only once the start menu is left, never behind it.
@@ -698,8 +700,9 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         </div>
 
         <aside className="right">
-          {/* The running ROS gateway, if any, as one thin line at the top of the status column. */}
-          {GATEWAY && <LiveGatewayPanel base={GATEWAY} />}
+          {/* The live ROS gateway link as one thin line at the top of the status column: always shown, disconnected
+              unless the page was opened with ?gateway=. */}
+          <LiveGatewayPanel base={GATEWAY} />
           <StatusBlock
             manifest={m}
             missionState={view.state?.mission_state ?? 'IDLE'}
