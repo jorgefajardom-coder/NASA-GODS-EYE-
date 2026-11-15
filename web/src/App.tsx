@@ -330,7 +330,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       )}
       {!introDone && <Intro onDone={() => setIntroDone(true)} />}
 
-      <div className="overlay">
+      {/* The interface waits behind the intro, then enters (panels slide in, the dial spins in). */}
+      <div className={`overlay ${introDone ? 'overlay--enter' : 'overlay--waiting'}`}>
         <div className="left">
           <TitleBlock manifest={m} runId={RUN_ID} />
           <ModeTabs mode={mode} onMode={setMode} />

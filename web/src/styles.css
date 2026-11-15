@@ -2274,3 +2274,87 @@ input[type='checkbox'] {
   height: 100%;
 }
 
+/* ---------------------------------------------------------------- startup entrance
+   After the intro (or at once without it) the interface comes in: the left column slides in from
+   the left, the right column from the right, the timeline rises, and the agent dial spins into
+   place while its six options settle one by one. Display only; skipped with reduced motion. */
+.overlay--waiting {
+  visibility: hidden;
+}
+.overlay--enter .left {
+  animation: enter-from-left 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s backwards;
+}
+.overlay--enter .right {
+  animation: enter-from-right 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s backwards;
+}
+.overlay--enter .timeline,
+.overlay--enter .disclaimer {
+  animation: enter-from-below 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.45s backwards;
+}
+.overlay--enter .rhud__ring {
+  animation: rhud-spin-in 1.6s cubic-bezier(0.16, 0.84, 0.24, 1) 0.5s backwards;
+}
+.overlay--enter .rhud__btn {
+  animation: rhud-btn-in 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.3) backwards;
+  animation-delay: calc(0.9s + var(--i, 0) * 0.09s);
+}
+.overlay--enter .rhud__map {
+  animation: rhud-map-in 0.8s ease-out 1.2s backwards;
+}
+.rhud__ring {
+  position: absolute;
+  inset: 0;
+}
+.rhud__rim {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  animation: rhud-rim-turn 90s linear infinite;
+}
+.rhud__rim-dash {
+  fill: none;
+  stroke: rgba(101, 203, 232, 0.28);
+  stroke-width: 1;
+  stroke-dasharray: 2 7;
+}
+@keyframes enter-from-left {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes enter-from-right {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes enter-from-below {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rhud-spin-in {
+  from { opacity: 0; transform: rotate(-270deg) scale(0.55); }
+  60% { opacity: 1; }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rhud-btn-in {
+  from { transform: scale(0.2); }
+  to { transform: none; }
+}
+@keyframes rhud-map-in {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+@keyframes rhud-rim-turn {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .overlay--enter .left,
+  .overlay--enter .right,
+  .overlay--enter .timeline,
+  .overlay--enter .disclaimer,
+  .overlay--enter .rhud__ring,
+  .overlay--enter .rhud__btn,
+  .overlay--enter .rhud__map,
+  .rhud__rim {
+    animation: none;
+  }
+}
