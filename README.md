@@ -28,7 +28,9 @@ map.
    with the resources they have left.
 4. Record every decision and replay it in a web browser, with no server.
 
-**See it.** [Explore the six illustrative zones](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/),
+**See it.** [Watch the same-run software recovery (21 s)](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/media/height-recovery-002.mp4)
+([English subtitles](web/public/media/height-recovery-002.en.srt)).
+[Explore the six illustrative zones](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/),
 or [open the corrected recorded recovery](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/?run=recorded-recovery-002).
 The latter is a separately identified ROS software recording: one kinematic MOCK
 astronaut stops, replans and returns after a SIMULATED terrain contradiction;

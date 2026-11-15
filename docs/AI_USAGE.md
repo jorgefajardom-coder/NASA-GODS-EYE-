@@ -921,3 +921,11 @@ OpenAI Codex assisted the initial-condition resolver, executor XYZ guards, immut
 ## Height-corrected software recovery recording — 15 November 2026
 
 OpenAI Codex assisted recording workflow, new URL-entry integration, tests and audit receipts for `height-recovery-20261115-01` / `recorded-recovery-002`. The exact MOCK recording includes AI-assisted code and a deterministic SIMULATED observation, not new observational NASA data. Its scene initialization parks the drone; the human alone executes stop/replan/return. File scope and evidence are registered as `height_recovery_recording_and_presentation`; source/pose identities and historical package bytes are preserved. Capture/edited media retains visible labels and metadata.
+
+## Final delivery candidate reconciliation — 15 November 2026
+
+OpenAI Codex assisted local integration of PR37/PR38 and the height/replay cut, structured conflict resolution preserving both mandatory disclosure histories, a trailing-blank-line correction and delivery handoff documentation. Registered as `final_delivery_candidate_reconciliation`. Actual checks, deferred work and human gates are distinguished in `final_delivery_candidate.md`; no automatic main merge, physical validation or external submission was performed.
+
+## Same-run browser video — 15 November 2026
+
+OpenAI Codex assisted Chrome capture/edit scripts, English overlays/subtitles, metadata and technical review for `web/public/media/height-recovery-002.mp4`. The actual viewer replays the exact MOCK software run; the edit does not generate NASA observations or mission telemetry. Visible `AI-generated edit | SIMULATED | NOT LIVE` and existing portrait marks remain readable. Capture metadata locks viewerf7938f5, execution742eed5 and all four recorder files. No image-generation model or NASA branding was used to create the capture/edit. Third-party source terms remain; raw frames/browser profiles/caches are excluded. Final owner merge, organizer endorsement and submission approval remain pending.

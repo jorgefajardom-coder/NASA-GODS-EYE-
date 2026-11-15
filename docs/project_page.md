@@ -32,8 +32,11 @@ validation remain open.
 
 ## Link to Project Demo
 
-`[30-second video or 7-slide deck: public link, no login. English, or English
-subtitles. Script below.]`
+[Same-run software recovery, 21 seconds](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/media/height-recovery-002.mp4)
+([English subtitles](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/media/height-recovery-002.en.srt)).
+Recorded MOCK human stop/replan/return; parked rover/drone, final READY. This is
+not validated LIVE or a coordinated three-agent mission. Candidate links become
+public after the reviewed merge and Pages deployment; verify before submitting.
 
 ## Link to Final Project
 

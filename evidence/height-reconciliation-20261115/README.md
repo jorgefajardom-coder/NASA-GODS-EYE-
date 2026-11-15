@@ -11,3 +11,9 @@ Validation: native Python1200 passed/23 platform skips; web321 passed/one existi
 Browser/video evidence is recorded separately against the exact local production build and package. All generated capture/edited media must retain a visible AI-generated/SIMULATED/NOT LIVE label, metadata and attribution. No analytical pilot's private publication flag is overridden by this software recording.
 
 Owner integration/scientific review remains pending. Jesus hands the exact accepted package to the organizer at20:00 America/Bogota15 November; explicit endorsement of that revision is still required before final submission, due23:59. No external notification or submission was performed.
+
+## Combined-candidate browser capture
+
+The final viewer capture uses combined source `f7938f503e8adabcf7cc677e8913cf251096d632`; execution provenance remains742eed5. [Video](../../web/public/media/height-recovery-002.mp4), [English subtitles](../../web/public/media/height-recovery-002.en.srt) and [metadata](../../web/public/media/height-recovery-002.metadata.json) refer to the same four recorder files. Duration20.916667s; video SHA256`3486cbba345999b10898f74cc70fb5a17c8b4338c861882346667e4498bf88f3`. Global and portrait AI marks remain visible.
+
+Technical review passed:111 web-source hashes and four package hashes verified, final drone raw/drawn/ground height agrees (AGL0), five cameras, six zone cards, Gale and paused morph checked. No product errors or external requests in the tested recording. This is headless Chrome on one machine; final deployed review from two machines remains a human gate. Browser proof frames and JSON are under `browser/`; raw frames, profiles and caches were excluded.
