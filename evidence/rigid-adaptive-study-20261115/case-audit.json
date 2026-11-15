@@ -1,0 +1,1019 @@
+{
+  "classification": "INDEPENDENT_ILLUSTRATIVE_CASE_AUDIT_NOT_FREQUENCY_SAMPLE",
+  "selection": "Purposive examples chosen to explain unchanged decisions, an observed corridor obstruction, accepted/declined additional service, and an adverse bounded-search result. Their occurrence rates are not estimated from this selected set.",
+  "n_themes": 4,
+  "n_traceable_conditions": 5,
+  "source_sha": "3c82d72f972109113216039bff5cfd491df5f1ba",
+  "cases": [
+    {
+      "label": "unchanged-route",
+      "catalogue": "results/paired-blocks.jsonl",
+      "catalogue_sha256_at_capture": "307f1466b19948b7455bb76595f9fadf3ea0ad194a68b9e3582895cd8ae2429a",
+      "source_seq": 52,
+      "source_payload_sha256": "30b7d588bc28ed3ba2c54c384f28ffebc71cf7cad578fdaee7dc46d3b26dc89e",
+      "block_id": "bunsen-256-unchanged-1-broad",
+      "condition_id": "rover_1:FAST",
+      "design": "broad",
+      "family": "unchanged",
+      "world_spec": {
+        "amplitude_m": 0.2,
+        "base": [
+          54,
+          2
+        ],
+        "correlation_m": 16.0,
+        "directed": false,
+        "family": "unchanged",
+        "goal": [
+          43,
+          8
+        ],
+        "obstacle_cells": 2,
+        "target": null,
+        "world_seed": [
+          20261115,
+          7241903,
+          2,
+          256,
+          0,
+          1,
+          1
+        ]
+      },
+      "world_metadata": {
+        "full_world_exposed": false,
+        "hypothetical_obstacle_cells": 0,
+        "max_abs_relief_m": 0.0,
+        "max_block_mean_error_m": 0.0,
+        "native_resolution_improved": false,
+        "source_kind": "SIMULATED",
+        "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+      },
+      "base": [
+        -118.0,
+        90.0,
+        -2400.520751953125
+      ],
+      "goal": [
+        -94.0,
+        46.0,
+        -2389.118408203125
+      ],
+      "gross": {
+        "energy_wh": 800.0,
+        "oxygen_l": null,
+        "time_s": 23400.0
+      },
+      "reserves": {
+        "energy_wh": 160.0,
+        "oxygen_l": null,
+        "time_s": 4680.0
+      },
+      "checkpoint_xyz": [
+        -118.0,
+        78.0,
+        -2397.846435546875
+      ],
+      "checkpoint_remaining": {
+        "energy_wh": 697.6647252745446,
+        "oxygen_l": null,
+        "time_s": 19554.410750620304
+      },
+      "initial_status": "FEASIBLE",
+      "common_observation_id": "bunsen-256-unchanged-1-broad:rover_1:FAST:paid",
+      "common_observed_cells": 28,
+      "observed_obstacle_cells": 0,
+      "paid_observation_duration_s": 120,
+      "opportunity": {
+        "activity": "inspect",
+        "appearance_phase": "AFTER_SHARED_REACHED_OBSERVATION",
+        "available": false,
+        "capable_kinds": [
+          "rover"
+        ],
+        "duration_s": 600.0,
+        "event_id": "bunsen-256-unchanged-1-broad:public-opportunity",
+        "event_semantics": "EXOGENOUS_SIMULATED_PUBLIC_MISSION_NOTICE_NOT_SENSOR_DISCOVERY",
+        "inspection_evidence": "primary_B_service_required_before_optional",
+        "position": [
+          -94.0,
+          46.0,
+          -2389.118408203125
+        ],
+        "prerequisite": "PRIMARY_B_COMPLETED",
+        "source_kind": "SIMULATED_PUBLIC_TYPED_EVENT",
+        "task_scope": "additional_inspection_not_sampling_workflow"
+      },
+      "outcomes": {
+        "ADAPTIVE": {
+          "primary_completed": true,
+          "returned": true,
+          "optional_completed": 0,
+          "unknown": false,
+          "optional_unknown": false,
+          "status": "PRIMARY_COMPLETED",
+          "decision_changed": false,
+          "geometry_changed": false,
+          "elapsed_s": 7167.47466218164,
+          "energy_wh": 247.5773181415786,
+          "oxygen_l": null,
+          "remaining": {
+            "energy_wh": 552.4226818584216,
+            "oxygen_l": null,
+            "time_s": 16232.52533781837
+          },
+          "reserve_margins": {
+            "energy_wh": 392.4226818584216,
+            "oxygen_l": null,
+            "time_s": 11552.52533781837
+          },
+          "pose": [
+            -118.0,
+            90.0,
+            -2400.520751953125
+          ],
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "CURRENT_MAP_AND_RESOURCES"
+            }
+          ],
+          "searches": [
+            {
+              "status": "FEASIBLE",
+              "reason_code": "FEASIBLE_UNDER_MODEL",
+              "elapsed_s": 0.031000000002677552,
+              "expanded_labels": 158,
+              "wall_s": 0.03091800000402145,
+              "time_s": 3321.885412801942,
+              "energy_wh": 145.24204341612318,
+              "oxygen_l": null
+            }
+          ],
+          "interval_count": 25
+        },
+        "RIGID": {
+          "primary_completed": true,
+          "returned": true,
+          "optional_completed": 0,
+          "unknown": false,
+          "optional_unknown": false,
+          "status": "PRIMARY_COMPLETED",
+          "decision_changed": false,
+          "geometry_changed": false,
+          "elapsed_s": 7167.47466218164,
+          "energy_wh": 247.5773181415786,
+          "oxygen_l": null,
+          "remaining": {
+            "energy_wh": 552.4226818584216,
+            "oxygen_l": null,
+            "time_s": 16232.52533781837
+          },
+          "reserve_margins": {
+            "energy_wh": 392.4226818584216,
+            "oxygen_l": null,
+            "time_s": 11552.52533781837
+          },
+          "pose": [
+            -118.0,
+            90.0,
+            -2400.520751953125
+          ],
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "FIXED_INITIAL_ITINERARY"
+            }
+          ],
+          "searches": [],
+          "interval_count": 25
+        }
+      },
+      "catalogue_closed": true
+    },
+    {
+      "label": "observed-obstruction-detour",
+      "catalogue": "directed-results/paired-blocks.jsonl",
+      "catalogue_sha256_at_capture": "c7014c75b4d38fdc493b10afc3cff59ad905431b9aa7ebd73ebafb4b59eefb79",
+      "source_seq": 4,
+      "source_payload_sha256": "f69d0f33cc732227a7c682bfc71014bb5119d91b7dd68f9425f3231dda89c560",
+      "block_id": "bright-256-detour-0-directed",
+      "condition_id": "human_1:FAST",
+      "design": "directed",
+      "family": "detour",
+      "world_spec": {
+        "amplitude_m": 0.1,
+        "base": [
+          17,
+          28
+        ],
+        "correlation_m": 8.0,
+        "directed": true,
+        "family": "detour",
+        "goal": [
+          3,
+          22
+        ],
+        "obstacle_cells": 1,
+        "target": [
+          12,
+          24
+        ],
+        "world_seed": [
+          20261115,
+          7241903,
+          0,
+          256,
+          1,
+          0,
+          1
+        ]
+      },
+      "world_metadata": {
+        "full_world_exposed": false,
+        "hypothetical_obstacle_cells": 1,
+        "max_abs_relief_m": 0.0,
+        "max_block_mean_error_m": 0.0,
+        "native_resolution_improved": false,
+        "source_kind": "SIMULATED",
+        "world_sha256": "133d3d0fa877e7f5f637fe4ae264f0ffd1afae1539aa1d029730548aab62d282"
+      },
+      "base": [
+        -14.0,
+        -58.0,
+        -2365.871826171875
+      ],
+      "goal": [
+        -38.0,
+        -114.0,
+        -2368.574951171875
+      ],
+      "gross": {
+        "energy_wh": 320.0,
+        "oxygen_l": 64.0,
+        "time_s": 2880.0
+      },
+      "reserves": {
+        "energy_wh": 32.0,
+        "oxygen_l": 6.4,
+        "time_s": 288.0
+      },
+      "checkpoint_xyz": [
+        -26.0,
+        -70.0,
+        -2366.738037109375
+      ],
+      "checkpoint_remaining": {
+        "energy_wh": 215.93981694026883,
+        "oxygen_l": 42.75062767027737,
+        "time_s": 1837.5555206726544
+      },
+      "initial_status": "FEASIBLE",
+      "common_observation_id": "bright-256-detour-0-directed:human_1:FAST:paid",
+      "common_observed_cells": 29,
+      "observed_obstacle_cells": 1,
+      "paid_observation_duration_s": 120,
+      "opportunity": {
+        "activity": "inspect",
+        "appearance_phase": "AFTER_SHARED_REACHED_OBSERVATION",
+        "available": true,
+        "capable_kinds": [
+          "human"
+        ],
+        "duration_s": 600.0,
+        "event_id": "bright-256-detour-0-directed:public-opportunity",
+        "event_semantics": "EXOGENOUS_SIMULATED_PUBLIC_MISSION_NOTICE_NOT_SENSOR_DISCOVERY",
+        "inspection_evidence": "primary_B_service_required_before_optional",
+        "position": [
+          -38.0,
+          -114.0,
+          -2368.574951171875
+        ],
+        "prerequisite": "PRIMARY_B_COMPLETED",
+        "source_kind": "SIMULATED_PUBLIC_TYPED_EVENT",
+        "task_scope": "additional_inspection_not_sampling_workflow"
+      },
+      "outcomes": {
+        "ADAPTIVE": {
+          "primary_completed": true,
+          "returned": true,
+          "optional_completed": 1,
+          "unknown": false,
+          "optional_unknown": false,
+          "status": "PRIMARY_COMPLETED",
+          "decision_changed": true,
+          "geometry_changed": true,
+          "elapsed_s": 1914.0524381908272,
+          "energy_wh": 195.50329402633568,
+          "oxygen_l": 39.92230423108364,
+          "remaining": {
+            "energy_wh": 124.49670597366433,
+            "oxygen_l": 24.077695768916374,
+            "time_s": 965.9475618091739
+          },
+          "reserve_margins": {
+            "energy_wh": 92.49670597366433,
+            "oxygen_l": 17.677695768916372,
+            "time_s": 677.9475618091739
+          },
+          "pose": [
+            -14.0,
+            -58.0,
+            -2365.871826171875
+          ],
+          "decisions": [
+            {
+              "action": "DETOUR",
+              "reason": "CURRENT_MAP_AND_RESOURCES"
+            },
+            {
+              "action": "ACCEPT_OPTIONAL",
+              "event_id": "bright-256-detour-0-directed:public-opportunity",
+              "reason": "CAPABILITY_PRECEDENCE_DIRECTED_RETURN_AND_RESERVES_FIT"
+            }
+          ],
+          "searches": [
+            {
+              "status": "FEASIBLE",
+              "reason_code": "FEASIBLE_UNDER_MODEL",
+              "elapsed_s": 0.09399999999732245,
+              "expanded_labels": 353,
+              "wall_s": 0.08753799999976764,
+              "time_s": 271.6079588634813,
+              "energy_wh": 31.763110966604486,
+              "oxygen_l": 6.486113626114337
+            },
+            {
+              "status": "FEASIBLE",
+              "reason_code": "FEASIBLE_UNDER_MODEL",
+              "elapsed_s": 0.046999999998661224,
+              "expanded_labels": 181,
+              "wall_s": 0.05425139999715611,
+              "time_s": 685.6202754073612,
+              "energy_wh": 71.85070669448747,
+              "oxygen_l": 14.672109675498804
+            }
+          ],
+          "interval_count": 33
+        },
+        "RIGID": {
+          "primary_completed": false,
+          "returned": true,
+          "optional_completed": 0,
+          "unknown": false,
+          "optional_unknown": false,
+          "status": "HALT_BEFORE_PRIVATE_INADMISSIBLE_SEGMENT",
+          "decision_changed": true,
+          "geometry_changed": false,
+          "elapsed_s": 1064.8889586546914,
+          "energy_wh": 107.38100841438425,
+          "oxygen_l": 21.92749389676332,
+          "remaining": {
+            "energy_wh": 212.6189915856158,
+            "oxygen_l": 42.07250610323668,
+            "time_s": 1815.1110413453089
+          },
+          "reserve_margins": {
+            "energy_wh": 180.6189915856158,
+            "oxygen_l": 35.67250610323668,
+            "time_s": 1527.1110413453089
+          },
+          "pose": [
+            -14.0,
+            -58.0,
+            -2365.871826171875
+          ],
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "FIXED_INITIAL_ITINERARY"
+            },
+            {
+              "action": "HOLD",
+              "guard": "analytical_private_world_safety_guard_not_sensor",
+              "reason": "HALT_BEFORE_PRIVATE_INADMISSIBLE_SEGMENT"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "FIXED_TASK_SET"
+            }
+          ],
+          "searches": [],
+          "interval_count": 8
+        }
+      },
+      "catalogue_closed": true
+    },
+    {
+      "label": "optional-inspection-accepted",
+      "catalogue": "results/paired-blocks.jsonl",
+      "catalogue_sha256_at_capture": "307f1466b19948b7455bb76595f9fadf3ea0ad194a68b9e3582895cd8ae2429a",
+      "source_seq": 1,
+      "source_payload_sha256": "f6efcdc65752d86dbbbf41d5fe75017a3a707c4ecd4b97d82623092b0fb53742",
+      "block_id": "hawksbill-256-blocked-0-broad",
+      "condition_id": "rover_1:FAST",
+      "design": "broad",
+      "family": "blocked",
+      "world_spec": {
+        "amplitude_m": 0.1,
+        "base": [
+          29,
+          14
+        ],
+        "correlation_m": 8.0,
+        "directed": false,
+        "family": "blocked",
+        "goal": [
+          4,
+          19
+        ],
+        "obstacle_cells": 1,
+        "target": null,
+        "world_seed": [
+          20261115,
+          7241903,
+          1,
+          256,
+          2,
+          0,
+          1
+        ]
+      },
+      "world_metadata": {
+        "full_world_exposed": false,
+        "hypothetical_obstacle_cells": 1,
+        "max_abs_relief_m": 0.0,
+        "max_block_mean_error_m": 0.0,
+        "native_resolution_improved": false,
+        "source_kind": "SIMULATED",
+        "world_sha256": "839f3b188d5c62e3cf896c5347b7b8cfaa97d3b1e45a59585b54c2aa1cc41db9"
+      },
+      "base": [
+        -70.0,
+        -10.0,
+        -2523.967529296875
+      ],
+      "goal": [
+        -50.0,
+        -110.0,
+        -2539.883056640625
+      ],
+      "gross": {
+        "energy_wh": 1440.0,
+        "oxygen_l": null,
+        "time_s": 41760.0
+      },
+      "reserves": {
+        "energy_wh": 144.0,
+        "oxygen_l": null,
+        "time_s": 4176.0
+      },
+      "checkpoint_xyz": [
+        -50.0,
+        -34.0,
+        -2530.025390625
+      ],
+      "checkpoint_remaining": {
+        "energy_wh": 1280.5201215280013,
+        "oxygen_l": null,
+        "time_s": 34991.51784674692
+      },
+      "initial_status": "FEASIBLE",
+      "common_observation_id": "hawksbill-256-blocked-0-broad:rover_1:FAST:paid",
+      "common_observed_cells": 29,
+      "observed_obstacle_cells": 0,
+      "paid_observation_duration_s": 120,
+      "opportunity": {
+        "activity": "inspect",
+        "appearance_phase": "AFTER_SHARED_REACHED_OBSERVATION",
+        "available": true,
+        "capable_kinds": [
+          "rover"
+        ],
+        "duration_s": 300.0,
+        "event_id": "hawksbill-256-blocked-0-broad:public-opportunity",
+        "event_semantics": "EXOGENOUS_SIMULATED_PUBLIC_MISSION_NOTICE_NOT_SENSOR_DISCOVERY",
+        "inspection_evidence": "primary_B_service_required_before_optional",
+        "position": [
+          -50.0,
+          -110.0,
+          -2539.883056640625
+        ],
+        "prerequisite": "PRIMARY_B_COMPLETED",
+        "source_kind": "SIMULATED_PUBLIC_TYPED_EVENT",
+        "task_scope": "additional_inspection_not_sampling_workflow"
+      },
+      "outcomes": {
+        "ADAPTIVE": {
+          "primary_completed": true,
+          "returned": true,
+          "optional_completed": 1,
+          "unknown": false,
+          "optional_unknown": false,
+          "status": "PRIMARY_COMPLETED",
+          "decision_changed": true,
+          "geometry_changed": false,
+          "elapsed_s": 12545.076112723269,
+          "energy_wh": 408.13453627982096,
+          "oxygen_l": null,
+          "remaining": {
+            "energy_wh": 1031.865463720179,
+            "oxygen_l": null,
+            "time_s": 29214.92388727674
+          },
+          "reserve_margins": {
+            "energy_wh": 887.8654637201789,
+            "oxygen_l": null,
+            "time_s": 25038.92388727674
+          },
+          "pose": [
+            -70.0,
+            -10.0,
+            -2523.967529296875
+          ],
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "CURRENT_MAP_AND_RESOURCES"
+            },
+            {
+              "action": "ACCEPT_OPTIONAL",
+              "event_id": "hawksbill-256-blocked-0-broad:public-opportunity",
+              "reason": "CAPABILITY_PRECEDENCE_DIRECTED_RETURN_AND_RESERVES_FIT"
+            }
+          ],
+          "searches": [
+            {
+              "status": "FEASIBLE",
+              "reason_code": "FEASIBLE_UNDER_MODEL",
+              "elapsed_s": 0.125,
+              "expanded_labels": 389,
+              "wall_s": 0.12579240000195568,
+              "time_s": 5476.593959470188,
+              "energy_wh": 231.9879911411557,
+              "oxygen_l": null
+            },
+            {
+              "status": "FEASIBLE",
+              "reason_code": "FEASIBLE_UNDER_MODEL",
+              "elapsed_s": 0.06199999999807915,
+              "expanded_labels": 198,
+              "wall_s": 0.06366859999980079,
+              "time_s": 3344.521735708809,
+              "energy_wh": 172.7637627033396,
+              "oxygen_l": null
+            }
+          ],
+          "interval_count": 54
+        },
+        "RIGID": {
+          "primary_completed": true,
+          "returned": true,
+          "optional_completed": 0,
+          "unknown": false,
+          "optional_unknown": false,
+          "status": "PRIMARY_COMPLETED",
+          "decision_changed": false,
+          "geometry_changed": false,
+          "elapsed_s": 12245.076112723269,
+          "energy_wh": 391.4678696131543,
+          "oxygen_l": null,
+          "remaining": {
+            "energy_wh": 1048.5321303868457,
+            "oxygen_l": null,
+            "time_s": 29514.92388727674
+          },
+          "reserve_margins": {
+            "energy_wh": 904.5321303868457,
+            "oxygen_l": null,
+            "time_s": 25338.92388727674
+          },
+          "pose": [
+            -70.0,
+            -10.0,
+            -2523.967529296875
+          ],
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "FIXED_INITIAL_ITINERARY"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "FIXED_TASK_SET"
+            }
+          ],
+          "searches": [],
+          "interval_count": 53
+        }
+      },
+      "catalogue_closed": true
+    },
+    {
+      "label": "optional-inspection-declined-height-context",
+      "catalogue": "results/paired-blocks.jsonl",
+      "catalogue_sha256_at_capture": "307f1466b19948b7455bb76595f9fadf3ea0ad194a68b9e3582895cd8ae2429a",
+      "source_seq": 9,
+      "source_payload_sha256": "cb64f3474203100fda485d61f65346dcaeff85384783278192f8ac494d5aaa10",
+      "block_id": "bunsen-256-relief-0-broad",
+      "condition_id": "rover_1:FAST",
+      "design": "broad",
+      "family": "relief",
+      "world_spec": {
+        "amplitude_m": 0.1,
+        "base": [
+          42,
+          19
+        ],
+        "correlation_m": 8.0,
+        "directed": false,
+        "family": "relief",
+        "goal": [
+          45,
+          4
+        ],
+        "obstacle_cells": 1,
+        "target": null,
+        "world_seed": [
+          20261115,
+          7241903,
+          2,
+          256,
+          3,
+          0,
+          1
+        ]
+      },
+      "world_metadata": {
+        "full_world_exposed": false,
+        "hypothetical_obstacle_cells": 0,
+        "max_abs_relief_m": 0.10009765625,
+        "max_block_mean_error_m": 4.8828125e-05,
+        "native_resolution_improved": false,
+        "source_kind": "SIMULATED",
+        "world_sha256": "1d046155f7aa129f8809f215e60a8e3381e5d4717e74cb9dcc1b8dca4b53ec00"
+      },
+      "base": [
+        -50.0,
+        42.0,
+        -2388.897705078125
+      ],
+      "goal": [
+        -110.0,
+        54.0,
+        -2391.48583984375
+      ],
+      "gross": {
+        "energy_wh": 640.0,
+        "oxygen_l": null,
+        "time_s": 18720.0
+      },
+      "reserves": {
+        "energy_wh": 64.0,
+        "oxygen_l": null,
+        "time_s": 1872.0
+      },
+      "checkpoint_xyz": [
+        -66.0,
+        54.0,
+        -2391.013427734375
+      ],
+      "checkpoint_remaining": {
+        "energy_wh": 541.2139455574245,
+        "oxygen_l": null,
+        "time_s": 14629.747551680714
+      },
+      "initial_status": "FEASIBLE",
+      "common_observation_id": "bunsen-256-relief-0-broad:rover_1:FAST:paid",
+      "common_observed_cells": 29,
+      "observed_obstacle_cells": 0,
+      "paid_observation_duration_s": 120,
+      "opportunity": {
+        "activity": "inspect",
+        "appearance_phase": "AFTER_SHARED_REACHED_OBSERVATION",
+        "available": true,
+        "capable_kinds": [
+          "rover"
+        ],
+        "duration_s": 300.0,
+        "event_id": "bunsen-256-relief-0-broad:public-opportunity",
+        "event_semantics": "EXOGENOUS_SIMULATED_PUBLIC_MISSION_NOTICE_NOT_SENSOR_DISCOVERY",
+        "inspection_evidence": "primary_B_service_required_before_optional",
+        "position": [
+          -110.0,
+          54.0,
+          -2391.48583984375
+        ],
+        "prerequisite": "PRIMARY_B_COMPLETED",
+        "source_kind": "SIMULATED_PUBLIC_TYPED_EVENT",
+        "task_scope": "additional_inspection_not_sampling_workflow"
+      },
+      "outcomes": {
+        "ADAPTIVE": {
+          "primary_completed": true,
+          "returned": true,
+          "optional_completed": 0,
+          "unknown": false,
+          "optional_unknown": false,
+          "status": "PRIMARY_COMPLETED",
+          "decision_changed": true,
+          "geometry_changed": false,
+          "elapsed_s": 7421.348530303933,
+          "energy_wh": 225.01575575488565,
+          "oxygen_l": null,
+          "remaining": {
+            "energy_wh": 414.9842442451142,
+            "oxygen_l": null,
+            "time_s": 11298.651469696064
+          },
+          "reserve_margins": {
+            "energy_wh": 350.9842442451142,
+            "oxygen_l": null,
+            "time_s": 9426.651469696064
+          },
+          "pose": [
+            -50.0,
+            42.0,
+            -2388.897705078125
+          ],
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "CURRENT_MAP_AND_RESOURCES"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "INVALID_START_Z",
+              "status": "ERROR"
+            }
+          ],
+          "searches": [
+            {
+              "status": "FEASIBLE",
+              "reason_code": "FEASIBLE_UNDER_MODEL",
+              "elapsed_s": 0.031000000002677552,
+              "expanded_labels": 105,
+              "wall_s": 0.0238995999970939,
+              "time_s": 3331.0085963353777,
+              "energy_wh": 126.22727115538595,
+              "oxygen_l": null
+            },
+            {
+              "status": "ERROR",
+              "reason_code": "INVALID_START_Z",
+              "elapsed_s": 0.0,
+              "expanded_labels": 0,
+              "wall_s": 0.00017300000035902485,
+              "time_s": null,
+              "energy_wh": null,
+              "oxygen_l": null
+            }
+          ],
+          "interval_count": 33
+        },
+        "RIGID": {
+          "primary_completed": true,
+          "returned": true,
+          "optional_completed": 0,
+          "unknown": false,
+          "optional_unknown": false,
+          "status": "PRIMARY_COMPLETED",
+          "decision_changed": false,
+          "geometry_changed": false,
+          "elapsed_s": 7421.348530303933,
+          "energy_wh": 225.01575575488565,
+          "oxygen_l": null,
+          "remaining": {
+            "energy_wh": 414.9842442451142,
+            "oxygen_l": null,
+            "time_s": 11298.651469696064
+          },
+          "reserve_margins": {
+            "energy_wh": 350.9842442451142,
+            "oxygen_l": null,
+            "time_s": 9426.651469696064
+          },
+          "pose": [
+            -50.0,
+            42.0,
+            -2388.897705078125
+          ],
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "FIXED_INITIAL_ITINERARY"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "FIXED_TASK_SET"
+            }
+          ],
+          "searches": [],
+          "interval_count": 33
+        }
+      },
+      "catalogue_closed": true
+    },
+    {
+      "label": "safe-search-limit-adverse",
+      "catalogue": "results/paired-blocks.jsonl",
+      "catalogue_sha256_at_capture": "307f1466b19948b7455bb76595f9fadf3ea0ad194a68b9e3582895cd8ae2429a",
+      "source_seq": 15,
+      "source_payload_sha256": "18d8c444a4f178ef316d9beea0993dbfbe9307d104d11f4333fc321fdade88cf",
+      "block_id": "bright-512-blocked-0-broad",
+      "condition_id": "human_1:SAFE",
+      "design": "broad",
+      "family": "blocked",
+      "world_spec": {
+        "amplitude_m": 0.1,
+        "base": [
+          48,
+          37
+        ],
+        "correlation_m": 8.0,
+        "directed": false,
+        "family": "blocked",
+        "goal": [
+          36,
+          63
+        ],
+        "obstacle_cells": 1,
+        "target": null,
+        "world_seed": [
+          20261115,
+          7241903,
+          0,
+          512,
+          2,
+          0,
+          1
+        ]
+      },
+      "world_metadata": {
+        "full_world_exposed": false,
+        "hypothetical_obstacle_cells": 1,
+        "max_abs_relief_m": 0.0,
+        "max_block_mean_error_m": 0.0,
+        "native_resolution_improved": false,
+        "source_kind": "SIMULATED",
+        "world_sha256": "c08b537300ff4c5616b2f6661070ff6e40dc5b2514bcbe4bc19583f551e304b6"
+      },
+      "base": [
+        -106.0,
+        -62.0,
+        -2366.50048828125
+      ],
+      "goal": [
+        -2.0,
+        -110.0,
+        -2368.80126953125
+      ],
+      "gross": {
+        "energy_wh": 320.0,
+        "oxygen_l": 64.0,
+        "time_s": 2880.0
+      },
+      "reserves": {
+        "energy_wh": 32.0,
+        "oxygen_l": 6.4,
+        "time_s": 288.0
+      },
+      "checkpoint_xyz": [
+        -82.0,
+        -86.0,
+        -2367.338134765625
+      ],
+      "checkpoint_remaining": {
+        "energy_wh": 213.58480896798383,
+        "oxygen_l": 42.2697286388599,
+        "time_s": 1817.2585881846821
+      },
+      "initial_status": "FEASIBLE",
+      "common_observation_id": "bright-512-blocked-0-broad:human_1:SAFE:paid",
+      "common_observed_cells": 29,
+      "observed_obstacle_cells": 0,
+      "paid_observation_duration_s": 120,
+      "opportunity": {
+        "activity": "inspect",
+        "appearance_phase": "AFTER_SHARED_REACHED_OBSERVATION",
+        "available": true,
+        "capable_kinds": [
+          "human"
+        ],
+        "duration_s": 600.0,
+        "event_id": "bright-512-blocked-0-broad:public-opportunity",
+        "event_semantics": "EXOGENOUS_SIMULATED_PUBLIC_MISSION_NOTICE_NOT_SENSOR_DISCOVERY",
+        "inspection_evidence": "primary_B_service_required_before_optional",
+        "position": [
+          -2.0,
+          -110.0,
+          -2368.80126953125
+        ],
+        "prerequisite": "PRIMARY_B_COMPLETED",
+        "source_kind": "SIMULATED_PUBLIC_TYPED_EVENT",
+        "task_scope": "additional_inspection_not_sampling_workflow"
+      },
+      "outcomes": {
+        "ADAPTIVE": {
+          "primary_completed": false,
+          "returned": true,
+          "optional_completed": 0,
+          "unknown": true,
+          "optional_unknown": false,
+          "status": "UNKNOWN",
+          "decision_changed": false,
+          "geometry_changed": false,
+          "elapsed_s": 1105.4828236306355,
+          "energy_wh": 112.0673921299503,
+          "oxygen_l": 22.884466194177513,
+          "remaining": {
+            "energy_wh": 207.93260787004968,
+            "oxygen_l": 41.11553380582249,
+            "time_s": 1774.5171763693643
+          },
+          "reserve_margins": {
+            "energy_wh": 175.93260787004968,
+            "oxygen_l": 34.71553380582249,
+            "time_s": 1486.5171763693643
+          },
+          "pose": [
+            -106.0,
+            -62.0,
+            -2366.50048828125
+          ],
+          "decisions": [
+            {
+              "action": "UNKNOWN",
+              "reason": "SEARCH_LIMIT"
+            }
+          ],
+          "searches": [
+            {
+              "status": "UNKNOWN",
+              "reason_code": "SEARCH_LIMIT",
+              "elapsed_s": 8.0,
+              "expanded_labels": 56907,
+              "wall_s": 8.008989099995233,
+              "time_s": null,
+              "energy_wh": null,
+              "oxygen_l": null
+            },
+            {
+              "status": "FEASIBLE",
+              "reason_code": "FEASIBLE_UNDER_MODEL",
+              "elapsed_s": 3.4690000000045984,
+              "expanded_labels": 16501,
+              "wall_s": 3.463990299998841,
+              "time_s": 42.74141181531775,
+              "energy_wh": 5.652201097934142,
+              "oxygen_l": 1.1541948330374183
+            }
+          ],
+          "interval_count": 14
+        },
+        "RIGID": {
+          "primary_completed": true,
+          "returned": true,
+          "optional_completed": 0,
+          "unknown": false,
+          "optional_unknown": false,
+          "status": "PRIMARY_COMPLETED",
+          "decision_changed": false,
+          "geometry_changed": false,
+          "elapsed_s": 1448.3734873248736,
+          "energy_wh": 151.0753958114513,
+          "oxygen_l": 30.85000661218364,
+          "remaining": {
+            "energy_wh": 168.92460418854873,
+            "oxygen_l": 33.14999338781635,
+            "time_s": 1431.6265126751264
+          },
+          "reserve_margins": {
+            "energy_wh": 136.92460418854873,
+            "oxygen_l": 26.749993387816353,
+            "time_s": 1143.6265126751264
+          },
+          "pose": [
+            -106.0,
+            -62.0,
+            -2366.50048828125
+          ],
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "FIXED_INITIAL_ITINERARY"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "FIXED_TASK_SET"
+            }
+          ],
+          "searches": [],
+          "interval_count": 55
+        }
+      },
+      "catalogue_closed": true
+    }
+  ],
+  "refreshed_at_utc": "2026-11-15T21:56:14.358993+00:00"
+}

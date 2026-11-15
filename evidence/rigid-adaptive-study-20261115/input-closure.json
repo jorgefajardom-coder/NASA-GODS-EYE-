@@ -1,0 +1,116 @@
+{
+  "classification": "SIMULATED_RESEARCH_EXTENSION_NOT_PRODUCTION",
+  "captured_at_utc": "2026-11-15T21:48:37.057637+00:00",
+  "published_main_sha": "3c82d72f972109113216039bff5cfd491df5f1ba",
+  "note": "Manifest import locks were recorded before the bulk run. The allocation helper and campaign JSON were identified and snapshotted after the run began; no modification of them was observed. This record does not claim a pre-run lock for those two dependencies.",
+  "files": [
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\.local\\rigid-adaptive-study\\frozen-main\\config\\science_profiles.proposed.json",
+      "snapshot_path": "config/science_profiles.proposed.json",
+      "sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "bytes": 29440
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\.local\\rigid-adaptive-study\\frozen-main\\src\\mge_mapping\\mge_mapping\\__init__.py",
+      "snapshot_path": "src/mge_mapping/mge_mapping/__init__.py",
+      "sha256": "3aa6b8e871fb8c7ec9d0ad6e34a844d3586add21fac60147bc3b6cdd552a0dcc",
+      "bytes": 73
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\.local\\rigid-adaptive-study\\frozen-main\\src\\mge_mapping\\mge_mapping\\core.py",
+      "snapshot_path": "src/mge_mapping/mge_mapping/core.py",
+      "sha256": "7e2cd5ab6831b1787b73d49497a910919ed0e5c7a40fc0a9f9c6be477975a1a8",
+      "bytes": 17369
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\.local\\rigid-adaptive-study\\frozen-main\\src\\mge_mission\\mge_mission\\__init__.py",
+      "snapshot_path": "src/mge_mission/mge_mission/__init__.py",
+      "sha256": "c4d0a343fe14d25931d280dda8e78281cb17d8444f22da58520691d792378df7",
+      "bytes": 73
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\.local\\rigid-adaptive-study\\frozen-main\\src\\mge_mission\\mge_mission\\models.py",
+      "snapshot_path": "src/mge_mission/mge_mission/models.py",
+      "sha256": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+      "bytes": 15380
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\.local\\rigid-adaptive-study\\frozen-main\\src\\mge_planning\\mge_planning\\__init__.py",
+      "snapshot_path": "src/mge_planning/mge_planning/__init__.py",
+      "sha256": "a26f5fd6f9d68940c8358b1cebcb48d4fdada7b0d4af1383a9444f5d0a567bca",
+      "bytes": 74
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\.local\\rigid-adaptive-study\\frozen-main\\src\\mge_planning\\mge_planning\\core.py",
+      "snapshot_path": "src/mge_planning/mge_planning/core.py",
+      "sha256": "f59b51ccdd53218ecaa425b3fc7963fe43f3bfd95d1157a3aa687b9378c950d9",
+      "bytes": 34058
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\.local\\rigid-adaptive-study\\frozen-main\\src\\mge_planning\\mge_planning\\resource_costs.py",
+      "snapshot_path": "src/mge_planning/mge_planning/resource_costs.py",
+      "sha256": "7d958896a9c9e69bf53f9dd6fe6014b9363d3c3988b8672d04aa8a562f6e7047",
+      "bytes": 3381
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\evidence\\overnight-mission-research-20261115-v3\\campaign-campaign_analysis.json",
+      "snapshot_path": "evidence/overnight-mission-research-20261115-v3/campaign-campaign_analysis.json",
+      "sha256": "a4aafe7c9e97b0fee84141075b7198cc9a4083d10be9643d8909039eea0a0e1f",
+      "bytes": 157914
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\scripts\\run_rigid_adaptive_study.py",
+      "snapshot_path": "scripts/run_rigid_adaptive_study.py",
+      "sha256": "0024f2dee8957980353938d82187c1034a5a2eda6248e60ccc29682d7e8ead85",
+      "bytes": 1893
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\src\\mge_mission\\mge_mission\\environment_pilots.py",
+      "snapshot_path": "src/mge_mission/mge_mission/environment_pilots.py",
+      "sha256": "fa3c3e584a1716a1851af6588df5a6c0b10b6cf79ed8a3b5a268a39d4d978093",
+      "bytes": 5588
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\src\\mge_mission\\mge_mission\\research\\__init__.py",
+      "snapshot_path": "src/mge_mission/mge_mission/research/__init__.py",
+      "sha256": "3de22f999a12998df5e9bc28803829c07da94f70589370d9e99e724677db5932",
+      "bytes": 86
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\src\\mge_mission\\mge_mission\\research\\design.py",
+      "snapshot_path": "src/mge_mission/mge_mission/research/design.py",
+      "sha256": "00157d5b2bd78672fed07b10cc32e30e98373e046735e060cfbb9e2373d8dc58",
+      "bytes": 7221
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\src\\mge_mission\\mge_mission\\research\\protocol.py",
+      "snapshot_path": "src/mge_mission/mge_mission/research/protocol.py",
+      "sha256": "08373118fc1e9cb20e332c89322f88c242a4a6dab159a4f13e194b12a206d4e8",
+      "bytes": 10375
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\src\\mge_mission\\mge_mission\\research\\rigid_adaptive.py",
+      "snapshot_path": "src/mge_mission/mge_mission/research/rigid_adaptive.py",
+      "sha256": "5a685dbbf0720bc723504da13c787a01d55e3798f006905a3f48b79fe940ff40",
+      "bytes": 25226
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\src\\mge_mission\\mge_mission\\research\\world.py",
+      "snapshot_path": "src/mge_mission/mge_mission/research/world.py",
+      "sha256": "56f454a13bfd73eb007b9df5df47dc1ba3c81c34cb8879058c4dd50c7fdb0d02",
+      "bytes": 7765
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\src\\mge_mission\\mge_mission\\scientific_search.py",
+      "snapshot_path": "src/mge_mission/mge_mission/scientific_search.py",
+      "sha256": "0c156fc5a762a4a8e28a954da883a0eaf2cdec85e7f997e3be11743d70f30030",
+      "bytes": 8298
+    },
+    {
+      "runtime_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\src\\mge_mission\\mge_mission\\terrain_profile_variants.py",
+      "snapshot_path": "src/mge_mission/mge_mission/terrain_profile_variants.py",
+      "sha256": "f18c12d53bedb73b1b3aefaeb40f2be6c46b4cd2ef52111c8d45c236e0bc4d6b",
+      "bytes": 2676
+    }
+  ]
+}

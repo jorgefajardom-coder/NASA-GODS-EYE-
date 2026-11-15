@@ -1,0 +1,73 @@
+{
+  "id": "hawksbill-256",
+  "path": "public/hawksbill-256.npz",
+  "file_sha256": "41b9c5ef34a9735d75a7f0e6ae3afdcf4e731f75a1445ba0c28fccb4da1f4f14",
+  "array_sha256": "a27527a3e224b29433a0ca79e6eae7adf04052ba0668d0f14d6a87ff182fddee",
+  "rows": 64,
+  "cols": 64,
+  "side_m": 256,
+  "resolution_m": 4,
+  "native_resolution_m": 20,
+  "origin_x_m": -128.0,
+  "origin_y_m": -128.0,
+  "row_orientation": "south_to_north",
+  "region": {
+    "id": "hawksbill",
+    "candidate_id": "JZ-ROI-02",
+    "name": "Hawksbill–Hogwallow",
+    "lat": 18.45835024,
+    "lon": 77.40732773,
+    "campaign": "CAM-HAWKSBILL"
+  },
+  "valid_fraction": 1.0,
+  "nodata_cells": 0,
+  "elevation_range_m": [
+    -2542.979248046875,
+    -2481.563720703125
+  ],
+  "slope_p50_p95_deg": [
+    9.115063190460205,
+    20.43000078201294
+  ],
+  "prior_sigma_m": 2.5,
+  "observed_cells": 0,
+  "geographic_target_association": "QUERY_ANCHOR_NOT_VERIFIED_WORKSPACE",
+  "controls": "Projection/centering self-consistency only; independent field controls unavailable",
+  "provenance": {
+    "mission": "MRO",
+    "instrument": "CTX",
+    "role": "prior",
+    "product_id": "JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0",
+    "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/CTX/JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0.tif",
+    "license_or_terms_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+    "native_resolution_m": 20.0,
+    "citation": "Fergason et al. (2020), Mars 2020 Terrain Relative Navigation CTX DTM Mosaic, USGS Astrogeology Science Center.",
+    "source_window_col_row_width_height": [
+      701,
+      750,
+      61,
+      58
+    ],
+    "source_window_values_sha256": "4209599ff87df90fc3c4022b39281afa72da0a9fb12e34a85a0a7e24ac0f7172",
+    "source_shape": [
+      1512,
+      1596
+    ],
+    "source_crs_wkt": "PROJCS[\"Equirectangular Mars 2000 Sphere IAU\",GEOGCS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",SPHEROID[\"Mars_2000_Sphere_IAU\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",0],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+    "source_nodata": "-3.4028226550889045e+38",
+    "target_crs_wkt": "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"unknown\",SPHEROID[\"unknown\",3396190,0]],PRIMEM[\"Reference meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",18.45835024],PARAMETER[\"latitude_of_origin\",18.45835024],PARAMETER[\"central_meridian\",77.40732773],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+    "resampling": "bilinear, GDAL NoData-aware; no synthetic replacement",
+    "native_valid_fraction": 1.0,
+    "native_min_m": -2560.28857421875,
+    "native_max_m": -2463.79150390625,
+    "native_mean_m": -2510.518310546875,
+    "upstream_etag": "\"8f6693aae0b562f7db2dfdec89282955-2\"",
+    "upstream_last_modified": "Thu, 10 Nov 2022 20:43:51 GMT",
+    "upstream_content_length": 9662387,
+    "read_method": "fresh HTTP 206 ranges via bounded urllib reader"
+  },
+  "upstream_full_file_sha256": null,
+  "source_window_hash_not_full_file_hash": true,
+  "source_role": "public_orbital_prior",
+  "scientific_approval": false
+}

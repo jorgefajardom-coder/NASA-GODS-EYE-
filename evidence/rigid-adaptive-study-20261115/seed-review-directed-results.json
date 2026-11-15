@@ -1,0 +1,741 @@
+{
+  "classification": "POSTHOC_PRIVATE_SYNTHETIC_WORLD_AUDIT_NOT_PLANNER_INPUT",
+  "audited_at_utc": "2026-11-15T22:15:30.871493+00:00",
+  "batch": "directed-results",
+  "checks": "PASS",
+  "journal_sha256": "c7014c75b4d38fdc493b10afc3cff59ad905431b9aa7ebd73ebafb4b59eefb79",
+  "auditor_sha256": "1db94e2b7a9b6dbc53dace3496543629d9f707fbc6d755ee9072056ceb42373c",
+  "blocks": 120,
+  "max_20m_computational_block_mean_error_m": 6.8359375e-05,
+  "checks_performed": [
+    "Independent mission seed to endpoint reproduction",
+    "Independent world stream seed derivation",
+    "Public prior plus recorded world specification to complete world hash",
+    "NoData preservation",
+    "Protected base elevation",
+    "20m computation-block residual mean within1mm"
+  ],
+  "scope": "The post-hoc auditor may reconstruct the private hypothetical world after decisions were recorded. No generated private arrays or future observations are exported to the planner consumer.",
+  "cases": [
+    {
+      "block_id": "hawksbill-256-blocked-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "e36de2eecdb6ecc5ee2000f6d24625c404e7c2cc5d812f4180e3c5e26f7128d1",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-blocked-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "d0d3c1fee8e56d4006fbafda3fb30f34e4d8ee588575481a6bba7989f00e01b6",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-blocked-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "664de27d2920c0552f86345ab4cb38ed47aa42a67277d161c26cf2bc8667ad1a",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-detour-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "133d3d0fa877e7f5f637fe4ae264f0ffd1afae1539aa1d029730548aab62d282",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-detour-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "1e876fca12e4e4a6120a52f10c2a10faaae5ffbaf1334d611000ad1a37ad08f0",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-detour-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "83d2d5720a043f106f45f0b8e1cab11bfb39f6f43d2336659547f9f3f62dad57",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-detour-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "113ad6f83066ea7d2e61d405dc8a9f688a28c0ee9af6b2899adc712d6502d15e",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-detour-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "8dfd53d2b82292131c52c9b6ab02bef352f4599c8253f2b88dde671a7dadc65c",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-blocked-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "ea9c9c68e91e492f37d64515dcade944bbca9ce5c13908a1327592ccea44a268",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-relief-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "f911573992c3133c8ff8e62194e6bf819c88ac16d578d36d2fd74a976bea202b",
+      "max_block_mean_error_m": 6.8359375e-05
+    },
+    {
+      "block_id": "hawksbill-256-relief-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "2da30dd7fba7f8f69e382e1fb608b3962622355b11b1891a3f8cf90430b211c1",
+      "max_block_mean_error_m": 6.8359375e-05
+    },
+    {
+      "block_id": "bright-256-relief-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "ea67595f8aa6a4744780453690f8bd5e0781a60988005db0477ea8724283cc2e",
+      "max_block_mean_error_m": 3.90625e-05
+    },
+    {
+      "block_id": "bright-512-relief-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "f71ed8c7f54e85a35f619acfc7e02d8e24846045e1a8253acb59b4b7ace1a229",
+      "max_block_mean_error_m": 3.90625e-05
+    },
+    {
+      "block_id": "bright-512-blocked-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "d4be1916d86ca674a680f427918858d7219ad22e07ab4112bf1845574cde3d10",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-resource-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-blocked-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "add06b60c0801533949eb0d39d33ce2b65562658b34b075565ef283ae2a821fc",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-resource-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-resource-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-relief-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "3e82be22e69912c6c7e09ef10bbfe18b90f633aca439be38f3c130777e52affd",
+      "max_block_mean_error_m": 3.90625e-05
+    },
+    {
+      "block_id": "hawksbill-512-resource-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-unchanged-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-unchanged-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-resource-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-unchanged-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-detour-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "77f7c2302fba6a07aa234a2892c15d11c24f6bc89a23d4b52a78b59b08216535",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-blocked-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "03486a35a2b273049843136ccfe63cabcbd68c39cf466c8c03eb5663d1e5c327",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-unchanged-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-resource-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-unchanged-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-blocked-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "922aadc22fef2e45ac513572b322c3e1426ffdb7fed2287e0a60300b22736ecc",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-blocked-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "15b6ec286cdd12da0ea7bbb0adc241318ad35bfe1e0551d42f215aab594fcc2f",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-detour-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "39bff2adbe0fdb946a2bab3c8e7ad3a122db20b74ce01daf705dec1421c1098f",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-blocked-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "4c30b1fdcf7afccaf21406e3ee4f6e62bbb633f86769d9cc50f75d2395c79db9",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-relief-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "3ebb03408a0fa5f51ab4d1f56b0d8c143c8781d414532de2c4186ea1229deddd",
+      "max_block_mean_error_m": 5.859375e-05
+    },
+    {
+      "block_id": "hawksbill-256-detour-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "3a29fa33ccf7387e326eb595e9a0931281d58605ecab363933944091f13d56dd",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-detour-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "c560ccf4dfb57bca2e47be0ef0947b5ed3cb3a22df41788b622569da51034ff1",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-unchanged-0-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-detour-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "fcae98818bbaf1e9413417e7baee22686dc950a1a23dbccfcaf583b7586c04ee",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-blocked-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a45aaa635357fdb8b7244e767aae944b6e45e036fdcf2f504fefb92a5642e180",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-relief-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "c5fb10fd5dadc0882d865992f32865397d36e40728b71d831ab426afe92bbc02",
+      "max_block_mean_error_m": 4.8828125e-05
+    },
+    {
+      "block_id": "bunsen-512-blocked-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "ac050a87d8e7455c1f243f2e09175ab32587791176796a77dc3bce2dfb69c562",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-detour-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "01baff2897a1940e9cc28ff49458664564496dc06ee2ba63e92d2b6327f70ed3",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-relief-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a34c0537f6633c96d5f4d3caac1a9e190b8c9fe2b20a93c2c685c23448fbdae1",
+      "max_block_mean_error_m": 5.859375e-05
+    },
+    {
+      "block_id": "hawksbill-256-relief-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "d13d55f9f51f7241c2f67110f9475517033ffeeccfefe02ade14ab5f453021d2",
+      "max_block_mean_error_m": 4.8828125e-05
+    },
+    {
+      "block_id": "bunsen-512-relief-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "f21682e5d76c74d0ce6800d32d51ef160c81627ab2ec86b046bfb419b50ad478",
+      "max_block_mean_error_m": 4.8828125e-05
+    },
+    {
+      "block_id": "bright-256-resource-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-resource-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-resource-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-resource-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-unchanged-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-detour-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "d75d89971eaacbbce5c423d18fee52e1ecc1e761f0f64f1941cb589569f9c6aa",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-unchanged-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-unchanged-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-relief-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "7a7343cbf513ff3bcfc1c87bc496f75a492a9d4dc1f7b25da0fba200b8d5afb4",
+      "max_block_mean_error_m": 4.8828125e-05
+    },
+    {
+      "block_id": "bunsen-512-unchanged-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-unchanged-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-blocked-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "83c710f04fc73c17583ac27326a7ba140eaf1af6a8ab3e6fe13f7a0f793558de",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-blocked-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "db332cd0ea4e5f2cf99c2088dd96ff5f028c0fd81e32a8030ac7712042afc19f",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-unchanged-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-blocked-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "d1525115f716ec29563a5f3a8d5e928078f82ce9f715ad085ad2f3a7e57b6c53",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-relief-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "6c9d84ed63eb1cd470227769b5eda83ebea6cff995ab4a255e5584195db96141",
+      "max_block_mean_error_m": 4.8828125e-05
+    },
+    {
+      "block_id": "bunsen-256-blocked-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "dde8d95c5fe41734450219ddc3fec589adeb564ebc1b313b9bf1d9bd63c5c07f",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-blocked-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "f0ba24407d8d65372855a61bb4e8b364e55bc39a131ecba077907803872af7ed",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-detour-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "dbf7cd16fd00bd73534e49e86186828d40871ce5a49eb87d79286180f12e0a4b",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-resource-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-detour-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "597582a72a3b1be10943becd34ae695cba670641b50895898c7e675e7b4112fa",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-detour-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "7724a6ee3616e2af6a2010e8a58ebb26bb678556f71c0b4182afbb15b2e27185",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-detour-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "c3772fa047239fc7f2de6cf79aa2ba24224490edbe0f7081afa313999af0a949",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-detour-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "63bd8727fe6eaca60bdd395ead4ec31c11a6ee10bb5f4a124f50df53a286f2e9",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-relief-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "0672149b92c05e8546c88a25318e37c013484c662d86a74d6324ccab271af035",
+      "max_block_mean_error_m": 4.8828125e-05
+    },
+    {
+      "block_id": "bunsen-256-relief-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a833abd169ea7e593c03166fddf8bdd2a196dc3d6319e2e28e0ecb2498f7e908",
+      "max_block_mean_error_m": 4.8828125e-05
+    },
+    {
+      "block_id": "hawksbill-512-resource-1-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-relief-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "29f4e2ba295265ca7001374be0ccd9db350fd06b26e292fea530cdfd60ce466d",
+      "max_block_mean_error_m": 5.859375e-05
+    },
+    {
+      "block_id": "bunsen-512-relief-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "4d36b4c039f19d49986f208bff58e5a187c0a8517c3eb851af9c88405faf486c",
+      "max_block_mean_error_m": 3.90625e-05
+    },
+    {
+      "block_id": "bright-512-relief-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4382ebbdc2ca6fb0bd2ca521ac554b21d60b5c6a70d73e4518f6f3e61639aea",
+      "max_block_mean_error_m": 4.8828125e-05
+    },
+    {
+      "block_id": "bunsen-512-detour-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "8d79000e81ec4d9530fb0783c14250ea609c02bfd1f8b7a2262bd68959ef9352",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-resource-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-resource-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-resource-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-blocked-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "ddcc9e25b6c2381e510c32cc41e2fefb07d78a81a7bf8e70bff189be89c726f1",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-unchanged-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-unchanged-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-resource-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-unchanged-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-unchanged-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-relief-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "c3b31e2bda3ea576881cf00a5dd70fd51211f534a7e684a0955e5c69cb29ba4b",
+      "max_block_mean_error_m": 4.8828125e-05
+    },
+    {
+      "block_id": "bright-256-blocked-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "874390d4f9adb69f52b029d8ece5afddce8f6bd2111c7f48655cfa7bd0e3754f",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-blocked-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "d77075db43070d47b703513fd806091594af069c9f787b22e1538dd4bb06dc04",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-blocked-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "0795f492fb14426b4f33beb3ab1124b1780b4df53a1f25c0a549f7d424a60d98",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-blocked-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "df0b41d69bda539f516b8f177cea6fd32afd942751fb5ab1b805faba2c8f6f05",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-blocked-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "7068c6bedae42a63857fb74f19cee747f6769327e1b4c93dab02fc2b6ab1e931",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-resource-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-detour-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "4c8bacbee493fda66114fe9ee9524d7afff00cdc9a66483b9a137ef864a90b93",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-unchanged-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-resource-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-detour-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4362ef67fb59b1da4489109443600949cf81af4e01da409f83b8be994d43ff6",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-detour-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "1a6aeb4c59bf8b80da01db39c9aee1a2ae2783f21cf8069191387f314af67373",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-unchanged-2-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-relief-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "20f44d9ea53c46cccee1fe53deb6b5ec1558ae99622db91c8da5140fc0fab01b",
+      "max_block_mean_error_m": 6.8359375e-05
+    },
+    {
+      "block_id": "bunsen-256-relief-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "ddbc9f71b068bdfe2b2d9d6a70cd88a84d1d8031988971c3fe02ef2a862e1837",
+      "max_block_mean_error_m": 1.953125e-05
+    },
+    {
+      "block_id": "hawksbill-512-blocked-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "537559fb2496a85052cdc88b509662355bb97b6f4e4d094b52686870854371ec",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-relief-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "105d017e33132cd21add7f2fb3da29c1b90fa7f293b48cb8fd32bafc8c1485a2",
+      "max_block_mean_error_m": 5.859375e-05
+    },
+    {
+      "block_id": "hawksbill-256-detour-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "73081fdf8d1c362d2340506cd8d5cd3e8e7042ddc86cd328e1c1bc5a6b08f0d3",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-relief-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "ce6e6df877d4b9387b8925e6483a1aa159815ad16ef4213250475c0c2e385eef",
+      "max_block_mean_error_m": 4.8828125e-05
+    },
+    {
+      "block_id": "bright-256-resource-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-resource-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-resource-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-detour-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "374f42bbfbeaebc97150956287bdc8125668c80fc9eeb11dc05d37fd112196ac",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-512-resource-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-detour-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "860cf873295e854ad1f035ae3e930ede52817c297cf6ee84bb6a8108e1f461c7",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-unchanged-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-256-unchanged-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-unchanged-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-relief-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "aa63bae5c985ef712b96b0b9132faeaee5b3e94a6942aef5a24725cf69cfa8ab",
+      "max_block_mean_error_m": 3.90625e-05
+    },
+    {
+      "block_id": "bright-512-unchanged-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-unchanged-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-resource-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "hawksbill-512-unchanged-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-512-relief-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "9176f00275f8544907fe326f60dfd6a9948688a4cfe6929c8936f99f066a2be9",
+      "max_block_mean_error_m": 3.90625e-05
+    },
+    {
+      "block_id": "bunsen-512-resource-3-directed",
+      "endpoint_reproduced": true,
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356",
+      "max_block_mean_error_m": 0.0
+    }
+  ]
+}

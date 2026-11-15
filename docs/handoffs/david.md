@@ -282,3 +282,23 @@ JES-07/AC-10 organizer notification and explicit endorsement remain separate del
 Prepared a documentation-only refresh from main 7ff5a077dfe70e181e960a2d638e3a1e955591c1 and native Wiki acf3edddb25718dc5c234a4f836cc7b96b064a6b. The supplied package has 20 images; nine corrected conceptual illustrations are selected and 11 originals excluded. Every accepted PNG/WebP carries the visible AI-generated footer. Existing numerical figures, source citations, three GIFs and historical manifests retain their bytes. Both AI declarations are appended without removing main entries. `docs/wiki/Editorial-Review.md` and the edition manifest identify exact placements, prompts, hashes and exclusions.
 
 The supplied README_START_HERE item4 and PROMPT_FOR_CODEX section6 require a PR and owner review before the separate Wiki push. Prepare the concrete source/native diff and visual checks; leave native synchronization pending that review. Scientific profile/model/mission acceptance is unchanged. JES-07/AC-10 organizer notification and endorsement remain a separate submission gate; Jesus coordinates and David backs up. This editorial cut does not claim submission readiness.
+
+## Paired analytical policy study — 15 November 2026
+
+Owner request: one hour of parallel local missions without rendering, followed by statistical analysis and English Wiki publication. Pinned planning/science source: `3c82d72f972109113216039bff5cfd491df5f1ba`; shared contract versions unchanged. The source publication contains documentation and the separate `evidence/rigid-adaptive-study-20261115` archive, with no production module, operational allocation or scientific approval change.
+
+| main | 360 | 360 | 0 |
+| directed | 120 | 120 | 0 |
+| extended-1024 | 180 | 180 | 0 |
+| strict-sigma | 3 | 3 | 0 |
+| published-step | 3 | 3 | 0 |
+| development-pilot-1 | 2 | 2 | 0 |
+| development-pilot-2 | 2 | 2 | 0 |
+
+Read the [study](../wiki/10-Adaptive-Planning-Study.md), frozen protocol, compressed original catalogues and their separate main/directed/large-window analyses. The main predeclared comparison retains all initial rejections and UNKNOWN; conditional directed results and supplementary maps do not replace it. Allocation helper/campaign closure after the first cases is explicitly recorded. No results from development pilots count as additional independent evidence.
+
+Validation: frozen main Python 1,281 passed / 26 skipped; four new accounting/retreat controls passed; repository checker passed; frontend 412 passed / one skipped; build passed on Node 24.18.0. Initial Windows temp/dependency/layout failures were resolved without source changes and recorded. Independent source/input/ledger audits accompany the archive. Ubuntu/Jazzy, ROS, Gazebo and physical mission acceptance were not executed for this research cut.
+
+Remaining: agreed production cost/context consumer; owner-approved profiles/allocations; calibrated observations and real task/work/traversal inputs; current-map/current-resource reauthorization before reusing incumbent geometry; actual integrated mission evidence. The research comparison does not close these gates.
+
+Submission coordination remains separate: JES-07 / AC-10 still requires recorded organizer notification, review and explicit endorsement. Jesús coordinates and David is backup. For the intended 20:00 America/Bogota submission, the four-hour review lead time has already passed at this research cut; notify promptly if the package becomes ready and record the lost margin. This archive is not a final submission-readiness declaration and sends no external message.

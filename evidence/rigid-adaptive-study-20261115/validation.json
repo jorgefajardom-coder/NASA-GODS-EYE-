@@ -1,0 +1,55 @@
+{
+  "classification": "SOFTWARE_AND_SIMULATED_MODEL_VALIDATION_NOT_LIVE",
+  "source_sha": "3c82d72f972109113216039bff5cfd491df5f1ba",
+  "platform": "Windows 11, Python 3.12.14, NumPy 2.5.4, SciPy 1.18.1, Node 24.18.0",
+  "parallelism": "At most six paired workers, each with one private-world subprocess; no mission rendering, ROS or Gazebo",
+  "checks": [
+    {
+      "command": "python -m pytest -q --basetemp=../pytest-basetemp-validated",
+      "scope": "Full frozen published main source tree",
+      "exit_code": 0,
+      "passed": 1281,
+      "skipped": 26,
+      "warnings": 1,
+      "log": "validation-pytest-retry.log"
+    },
+    {
+      "command": "python -m pytest -q tests/mission/test_rigid_adaptive.py",
+      "scope": "Four meaningful experimental accounting, actual-XYZ, strict-reserve and optional-retreat controls",
+      "exit_code": 0,
+      "passed": 4,
+      "log": "source-review-tests.txt"
+    },
+    {
+      "command": "python scripts/check_repository.py",
+      "scope": "Frozen published baseline; repeat against publication tree before commit",
+      "exit_code": 0,
+      "log": "validation-repository-base.log"
+    },
+    {
+      "command": "npm test (vitest run through the task-owned complete dependency installation)",
+      "scope": "Frozen published web source and original repository fixture layout",
+      "exit_code": 0,
+      "test_files_passed": 61,
+      "passed": 412,
+      "skipped": 1,
+      "log": "validation-base/validation-web-test-final.log"
+    },
+    {
+      "command": "npm run build",
+      "scope": "Frozen published web source, pinned Node 24.18.0",
+      "exit_code": 0,
+      "log": "validation-web-build-clean.log"
+    }
+  ],
+  "setup_retries": [
+    "The first Python attempt could not access the existing global Windows pytest temp root. A task-owned --basetemp resolved it without source changes.",
+    "The shared frontend install lacked jsdom. A task-owned npm ci --ignore-scripts supplied the frozen lockfile dependencies; tests then ran from the original repository layout so its fixture paths remained valid."
+  ],
+  "unexecuted": [
+    "Ubuntu 24.04 / ROS 2 Jazzy colcon and actual ROS exchange",
+    "Gazebo or physical execution, calibrated sensors, integrated MissionManager task/work/traversal verification",
+    "Controlled serial performance benchmark of the entire study"
+  ],
+  "mandatory_ai_declaration": "OpenAI Codex assisted the experimental code, synthetic records, analysis, audits and explanatory plots. Public CTX input retains its original data provenance."
+}

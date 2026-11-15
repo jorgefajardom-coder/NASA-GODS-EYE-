@@ -64,3 +64,5 @@ This is the complete English documentation draft prepared for scientific audit o
 The [required AI-use declaration](../AI_USAGE.md) describes assistance used for the documentation and media. Generated illustrations, plots and every GIF frame carry a visible `AI-generated` mark. Existing scientific references retain their authorship and licences.
 
 [Visual edition: selection and review](Editorial-Review.md).
+
+[Paired fixed and adaptive planning study](10-Adaptive-Planning-Study.md).

@@ -1,0 +1,36 @@
+{
+  "classification": "SIMULATED_DESCRIPTIVE_REPEATED_CONDITIONS",
+  "independent_unit": "scenario/mission seed; table rows count dependent agent/mode conditions",
+  "denominator": "PAIRED conditions that reach the shared posterior decision; geometry panel uses only first posterior FEASIBLE routes. UNKNOWN is not a keep decision.",
+  "groups": {
+    "all_families": {
+      "posterior_decisions_reached": 239,
+      "first_query_FEASIBLE": 211,
+      "geometry_retained": 149,
+      "geometry_retained_with_extra_work": 63,
+      "geometry_retained_without_extra_work": 86,
+      "first_query_UNKNOWN": 28,
+      "geometry_changed": 62,
+      "geometry_changed_without_extra_work": 43,
+      "geometry_changed_with_extra_work": 19
+    },
+    "unchanged_only": {
+      "posterior_decisions_reached": 42,
+      "first_query_FEASIBLE": 36,
+      "geometry_retained": 24,
+      "geometry_retained_without_extra_work": 12,
+      "first_query_UNKNOWN": 6,
+      "geometry_retained_with_extra_work": 12,
+      "geometry_changed": 12,
+      "geometry_changed_without_extra_work": 7,
+      "geometry_changed_with_extra_work": 5
+    }
+  },
+  "exact_duplicates_ignored": 0,
+  "provenance": {
+    "input_sha256": "6fc5b9f6bf04ab739f4c2b53c0d04348f2bb9d959077275bd9b2a70cdeccfd5b",
+    "script_sha256": "e43427485d58d089d31a23d8e68a1ea2fa274c6775e4544494d25db7db487424",
+    "validator_sha256": "f5c0a502c17cb4d9227437a2c8ec2dbd44cc88f66e32180a9ce1319bd98e4954"
+  },
+  "mandatory_ai_declaration": "OpenAI Codex assisted code and derived synthetic table; not observational NASA data."
+}

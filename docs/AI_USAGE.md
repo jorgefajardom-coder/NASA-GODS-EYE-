@@ -1021,3 +1021,9 @@ OpenAI Codex assisted a minimal gateway event-stream correction, four real WebSo
 ## Live bar and run selector — 15 November 2026
 
 Claude (Anthropic) through Claude Code assisted the viewer changes registered as `live_bar_and_direct_run_switch`: the read-only ROS gateway bar is always shown, disconnected (and never contacting a server) when the page has no `?gateway=`; a run chosen in the run selector opens directly instead of returning to the intro and zone menu. Code and tests only; no data, observation or live mission is claimed.
+
+## Paired fixed and adaptive analytical study — 15 November 2026
+
+OpenAI Codex assisted the experimental consumer, seeded synthetic mission records, statistical protocol and analysis, independent bookkeeping audit, English explanation and numerical plots in `evidence/rigid-adaptive-study-20261115` and `docs/wiki/10-Adaptive-Planning-Study.md`. The archive includes the exact experimental code and meaningful verification tests without activating it in production paths. The source and result manifests identify tool use, SIMULATED status, seeds, input/module hashes and publication provenance. Every new plot retains a visible `AI-generated | SIMULATED` label.
+
+The records are analytical experiments on public CTX terrain with explicitly hypothetical perturbations and public simulated mission notices. They are not observational NASA data or verified LIVE execution. Published planning and science code is consumed at the declared SHA; this publication changes no shared contract, operational approval, production implementation or scientific coefficient approval. The experimental archive includes mandatory AI declarations as metadata and prose, with no optional authorship credit.

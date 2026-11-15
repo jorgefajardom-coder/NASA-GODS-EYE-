@@ -1,0 +1,75 @@
+
+ RUN  v3.2.4 C:/Users/User/.codex/worktrees/david-mission/Hacktón NASA/.local/rigid-adaptive-study/validation-base/web
+
+ ✓ tests/geology.test.ts (4 tests) 131ms
+ ✓ tests/imagery.test.ts (3 tests) 58ms
+ ✓ tests/baseModel.test.ts (4 tests) 91ms
+ ✓ tests/slope.test.ts (5 tests) 206ms
+ ✓ tests/terrainShape.test.ts (5 tests) 37ms
+ ✓ tests/gatewayLive.test.ts (62 tests) 122ms
+ ✓ tests/recordedRecoveryPackage.test.ts (2 tests) 70ms
+ ✓ tests/timelineEndpoint.test.ts (7 tests) 32ms
+ ✓ tests/droneHazards.test.ts (3 tests) 51ms
+ ✓ tests/gatewayReplay.test.ts (9 tests) 277ms
+ ✓ tests/gatewayIntegrity.test.ts (37 tests | 1 skipped) 408ms
+ ✓ tests/astronaut.test.ts (10 tests) 638ms
+ ✓ tests/worlds.test.ts (11 tests) 517ms
+   ✓ zones > keeps every agent off the crop edge, where the drawn terrain ends  495ms
+ ✓ tests/modelBranding.test.ts (4 tests) 96ms
+ ✓ tests/terrainScanner.test.ts (7 tests) 91ms
+ ✓ tests/referenceIsolation.test.ts (2 tests) 1294ms
+   ✓ evaluator reference isolation (R05) > is not in any public replay fixture  1291ms
+ ✓ tests/terrainGrowth.test.ts (5 tests) 15ms
+ ✓ tests/replay.test.ts (23 tests) 36ms
+ ✓ tests/terrainSmooth.test.ts (7 tests) 13ms
+ ✓ tests/marsSky.test.ts (6 tests) 17ms
+ ✓ tests/terrainSurface.test.ts (8 tests) 1005ms
+   ✓ the rendered terrain surface > covers the audited Gale human position with the same mesh as the renderer  985ms
+ ✓ tests/rawImagesStore.test.ts (13 tests) 12ms
+ ✓ tests/terrainPresentation.test.ts (8 tests) 11ms
+ ✓ tests/povSway.test.ts (3 tests) 13ms
+ ✓ tests/recordedEntry.test.ts (6 tests) 21ms
+ ✓ tests/hudScientificContext.test.ts (2 tests) 16ms
+ ✓ tests/management.test.ts (12 tests) 10ms
+ ✓ tests/stateSnapshot.test.ts (3 tests) 9ms
+ ✓ tests/roverRig.test.ts (7 tests) 9ms
+ ✓ tests/perseveranceRaw.test.ts (7 tests) 7ms
+ ✓ tests/roverCameras.test.ts (6 tests) 7ms
+ ✓ tests/marsClock.test.ts (5 tests) 7ms
+ ✓ tests/atmos.test.ts (6 tests) 6ms
+ ✓ tests/contextTerrain.test.ts (3 tests) 10ms
+ ✓ tests/photoAim.test.ts (5 tests) 6ms
+ ✓ tests/terrainMorph.test.ts (2 tests) 8ms
+ ✓ tests/roverStops.test.ts (7 tests) 5ms
+ ✓ tests/zoneGlobe.test.ts (6 tests) 6ms
+ ✓ tests/strata.test.ts (2 tests) 5ms
+ ✓ tests/resourceAlert.test.ts (10 tests) 6ms
+ ✓ tests/routeProgress.test.ts (5 tests) 6ms
+ ✓ tests/coords.test.ts (7 tests) 6ms
+ ✓ tests/zoneEnvironment.test.ts (5 tests) 5ms
+ ✓ tests/labelDeclutter.test.ts (5 tests) 5ms
+ ✓ tests/provenance.test.ts (3 tests) 4ms
+ ✓ tests/smoothing.test.ts (5 tests) 4ms
+ ✓ tests/scan.test.ts (4 tests) 5ms
+ ✓ tests/resources.test.ts (4 tests) 6ms
+ ✓ tests/arrivalQuad.test.ts (4 tests) 5ms
+ ✓ tests/tacticalMap.test.ts (3 tests) 4ms
+ ✓ tests/siteKinds.test.ts (3 tests) 5ms
+ ✓ tests/atmosMap.test.ts (2 tests) 4ms
+ ✓ tests/gpu.test.ts (4 tests) 4ms
+ ✓ tests/co2.test.ts (3 tests) 4ms
+ ✓ tests/photoTourTitle.test.ts (2 tests) 4ms
+ ✓ tests/agentLayer.test.ts (2 tests) 3ms
+ ✓ tests/liveGatewayPanel.test.ts (4 tests) 51ms
+ ✓ tests/rawImagesProvenance.test.ts (5 tests) 66ms
+ ✓ tests/runSelectorDirect.test.ts (2 tests) 4ms
+stderr | tests/photoTourExit.test.ts
+WARNING: Multiple instances of Three.js being imported.
+
+ ✓ tests/zoneSelectorFallback.test.ts (2 tests) 79ms
+ ✓ tests/photoTourExit.test.ts (2 tests) 57ms
+
+ Test Files  61 passed (61)
+      Tests  412 passed | 1 skipped (413)
+   Start at  16:47:55
+   Duration  6.89s (transform 6.51s, setup 0ms, collect 16.34s, tests 5.71s, environment 6.02s, prepare 15.63s)

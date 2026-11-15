@@ -1,0 +1,81 @@
+{
+  "identity": "88375c40f9920f3ec857854efeee248e30f878802a07b3b7dfefdcc11d7f4897",
+  "config": {
+    "source_sha": "3c82d72f972109113216039bff5cfd491df5f1ba",
+    "source_root": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\.local\\rigid-adaptive-study/frozen-main",
+    "output_dir": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\.local\\rigid-adaptive-study/pilot",
+    "prior_root": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\evidence\\overnight-mission-research-20261115-v3",
+    "profiles_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\.local\\rigid-adaptive-study/frozen-main/config/science_profiles.proposed.json",
+    "script_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA/scripts/run_rigid_adaptive_study.py",
+    "map_records": [
+      "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\evidence\\overnight-mission-research-20261115-v3\\public/bunsen-256.json"
+    ],
+    "families": [
+      "unchanged",
+      "detour"
+    ],
+    "designs": [
+      "directed"
+    ],
+    "indices": 1,
+    "agents": [
+      "human_1",
+      "rover_1"
+    ],
+    "modes": [
+      "FAST",
+      "SAFE"
+    ],
+    "workers": 2,
+    "deadline_utc": "2026-11-15T21:46:00Z",
+    "search_limits": {
+      "max_labels": 1000000,
+      "timeout_s": 8.0
+    },
+    "max_sigma_m": 3.0,
+    "grade_consistent_projection": true,
+    "vary_budgets": true,
+    "vary_reserves": true,
+    "observation_duration_s": 120,
+    "footprint_radius_m": 12
+  },
+  "planned_cases": [
+    {
+      "block_id": "bunsen-256-detour-0-directed",
+      "record_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\evidence\\overnight-mission-research-20261115-v3\\public\\bunsen-256.json",
+      "map_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\evidence\\overnight-mission-research-20261115-v3\\public\\bunsen-256.npz",
+      "map_id": "bunsen-256",
+      "sector": "bunsen",
+      "sector_index": 2,
+      "side_m": 256,
+      "family": "detour",
+      "index": 0,
+      "design": "directed",
+      "partition": "exploration"
+    },
+    {
+      "block_id": "bunsen-256-unchanged-0-directed",
+      "record_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\evidence\\overnight-mission-research-20261115-v3\\public\\bunsen-256.json",
+      "map_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\evidence\\overnight-mission-research-20261115-v3\\public\\bunsen-256.npz",
+      "map_id": "bunsen-256",
+      "sector": "bunsen",
+      "sector_index": 2,
+      "side_m": 256,
+      "family": "unchanged",
+      "index": 0,
+      "design": "directed",
+      "partition": "exploration"
+    }
+  ],
+  "classification": "SIMULATED_ANALYTICAL",
+  "root_seed": 20261115,
+  "seed_namespace": 7241903,
+  "code_sha256": "0d9f0aea8bf6368ab5dbf6c93180c455943eb7529a68ebaefb7f42e8f9a9a37d",
+  "script_sha256": "d66099a32b2488e8e6347358674e7950f3eee76cf04110fc2f4b3669b194a500",
+  "no_seed_replacement": true,
+  "unit": "independent_world_block_modes_agents_strategies_nested",
+  "ai_usage": {
+    "tool": "Codex",
+    "scope": "experimental Python runner and synthetic records; not observational NASA data"
+  }
+}

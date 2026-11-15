@@ -1,0 +1,15 @@
+{
+  "recorded_at_utc": "2026-11-15T21:55:08.600490+00:00",
+  "classification": "SIMULATED_METHODOLOGICAL_CLARIFICATION",
+  "original_plan_unchanged": true,
+  "context": "After development pilots and interim main-result inspection, clarify implementation vocabulary and report extra diagnostics without changing the frozen primary estimand, weighting, resampling unit or UNKNOWN credit policy.",
+  "independence": "A world block means an independently seeded scenario/mission draw conditional on the fixed selected public terrains. It does not imply independently sampled geological terrain. Unchanged worlds can share identical private-array hashes while A/B and mission resources vary. Report array-hash multiplicities and condition intervals on these terrains.",
+  "primary_unknown": "The episode unknown field concerns the primary/return endpoint. An optional-only unresolved search does not remove an already completed primary-and-return outcome; report optional_unknown separately.",
+  "new_work": "Optional work is extra INSPECT at B, introduced through an exogenous public mission notice. It is neither a footprint-sensor discovery nor a demonstrated survey-inspect-sample workflow.",
+  "unchanged_geometry": "A geometric difference after replanning can occur without a changed world, owing to remaining-origin context or equivalent planner alternatives. Report it as a policy geometry change, not proof that new terrain information caused the change.",
+  "meaningful_change_reconstruction": "The frozen runner's decision_changed field can include DECLINE_OPTIONAL without any actual change. Preserve that raw field, but reconstruct the predeclared meaningful indicator from geometry_changed OR a positive adaptive-minus-rigid optional count OR different resolved primary/return outcomes. Do not count a new identifier or a no-op optional decline alone.",
+  "mandatory_ai_declaration": {
+    "tool": "OpenAI Codex",
+    "use": "AI-assisted methodology clarification for the simulated experiment."
+  }
+}
