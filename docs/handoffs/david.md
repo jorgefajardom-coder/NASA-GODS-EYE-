@@ -1,5 +1,11 @@
 # David - retain scientific mission authority and approve the model
 
+Future guide: [science extension tree](../science_extension_tree.md). David leads
+scope/science review and the A2/A3, C1 and D1-D3 hypotheses; these are proposed
+contracts, not activated tasks. New unlisted ideas may be assessed in an isolated
+local branch for discussion on 15-Nov-2026 (Bogota), without integration or a
+scope/approval change. Preserve D-DEL-03 and current delivery responsibilities.
+
 ## Delivery priority after PR28 — owner-confirmed 14 November 2026
 
 Read [current conclusions and PDF tasks DV-1..4](../delivery_closure_plan.md)

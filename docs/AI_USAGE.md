@@ -1,5 +1,22 @@
 # Required AI-use declaration
 
+## Science extension tree and reproducible diagram
+
+OpenAI Codex assisted the proposed 22-node guide (four common gates and eighteen
+extensions), structured source, Markdown/SVG/PNG renderer, owner-navigation
+updates and the latest local-idea clarification of D-DEL-03. The guide records
+future questions, responsible leads/reviewers, AND dependencies, acceptance and
+stop conditions; no capability or completed milestone is asserted.
+
+`docs/assets/science-tree/science-tree.png` and `.svg` are code-rendered planning
+diagrams, not image-model output or NASA observational imagery. They retain a
+visible `AI-generated` label and embedded tool/source metadata. The renderer's
+Pillow output was visually inspected for legibility; the source and image parity
+check is reproducible. No image-generation model, NASA branding, terrain,
+observation, mission measurement or new experiment result was generated. This
+documentation preserves the delivery freeze and permits only the owner's bounded
+local assessment of unlisted ideas for the 15-Nov-2026 discussion.
+
 ## Local per-agent campaign and EVA proposal
 
 OpenAI Codex assisted primary-source research, per-patch analytical workloads,

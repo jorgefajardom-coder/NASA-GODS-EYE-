@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2700" height="1840" viewBox="0 0 2700 1840" role="img" aria-labelledby="title desc">
+<title id="title">Science extension tree</title>
+<desc id="desc">Four prerequisite gates and eighteen proposed extensions. Every Requires list is AND. Delivery freeze remains active; isolated local assessment of unlisted ideas may be discussed on 15 November.</desc>
+<metadata>{&quot;source_sha256&quot;: &quot;af436aadec2b1bc544ad28508e015496f5f9d11a1f58d49222d84c9dd24ef19a&quot;, &quot;ai_use&quot;: {&quot;tool&quot;: &quot;OpenAI Codex&quot;, &quot;scope&quot;: &quot;proposed planning content, structured metadata, document and diagram renderer&quot;, &quot;new_observations_or_results&quot;: false}, &quot;kind&quot;: &quot;planning_document_not_runtime_contract&quot;}</metadata>
+<rect x="0" y="0" width="2700" height="1840" rx="0" fill="#f5f3ed" stroke="none" stroke-width="2"/>
+<text x="65" y="106" font-family="Arial,DejaVu Sans,sans-serif" font-size="58" fill="#173d49">SCIENCE EXTENSION TREE</text>
+<text x="65" y="157" font-family="Arial,DejaVu Sans,sans-serif" font-size="29" fill="#173d49">Proposed capabilities | delivery freeze active | no milestone accepted by this diagram</text>
+<text x="65" y="210" font-family="Arial,DejaVu Sans,sans-serif" font-size="29" fill="#173d49">Current root: recorded human MOCK recovery + replay; full scientific three-role closure remains open.</text>
+<polyline points="650,331 718,331" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="718,331 704,322 704,340" fill="#82949b"/>
+<polyline points="1310,331 1378,331" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="1378,331 1364,322 1364,340" fill="#82949b"/>
+<polyline points="1970,331 2038,331" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="2038,331 2024,322 2024,340" fill="#82949b"/>
+<rect x="65" y="250" width="585" height="165" rx="14" fill="#dce8e7" stroke="#90aaa9" stroke-width="2"/>
+<text x="87" y="309" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#173d49">G0</text>
+<text x="87" y="356" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Reopen scope</text>
+<text x="87" y="400" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Lead: David | Requires: scope decision</text>
+<rect x="725" y="250" width="585" height="165" rx="14" fill="#dce8e7" stroke="#90aaa9" stroke-width="2"/>
+<text x="747" y="309" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#173d49">G1</text>
+<text x="747" y="356" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Auditable costs</text>
+<text x="747" y="400" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Lead: Diego | Requires: G0</text>
+<rect x="1385" y="250" width="585" height="165" rx="14" fill="#dce8e7" stroke="#90aaa9" stroke-width="2"/>
+<text x="1407" y="309" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#173d49">G2</text>
+<text x="1407" y="356" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Three executed roles</text>
+<text x="1407" y="400" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Lead: Jesus | Requires: G1</text>
+<rect x="2045" y="250" width="585" height="165" rx="14" fill="#dce8e7" stroke="#90aaa9" stroke-width="2"/>
+<text x="2067" y="309" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#173d49">G3</text>
+<text x="2067" y="356" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Reproducible base</text>
+<text x="2067" y="400" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Lead: Jorge | Requires: G2</text>
+<text x="65" y="491" font-family="Arial,DejaVu Sans,sans-serif" font-size="29" fill="#173d49">ALL extensions require G3 transitively. Every additional Requires list must also be satisfied (AND).</text>
+<text x="65" y="537" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Read left-to-right within the trunk; top-to-bottom within each branch. Cross-branch links are printed on nodes.</text>
+<text x="65" y="608" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Territory and science</text>
+<polyline points="262.5,914 262.5,938" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="262.5,938 253.5,924 271.5,924" fill="#82949b"/>
+<rect x="65" y="690" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="85" y="746" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">A1</text>
+<text x="85" y="796" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Multiscale context</text>
+<text x="85" y="882" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Daniel</text>
+<text x="85" y="913" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: G3</text>
+<polyline points="262.5,1169 262.5,1193" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="262.5,1193 253.5,1179 271.5,1179" fill="#82949b"/>
+<rect x="65" y="945" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="85" y="1001" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">A2</text>
+<text x="85" y="1051" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Opportunistic science</text>
+<text x="85" y="1137" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: David</text>
+<text x="85" y="1168" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: A1</text>
+<rect x="65" y="1200" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="85" y="1256" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">A3</text>
+<text x="85" y="1306" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Campaign atlas</text>
+<text x="85" y="1392" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: David</text>
+<text x="85" y="1423" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: A2, D3</text>
+<text x="505" y="608" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Robustness and</text>
+<text x="505" y="649" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">information</text>
+<polyline points="702.5,914 702.5,938" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="702.5,938 693.5,924 711.5,924" fill="#82949b"/>
+<rect x="505" y="690" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="525" y="746" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">B1</text>
+<text x="525" y="796" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Seeded worlds</text>
+<text x="525" y="882" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Daniel</text>
+<text x="525" y="913" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: G3</text>
+<polyline points="702.5,1169 702.5,1193" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="702.5,1193 693.5,1179 711.5,1179" fill="#82949b"/>
+<rect x="505" y="945" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="525" y="1001" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">B2</text>
+<text x="525" y="1051" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Explore for value</text>
+<text x="525" y="1137" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Diego</text>
+<text x="525" y="1168" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: B1, A2, F1</text>
+<rect x="505" y="1200" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="525" y="1256" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">B3</text>
+<text x="525" y="1306" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Evaluated learning</text>
+<text x="525" y="1392" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Diego</text>
+<text x="525" y="1423" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: B2</text>
+<text x="945" y="608" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Cooperation</text>
+<polyline points="1142.5,914 1142.5,938" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="1142.5,938 1133.5,924 1151.5,924" fill="#82949b"/>
+<rect x="945" y="690" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="965" y="746" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">C1</text>
+<text x="965" y="796" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Dynamic assignment</text>
+<text x="965" y="882" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: David</text>
+<text x="965" y="913" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: G3</text>
+<polyline points="1142.5,1169 1142.5,1193" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="1142.5,1193 1133.5,1179 1151.5,1179" fill="#82949b"/>
+<rect x="945" y="945" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="965" y="1001" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">C2</text>
+<text x="965" y="1051" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Larger fleet</text>
+<text x="965" y="1137" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Jesus</text>
+<text x="965" y="1168" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: C1, E1</text>
+<rect x="945" y="1200" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="965" y="1256" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">C3</text>
+<text x="965" y="1306" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Resilient network</text>
+<text x="965" y="1392" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Jesus</text>
+<text x="965" y="1423" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: C2</text>
+<text x="1385" y="608" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Resources and time</text>
+<polyline points="1582.5,914 1582.5,938" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="1582.5,938 1573.5,924 1591.5,924" fill="#82949b"/>
+<rect x="1385" y="690" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="1405" y="746" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">D1</text>
+<text x="1405" y="796" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Campaign / EVA /</text>
+<text x="1405" y="837" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">sorties</text>
+<text x="1405" y="882" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: David</text>
+<text x="1405" y="913" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: G3</text>
+<polyline points="1582.5,1169 1582.5,1193" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="1582.5,1193 1573.5,1179 1591.5,1179" fill="#82949b"/>
+<rect x="1385" y="945" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="1405" y="1001" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">D2</text>
+<text x="1405" y="1051" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Energy and environment</text>
+<text x="1405" y="1137" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: David</text>
+<text x="1405" y="1168" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: D1</text>
+<rect x="1385" y="1200" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="1405" y="1256" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">D3</text>
+<text x="1405" y="1306" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Multi-sol campaigns</text>
+<text x="1405" y="1392" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: David</text>
+<text x="1405" y="1423" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: D2, C1</text>
+<text x="1825" y="608" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Computational scale</text>
+<polyline points="2022.5,914 2022.5,938" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="2022.5,938 2013.5,924 2031.5,924" fill="#82949b"/>
+<rect x="1825" y="690" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="1845" y="746" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">E1</text>
+<text x="1845" y="796" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Hierarchical planning</text>
+<text x="1845" y="882" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Diego</text>
+<text x="1845" y="913" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: A1</text>
+<polyline points="2022.5,1169 2022.5,1193" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="2022.5,1193 2013.5,1179 2031.5,1179" fill="#82949b"/>
+<rect x="1825" y="945" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="1845" y="1001" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">E2</text>
+<text x="1845" y="1051" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Incremental replanning</text>
+<text x="1845" y="1137" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Diego</text>
+<text x="1845" y="1168" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: E1</text>
+<rect x="1825" y="1200" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="1845" y="1256" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">E3</text>
+<text x="1845" y="1306" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Multiobjective decisions</text>
+<text x="1845" y="1392" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Diego</text>
+<text x="1845" y="1423" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: E2, A2, D1</text>
+<text x="2265" y="608" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Perception and reality</text>
+<polyline points="2462.5,914 2462.5,938" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="2462.5,938 2453.5,924 2471.5,924" fill="#82949b"/>
+<rect x="2265" y="690" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="2285" y="746" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">F1</text>
+<text x="2285" y="796" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Audited simulated</text>
+<text x="2285" y="837" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">sensor</text>
+<text x="2285" y="882" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Daniel</text>
+<text x="2285" y="913" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: G3</text>
+<polyline points="2462.5,1169 2462.5,1193" fill="none" stroke="#82949b" stroke-width="3"/>
+<polygon points="2462.5,1193 2453.5,1179 2471.5,1179" fill="#82949b"/>
+<rect x="2265" y="945" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="2285" y="1001" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">F2</text>
+<text x="2285" y="1051" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Physics and localization</text>
+<text x="2285" y="1137" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Jesus</text>
+<text x="2285" y="1168" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: F1, D1</text>
+<rect x="2265" y="1200" width="395" height="224" rx="10" fill="#ffffff" stroke="#c2cdcc" stroke-width="2"/>
+<text x="2285" y="1256" font-family="Arial,DejaVu Sans,sans-serif" font-size="39" fill="#975431">F3</text>
+<text x="2285" y="1306" font-family="Arial,DejaVu Sans,sans-serif" font-size="33" fill="#173d49">Analog field trial</text>
+<text x="2285" y="1392" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Lead: Jesus</text>
+<text x="2285" y="1423" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Requires: F2, C1</text>
+<text x="65" y="1509" font-family="Arial,DejaVu Sans,sans-serif" font-size="29" fill="#173d49">Review is not implementation approval. An accepted experiment opens only its declared scope.</text>
+<text x="65" y="1559" font-family="Arial,DejaVu Sans,sans-serif" font-size="29" fill="#173d49">New unlisted idea? Assess in an isolated local branch; discuss on 15 Nov 2026 (America/Bogota).</text>
+<text x="65" y="1605" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">No extension push, merge, deployment or frozen-baseline change is authorized by that local assessment.</text>
+<text x="65" y="1669" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Evidence: reproducible artifact + positive/negative checks + independent review + green regressions + scope decision.</text>
+<text x="65" y="1717" font-family="Arial,DejaVu Sans,sans-serif" font-size="27" fill="#173d49">Authoritative contracts, reviewers and stop conditions: docs/science_extension_tree.md</text>
+<text x="65" y="1799" font-family="Arial,DejaVu Sans,sans-serif" font-size="29" fill="#975431">AI-generated | planning diagram, not NASA observational data</text>
+<text x="2190" y="1794" font-family="Arial,DejaVu Sans,sans-serif" font-size="24" fill="#173d49">Source af436aadec2b1bc5</text>
+</svg>

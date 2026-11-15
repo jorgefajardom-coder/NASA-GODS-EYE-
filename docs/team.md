@@ -1,5 +1,11 @@
 # Team branches and ownership
 
+Future research guide: [science extension tree](science_extension_tree.md),
+with a lead/reviewers, verifiable gate and stop rule for every extension.
+The delivery freeze stays active; new unlisted ideas may be assessed locally
+and discussed on 15 November 2026 (America/Bogota), without publishing/integrating
+an extension or displacing delivery work. Follow D-DEL-03's local-idea clarification.
+
 Current priority after PR28: [delivery closure](delivery_closure_plan.md) and
 [D-DEL-03](decisions/2026-11-14-delivery-freeze.md). Basic reconciliation is
 published at main9198b3d; source/parameter freeze and full mission acceptance

@@ -7,6 +7,21 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "science_extension_tree_and_diagram",
+      "generation": "AI-assisted proposed research guide, structured source and reproducible diagram code",
+      "paths": [
+        "AGENTS.md", "README.md", "docs/science_extension_tree.md",
+        "docs/assets/science-tree/tree.json", "docs/assets/science-tree/render.py",
+        "docs/assets/science-tree/science-tree.png", "docs/assets/science-tree/science-tree.svg",
+        "docs/decisions/2026-11-14-delivery-freeze.md", "docs/delivery_closure_plan.md",
+        "docs/research_hypotheses.md", "docs/team.md", "docs/team_continuation_plan.md",
+        "docs/handoffs/david.md", "docs/handoffs/daniel.md", "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md", "docs/handoffs/jorge.md", "docs/AI_USAGE.md", "docs/ai_usage.json"
+      ],
+      "use": "Document four common gates and eighteen proposed extensions with named leads/reviewers, AND dependencies and verifiable acceptance/stop rules. Generate marked PNG/SVG planning diagrams from the same source and preserve the owner's freeze plus bounded local assessment of unlisted ideas for 15-Nov-2026. Code-rendered with Python/Pillow, no image-generation model or NASA branding; no new terrain, observations, experimental results or approvals."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "local_per_agent_campaign_and_EVA_proposal",
       "generation": "AI-assisted primary-source synthesis, proposed workloads, standalone analytical code and derived model diagnostics",
       "paths": [
@@ -1306,6 +1321,15 @@
     }
   ],
   "generated_media": [
+    {
+      "kind": "code_rendered_planning_diagram",
+      "paths": ["docs/assets/science-tree/science-tree.png", "docs/assets/science-tree/science-tree.svg"],
+      "tool": "OpenAI Codex-assisted Python/Pillow and SVG renderer",
+      "watermark": "Visible AI-generated planning-diagram label in both outputs; embedded source SHA-256 and AI-use metadata",
+      "source": "docs/assets/science-tree/tree.json",
+      "use": "Proposed extension dependencies and leads; not observational data, implemented capabilities, completed milestones or scientific approval",
+      "nasa_branding": false
+    },
     {
       "path": "web/public/assets/portraits/human_1.webp",
       "kind": "ai_generated_image",
