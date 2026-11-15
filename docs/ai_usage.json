@@ -13,14 +13,17 @@
         "README.md",
         "docs/AI_USAGE.md",
         "docs/ai_usage.json",
-        "docs/handoffs/david.md",
-        ".local/readme-science-update"
+        "docs/handoffs/david.md"
       ],
       "use": "Explain the research question, terrain scale, declared resource models, paired comparison, all three result panels and computational limitations. Link the merged PR47 evidence and scientific Wiki.",
       "metadata": "Published study inputs, points, intervals and model/approval states are retained; no new measurements, simulation outcomes, media or coefficients are generated.",
       "source_main_sha": "9bae0f0fc8337fed235b7fe71301c4bea6cce80e",
       "production_implementation_change": false,
-      "scientific_approval_change": false
+      "scientific_approval_change": false,
+      "local_helper_provenance": {
+        "location": ".local/readme-science-update",
+        "scope": "Internal documentation preparation/link checks; not part of the publication payload"
+      }
     },
     {
       "tool": "OpenAI Codex",
