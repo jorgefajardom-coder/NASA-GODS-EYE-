@@ -9,7 +9,7 @@ import { arrivalView, coverQuad, easeInOut, lerpQuad, quadMatrix3d, type Quad } 
 /** Session key that carries the card image across the page load, for the arrival fade. */
 export const ARRIVAL_KEY = 'mge-zone-arrival';
 /** Card-to-screen zoom before the page changes (ms). */
-const TRAVEL_MS = 750;
+const TRAVEL_MS = 420;
 
 /** Whether this load comes from the selector (the arrival fade will show), without consuming it. */
 export function arrivalPending(runId: string): boolean {
@@ -39,10 +39,10 @@ function removeVeil() {
 }
 
 /** Arrival timing (ms): least and most time full screen before laying down, the lay-down itself, the fade. */
-const ARRIVE_HOLD_MIN = 350;
+const ARRIVE_HOLD_MIN = 0;
 const ARRIVE_HOLD_MAX = 6000;
-const ARRIVE_FIT = 1400;
-const ARRIVE_FADE = 800;
+const ARRIVE_FIT = 650;
+const ARRIVE_FADE = 380;
 
 /**
  * After travelling from the selector, the zone's card image (the same north-up orthomosaic that is draped on the
