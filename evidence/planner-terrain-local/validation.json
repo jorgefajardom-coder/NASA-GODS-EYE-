@@ -1,0 +1,37 @@
+{
+  "base": "d737e0fa969746a69cf0b141aa50e52eaf642e7f",
+  "reference_main": "9013bebf2400d605f5a3d68e79dadbd5d1c57d03",
+  "synthetic_only": true,
+  "results": {
+    "new_passed": 32,
+    "full_passed": 1268,
+    "full_skipped": 22,
+    "full_failed": 0,
+    "planning_pre_final_assertion_revision_passed": 497
+  },
+  "historical_attempts": [
+    {
+      "path": "tmp/terrain-first.xml",
+      "passed": 31,
+      "failed": 1,
+      "cause": "rover fixture time budget"
+    },
+    {
+      "path": "tmp/terrain-final.xml",
+      "passed": 1266,
+      "failed": 2,
+      "cause": "incorrect roughness expectation on obstacle-invalidated fit"
+    }
+  ],
+  "hashes": {
+    "src/mge_planning/mge_planning/terrain_diagnostics.py": "64e57ed2de2cdab468e33c6a3a81ce2ecd3e07dc77027670545b97b135fec84f",
+    "tests/planning/test_terrain_diagnostics.py": "36e4a52060181adb4032185e704760ffce727fe34194c6f5b1c5175d2390e658",
+    "src/mge_planning/mge_planning/core.py": "4decebff1b0b0a1bfcb0f29c8e82dc314ddf1af05440fa8070359ad42deb8662",
+    "config/science_profiles.proposed.json": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea"
+  },
+  "limitations": [
+    "No fresh ROS/web execution for this isolated non-runtime module; earlier reconciled-branch results are historical.",
+    "22 Windows skips: ROS, symlink privilege and external snapshot.",
+    "No route authorization or physical safety evidence."
+  ]
+}

@@ -1612,6 +1612,17 @@
         "docs/ai_usage.json"
       ],
       "use": "Exercise actual scientific Python A* results through the existing actual MissionManager audit with explicit activity context, remaining resources, FAST/SAFE, map invalidation, continuous restart, identity/model/budget/search-limit rejection and explicit base return. Synthetic grid and telemetry; manager approval flags/profile labels are test-local only. No production code, coefficients, ROS contracts, runtime scientific activation, frozen delivery revision or publication is changed. Outcomes are software validation, not physical or three-role scientific mission acceptance."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "experimental_terrain_diagnostics",
+      "paths": [
+        "src/mge_planning/mge_planning/terrain_diagnostics.py",
+        "tests/planning/test_terrain_diagnostics.py",
+        "docs/planner_terrain_mobility_review.md",
+        "evidence/planner-terrain-local"
+      ],
+      "use": "Generate synthetic analytical terrain tests and non-authorizing raster diagnostics; record real computational outcomes. No NASA observation, operational activation, scientific approval or physical certification."
     }
   ],
   "generated_media": [
