@@ -1017,3 +1017,7 @@ OpenAI Codex assisted the metadata/hash continuation and read-only native Wiki v
 ## PR44 late-event stream reconciliation — 15 November 2026
 
 OpenAI Codex assisted a minimal gateway event-stream correction, four real WebSocket regressions, actual-client validation and review handoff registered as `pr44_late_event_stream_reconciliation`. The original high-water filter lost a unique event2 after event3; a fixed resume floor plus emitted-sequence set preserves late events and deduplicates backlog/queue overlap. Tests use synthetic envelopes or the existing public MOCK replay, not new NASA observations or a new mission. Original contributor history, declarations and schema1.0.0 are retained. Final owner merge approval and organizer endorsement remain separate gates.
+
+## Live bar and run selector — 15 November 2026
+
+Claude (Anthropic) through Claude Code assisted the viewer changes registered as `live_bar_and_direct_run_switch`: the read-only ROS gateway bar is always shown, disconnected (and never contacting a server) when the page has no `?gateway=`; a run chosen in the run selector opens directly instead of returning to the intro and zone menu. Code and tests only; no data, observation or live mission is claimed.

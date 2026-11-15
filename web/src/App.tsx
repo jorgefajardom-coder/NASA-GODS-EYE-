@@ -698,8 +698,9 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         </div>
 
         <aside className="right">
-          {/* The running ROS gateway, if any, as one thin line at the top of the status column. */}
-          {GATEWAY && <LiveGatewayPanel base={GATEWAY} />}
+          {/* The live ROS gateway link as one thin line at the top of the status column: always shown, disconnected
+              unless the page was opened with ?gateway=. */}
+          <LiveGatewayPanel base={GATEWAY} />
           <StatusBlock
             manifest={m}
             missionState={view.state?.mission_state ?? 'IDLE'}

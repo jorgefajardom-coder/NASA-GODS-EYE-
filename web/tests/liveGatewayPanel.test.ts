@@ -84,4 +84,16 @@ describe('live gateway panel', () => {
     expect(container.querySelector('.live-gw--connected')).toBeNull();
     Object.assign(state, previous);
   });
+
+  it('stays visible and disconnected without a gateway, and never connects', async () => {
+    const { gatewayLive } = await import('../src/lib/gatewayLive');
+    (gatewayLive.connect as ReturnType<typeof vi.fn>).mockClear();
+    act(() => root.render(createElement(LiveGatewayPanel, { base: null })));
+    expect(container.querySelector('.live-gw--off')).not.toBeNull();
+    expect(container.querySelector('.chip-mode')?.textContent).toBe('NOT CONNECTED');
+    expect(container.querySelector('.live-gw--connected')).toBeNull();
+    expect(gatewayLive.connect).not.toHaveBeenCalled();
+    act(() => (container.querySelector('.live-gw__btn') as HTMLButtonElement).click());
+    expect(container.textContent).toContain('?gateway=http://127.0.0.1:8010');
+  });
 });
