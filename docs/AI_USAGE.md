@@ -937,3 +937,7 @@ OpenAI Codex assisted local integration of PR37/PR38 and the height/replay cut, 
 ## Same-run browser video — 15 November 2026
 
 OpenAI Codex assisted Chrome capture/edit scripts, English overlays/subtitles, metadata and technical review for `web/public/media/height-recovery-002.mp4`. The actual viewer replays the exact MOCK software run; the edit does not generate NASA observations or mission telemetry. Visible `AI-generated edit | SIMULATED | NOT LIVE` and existing portrait marks remain readable. Capture metadata locks viewerf7938f5, execution742eed5 and all four recorder files. No image-generation model or NASA branding was used to create the capture/edit. Third-party source terms remain; raw frames/browser profiles/caches are excluded. Final owner merge, organizer endorsement and submission approval remain pending.
+
+## Viewer terrain shape and zone menu — 15 November 2026
+
+Claude (Anthropic) through Claude Code assisted a viewer fix registered in `ai_usage.json` as `viewer_terrain_shape_and_zone_menu_fix`: the updated-map layer keeps the ground shape of the run's last public map version from the start (no sudden rise of observed ground near the agents), while observed-cell tints and uncertainty still follow the current map version; the zone menu opens on the Jezero card. Code and tests only; no data or observations were generated.
