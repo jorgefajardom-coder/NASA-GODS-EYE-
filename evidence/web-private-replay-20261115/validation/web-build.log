@@ -1,0 +1,30 @@
+
+> mge-web@0.1.0 build
+> tsc -b && vite build
+
+vite v7.0.4 building for production...
+transforming...
+✓ 699 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/replay/mock-vertical-001/manifest.json                       1.09 kB │ gzip:   0.53 kB
+dist/index.html                                                   7.68 kB │ gzip:   2.77 kB
+dist/assets/rajdhani-latin-500-normal-DfvNI-Td.woff              11.76 kB
+dist/assets/rajdhani-latin-600-normal-Dx02qI2_.woff              12.09 kB
+dist/assets/ibm-plex-mono-latin-400-normal-CvHOgSBP.woff         13.14 kB
+dist/assets/ibm-plex-mono-latin-500-normal-CB9ihrfo.woff         13.16 kB
+dist/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2        14.71 kB
+dist/assets/ibm-plex-mono-latin-500-normal-DSY6xOcd.woff2        14.89 kB
+dist/assets/rajdhani-latin-500-normal-ByNUCHrt.woff2             15.08 kB
+dist/assets/rajdhani-latin-600-normal-CXCVEoA9.woff2             15.73 kB
+dist/assets/barlow-condensed-latin-400-normal-BXL2z6Kg.woff      18.52 kB
+dist/assets/barlow-condensed-latin-500-normal-HIEiP5Ov.woff      18.60 kB
+dist/assets/barlow-condensed-latin-600-normal-BFJEwTuo.woff      18.89 kB
+dist/replay/mock-vertical-001/snapshot.json                      20.71 kB │ gzip:   2.47 kB
+dist/assets/barlow-condensed-latin-400-normal-Dc2u_eUW.woff2     21.16 kB
+dist/assets/barlow-condensed-latin-500-normal-BgYH2mbd.woff2     21.42 kB
+dist/assets/barlow-condensed-latin-600-normal-DepVgxBB.woff2     22.31 kB
+dist/replay/mock-vertical-001/timeline.jsonl                     33.58 kB
+dist/assets/index-CqE-wolL.css                                   41.92 kB │ gzip:   9.57 kB
+dist/assets/index-CH0chMQm.js                                 1,383.23 kB │ gzip: 403.27 kB
+✓ built in 11.22s

@@ -1,0 +1,37 @@
+PASS  recorded: opens in an off-the-record context with empty storage
+PASS  recorded: every request stays on the static origin
+PASS  recorded: no WebSocket or EventSource opened
+PASS  recorded: no failed or non-OK request
+PASS  recorded: no evaluator/reference request
+PASS  recorded: no uncaught page exception
+PASS  recorded: label is REPLAY with the recorded producer
+PASS  recorded/planning: IDs, decisions and results match the package
+PASS  recorded/planning: REPLAY label and Offline shown, no LIVE claim
+PASS  recorded/planning: latest recorded event explanation is on screen
+PASS  recorded/first-route: IDs, decisions and results match the package
+PASS  recorded/first-route: REPLAY label and Offline shown, no LIVE claim
+PASS  recorded/first-route: latest recorded event explanation is on screen
+PASS  recorded/invalidated-replanning: IDs, decisions and results match the package
+PASS  recorded/invalidated-replanning: REPLAY label and Offline shown, no LIVE claim
+PASS  recorded/invalidated-replanning: latest recorded event explanation is on screen
+PASS  recorded/replacement-route: IDs, decisions and results match the package
+PASS  recorded/replacement-route: REPLAY label and Offline shown, no LIVE claim
+PASS  recorded/replacement-route: latest recorded event explanation is on screen
+PASS  recorded/final: IDs, decisions and results match the package
+PASS  recorded/final: REPLAY label and Offline shown, no LIVE claim
+PASS  recorded/final: latest recorded event explanation is on screen
+PASS  default: every request stays on the static origin
+PASS  default: no WebSocket or EventSource opened
+PASS  default: no failed or non-OK request
+PASS  default: no evaluator/reference request
+PASS  default: no uncaught page exception
+PASS  default: label is REPLAY · SIMULATION, Offline, no LIVE claim
+PASS  default: the replay plays without a backend
+PASS  evaluator probe: the public build answers 404 for the reference
+PASS  evaluator probe: no reference layer is offered
+PASS  evaluator probe: the viewer still opens as REPLAY
+PASS  build: no evaluator/reference/HiRISE-named file in dist
+PASS  server: only GET file requests were answered
+PASS  host: no ROS, Gazebo, gateway, planner or recorder process running
+
+PASS: 35/35 checks. Output: evidence/web-private-replay-20261115/run
