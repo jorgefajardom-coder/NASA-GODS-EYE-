@@ -50,6 +50,7 @@ Final English video/project-page links and acceptance remain tracked in the
 - [Team branches and ownership](docs/team.md) and
   [continuation plan, 14 November 2026](docs/team_continuation_plan.md) (on `main`)
 - [Probable roadmap and owner checklists](docs/mission_checklist.md)
+- [Science extension tree: verifiable gates, dependencies and leads](docs/science_extension_tree.md) — freeze remains active; unlisted ideas may be assessed locally for discussion on 15 November 2026 (America/Bogota).
 - [Accepted estimated-terrain scope, D-EST-01](docs/decisions/2026-11-14-estimated-terrain-planning.md)
 - [NASA resource-to-result traceability](docs/nasa_traceability.md)
 - [Proposed shared interface contract](docs/ICD.md) (pending team confirmation),

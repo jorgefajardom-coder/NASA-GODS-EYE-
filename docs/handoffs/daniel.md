@@ -1,5 +1,11 @@
 # Daniel - deliver the canonical public dataset and coherent belief
 
+Future guide: [science extension tree](../science_extension_tree.md). Daniel
+leads A1 context, B1/H-DAN-01 seeded worlds and F1 sensor hypotheses once their
+gates are accepted and scope is reopened. The delivery freeze remains active.
+New unlisted ideas may be assessed in an isolated local branch for discussion
+on 15-Nov-2026 (Bogota), without extension publication/integration or lost delivery work.
+
 ## Delivery priority after PR28 — owner-confirmed 14 November 2026
 
 Follow [PDF tasks DA-1..4](../delivery_closure_plan.md) and
