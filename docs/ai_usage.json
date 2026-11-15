@@ -1629,9 +1629,17 @@
         "web/src/lib/co2.ts",
         "web/tests/co2.test.ts",
         "web/src/components/RadialHud.tsx",
-        "web/src/components/HudGauge.tsx"
+        "web/src/components/HudGauge.tsx",
+        "web/src/lib/gatewayLive.ts",
+        "web/src/components/LiveGatewayPanel.tsx",
+        "web/tests/gatewayLive.test.ts",
+        "web/src/components/Frame.tsx",
+        "web/README.md",
+        "web/src/components/FirstPersonHud.tsx",
+        "web/tests/photoTourExit.test.ts",
+        "web/tests/liveGatewayPanel.test.ts"
       ],
-      "use": "Display the existing per-zone water (Mars Odyssey GRS) and radiation (MSL RAD and RAD's dose-pressure relation) context from web/scripts/data/zone_environment.json in the Atmos tab of every zone and on the zone cards, with a 4 h Marswalk example dose; draft the English project-page text that maps the challenge to delivered and pending items. Add the HUD's exhaled-CO2 gauge on the oxygen button (oxygen used x an assumed respiratory quotient of 0.85, pending review; suit CO2 removal capacity not modelled). Use each zone's surface dose rate in the HUD dose gauge, with NASA's 600 mSv career limit (NASA-STD-3001) as scale context. The numeric values and their sources are unchanged NASA-derived data, not generated; the example dose is a linear display estimate without shielding or solar events. No media generated; no scientific approval or milestone closure."
+      "use": "Display the existing per-zone water (Mars Odyssey GRS) and radiation (MSL RAD and RAD's dose-pressure relation) context from web/scripts/data/zone_environment.json in the Atmos tab of every zone and on the zone cards, with a 4 h Marswalk example dose; draft the English project-page text that maps the challenge to delivered and pending items. Add the HUD's exhaled-CO2 gauge on the oxygen button (oxygen used x an assumed respiratory quotient of 0.85, pending review; suit CO2 removal capacity not modelled). Use each zone's surface dose rate in the HUD dose gauge, with NASA's 600 mSv career limit (NASA-STD-3001) as scale context. Add the opt-in read-only live gateway panel (?gateway=), tested with synthetic gateway envelopes and checked against a running MOCK ROS stack; it labels a MOCK stack MOCK and sends no goals; the redundant fixed Offline headline in the top-right status was removed, so the connection is shown only in the panel. Add an Exit photo tour button (and Esc) to the rover HUD; it changes no data. The gateway panel is one thin line in the top-right status column with a details dropdown, so it does not cover the map. The numeric values and their sources are unchanged NASA-derived data, not generated; the example dose is a linear display estimate without shielding or solar events. No media generated; no scientific approval or milestone closure."
     },
     {
       "tool": "OpenAI Codex",
@@ -1781,6 +1789,33 @@
         "docs/ai_usage.json"
       ],
       "use": "Capture the actual combined viewer replaying height-recovery-20261115-01 without seeks, annotate honestly and preserve visible global/portrait AI marks. Lock source/build/package/video hashes, retain original third-party terms, exclude browser profiles/raw frames, and distinguish review candidate publication from final submission approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "pr39_gateway_contract_reconciliation",
+      "generation": "AI-assisted read-only gateway validation/recovery code, regression tests, bounded real HTTP/WebSocket consumer harness and review documentation; preserve concurrent main photo-tour/terrain/menu changes during reconciliation; restrict retrospective stable terrain to explicitly illustrative SIMULATION scenes and preserve current-version recorded geometry",
+      "paths": [
+        "web/src/lib/gatewayLive.ts",
+        "web/src/components/LiveGatewayPanel.tsx",
+        "web/tests/gatewayLive.test.ts",
+        "web/tests/liveGatewayPanel.test.ts",
+        "README.md",
+        "web/README.md",
+        "docs/project_page.md",
+        "web/public/about.html",
+        "web/public/llms.txt",
+        "docs/pr39_gateway_review.md",
+        "evidence/pr39-gateway-contract-20261115",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        ".gitattributes",
+        "docs/final_delivery_candidate.md",
+        "web/src/App.tsx",
+        "web/src/lib/layers.ts",
+        "web/src/components/MissionScene.tsx",
+        "web/tests/terrainShape.test.ts"
+      ],
+      "scope": "Software consumer validation only. Actual unchanged gateway/RunStore is fed the existing public MOCK recorded-recovery-002 package; no ROS execution, goals, generated NASA observations, scientific approval or verified LIVE mission in this review."
     },
     {
       "tool": "Claude (Anthropic) through Claude Code",
