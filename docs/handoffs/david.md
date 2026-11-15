@@ -276,3 +276,9 @@ The owner authorized publication of the complete English Wiki after its local fi
 Published-main baseline:9013bebf2400d605f5a3d68e79dadbd5d1c57d03. Both AI registers retain all main declarations and add only this Wiki entry. No application source, runtime configuration, message, planner implementation, private world, evaluator reference, raw capture frames or browser profile is included. Scientific owner audit remains pending. The publication manifest and standard-library checker identify the precise exported scope; the historical3394-artifact local archive is not claimed to be uploaded.
 
 JES-07/AC-10 organizer notification and explicit endorsement remain separate delivery gates. Jesus coordinates and David backs up; this publication does not mark the submission complete and sends no external message.
+
+## Reviewed ImageGen Wiki visual edition
+
+Prepared a documentation-only refresh from main 7ff5a077dfe70e181e960a2d638e3a1e955591c1 and native Wiki acf3edddb25718dc5c234a4f836cc7b96b064a6b. The supplied package has 20 images; nine corrected conceptual illustrations are selected and 11 originals excluded. Every accepted PNG/WebP carries the visible AI-generated footer. Existing numerical figures, source citations, three GIFs and historical manifests retain their bytes. Both AI declarations are appended without removing main entries. `docs/wiki/Editorial-Review.md` and the edition manifest identify exact placements, prompts, hashes and exclusions.
+
+The supplied README_START_HERE item4 and PROMPT_FOR_CODEX section6 require a PR and owner review before the separate Wiki push. Prepare the concrete source/native diff and visual checks; leave native synchronization pending that review. Scientific profile/model/mission acceptance is unchanged. JES-07/AC-10 organizer notification and endorsement remain a separate submission gate; Jesus coordinates and David backs up. This editorial cut does not claim submission readiness.

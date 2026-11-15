@@ -1,0 +1,871 @@
+{
+  "schema": "mge-wiki-imagegen-editorial-1.0.0",
+  "prepared_at_utc": "2026-11-15T19:07:36.589706+00:00",
+  "baseline_main_sha": "7ff5a077dfe70e181e960a2d638e3a1e955591c1",
+  "baseline_native_wiki_sha": "acf3edddb25718dc5c234a4f836cc7b96b064a6b",
+  "package": {
+    "filename": "MARS_GODS_EYE_Wiki_ImageGen_20_Assets.zip",
+    "zip_sha256": "ca849c0344f657eb9c652d00c8e23a69d87acd0b08aee755fa51a7390585bcc1",
+    "manifest_sha256": "27a8e041724ddf569bd7efc3f1df32b1aeb9bb8967891e2f0d0ab37d91b2689f",
+    "images_count": 20
+  },
+  "owner_review_required": true,
+  "owner_review": "pending",
+  "native_synchronized": false,
+  "technical_changes": false,
+  "accepted": [
+    {
+      "source_id": 1,
+      "slug": "cooperative-exploration",
+      "source_original_png_sha256": "ab9ab80e720a9fb116b0e64e8df3e42786f7b8b28422949ce7e93d464132e318",
+      "source_original_webp_sha256": "88227273e2e2b11a69bcb3a7150dbdebfb8f820a4a69a7c8c845d4a5f8ee9031",
+      "png_path": "assets/imagegen-20261115/01-cooperative-exploration-reviewed.png",
+      "webp_path": "assets/imagegen-20261115/01-cooperative-exploration-reviewed.webp",
+      "png_sha256": "74a3dafe967f2e367579771aa2dd168a693c90941cfbaef35374d74d1a1a961d",
+      "webp_sha256": "8b31faecd2d44ef414670bc8ea18345de2730261334d86ed97b743193d187357",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "prompt_path": "audit/editorial-20261115/prompts/01-cooperative-exploration.json",
+      "expected_visible_text": [
+        "Complementary exploration roles",
+        "Observe",
+        "Inspect",
+        "Sample",
+        "AI-generated | Conceptual illustration"
+      ],
+      "changed_pages": [
+        "Home.md"
+      ],
+      "classification": "AI-generated conceptual illustration",
+      "visual_review": "Scientific wording and causal layout inspected; separate owner review pending",
+      "role": "Conceptual illustration replacement; original file retained"
+    },
+    {
+      "source_id": 2,
+      "slug": "research-loop",
+      "source_original_png_sha256": "20efd38acedd17470de360dd314be8e424f9317a6b466c4d33f76421e2c36931",
+      "source_original_webp_sha256": "9a615a0092eefa14a8d7ebcc8a390d8bdb61461d59aefdba695196eb705675d3",
+      "png_path": "assets/imagegen-20261115/02-research-loop-reviewed.png",
+      "webp_path": "assets/imagegen-20261115/02-research-loop-reviewed.webp",
+      "png_sha256": "a940f6e906d551afdfdda799d6bc5c298efbf99bba717c9ef4a4d7d4869e0c4e",
+      "webp_sha256": "b52278f8ef5a4845b1048c065178a1261f3c2fab191179f5216380b244a97071",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "prompt_path": "audit/editorial-20261115/prompts/02-research-loop.json",
+      "expected_visible_text": [
+        "From question to evidence",
+        "Scientific question",
+        "Orbital prior",
+        "Candidate itinerary",
+        "Local observation",
+        "Mission decision",
+        "Recorded result",
+        "AI-generated | Conceptual illustration"
+      ],
+      "changed_pages": [
+        "01-Research-Question.md"
+      ],
+      "classification": "AI-generated conceptual illustration",
+      "visual_review": "Scientific wording and causal layout inspected; separate owner review pending",
+      "role": "Conceptual illustration replacement; original file retained"
+    },
+    {
+      "source_id": 3,
+      "slug": "jezero-evidence-chain",
+      "source_original_png_sha256": "9f2947f01dd094abd401a0686470dc712d84118d363dc596dd0137aea26e4829",
+      "source_original_webp_sha256": "dd3509ca4add9d9f9ace3ef7f0df3ac444917168b3301af07e7acfef7d0d426b",
+      "png_path": "assets/imagegen-20261115/03-jezero-evidence-chain-reviewed.png",
+      "webp_path": "assets/imagegen-20261115/03-jezero-evidence-chain-reviewed.webp",
+      "png_sha256": "9105c9fbcbf813993ed22298e667e199a6bf8939f4d7f02d121b3f97d04a3b27",
+      "webp_sha256": "21276ce9cfc094ca1d1598e910736d235f891f00604c659f7fcb33d38f26947f",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "prompt_path": "audit/editorial-20261115/prompts/03-jezero-evidence-chain.json",
+      "expected_visible_text": [
+        "Evidence across scales",
+        "Regional context",
+        "Orbital product",
+        "Outcrop context",
+        "Instrument measurement",
+        "Interpretation",
+        "Mission question",
+        "AI-generated | Conceptual illustration"
+      ],
+      "changed_pages": [
+        "02-Jezero-Science.md"
+      ],
+      "classification": "AI-generated conceptual illustration",
+      "visual_review": "Scientific wording and causal layout inspected; separate owner review pending",
+      "role": "Conceptual illustration replacement; original file retained"
+    },
+    {
+      "source_id": 4,
+      "slug": "terrain-scale",
+      "source_original_png_sha256": "256cae1618450ebe702f837e181d5b3adc9135d42d94934e3ff0281242bc8882",
+      "source_original_webp_sha256": "fdd6cf10fda0ba99a94511bb961c91fbc625e5685dc9a3868b94fe5f3eb58391",
+      "png_path": "assets/imagegen-20261115/04-terrain-scale-reviewed.png",
+      "webp_path": "assets/imagegen-20261115/04-terrain-scale-reviewed.webp",
+      "png_sha256": "af3f1e64560ed0624ff7f224385a81f60650db4727df1301494c9104beadcf24",
+      "webp_sha256": "c052c0bd302cd3620a648473c1a9ea4184682c2d4bb8d3c3df070d55e2b2d293",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "prompt_path": "audit/editorial-20261115/prompts/04-terrain-scale.json",
+      "expected_visible_text": [
+        "Terrain sampling and information",
+        "20 m source sampling",
+        "4 m computational grid",
+        "Local observation footprint",
+        "NoData",
+        "Finer numerical sampling does not add orbital detail",
+        "AI-generated | Conceptual illustration"
+      ],
+      "changed_pages": [
+        "03-Terrain-and-Scale.md"
+      ],
+      "classification": "AI-generated conceptual illustration",
+      "visual_review": "Scientific wording and causal layout inspected; separate owner review pending",
+      "role": "Supplement before retained quantitative figure"
+    },
+    {
+      "source_id": 5,
+      "slug": "agent-timescales",
+      "source_original_png_sha256": "234ae0d9da8d449a1b0838d4cfd0e7a71613cc6092453c14c17f49a1eb5fa465",
+      "source_original_webp_sha256": "3076430666aa368302a9718e3a0d072fcd3da0d4f1af3490157ecd7cf83535fb",
+      "png_path": "assets/imagegen-20261115/05-agent-timescales-reviewed.png",
+      "webp_path": "assets/imagegen-20261115/05-agent-timescales-reviewed.webp",
+      "png_sha256": "e3487c1b1794e16c70321af517da260d276e6502654ff8cef65eb78912688710",
+      "webp_sha256": "5e82a00d8a53c7703737b4bd5f86925686d735687d897af08b1e125f0600e62f",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "prompt_path": "audit/editorial-20261115/prompts/05-agent-timescales.json",
+      "expected_visible_text": [
+        "Human EVA",
+        "Rover campaign",
+        "Drone sortie",
+        "Each clock is allocated separately",
+        "AI-generated | Conceptual illustration"
+      ],
+      "changed_pages": [
+        "04-Agents-and-Activities.md"
+      ],
+      "classification": "AI-generated conceptual illustration",
+      "visual_review": "Scientific wording and causal layout inspected; separate owner review pending",
+      "role": "Supplement before retained quantitative figure"
+    },
+    {
+      "source_id": 6,
+      "slug": "activity-cycle",
+      "source_original_png_sha256": "47cb4c35739945beb27e09702e1b9ee8b3ba55b0c45b533fbecc81b56ca14e91",
+      "source_original_webp_sha256": "4df53356ddb27e9c2a2d226a0ed4aefc24de436ebb8ccc0f1d1d1a0811a99911",
+      "png_path": "assets/imagegen-20261115/06-activity-cycle-reviewed.png",
+      "webp_path": "assets/imagegen-20261115/06-activity-cycle-reviewed.webp",
+      "png_sha256": "1d4b40ef0d11b2b8d767dbe1efc5e93b8a9c383366b0835ce3adef206a01740e",
+      "webp_sha256": "a301435aeda4a745e9119d3d701f7d2d28e3e784a6fd9f404e2e73edbd859100",
+      "dimensions_px": [
+        1671,
+        941
+      ],
+      "prompt_path": "audit/editorial-20261115/prompts/06-activity-cycle.json",
+      "expected_visible_text": [
+        "Primary check-in",
+        "120 s",
+        "Documented-sample example",
+        "600 s",
+        "Assumed light-work phase",
+        "420 s",
+        "Assumed heavy-work phase",
+        "180 s",
+        "Phase split is a project assumption",
+        "AI-generated | Conceptual illustration"
+      ],
+      "changed_pages": [
+        "04-Agents-and-Activities.md"
+      ],
+      "classification": "AI-generated conceptual illustration",
+      "visual_review": "Scientific wording and causal layout inspected; separate owner review pending",
+      "role": "Conceptual illustration replacement; original file retained"
+    },
+    {
+      "source_id": 7,
+      "slug": "task-precedence",
+      "source_original_png_sha256": "c46c779aff42ff26c64772d729e9079c6b4ddbad7f204073ffc80ec7ac5fac2b",
+      "source_original_webp_sha256": "7a41fd0bf3f42afa4bbdea21352c89f847c51535c3936270d4072cbe0e017a5d",
+      "png_path": "assets/imagegen-20261115/07-task-precedence-reviewed.png",
+      "webp_path": "assets/imagegen-20261115/07-task-precedence-reviewed.webp",
+      "png_sha256": "08218ee9aa459383ad67b80a45aa44b7ca896ea4470423a609b0ee31fdfb9e5e",
+      "webp_sha256": "eb0b32c1e6e119fc28b0904f44c113041a9c7fb860eb54ee4745cb77338f7c53",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "prompt_path": "audit/editorial-20261115/prompts/07-task-precedence.json",
+      "expected_visible_text": [
+        "When optional sampling becomes eligible",
+        "Inspection complete?",
+        "Primary B work complete?",
+        "Compatible capability?",
+        "Work + return + reserves fit?",
+        "All four true?",
+        "Eligible optional sample",
+        "Defer optional work",
+        "AI-generated | Conceptual illustration"
+      ],
+      "changed_pages": [
+        "06-Mission-Decisions.md"
+      ],
+      "classification": "AI-generated conceptual illustration",
+      "visual_review": "Scientific wording and causal layout inspected; separate owner review pending",
+      "role": "Conceptual illustration replacement; original file retained"
+    },
+    {
+      "source_id": 9,
+      "slug": "experimental-design",
+      "source_original_png_sha256": "887a16dd93d71e780cacd9b3eb4242821b5e22e402a341c0356109a4b0a1fdd5",
+      "source_original_webp_sha256": "e16f83baf40efca3f217c266f31b7f9c2474dc9888a2033281b3329d5e35e0ec",
+      "png_path": "assets/imagegen-20261115/09-experimental-design-reviewed.png",
+      "webp_path": "assets/imagegen-20261115/09-experimental-design-reviewed.webp",
+      "png_sha256": "2398881c4409550f2fd9274627efd737d27a14c1885370d02e52b06219b0911a",
+      "webp_sha256": "60a970d89a2750cfbd787e3e1e167f5b72995f619a65615a9a2f94d739f8d884",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "prompt_path": "audit/editorial-20261115/prompts/09-experimental-design.json",
+      "expected_visible_text": [
+        "A paired planning comparison",
+        "Same initial world and resources",
+        "Public prior",
+        "Prior + reconnaissance",
+        "Route geometry",
+        "Task eligibility",
+        "Resource margin",
+        "AI-generated | Conceptual illustration"
+      ],
+      "changed_pages": [
+        "07-Experimental-Method.md"
+      ],
+      "classification": "AI-generated conceptual illustration",
+      "visual_review": "Scientific wording and causal layout inspected; separate owner review pending",
+      "role": "Conceptual illustration replacement; original file retained"
+    },
+    {
+      "source_id": 10,
+      "slug": "evidence-ladder",
+      "source_original_png_sha256": "efa3e4d4ed869d6c0a54a125fc570502f14a073da2043fbd14d632e133927c32",
+      "source_original_webp_sha256": "542524254412f94fac626ee335b9f3a40dbf55475f7adaec5d536567298c610d",
+      "png_path": "assets/imagegen-20261115/10-evidence-ladder-reviewed.png",
+      "webp_path": "assets/imagegen-20261115/10-evidence-ladder-reviewed.webp",
+      "png_sha256": "358b4110f622349e02988da184dc61384ff1111bc93ffb91ac1320200db45266",
+      "webp_sha256": "e9c449c21876e6a3cfc959df53ddd0a8154421bafe1cab7e20df0d5b46261870",
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "prompt_path": "audit/editorial-20261115/prompts/10-evidence-ladder.json",
+      "expected_visible_text": [
+        "What each kind of evidence establishes",
+        "Software checks",
+        "Tested implementation properties",
+        "Analytical case",
+        "Conclusions under declared assumptions",
+        "Integrated execution",
+        "Evidence from one connected run",
+        "Physical validation",
+        "Measurements of the evaluated system",
+        "AI-generated | Conceptual illustration"
+      ],
+      "changed_pages": [
+        "09-Discussion.md"
+      ],
+      "classification": "AI-generated conceptual illustration",
+      "visual_review": "Scientific wording and causal layout inspected; separate owner review pending",
+      "role": "Conceptual illustration replacement; original file retained"
+    }
+  ],
+  "excluded": [
+    {
+      "source_id": 8,
+      "slug": "resource-ledger",
+      "source_original_png_sha256": "0529a17310c39ebab4d1655998a52ea1347bc2f0db042658d532a122e57ee229",
+      "reason": "Invented mission budgets and reserve percentages; retain the audited resource-ledger calculation.",
+      "publication": "Original retained only in the local source package"
+    },
+    {
+      "source_id": 11,
+      "slug": "system-architecture",
+      "source_original_png_sha256": "0a83700da014d63b28848e912dfe3f46e84e32b11dea6e364aed877bbca14418",
+      "reason": "Aspirational live world, mineral sensing and Gazebo claims do not describe the recorded project scope.",
+      "publication": "Original retained only in the local source package"
+    },
+    {
+      "source_id": 12,
+      "slug": "ros2-integration-graph",
+      "source_original_png_sha256": "61d6c57a74d38a75bd86367dd967c8591ed013e3ed2b1a4ad2cdc0601e2eb4c8",
+      "reason": "Decorative node/topic names do not follow the published ICD.",
+      "publication": "Original retained only in the local source package"
+    },
+    {
+      "source_id": 13,
+      "slug": "map-refinement-loop",
+      "source_original_png_sha256": "1249a5932b976dc25deabde21c336091f3635f6c138a79a8c95db580e3e7dbad",
+      "reason": "Promises sharper, more reliable maps after every observation and implies soil classification from terrain.",
+      "publication": "Original retained only in the local source package"
+    },
+    {
+      "source_id": 14,
+      "slug": "poi-ranking",
+      "source_original_png_sha256": "529b8342a4ed4076a778e63bd44212da264b341069544fa70a15490a5e9ddccd",
+      "reason": "Invented weights, scores, distances and ranking; no approved numerical ranking exists.",
+      "publication": "Original retained only in the local source package"
+    },
+    {
+      "source_id": 15,
+      "slug": "why-site-b",
+      "source_original_png_sha256": "24edc9df697b30fb8aa67324fee70d16e67706a14f33b70e835e384eaf93bac5",
+      "reason": "Fictionally identifies experimental B with a geological deposit and invented secondary targets.",
+      "publication": "Original retained only in the local source package"
+    },
+    {
+      "source_id": 16,
+      "slug": "emergent-tasks",
+      "source_original_png_sha256": "048b4a7639e8300e59000c3afce71f685516c5a10390ddc13da915fc448d1289",
+      "reason": "Invented detour costs, margins and safe status, including incompatible oxygen accounting.",
+      "publication": "Original retained only in the local source package"
+    },
+    {
+      "source_id": 17,
+      "slug": "known-inferred-unknown",
+      "source_original_png_sha256": "fb82a83640b3d6af605a5f5f7a497af26ce3c0c0715aa26f3c72181798d23093",
+      "reason": "Invented coverage/confidence values and a known-versus-estimated taxonomy inconsistent with the project.",
+      "publication": "Original retained only in the local source package"
+    },
+    {
+      "source_id": 18,
+      "slug": "mission-engine-to-web",
+      "source_original_png_sha256": "49f337557d75f375ba8260a5a25f498b0a98684edd772aea7c2277ff745160fd",
+      "reason": "Represents high-fidelity LIVE/spectral integration and scientific results beyond the cited replay.",
+      "publication": "Original retained only in the local source package"
+    },
+    {
+      "source_id": 19,
+      "slug": "demo-walkthrough",
+      "source_original_png_sha256": "eed97d91fbd7ac2440c0e9718509bf47d6ed0ea28956d24b1cc2de835ef9befd",
+      "reason": "Portrays mineral identification and completed human sampling as a recorded demo outcome.",
+      "publication": "Original retained only in the local source package"
+    },
+    {
+      "source_id": 20,
+      "slug": "rflp-traceability",
+      "source_original_png_sha256": "c0c45803044829114b2cd45298bb7c79841e227706f76ab5c01822da38b23a88",
+      "reason": "Invented requirements, modules, thresholds and successful verification marks.",
+      "publication": "Original retained only in the local source package"
+    }
+  ],
+  "protected_paths_sha256": {
+    "docs/wiki/assets/research-loop.png": "15a33586e4e6021f5be7ccf5e30ce4c6aad3faf3b47d82b9b93385478991a1a1",
+    "docs/wiki/assets/jezero-evidence-chain.png": "50bad10f443f2bc08e0964ac037217b8e903e8881bcaff3b57da6e5a25ef6793",
+    "docs/wiki/assets/terrain-scale.png": "5c5d1250133a1188c74d58ace28019081e86ee6c92efb51a4347a0251dc83b0f",
+    "docs/wiki/assets/agent-timescales.png": "2b1787f4887d9929aa4e47a432852a1f052bc42342234c5b4a0b7e1350b31f63",
+    "docs/wiki/assets/activity-cycle.png": "aa1bbdf042be0446ce7c601a703470a554f86a210b0dc16eece2c5d8e7a331cb",
+    "docs/wiki/assets/task-precedence.png": "e695ca8dd52d23bcc0ed1d969433136f8478a644a3b380519dc60a82255d81d6",
+    "docs/wiki/assets/experimental-design.png": "2e43d1e701c038c13468bc912a60a0c6764e7d36686ae029383428a98cb37f66",
+    "docs/wiki/assets/evidence-ladder.png": "fe67fb40acd73d5a26e5a5214b86fd68a72819e0f0da8a23ec9cadf4ec85f599",
+    "docs/wiki/assets/directed-costs.png": "b7746cef6193ee1b0c36d882cb1b15a23d1ed5a738afdbd2bb8419fe1584ff39",
+    "docs/wiki/assets/resource-ledger.png": "0cb95ebcfc386001fb411e29dadf41c838f45709d29c024b9fe17ec8f33096b6",
+    "docs/wiki/assets/sensitivity.png": "abecdd6ade1f52aa802d7f9973dbf9077e72ab3a62d0881c34c6ce4406e9b75e",
+    "docs/wiki/assets/scale-crop.png": "946f7489bcd2ec14902ff0d0f3245f8e9ae64f621944a4a004d5d0a4abf1a6fc",
+    "docs/wiki/assets/case-route.png": "0b943fcd727ae66d979543b712ac01a0c5d63facb6fcab201e7003d15d42b0c8",
+    "docs/wiki/assets/case-resources.png": "34d0c08d5032773162a0bf003ebe97840d79ae226128cd6190a0b131da93d342",
+    "docs/wiki/assets/adaptation.gif": "95ec6288ff866ffef3df8c604f08892f6c6af9ab62adf993a5d1298e0262e76d",
+    "docs/wiki/assets/adaptation-poster.png": "ec98601bbf98b4cfe46ac343b24168ea65c429e6025692529b103f5be0df0528",
+    "docs/wiki/assets/prior-observation.gif": "aa51ee231a28fad5477f8ef8689afa3112f35f96916b2425a492cf260e876c28",
+    "docs/wiki/assets/prior-observation-poster.png": "b0707b4916641f815fd8eddbec0c31347ed6568e9979cb51810578f9a3260713",
+    "docs/wiki/assets/mission-decisions.gif": "2c80c138258e21ef31612cc8bcc3f8745b062e0b5b677d7b8958a0ec04993c58",
+    "docs/wiki/assets/mission-decisions-poster.png": "4c02ae4c0fef64197989ce7cd7aa44c97c2ea05909c7febbc7b3f06aaf7c4595",
+    "docs/wiki/assets/cooperative-exploration.png": "93860d7d0103ff337488560548073becd80891ef99a0691a3117ad0acf49bef2",
+    "docs/wiki/assets/manifest.json": "1f23c172aac6841d54af81f806597e64428840caaa821396e925a13be13e41ad",
+    "docs/wiki/audit/publication-manifest.json": "ccf3db34720171dbd709ee4c4c8994c51f1db3da412f90ca746339a3d3dbeeb1",
+    "docs/wiki/audit/local-draft-manifest.json": "d23d69bb0e2123947638a597f5be0366189bd65cd84c0c9112429fcc940eaf49",
+    "docs/wiki/audit/report.json": "88eb9730232a7f64b821feb3a7d4a875643369ed45391139cb754fa265a7b247",
+    "docs/wiki/audit/publication-report.json": "e11500fcdda20493cacac249106e8da0b742f80b627dc09753b3218d37c3e1a3",
+    "docs/wiki/audit/inputs.json": "23ea3b11ee7c789839c1dfbf9fa46b00d79afe22567419f32e09024070bd8a5e"
+  },
+  "visual_review": "All nine edited PNGs and 900px WebP reading previews inspected independently;1200px previews retained. Caption consistency and protected-media hashes checked. GitHub/native rendering and owner review remain separate recorded gates.",
+  "payload_files": [
+    {
+      "path": "docs/ai_usage.json",
+      "size_bytes": 115694,
+      "sha256": "ce1342df794da132bb16b6271018b509bdfca2edc87f3efd9ee9f6956960eb13"
+    },
+    {
+      "path": "docs/AI_USAGE.md",
+      "size_bytes": 65717,
+      "sha256": "aeb4c07547791b87a204cddf3aa4aa79e4b82229b796830d0439be5ae0801e1b"
+    },
+    {
+      "path": "docs/handoffs/david.md",
+      "size_bytes": 24595,
+      "sha256": "3b5ce13a014b8c69b5925b312c326aef4979c5001032abd679441b9dfcf4d8c7"
+    },
+    {
+      "path": "docs/wiki/01-Research-Question.md",
+      "size_bytes": 8831,
+      "sha256": "21f6885624d115541f8f89b63cb8023521fb10fe13f04c28aaf277092e680761"
+    },
+    {
+      "path": "docs/wiki/02-Jezero-Science.md",
+      "size_bytes": 9936,
+      "sha256": "77d279d3da59a4f1502d67734563143b7807c3c50af14368ebf293512e3b9968"
+    },
+    {
+      "path": "docs/wiki/03-Terrain-and-Scale.md",
+      "size_bytes": 9505,
+      "sha256": "ecad32b559b9445a4e8dd6f3a8c7978b5e0600795886378573326f99d424ba07"
+    },
+    {
+      "path": "docs/wiki/04-Agents-and-Activities.md",
+      "size_bytes": 11328,
+      "sha256": "e983b24f8055b74cf17ebdb4b96df2832bac46b426a5503cd50d20abf9bb8290"
+    },
+    {
+      "path": "docs/wiki/05-Resource-Models.md",
+      "size_bytes": 10679,
+      "sha256": "e445d865716377ecbdfe894add0c0f41c8b438201baabe93acdefc8876948722"
+    },
+    {
+      "path": "docs/wiki/06-Mission-Decisions.md",
+      "size_bytes": 11925,
+      "sha256": "ccbca5b71c3c6a2d424bb41334d433b015042509e855a3c7875a9ec2ced3b83f"
+    },
+    {
+      "path": "docs/wiki/07-Experimental-Method.md",
+      "size_bytes": 10750,
+      "sha256": "fe72f30fc38210112e48cecd1af31d4dabf7bd2cfe116d77cb6e2e401fea3acd"
+    },
+    {
+      "path": "docs/wiki/08-Case-Studies.md",
+      "size_bytes": 9974,
+      "sha256": "689768f8751bc3b1946e3e1ae0443ad38da2e1608944196af7e7f1a44f12f6af"
+    },
+    {
+      "path": "docs/wiki/09-Discussion.md",
+      "size_bytes": 10099,
+      "sha256": "239df87a266f63899cafb1bc66d0bfae18ea9096469bf0c0e91c662263ceb03e"
+    },
+    {
+      "path": "docs/wiki/_Footer.md",
+      "size_bytes": 212,
+      "sha256": "1081d1a7c4b86a035139481219e49abd262659190089a4d46b0ef88013b96661"
+    },
+    {
+      "path": "docs/wiki/_Sidebar.md",
+      "size_bytes": 665,
+      "sha256": "d263df9b4d9be7c26cba9ca9122fbe3148853fd0d503a3b79f64a5f02adf6ef9"
+    },
+    {
+      "path": "docs/wiki/assets/activity-cycle.png",
+      "size_bytes": 59160,
+      "sha256": "aa1bbdf042be0446ce7c601a703470a554f86a210b0dc16eece2c5d8e7a331cb"
+    },
+    {
+      "path": "docs/wiki/assets/adaptation-poster.png",
+      "size_bytes": 63598,
+      "sha256": "ec98601bbf98b4cfe46ac343b24168ea65c429e6025692529b103f5be0df0528"
+    },
+    {
+      "path": "docs/wiki/assets/adaptation.gif",
+      "size_bytes": 1719696,
+      "sha256": "95ec6288ff866ffef3df8c604f08892f6c6af9ab62adf993a5d1298e0262e76d"
+    },
+    {
+      "path": "docs/wiki/assets/agent-timescales.png",
+      "size_bytes": 67992,
+      "sha256": "2b1787f4887d9929aa4e47a432852a1f052bc42342234c5b4a0b7e1350b31f63"
+    },
+    {
+      "path": "docs/wiki/assets/case-resources.png",
+      "size_bytes": 77787,
+      "sha256": "34d0c08d5032773162a0bf003ebe97840d79ae226128cd6190a0b131da93d342"
+    },
+    {
+      "path": "docs/wiki/assets/case-route.png",
+      "size_bytes": 73690,
+      "sha256": "0b943fcd727ae66d979543b712ac01a0c5d63facb6fcab201e7003d15d42b0c8"
+    },
+    {
+      "path": "docs/wiki/assets/cooperative-exploration.png",
+      "size_bytes": 2644401,
+      "sha256": "93860d7d0103ff337488560548073becd80891ef99a0691a3117ad0acf49bef2"
+    },
+    {
+      "path": "docs/wiki/assets/directed-costs.png",
+      "size_bytes": 95670,
+      "sha256": "b7746cef6193ee1b0c36d882cb1b15a23d1ed5a738afdbd2bb8419fe1584ff39"
+    },
+    {
+      "path": "docs/wiki/assets/evidence-ladder.png",
+      "size_bytes": 70888,
+      "sha256": "fe67fb40acd73d5a26e5a5214b86fd68a72819e0f0da8a23ec9cadf4ec85f599"
+    },
+    {
+      "path": "docs/wiki/assets/experimental-design.png",
+      "size_bytes": 73389,
+      "sha256": "2e43d1e701c038c13468bc912a60a0c6764e7d36686ae029383428a98cb37f66"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/01-cooperative-exploration-reviewed.png",
+      "size_bytes": 2687561,
+      "sha256": "74a3dafe967f2e367579771aa2dd168a693c90941cfbaef35374d74d1a1a961d"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/01-cooperative-exploration-reviewed.webp",
+      "size_bytes": 457154,
+      "sha256": "8b31faecd2d44ef414670bc8ea18345de2730261334d86ed97b743193d187357"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/02-research-loop-reviewed.png",
+      "size_bytes": 2074759,
+      "sha256": "a940f6e906d551afdfdda799d6bc5c298efbf99bba717c9ef4a4d7d4869e0c4e"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/02-research-loop-reviewed.webp",
+      "size_bytes": 271818,
+      "sha256": "b52278f8ef5a4845b1048c065178a1261f3c2fab191179f5216380b244a97071"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/03-jezero-evidence-chain-reviewed.png",
+      "size_bytes": 2547238,
+      "sha256": "9105c9fbcbf813993ed22298e667e199a6bf8939f4d7f02d121b3f97d04a3b27"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/03-jezero-evidence-chain-reviewed.webp",
+      "size_bytes": 445260,
+      "sha256": "21276ce9cfc094ca1d1598e910736d235f891f00604c659f7fcb33d38f26947f"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/04-terrain-scale-reviewed.png",
+      "size_bytes": 1821647,
+      "sha256": "af3f1e64560ed0624ff7f224385a81f60650db4727df1301494c9104beadcf24"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/04-terrain-scale-reviewed.webp",
+      "size_bytes": 216288,
+      "sha256": "c052c0bd302cd3620a648473c1a9ea4184682c2d4bb8d3c3df070d55e2b2d293"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/05-agent-timescales-reviewed.png",
+      "size_bytes": 2006993,
+      "sha256": "e3487c1b1794e16c70321af517da260d276e6502654ff8cef65eb78912688710"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/05-agent-timescales-reviewed.webp",
+      "size_bytes": 290148,
+      "sha256": "5e82a00d8a53c7703737b4bd5f86925686d735687d897af08b1e125f0600e62f"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/06-activity-cycle-reviewed.png",
+      "size_bytes": 1989560,
+      "sha256": "1d4b40ef0d11b2b8d767dbe1efc5e93b8a9c383366b0835ce3adef206a01740e"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/06-activity-cycle-reviewed.webp",
+      "size_bytes": 274688,
+      "sha256": "a301435aeda4a745e9119d3d701f7d2d28e3e784a6fd9f404e2e73edbd859100"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/07-task-precedence-reviewed.png",
+      "size_bytes": 1984183,
+      "sha256": "08218ee9aa459383ad67b80a45aa44b7ca896ea4470423a609b0ee31fdfb9e5e"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/07-task-precedence-reviewed.webp",
+      "size_bytes": 265796,
+      "sha256": "eb0b32c1e6e119fc28b0904f44c113041a9c7fb860eb54ee4745cb77338f7c53"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/09-experimental-design-reviewed.png",
+      "size_bytes": 2006066,
+      "sha256": "2398881c4409550f2fd9274627efd737d27a14c1885370d02e52b06219b0911a"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/09-experimental-design-reviewed.webp",
+      "size_bytes": 276312,
+      "sha256": "60a970d89a2750cfbd787e3e1e167f5b72995f619a65615a9a2f94d739f8d884"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/10-evidence-ladder-reviewed.png",
+      "size_bytes": 2136760,
+      "sha256": "358b4110f622349e02988da184dc61384ff1111bc93ffb91ac1320200db45266"
+    },
+    {
+      "path": "docs/wiki/assets/imagegen-20261115/10-evidence-ladder-reviewed.webp",
+      "size_bytes": 315120,
+      "sha256": "e9c449c21876e6a3cfc959df53ddd0a8154421bafe1cab7e20df0d5b46261870"
+    },
+    {
+      "path": "docs/wiki/assets/jezero-evidence-chain.png",
+      "size_bytes": 88242,
+      "sha256": "50bad10f443f2bc08e0964ac037217b8e903e8881bcaff3b57da6e5a25ef6793"
+    },
+    {
+      "path": "docs/wiki/assets/manifest.json",
+      "size_bytes": 9646,
+      "sha256": "1f23c172aac6841d54af81f806597e64428840caaa821396e925a13be13e41ad"
+    },
+    {
+      "path": "docs/wiki/assets/mission-decisions-poster.png",
+      "size_bytes": 56509,
+      "sha256": "4c02ae4c0fef64197989ce7cd7aa44c97c2ea05909c7febbc7b3f06aaf7c4595"
+    },
+    {
+      "path": "docs/wiki/assets/mission-decisions.gif",
+      "size_bytes": 213506,
+      "sha256": "2c80c138258e21ef31612cc8bcc3f8745b062e0b5b677d7b8958a0ec04993c58"
+    },
+    {
+      "path": "docs/wiki/assets/prior-observation-poster.png",
+      "size_bytes": 64198,
+      "sha256": "b0707b4916641f815fd8eddbec0c31347ed6568e9979cb51810578f9a3260713"
+    },
+    {
+      "path": "docs/wiki/assets/prior-observation.gif",
+      "size_bytes": 117291,
+      "sha256": "aa51ee231a28fad5477f8ef8689afa3112f35f96916b2425a492cf260e876c28"
+    },
+    {
+      "path": "docs/wiki/assets/research-loop.png",
+      "size_bytes": 74813,
+      "sha256": "15a33586e4e6021f5be7ccf5e30ce4c6aad3faf3b47d82b9b93385478991a1a1"
+    },
+    {
+      "path": "docs/wiki/assets/resource-ledger.png",
+      "size_bytes": 63834,
+      "sha256": "0cb95ebcfc386001fb411e29dadf41c838f45709d29c024b9fe17ec8f33096b6"
+    },
+    {
+      "path": "docs/wiki/assets/scale-crop.png",
+      "size_bytes": 113726,
+      "sha256": "946f7489bcd2ec14902ff0d0f3245f8e9ae64f621944a4a004d5d0a4abf1a6fc"
+    },
+    {
+      "path": "docs/wiki/assets/sensitivity.png",
+      "size_bytes": 102027,
+      "sha256": "abecdd6ade1f52aa802d7f9973dbf9077e72ab3a62d0881c34c6ce4406e9b75e"
+    },
+    {
+      "path": "docs/wiki/assets/task-precedence.png",
+      "size_bytes": 70035,
+      "sha256": "e695ca8dd52d23bcc0ed1d969433136f8478a644a3b380519dc60a82255d81d6"
+    },
+    {
+      "path": "docs/wiki/assets/terrain-scale.png",
+      "size_bytes": 81767,
+      "sha256": "5c5d1250133a1188c74d58ace28019081e86ee6c92efb51a4347a0251dc83b0f"
+    },
+    {
+      "path": "docs/wiki/audit/check.log",
+      "size_bytes": 585,
+      "sha256": "cafb8c8f02f20ca885a21aaaa21f58cdd46d4dd7b773bb47c465b6bd8d8b6ab7"
+    },
+    {
+      "path": "docs/wiki/audit/cover-provenance.json",
+      "size_bytes": 855,
+      "sha256": "459a6f364187ad9d0770c791bf77c6170a602af41513552b8b57323e5638bea5"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/ASSET_USAGE_MATRIX.md.sealed",
+      "size_bytes": 6272,
+      "sha256": "8c0534a27c58b338cd07949c27176758e303169e6f0e5e3c97c5bd01f6384ec7"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/PROMPT_FOR_CODEX.md.sealed",
+      "size_bytes": 9463,
+      "sha256": "b3e5020896403855229beedb66ef10fcf6cd557790a8e7b4bd9550a545a4b870"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/prompts/01-cooperative-exploration.json",
+      "size_bytes": 3090,
+      "sha256": "02d71c202885e82d2564e73f187ea4484073eb08ef1f458e7e90b152f628fb4d"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/prompts/02-research-loop.json",
+      "size_bytes": 2532,
+      "sha256": "536867c6170f9abc81a7cc5e7dd395983a4b008aa79e1d322054840b8702bc4b"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/prompts/03-jezero-evidence-chain.json",
+      "size_bytes": 3690,
+      "sha256": "4396752df7f7f5c0fea059f12dbc55416511b3e1a0785f671394f7a4ef149796"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/prompts/04-terrain-scale.json",
+      "size_bytes": 5685,
+      "sha256": "d161bfa4c82353bf75f82bd9f0582994ff908ec0b3c9210bc567be93aed70e0b"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/prompts/05-agent-timescales.json",
+      "size_bytes": 3167,
+      "sha256": "7128270bfb9cb399805f41943afed493876d2d3fe5b30808d1df3817f0162316"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/prompts/06-activity-cycle.json",
+      "size_bytes": 3343,
+      "sha256": "b0c19e697a308d7c91ca8e2365a7215c2f9f2e1552b23b2684118b012abb5434"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/prompts/07-task-precedence.json",
+      "size_bytes": 8588,
+      "sha256": "2e21459612f821c0a0485e6516d74e43eb88e3093a491b10af1eb0fb858d580b"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/prompts/09-experimental-design.json",
+      "size_bytes": 2734,
+      "sha256": "a59f88beced9e3eb3ea18ffd23f6c4cbe12c5ac3404e3ad9a09a5e8a977f376c"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/prompts/10-evidence-ladder.json",
+      "size_bytes": 3049,
+      "sha256": "afb4742874fffc1c9e20155c70bb1e1c61149838043f5de523cd76f2207fbda4"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/README_START_HERE.md.sealed",
+      "size_bytes": 1593,
+      "sha256": "a12248f275655d1e64cb2ad4e6b0246f42aabb74fea7b5b0b1b103f50bf8ea93"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/source-check.json",
+      "size_bytes": 2788,
+      "sha256": "37d6bbb5497f85da90a210e190dea5dfa147c92616b83f8b63ecd8af28bafd52"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/source-package-manifest.json",
+      "size_bytes": 18025,
+      "sha256": "27a8e041724ddf569bd7efc3f1df32b1aeb9bb8967891e2f0d0ab37d91b2689f"
+    },
+    {
+      "path": "docs/wiki/audit/editorial-20261115/validation.json",
+      "size_bytes": 1225,
+      "sha256": "4b57313d110cc27da53bea9000657216e0883b8bda212047050735fc7ffdfa64"
+    },
+    {
+      "path": "docs/wiki/audit/inputs.json",
+      "size_bytes": 49207,
+      "sha256": "23ea3b11ee7c789839c1dfbf9fa46b00d79afe22567419f32e09024070bd8a5e"
+    },
+    {
+      "path": "docs/wiki/audit/local-draft-manifest.json",
+      "size_bytes": 10053,
+      "sha256": "d23d69bb0e2123947638a597f5be0366189bd65cd84c0c9112429fcc940eaf49"
+    },
+    {
+      "path": "docs/wiki/audit/previous-document-versions/docs/ai_usage.json.sealed",
+      "size_bytes": 91035,
+      "sha256": "3f64caf6eef69a28f7674198f22760715895721c47a9e222825e1bb4c029f933"
+    },
+    {
+      "path": "docs/wiki/audit/previous-document-versions/docs/AI_USAGE.md.sealed",
+      "size_bytes": 54252,
+      "sha256": "e74a31bbca57454f8d5f131b5efb5c56e6dfd2d8e82d145b19d6fef79d9bbc71"
+    },
+    {
+      "path": "docs/wiki/audit/previous-document-versions/docs/handoffs/david.md.sealed",
+      "size_bytes": 36688,
+      "sha256": "4c6a2381f871e8131285e6ece57b4bc5667e3efa0decbe9fd7669c208acc8c46"
+    },
+    {
+      "path": "docs/wiki/audit/previous-packet-preservation.json",
+      "size_bytes": 1046,
+      "sha256": "7c805b7d37bf89f047c6729ca5e14d3d4b3a920069676ee5c3d95a758ace2f60"
+    },
+    {
+      "path": "docs/wiki/audit/publication-manifest.json",
+      "size_bytes": 22824,
+      "sha256": "ccf3db34720171dbd709ee4c4c8994c51f1db3da412f90ca746339a3d3dbeeb1"
+    },
+    {
+      "path": "docs/wiki/audit/publication-report.json",
+      "size_bytes": 4405,
+      "sha256": "e11500fcdda20493cacac249106e8da0b742f80b627dc09753b3218d37c3e1a3"
+    },
+    {
+      "path": "docs/wiki/audit/report.json",
+      "size_bytes": 6773,
+      "sha256": "88eb9730232a7f64b821feb3a7d4a875643369ed45391139cb754fa265a7b247"
+    },
+    {
+      "path": "docs/wiki/audit/repository-check-initial.log",
+      "size_bytes": 2101,
+      "sha256": "771190ad9421d1438f42003f2b4c5135b84929483270cac7b53590db878015dc"
+    },
+    {
+      "path": "docs/wiki/audit/repository-check.log",
+      "size_bytes": 58,
+      "sha256": "deb9e859f1bb4726aedd18cf923af6ad1b5cc4514668076065124e23548de911"
+    },
+    {
+      "path": "docs/wiki/Bibliography.md",
+      "size_bytes": 9419,
+      "sha256": "bc32161457d0bffae613799b1f25240813373201cda6d8014b3f95a4486a7ee7"
+    },
+    {
+      "path": "docs/wiki/Editorial-Review.md",
+      "size_bytes": 4994,
+      "sha256": "a589ed537373f99086a81d04063c26cd401f8cdbd65f0c4fc6932d9fd0a4f00a"
+    },
+    {
+      "path": "docs/wiki/Glossary.md",
+      "size_bytes": 5159,
+      "sha256": "ad9dd2baf3b44184d8ffdd84a3de1a6c1810aa2d4ddd3bc3bcf6d5ae503f18bc"
+    },
+    {
+      "path": "docs/wiki/Home.md",
+      "size_bytes": 6651,
+      "sha256": "c07b0d80cfbd920776c732ad5db45c0701eb9089536bfcd033071e15102cb353"
+    },
+    {
+      "path": "docs/wiki/Parameters-and-Decisions.md",
+      "size_bytes": 8180,
+      "sha256": "d2858c257da712ae916da99e9fffa938616411dd13cd75a47d0c5496b5d52fd0"
+    },
+    {
+      "path": "docs/wiki/README.md",
+      "size_bytes": 1763,
+      "sha256": "085465e2402ce3e1263f7dec7607f74bf409ed3f96399e8bd7f8f3ec0d9bca20"
+    },
+    {
+      "path": "docs/wiki/Reproducibility.md",
+      "size_bytes": 10024,
+      "sha256": "6d921bfec9d5ccc6cb5ac849e38de8c025ab507746a10f0fc03ed519544fad3a"
+    },
+    {
+      "path": "docs/wiki/tools/audit_editorial.py",
+      "size_bytes": 17372,
+      "sha256": "bd072e66659d6bcf06cd79d1cb88496e5988d79b16b20421822cf49e53ed8001"
+    },
+    {
+      "path": "docs/wiki/tools/audit_publication.py",
+      "size_bytes": 7019,
+      "sha256": "42d0df7d32ab82b2707ce5c9d7127d0c0a500d575e3bf38203770301a7e336f4"
+    },
+    {
+      "path": "docs/wiki/tools/audit_wiki.py",
+      "size_bytes": 10377,
+      "sha256": "d4e67f2d423d61394b8edbf3dc572b6f4455f447ace668773a6788a076a9ac1f"
+    },
+    {
+      "path": "docs/wiki/tools/build_figures.py",
+      "size_bytes": 25754,
+      "sha256": "ecb05930d0e2bd98bd5c76c8603be91526e6dc095e353b0903401d01b8191aa3"
+    }
+  ]
+}

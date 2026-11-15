@@ -1,5 +1,11 @@
 # Required AI-use declaration
 
+## Reviewed ImageGen Wiki illustrations
+
+The repository owner supplied a 20-image ImageGen package for a scientific-Wiki visual refresh. OpenAI Codex assisted the semantic review, captions, provenance and documentation-only validation. Nine selected images were edited with image_gen to remove unsupported numerical, geographic, capability or evidence claims and to improve readability. Eleven originals remain excluded with reasons in `docs/wiki/Editorial-Review.md`. The supplied theses and private research working files were not uploaded as part of this edition.
+
+New PNGs and encoding-only WebP reading copies are stored in `docs/wiki/assets/imagegen-20261115`. Each carries a large visible `AI-generated | Conceptual illustration` footer; prompts and source/output hashes are recorded under `docs/wiki/audit/editorial-20261115`. Original measured/model figures, all 21 existing assets, the three GIFs and historical manifests are preserved. Numerical interpretation remains tied to the original primary sources and run records. The edition introduces no technical or scientific-parameter change. The source package requires owner review before a separate Wiki synchronization; that review remains pending.
+
 ## English scientific Wiki and pedagogical media
 
 OpenAI Codex assisted the complete English scientific Wiki in `docs/wiki`: nine chapters, the landing page and supporting glossary, parameter, bibliography and reproduction pages. Private doctoral and master's theses supplied style references only; they were read locally and were not uploaded or copied into the Wiki. Scientific statements cite original articles, NASA/JPL technical reports and public product metadata with locators; project outcomes retain their configuration and run identifiers.

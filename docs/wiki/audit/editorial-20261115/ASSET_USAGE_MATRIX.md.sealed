@@ -1,0 +1,44 @@
+# Matriz editorial de los 20 assets
+
+Estos son **recursos generados por IA**, no datos NASA, mapas georreferenciados, ensayos de campo ni evidencia de ejecución del prototipo.
+La clasificación es un filtro previo. **Ni siquiera las imágenes CONCEPT se publican sin revisión visual y científica.**
+
+| ID | Asset | Capítulo sugerido | Estado editorial | Revisión necesaria |
+|---:|---|---|---|---|
+| 01 | `01_cooperative-exploration.png` | Home | **VISUAL_CONCEPT** | Tres roles, escenarios A/B/C ficticios y etiquetas geológicas conceptuales; no ubicarlo como mapa real de Jezero. |
+| 02 | `02_research-loop.png` | 01-Research-Question | **CONCEPT** | Diagrama pedagógico: muestra orden conceptual, no evidencia ejecutada. |
+| 03 | `03_jezero-evidence-chain.png` | 02-Jezero-Science | **CAUTION** | Incluye Marte/Jezero y escalas/antiguo lago dibujados sin cartografía verificable; preservar como ilustración, evitar cifras geográficas sin cotejo. |
+| 04 | `04_terrain-scale.png` | 03-Terrain-and-Scale | **CAUTION** | 20 m nativos y 4 m de malla computacional son conceptos válidos; los detalles y barras de escala dibujados no son un mapa georreferenciado. 4 m no implica resolución física. |
+| 05 | `05_agent-timescales.png` | 04-Agents-and-Activities | **CAUTION** | Los plazos 2–8 h, días–semanas, 5–20 min son ilustrativos, no cotas ni autonomía aprobada para agentes MGE. |
+| 06 | `06_activity-cycle.png` | 04-Agents-and-Activities | **CAUTION** | 120 s check-in y 420+180 s muestra reflejan un ejemplo/hipótesis; no medición experimental de fases de muestreo marciano. |
+| 07 | `07_task-precedence.png` | 06-Mission-Decisions | **CONCEPT** | Validar que precedencias y autorización coincidan con el MissionManager de main y estado actual. |
+| 08 | `08_resource-ledger.png` | 05-Resource-Models | **DO_NOT_PUBLISH_AS_IS** | Cifras inventadas 720 días, 12.000 kWh, 3.600 m³, reserva 5–8% y estado Safe/Feasible no corresponden al MVP. REGENERAR sin cifras o con cálculo auditado. |
+| 09 | `09_experimental-design.png` | 07-Experimental-Method | **CONCEPT** | Comparación A/B conceptual, paisaje con hielo/nieve ilustrativo no atribuible al recorte real. |
+| 10 | `10_evidence-ladder.png` | 09-Discussion | **CONCEPT** | Jerarquía ilustrativa; observación física NASA no constituye observación física efectuada por MGE. |
+| 11 | `11_system-architecture.png` | Home, 06-Mission-Decisions | **CAUTION** | Arquitectura aspiracional: mundo 3D/4D en vivo, Gazebo validado, datos mineralógicos y muestreo no necesariamente implementados. |
+| 12 | `12_ros2-integration-graph.png` | 06-Mission-Decisions, developer docs | **DO_NOT_PUBLISH_AS_IS** | Nombres/nodos/tópicos son ficticios (p.ej. map_data, resource_status, world_state); no sustituye ICD real de src/mge_interfaces. |
+| 13 | `13_map-refinement-loop.png` | 03-Terrain-and-Scale, 06-Mission-Decisions | **CAUTION** | Afirmar que cada ciclo da mayor detalle y seguridad es incorrecto sin evidencia: una observación puede no cambiar decisión ni resolución nativa. |
+| 14 | `14_poi-ranking.png` | 02-Jezero-Science, 07-Experimental-Method | **DO_NOT_PUBLISH_AS_IS** | Pesos 30/20/15/15/10/10, puntajes, km/horas y rankings son inventados; ni NASA ni MGE aprobaron estos datos. |
+| 15 | `15_why-site-b.png` | 02-Jezero-Science | **DO_NOT_PUBLISH_AS_IS** | Presenta B como delta/mineral objetivo verificado y muestra POIs/costos ficticios. La B de la ventana 128m era experimental, no POI geológico demostrado. |
+| 16 | `16_emergent-tasks.png` | 06-Mission-Decisions | **DO_NOT_PUBLISH_AS_IS** | Desvío +0,8 km/+14min/0,7 kWh/+0,2 kg O2 y márgenes safe son inventados y en unidades no concordadas. |
+| 17 | `17_known-inferred-unknown.png` | 03-Terrain-and-Scale | **DO_NOT_PUBLISH_AS_IS** | Porcentajes 22→68%, -78% y confianza 0…1 son datos inventados; además “known = orbital high confidence” confunde estimado con observado. |
+| 18 | `18_mission-engine-to-web.png` | 09-Discussion, developer docs | **CAUTION** | Muestra Gazebo de alta fidelidad, rosbag2, telemetría LIVE y resultados científicos como si estuvieran integrados; realidad del prototipo: replay offline, pruebas MOCK/analíticas. |
+| 19 | `19_demo-walkthrough.png` | Home, 08-Case-Studies | **CAUTION** | Storyboard de capacidad propuesta, incluye muestreo ejecutado y espectrometría no probados; jamás usarlo como caso registrado. |
+| 20 | `20_rflp-traceability.png` | Developer docs | **DO_NOT_PUBLISH_AS_IS** | Nuevos módulos/agentes, verificaciones con checks y umbrales ≥90%, ±10%, ≥24h son inventados; reconstruir desde docs/requirements y evidence real. |
+
+## Convenciones de estado
+
+- **CONCEPT:** diagrama meramente pedagógico que puede considerarse tras revisión y caption correcto.
+- **VISUAL_CONCEPT:** escena conceptual sin ubicaciones reales o POI verificados; requiere un aviso destacado.
+- **CAUTION:** contiene matices/afirmaciones o visuales potencialmente equívocos; corregir texto en la imagen o aislar la ficción antes de publicar.
+- **DO_NOT_PUBLISH_AS_IS:** incluye cifras, puntajes, resultados, afirmaciones o interfaces falsamente específicos. **No insertarlo como figura de investigación.** Sólo reutilizarlo como referencia para un diseño corregido y verificado.
+
+## Reglas de publicación
+
+1. Ninguna cifra de estos pósteres se usa como resultado, métrica o criterio NASA.
+2. Si un dato es incorrecto **dentro del PNG**, no basta con una nota bajo la figura: hay que regenerarlo/corregirlo o no publicarlo.
+3. Para grafo ROS/ICD, RFLP y cálculos reproducibles, preferir diagramas generados desde datos/contratos reales; mantener el estilo gráfico de esta tanda como referencia.
+4. Mapas, escenarios, escalas, posiciones, porcentajes y rutas dibujados son conceptuales, aunque parezcan mediciones.
+5. Como mínimo, cada figura mostrará `AI-generated · Conceptual illustration` y un alt text en inglés. Declarar herramientas y autoría en docs/AI_USAGE.md y metadata correspondiente.
+6. No ocultar que el sitio actualmente ofrece replay offline y que hay aceptación científica y ejecución completa pendientes.
+7. Conservar todas las versiones previas y los registros de auditoría. No reemplazar gráficos empíricos ni GIF de evidencias reales.

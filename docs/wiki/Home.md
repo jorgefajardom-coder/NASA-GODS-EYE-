@@ -4,9 +4,9 @@ Exploring a scientifically promising place requires a sequence of decisions. The
 
 Mars God's Eye studies that sequence using public Martian terrain, heterogeneous agents and explicit mission constraints. Its central question is: under a declared terrain and resource model, when does additional reconnaissance improve the decisions available to an exploration team?
 
-![An unbranded astronaut, rover and aerial scout illustrate complementary observation roles in a conceptual Martian landscape.](assets/cooperative-exploration.png)
+![A conceptual astronaut, rover and scout illustrate complementary observation, inspection and proposed sampling roles.](assets/imagegen-20261115/01-cooperative-exploration-reviewed.webp)
 
-Figure H.1. Complementary exploration roles. This AI-generated illustration introduces the idea of cooperation. Its landscape, vehicles and highlighted locations are conceptual artwork. The measured terrain products and the project's experimental coordinates are introduced in Chapter 3.
+Figure H.1. Complementary roles in a conceptual exploration program. The generic landscape and work areas illustrate how a local view, inspection and proposed sampling activity can contribute to a mission question. [Full-size PNG](assets/imagegen-20261115/01-cooperative-exploration-reviewed.png).
 
 ## A first reading
 
@@ -62,3 +62,5 @@ This is the complete English documentation draft prepared for scientific audit o
 - [Publication integrity audit](audit/publication-report.json) and [original local editorial/asset audit](audit/report.json).
 
 The [required AI-use declaration](../AI_USAGE.md) describes assistance used for the documentation and media. Generated illustrations, plots and every GIF frame carry a visible `AI-generated` mark. Existing scientific references retain their authorship and licences.
+
+[Visual edition: selection and review](Editorial-Review.md).

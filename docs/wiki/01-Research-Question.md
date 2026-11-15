@@ -8,9 +8,9 @@ The central research question is: under a declared terrain and resource model, w
 
 The question has two parts. One concerns information: which observations distinguish useful alternatives? The other concerns action: after paying for those observations, which routes and tasks remain feasible? Keeping both parts in the same explanation makes the contribution easier to assess. A highly detailed map has practical value when it changes a justified choice, improves a resource margin or establishes that a proposed action should be abandoned.
 
-![Conceptual loop connecting a scientific question, a terrain estimate, reconnaissance, mission decisions and evidence.](assets/research-loop.png)
+![A six-stage conceptual cycle connects the scientific question, orbital prior, candidate itinerary, observation, decision and recorded result.](assets/imagegen-20261115/02-research-loop-reviewed.webp)
 
-Figure 1. Scientific reasoning in the project. This conceptual diagram connects the question that motivates an excursion to the evidence needed to interpret its outcome. The arrows connect the conceptual dependencies used to reason about an excursion.
+Figure 1. Scientific reasoning through an excursion. The arrows follow the conceptual sequence from a question to a recorded result, which can motivate the next question. The artwork supplies an explanatory layout. [Full-size PNG](assets/imagegen-20261115/02-research-loop-reviewed.png).
 
 ## From planetary science to a mission objective
 

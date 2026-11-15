@@ -1,0 +1,88 @@
+# INSTRUCCIONES PARA CODEX — Renovación ImageGen de la Wiki de MARS GODS EYE
+
+## Misión
+
+Actúa como editor científico, diseñador de información y mantenedor Git del proyecto `jorgefajardom-coder/NASA-GODS-EYE-`. Dispones de un paquete de 20 imágenes ImageGen con estilo editorial marciano y versiones PNG/WebP.
+
+**Objetivo:** mejorar sustancialmente la legibilidad y atractivo de la wiki científica para jurados y miembros del equipo, **sin cambiar el significado del trabajo ni presentar como evidencia real información inventada por un generador de imágenes**.
+
+Repositorio principal: `https://github.com/jorgefajardom-coder/NASA-GODS-EYE-`
+Wiki Git independiente: `https://github.com/jorgefajardom-coder/NASA-GODS-EYE-.wiki.git`
+Copia fuente en el repositorio principal: `docs/wiki/`.
+
+## REGLA 0 — No se publican ilustraciones con cifras inventadas
+
+Lee **íntegramente** `instructions/ASSET_USAGE_MATRIX.md` y `ASSET_MANIFEST.json`. **Las imágenes 08, 12, 14, 15, 16, 17 y 20 están explícitamente vetadas para publicación tal como están**. Por ejemplo:
+
+- `08_resource-ledger`: presupuestos ficticios de 720 días, 12.000 kWh, 3.600 m³ y reserva 5–8% en vez del modelo revisado.
+- `12_ros2-integration-graph`: grafo decorativo con nombres/tópicos que no necesariamente existen en `src/mge_interfaces` ni en `docs/ICD.md`.
+- `14_poi-ranking`: pesos, puntos, distancias y clasificación inventados; no son criterios oficiales NASA ni resultado de un benchmark.
+- `15_why-site-b`: muestra B como depósito deltaico geológicamente elegido, aunque la B experimental de 128 m no tiene esa identificación científica demostrada.
+- `16_emergent-tasks`: consumo adicional, márgenes y “Safe” ficticios y dimensionalmente inconsistentes.
+- `17_known-inferred-unknown`: porcentajes 22/68, -78%, clasificación “known” y nivel 0–1 inventados; confusión entre estimado orbital y observado localmente.
+- `20_rflp-traceability`: métricas de aceptación ≥90%, ±10% y ≥24h y módulos inventados.
+
+No basta con añadir una nota al pie: **si la falsedad está dentro de la imagen, corrígela o elimínala de la publicación**. Los assets no publicados pueden conservarse en la colección de revisión como propuestas visuales. No inventes nuevas cifras ni acredites resultados a NASA.
+
+## 1. Inspección y seguridad de cambios
+
+1. Actualiza `main` mediante `git fetch`, identifica los SHA y el estado de las ramas/PR. Revisa `AGENTS.md`, `docs/wiki/README.md`, `docs/wiki/Reproducibility.md`, `docs/wiki/assets/manifest.json`, `docs/wiki/tools/build_figures.py`, `docs/wiki/tools/audit_wiki.py`, `docs/wiki/tools/audit_publication.py`, y `docs/AI_USAGE.md`.
+2. Revisa las nueve páginas `01-Research-Question.md`…`09-Discussion.md`, `Home.md`, `Bibliography.md`, `Glossary.md`, `Parameters-and-Decisions.md`, `_Sidebar.md` y `_Footer.md`.
+3. Obtén y contrasta la versión de la wiki publicada (`.wiki.git`) con la fuente `docs/wiki`. No presupongas sincronía ni sobreescribas contenido más nuevo.
+4. Crea rama corta desde `main`, por ejemplo `codex/wiki-imagegen-editorial-refresh`; evita cambios funcionales en ROS, planner, misión, datasets, web y evidence.
+5. Guarda los nuevos recursos con nombres estables, preferiblemente en una carpeta separada (`docs/wiki/assets/imagegen-20261115/`) para no sobrescribir nada antes de revisar.
+
+## 2. Selección y colocación editorial
+
+Cada imagen tiene archivo, destino y riesgo en el manifiesto. Priorizar estas sustituciones/añadidos después de revisión:
+
+- `01_cooperative-exploration`: Home, solo visual conceptual; quitar implicación de POI reales A/B/C en el texto.
+- `02_research-loop`: Capítulo 01, ciclo lógico de la investigación.
+- `03_jezero-evidence-chain`: Capítulo 02, como ilustración de un proceso multiescala, **no mapa medido**.
+- `04_terrain-scale`: Capítulo 03, aclarar 20 m de dato nativo vs. 4 m malla de cálculo; no usar barras de escala dibujadas como prueba de georreferenciación.
+- `05_agent-timescales`: Capítulo 04, como comparación cualitativa de episodios (EVA/campaña/sortie); no presentar duraciones como capacidades reales.
+- `06_activity-cycle`: Capítulo 04, después de cotejar 120 s de check-in y ejemplo hipotético 420/180 con `docs/activity_duration_research.md`, `config/activity_duration.pilot.json` y capítulo correspondiente.
+- `07_task-precedence`: Capítulo 06, contrastar con la precedencia/capacidades del `mge_mission` real.
+- `09_experimental-design`: Capítulo 07, diagrama de pares A/B con paisaje ilustrativo.
+- `10_evidence-ladder`: Capítulo 09, explicar qué evidencia respalda cada nivel, sin confundir imágenes NASA con pruebas MGE.
+
+Assets `03`, `04`, `05`, `06` contienen detalles que requieren precisión editorial. Sólo insertarlos después de revisar y, si hace falta, regenerar. No sobreescribir por defecto figuras derivadas de datos científicos (`case-route`, `case-resources`, `sensitivity`, `directed-costs`, etc.) ni el GIF grabado `adaptation.gif`.
+
+Los assets 11, 13, 18 y 19 representan principalmente una **visión del sistema** y pueden servir con cambios: el programa actual no demuestra un mundo vivo 4D completo, Gazebo alta fidelidad, reconocimiento espectral real ni muestreo científico ejecutado. Especialmente `13`: más observaciones no aumentan necesariamente la resolución nativa y pueden no alterar una decisión. Toda representación de características imaginadas debe declararse conceptual.
+
+## 3. Criterios editoriales
+
+- Idioma de la wiki: **inglés**; títulos y captions claros, no propaganda ni claims de seguridad no verificados.
+- Mantener estructura de nueve capítulos y contenido técnico; mejorar lectura, no simplificar borrando análisis, fórmulas o referencias.
+- Home: acceso orientado a jurados (qué problema, qué integra, qué demuestra y qué no), y camino técnico separado hacia contratos/resultados.
+- Cada figura tiene `alt` descriptivo y caption que indica si es conceptual, estimada, simulada o registrada; enlaza el código/config/evidencia cuando corresponda.
+- Cada PNG es un render fijo; no lo llames SVG editable. Para diagramas exactos, volver a generar con fuente estructurada usando el estilo ImageGen como guía.
+- Preservar atribución y registro de IA; verificar que la etiqueta visible 'AI-generated • Conceptual diagram' no desaparezca por recorte o conversión.
+- Ofrecer versiones optimizadas para web sin perder legibilidad; validar tamaño móvil y gran pantalla.
+
+## 4. Trazabilidad y automatización
+
+1. No modificar ni borrar los manifiestos de auditoría histórica. Crear un manifest de esta edición con rutas, hashes SHA-256, autor/procedencia ImageGen, rol, limitaciones y cambio de página.
+2. Si `docs/wiki/tools/build_figures.py` reescribe ficheros con el mismo nombre que los nuevos assets, **no ejecutar sin aislamiento**: usar nueva carpeta, permitir flags explícitos o adaptar el script bajo revisión para conservar salidas anteriores y nueva colección.
+3. Extender el auditor de wiki para comprobar: enlaces internos en `.md`, rutas PNG/WebP, ficheros existentes, leyendas AI, captions, formato, datos no respaldados y ausencia de referencias a material de evaluador.
+4. Actualizar `docs/AI_USAGE.md` y metadatos JSON según políticas; no sustituir registros previos. Mantener citas reales de NASA/JPL/USGS y tercera parte.
+
+## 5. Pruebas y aceptación
+
+- Ejecutar en el repo `python docs/wiki/tools/audit_wiki.py`, `python docs/wiki/tools/audit_publication.py`, `python scripts/check_repository.py` cuando estén disponibles; atender sus argumentos reales con `--help` antes de invocar.
+- Verificar por inspección visual Home y los capítulos 01, 02, 03, 04, 06, 07, 08, 09 con las imágenes realmente renderizadas por GitHub Wiki, no sólo en Markdown.
+- Comprobar legibilidad de texto de cada imagen a 900–1200 px de ancho (varias son densas); si es ilegible, dividir en dos figuras o crear SVG nativo desde datos verificados en lugar de forzar la imagen.
+- Inspeccionar de manera individual la exactitud científica de figuras ilustrativas con texto. Mapa CTX 20 m nativos vs grid 4 m no implica mayor información; MOLA es contexto, HiRISE permanece aislado del planner; no hay “garantía de retorno”.
+- Mantener el replay analítico y las fuentes científicas originales. No crear nuevos estados COMPLETE, métricas, aprobaciones o valores de costeo.
+- Producir capturas antes/después, tabla de sustituciones y reporte de casos excluidos.
+
+## 6. Entrega Git
+
+- Preparar cambios como PR sobre `main`; indicar qué páginas usan cada asset, qué se descartó y por qué, fuentes/captions, hashes, scripts, tests y comprobación en navegador.
+- No publicar aún en `.wiki.git` sin autorización del responsable ni revisión de diferencias con `main`.
+- Si se aprueba sincronización, preservar historial de la wiki independiente (sin force-push) y asegurar que sus imágenes se resuelven correctamente; no usar enlaces a rutas inexistentes.
+- No superar las restricciones de entrega del hackatón ni abrir alcance funcional: esta es una mejora documental.
+
+## Resultado esperado
+
+Una wiki visualmente superior que permite distinguir 1) idea científica, 2) datos NASA utilizados, 3) decisiones estimadas, 4) acciones realmente simuladas y registradas, 5) resultado sustentado, 6) limitaciones. **Las 20 imágenes no tienen por qué publicarse todas**: calidad de evidencia > cantidad de pósteres.
