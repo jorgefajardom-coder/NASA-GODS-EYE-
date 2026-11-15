@@ -6,6 +6,7 @@ import type { RasterSet } from '../types/replay';
 import { elevationColor, finiteRange, heightGrid, sigmaColor, slopeColor, versionKey, type TerrainLayer } from '../lib/layers';
 import { slopeDegrees } from '../lib/slope';
 import { bilinear, upsampleGrid } from '../lib/terrainSmooth';
+import { growthClock, zoneDelay, zoneGlow, zoneShare } from './TerrainGrowth';
 
 /** Mesh vertices per source cell interval. Source cell centres are always vertices (J-01). */
 export const MESH_SUBDIVISION = 3;
@@ -281,12 +282,30 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
   // Height morph: a new grid (layer switch, new map version) eases from the heights on screen to the
   // new ones instead of jumping. Display only; agents and routes read the new grid at once.
   const shown = useRef<Float32Array | null>(null);
+  // True heights and colours of the current geometry, for the opening growth.
+  const rest = useRef<{ y: Float32Array; color: Float32Array; delay: Float32Array } | null>(null);
+  const growing = useRef(false);
   const morph = useRef<{ from: Float32Array; to: Float32Array; t: number } | null>(null);
   useLayoutEffect(() => {
     const pos = geometry.getAttribute('position') as THREE.BufferAttribute;
     const arr = pos.array as Float32Array;
     const prev = shown.current;
     shown.current = arr;
+    {
+      const col = (geometry.getAttribute('color') as THREE.BufferAttribute).array as Float32Array;
+      const y = new Float32Array(arr.length / 3);
+      let lo = Infinity;
+      let hi = -Infinity;
+      for (let i = 0; i < y.length; i++) {
+        y[i] = arr[i * 3 + 1];
+        if (y[i] < lo) lo = y[i];
+        if (y[i] > hi) hi = y[i];
+      }
+      const span = Math.max(1e-6, hi - lo);
+      const delay = new Float32Array(y.length);
+      for (let i = 0; i < y.length; i++) delay[i] = zoneDelay((y[i] - lo) / span, arr[i * 3], arr[i * 3 + 2]);
+      rest.current = { y, color: col.slice(), delay };
+    }
     if (!prev || prev.length !== arr.length) {
       morph.current = null;
       return;
@@ -306,9 +325,36 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     geometry.computeVertexNormals();
     morph.current = { from, to, t: 0 };
   }, [geometry]);
+  // Opening growth: each zone rises from flat on its own schedule and is lit while it rises.
+  useFrame(() => {
+    const r = rest.current;
+    if (!r) return;
+    if (!growthClock.active && !growing.current) return;
+    const pos = geometry.getAttribute('position') as THREE.BufferAttribute;
+    const colAttr = geometry.getAttribute('color') as THREE.BufferAttribute;
+    const arr = pos.array as Float32Array;
+    const col = colAttr.array as Float32Array;
+    let lo = Infinity;
+    for (let i = 0; i < r.y.length; i++) if (r.y[i] < lo) lo = r.y[i];
+    const p = growthClock.active ? growthClock.p : 1;
+    for (let i = 0; i < r.y.length; i++) {
+      const k = zoneShare(p, r.delay[i]);
+      arr[i * 3 + 1] = lo + (r.y[i] - lo) * k;
+      const glow = zoneGlow(p, r.delay[i]);
+      // Warm light on rising ground (display only), back to the true colour once risen.
+      col[i * 3] = r.color[i * 3] * (1 + 0.55 * glow);
+      col[i * 3 + 1] = r.color[i * 3 + 1] * (1 + 0.38 * glow);
+      col[i * 3 + 2] = r.color[i * 3 + 2] * (1 + 0.18 * glow);
+    }
+    pos.needsUpdate = true;
+    colAttr.needsUpdate = true;
+    geometry.computeVertexNormals();
+    geometry.computeBoundingSphere();
+    growing.current = growthClock.active;
+  });
   useFrame((_, dt) => {
     const m = morph.current;
-    if (!m) return;
+    if (!m || growthClock.active) return;
     m.t += Math.min(dt, 0.1);
     const p = m.t / HEIGHT_MORPH_S;
     const pos = geometry.getAttribute('position') as THREE.BufferAttribute;

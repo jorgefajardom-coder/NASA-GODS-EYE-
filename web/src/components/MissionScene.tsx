@@ -1,10 +1,10 @@
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { TerrainLayer } from '../lib/layers';
-import { heightGrid } from '../lib/layers';
+import { finiteRange, heightGrid } from '../lib/layers';
 import { smoothHeightAt } from '../lib/terrainSmooth';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
@@ -31,7 +31,7 @@ interface Props {
   exaggeration: number;
   showControlPoints: boolean;
   showLabels: boolean;
-  /** The intro has ended: the terrain grows in from the centre, once. */
+  /** The intro has ended: the terrain relief rises from flat to its true shape, once. */
   reveal: boolean;
   playing: boolean;
   replaySpeed: number;
@@ -80,9 +80,12 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const followedKind = view.state?.agents.find((a) => a.agent_id === followed)?.agent_kind ?? null;
   const pov = !!followed && firstPerson && !!followedKind;
   const drone = view.state?.agents.find((a) => a.agent_kind === 'DRONE') ?? null;
-  // Opening growth: the terrain appears from the centre of the map outwards, to the farthest
-  // corner (of the 20 km surroundings when they are drawn). Labels show once it has finished.
+  // Opening growth: the whole layer appears flat and its relief rises to the true shape, scaled
+  // about the lowest ground. Agents, the base and labels show once it has finished.
   const [grown, setGrown] = useState(false);
+  const [growLo] = useMemo(() => finiteRange(grid), [grid]);
+  const growPivot = growLo * exaggeration;
+  const ground = useRef<THREE.Group>(null);
   // Base camera anchor: on the drawn ground at the centre of the habitat cluster.
   const base = bundle.manifest.pois.find((p) => p.kind === 'base');
   const baseAnchor = useMemo(() => {
@@ -98,18 +101,6 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const ctx = showContext ? bundle.context : undefined;
   // Far plane and haze reach the edge of the context terrain when there is one.
   const reach = ctx ? Math.max(ctx.frame.rows, ctx.frame.cols) * ctx.frame.resolution_m * 0.75 : extent * 6;
-  // Growth centre (Three.js ground plane) and the distance to the farthest drawn corner.
-  const growCx = meta.origin_x_m + (meta.cols * meta.resolution_m) / 2;
-  const growCz = -(meta.origin_y_m + (meta.rows * meta.resolution_m) / 2);
-  const growR = useMemo(() => {
-    const corner = (f: { origin_x_m: number; origin_y_m: number; resolution_m: number; rows: number; cols: number }) => {
-      const xs = [f.origin_x_m, f.origin_x_m + f.cols * f.resolution_m];
-      const ys = [f.origin_y_m, f.origin_y_m + f.rows * f.resolution_m];
-      return Math.max(...xs.flatMap((x) => ys.map((y) => Math.hypot(x - growCx, y + growCz)))) * 1.02;
-    };
-    const block = corner(meta);
-    return { block, max: ctx ? Math.max(block, corner(ctx.frame)) : block };
-  }, [ctx, meta, growCx, growCz]);
   const hole = useMemo(
     () => ({ origin_x_m: meta.origin_x_m, origin_y_m: meta.origin_y_m, width_m: meta.cols * meta.resolution_m, height_m: meta.rows * meta.resolution_m }),
     [meta],
@@ -142,6 +133,8 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         surfaceDetail={surfaceDetail}
         detailFarM={pov ? DETAIL_FAR_POV_M : DETAIL_FAR_M}
       />
+      {/* The surroundings and the block rise uniformly with the opening growth; the mesh rises by zones. */}
+      <group ref={ground} name="terrain-ground" visible={false}>
       {ctx && (
         <ContextTerrain
           data={ctx}
@@ -152,10 +145,11 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       )}
       {/* Always a solid block; schematic strata only in the Ground layers tab. Hidden under the surroundings. */}
       {!ctx && <CutawayBlock meta={meta} heights={grid} geology={cutaway} verticalExaggeration={exaggeration} />}
+      </group>
       {/* The route is a map overlay: hidden in the follow view, where it reads as a line painted on the ground. */}
-      {/* Route lines and site markers ignore the growth clipping, so they appear once the terrain has grown. */}
+      {/* Route lines, site markers, the base and the agents appear once the terrain has grown. */}
       {grown && !followed && <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />}
-      {bundle.manifest.pois.filter((p) => p.kind === 'base').map((p) => (
+      {grown && bundle.manifest.pois.filter((p) => p.kind === 'base').map((p) => (
         <BaseModel key={p.id} site={p.position} verticalExaggeration={exaggeration} groundHeight={groundHeight} />
       ))}
       {grown && (
@@ -168,11 +162,12 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
           verticalExaggeration={exaggeration}
         />
       )}
+      {grown && (
       <AgentLayer
         agents={view.state?.agents ?? []}
         t={view.t}
         verticalExaggeration={exaggeration}
-        showLabels={showLabels && grown}
+        showLabels={showLabels}
         playing={playing}
         replaySpeed={replaySpeed}
         speeds={view.speeds}
@@ -181,6 +176,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         trueScale={trueScale}
         hideLabelFor={pov ? followed : null}
       />
+      )}
       {grown && <DroneScan scan={scan} droneName={drone ? `agent-${drone.agent_id}` : null} groundHeight={groundHeight} verticalExaggeration={exaggeration} />}
       {baseAnchor && <group name={BASE_ANCHOR} position={baseAnchor} />}
       <FollowCamera target={cameraTarget} framing={followed ? undefined : BASE_FRAMING} />
@@ -201,7 +197,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         touches={freePan ? { ONE: THREE.TOUCH.PAN, TWO: THREE.TOUCH.DOLLY_ROTATE } : { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
       />
       <ViewRotator />
-      {!grown && <TerrainGrowth start={reveal} centerX={growCx} centerZ={growCz} maxRadius={growR.max} blockRadius={growR.block} onDone={() => setGrown(true)} />}
+      {!grown && <TerrainGrowth start={reveal} target={ground} pivotY={growPivot} onDone={() => setGrown(true)} />}
       {/* Mounted after the controls and the follow camera so it corrects their result in the same frame. */}
       <CameraGroundClamp meta={meta} groundHeight={groundHeight} verticalExaggeration={exaggeration} />
     </Canvas>

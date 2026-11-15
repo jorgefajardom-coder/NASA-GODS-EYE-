@@ -1,97 +1,133 @@
-import { useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useMemo, useRef } from 'react';
-import * as THREE from 'three';
+import { useFrame } from '@react-three/fiber';
+import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
+import type * as THREE from 'three';
 
 /** Duration of the growth (s). */
-export const GROWTH_S = 2.4;
-/** Sides of the clipping polygon: enough that the front reads as a circle. */
-export const GROWTH_SIDES = 24;
+export const GROWTH_S = 5;
+/** Relief share at the start: a nearly flat sheet, so the whole layer is visible from the first frame. */
+export const GROWTH_FLAT = 0.02;
 
-/** Share of the time spent opening the main terrain block when the wider surroundings follow it. */
-export const GROWTH_BLOCK_SHARE = 0.7;
-
-const easeInOutSine = (x: number) => -(Math.cos(Math.PI * x) - 1) / 2;
+/** Smooth start and stop (zero speed and acceleration at both ends). */
+const smootherstep = (x: number) => x * x * x * (x * (x * 6 - 15) + 10);
 
 /**
- * Radius of the growth front at progress p (0..1); negative before the start, so nothing is drawn.
- * The front opens the main block (radius `blockR`) with a smooth ease; when the 20 km surroundings
- * are drawn (`maxR` > `blockR`) it then keeps expanding geometrically to them, so their much larger
- * radius does not make the centre flash by.
+ * Share of the true relief drawn at progress p (0..1): GROWTH_FLAT at the start, then one
+ * continuous rise to 1 that starts and stops gently (no steps, no overshoot).
  */
-export function growthRadius(p: number, maxR: number, blockR = maxR): number {
+export function reliefShare(p: number): number {
   const q = Math.max(0, Math.min(1, p));
-  if (q === 0) return -1;
-  const share = maxR > blockR ? GROWTH_BLOCK_SHARE : 1;
-  if (q <= share) return blockR * easeInOutSine(q / share);
-  return blockR * Math.pow(maxR / blockR, (q - share) / (1 - share));
+  return GROWTH_FLAT + (1 - GROWTH_FLAT) * smootherstep(q);
+}
+
+/** Live progress of the opening growth (0..1), read by the terrain mesh each frame; 1 when idle. */
+export const growthClock = { p: 1, active: false };
+
+/** Share of the growth time over which one zone rises (the rest is the stagger between zones). */
+export const ZONE_RISE_SHARE = 0.38;
+
+/**
+ * Start of a zone's rise (0..1 of the stagger): low ground first, ridges last, with a little
+ * position-dependent variation so neighbouring zones of equal height do not rise as one block.
+ * `normH` is the zone's height within the layer (0 = lowest, 1 = highest).
+ */
+export function zoneDelay(normH: number, x: number, z: number): number {
+  const h = Math.max(0, Math.min(1, normH));
+  const n = Math.sin(x * 0.011 + z * 0.007) * Math.cos(z * 0.013 - x * 0.005); // -1..1, smooth
+  return Math.max(0, Math.min(1, 0.85 * h + 0.15 * (0.5 + 0.5 * n)));
 }
 
 /**
- * Clipping planes that keep a regular polygon around (cx, cz) in the Three.js ground plane, hidden
- * until a radius is set. Each plane keeps the side facing the centre: n·p + constant >= 0.
+ * Relief share of one zone at overall progress p: it waits for its delay, then rises smoothly
+ * over ZONE_RISE_SHARE of the time; every zone has finished at p = 1.
  */
-export function growthPlanes(cx: number, cz: number, sides = GROWTH_SIDES): THREE.Plane[] {
-  const planes = Array.from({ length: sides }, (_, i) => {
-    const a = (i / sides) * Math.PI * 2;
-    return new THREE.Plane(new THREE.Vector3(-Math.cos(a), 0, -Math.sin(a)), 0);
-  });
-  setGrowthRadius(planes, cx, cz, -1);
-  return planes;
+export function zoneShare(p: number, delay: number): number {
+  const q = Math.max(0, Math.min(1, p));
+  const start = delay * (1 - ZONE_RISE_SHARE);
+  const local = Math.max(0, Math.min(1, (q - start) / ZONE_RISE_SHARE));
+  return GROWTH_FLAT + (1 - GROWTH_FLAT) * smootherstep(local);
 }
 
-/** Sets every plane so the kept polygon has apothem `r` around its centre. */
-export function setGrowthRadius(planes: THREE.Plane[], cx: number, cz: number, r: number): void {
-  for (const p of planes) {
-    // Kept side: r - dir·(x - c) >= 0, with n = -dir  =>  constant = r + dir·c.
-    p.constant = r - (p.normal.x * cx + p.normal.z * cz);
-  }
+/** How strongly a zone is rising right now (0 at rest, 1 mid-rise): used to light the rising ground. */
+export function zoneGlow(p: number, delay: number): number {
+  const q = Math.max(0, Math.min(1, p));
+  const start = delay * (1 - ZONE_RISE_SHARE);
+  const local = (q - start) / ZONE_RISE_SHARE;
+  if (local <= 0 || local >= 1) return 0;
+  return Math.sin(Math.PI * local);
+}
+
+/**
+ * Vertical transform of the terrain group for a relief share k: heights are scaled by k about the
+ * pivot (the lowest ground), so the layer starts flat at the pivot and rises to its true shape.
+ */
+export function reliefTransform(k: number, pivotY: number): { scaleY: number; offsetY: number } {
+  return { scaleY: k, offsetY: pivotY * (1 - k) };
 }
 
 interface Props {
-  /** Start growing (after the intro). Until then nothing is drawn. */
+  /** Start growing (after the intro). Until then the terrain is hidden. */
   start: boolean;
-  /** Centre of the terrain in Three.js ground coordinates (x east, z = -north). */
-  centerX: number;
-  centerZ: number;
-  /** Distance from the centre to the farthest drawn ground (m), and to the main block's corners. */
-  maxRadius: number;
-  blockRadius: number;
+  /** Group holding the terrain mesh, the block and the surroundings. */
+  target: RefObject<THREE.Group | null>;
+  /** Height the relief grows from (Three.js y, already exaggerated): the lowest ground. */
+  pivotY: number;
   onDone?: () => void;
 }
 
 /**
- * Opening animation of the 3D view: the terrain appears from the centre of the map outwards, as a
- * circular front (a polygon of clipping planes) that expands to the farthest corner. Agents and the
- * base appear as the front reaches them. Display only; removed once finished.
+ * Opening animation of the 3D view: the whole terrain layer appears at once as a flat sheet and its
+ * relief rises to the true shape zone by zone (low ground first, ridges last, rising ground lit),
+ * as if the ground were being generated. The terrain mesh reads growthClock; the block and the
+ * surroundings in `target` rise uniformly. No height data changes. Agents, the base and labels appear once it has finished.
  */
-export function TerrainGrowth({ start, centerX, centerZ, maxRadius, blockRadius, onDone }: Props) {
-  const gl = useThree((s) => s.gl);
-  const planes = useMemo(() => growthPlanes(centerX, centerZ), [centerX, centerZ]);
+export function TerrainGrowth({ start, target, pivotY, onDone }: Props) {
   const t = useRef(0);
   const finished = useRef(false);
   const done = useRef(onDone);
   done.current = onDone;
 
-  useEffect(() => {
-    setGrowthRadius(planes, centerX, centerZ, -1);
-    gl.clippingPlanes = planes;
-    return () => {
-      gl.clippingPlanes = [];
-    };
-  }, [gl, planes, centerX, centerZ]);
+  // Flat from the very first frame, before this component's own frame runs.
+  useLayoutEffect(() => {
+    growthClock.p = 0;
+    growthClock.active = true;
+  }, []);
+
+  // Leave the group at its true shape when unmounted (finished, or the scene changes).
+  useEffect(
+    () => () => {
+      growthClock.p = 1;
+      growthClock.active = false;
+      const g = target.current;
+      if (!g) return;
+      g.visible = true;
+      g.scale.y = 1;
+      g.position.y = 0;
+    },
+    [target],
+  );
 
   useFrame((_, dt) => {
-    if (finished.current) return;
+    const g = target.current;
+    if (finished.current || !g) return;
     if (!start) {
-      setGrowthRadius(planes, centerX, centerZ, -1); // keep everything hidden until the growth starts
+      g.visible = false; // hidden behind the intro
+      growthClock.p = 0;
+      growthClock.active = true;
       return;
     }
+    g.visible = true;
+    growthClock.active = true;
     t.current += Math.min(dt, 0.25); // keeps its pace at low frame rates, without jumping after a stall
     const p = t.current / GROWTH_S;
-    setGrowthRadius(planes, centerX, centerZ, growthRadius(p, maxRadius, blockRadius));
+    const { scaleY, offsetY } = reliefTransform(reliefShare(p), pivotY);
+    g.scale.y = scaleY;
+    g.position.y = offsetY;
+    growthClock.p = Math.min(1, p);
     if (p >= 1) {
       finished.current = true;
-      gl.clippingPlanes = [];
+      growthClock.active = false;
+      g.scale.y = 1;
+      g.position.y = 0;
       done.current?.();
     }
   });
