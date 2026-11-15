@@ -162,3 +162,29 @@ def test_finite_ctx_prior_is_still_unknown_to_the_planner():
     assert np.isfinite(grid.elevation_m).all()
     assert (grid.traversability == -1).all()
     assert np.isnan(grid.sigma_m).all()
+
+
+def test_batch_key_ignores_other_kinds_completing_the_same_batch():
+    # A rover search must survive the human and drone masks of its own batch arriving.
+    store = complete()
+    token = store.batch_key
+    revision = store.key
+    store.ingest_mask("human", mask())
+    store.ingest_mask("drone", mask())
+    assert store.key != revision          # the store did change...
+    assert store.batch_key == token       # ...but not the inputs of the rover search
+
+
+def test_batch_key_changes_on_a_new_version_or_a_rejected_layer():
+    store = complete()
+    token = store.batch_key
+    store.ingest_meta(metadata(version=2, stamp=2))
+    assert store.batch_key != token
+
+    store = complete()
+    token = store.batch_key
+    changed = mask()
+    changed.data[4] = 100
+    with pytest.raises(ValueError, match="changed without"):
+        store.ingest_mask("rover", changed)
+    assert store.batch_key != token

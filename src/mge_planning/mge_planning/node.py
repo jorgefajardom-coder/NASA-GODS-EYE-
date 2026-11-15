@@ -112,7 +112,9 @@ def make_node_class():
             try:
                 with self.store.lock:
                     terrain, reason = self.store.snapshot(request.agent_kind)
-                    key = self.store.key
+                    # The batch, not the store revision: masks of other agent kinds
+                    # completing the same batch must not discard this search.
+                    key = self.store.batch_key
                 if terrain is None:
                     return _failure(message, response, RouteStatus.UNKNOWN, reason,
                                     "Waiting for matching public belief, sigma and traversability")
@@ -120,7 +122,7 @@ def make_node_class():
                                     allow_continuous_start=self.allow_continuous)
             except (ValueError, TypeError, OverflowError) as error:
                 return _failure(message, response, RouteStatus.ERROR, "INVALID_INPUT", str(error))
-            if key != self.store.key:
+            if key != self.store.batch_key:
                 return _failure(message, response, RouteStatus.STALE_MAP, "SNAPSHOT_CHANGED_DURING_SEARCH",
                                 "Map inputs changed or were rejected; recompute from the current pose")
             _failure(message, response, result.status, result.reason_code, result.detail)

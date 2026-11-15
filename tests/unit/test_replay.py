@@ -176,3 +176,17 @@ def test_validator_reports_relabelled_source(package, value):
     with open(os.path.join(package, 'manifest.json'), 'w', encoding='utf-8') as f:
         json.dump(manifest, f)
     assert any('source_mode' in p for p in check_package(package))
+
+
+def test_a_closed_package_is_never_extended(tmp_path):
+    w = ReplayWriter(str(tmp_path), RUN, 'system')
+    w.record('terrain_meta', meta(10))
+    w.record('state', state(10, 0))
+    w.close()
+    w.close()                                   # second close is harmless
+    # A late callback after shutdown must not touch the package.
+    assert w.record('event', event(11, 1)) is False
+    assert len(lines(w.dir)) == 2
+    manifest = read(w.dir, 'manifest.json')
+    assert manifest['record_count'] == 2 and manifest['event_count'] == 0
+    assert check_package(w.dir) == []
