@@ -121,6 +121,19 @@ def generate_launch_description():
         DeclareLaunchArgument('exploration_policy_file', default_value=''),
         DeclareLaunchArgument('allow_continuous_starts', default_value='false'),
         DeclareLaunchArgument('mission', default_value='mock', choices=['mock', 'real']),
+        # MOCK mission only: on a resource rejection, try nearer targets and then the base.
+        DeclareLaunchArgument('budget_fallback', default_value='false', choices=['true', 'false']),
+        # MOCK mission only: a goal is complete once its agent finishes the route back at base.
+        DeclareLaunchArgument('complete_on_return', default_value='false', choices=['true', 'false']),
+        # Distance to the route end that counts as arrived (a physical agent never lands exactly).
+        DeclareLaunchArgument('completion_tolerance_m', default_value='0.001'),
+        # Comma-separated agents the kinematic executor leaves to another driver (e.g. Gazebo).
+        DeclareLaunchArgument('external_agents', default_value=''),
+        # SIMULATED on-board sensing of a declared test scene (terrain:=real only).
+        DeclareLaunchArgument('sensor', default_value='false', choices=['true', 'false']),
+        DeclareLaunchArgument('sensor_scene_file', default_value=''),
+        DeclareLaunchArgument('sensor_agents', default_value="['drone_1', 'human_1', 'rover_1']"),
+        DeclareLaunchArgument('sensor_radii_m', default_value='[24.0, 8.0, 12.0]'),
         DeclareLaunchArgument('mission_profiles_path', default_value=''),
         DeclareLaunchArgument('mission_path', default_value=''),
         DeclareLaunchArgument('base_enu_m', default_value='[]'),
@@ -136,9 +149,16 @@ def generate_launch_description():
         Node(package='mge_sim', executable='mock_agents', output='screen',
              condition=_when('agents', 'static'), parameters=[with_agents]),
         Node(package='mge_sim', executable='kinematic_executor', output='screen',
-             condition=_when('agents', 'kinematic'), parameters=[with_agents]),
+             condition=_when('agents', 'kinematic'),
+             parameters=[{**with_agents, 'external_agents': LaunchConfiguration('external_agents')}]),
         Node(package='mge_sim', executable='mock_terrain', output='screen',
              condition=_when('terrain', 'mock'), parameters=[common]),
+        Node(package='mge_sim', executable='scene_sensor', output='screen',
+             condition=_when('sensor', 'true'),
+             parameters=[{**common,
+                          'scene_file': LaunchConfiguration('sensor_scene_file'),
+                          'agent_ids': ParameterValue(LaunchConfiguration('sensor_agents'), value_type=List[str]),
+                          'radii_m': ParameterValue(LaunchConfiguration('sensor_radii_m'), value_type=List[float])}]),
         # Exactly one terrain provider set: mapping_node alone publishes the
         # map batch (metadata included); data_node only the immutable prior.
         Node(package='mge_data', executable='data_node', output='screen',
@@ -166,7 +186,13 @@ def generate_launch_description():
         Node(package='mge_sim', executable='mock_mission', output='screen',
              condition=IfCondition(EqualsSubstitution(LaunchConfiguration('mission'), 'mock')),
              parameters=[{**with_agents, 'require_stop_ack': ParameterValue(
-                 EqualsSubstitution(LaunchConfiguration('agents'), 'kinematic'), value_type=bool)}]),
+                 EqualsSubstitution(LaunchConfiguration('agents'), 'kinematic'), value_type=bool),
+                 'budget_fallback': ParameterValue(
+                     LaunchConfiguration('budget_fallback'), value_type=bool),
+                 'complete_on_return': ParameterValue(
+                     LaunchConfiguration('complete_on_return'), value_type=bool),
+                 'completion_tolerance_m': ParameterValue(
+                     LaunchConfiguration('completion_tolerance_m'), value_type=float)}]),
         Node(package='mge_mission', executable='mission_node', output='screen',
              condition=IfCondition(EqualsSubstitution(LaunchConfiguration('mission'), 'real')),
              parameters=[{

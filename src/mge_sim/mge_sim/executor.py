@@ -37,8 +37,13 @@ class KinematicExecutor(Node):
         self.run_id = self.declare_parameter('run_id', 'mock-run').value
         agents_file = self.declare_parameter('agents_file', '').value
         rate_hz = float(self.declare_parameter('rate_hz', 10.0).value)
+        # Agents driven and published by another node (e.g. a physical rover in Gazebo):
+        # comma-separated IDs. Keeps exactly one publisher per agent state topic.
+        external = {i.strip() for i in str(self.declare_parameter('external_agents', '').value).split(',') if i.strip()}
         self.agents = {}
         for a in load_agents(agents_file):
+            if a['id'] in external:
+                continue
             self.agents[a['id']] = {
                 'kind': a['kind'],
                 'position': (float(a['x_m']), float(a['y_m']), float(a['z_m'])),
