@@ -26,7 +26,7 @@ on `feat/integration` is not connected to the viewer yet. Two saved runs can be 
 | Astronaut portrait | **AI-generated** (ChatGPT), shown beside human_1 in the details panel with a burned-in `AI-generated` watermark |
 | Intro screen | **AI-generated** video (Kling), skippable, with a burned-in `AI-generated` watermark; its audio track is declared and the clip plays muted |
 | Team logo and link preview | **AI-generated** image (ChatGPT, edited by the team) with a visible `AI-generated` watermark (`public/assets/brand/`) |
-| Tab icon | Simple SVG drawing of Mars made with AI assistance (`public/favicon.svg`, PNG copies); too small for a legible watermark, declared instead |
+| Tab icon | Illustration of Mars made by the team (`public/favicon.ico`, PNG sizes up to 512 px); not AI-generated |
 | Slope layer | Derived from the orbital CTX DTM (Horn 3x3, about 60 m window); a lower bound for local slope, not a hazard map |
 | Surroundings (option, off by default) | Same CTX DTM over 20 km (100 m box average, `scripts/extract-ctx-context.mjs`) and CTX orthomosaic at 40 m; context only |
 | Drone camera scan | The orbital slope above, redrawn around the drone in display bands; **not an observation**, no data changes, bands pending science approval |
