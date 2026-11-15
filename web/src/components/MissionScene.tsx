@@ -9,7 +9,7 @@ import { smoothHeightAt } from '../lib/terrainSmooth';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
 import * as THREE from 'three';
-import { FollowCamera, type Framing } from './FollowCamera';
+import { FollowCamera, TOUR_FRAMING, type Framing } from './FollowCamera';
 import { ViewRotator } from './ViewRotator';
 import { TerrainGrowth } from './TerrainGrowth';
 import { FirstPersonCamera } from './FirstPersonCamera';
@@ -18,6 +18,7 @@ import { SkyDome } from './SkyDome';
 import { HelmetLight } from './HelmetLight';
 import { TerrainScanner } from './TerrainScanner';
 import { slopeDegrees } from '../lib/slope';
+import { arrivalView, type Quad } from '../lib/arrivalQuad';
 import { JEZERO_LON_E_DEG } from '../lib/marsClock';
 import { PovRoute } from './PovRoute';
 import { SUN_FROM } from '../lib/sun';
@@ -28,6 +29,7 @@ import { DETAIL_FAR_M, DETAIL_FAR_POV_M, TerrainView } from './TerrainView';
 import { RouteOverlay } from './RouteOverlay';
 import { AgentLayer } from './AgentLayer';
 import { SiteMarkers } from './SiteMarkers';
+import { RoverStopMarkers } from './RoverStopMarkers';
 import { BaseModel, CLUSTER_OFFSET } from './BaseModel';
 import { ContextTerrain } from './ContextTerrain';
 
@@ -68,6 +70,8 @@ interface Props {
   cutaway: GeologyData | null;
   /** First-person view from the followed agent (ignored when no agent is followed). */
   firstPerson: boolean;
+  /** Photo tour: the first-person interface over a third-person camera that sits further back. */
+  tourHud?: boolean;
   /** Walking/driving sway of the first-person camera (display only). */
   povSway: boolean;
   /** Low-power rendering (software rasteriser or slow GPU): pixel ratio 1, no antialiasing, surface detail or surroundings. */
@@ -83,7 +87,7 @@ interface Props {
 /** Horizon haze colour: dusty Martian daytime sky, darkened so the panels stay readable. */
 const SKY = '#6e5242';
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, povSway, lite = false, droneCam = false, helmetLight = false, artificialLight = false }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, tourHud = false, povSway, lite = false, droneCam = false, helmetLight = false, artificialLight = false }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const sunLight = useRef<THREE.DirectionalLight>(null);
   const hemiLight = useRef<THREE.HemisphereLight>(null);
@@ -140,7 +144,8 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
     >
       {/* Dusty daytime haze toward the horizon (display only, not an atmospheric model). */}
       <color attach="background" args={[SKY]} />
-      <fog attach="fog" args={[SKY, extent * 2.5, reach]} />
+      {/* Haze starts before it ends: with a large crop extent * 2.5 can pass the reach, which fogs the whole ground. */}
+      <fog attach="fog" args={[SKY, Math.min(extent * 2.5, reach * 0.6), reach]} />
       {/* Sun and stars at the real present time at the site (same instant as the Jezero clock). */}
       <SkyDome latDeg={meta.origin_lat_deg ?? 18.44} lonEastDeg={meta.origin_lon_deg ?? JEZERO_LON_E_DEG} sunLight={sunLight} hemiLight={hemiLight} lightDistance={extent * 1.37} artificialLight={artificialLight} />
       <hemisphereLight ref={hemiLight} args={['#ffe2c8', '#2a1a12', 0.4]} />
@@ -188,6 +193,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
           verticalExaggeration={exaggeration}
         />
       )}
+      {grown && bundle.roverStops && (
+        <RoverStopMarkers stops={bundle.roverStops.stops} agent={(view.state?.agents ?? []).find((a) => a.agent_id === selectedAgentId) ?? null} verticalExaggeration={exaggeration} />
+      )}
       {grown && (
       <AgentLayer
         agents={view.state?.agents ?? []}
@@ -204,7 +212,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       />
       )}
       {baseAnchor && <group name={BASE_ANCHOR} position={baseAnchor} />}
-      <FollowCamera target={cameraTarget} framing={followed ? undefined : BASE_FRAMING} />
+      <FollowCamera target={cameraTarget} framing={followed ? (tourHud ? TOUR_FRAMING : undefined) : BASE_FRAMING} mirrorHud={tourHud} />
       {/* Mounted after the follow camera: same frame priority, so it places the eye after the follow update. */}
       <FirstPersonCamera target={pov ? `agent-${followed}` : null} kind={pov ? followedKind : null} sway={povSway} lite={lite} />
       {(() => {
@@ -250,10 +258,39 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       />
       <ViewRotator />
       {!grown && <TerrainGrowth start={reveal} target={ground} pivotY={growPivot} onDone={() => setGrown(true)} />}
+      {bundle.manifest.imagery && <ArrivalAnchor extent={bundle.manifest.imagery.extent} groundY={framing.target[1]} />}
       {/* Mounted after the controls and the follow camera so it corrects their result in the same frame. */}
       <CameraGroundClamp meta={meta} groundHeight={groundHeight} verticalExaggeration={exaggeration} />
     </Canvas>
   );
+}
+
+/**
+ * While the zone-arrival transition runs, projects the corners of the draped orbital image (its footprint at the
+ * mean ground height) to client pixels, so the full-screen image can lay itself down on the terrain. Display only.
+ */
+function ArrivalAnchor({ extent, groundY }: { extent: { origin_x_m: number; origin_y_m: number; width_m: number; height_m: number }; groundY: number }) {
+  useFrame(({ camera, gl }) => {
+    if (!arrivalView.want) return;
+    camera.updateMatrixWorld();
+    const r = gl.domElement.getBoundingClientRect();
+    const { origin_x_m: x0, origin_y_m: y0, width_m: w, height_m: h } = extent;
+    // Image row 0 is north: top-left = NW, then NE, SE, SW. ENU -> three.js: (x, z, -y).
+    const corners: [number, number][] = [[x0, y0 + h], [x0 + w, y0 + h], [x0 + w, y0], [x0, y0]];
+    const v = new THREE.Vector3();
+    const out: [number, number][] = [];
+    for (const [e, n] of corners) {
+      v.set(e, groundY, -n).applyMatrix4(camera.matrixWorldInverse);
+      if (v.z >= 0) {
+        arrivalView.quad = null; // a corner behind the camera: no sensible quad
+        return;
+      }
+      v.applyMatrix4(camera.projectionMatrix);
+      out.push([r.left + ((v.x + 1) / 2) * r.width, r.top + ((1 - v.y) / 2) * r.height]);
+    }
+    arrivalView.quad = out as Quad;
+  }); // priority 0, mounted after the cameras: runs once they have moved this frame
+  return null;
 }
 
 /** Scene name of the base camera anchor, and how that camera frames the habitat. */

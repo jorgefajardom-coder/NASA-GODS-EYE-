@@ -97,11 +97,11 @@ export function DroneCamFrame({ droneId, onClose, className = '', bundle, view }
         <button type="button" role="tab" aria-selected={tab === 'cam'} onClick={() => setTab('cam')} title="Drone camera: the replayed flight seen from the drone">
           Cam
         </button>
-        <button type="button" role="tab" aria-selected={tab === 'map'} onClick={() => setTab('map')} title="Drone map: the terrain the drone has surveyed so far (simulated observations in the replay, not a LiDAR measurement)">
-          Map
+        <button type="button" role="tab" aria-selected={tab === 'map'} onClick={() => setTab('map')} title="Drone hazard map: steep ground and contradictions of the orbital estimate found in the drone's observations (simulated in the replay, not a LiDAR measurement)">
+          Hazards
         </button>
       </span>
-      <span className="dronecam__src">{tab === 'cam' ? 'Replay · simulated pose' : 'Simulated survey · replay, not LiDAR'}</span>
+      <span className="dronecam__src">{tab === 'cam' ? 'Replay · simulated pose' : 'Hazard report · simulated, not LiDAR'}</span>
       {tab === 'cam' && <span className="dronecam__cross" aria-hidden />}
       <button type="button" className="dronecam__close" onClick={onClose} title="Close the drone window (C)">
         ×

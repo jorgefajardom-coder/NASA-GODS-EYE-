@@ -18,6 +18,18 @@ import {
 import { MissionScene } from './components/MissionScene';
 import { FlatMap } from './components/FlatMap';
 import { DroneCamFrame } from './components/DroneCam';
+import { MarsNowFrame } from './components/MarsNow';
+import { rawImages, useRawImages, rawImagesRequestMatches } from './lib/rawImagesStore';
+import { photoDirection, relativeToRover, requestAim } from './lib/photoAim';
+import { CAMERA_ORDER, mastcamFocalFromId, roverCameraOf } from './lib/roverCameras';
+import { homeRig, requestShot, roverRig, selectCamera, shotReady } from './lib/roverRig';
+import { yawFromQuaternion } from './lib/coords';
+import { headingFromNorth } from './lib/management';
+import type { RawImage } from './lib/perseveranceRaw';
+import type { RoverStop } from './types/replay';
+import { stopUnderAgent, tourStepTime } from './lib/roverStops';
+import { startLabelDeclutter } from './lib/labelDeclutter';
+import { ZoneArrival, ZoneSelector, arrivalPending } from './components/ZoneSelector';
 import { resourceAlert } from './lib/resourceAlert';
 import { SCAN_CONFIG } from './scanner/ScanConfig';
 import { triggerScan } from './scanner/ScanController';
@@ -34,6 +46,7 @@ import { EventInspector } from './components/EventInspector';
 import { GeologyDetails, GeologyList } from './components/GeologyPanel';
 import { AtmosDetails, AtmosList } from './components/AtmosPanel';
 import { Minimap } from './components/Minimap';
+import { SitesList } from './components/SitesList';
 import { Timeline } from './components/Timeline';
 import { CameraBar } from './components/CameraBar';
 import { FirstPersonHud } from './components/FirstPersonHud';
@@ -44,6 +57,9 @@ import { PORTRAITS } from './lib/portraits';
 import { rotateView, ROTATE_STEP_RAD } from './components/ViewRotator';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
 import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './components/Frame';
+
+/** Time each photo of a stop is "taken" on the tour (ms): the rover's camera turns to it and the photo lights up. */
+const SHOT_MS = 1500;
 
 const params = new URLSearchParams(window.location.search);
 /** Evaluator view shows the hidden reference DEM. Off by default; enable with ?evaluator=1. */
@@ -104,19 +120,34 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showControlPoints, setShowControlPoints] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
   // Intro clip first (unless reduced motion or ?nointro=1); the terrain grows in once it ends.
-  const [introDone, setIntroDone] = useState(() => RUN_ID === RECORDED_RECOVERY_ENTRY || !introWanted());
+  // On load the intro plays first, then the zone selector opens; arriving from it (travel) opens the scene directly.
+  const [startWithZones] = useState(() => RUN_ID !== RECORDED_RECOVERY_ENTRY && !arrivalPending(RUN_ID));
+  // Arriving from the zone selector skips the intro: the zone's map image fades straight into its terrain.
+  const [introDone, setIntroDone] = useState(() => RUN_ID === RECORDED_RECOVERY_ENTRY || !introWanted() || arrivalPending(RUN_ID));
+  // Without an intro (reduced motion or ?nointro=1) the selector opens at once; otherwise when the intro ends.
+  const [zonesOpen, setZonesOpen] = useState(() => startWithZones && introDone);
+  // The terrain grows in and the panels enter only once the start menu is left, never behind it.
+  const [entered, setEntered] = useState(() => !startWithZones);
+  const sceneOn = introDone && entered;
   // Camera: 'free' (map), 'base', or the id of the agent it follows.
   const [camView, setCamView] = useState<string>('free');
   const follow = camView !== 'free' && camView !== 'base';
   // First or third person while following an agent (V toggles; no effect on the free/base cameras).
   const [firstPerson, setFirstPerson] = useState(false);
+  const [tourOn, setTourOn] = useState(false);
   /** Drone camera window: on by default with a full GPU (it renders the scene a second time). */
   const [droneCam, setDroneCam] = useState(RENDER_TIER === 'full');
+  /** "Mars now" window (M) with the latest real Perseverance image. First person only. */
+  const [marsNow, setMarsNow] = useState(false);
   /** Astronaut helmet lights (L), display only. */
   const [helmetLight, setHelmetLight] = useState(false);
   /** Artificial light (I), on by default: terrain lit as by day; off shows the real light at the site's hour. */
   const [artificialLight, setArtificialLight] = useState(true);
   const pov = follow && firstPerson && RENDER_TIER !== 'map2d';
+  // The photo tour keeps the first-person interface (compass, dial, dock) on the rover while the camera
+  // stays behind it in third person, so the rover is seen driving. V switches the camera to its eyes.
+  const tourHud = tourOn && follow && !pov && RENDER_TIER !== 'map2d' && camView === (m.photo_tour?.agent_id ?? '');
+  const hud = pov || tourHud;
   // First-person camera sway: a per-viewer preference, off by default with reduced motion.
   const [povSway, setPovSwayState] = useState<boolean>(() => {
     try {
@@ -217,7 +248,138 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const canDroneCam = !!drone && RENDER_TIER !== 'map2d' && pov && camView !== drone.agent_id;
   const showDroneCam = droneCam && canDroneCam;
   const povAgent = pov ? view.state?.agents.find((a) => a.agent_id === camView) ?? null : null;
-  const povAlert = povAgent ? resourceAlert(resourceLines(bundle, t, povAgent, view.activeRoute, budgets[povAgent.agent_id]), budgets[povAgent.agent_id], view.activeRoute, povAgent.agent_id, povAgent.pose.position) : null;
+  // The real Perseverance stop the first-person agent is standing on, if any: its images open by themselves.
+  const roverStops = bundle.roverStops?.stops ?? [];
+  // On the photo tour the rover's stop counts in third person too (the window shows beside the driving rover).
+  const stopAgent = pov ? povAgent : tourOn ? view.state?.agents.find((a) => a.agent_id === m.photo_tour?.agent_id) ?? null : null;
+  const povStop = stopAgent ? stopUnderAgent(roverStops, stopAgent.pose.position.x, stopAgent.pose.position.y, stopAgent.mode) : null;
+  const povStopId = povStop?.rmc ?? null;
+  const stopAgentRef = useRef(stopAgent);
+  stopAgentRef.current = stopAgent;
+  const [closedStop, setClosedStop] = useState<string | null>(null);
+  // The rover's photo tour of every real stop: drives the rover through them (the replay has that phase
+  // after the story) and opens each stop's images on arrival. The button is the person's request for them.
+  const photoTour = m.photo_tour ?? null;
+  const startTour = () => {
+    if (!photoTour) return;
+    setTourOn(true);
+    followAgent(photoTour.agent_id);
+    setFirstPerson(true); // the tour is seen from the rover's own camera; V steps back behind the rover
+    setClosedStop(null);
+    setMarsNow(true);
+    setSpeed(10);
+    setT(photoTour.start_s);
+    setPlaying(true);
+  };
+  const stepTour = (dir: 1 | -1) => {
+    const to = tourStepTime(roverStops, t, dir);
+    if (to != null) setT(to);
+  };
+  // Following sets 1x; the tour is long, so it plays at the top speed (the person can change it).
+  useEffect(() => {
+    if (tourOn && follow) setSpeed(10);
+  }, [tourOn, follow]);
+  const marsNowNode = marsNow ? <MarsNowFrame stop={povStop} mission={bundle.roverStops?.mission} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: () => { setTourOn(false); setPlaying(false); } } : null} /> : null;
+  // At each stop the replay holds while the images load, then the rover "takes" them one after another:
+  // the view switches to the rover's own camera, which turns to where each photo was taken while the photo
+  // lights up in the window. Then the view goes back behind the rover and it drives on.
+  const rawNow = useRawImages();
+  const imageRequestMatches = rawImagesRequestMatches(rawNow, bundle.roverStops?.mission?.raw_category ?? 'mars2020', povStop);
+  const imagesReady = imageRequestMatches && (rawNow.status === 'ready' ? rawNow.preloaded : rawNow.status === 'error');
+  const imagesRef = useRef<{ images: RawImage[]; stop: RoverStop | null }>({ images: [], stop: null });
+  imagesRef.current = { images: rawNow.status === 'ready' && imageRequestMatches ? rawNow.images : [], stop: povStop };
+  const doneStop = useRef<string | null>(null);
+  const firstPersonNow = useRef(false);
+  firstPersonNow.current = firstPerson;
+  useEffect(() => {
+    if (!tourOn || !marsNow || !povStopId) {
+      doneStop.current = null; // left the stop: the next arrival shoots again
+      return;
+    }
+    if (doneStop.current === povStopId) return;
+    if (!imagesReady) {
+      setPlaying(false);
+      return;
+    }
+    const { images, stop } = imagesRef.current;
+    const mission = bundle.roverStops?.mission?.name ?? 'Perseverance';
+    let n = 0;
+    let timer = 0;
+    let poll = 0;
+    // Waits (polling) until `done()` holds, then runs `then`; gives up after `maxMs` so the tour never stalls.
+    const waitFor = (done: () => boolean, then: () => void, maxMs = 15000) => {
+      const t0 = performance.now();
+      window.clearInterval(poll);
+      poll = window.setInterval(() => {
+        if (done() || performance.now() - t0 > maxMs) {
+          window.clearInterval(poll);
+          then();
+        }
+      }, 80);
+    };
+    // The drawn rover's compass heading, to turn each photo's world direction into a mast pointing.
+    const roverHeading = stopAgentRef.current ? headingFromNorth(yawFromQuaternion(stopAgentRef.current.pose.orientation)) : null;
+    // The photos are seen from the rover's camera; the view returns behind the rover when they are done.
+    const switched = !firstPersonNow.current && images.length > 0;
+    if (switched) setFirstPerson(true);
+    const back = () => {
+      if (switched) setFirstPerson(false);
+    };
+    const shoot = () => {
+      if (n >= images.length) {
+        doneStop.current = povStopId;
+        // Back to the Navcam looking ahead; the rover drives on only once the arm is stowed.
+        homeRig(roverRig);
+        requestAim({ pitchDeg: -10 });
+        waitFor(() => roverRig.arm === 0, () => {
+          back();
+          setPlaying(true);
+        });
+        return;
+      }
+      // The real camera (and eye of its stereo pair) that took the photo: the rig switches to it, the mast
+      // slews to where it looked, Mastcam-Z zooms to the frame's focal length, WATSON needs the arm out.
+      // The photo is "taken" (lit in the window) only once the rig has arrived.
+      const img = images[n];
+      const which = roverCameraOf(img.instrument, mission);
+      const id = which?.camera.id ?? 'navcam';
+      const dir = photoDirection(img, stop?.yaw_deg, mission);
+      const rel = dir && roverHeading != null ? relativeToRover(dir, roverHeading) : null;
+      const onMast = id === 'navcam' || id === 'mastcamz';
+      const token = requestShot(roverRig, {
+        camera: id,
+        side: which?.side,
+        azDeg: onMast ? rel?.azDeg : null,
+        elDeg: onMast ? rel?.elDeg : null,
+        focalMm: id === 'mastcamz' ? mastcamFocalFromId(img.id) ?? 26 : null,
+        watsonVector: id === 'watson' ? img.vector : null,
+      });
+      requestAim({ azimuthDeg: dir?.azimuthDeg, pitchDeg: dir?.pitchDeg }); // the third-person view swings the same way
+      waitFor(() => shotReady(roverRig, token), () => {
+        rawImages.select(n);
+        n += 1;
+        timer = window.setTimeout(shoot, SHOT_MS);
+      });
+    };
+    setPlaying(false);
+    timer = window.setTimeout(shoot, 650); // a beat for the rover's camera to settle on the stop
+    return () => {
+      window.clearTimeout(timer);
+      window.clearInterval(poll);
+      if (doneStop.current !== povStopId) back();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tourOn, marsNow, povStopId, imagesReady]);
+  useEffect(() => {
+    if (tourOn && photoTour && t >= photoTour.end_s) setTourOn(false);
+  }, [tourOn, photoTour, t]);
+  useEffect(() => {
+    if (!povStopId) setClosedStop(null); // left the stop: the next arrival opens it again
+    else if (povStopId !== closedStop) setMarsNow(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [povStopId]);
+  // No resource alert on the photo tour: its resource use is not modelled.
+  const povAlert = povAgent && !tourOn ? resourceAlert(resourceLines(bundle, t, povAgent, view.activeRoute, budgets[povAgent.agent_id]), budgets[povAgent.agent_id], view.activeRoute, povAgent.agent_id, povAgent.pose.position) : null;
   // While following, picking another agent in the list moves the camera to it.
   useEffect(() => {
     if (follow && sel.kind === 'agent' && sel.id && sel.id !== camView) setCamView(sel.id);
@@ -280,9 +442,16 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'KeyB' && pov) setPovSway(!povSway);
       else if (e.code === 'KeyC') setDroneCam((c) => !c);
       else if (e.code === 'KeyL') setHelmetLight((v) => !v);
+      else if (e.code === 'KeyM' && pov) setMarsNow((v) => !v);
       else if (e.code === 'KeyI') setArtificialLight((v) => !v);
       else if (e.code === 'KeyQ') rotateView(-ROTATE_STEP_RAD);
       else if (e.code === 'KeyE') rotateView(ROTATE_STEP_RAD);
+      else if (e.code === 'KeyZ' && !pov) setZonesOpen(true);
+      else if (!pov && /^Digit[1-5]$/.test(e.code) && view.state?.agents.some((a) => a.agent_id === camView && a.agent_kind === 'ROVER')) {
+        // Following the rover from behind: a camera number looks through that camera (in first person the camera handles it).
+        selectCamera(roverRig, CAMERA_ORDER[Number(e.code.slice(5)) - 1]);
+        setFirstPerson(true);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -309,6 +478,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
 
   // The footer wraps to more lines on narrow screens; the panels above it sit on its measured height.
   const appRef = useRef<HTMLDivElement>(null);
+  // Floating 3D labels never cover each other: the lower-priority one waits until there is room (zoomed out).
+  useEffect(() => (appRef.current ? startLabelDeclutter(appRef.current) : undefined), []);
   useEffect(() => {
     const app = appRef.current;
     const foot = app?.querySelector('.disclaimer') as HTMLElement | null;
@@ -338,7 +509,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   );
 
   return (
-    <div className={`app${pov ? ' app--pov' : ''}`} ref={appRef}>
+    <div className={`app${hud ? ' app--pov' : ''}`} ref={appRef}>
       {RENDER_TIER === 'map2d' ? (
         <FlatMap bundle={bundle} view={view} selectedAgentId={agentId} reason="map2d" />
       ) : (
@@ -350,7 +521,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         exaggeration={exaggeration}
         showControlPoints={showControlPoints}
         showLabels={showLabels}
-        reveal={introDone}
+        reveal={sceneOn}
         playing={playing}
         replaySpeed={speed}
         followAgentId={follow ? camView : null}
@@ -367,6 +538,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         geology={mode === 'geology' && showGeoMap && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
         cutaway={mode === 'geology' && showCut && bundle.geology ? bundle.geology : null}
         firstPerson={firstPerson}
+        tourHud={tourHud}
         povSway={povSway}
         lite={RENDER_TIER === 'lite'}
         droneCam={showDroneCam}
@@ -376,7 +548,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       </SceneBoundary>
       )}
       <div className="vignette" aria-hidden />
-      {pov && agent && (
+      {tourOn && !hud && marsNowNode && <div className="marsnow-float">{marsNowNode}</div>}
+      {hud && agent && (
         <FirstPersonHud
           agent={view.state?.agents.find((a) => a.agent_id === camView) ?? agent}
           sourceLabel={displayState({ mode: 'REPLAY', source: m.source_mode ?? 'UNKNOWN' }).label}
@@ -387,6 +560,10 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           alert={povAlert}
           droneCam={showDroneCam && drone ? <DroneCamFrame droneId={drone.agent_id} onClose={() => setDroneCam(false)} bundle={bundle} view={view} /> : null}
           droneCamOn={showDroneCam}
+          marsNow={marsNowNode}
+          stops={roverStops}
+          marsNowOn={marsNow}
+          onMarsNow={() => setMarsNow((v) => !v)}
           canDroneCam={canDroneCam}
           onDroneCam={() => setDroneCam((v) => !v)}
           helmetLight={helmetLight}
@@ -398,10 +575,31 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           onSway={setPovSway}
         />
       )}
-      {!introDone && <Intro onDone={() => setIntroDone(true)} />}
+      {/* The start menu sits under the intro (same layer, earlier in the page) and opens as the intro starts
+          fading, so the intro dissolves straight into it; it lives outside the overlay, which stays hidden
+          until the menu is left. */}
+      {zonesOpen && (
+        <ZoneSelector
+          runId={RUN_ID}
+          globeEnabled={RENDER_TIER !== 'map2d'}
+          instant={!entered}
+          onClose={() => {
+            setZonesOpen(false);
+            setEntered(true);
+          }}
+        />
+      )}
+      {!introDone && (
+        <Intro
+          onLeaving={() => {
+            if (startWithZones) setZonesOpen(true);
+          }}
+          onDone={() => setIntroDone(true)}
+        />
+      )}
 
       {/* The interface waits behind the intro, then enters (panels slide in, the dial spins in). */}
-      <div className={`overlay ${introDone ? 'overlay--enter' : 'overlay--waiting'}`}>
+      <div className={`overlay ${sceneOn ? 'overlay--enter' : 'overlay--waiting'}`}>
         <div className="left">
           <TitleBlock manifest={m} runId={RUN_ID} />
           <ModeTabs mode={mode} onMode={setMode} />
@@ -411,7 +609,10 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           ) : mode === 'atmos' ? (
             <AtmosList data={bundle.atmosphere} t={t} duration={duration} />
           ) : (
-            <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
+            <>
+              <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
+              <SitesList pois={m.pois} t={t} from={agent?.pose.position ?? null} />
+            </>
           )}
           <CameraBar
             agents={view.state?.agents ?? []}
@@ -432,6 +633,11 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             <button type="button" className="chip" aria-pressed={freePan} onClick={() => setFreePan((g) => !g)} title="On: left drag slides the map, right drag orbits. Off: left drag orbits, right drag slides. Wheel zooms.">
               <kbd>G</kbd> Grab map
             </button>
+            {photoTour && (
+              <button type="button" className="chip" aria-pressed={tourOn} onClick={tourOn ? () => { setTourOn(false); setPlaying(false); } : startTour} title="The rover drives through every real Perseverance stop of this map and shows NASA's images of each (needs a network; illustrative speed)">
+                Photo tour
+              </button>
+            )}
             <button type="button" className="chip" onClick={playPause}>
               <kbd>Space</kbd> {playing ? 'Pause' : 'Play'}
             </button>
@@ -469,7 +675,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           <StatusBlock
             manifest={m}
             missionState={view.state?.mission_state ?? 'IDLE'}
-            mapVersion={view.state?.map_version ?? 1}
             t={t}
             agent={agent}
             evaluator={EVALUATOR}
@@ -490,6 +695,12 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         </aside>
 
         <AlertBanner alert={alert} />
+        {camView === 'free' && !pov && !zonesOpen && (
+          <button type="button" className="zones-open" onClick={() => setZonesOpen(true)} title="Select zone (Z)">
+            <kbd>Z</kbd> Zones
+          </button>
+        )}
+        <ZoneArrival runId={RUN_ID} />
 
         <Timeline
           t={t}

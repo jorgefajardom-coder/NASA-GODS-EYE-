@@ -12,7 +12,8 @@ import { FOLLOW_PRIORITY } from './FollowCamera';
  */
 export const EYE: Record<AgentKind, { upM: number; forwardM: number; pitchDeg: number; fovDeg: number }> = {
   HUMAN: { upM: 1.62, forwardM: 0.25, pitchDeg: -6, fovDeg: 82 },
-  ROVER: { upM: 2.0, forwardM: 0.6, pitchDeg: -10, fovDeg: 78 },
+  // The rover's view is drawn from its real cameras (lib/roverCameras, lib/roverRig); these values are only its fallback.
+  ROVER: { upM: 2.0, forwardM: 0.6, pitchDeg: -10, fovDeg: 73 },
   DRONE: { upM: -0.12, forwardM: 0.15, pitchDeg: -28, fovDeg: 90 },
 };
 
@@ -29,6 +30,15 @@ const MAP_DPR_MAX = 1.75;
 const LOOK_DEG_PER_PX = 0.18;
 
 /** Live camera heading and pitch, read by the HUD outside React (no re-render per frame). */
+import { aimRequest, shortestTurnDeg } from '../lib/photoAim';
+import { CAMERA_ORDER, ROVER_CAMERAS, cameraFovDeg } from '../lib/roverCameras';
+import { homeRig, nudgeMast, roverRig, selectCamera, zoomBy } from '../lib/roverRig';
+
+/** The lens sits a little ahead of the node's origin, so the camera is not inside its own housing (m). */
+const LENS_AHEAD_M = { mast: 0.14, body: 0.06, arm: 0.1 } as const;
+/** Stabilisation of the rover's view (s): a short low-pass on position and direction, so no shake reaches it. */
+const ROVER_STAB_TAU_S = 0.12;
+
 export const povState = { headingDeg: 0, pitchDeg: 0, fovDeg: 70, active: false };
 
 /** Heading of a Three.js direction measured clockwise from north (deg, 0..360). */
@@ -43,8 +53,8 @@ const STILL_MPS = 0.05;
 
 /**
  * Display-only camera sway from the agent's drawn ground speed, so moving reads as walking or
- * driving: the astronaut's head bobs once per step and rolls slightly, the rover's mast shakes
- * finely, the hovering drone drifts gently. Offsets in metres (up, side) and radians (roll);
+ * walking: the astronaut's head bobs once per step and rolls slightly, the hovering drone drifts
+ * gently; the rover's cameras stay still (they are rigidly mounted). Offsets in metres (up, side) and radians (roll);
  * `phase` advances with the step rate (see swayStepHz). No pose or data is changed.
  */
 export function swayOffset(kind: AgentKind, speedMps: number, phase: number, timeS: number): { up: number; side: number; roll: number } {
@@ -54,7 +64,9 @@ export function swayOffset(kind: AgentKind, speedMps: number, phase: number, tim
     return { up: -0.035 * moving * Math.abs(Math.sin(phase)), side: 0.022 * moving * Math.sin(phase), roll: 0.006 * moving * Math.sin(phase) };
   }
   if (kind === 'ROVER') {
-    return { up: 0.008 * moving * Math.sin(timeS * 37) * Math.sin(timeS * 11), side: 0, roll: 0.002 * moving * Math.sin(timeS * 7) };
+    // No shake: the rover's cameras are bolted to its mast, body and arm, and the real rover drives at
+    // about 4 cm/s, so nothing in its images trembles. The view is also stabilised (ROVER_STAB_TAU_S).
+    return { up: 0, side: 0, roll: 0 };
   }
   // Drone: a slow hover drift even when still, a little stronger in flight.
   const k = 0.4 + 0.6 * moving;
@@ -96,12 +108,17 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
   const world = useRef(new THREE.Vector3());
   const fwd = useRef(new THREE.Vector3());
   const aim = useRef(new THREE.Vector3());
+  // A request to turn towards where a photo was taken (lib/photoAim): eased in, cancelled by a drag.
+  const turn = useRef<{ seen: number; yaw: number | null; pitch: number | null }>({ seen: aimRequest.token, yaw: null, pitch: null });
+  // The rover's view: last camera cut seen, and the stabilised eye and direction.
+  const rov = useRef({ cut: -1, eye: new THREE.Vector3(), dir: new THREE.Vector3(), pos: new THREE.Vector3(), d: new THREE.Vector3(), q: new THREE.Quaternion(), side: new THREE.Vector3() });
 
   // Enter / leave: remember the third-person offset and the lens, restore them on exit.
   useEffect(() => {
     if (!target || !kind) return;
     const eye = EYE[kind];
     look.current = { yaw: 0, pitch: eye.pitchDeg, fov: eye.fovDeg };
+    rov.current.cut = -1;
     motion.current = { last: null, speed: 0, phase: 0, time: 0 };
     saved.current = { offset: controls ? camera.position.clone().sub(controls.target) : new THREE.Vector3(-6, 2.6, 0), fov: camera.fov };
     povState.active = true;
@@ -111,7 +128,11 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
     return () => {
       povState.active = false;
       setDpr(lite ? 1 : Math.min(MAP_DPR_MAX, Math.max(1, device)));
-      if (hidden.current) hidden.current.visible = true;
+      if (hidden.current) {
+        hidden.current.visible = true;
+        const ring = hidden.current.getObjectByName('selection-ring');
+        if (ring) ring.visible = true;
+      }
       hidden.current = null;
       const s = saved.current;
       if (s) {
@@ -136,7 +157,15 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
     };
     const move = (e: PointerEvent) => {
       if (!drag) return;
+      turn.current.yaw = null; // the person takes over the view
       const l = look.current;
+      if (kind === 'ROVER') {
+        // Dragging aims the mast head (it slews at its own rate); body cameras and WATSON cannot be aimed.
+        const k = LOOK_DEG_PER_PX * (cameraFovDeg(ROVER_CAMERAS[roverRig.view], roverRig.focalMm) / EYE.ROVER.fovDeg);
+        nudgeMast(roverRig, (e.clientX - drag.x) * k, -(e.clientY - drag.y) * k);
+        drag = { x: e.clientX, y: e.clientY };
+        return;
+      }
       const k = LOOK_DEG_PER_PX * (l.fov / EYE[kind].fovDeg);
       l.yaw -= (e.clientX - drag.x) * k;
       l.pitch = THREE.MathUtils.clamp(l.pitch - (e.clientY - drag.y) * k, PITCH_MIN_DEG, PITCH_MAX_DEG);
@@ -149,11 +178,26 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
     const wheel = (e: WheelEvent) => {
       e.preventDefault();
       const l = look.current;
+      // The rover zooms only with Mastcam-Z (26-110 mm, at its motor's speed); Navcam and Hazcam have fixed lenses.
+      if (kind === 'ROVER') {
+        zoomBy(roverRig, Math.exp(-e.deltaY * 0.001));
+        return;
+      }
       l.fov = THREE.MathUtils.clamp(l.fov * Math.exp(e.deltaY * 0.001), FOV_MIN_DEG, FOV_MAX_DEG);
     };
     const reset = () => {
-      look.current = { yaw: 0, pitch: EYE[kind].pitchDeg, fov: EYE[kind].fovDeg };
+      if (kind === 'ROVER') homeRig(roverRig);
+      else look.current = { yaw: 0, pitch: EYE[kind].pitchDeg, fov: EYE[kind].fovDeg };
     };
+    // Rover: keys 1-5 pick its camera (Navcam, Mastcam-Z, front Hazcam, rear Hazcam, WATSON on the arm).
+    const key = (e: KeyboardEvent) => {
+      if (kind !== 'ROVER' || e.ctrlKey || e.metaKey || e.altKey) return;
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= CAMERA_ORDER.length) selectCamera(roverRig, CAMERA_ORDER[n - 1]);
+    };
+    window.addEventListener('keydown', key);
     el.addEventListener('pointerdown', down);
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerup', up);
@@ -167,8 +211,66 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
       el.removeEventListener('pointercancel', up);
       el.removeEventListener('wheel', wheel);
       el.removeEventListener('dblclick', reset);
+      window.removeEventListener('keydown', key);
     };
   }, [target, kind, gl]);
+
+  /**
+   * The rover's own view: the camera in use (roverRig.view) seen from its node on the model, the left
+   * or right eye of its stereo pair, pointing where the mast head, the body or the arm's turret points.
+   * A camera change is a cut; otherwise position and direction pass a short low-pass so no jitter of the
+   * drawn pose or terrain tilt reaches the image. Returns false when the model has no such node.
+   */
+  const roverView = (obj: THREE.Object3D, dt: number): boolean => {
+    const cam = ROVER_CAMERAS[roverRig.view];
+    const node = obj.getObjectByName(cam.node);
+    const head = obj.getObjectByName('head');
+    // The rover body frame (the model root, parent of the head): body cameras and the arm's pointing are given in it.
+    const body = head?.parent ?? node?.parent ?? null;
+    if (!node || !body || (cam.mount === 'mast' && !head)) return false;
+    const r = rov.current;
+    node.getWorldPosition(r.pos);
+    (cam.mount === 'mast' ? head! : body).getWorldQuaternion(r.q);
+    // Direction in the model frame (front +z, up +y, left +x), then to the world.
+    if (cam.mount === 'mast') r.d.set(0, 0, 1);
+    else if (cam.mount === 'body') {
+      const az = THREE.MathUtils.degToRad(cam.boresight?.azDeg ?? 0);
+      const el = THREE.MathUtils.degToRad(cam.boresight?.elDeg ?? 0);
+      r.d.set(-Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el));
+    } else {
+      const v = roverRig.watsonVector; // rover frame: x forward, y right, z down
+      if (v) r.d.set(-v[1], -v[2], v[0]);
+      else r.d.set(0, -1, 0.15);
+    }
+    r.d.normalize().applyQuaternion(r.q);
+    // Eye of the stereo pair: half the baseline to the left (+x of the frame) or to the right.
+    if (cam.baselineM) {
+      r.side.set(1, 0, 0).applyQuaternion(r.q);
+      r.pos.addScaledVector(r.side, (roverRig.side === 'left' ? 0.5 : -0.5) * cam.baselineM);
+    }
+    r.pos.addScaledVector(r.d, LENS_AHEAD_M[cam.mount]);
+    if (r.cut !== roverRig.cut) {
+      r.cut = roverRig.cut;
+      r.eye.copy(r.pos);
+      r.dir.copy(r.d);
+    } else {
+      const k = 1 - Math.exp(-dt / ROVER_STAB_TAU_S);
+      r.eye.lerp(r.pos, k);
+      r.dir.lerp(r.d, k).normalize();
+    }
+    camera.position.copy(r.eye);
+    camera.up.set(0, 1, 0);
+    camera.lookAt(aim.current.copy(r.eye).add(r.dir));
+    const fov = cameraFovDeg(cam, roverRig.focalMm);
+    if (Math.abs(camera.fov - fov) > 0.01) {
+      camera.fov = fov;
+      camera.updateProjectionMatrix();
+    }
+    povState.headingDeg = headingFromThree(r.dir.x, r.dir.z);
+    povState.pitchDeg = THREE.MathUtils.radToDeg(Math.asin(THREE.MathUtils.clamp(r.dir.y, -1, 1)));
+    povState.fovDeg = fov;
+    return true;
+  };
 
   // After the poses (-2) and the follow camera (same priority, mounted before this one).
   useFrame((_, dtRaw) => {
@@ -180,7 +282,12 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
       if (hidden.current) hidden.current.visible = true;
       hidden.current = obj;
     }
-    obj.visible = false;
+    // The rover's camera sees parts of the rover (deck, arm, wheels), as the real photos do; the others hide their own model.
+    obj.visible = kind === 'ROVER';
+    // ...but not its selection ring, a map marker that would fill the bottom of its own camera's image.
+    const ring = obj.getObjectByName('selection-ring');
+    if (ring) ring.visible = false;
+    if (kind === 'ROVER' && roverView(obj, dt)) return;
     const eye = EYE[kind];
     const l = look.current;
     obj.getWorldPosition(world.current);
@@ -201,6 +308,25 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
     right.current.set(Math.sin(heading), 0, Math.cos(heading)); // to the agent's right
     camera.position.y += s.up;
     camera.position.addScaledVector(right.current, s.side);
+    // Turn towards the last photo direction asked for (compass azimuth -> yaw relative to the agent).
+    const tr = turn.current;
+    if (aimRequest.token !== tr.seen) {
+      tr.seen = aimRequest.token;
+      tr.yaw = aimRequest.azimuthDeg;
+      tr.pitch = aimRequest.pitchDeg;
+    }
+    // Eased and limited in speed (about 55 deg/s): the turn starts and ends gently.
+    const k = 1 - Math.exp(-dt * 2.4);
+    if (tr.yaw != null) {
+      const headingNorthDeg = (90 - THREE.MathUtils.radToDeg(heading) + 720) % 360; // the agent's compass heading
+      const dYaw = shortestTurnDeg(headingNorthDeg + -l.yaw, tr.yaw); // look.yaw grows to the left, compass to the right
+      l.yaw -= THREE.MathUtils.clamp(dYaw * k, -55 * dt, 55 * dt);
+      if (Math.abs(dYaw) < 0.3) tr.yaw = null;
+    }
+    if (tr.pitch != null) {
+      l.pitch += (THREE.MathUtils.clamp(tr.pitch, PITCH_MIN_DEG, PITCH_MAX_DEG) - l.pitch) * k;
+      if (Math.abs(tr.pitch - l.pitch) < 0.3) tr.pitch = null;
+    }
     const yaw = heading + THREE.MathUtils.degToRad(l.yaw);
     const pitch = THREE.MathUtils.degToRad(l.pitch);
     aim.current.set(Math.cos(yaw) * Math.cos(pitch), Math.sin(pitch), -Math.sin(yaw) * Math.cos(pitch));

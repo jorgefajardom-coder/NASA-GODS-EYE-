@@ -1,5 +1,5 @@
-import type { RasterSet } from '../types/replay';
-import { finiteRange, versionKey } from './layers';
+import type { ContextTerrainData, RasterSet } from '../types/replay';
+import { versionKey } from './layers';
 
 /**
  * Base image of the 2D tactical map: the updated map in hypsometric blue bands, shaded by
@@ -10,8 +10,8 @@ export const MAP_BANDS = 9;
 
 /** Dark-to-light blue steps used for the elevation bands (low = dark). */
 const BAND_RGB: Array<[number, number, number]> = [
-  [6, 22, 48], [9, 34, 70], [12, 47, 94], [17, 62, 120], [24, 80, 146],
-  [34, 100, 170], [52, 124, 192], [80, 152, 212], [122, 186, 230],
+  [14, 38, 78], [20, 54, 104], [28, 72, 132], [40, 92, 158], [58, 114, 182],
+  [84, 140, 205], [118, 170, 224], [160, 200, 240], [206, 228, 250],
 ];
 
 export function bandOf(h: number, lo: number, hi: number, bands = MAP_BANDS): number {
@@ -40,6 +40,43 @@ export function hillshade(grid: ReadonlyArray<number | null>, rows: number, cols
   return out;
 }
 
+/** Heights at the band edges so each band holds the same share of the map (a few high points do not flatten the rest). */
+export function quantileEdges(values: ReadonlyArray<number>, bands = MAP_BANDS): number[] {
+  if (values.length === 0) return [];
+  const sorted = [...values].sort((a, b) => a - b);
+  const edges: number[] = [];
+  for (let k = 1; k < bands; k++) edges.push(sorted[Math.min(sorted.length - 1, Math.floor((k / bands) * (sorted.length - 1)))]);
+  return edges;
+}
+
+/** Band index of a height given the quantile edges. */
+export function bandByEdges(h: number, edges: ReadonlyArray<number>): number {
+  let lo = 0;
+  let hi = edges.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (h >= edges[mid]) lo = mid + 1;
+    else hi = mid;
+  }
+  return lo;
+}
+
+/** Height-per-cell scale for the hillshade so the steeper tenth of the map reads about 38 degrees, whatever the relief. */
+export function shadeScale(grid: ReadonlyArray<number | null>, rows: number, cols: number): number {
+  const g: number[] = [];
+  const at = (r: number, c: number) => grid[Math.min(rows - 1, Math.max(0, r)) * cols + Math.min(cols - 1, Math.max(0, c))];
+  for (let r = 1; r < rows - 1; r += 2) {
+    for (let c = 1; c < cols - 1; c += 2) {
+      const e = at(r, c + 1), w = at(r, c - 1), n = at(r + 1, c), s = at(r - 1, c);
+      if (e == null || w == null || n == null || s == null) continue;
+      g.push(Math.hypot(e - w, n - s) / 2);
+    }
+  }
+  if (g.length === 0) return 1;
+  g.sort((a, b) => a - b);
+  return Math.max(1e-6, g[Math.floor(0.9 * (g.length - 1))] / 0.8);
+}
+
 export interface TacticalBase {
   /** RGBA, row 0 = NORTH (canvas order). */
   pixels: Uint8ClampedArray;
@@ -54,9 +91,9 @@ export function tacticalBase(rasters: RasterSet, mapVersion: number): TacticalBa
   const { rows, cols } = rasters;
   const v = rasters.versions[versionKey(rasters, mapVersion)];
   const grid = v.belief;
-  const [lo, hi] = finiteRange(rasters.prior);
-  const res = 1; // shading uses relative slope only; absolute scale does not matter for the look
-  const shade = hillshade(grid, rows, cols, res * Math.max(1, (hi - lo) / 40));
+  const edges = quantileEdges(rasters.prior.filter((h): h is number => h != null));
+  // Shading uses relative slope only; its scale adapts to the relief so a flat area still shows its shape.
+  const shade = hillshade(grid, rows, cols, shadeScale(grid, rows, cols));
   const seen = new Set(v.observed);
   const pixels = new Uint8ClampedArray(rows * cols * 4);
   let total = 0;
@@ -70,9 +107,9 @@ export function tacticalBase(rasters: RasterSet, mapVersion: number): TacticalBa
         continue;
       }
       total++;
-      const base = BAND_RGB[bandOf(h, lo, hi)];
-      const k = 0.55 + 0.6 * shade[i];
-      const lit = seen.has(i) ? 1.35 : 0.8; // coverage: observed cells glow brighter
+      const base = BAND_RGB[bandByEdges(h, edges)];
+      const k = 0.5 + 0.75 * shade[i];
+      const lit = seen.has(i) ? 1.3 : 0.95; // coverage: observed cells glow brighter
       pixels[o] = base[0] * k * lit + (seen.has(i) ? 30 : 0);
       pixels[o + 1] = base[1] * k * lit + (seen.has(i) ? 40 : 0);
       pixels[o + 2] = base[2] * k * lit + (seen.has(i) ? 50 : 0);
@@ -80,4 +117,36 @@ export function tacticalBase(rasters: RasterSet, mapVersion: number): TacticalBa
     }
   }
   return { pixels, width: cols, height: rows, observed: seen.size, total };
+}
+
+/**
+ * Surroundings of the crop for the minimap, in the same blue bands as the crop (band edges from the
+ * crop's prior; the context shares its height datum) and slightly dimmer, so the map does not end in
+ * an empty area when an agent is near the crop's edge. Context only: never observed, never a mission
+ * input. Row 0 = north (canvas order). Returns null when the context grid is not row-0-south.
+ */
+export function tacticalContext(rasters: RasterSet, context: ContextTerrainData): TacticalBase | null {
+  const { rows, cols } = context.frame;
+  if ((context.frame.row0 ?? 'south') !== 'south' || context.heights.length !== rows * cols) return null;
+  const edges = quantileEdges(rasters.prior.filter((h): h is number => h != null));
+  const grid = context.heights;
+  const shade = hillshade(grid, rows, cols, shadeScale(grid, rows, cols));
+  const pixels = new Uint8ClampedArray(rows * cols * 4);
+  let total = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const i = r * cols + c;
+      const o = ((rows - 1 - r) * cols + c) * 4;
+      const h = grid[i];
+      if (h == null) continue;
+      total++;
+      const base = BAND_RGB[bandByEdges(h, edges)];
+      const k = (0.5 + 0.75 * shade[i]) * 0.72;
+      pixels[o] = base[0] * k;
+      pixels[o + 1] = base[1] * k;
+      pixels[o + 2] = base[2] * k;
+      pixels[o + 3] = 255;
+    }
+  }
+  return { pixels, width: cols, height: rows, observed: 0, total };
 }

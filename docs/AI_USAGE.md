@@ -786,8 +786,12 @@ from Mars24, stars from the Yale Bright Star Catalogue with the IAU rotation
 model of Mars, key light following the Sun) and the star-extraction script,
 the first-person terrain scan (state machine, wave/indicator/footprint shaders,
 scan key and synthesised sounds; inspired by Death Stranding's Odradek scanner,
-no game assets), the drone window's survey map tab (simulated observations of
-the replay, not LiDAR), the astronaut facing its walking direction,
+no game assets), the drone window's Hazards tab (`web/src/lib/droneHazards.ts`,
+`DroneMap.tsx`: steep cells and contradictions of the orbital prior read from the
+replay's simulated observations, not LiDAR; it replaces the earlier survey map tab), the astronaut facing its walking direction, the photo directions of the rover tour (`photoAim.ts`) and the rover's real-camera rig and arm close-up (`roverCameras.ts`, `roverRig.ts`, `RoverCameraBar.tsx`; the field of view, focal length, focus range and stereo baseline numbers are NASA's or from the instrument papers, the mast slew and zoom speeds and the stowed arm pose are display assumptions, the deployed arm pose is solved from a NASA feed camera position), the Gale (Curiosity) world, the Gusev (Spirit), Elysium (InSight), Meridiani (Opportunity) and Valles Marineris (Melas) worlds and the zone selector, a Mars globe built from the Viking MDIM 2.1 mosaic tiles with real zone positions, a radially fitted card and a horizon from the Melas DEM (`extract-globe-tiles.mjs`, `extract-zone-horizon.mjs`, `zoneGlobe.ts`; the globe imagery and horizon heights are NASA data, not generated; the zone synopses are AI-assisted text summarising public mission facts; the travel transition fills the screen with the zone's orbital image and warps it onto the projected terrain footprint before fading into the scene, `arrivalQuad.ts`, display code only, the image is NASA data) (`extract-gale-crop.mjs`, `extract-dem-crop.mjs`, `extract-mer-traverse.mjs`, `make-demo-fixture.mjs`, `data/worlds.ts`, `ZoneSelector.tsx`, `scripts/data/<zone>/`, `public/replay/<zone>-demo/`; the terrain, imagery and Spirit/Opportunity stops, the real science sites used as POIs C and D (`extract-science-sites.mjs`, `scripts/data/<zone>/science_sites.json`) and every zone card image are NASA data from JPL Mars Trek, NASA/JPL and the PDS Geosciences Node, not generated; the astronaut sites (Three Forks depot from the PDS, `extract-three-forks.mjs`; science stop; habitat area by the NASA Exploration Zone slope criterion) are NASA data or a published criterion applied by an AI-assisted script; the water, ice and radiation context, documented only (`extract-zone-environment.mjs`, `scripts/data/zone_environment.json`; Mars Odyssey GRS water, the RAD Gale dose and, elsewhere, RAD's published dose-pressure relation applied to each scene's pressure, flagged outside its measured range; no ice value) is NASA data with an AI-assisted derivation; the science-POI dossier `docs/science_poi_dossier.md` was drafted with AI assistance from the cited sources and awaits David's audit; the mission story in each scene's timeline, routes and rasters is generated and simulated, as in the other demos), the minimap surroundings (`tacticalMap.ts`, `Minimap.tsx`), the rover photo tour (`make-demo-fixture.mjs` tour phase, `MarsNow.tsx` controls; generated simulated motion, labelled illustrative), the real Perseverance stop markers and the stop-image window (`roverStops.ts`, `RoverStopMarkers.tsx`, `extract-rover-waypoints.mjs`; the stop positions are NASA data, not generated), the expanded demo crop (landing area plus the earlier demo area, 8 m display grid) (`extract-ctx-crop.mjs`, `make-demo-fixture.mjs`; the terrain heights stay NASA/USGS data), the opt-in Perseverance raw-images panel
+(`perseveranceRaw.ts`, `rawImagesStore.ts`, `RawImagesPanel.tsx`, and the first-person `MarsNow.tsx` window; the images are real NASA/JPL-Caltech files read
+from the public feed on request, not AI-generated and not stored) and the site icons
+(`siteKinds.ts`, `SiteIcon.tsx`, `SitesList.tsx`),
 their tests, and the workflow that publishes the public viewer to
 GitHub Pages. The scan only redraws the slope already computed from the orbital
 CTX DTM prior around the drone in display bands; it is not an observation, it
@@ -801,7 +805,7 @@ The team logo (`web/public/assets/brand/mars-gods-eye-logo.webp`) was generated
 with ChatGPT (OpenAI) and edited by the team. A band with a visible
 `AI-generated logo (ChatGPT, edited)` label is burned into the image, and it
 stays visible in the README and the about page. The link preview
-(`og-image.png`) is the NASA/JPL/USGS Viking global color mosaic of Mars (PIA00407),
+(`og-image.jpg`) is the NASA/JPL/USGS Viking global color mosaic of Mars (PIA00407),
 centred on black with Pillow (no text); it is not AI-generated (credits in
 THIRD_PARTY_NOTICES.md). The browser tab icon
 (`web/public/favicon.ico` and its PNG sizes) is an illustration of Mars made by
@@ -848,3 +852,23 @@ evidence record and the matching README wording. The script reads the built
 viewer and the existing recorded package; it generated no mission data,
 observation, measurement, image, video or audio. Its outputs are software
 check results, not an AC-08 acceptance.
+
+## PR36 raw-image acquisition provenance correction
+
+OpenAI Codex assisted the owner-requested correction of shared image-query
+identity in `web/src/lib/rawImagesStore.ts`, its consumers in `App.tsx`,
+`RawImagesPanel.tsx` and `MarsNow.tsx`, and the raw-image regression tests.
+The tests use synthetic feed fixtures and jsdom, pinned as a development-only
+dependency. No NASA image, observation, mission result or media was generated.
+This software correction does not approve scientific models or close mission,
+replay or submission acceptance.
+
+## PR36 zone-selector fallback correction
+
+OpenAI Codex assisted the owner-requested WebGL allocation fallback in
+`web/src/components/ZoneSelector.tsx`, its App tier binding and fallback styles,
+the jsdom navigation regressions, and the validation record under
+`evidence/pr36-viewer-regressions-20261115/`. The tests and browser checks are
+software evidence; no image, video, NASA observation or mission result was
+generated. Existing asset declarations and watermarks remain intact. This cut
+does not close AC-08, steps 4/5, scientific approvals or organizer endorsement.

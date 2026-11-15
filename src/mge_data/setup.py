@@ -14,6 +14,6 @@ setup(
     maintainer="MARS GODS EYE team",
     maintainer_email="team@example.invalid",
     description="P0 scaffold for mge_data; implementation pending",
-    license="LicenseRef-UNSPECIFIED",
+    license="MIT",
     entry_points={"console_scripts": ["data_node = mge_data.node:main"]},
 )

@@ -40,9 +40,9 @@ non-use, instead of claiming that every linked resource supplied scientific data
 | --- | --- |
 | [JPL Mars Trek](https://trek.nasa.gov/mars/) | Discovery, context and layer inspection. Record specific layer/product ID, footprint and date, then the actual downloaded product/terms if used in computation. A portal URL alone is insufficient. |
 | [USGS-NASA interactive Mars maps](https://astrogeology-usgs.hub.arcgis.com/pages/interactive-maps-mars) | Geological context/area selection when actually used. Record map release, scale, unit/feature and the decision informed. Geological interpretation is not an observed traversability mask. |
-| [Curiosity proposed Mount Sharp route](https://science.nasa.gov/resource/curiositys-proposed-path-up-mount-sharp/) | Optional annotated-route design reference. If adopted, record design-reference use; do not represent its route as Jezero mission input. |
+| [Curiosity proposed Mount Sharp route](https://science.nasa.gov/resource/curiositys-proposed-path-up-mount-sharp/) | Adopted as a design reference for the web route view (planned traverse over an orbital base map with labelled regions); no data from the page is reused. The web Gale world uses Curiosity's MMGIS waypoints, not this proposed route, and is not Jezero mission input. |
 | [NASA Worldview](https://worldview.earthdata.nasa.gov/) | Optional Earth imagery/temporal-view reference. Not a Mars elevation input; do not claim use if no actual material or design reference was adopted. |
-| [Perseverance raw images](https://mars.nasa.gov/mars2020/multimedia/raw-images/) | Optional contextual image, with exact image ID, camera, acquisition time/sol and required credits/terms. No calibrated local DEM, obstacle detection or stereo reconstruction is claimed without an implemented and tested derivation. |
+| [Perseverance raw images](https://mars.nasa.gov/mars2020/multimedia/raw-images/) | Used on request in the web viewer (Atmos tab, real rover stops, photo tour): images are fetched from the public feed after the person's action and shown with image ID, camera, sol and NASA/JPL-Caltech credit; nothing is bundled. Real stop positions come from the MMGIS M20 waypoints (THIRD_PARTY_NOTICES.md). No calibrated local DEM, obstacle detection or stereo reconstruction is claimed, and the images never reach the agent's map. |
 
 ## Scientific-model resources
 

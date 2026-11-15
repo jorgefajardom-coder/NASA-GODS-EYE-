@@ -11,6 +11,11 @@ import { growthClock, zoneDelay, zoneGlow, zoneShare } from './TerrainGrowth';
 
 /** Mesh vertices per source cell interval. Source cell centres are always vertices (J-01). */
 export const MESH_SUBDIVISION = 3;
+/** Vertices the terrain mesh aims for: building and lighting more of them freezes the opening for seconds. */
+const MESH_VERTEX_BUDGET = 700_000;
+/** Mesh subdivision per source cell: up to 3, fewer on a large map so it stays within the vertex budget. */
+export const meshSubdivision = (meta: { rows: number; cols: number }): number =>
+  Math.max(1, Math.min(MESH_SUBDIVISION, Math.floor(Math.sqrt(MESH_VERTEX_BUDGET / (meta.rows * meta.cols)))));
 /** Distance (m) at which the cosmetic ground grain has faded out; the first-person view reaches farther. */
 export const DETAIL_FAR_M = 180;
 export const DETAIL_FAR_POV_M = 480;
@@ -44,7 +49,7 @@ float gPx = 0.0;
 float gKeep(float lo, float hi) { return 1.0 - smoothstep(lo, hi, gPx); }
 float gHash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float gNoise(vec2 p) {
-  vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
+  vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0); // quintic: no flat seams on the lattice lines
   return mix(mix(gHash(i), gHash(i + vec2(1.0, 0.0)), u.x), mix(gHash(i + vec2(0.0, 1.0)), gHash(i + vec2(1.0, 1.0)), u.x), u.y);
 }
 // Each octave is rotated (about 37 deg) so the value-noise lattice never lines up across octaves.
@@ -87,13 +92,27 @@ vec2 gPebbles(vec2 g) {
 }
 // Relief in metres-like units: metre-scale undulation, grit, pebbles. No ripples: their
 // parallel crests read as lines on the ground and alias into moire at grazing angles.
-float groundHeight(vec2 g) {
+// Mid-range breakup (cosmetic, not measured): irregular, domain-warped relief and tone at 10-90 m
+// wavelengths, so the regular lattice lines of an interpolated 20 m DTM do not read as a pattern.
+float groundMid(vec2 g0) {
+  vec2 g = gTurn(2.41) * g0;
+  vec2 w = g + vec2(gFbm(g * 0.021), gFbm(g * 0.021 + 3.7)) * 40.0;
+  return gFbm(w * 0.045) * 2.4 + gFbm(w * 0.17) * 0.6;
+}
+float groundMidTone(vec2 g0) {
+  vec2 g = gTurn(0.93) * g0;
+  vec2 w = g + vec2(gFbm(g * 0.013 + 8.0), gFbm(g * 0.013 + 1.1)) * 60.0;
+  return 0.86 + gFbm(w * 0.03) * 0.3;
+}
+float groundHeight(vec2 g0) {
+  vec2 g = gTurn(0.61) * g0; // off the world axes, so the lattice never lines up with the map grid
   float undulation = gFbm(g * 0.3 + gFbm(g * 0.07) * 2.0) * 0.4;
   float grit = gFbm(g * 7.0) * 0.035 * gKeep(0.015, 0.05);
   return undulation + grit + gPebbles(g).x * 0.07;
 }
 // Brightness modulation: dust patches, darker grit, pebble speckle.
-float groundAlbedo(vec2 g) {
+float groundAlbedo(vec2 g0) {
+  vec2 g = gTurn(1.17) * g0;
   float patches = gFbm(g * 0.06 + gFbm(g * 0.02) * 3.0) * 0.3 + 0.86;
   float grit = mix(1.0, 0.9 + gFbm(g * 9.0) * 0.18, gKeep(0.012, 0.04));
   vec2 st = gPebbles(g);
@@ -151,7 +170,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
 
   const geometry = useMemo(() => {
     const { rows, cols } = meta;
-    const f = MESH_SUBDIVISION;
+    const f = meshSubdivision(meta);
     const fine = upsampleGrid(heights, rows, cols, f);
     const R = fine.rows;
     const C = fine.cols;
@@ -243,12 +262,14 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
           `#include <color_fragment>
           gPx = length(fwidth(vGround));
           float detailFade = uDetail * (1.0 - smoothstep(uDetailFar * 0.28, uDetailFar, length(vViewPosition)));
-          if (detailFade > 0.0) diffuseColor.rgb *= mix(1.0, groundAlbedo(vGround), detailFade);`,
+          if (detailFade > 0.0) diffuseColor.rgb *= mix(1.0, groundAlbedo(vGround), detailFade);
+          float midFade = uDetail * smoothstep(uDetailFar * 0.35, uDetailFar * 1.6, length(vViewPosition)) * (1.0 - smoothstep(6000.0, 14000.0, length(vViewPosition)));
+          if (midFade > 0.0) diffuseColor.rgb *= mix(1.0, groundMidTone(vGround), midFade);`,
         )
         .replace(
           '#include <normal_fragment_maps>',
           `#include <normal_fragment_maps>
-          if (detailFade > 0.0) normal = groundNormal(-vViewPosition, normal, groundHeight(vGround) * detailFade, faceDirection);`,
+          if (detailFade > 0.0 || midFade > 0.0) normal = groundNormal(-vViewPosition, normal, (detailFade > 0.0 ? groundHeight(vGround) * detailFade : 0.0) + (midFade > 0.0 ? groundMid(vGround) * midFade : 0.0), faceDirection);`,
         )
         // The draped CTX image is panchromatic: map its grey level onto a basalt-to-dust ramp
         // (display only). The vertex colour (observed-cell tint) is applied next by color_fragment.
@@ -358,8 +379,8 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     }
     pos.needsUpdate = true;
     colAttr.needsUpdate = true;
-    geometry.computeVertexNormals();
-    geometry.computeBoundingSphere();
+    // Normals and the bounding sphere stay those of the finished terrain: recomputing them for every
+    // vertex on every frame took long enough on a large map to freeze the animation into a few frames.
     growing.current = growthClock.active;
     if (!growing.current) morph.current = null; // the growth has set the true heights: nothing left to morph
   });

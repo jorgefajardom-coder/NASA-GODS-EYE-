@@ -4,7 +4,7 @@
   <version>0.2.0</version>
   <description>Mars Gods Eye ROS to web gateway (REST and WebSocket) and replay recorder.</description>
   <maintainer email="team@example.invalid">MARS GODS EYE team</maintainer>
-  <license>LicenseRef-UNSPECIFIED</license>
+  <license>MIT</license>
 
   <buildtool_depend>ament_python</buildtool_depend>
 

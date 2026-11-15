@@ -256,6 +256,16 @@ flowchart LR
 - Intro screen for the illustrative demo: skippable AI-generated video with one burned-in
   `AI-GENERATED · KLING` mark (`?nointro=1` or reduced motion skips it). The interface then enters: the panels
   slide in, the timeline rises and the agent dial spins into place.
+- Zone selector (`Z` in the map view; opens after the intro): a Mars globe built from the Viking
+  MDIM 2.1 colour mosaic (JPL Mars Trek) with one point per scene at the centre of its crop.
+  The selected zone turns to face the camera and the globe zooms in; a card fitted radially
+  against the planet shows the zone's orbital image, a short synopsis and its coordinates.
+  Six Mars scenes: Jezero (Perseverance), Gale (Curiosity), Gusev (Spirit), Elysium Planitia
+  (InSight), Meridiani Planum (Opportunity) and Valles Marineris (Melas Chasma).
+  *Travel* zooms the card image to fill the screen edge to edge (cover, no black bands); on
+  arrival the same image lays itself down on the terrain it is draped on, a perspective warp
+  onto the projected footprint that follows the camera, then fades into the 3D map. Display
+  only; reduced motion skips the warp and simply fades.
 - Terrain formation: the layer appears flat and its relief rises to the true shape in 2.5 s,
   valleys first and ridges last, with rising ground lit. Switching layers or a new map version
   morphs the heights in 1.8 s instead of jumping. Display only.
@@ -323,7 +333,7 @@ flowchart LR
 
 Keys: `F` follow camera, `V` first person, `Q` terrain scan (first person; rotates the view otherwise), `C` drone camera
 (first person), `L` helmet lights, `I` artificial / real light, `B` camera sway (first person),
-`G` grab map, `Q` / `E` rotate view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
+`G` grab map, `Q` / `E` rotate view, `Z` zone selector (map view), `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 
 ### What is real in the viewer
 
@@ -358,6 +368,8 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Updated map (v2) | CTX prior plus a simulated drone observation over a scarp added to the hidden reference | **Synthetic** adverse case |
 | Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
 | Shadows, footprints, dust, rotor blur, wheel and steering motion | Derived in the viewer from the drawn poses | **Cosmetic display** only |
+| Zone selector globe | Viking MDIM 2.1 colour mosaic, NASA/USGS via [JPL Mars Trek](https://trek.nasa.gov/mars/) (32 level-2 tiles); each zone card shows the orbital image draped on that scene | Real NASA imagery; horizon band from the Melas DEM is decorative, not to scale; synopses are AI-assisted text |
+| Zone arrival transition | The zone's orbital image warped from full screen onto the projected footprint of its terrain | **Cosmetic display**; no data changes |
 | Terrain formation, height morph, interface entrance, camera sway | Viewer animations on the drawn surface and camera | **Cosmetic display**; no height or pose in the data changes |
 | Terrain scan | Prior-derived slope classes and NoData around the astronaut, using the current run's grid | **Display only**: not an observation, sensor or route update; display bands are unvalidated |
 | First-person route | Route in force as recorded, draped on the ground, with the next waypoint and its distance | Drawn from the received route |
@@ -374,7 +386,7 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Surface base | `base-marciana-v2`, generated with OpenAI Codex, prepared by `web/scripts/blender/prepare_base.py` | **AI-generated** 3D model |
 | Intro screen | Generated with Kling, `web/public/assets/intro/mars-gods-eye-intro.webm` | **AI-generated** video, one `AI-GENERATED · KLING` mark burned into every frame; audio track declared, played muted |
 | Team logo (README, about page) | Generated with ChatGPT (OpenAI) and edited by the team, `web/public/assets/brand/mars-gods-eye-logo.webp` | **AI-generated** image, visible `AI-generated` watermark in every version |
-| Link preview | NASA/JPL/USGS Viking global color mosaic ([PIA00407](https://science.nasa.gov/photojournal/global-color-views-of-mars/)), centred on black without text, `web/public/assets/brand/og-image.png` | Real NASA image, not AI-generated; no NASA logos or mission marks |
+| Link preview | NASA/JPL/USGS Viking global color mosaic ([PIA00407](https://science.nasa.gov/photojournal/global-color-views-of-mars/)), centred on black without text, `web/public/assets/brand/og-image.jpg` | Real NASA image, not AI-generated; no NASA logos or mission marks |
 | Browser tab icon | Illustration of Mars made by the team, `web/public/favicon.ico` and PNG sizes (32, 48, 180, 512 px) | Team-made image, not AI-generated; background removed and resized |
 | Evaluator reference | MRO/HiRISE DTM ([DOI 10.5066/P9REJ9JN](https://doi.org/10.5066/P9REJ9JN)) | Real; isolated, never in the public build |
 
@@ -630,10 +642,12 @@ Read [AGENTS.md](AGENTS.md). Work on your assigned branch; open small PRs to
 producers, consumers and contract tests together when fields/frames/units change.
 Use English Conventional Commits and English PR descriptions.
 
-The integrated interfaces/simulation/bringup packages retain their existing MIT
-metadata. New packages use `LicenseRef-UNSPECIFIED` and `team@example.invalid`
-as explicit placeholders to replace before distribution. The team still needs
-to choose and supply the overall project license; dataset licenses are separate.
+The project's own code and documentation are released under the
+[MIT License](LICENSE); every ROS package and the web viewer declare MIT.
+The `team@example.invalid` maintainer address in new packages is still a
+placeholder to replace before distribution. The MIT License does not cover
+third-party material: NASA/USGS data and imagery, fonts, 3D models and other
+assets keep their own terms and credits.
 Third-party credits and licences are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## AI use
