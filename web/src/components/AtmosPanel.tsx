@@ -36,7 +36,7 @@ export function ZoneEnvironmentPanel({ runId }: { runId: string }) {
       <div className="geo__head">
         <span>
           Water and radiation here{' '}
-          <Info text="Water: Mars Odyssey GRS water-equivalent hydrogen in the top few tens of centimetres, 5 x 5 degree cell (Boynton et al. 2007; ice and hydrated minerals not distinguished). Radiation: MSL RAD surface dose at Gale (Hassler et al. 2014); other zones use RAD's measured dose-pressure relation (Guo et al. 2018) at their pressure. Surface averages without shielding; solar particle events are not included." />
+          <Info text="Water: Mars Odyssey GRS water-equivalent hydrogen in the top few tens of centimetres, 5 x 5 degree cell (Boynton et al. 2007; ice and hydrated minerals not distinguished). Radiation: MSL RAD surface dose at Gale (Hassler et al. 2014); other zones use RAD's measured dose-pressure relation (Guo et al. 2017) at their pressure. Surface averages without shielding; solar particle events are not included." />
         </span>
         <span className="mono">GRS · RAD</span>
       </div>

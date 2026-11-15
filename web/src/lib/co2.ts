@@ -13,7 +13,7 @@ export interface Co2Line {
   exhaledL: number;
   /** CO2 the whole oxygen budget would produce (L): the bar's full scale. */
   budgetL: number | null;
-  /** Current rate (L/h), or null when oxygen is not being consumed. */
+  /** Current rate (L/h), or null when the consumption rate is unavailable. */
   perHour: number | null;
   /** CO2 the route in force adds (L), or null. */
   routeAddsL: number | null;

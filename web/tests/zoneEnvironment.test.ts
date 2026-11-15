@@ -34,10 +34,8 @@ describe('astronaut dose at each zone (HUD)', () => {
     expect(zoneCrewDose('demo', 3600)!.usv).toBeCloseTo((0.69 * 1000) / 24); // Jezero uses its own rate, not Gale's
   });
 
-  it('puts the dose in proportion to NASA\'s career limit', async () => {
-    const { zoneCrewDose, NASA_CAREER_LIMIT_MSV } = await import('../src/lib/zoneEnvironment');
-    expect(NASA_CAREER_LIMIT_MSV).toBe(600);
-    expect(zoneCrewDose('gale-demo', 86400)!.careerShare).toBeCloseTo(0.64 / 600);
+  it('has no zone estimate for an unknown run', async () => {
+    const { zoneCrewDose } = await import('../src/lib/zoneEnvironment');
     expect(zoneCrewDose('unknown-run', 100)).toBeNull();
   });
 });

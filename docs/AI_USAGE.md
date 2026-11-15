@@ -890,3 +890,7 @@ and an assumed respiratory quotient of 0.85, pending scientific review; no CO₂
 suit capacity is generated. It also switched the HUD dose gauge to each zone's surface
 rate from the existing zone environment data, with NASA's 600 mSv career limit as scale
 context; no dose value was generated.
+
+## PR37 scientific presentation corrections — 15 November 2026
+
+OpenAI Codex assisted the HUD/context code, source-year corrections, project-page draft and regression tests listed in `ai_usage.json` under `pr37_scientific_presentation_corrections`. RAD dose equivalent is not converted into NASA effective dose or a career-limit percentage. An unavailable CO2 rate remains unavailable. No new measured data, numerical radiation inputs, scientific profile or approval was generated. Owner scientific review remains pending.

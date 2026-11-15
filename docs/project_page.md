@@ -1,4 +1,4 @@
-# Project page — ready to paste into the Space Apps form
+# Project page — draft pending final evidence and owner review
 
 English text for the NASA Space Apps 2026 project page of team *Houston, We Have a
 Bug!*, challenge **Interplanetary Survival Guide: Martian Map**. The sections follow
@@ -19,18 +19,16 @@ Mars Gods Eye
 
 ## High-Level Project Summary
 
-Mars Gods Eye is a layered, walkable map of real Mars terrain for a crew on a
-Marswalk: an astronaut, a rover and a drone. It stacks NASA data from several
-missions on one view (orbital terrain, orbital imagery, geology, weather, water,
-radiation, real rover stops and real rover photos) over six Mars zones. The crew
-can see it from orbit, in 3D, or through a first-person helmet display. A route
-planner checks time, energy and oxygen for the way out, the work at the science
-stop and the way back. When an observation contradicts the orbital map, the
-crew member stops and gets a new route from where they actually are. This
-answers the challenge's gap: tools like Mars Trek are built for regional views,
-while a crew on foot needs to know, metre by metre, which ground is only
-estimated from orbit, what the walk costs, and how to get home. Every run is
-recorded and replays in a web browser, with no server.
+Mars Gods Eye is a research prototype for exploring Mars terrain, mission
+resources and the route home. Its browser presents six illustrative zone scenes
+built from NASA terrain and imagery, with a map and first-person helmet display.
+Separately, a recorded ROS software test demonstrates one kinematic MOCK
+astronaut stopping, replanning and returning after a SIMULATED terrain
+contradiction; the rover and drone remain idle. An analytical pilot examines
+proposed scientific activity costs. These are distinct evidence products, not a
+validated live mission. The browser replays saved files without a backend;
+scientific model agreement, coordinated three-agent execution and physical
+validation remain open.
 
 ## Link to Project Demo
 
@@ -50,41 +48,41 @@ subtitles. Script below.]`
    Jezero (Perseverance), Gale (Curiosity), Gusev (Spirit), Elysium Planitia
    (InSight), Meridiani Planum (Opportunity) and Valles Marineris. Each card shows
    the zone's orbital image, its water and its daily radiation dose.
-2. **Plan a Marswalk.** The science stops are real NASA science sites: the
-   Perseverance sample sites Salette and Swift Run, the Curiosity drill holes
-   Buckskin and Big Sky, and the Spirit and Opportunity contact-science rocks. The
-   planner proposes FAST or SAFE routes over the orbital terrain. It avoids steep
-   ground, keeps NoData and uncertainty, and checks time, energy and oxygen for
-   the whole trip with a reserve.
-3. **Walk it.** The first-person helmet display shows:
-   - a compass tape with site bearings and a heading-up minimap;
-   - gauges for oxygen, exhaled CO₂, energy, time, atmosphere and radiation dose;
-   - the route draped on the ground, with the next waypoint;
-   - alerts that compare what is left with what finishing the route, or walking
-     back now, would need (*Route uses the reserve*, *Turn back*, *Return to base
-     now*).
-4. **React to the unexpected.** When a drone or rover observation contradicts the
-   orbital estimate, the affected crew member stops, the route is cancelled and a
-   new one is planned with the resources left.
-5. **See what to expect.** At every real rover stop the viewer shows NASA's real
-   rover photos, turning the view to where each photo was taken. The rover can be
-   driven from its real cameras: Navcam, Mastcam-Z, Hazcams and WATSON.
-6. **Replay and audit.** Every decision is recorded and replays offline, in REPLAY
-   mode, with the source of every layer shown.
+2. **Explore an illustrative Marswalk.** The scene generator supplies example
+   routes and resources. Some stops use published NASA science-site locations;
+   their scientific selection remains pending review. The deployed browser does
+   not call the ROS planner or a live gateway.
+3. **Inspect the presentation.** The helmet view shows a compass, minimap,
+   resource estimates, route and return alerts. These are replay/model context,
+   not measured suit telemetry or certified safety decisions. Exhaled CO2 uses
+   an assumed respiratory quotient; removal capacity is not modelled.
+4. **Review recorded recovery separately.** The URL-selected
+   `recorded-recovery-001` package preserves a ROS test with real data/mapping,
+   planner and recorder, a MOCK mission and kinematic human, and one SIMULATED
+   contradicting observation. It demonstrates stop/replan/return and ends READY,
+   not scientific COMPLETE. Its historical idle-drone height limitation is
+   tracked in the height reconciliation; do not present it as a three-agent run.
+5. **Explore NASA imagery.** Rover tours show published stops and raw images.
+   The driving, resources and approximate camera directions are illustrative;
+   the photographs retain their mission and acquisition provenance.
+6. **Audit an analytical pilot.** A separately sealed pilot records proposed
+   activity costs and simulated outcomes. Its report/video must retain its run,
+   source revision and SIMULATED classification; it is not ROS execution.
 
 ### How it works
 
-- **Data:** public NASA terrain models and orbital mosaics are cropped to a local
-  east-north-up grid, keeping their source, version and checksum. Orbital terrain
-  starts as an *estimate*, with its uncertainty; a cell becomes *observed* only
-  after a simulated observation.
-- **Planner and mission authority:** Python and ROS 2 Jazzy nodes (planner,
-  mapping, mission manager, gateway and recorder), with a Gazebo Harmonic
-  simulation. Routes are costed with a resource model for walking, climbing and
-  working in a suit, plus the return.
-- **Viewer:** TypeScript with React and three.js, built with Vite, published as a
-  static site. It plays recorded runs with no backend and falls back to a 2D map
-  on computers without WebGL.
+- **Data:** public NASA terrain and imagery are cropped to declared grids,
+  preserving datum, resolution, provenance and uncertainty. The six browser
+  scenes and the small ROS integration dataset are different products.
+- **ROS software:** mapping, planner, mission, gateway and recorder components
+  use ROS 2 Jazzy. The recorded recovery uses a kinematic MOCK executor.
+  Gazebo Harmonic is a target platform, not evidence of this recorded execution.
+- **Resources:** the production planner and scientific analytical API are
+  distinct models. Model agreement and operational approval remain pending;
+  finite cost estimates do not establish validated EVA feasibility.
+- **Viewer:** TypeScript, React and three.js, built with Vite and served as a
+  static site. It consumes saved packages, labels replay provenance and offers
+  a 2D fallback when WebGL is unavailable.
 
 ### Benefits
 
@@ -116,7 +114,7 @@ GitHub Actions and GitHub Pages; Blender for the base model.
 | A map, tool or interface an astronaut can use during a surface excursion | 3D map, heading-up minimap and first-person helmet display | Delivered |
 | Scientific goals and a location chosen for them | Real NASA science sites as stops in every rover zone; the reasoning is in the [science POI dossier](science_poi_dossier.md) | Delivered; scientific review **pending** |
 | At least three kinds of data | Jezero: topography, optical, geology, atmosphere, radiation, water (6). Other zones: topography, optical, water, radiation (4) | Delivered |
-| Astronaut safety, radiation and space weather | Dose per zone from MSL RAD (measured at Gale, estimated elsewhere), shown against NASA's 600 mSv career limit; example dose for a 4 h Marswalk; resource alerts; stop on contradiction | Delivered as context; live space weather is **future work** |
+| Astronaut safety, radiation and space weather | Dose per zone from MSL RAD (measured at Gale, estimated elsewhere), reported as dose-equivalent context without an effective-dose conversion; example dose for a 4 h Marswalk; resource alerts; stop on contradiction | Delivered as context; live space weather is **future work** |
 | Spacesuit mobility and load | Time, energy, oxygen and exhaled CO₂ for walking, working and returning, with reserve alerts | Delivered; costs are model estimates **pending** review |
 | A route that avoids obstacles | Routes avoid steep slopes and keep uncertainty; replanning after a contradiction | Delivered for slope; rock maps are **future work** |
 | (Optional) Helmet HUD, tablet or habitat display | First-person HUD and map view | Delivered |
@@ -221,14 +219,14 @@ Sources, product IDs and checksums: [data sources](data_sources.md),
 - **ESA Mars Express HRSC:** HRSC stereo data are part of the Columbia Hills
   (Gusev) and InSight terrain mosaics distributed through JPL Mars Trek.
 - **Science references:**
-  - Guo et al. 2018, *JGR Planets* (RAD dose-pressure relation);
+  - Guo et al. 2017, *JGR Planets* (RAD dose-pressure relation);
   - Herd 2025 and Vasavada 2022 (rover sampling and science strategy);
   - Squyres 2003 (MER contact science);
   - Maki et al. 2020 and Bell et al. 2021, *Space Science Reviews* (rover camera
     specifications);
   - Allison and McEwen 2000 (Mars time);
   - Yale Bright Star Catalogue (Hoffleit and Warren 1991) for the night sky;
-  - NASA-STD-3001 (radiation career limit, scale only).
+  - NASA-STD-3001 (effective-dose requirements; no conversion or compliance calculation implemented).
 - **Third-party assets:**
   - Animated astronaut model by LasquetiSpice (Sketchfab, CC BY 4.0);
   - Barlow Condensed, IBM Plex Mono and Rajdhani fonts (SIL Open Font

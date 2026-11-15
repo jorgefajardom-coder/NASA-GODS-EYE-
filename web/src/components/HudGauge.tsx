@@ -9,7 +9,7 @@ import { fmtDuration } from '../lib/format';
 import { heightGrid } from '../lib/layers';
 import { resourceLines, type ResourceLine } from '../lib/resources';
 import { RESPIRATORY_QUOTIENT, co2FromOxygen, type Co2Line } from '../lib/co2';
-import { NASA_CAREER_LIMIT_MSV, zoneCrewDose } from '../lib/zoneEnvironment';
+import { zoneCrewDose } from '../lib/zoneEnvironment';
 import { HUD_ICON, type HudOption } from './RadialHud';
 
 const V = 168; // drawing grid (viewBox), scaled to the circle
@@ -136,7 +136,7 @@ function Co2Gauge({ c }: { c: Co2Line }) {
       {[30, 62, 104, 132].map((x, i) => (
         <circle key={x} cx={x} cy={V - 14 - (i % 2) * 18} r={2 + (i % 3)} fill="#fff" opacity={0.5} className={`hg__bubble${i % 2 ? ' hg__bubble--late' : ''}`} />
       ))}
-      <Caption y={70} lines={[['CO₂', 'hg__t--icon'], [amount(c.exhaledL, 'L', 1), 'hg__t--big'], [c.budgetL ? `${Math.round(f * 100)} % exhaled` : ''], [c.perHour == null || c.perHour < 1e-6 ? 'not breathing hard' : `${amount(c.perHour, 'L/h', 1)} est.`]]} />
+      <Caption y={70} lines={[['CO₂', 'hg__t--icon'], [amount(c.exhaledL, 'L', 1), 'hg__t--big'], [c.budgetL ? `${Math.round(f * 100)} % exhaled` : ''], [c.perHour == null ? 'rate unavailable' : `${amount(c.perHour, 'L/h', 1)} est.`]]} />
     </>
   );
 }
@@ -341,7 +341,7 @@ export function HudGauge({ option, size, bundle, view, t, agent, route, budget, 
   const zone = agent?.agent_kind === 'HUMAN' ? zoneCrewDose(runId, t) : null;
   if (zone) {
     const end = zoneCrewDose(runId, bundle.manifest.duration_s)!;
-    const how = zone.measuredHere ? 'measured here by MSL RAD (Hassler et al. 2014)' : `estimated from RAD's dose-pressure relation (Guo et al. 2018)${zone.withinRange ? '' : ', outside the pressure range RAD measured'}`;
+    const how = zone.measuredHere ? 'measured here by MSL RAD (Hassler et al. 2014)' : `estimated from RAD's dose-pressure relation (Guo et al. 2017)${zone.withinRange ? '' : ', outside the pressure range RAD measured'}`;
     return (
       <RadialBar
         f={end.usv ? zone.usv / end.usv : 0}
@@ -349,7 +349,7 @@ export function HudGauge({ option, size, bundle, view, t, agent, route, budget, 
         option="dose"
         value={`${fmtMicroSv(zone.usv)} µSv`}
         sub={`${zone.msvPerDay.toFixed(2)} mSv/day${zone.measuredHere ? '' : ' est.'}`}
-        title={`Radiation dose so far ${fmtMicroSv(zone.usv)} µSv (± ${fmtMicroSv(zone.sigmaUsv)}), whole run ${fmtMicroSv(end.usv)} µSv, at ${zone.msvPerDay.toFixed(2)} mSv/day ${how}. That is ${(zone.careerShare * 100).toFixed(4)} % of NASA's ${NASA_CAREER_LIMIT_MSV} mSv career limit (NASA-STD-3001). Unshielded surface average without solar storms; an estimate, not a dosimeter reading`}
+        title={`Radiation dose so far ${fmtMicroSv(zone.usv)} µSv (± ${fmtMicroSv(zone.sigmaUsv)}), whole run ${fmtMicroSv(end.usv)} µSv, at ${zone.msvPerDay.toFixed(2)} mSv/day ${how}. RAD dose equivalent; NASA effective dose and career-limit compliance are not calculated. Unshielded surface average without solar storms; an estimate, not a dosimeter reading`}
       />
     );
   }

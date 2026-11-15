@@ -1680,6 +1680,28 @@
         "scripts/dev.sh"
       ],
       "use": "Canonical interfaces and integration smoke contribution preserved with original history; Codex assisted conflict resolution and adaptation. Contributor AI use requires separate confirmation."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "pr37_scientific_presentation_corrections",
+      "generation": "AI-assisted code, regression tests and documentation reviewed against primary sources",
+      "paths": [
+        "docs/project_page.md",
+        "docs/science_poi_dossier.md",
+        "docs/pr37_science_review.md",
+        "web/README.md",
+        "web/scripts/data/zone_environment.json",
+        "web/scripts/extract-zone-environment.mjs",
+        "web/src/components/AtmosPanel.tsx",
+        "web/src/components/HudGauge.tsx",
+        "web/src/lib/co2.ts",
+        "web/src/lib/zoneEnvironment.ts",
+        "web/tests/zoneEnvironment.test.ts",
+        "web/tests/hudScientificContext.test.ts",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Remove an unsupported RAD dose-equivalent to NASA effective-career-dose percentage, distinguish unavailable CO2 rates, correct Guo 2017 references without changing numerical data, and separate illustrative scenes, recorded MOCK recovery, analytical pilots and pending physical/three-role acceptance. No new observational data, profiles or scientific approval."
     }
   ],
   "measurement_scope": "New computational planner benchmark timings/costs, not physical or NASA mission measurements",
