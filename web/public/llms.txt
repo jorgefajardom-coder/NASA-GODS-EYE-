@@ -21,7 +21,7 @@ Mission playback is a REPLAY of simulated data, not a live mission. The public o
 - Cameras: Map, Astronaut, Rover, Drone, Base; V switches the followed agent between third and first person. In first person the HUD shows a compass, site bearings, the agent dial with resources and a minimap, the route ahead with the next waypoint, and resource alerts.
 - Terrain scan (Q in first person): a visual pulse around the astronaut that redraws the run's prior-derived slope classes (< 8°, 8–15°, ≥ 15°) and NoData on the surface. It is not a sensor, observation or mission command; map, uncertainty and routes remain unchanged.
 - Keyboard: Space play/pause, ←/→ ±5 s, Home restart, F follow the selected agent, G grab-to-drag map, Q/E rotate (Q is the terrain scan in first person), V first person, C drone camera, L helmet lights, I artificial / real light, B camera sway in first person.
-- URL parameters: ?run=recorded-recovery-001 (default, intro omitted), ?run=demo (separate illustrative story), or ?run=mock-vertical-001 (historical flat-MOCK recording); ?nointro=1 skips the demo intro. Entry folders and internal run IDs are separate identifiers.
+- URL parameters: ?run=demo (default: the illustrative Jezero story, reached from a Mars globe selector of six zones), ?run=gale-demo, gusev-demo, insight-demo, meridiani-demo or melas-demo (the other zones, also simulated stories on real terrain), ?run=recorded-recovery-001 (recorded real-planner recovery with MOCK execution, intro omitted), or ?run=mock-vertical-001 (historical flat-MOCK recording); ?nointro=1 skips the demo intro. Entry folders and internal run IDs are separate identifiers.
 
 ## Machine-readable data
 

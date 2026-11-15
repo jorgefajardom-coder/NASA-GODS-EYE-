@@ -29,8 +29,11 @@ map.
 4. Record every decision and replay it in a web browser, with no server.
 
 **See it.** [Open the web viewer](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/).
-The default run, *Recorded recovery · MOCK*, is a recording of the real planner
-on public Jezero terrain: the astronaut follows an estimated route, a simulated
+It opens on a Mars globe to choose one of six zones; the default scene is the
+illustrative Jezero demo (a simulated story on real terrain). The recording of the
+real planner, *Recorded recovery · MOCK*, opens with
+[`?run=recorded-recovery-001`](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/?run=recorded-recovery-001):
+on public Jezero terrain the astronaut follows an estimated route, a simulated
 observation contradicts the map, the astronaut stops, receives a new route and
 returns. Video and project page: links will be added here before submission.
 How each part of the challenge is answered, and what is still future work:
@@ -44,7 +47,7 @@ How each part of the challenge is answered, and what is still future work:
 | MGS/MOLA global elevation model (NASA PDS) | Regional context: places the study area and checks the vertical alignment of the CTX tile |
 | MRO/CTX orthomosaic via [JPL Mars Trek](https://trek.nasa.gov/mars/) | Surface image draped over the terrain (display) |
 | USGS SIM 3464 geologic map of Jezero | Geologic units in the viewer (display; boundaries approximate to 100–200 m) |
-| Perseverance MEDA, Curiosity REMS, MSL RAD | Weather and radiation context in the viewer (display; the radiation values come from Gale crater, not Jezero) |
+| Perseverance MEDA, Curiosity REMS, MSL RAD | Weather and radiation context in the viewer (display; RAD measured the dose at Gale crater, the other zones, Jezero included, use RAD's dose-pressure relation) |
 | MRO/HiRISE terrain model (USGS) | Held back as a reference for evaluating results; never given to the planner or the viewer |
 | Perseverance and Ingenuity 3D models (NASA/JPL-Caltech) | Rover and drone models in the viewer |
 | Zone terrain models via JPL Mars Trek: MSL Gale DEM mosaic, Columbia Hills and InSight HiRISE/CTX/HRSC mosaics, Endeavour crater HiRISE DEM, CTX stereo DEM of Melas Chasma | Terrain of the five other zone scenes (display; mission stories there are simulated) |
@@ -247,8 +250,9 @@ flowchart LR
 
 - REPLAY mode only. The status block shows `REPLAY · <source_mode>` (`MOCK`,
   `SIMULATION` or `UNKNOWN`); a package that claims `LIVE` is refused.
-- Default and only offered entry: the simulated `demo` on the 2 km CTX crop (no MOCK
-  runs in the viewer). `recorded-recovery-001` stays loadable with `?run=`: an unchanged recorder package
+- Default entry: the simulated `demo` on the Jezero CTX crop. The selector offers it and the
+  five other zone scenes (`OFFERED_RUNS`: `demo` and every `*-demo`), all simulated stories
+  on real terrain; no MOCK runs are offered. `recorded-recovery-001` stays loadable with `?run=`: an unchanged recorder package
   on Daniel's 128 m Jezero crop (32×32 computational cells at 4 m; CTX source
   spacing 20 m). Real data/mapping/planner providers are paired with MOCK mission
   and kinematic execution. The human stops, replans, resumes and returns; rover
@@ -303,7 +307,7 @@ flowchart LR
 - Real images (*Mars now*, `M` in first person, and the Atmos tab): Perseverance and Curiosity
   raw images from NASA's public feed, loaded only on request. Images keep their mission and stop:
   a rover's tour photos are never shown as another rover's latest images.
-- Terrain formation: the layer appears flat and its relief rises to the true shape in 2.5 s,
+- Terrain formation: the layer appears flat and its relief rises to the true shape in 1.4 s,
   valleys first and ridges last, with rising ground lit. Switching layers or a new map version
   morphs the heights in 1.8 s instead of jumping. Display only.
 - Modes: Exploration, Ground layers, Atmos and Mission replay.
