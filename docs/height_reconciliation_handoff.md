@@ -15,8 +15,8 @@ ROS ICD-ROS2-V1 / package 1.0.0, canonical replay 1.0.0 and public rasters `mge-
 ## Verification ledger
 
 - Native Python: 1200 passed, 23 platform/ROS skips, one existing Starlette deprecation warning. Evidence: `.local/height-native-clean.xml`.
-- Web: Node 24.18.0, 319 passed, one existing skip; production build passed. Eight new regressions compare sampling with independent Three.js raycasts, including Gale, subdivision, negative heights, NoData, exaggeration and morph.
-- Jazzy initial cut: eight packages built and six messages/two services inspected. ROS suites produced 806 passed, one skip and two failures in the new test clock stub. The harness was corrected to rclpy Time and all three focused ROS executor cases passed. A persistent ASCII workspace rebuilt all eight packages; final distinct-run recording results must be appended before claiming the candidate ready.
+- Web: Node 24.18.0, 321 passed, one existing skip; production build passed. Eight new regressions compare sampling with independent Three.js raycasts, including Gale, subdivision, negative heights, NoData, exaggeration and morph.
+- Jazzy initial cut: eight packages built and six messages/two services inspected. ROS suites produced 806 passed, one skip and two failures in the new test clock stub. The harness was corrected to rclpy Time and all three focused ROS executor cases passed. A persistent ASCII workspace rebuilt all eight packages; fresh distinct run `height-recovery-20261115-01` passed in116.84s with package validator empty; source receipt matches223 files to implementation commit742eed5.
 - Historical `recorded-recovery-001` files remain byte-identical. Its drone IDLE z=0 over ground -2571.2312 m is retained as a documented limitation, not evidence of flight.
 
 Initial test-environment attempts failed on shared Windows temporary-directory permissions and a misplaced disposable WSL venv. The venv's five verified generated paths were removed without touching source files; the native suite passed with worktree-local basetemp. Use file-based WSL scripts and the isolated persistent cache venv.
@@ -32,3 +32,5 @@ PR37 corrections are published at `91e1d1b` with metadata-only follow-up `0f9365
 All time before 20:00 America/Bogota on 15 November 2026 is available for isolated pilots and validated integration. Keep a continuously usable stable package; only fully reviewed/tested/sealed candidates replace it. No earlier 17:00/19:00 freeze applies.
 
 At 20:00 Jesus delivers the exact package to the local organizer; David is backup. The final submission deadline confirmed by the owner is 23:59, with an operational target of 22:00 after endorsement. No changes are planned after the organizer handoff. Explicit endorsement of that exact revision, any required corrections and final submission receipt are still required; contact confirmed alone does not close JES-07/AC-10. This work sends no external message or submission.
+
+Fresh package and immutable receipts: [height evidence](../evidence/height-reconciliation-20261115/README.md). Recorded entry002 is URL-selected; the six-zone default/selector stays illustrative.

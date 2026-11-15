@@ -1,0 +1,21 @@
+{
+  "run_id": "height-recovery-20261115-01",
+  "package": "/mnt/c/Users/User/.codex/worktrees/closure-height-reconciliation/Hackt\u00f3n NASA/.local/height-ros-final/fresh-record/pytest/estimated-replay0/height-recovery-20261115-01",
+  "policy": "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]",
+  "observation_id": "local-contradiction",
+  "observed_cell": 528,
+  "initial_route_id": "route-ce12f05f289ce8034fd0fb71",
+  "revised_route_id": "route-9f73844a6c4a55b987093774",
+  "halted_pose": [
+    -12.525254753988559,
+    -12.525254753988559,
+    -2571.2624708051885
+  ],
+  "final_pose": [
+    -14.0,
+    -14.0,
+    -2571.199462890625
+  ],
+  "status": "MOCK_RECOVERY_RECORDED",
+  "scientific_mission_complete": false
+}

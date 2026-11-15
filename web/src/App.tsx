@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from './types/replay';
-import { assetUrl, DEFAULT_RUN_ENTRY, RECORDED_RECOVERY_ENTRY, loadEvaluatorReference, loadReplay } from './data/replayAdapter';
+import { assetUrl, DEFAULT_RUN_ENTRY, isRecordedRecoveryEntry, loadEvaluatorReference, loadReplay } from './data/replayAdapter';
 import { REFERENCE_SOURCES } from './data/referenceSources';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from './lib/smoothing';
 import { firstMotionTime, viewAt } from './lib/replay';
@@ -121,9 +121,9 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showLabels, setShowLabels] = useState(true);
   // Intro clip first (unless reduced motion or ?nointro=1); the terrain grows in once it ends.
   // On load the intro plays first, then the zone selector opens; arriving from it (travel) opens the scene directly.
-  const [startWithZones] = useState(() => RUN_ID !== RECORDED_RECOVERY_ENTRY && !arrivalPending(RUN_ID));
+  const [startWithZones] = useState(() => !isRecordedRecoveryEntry(RUN_ID) && !arrivalPending(RUN_ID));
   // Arriving from the zone selector skips the intro: the zone's map image fades straight into its terrain.
-  const [introDone, setIntroDone] = useState(() => RUN_ID === RECORDED_RECOVERY_ENTRY || !introWanted() || arrivalPending(RUN_ID));
+  const [introDone, setIntroDone] = useState(() => isRecordedRecoveryEntry(RUN_ID) || !introWanted() || arrivalPending(RUN_ID));
   // Without an intro (reduced motion or ?nointro=1) the selector opens at once; otherwise when the intro ends.
   const [zonesOpen, setZonesOpen] = useState(() => startWithZones && introDone);
   // The terrain grows in and the panels enter only once the start menu is left, never behind it.

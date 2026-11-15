@@ -876,3 +876,7 @@ does not close AC-08, steps 4/5, scientific approvals or organizer endorsement.
 ## Height contract reconciliation — 15 November 2026
 
 OpenAI Codex assisted the initial-condition resolver, executor XYZ guards, immutable planner metadata binding, shared rendered-triangle sampler and regression tests listed in `ai_usage.json` under `height_contract_reconciliation`. New scene heights are explicitly SIMULATED initial conditions derived from the declared public prior, not measured observations. Historical packages are retained unchanged. New recordings and browser captures preserve MOCK/REPLAY and required marks; no scientific approval, physical validation or complete three-agent mission is asserted.
+
+## Height-corrected software recovery recording — 15 November 2026
+
+OpenAI Codex assisted recording workflow, new URL-entry integration, tests and audit receipts for `height-recovery-20261115-01` / `recorded-recovery-002`. The exact MOCK recording includes AI-assisted code and a deterministic SIMULATED observation, not new observational NASA data. Its scene initialization parks the drone; the human alone executes stop/replan/return. File scope and evidence are registered as `height_recovery_recording_and_presentation`; source/pose identities and historical package bytes are preserved. Capture/edited media retains visible labels and metadata.

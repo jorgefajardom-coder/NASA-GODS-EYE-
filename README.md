@@ -28,11 +28,14 @@ map.
    with the resources they have left.
 4. Record every decision and replay it in a web browser, with no server.
 
-**See it.** [Open the web viewer](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/).
-The default run, *Recorded recovery · MOCK*, is a recording of the real planner
-on public Jezero terrain: the astronaut follows an estimated route, a simulated
-observation contradicts the map, the astronaut stops, receives a new route and
-returns. Video and project page: links will be added here before submission.
+**See it.** [Explore the six illustrative zones](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/),
+or [open the corrected recorded recovery](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/?run=recorded-recovery-002).
+The latter is a separately identified ROS software recording: one kinematic MOCK
+astronaut stops, replans and returns after a SIMULATED terrain contradiction;
+rover and parked drone remain idle. It ends READY, not scientific COMPLETE.
+The browser consumes saved files; it is not connected to a live planner/gateway.
+[Source locks, validation and limitations](evidence/height-reconciliation-20261115/README.md)
+accompany this exact package. The historical recording remains unchanged.
 
 **NASA data in the project.**
 
