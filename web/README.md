@@ -23,7 +23,7 @@ packages are neither offered nor used by the viewer (see the Run selector below)
 | Uncertainty, budgets, consumption | Illustrative assumptions, not certified limits |
 | Atmos tab, HUD atmosphere and dose | NASA weather summaries and published radiation averages (other sites/periods); not the conditions of the simulated run. The HUD pressure map is a barometric **estimate** from one MEDA value, not a measured field |
 | Earth and Mars clocks | Your device clock; Mars time from the NASA GISS Mars24 algorithm (real present time, not the replay's) |
-| Shadows, footprints, dust, rotor blur, wheel and joint motion | **Cosmetic display** derived from the drawn poses; they never change a position in the data |
+| Shadows (astronaut, rover and drone), footprints, dust, rotor blur, wheel and joint motion | **Cosmetic display** derived from the drawn poses; they never change a position in the data |
 | Rover, drone, base models | NASA/JPL models with branding removed; the base is **AI-generated** (OpenAI Codex) and prepared in Blender |
 | Astronaut portrait | **AI-generated** (ChatGPT), shown beside human_1 in the details panel with a burned-in `AI-generated` watermark |
 | Intro screen | **AI-generated** video (Kling), skippable, with one discreet `AI-GENERATED · KLING` mark burned into every frame (no second label on screen); its audio track is declared and the clip plays muted |
@@ -79,7 +79,7 @@ node scripts/extract-ctx-crop.mjs <ctx.tif> 550 780   # centre pixel row, col
 
 Selectable list of agents, tasks and routes (left), status, contextual details and the agent HUD
 (right column, stacked so nothing overlaps), replay timeline (bottom). Modes: Exploration, Ground
-layers, Atmos and Mission replay. The 3D labels always stay under the panels.
+layers, Atmos and Mission replay. The 3D labels always stay under the panels, and when the camera pulls back a label that would cover another one waits until there is room (the selected agent first, then agents, base and goal, other sites, rover stops and route labels).
 
 The **agent HUD** (bottom right) is a circle with six buttons on its rim: oxygen, energy, time,
 route, atmosphere and radiation dose. With no option, or with Route, the circle is the minimap:
@@ -232,6 +232,7 @@ latitude or longitude. The recovery package carries its recorded Jezero rasters.
 | `src/scanner/`, `src/hooks/useTerrainScanner.ts` | Terrain scan state machine, controller, shaders, indicators and optional sounds |
 | `src/lib/perseveranceRaw.ts`, `rawImagesStore.ts`, `components/RawImagesPanel.tsx`, `MarsNow.tsx` | Opt-in reader (links restricted to https mars.nasa.gov), one shared loader, the Atmos panel and the first-person *Mars now* window |
 | `src/lib/siteKinds.ts`, `components/SiteIcon.tsx`, `SitesList.tsx` | One icon and colour per site kind, shared by the 3D markers, first-person compass, dial minimap, flat map and the Sites list |
+| `src/lib/labelDeclutter.ts`, `projectedShadow.ts` | Hides floating labels that would overlap (priority order); the planar sun shadow shared by astronaut, rover and drone |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
 | `src/components/` | 3D scene (`MissionScene`, `TerrainView`, `ContextTerrain`, `CutawayBlock`, `RouteOverlay`, `SiteMarkers`, `AgentLayer`), astronaut, vehicle and base models (wheels, steering joints, rotors, `Downwash`, `FootDust`), cameras (`CameraBar`, `FollowCamera`, `FirstPersonCamera`, `ViewRotator`), first-person HUD (`FirstPersonHud`, `PovRoute`), agent dial (`RadialHud`, `HudGauge`, `Minimap`), drone window (`DroneCam` with its Hazards tab `DroneMap`), `TerrainScanner`, sky (`SkyDome`), panels (`DetailsPanel`, `ManagementList`, `LayerPanel`, `GeologyPanel`, `AtmosPanel`, `EventInspector`), `Timeline`, `LiveClocks`, `Intro`, `FlatMap` and `SceneBoundary` fallbacks |
 | `scripts/` | Terrain crop, orthomosaic, context terrain, geology and atmosphere extraction, fixture generation, GLB branding strip, Blender base preparation |
