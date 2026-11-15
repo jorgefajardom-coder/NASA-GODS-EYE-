@@ -19,6 +19,7 @@ import json
 import math
 from pathlib import Path
 import platform
+import re
 import struct
 import sys
 import threading
@@ -114,30 +115,75 @@ def _drop_https_conn(host: str) -> None:
             pass
 
 
+class _InvalidRangeResponse(OSError):
+    """Reject an upstream representation without draining an unbounded body."""
+
+
+def _range_span(headers: dict[str, str]) -> tuple[int, int]:
+    value = next((value for key, value in headers.items() if key.lower() == "range"), "")
+    match = re.fullmatch(r"bytes=(\d+)-(\d+)", value)
+    if match is None or int(match[2]) < int(match[1]):
+        raise ValueError("an explicit bounded byte range is required")
+    return int(match[1]), int(match[2])
+
+
+def _validate_range_response(status: int, headers: dict[str, str], start: int, end: int,
+                             expected_total: int | None) -> None:
+    if status != 206:
+        raise _InvalidRangeResponse(f"upstream server did not return HTTP 206 (got {status})")
+    fields = {key.lower(): value for key, value in headers.items()}
+    content_range = re.fullmatch(r"bytes (\d+)-(\d+)/(\d+|\*)", fields.get("content-range", ""))
+    if content_range is None or (int(content_range[1]), int(content_range[2])) != (start, end):
+        raise _InvalidRangeResponse("upstream Content-Range does not match the requested byte range")
+    total = None if content_range[3] == "*" else int(content_range[3])
+    if (total is not None and total <= end) or (expected_total is not None and total != expected_total):
+        raise _InvalidRangeResponse("upstream Content-Range total does not match the source length")
+    content_length = fields.get("content-length", "")
+    if re.fullmatch(r"\d+", content_length) is None or int(content_length) != end-start+1:
+        raise _InvalidRangeResponse("upstream Content-Length does not match the requested byte count")
+    if (fields.get("content-encoding", "identity").lower() != "identity"
+            or "transfer-encoding" in fields):
+        raise _InvalidRangeResponse("upstream byte range has an unsupported encoded or ambiguous body")
+
+
 def _request_with_keepalive(
-    method: str, url: str, headers: dict[str, str], timeout: float = 6.0
+    method: str, url: str, headers: dict[str, str], timeout: float = 6.0,
+    *, expected_total: int | None = None,
 ) -> tuple[int, dict[str, str], bytes]:
     parsed = urlparse(url)
     path = parsed.path + (f"?{parsed.query}" if parsed.query else "")
     req_headers = {"Connection": "keep-alive", **headers}
+    span = None if method == "HEAD" else _range_span(headers)
     for attempt in range(4):
         conn = _get_https_conn(parsed.netloc, timeout=timeout)
         try:
             conn.request(method, path, headers=req_headers)
             resp = conn.getresponse()
+            resp_headers, seen = {}, {}
+            for key, value in resp.getheaders():
+                lower = key.lower()
+                if lower in {"content-range", "content-length", "content-encoding", "transfer-encoding"}:
+                    if lower in seen and seen[lower] != value:
+                        raise _InvalidRangeResponse(f"conflicting upstream {key} headers")
+                    seen[lower] = value
+                resp_headers[key] = value
             if method == "HEAD":
-                resp.read()
+                # HTTPResponse closes its HEAD response with a zero-sized read;
+                # Content-Length describes the resource, not a response body.
+                resp.read(0)
                 body = b""
             else:
-                chunks = []
-                while True:
-                    chunk = resp.read(256 * 1024)
-                    if not chunk:
-                        break
-                    chunks.append(chunk)
-                body = b"".join(chunks)
-            resp_headers = {k: v for k, v in resp.getheaders()}
+                start, end = span
+                _validate_range_response(resp.status, resp_headers, start, end, expected_total)
+                expected = end-start+1
+                body = resp.read(expected+1)
+                if len(body) != expected:
+                    raise _InvalidRangeResponse(
+                        f"upstream byte range body has {len(body)} bytes; expected {expected}")
             return resp.status, resp_headers, body
+        except _InvalidRangeResponse:
+            _drop_https_conn(parsed.netloc)
+            raise
         except Exception:
             _drop_https_conn(parsed.netloc)
             if attempt == 3:
@@ -164,7 +210,7 @@ def _fetch_shared_block(url: str, etag: str | None, length: int, block_size: int
     headers = {"Range": f"bytes={start}-{end}", "Accept-Encoding": "identity"}
     if etag:
         headers["If-Match"] = etag
-    status, _, payload = _request_with_keepalive("GET", url, headers, timeout=6.0)
+    status, _, payload = _request_with_keepalive("GET", url, headers, timeout=6.0, expected_total=length)
     if status != 206 or len(payload) != end - start + 1:
         raise OSError(f"upstream server did not return HTTP 206 (got {status}, len={len(payload)})")
     _cache_put_block(cache_key, payload)
@@ -202,7 +248,7 @@ def _prefetch_contiguous_blocks(
         headers = {"Range": f"bytes={byte_start}-{byte_end}", "Accept-Encoding": "identity"}
         if etag:
             headers["If-Match"] = etag
-        status, _, payload = _request_with_keepalive("GET", url, headers, timeout=8.0)
+        status, _, payload = _request_with_keepalive("GET", url, headers, timeout=8.0, expected_total=length)
         if status != 206 or len(payload) != byte_end - byte_start + 1:
             raise OSError(f"coalesced range failed (status={status}, len={len(payload)})")
         for idx in range(b0, b1 + 1):

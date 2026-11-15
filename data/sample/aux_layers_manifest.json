@@ -63,7 +63,7 @@
         "topic": "/mge/terrain/aux/surface_zones",
         "msg_type": "nav_msgs/msg/OccupancyGrid",
         "array_key": "surface_zone_rviz_occupancy",
-        "description": "Literal orbital surface-facies & slope zones (-1 NoData, 15/35/55/75/95 zones)"
+        "description": "Estimated DN/slope proxies for display only (-1 NoData, categorical 15/35/55/75/95; not planner occupancy)"
       },
       "geology_zones_grid": {
         "topic": "/mge/terrain/aux/geology_zones",
@@ -88,70 +88,53 @@
         "label": "NoData / Unmapped",
         "rviz_occupancy": -1,
         "color_hex": "#404040",
-        "traversable_agents": [],
-        "description": "Missing orbital elevation or CTX orthomosaic reflectance."
+        "navigation_authorization": false,
+        "description": "Missing orbital elevation, slope or CTX DN; no passage inference."
       },
       {
         "code": 1,
         "id": "dark_floor_facies",
-        "label": "Low-albedo smooth floor facies",
+        "label": "Lower-DN / low-slope proxy",
         "rviz_occupancy": 15,
         "color_hex": "#5c5346",
-        "traversable_agents": [
-          "human",
-          "rover",
-          "drone"
-        ],
-        "description": "Low-slope (<= human limit) terrain with lower CTX 6 m reflectance (< P33)."
+        "navigation_authorization": false,
+        "description": "Estimated slope below the human screening threshold and DN <= P33; not a mapped facies."
       },
       {
         "code": 2,
         "id": "intermediate_plains_facies",
-        "label": "Intermediate-albedo plains facies",
+        "label": "Intermediate-DN / low-slope proxy",
         "rviz_occupancy": 35,
         "color_hex": "#9c7a54",
-        "traversable_agents": [
-          "human",
-          "rover",
-          "drone"
-        ],
-        "description": "Low-slope (<= human limit) terrain with intermediate CTX 6 m reflectance (P33..P67)."
+        "navigation_authorization": false,
+        "description": "Estimated low slope and P33 < DN <= P67; not evidence of a geological plains unit."
       },
       {
         "code": 3,
         "id": "bright_etched_or_bedform_facies",
-        "label": "High-albedo etched ridge / bedform facies",
+        "label": "Higher-DN / low-slope proxy",
         "rviz_occupancy": 55,
         "color_hex": "#d9b36c",
-        "traversable_agents": [
-          "human",
-          "rover",
-          "drone"
-        ],
-        "description": "Low-slope (<= human limit) terrain with higher CTX 6 m reflectance (> P67)."
+        "navigation_authorization": false,
+        "description": "Estimated low slope and DN > P67; brightness alone does not identify ridges or bedforms."
       },
       {
         "code": 4,
         "id": "moderate_slope_rover_zone",
-        "label": "Moderate slope transition zone (rover/drone)",
+        "label": "Intermediate slope proxy",
         "rviz_occupancy": 75,
         "color_hex": "#d97b29",
-        "traversable_agents": [
-          "rover",
-          "drone"
-        ],
-        "description": "Moderate slope exceeding human limit (> 10 deg) up to rover limit (<= 20 deg)."
+        "navigation_authorization": false,
+        "description": "Estimated slope between the illustrative human and rover screening thresholds; not passage approval."
       },
       {
         "code": 5,
         "id": "steep_scarp_hazard_zone",
-        "label": "Steep scarp / hazard zone (drone only)",
+        "label": "Higher slope proxy",
         "rviz_occupancy": 95,
         "color_hex": "#c93b2b",
-        "traversable_agents": [
-          "drone"
-        ],
-        "description": "Steep slope exceeding rover limit (> 20 deg); surface obstacle."
+        "navigation_authorization": false,
+        "description": "Estimated slope above the rover screening threshold; neither a confirmed obstacle nor drone flight validation."
       }
     ],
     "cell_counts": {
@@ -161,7 +144,8 @@
       "bright_etched_or_bedform_facies": 300,
       "moderate_slope_rover_zone": 0,
       "steep_scarp_hazard_zone": 0
-    }
+    },
+    "meaning": "Unvalidated orbital DN/slope visual proxies, not geological facies, certified passage or flight altitude. Thresholds are illustrative; sigma and observed coverage are unchanged."
   },
   "geology_zones": {
     "units": [
@@ -244,5 +228,15 @@
       "licence": "USGS publication, public domain",
       "basemap_note": "Mapped on CTX 6 m/px uncontrolled mosaic and HiRISE 25 cm/px orthoimages; positional accuracy relative to the Mars 2020 TRN controlled CTX DEM is ~100-200 m."
     }
+  },
+  "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+  "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+  "classification": "ESTIMATED_VISUAL_CONTEXT",
+  "navigation_authorization": false,
+  "scientific_review": "PENDING",
+  "ai_disclosure": {
+    "ai_assisted": true,
+    "tool": "OpenAI Codex",
+    "scope": "Processing code and visual interpretation; public NASA/USGS source values are not AI observations."
   }
 }

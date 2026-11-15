@@ -7,12 +7,12 @@ data/sample/provenance_details.json. Instead, it reads the active grid geometry
 generates standalone auxiliary files in the same directory:
   1. jezero_aux_layers.npz  - Cell-aligned (rows, cols) south_to_north arrays:
        * ctx_ortho_dn (uint8): Real MRO/CTX 6 m/px orthomosaic radiometric DN
-       * ctx_ortho_norm (float32): Normalized [0, 1] CTX 6 m/px reflectance
+       * ctx_ortho_norm (float32): Normalized [0, 1] CTX DN (not calibrated reflectance)
        * ctx_ortho_valid_mask (bool): Valid mask for CTX 6 m/px orthomosaic
        * slope_deg (float32): Local terrain slope in degrees from elevation_m
        * geology_unit_code (int16): USGS SIM 3464 geologic unit integer ID per cell
        * geology_rviz_occupancy (int8): RViz OccupancyGrid (-1 or 0..100) for geologic units
-       * surface_zone_code (int8): Literal orbital surface-facies & slope zone ID (0..5)
+       * surface_zone_code (int8): Estimated orbital DN/slope visual proxy ID (0..5)
        * surface_zone_rviz_occupancy (int8): RViz OccupancyGrid (-1, 15, 35, 55, 75, 95)
        * x_m (float32), y_m (float32): Grid cell center coordinates in local ENU metres
   2. ctx_ortho.png          - North-up 8-bit grayscale PNG texture for 3D/web drape
@@ -40,6 +40,11 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+DATA_PACKAGE = ROOT / "src/mge_data"
+if str(DATA_PACKAGE) not in sys.path:
+    sys.path.insert(0, str(DATA_PACKAGE))
+
+from mge_data.core import load_public_terrain
 
 from scripts.prepare_jezero_terrain import (
     HTTPRangeReader,
@@ -182,62 +187,25 @@ SIM3464_UNITS: dict[str, dict[str, Any]] = {
 }
 
 SURFACE_ZONE_DEFINITIONS: list[dict[str, Any]] = [
-    {
-        "code": 0,
-        "id": "nodata",
-        "label": "NoData / Unmapped",
-        "rviz_occupancy": -1,
-        "color_hex": "#404040",
-        "traversable_agents": [],
-        "description": "Missing orbital elevation or CTX orthomosaic reflectance.",
-    },
-    {
-        "code": 1,
-        "id": "dark_floor_facies",
-        "label": "Low-albedo smooth floor facies",
-        "rviz_occupancy": 15,
-        "color_hex": "#5c5346",
-        "traversable_agents": ["human", "rover", "drone"],
-        "description": "Low-slope (<= human limit) terrain with lower CTX 6 m reflectance (< P33).",
-    },
-    {
-        "code": 2,
-        "id": "intermediate_plains_facies",
-        "label": "Intermediate-albedo plains facies",
-        "rviz_occupancy": 35,
-        "color_hex": "#9c7a54",
-        "traversable_agents": ["human", "rover", "drone"],
-        "description": "Low-slope (<= human limit) terrain with intermediate CTX 6 m reflectance (P33..P67).",
-    },
-    {
-        "code": 3,
-        "id": "bright_etched_or_bedform_facies",
-        "label": "High-albedo etched ridge / bedform facies",
-        "rviz_occupancy": 55,
-        "color_hex": "#d9b36c",
-        "traversable_agents": ["human", "rover", "drone"],
-        "description": "Low-slope (<= human limit) terrain with higher CTX 6 m reflectance (> P67).",
-    },
-    {
-        "code": 4,
-        "id": "moderate_slope_rover_zone",
-        "label": "Moderate slope transition zone (rover/drone)",
-        "rviz_occupancy": 75,
-        "color_hex": "#d97b29",
-        "traversable_agents": ["rover", "drone"],
-        "description": "Moderate slope exceeding human limit (> 10 deg) up to rover limit (<= 20 deg).",
-    },
-    {
-        "code": 5,
-        "id": "steep_scarp_hazard_zone",
-        "label": "Steep scarp / hazard zone (drone only)",
-        "rviz_occupancy": 95,
-        "color_hex": "#c93b2b",
-        "traversable_agents": ["drone"],
-        "description": "Steep slope exceeding rover limit (> 20 deg); surface obstacle.",
-    },
+    {"code": 0, "id": "nodata", "label": "NoData / Unmapped",
+     "rviz_occupancy": -1, "color_hex": "#404040", "navigation_authorization": False,
+     "description": "Missing orbital elevation, slope or CTX DN; no passage inference."},
+    {"code": 1, "id": "dark_floor_facies", "label": "Lower-DN / low-slope proxy",
+     "rviz_occupancy": 15, "color_hex": "#5c5346", "navigation_authorization": False,
+     "description": "Estimated slope below the human screening threshold and DN <= P33; not a mapped facies."},
+    {"code": 2, "id": "intermediate_plains_facies", "label": "Intermediate-DN / low-slope proxy",
+     "rviz_occupancy": 35, "color_hex": "#9c7a54", "navigation_authorization": False,
+     "description": "Estimated low slope and P33 < DN <= P67; not evidence of a geological plains unit."},
+    {"code": 3, "id": "bright_etched_or_bedform_facies", "label": "Higher-DN / low-slope proxy",
+     "rviz_occupancy": 55, "color_hex": "#d9b36c", "navigation_authorization": False,
+     "description": "Estimated low slope and DN > P67; brightness alone does not identify ridges or bedforms."},
+    {"code": 4, "id": "moderate_slope_rover_zone", "label": "Intermediate slope proxy",
+     "rviz_occupancy": 75, "color_hex": "#d97b29", "navigation_authorization": False,
+     "description": "Estimated slope between the illustrative human and rover screening thresholds; not passage approval."},
+    {"code": 5, "id": "steep_scarp_hazard_zone", "label": "Higher slope proxy",
+     "rviz_occupancy": 95, "color_hex": "#c93b2b", "navigation_authorization": False,
+     "description": "Estimated slope above the rover screening threshold; neither a confirmed obstacle nor drone flight validation."},
 ]
-
 
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -704,7 +672,7 @@ def compute_literal_surface_zones(
     resolution_m: float,
     slope_limits_deg: dict[str, float],
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict[str, float]]:
-    """Classify each cell into literal surface-facies & slope zones (0..5) and RViz OccupancyGrid values."""
+    """Classify estimated DN/slope visual proxies (0..5); no geological or navigation approval."""
     gy, gx = np.gradient(elevation_m.astype(np.float64), float(resolution_m), float(resolution_m))
     slope_deg = np.degrees(np.arctan(np.hypot(gx, gy))).astype(np.float32)
 
@@ -757,52 +725,41 @@ def build_auxiliary_package(
     context_margin_m: float = 300.0,
 ) -> dict[str, Any]:
     """Generate standalone auxiliary NASA/USGS layers aligned with the target terrain grid."""
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest_path = Path(manifest_path).resolve()
+    # Reuse the canonical public loader: no second provenance/DEM implementation.
+    # All checks run before creating output directories or making remote requests.
+    tile = load_public_terrain(manifest_path)
+    meta = tile.metadata
     sample_dir = manifest_path.parent
-    target_out_dir = out_dir or sample_dir
+    if terrain_npz_path is not None and Path(terrain_npz_path).resolve() != (sample_dir / "terrain.npz").resolve():
+        raise ValueError("terrain_npz_path must identify the manifest-bound public terrain.npz")
+    if meta.row_orientation != "south_to_north":
+        raise ValueError("Auxiliary generation requires the canonical south_to_north public grid")
+    for name, override, expected in (
+        ("latitude", lat_override, meta.origin_lat_deg),
+        ("longitude", lon_override, meta.origin_lon_deg),
+        ("rows", rows_override, meta.rows), ("cols", cols_override, meta.cols),
+        ("resolution_m", resolution_override, meta.resolution_m),
+    ):
+        if override is not None and (
+            isinstance(override, bool) or not isinstance(override, (int, float))
+            or not math.isfinite(override) or not math.isclose(override, expected, rel_tol=0, abs_tol=1e-9)
+        ):
+            raise ValueError(f"Auxiliary {name} override does not match the public terrain manifest")
+    latitude, longitude = meta.origin_lat_deg, meta.origin_lon_deg
+    rows, cols, resolution_m = meta.rows, meta.cols, meta.resolution_m
+    if min(rows, cols) < 2:
+        raise ValueError("At least two rows and columns are required to estimate a slope proxy")
+    origin_x_m, origin_y_m = meta.origin_x_m, meta.origin_y_m
+    elevation_m = np.array(tile.prior, dtype=np.float32, copy=True)
+    elevation_m[tile.nodata_mask] = np.nan
+    x_m = (origin_x_m + (np.arange(cols, dtype=np.float32) + .5) * resolution_m).astype(np.float32)
+    y_m = (origin_y_m + (np.arange(rows, dtype=np.float32) + .5) * resolution_m).astype(np.float32)
+    terrain_sha256 = meta.checksum_sha256
+    target_out_dir = Path(out_dir).resolve() if out_dir is not None else sample_dir
+    if "reference" in [part.lower() for part in target_out_dir.parts]:
+        raise PermissionError("Public auxiliary output cannot be written into evaluator reference storage")
     target_out_dir.mkdir(parents=True, exist_ok=True)
-
-    npz_path = terrain_npz_path or (sample_dir / "terrain.npz")
-    origin = manifest.get("local_origin") or {}
-    latitude = float(lat_override if lat_override is not None else origin.get("lat_planetocentric_deg", 18.45))
-    longitude = float(lon_override if lon_override is not None else origin.get("lon_east_deg", 77.45))
-    rows = int(rows_override if rows_override is not None else manifest.get("rows", 32))
-    cols = int(cols_override if cols_override is not None else manifest.get("cols", 32))
-    resolution_m = float(resolution_override if resolution_override is not None else manifest.get("resolution_m", 4.0))
-    origin_x_m = float(origin.get("origin_x_m", -(cols / 2.0) * resolution_m))
-    origin_y_m = float(origin.get("origin_y_m", -(rows / 2.0) * resolution_m))
-
-    terrain_sha256: str | None = None
-    if npz_path.exists():
-        with np.load(npz_path, allow_pickle=False) as terrain_arrays:
-            keys = set(terrain_arrays.files)
-            elev_key = "prior" if "prior" in keys else "elevation_m"
-            elev = np.asarray(terrain_arrays[elev_key], dtype=np.float32)
-            if elev.shape == (rows, cols) and lat_override is None and lon_override is None:
-                elevation_m = elev
-                if "origin_x_m" in keys:
-                    origin_x_m = float(terrain_arrays["origin_x_m"])
-                if "origin_y_m" in keys:
-                    origin_y_m = float(terrain_arrays["origin_y_m"])
-                x_m = (
-                    np.asarray(terrain_arrays["x_m"], dtype=np.float32)
-                    if "x_m" in keys
-                    else (origin_x_m + (np.arange(cols, dtype=np.float32) + 0.5) * resolution_m).astype(np.float32)
-                )
-                y_m = (
-                    np.asarray(terrain_arrays["y_m"], dtype=np.float32)
-                    if "y_m" in keys
-                    else (origin_y_m + (np.arange(rows, dtype=np.float32) + 0.5) * resolution_m).astype(np.float32)
-                )
-                terrain_sha256 = sha256_file(npz_path)
-            else:
-                elevation_m = np.zeros((rows, cols), dtype=np.float32)
-                x_m = (origin_x_m + (np.arange(cols, dtype=np.float32) + 0.5) * resolution_m).astype(np.float32)
-                y_m = (origin_y_m + (np.arange(rows, dtype=np.float32) + 0.5) * resolution_m).astype(np.float32)
-    else:
-        elevation_m = np.zeros((rows, cols), dtype=np.float32)
-        x_m = (origin_x_m + (np.arange(cols, dtype=np.float32) + 0.5) * resolution_m).astype(np.float32)
-        y_m = (origin_y_m + (np.arange(rows, dtype=np.float32) + 0.5) * resolution_m).astype(np.float32)
 
     ctx_dn, ctx_norm, ctx_valid, ctx_details = crop_ctx_orthomosaic(
         latitude=latitude,
@@ -873,9 +830,16 @@ def build_auxiliary_package(
         "schema_version": "1.0.0",
         "status": "ready",
         "optional_layer_bundle": True,
-        "region_id": manifest.get("region_id", "jezero_mvp"),
-        "frame_id": manifest.get("frame_id", "map"),
-        "row_orientation": manifest.get("row_orientation", "south_to_north"),
+        "region_id": meta.dataset_id,
+        "frame_id": meta.frame_id,
+        "row_orientation": meta.row_orientation,
+        "crs": meta.crs,
+        "vertical_datum": meta.vertical_datum,
+        "classification": "ESTIMATED_VISUAL_CONTEXT",
+        "navigation_authorization": False,
+        "scientific_review": "PENDING",
+        "ai_disclosure": {"ai_assisted": True, "tool": "OpenAI Codex",
+                          "scope": "Processing code and visual interpretation; public NASA/USGS source values are not AI observations."},
         "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "aligned_terrain_npz_sha256": terrain_sha256,
         "grid": {
@@ -934,7 +898,7 @@ def build_auxiliary_package(
                     "topic": "/mge/terrain/aux/surface_zones",
                     "msg_type": "nav_msgs/msg/OccupancyGrid",
                     "array_key": "surface_zone_rviz_occupancy",
-                    "description": "Literal orbital surface-facies & slope zones (-1 NoData, 15/35/55/75/95 zones)",
+                    "description": "Estimated DN/slope proxies for display only (-1 NoData, categorical 15/35/55/75/95; not planner occupancy)",
                 },
                 "geology_zones_grid": {
                     "topic": "/mge/terrain/aux/geology_zones",
@@ -945,6 +909,7 @@ def build_auxiliary_package(
             },
         },
         "surface_zones": {
+            "meaning": "Unvalidated orbital DN/slope visual proxies, not geological facies, certified passage or flight altitude. Thresholds are illustrative; sigma and observed coverage are unchanged.",
             "thresholds": zone_thresholds,
             "definitions": SURFACE_ZONE_DEFINITIONS,
             "cell_counts": zone_counts,
@@ -984,11 +949,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=None,
         help="Directory to write auxiliary layer files (defaults to manifest directory).",
     )
-    parser.add_argument("--lat", type=float, default=None, help="Override planetocentric latitude (deg N).")
-    parser.add_argument("--lon", type=float, default=None, help="Override east longitude (deg E).")
-    parser.add_argument("--rows", type=int, default=None, help="Override grid row count.")
-    parser.add_argument("--cols", type=int, default=None, help="Override grid col count.")
-    parser.add_argument("--resolution-m", type=float, default=None, help="Override cell resolution in metres.")
+    parser.add_argument("--lat", type=float, default=None, help="Assert matching planetocentric latitude; a different crop requires its own canonical terrain manifest.")
+    parser.add_argument("--lon", type=float, default=None, help="Assert matching east longitude of the canonical terrain.")
+    parser.add_argument("--rows", type=int, default=None, help="Assert matching canonical grid row count.")
+    parser.add_argument("--cols", type=int, default=None, help="Assert matching canonical grid column count.")
+    parser.add_argument("--resolution-m", type=float, default=None, help="Assert matching canonical cell resolution in metres.")
     parser.add_argument(
         "--context-margin-m",
         type=float,

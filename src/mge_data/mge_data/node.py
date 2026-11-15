@@ -17,6 +17,7 @@ from mge_data.core import (
     default_manifest_path,
     load_auxiliary_terrain_layers,
     load_public_terrain,
+    validate_auxiliary_alignment,
 )
 
 DEFAULT_MANIFEST_PATH = default_manifest_path()
@@ -49,7 +50,8 @@ def build_aux_layer_messages_dict(
     tile: TerrainTile,
     aux: AuxiliaryTerrainLayers,
 ) -> dict[str, dict[str, Any]]:
-    """Build RViz-ready Image and OccupancyGrid payload dictionaries for auxiliary terrain layers."""
+    """Build categorical visual messages; these topics are never planner masks."""
+    validate_auxiliary_alignment(aux.manifest, tile)
     meta = tile.metadata
     return {
         "ctx_ortho": {

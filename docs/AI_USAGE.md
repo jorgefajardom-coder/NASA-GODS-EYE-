@@ -887,3 +887,7 @@ the jsdom navigation regressions, and the validation record under
 software evidence; no image, video, NASA observation or mission result was
 generated. Existing asset declarations and watermarks remain intact. This cut
 does not close AC-08, steps 4/5, scientific approvals or organizer endorsement.
+
+## PR38 auxiliary-context reconciliation — 15 November 2026
+
+OpenAI Codex assisted strict DEM/metadata/hash/path and public-array validation, bounded HTTP Range handling, synthetic regression fixtures, a ROS consumer test, and the auxiliary visual-context contract. The complete file scope is registered in `ai_usage.json` under `pr38_auxiliary_context_reconciliation`. Acquired imagery/geology/NPZ bytes were preserved; interpreted DN/slope categories are estimated visual proxies without navigation authorization. No new scientific parameter, measured observation or approval was generated.

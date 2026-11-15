@@ -1,0 +1,19 @@
+{
+  "tests": 169,
+  "passed": 169,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "scope": "ROS consumer, bounded HTTP mocks and data contracts; no science/mission acceptance",
+  "artifacts_sha256": {
+    "build.log": "ac6d7bbeb118cac18d8c30469f0759b55e241a229a761608949950280aaa9abb",
+    "consumer.exit-code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "consumer.junit.xml": "d00bd0d3337d7f4c46c9f932fa9d58b0b5bf6a7aeca323c7bb3efc39e3d9779a",
+    "consumer.log": "efc06055339f48410731ad50338d64d3347b8da1131c006c7542f122ff587e17",
+    "interfaces.log": "c2e523ac1c3ecdb87d5f1d7a6be5f669e0e8ae70b10622e86f299783863db224",
+    "platform.json": "d61925330d9f62efd781e18b112795717803f9e0959c0fa3eae8574187ff48b8",
+    "python-packages.txt": "19a07d47b8d445c4a64a7c0a3cce35bd19adaf414ec6ed9738819e67170912ef",
+    "source-lock.json": "adf517f555bea455bda995b91f1eafb44c6094fdce3c56d47ccddc918f3177dc",
+    "workspace.txt": "067dda3772acfa51eb4910e501b81397e2f07ded48a51f804a339dacb79ad433"
+  }
+}
