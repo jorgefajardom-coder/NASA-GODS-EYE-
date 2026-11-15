@@ -141,7 +141,8 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
     >
       {/* Dusty daytime haze toward the horizon (display only, not an atmospheric model). */}
       <color attach="background" args={[SKY]} />
-      <fog attach="fog" args={[SKY, extent * 2.5, reach]} />
+      {/* Haze starts before it ends: with a large crop extent * 2.5 can pass the reach, which fogs the whole ground. */}
+      <fog attach="fog" args={[SKY, Math.min(extent * 2.5, reach * 0.6), reach]} />
       {/* Sun and stars at the real present time at the site (same instant as the Jezero clock). */}
       <SkyDome latDeg={meta.origin_lat_deg ?? 18.44} lonEastDeg={meta.origin_lon_deg ?? JEZERO_LON_E_DEG} sunLight={sunLight} hemiLight={hemiLight} lightDistance={extent * 1.37} artificialLight={artificialLight} />
       <hemisphereLight ref={hemiLight} args={['#ffe2c8', '#2a1a12', 0.4]} />

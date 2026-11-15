@@ -3022,3 +3022,40 @@ input[type='checkbox'] {
 .site-label--photo {
   border-left-color: #f0a050;
 }
+
+/* Floating tags of the real rover stops (game-style): icon, sol and distance, with a small tail. */
+.stop-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 2px 9px 2px 7px;
+  font: 600 12px var(--f-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff3e0;
+  background: rgba(9, 13, 17, 0.82);
+  border: 1px solid rgba(240, 160, 80, 0.85);
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(240, 160, 80, 0.35);
+  pointer-events: none;
+  user-select: none;
+}
+.stop-tag b {
+  font-weight: 600;
+}
+.stop-tag em {
+  font: 400 11px var(--f-mono);
+  font-style: normal;
+  color: var(--gray);
+}
+.stop-tag--on {
+  background: rgba(240, 160, 80, 0.9);
+  color: #1b1208;
+}
+.stop-tag--on em {
+  color: #3a2a14;
+}
+.stop-tag--on .site-icon {
+  stroke: #1b1208;
+}
