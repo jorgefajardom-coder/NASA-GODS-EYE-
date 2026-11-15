@@ -88,6 +88,8 @@ const WORLDS = {
   },
   insight: {
     dir: 'insight-demo', runId: 'insight-demo-sim-001', crop: 'insight/dem_crop.json', stops: null, mission: 'InSight',
+    // The crop is centred on NASA's published lander coordinates, so the lander is the local origin.
+    landmark: { label: 'InSight lander', x: 0, y: 0, source: 'NASA published InSight landing coordinates, 4.502 N 135.623 E (the centre of this crop).' },
     datasetId: 'insight-dem-mosaic-8m', datum: 'datum of the InSight DEM mosaic',
     title: 'Elysium demo: corridor survey and replanning near the InSight lander',
     terrain: (res) => `NASA/USGS InSight HiRISE/CTX/HRSC DEM mosaic crop centred on the InSight lander (real, provisional, ${res} m display grid from a 20 m source)`,
@@ -846,6 +848,12 @@ for (const t of frameTimes) {
 // ------------------------------------------------------------------ write
 const priorJson = JSON.stringify(prior);
 const cp = crop.crop;
+// Where each site comes from (shown in the viewer's site list).
+function siteSource(stop, role) {
+  if (stop) return { basis: 'nasa', text: `Real ${WD.mission} stop ${stop.rmc}, sol ${stop.sol} (${stopsFile.source.title}); the ${role} sits on the nearest walkable cell, within 12 m.` };
+  return { basis: 'chosen', text: `Chosen by the demo generator, not a NASA site: one of the flattest cells of the NASA DEM, paired so that a 1.3-2.3 km walkable route exists between base and goal.` };
+}
+const fictitiousSource = { basis: 'fictitious', text: `Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under ${poiSlope} degrees) inside the area the simulated drone survey saw.` };
 const cpCells = [[14, 20], [50, 50], [84, 78]].map(([r, c]) => [r * K, c * K]);
 const manifest = {
   schema_version: SCHEMA,
@@ -912,12 +920,15 @@ const manifest = {
     const p = center(r, c);
     return { id: `cp-${k + 1}`, position: { x: p.x, y: p.y, z: prior[r * COLS + c] }, description: `Cell centre row ${r}, col ${c} of the CTX crop.` };
   }),
+  // Every site says where it comes from: a NASA position, a choice of the generator on NASA terrain,
+  // or a fictitious site of the simulated story.
   pois: [
-    { id: 'A', label: 'Base A', kind: 'base', position: baseP, revealed_at_s: 0 },
-    { id: 'B', label: 'Goal B', kind: 'primary_goal', position: goalP, revealed_at_s: 0 },
+    { id: 'A', label: 'Base A', kind: 'base', position: baseP, revealed_at_s: 0, source: siteSource(stopA, 'base') },
+    { id: 'B', label: 'Goal B', kind: 'primary_goal', position: goalP, revealed_at_s: 0, source: siteSource(stopB, 'goal') },
     // POI heights from the updated map, not from the hidden reference (R05).
-    { id: 'C', label: 'POI C', kind: 'poi', position: { x: r2d(C.p.x), y: r2d(C.p.y), z: r2d(heightAt(belief2, C.p.x, C.p.y)) }, revealed_at_s: T_MAP },
-    { id: 'D', label: 'POI D', kind: 'poi', position: { x: r2d(D.p.x), y: r2d(D.p.y), z: r2d(heightAt(belief2, D.p.x, D.p.y)) }, revealed_at_s: T_MAP + DT },
+    { id: 'C', label: 'POI C', kind: 'poi', position: { x: r2d(C.p.x), y: r2d(C.p.y), z: r2d(heightAt(belief2, C.p.x, C.p.y)) }, revealed_at_s: T_MAP, source: fictitiousSource },
+    { id: 'D', label: 'POI D', kind: 'poi', position: { x: r2d(D.p.x), y: r2d(D.p.y), z: r2d(heightAt(belief2, D.p.x, D.p.y)) }, revealed_at_s: T_MAP + DT, source: fictitiousSource },
+    ...(WD.landmark ? [{ id: 'L', label: WD.landmark.label, kind: 'landing', position: { x: WD.landmark.x, y: WD.landmark.y, z: r2d(heightAt(prior, WD.landmark.x, WD.landmark.y)) }, revealed_at_s: 0, source: { basis: 'nasa', text: WD.landmark.source } }] : []),
   ],
   files: { rasters: 'rasters.json', timeline: 'timeline.json', routes: 'routes.json' },
 };

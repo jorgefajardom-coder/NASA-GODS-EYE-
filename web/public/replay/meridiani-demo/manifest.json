@@ -113,7 +113,11 @@
         "y": 3788,
         "z": 13.6
       },
-      "revealed_at_s": 0
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Opportunity stop 149_771, sol 2630 (Opportunity (MER-B) interpolated traverse, PDS Geosciences Node); the base sits on the nearest walkable cell, within 12 m."
+      }
     },
     {
       "id": "B",
@@ -124,7 +128,11 @@
         "y": 2900,
         "z": 10.9
       },
-      "revealed_at_s": 0
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Opportunity stop 153_1182, sol 2660 (Opportunity (MER-B) interpolated traverse, PDS Geosciences Node); the goal sits on the nearest walkable cell, within 12 m."
+      }
     },
     {
       "id": "C",
@@ -135,7 +143,11 @@
         "y": 3548,
         "z": 11.3
       },
-      "revealed_at_s": 286
+      "revealed_at_s": 286,
+      "source": {
+        "basis": "fictitious",
+        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+      }
     },
     {
       "id": "D",
@@ -146,7 +158,11 @@
         "y": 3356,
         "z": 10.5
       },
-      "revealed_at_s": 288
+      "revealed_at_s": 288,
+      "source": {
+        "basis": "fictitious",
+        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+      }
     }
   ],
   "files": {

@@ -102,7 +102,11 @@
         "y": -3604,
         "z": 4.2
       },
-      "revealed_at_s": 0
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "chosen",
+        "text": "Chosen by the demo generator, not a NASA site: one of the flattest cells of the NASA DEM, paired so that a 1.3-2.3 km walkable route exists between base and goal."
+      }
     },
     {
       "id": "B",
@@ -113,7 +117,11 @@
         "y": -2404,
         "z": 14.9
       },
-      "revealed_at_s": 0
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "chosen",
+        "text": "Chosen by the demo generator, not a NASA site: one of the flattest cells of the NASA DEM, paired so that a 1.3-2.3 km walkable route exists between base and goal."
+      }
     },
     {
       "id": "C",
@@ -124,7 +132,11 @@
         "y": -3100,
         "z": 10.6
       },
-      "revealed_at_s": 298
+      "revealed_at_s": 298,
+      "source": {
+        "basis": "fictitious",
+        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+      }
     },
     {
       "id": "D",
@@ -135,7 +147,26 @@
         "y": -3076,
         "z": 12.2
       },
-      "revealed_at_s": 300
+      "revealed_at_s": 300,
+      "source": {
+        "basis": "fictitious",
+        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+      }
+    },
+    {
+      "id": "L",
+      "label": "InSight lander",
+      "kind": "landing",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0.15
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "NASA published InSight landing coordinates, 4.502 N 135.623 E (the centre of this crop)."
+      }
     }
   ],
   "files": {

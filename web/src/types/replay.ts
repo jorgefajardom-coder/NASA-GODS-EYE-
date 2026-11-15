@@ -26,6 +26,12 @@ export interface PointOfInterest {
   position: Point;
   /** Simulated time at which the POI becomes known. Base and goal are known from t=0. */
   revealed_at_s: number;
+  /**
+   * Where the site comes from: `nasa` (a NASA position: a real rover stop or a published landing site),
+   * `chosen` (picked by the demo generator on NASA terrain, not a NASA site) or `fictitious` (a site of the
+   * simulated story). Older packages have none.
+   */
+  source?: { basis: 'nasa' | 'chosen' | 'fictitious'; text: string };
 }
 
 export interface ReplayManifest {

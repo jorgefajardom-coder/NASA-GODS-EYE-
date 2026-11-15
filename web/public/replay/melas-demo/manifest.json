@@ -102,7 +102,11 @@
         "y": 812,
         "z": -11.4
       },
-      "revealed_at_s": 0
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "chosen",
+        "text": "Chosen by the demo generator, not a NASA site: one of the flattest cells of the NASA DEM, paired so that a 1.3-2.3 km walkable route exists between base and goal."
+      }
     },
     {
       "id": "B",
@@ -113,7 +117,11 @@
         "y": 2252,
         "z": -162.9
       },
-      "revealed_at_s": 0
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "chosen",
+        "text": "Chosen by the demo generator, not a NASA site: one of the flattest cells of the NASA DEM, paired so that a 1.3-2.3 km walkable route exists between base and goal."
+      }
     },
     {
       "id": "C",
@@ -124,7 +132,11 @@
         "y": 1388,
         "z": -76.7
       },
-      "revealed_at_s": 318
+      "revealed_at_s": 318,
+      "source": {
+        "basis": "fictitious",
+        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+      }
     },
     {
       "id": "D",
@@ -135,7 +147,11 @@
         "y": 1580,
         "z": -89.5
       },
-      "revealed_at_s": 320
+      "revealed_at_s": 320,
+      "source": {
+        "basis": "fictitious",
+        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+      }
     }
   ],
   "files": {

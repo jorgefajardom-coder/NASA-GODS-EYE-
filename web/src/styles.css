@@ -3235,3 +3235,7 @@ input[type='checkbox'] {
 
 .camera-bar__rovercams { display: inline-flex; gap: 3px; }
 .camera-bar__num { min-width: 26px; text-align: center; font-variant-numeric: tabular-nums; }
+.sites__src { margin-left: 6px; font: 600 9px/1 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 4px; border-radius: 3px; border: 1px solid currentColor; vertical-align: middle; }
+.sites__src--nasa { color: #8fd18b; }
+.sites__src--chosen { color: #e8c36a; }
+.sites__src--fictitious { color: #e88a7a; }

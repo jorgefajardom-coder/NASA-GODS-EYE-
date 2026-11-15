@@ -113,7 +113,11 @@
         "y": 3636,
         "z": -287.8
       },
-      "revealed_at_s": 0
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Curiosity stop 45_996, sol 940 (Mars Science Laboratory Curiosity waypoints (MMGIS MSL)); the base sits on the nearest walkable cell, within 12 m."
+      }
     },
     {
       "id": "B",
@@ -124,7 +128,11 @@
         "y": 2764,
         "z": -264.9
       },
-      "revealed_at_s": 0
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Curiosity stop 53_1990, sol 1284 (Mars Science Laboratory Curiosity waypoints (MMGIS MSL)); the goal sits on the nearest walkable cell, within 12 m."
+      }
     },
     {
       "id": "C",
@@ -135,7 +143,11 @@
         "y": 3308,
         "z": -279.3
       },
-      "revealed_at_s": 264
+      "revealed_at_s": 264,
+      "source": {
+        "basis": "fictitious",
+        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+      }
     },
     {
       "id": "D",
@@ -146,7 +158,11 @@
         "y": 3348,
         "z": -283.1
       },
-      "revealed_at_s": 266
+      "revealed_at_s": 266,
+      "source": {
+        "basis": "fictitious",
+        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+      }
     }
   ],
   "files": {
