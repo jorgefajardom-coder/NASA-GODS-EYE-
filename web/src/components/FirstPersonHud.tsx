@@ -1,8 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import type { AgentState, RouteDecision } from '../types/icd';
 import type { PointOfInterest } from '../types/replay';
-import type { ResourceLine } from '../lib/resources';
-import type { Budget } from '../lib/management';
 import { AGENT_NAME } from '../lib/management';
 import { fmtDuration } from '../lib/format';
 import { angleDiffDeg, bearingDeg, SCAN_CLASS_INFO, SCAN_RADIUS_M, type ScanClass } from '../lib/scan';
@@ -10,9 +8,7 @@ import { povState } from './FirstPersonCamera';
 import { remainingTimeS, routeProgress } from '../lib/routeProgress';
 import { ROUTE_STATUS_STYLE } from '../lib/format';
 import { fmtM } from './PovRoute';
-
-/** Diameter of the HUD minimap (px). */
-export const POV_MINIMAP_PX = 150;
+import type { ResourceAlert } from '../lib/resourceAlert';
 
 /** Visible width of the compass tape (deg either side of the heading). */
 const TAPE_HALF_DEG = 60;
@@ -26,8 +22,6 @@ interface Props {
   /** Mode chip text, e.g. "REPLAY · SIMULATION": never shown as a live mission. */
   sourceLabel: string;
   pois: PointOfInterest[];
-  lines: ResourceLine[];
-  budget: Budget | undefined;
   /** Scan state: null before the first scan; counts per band of the last one. */
   scan: { counts: Record<ScanClass, number>; fromId: string } | null;
   canScan: boolean;
@@ -35,21 +29,30 @@ interface Props {
   onExit: () => void;
   /** Route in force (any agent); its guide is shown only when it belongs to this agent. */
   route: RouteDecision | null;
-  /** Heading-up minimap centred on this agent. */
-  minimap: ReactNode;
+  /** The agent dial of the third-person view (menu with resources, atmosphere, route... and the heading-up map). */
+  dial: ReactNode;
+  /** Resource alert of this agent (lib/resourceAlert), or null. */
+  alert: ResourceAlert | null;
+  /** Drone camera window (DroneCamFrame) shown in the bottom dock, or null. */
+  droneCam: ReactNode;
+  droneCamOn: boolean;
+  canDroneCam: boolean;
+  onDroneCam: () => void;
+  /** Astronaut helmet lights (L). */
+  helmetLight: boolean;
+  canHelmetLight: boolean;
+  onHelmetLight: () => void;
   /** Camera sway on/off (B). */
   sway: boolean;
   onSway: (on: boolean) => void;
 }
 
-const budgetOf = (b: Budget | undefined, key: ResourceLine['key']) => (b ? (key === 'oxygen' ? b.oxygen_l : key === 'energy' ? b.energy_wh : b.time_s) : null);
-
 /**
  * First-person overlay: a quiet cartographic HUD (thin rules, one accent colour) with a compass tape
- * and site bearings, the agent's resources, and the drone-camera scan control and readout. Every
+ * and site bearings, the shared agent dial (resources live in its menu), and the drone-camera scan control and readout. Every
  * value comes from the replay or from lib/scan; nothing here is a live measurement.
  */
-export function FirstPersonHud({ agent, sourceLabel, pois, lines, budget, scan, canScan, onScan, onExit, route, minimap, sway, onSway }: Props) {
+export function FirstPersonHud({ agent, sourceLabel, pois, scan, canScan, onScan, onExit, route, dial, alert, droneCam, droneCamOn, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, sway, onSway }: Props) {
   const tape = useRef<HTMLDivElement>(null);
   const readout = useRef<HTMLSpanElement>(null);
   const pitch = useRef<HTMLSpanElement>(null);
@@ -59,6 +62,7 @@ export function FirstPersonHud({ agent, sourceLabel, pois, lines, budget, scan, 
   const progress = own ? routeProgress(own.outbound_path, pos) : null;
   const left = own && progress ? remainingTimeS(progress, own.travel_time_s) : null;
   const sites = pois.map((p) => ({ id: p.id, kind: p.kind, bearing: bearingDeg(pos.x, pos.y, p.position.x, p.position.y), dist: Math.hypot(p.position.x - pos.x, p.position.y - pos.y) }));
+  const base = sites.find((x) => x.kind === 'base') ?? null;
   const sitesRef = useRef(sites);
   sitesRef.current = sites;
 
@@ -155,63 +159,83 @@ export function FirstPersonHud({ agent, sourceLabel, pois, lines, budget, scan, 
         )}
       </div>
 
-      <div className="pov__minimap" aria-label="Minimap, heading up">
-        {minimap}
-      </div>
+      {/* The same agent dial as in third person: its menu and, at the centre, the heading-up map. */}
+      <div className="pov__dial">{dial}</div>
 
       <div className="pov__reticle" aria-hidden>
         <span />
       </div>
 
-      <div className="pov__vitals" aria-label="Resources">
-        {lines.map((l) => {
-          const b = budgetOf(budget, l.key);
-          const share = l.remaining != null && b ? Math.max(0, Math.min(1, l.remaining / b)) : null;
-          const text = l.remaining == null ? 'no data' : l.key === 'time' ? fmtDuration(l.remaining) : `${l.remaining.toFixed(0)} ${l.unit}`;
-          return (
-            <div key={l.key} className={`pov__vital pov__vital--${l.tone}`}>
-              <span className="pov__vital-label">{l.label}</span>
-              <span className="pov__bar" title={share == null ? 'No reference' : 'Share of the first received sample (not a certified budget)'}>
-                <span style={{ width: `${(share ?? 0) * 100}%` }} />
-              </span>
-              <span className="pov__vital-value">{text}</span>
-            </div>
-          );
-        })}
-        {agent.agent_kind !== 'HUMAN' && <p className="pov__note">Oxygen: not applicable</p>}
-      </div>
+      {alert && (
+        <div className={`pov__alert pov__alert--${alert.level}`} role="alert">
+          <strong>
+            {alert.level === 'critical' ? 'Critical' : 'Low'} · {alert.label}
+            {alert.share != null && <b>{Math.round(alert.share * 100)}%</b>}
+          </strong>
+          <span>{alert.reason}</span>
+          <em>
+            {alert.action}
+            {alert.level === 'critical' && base ? ` · ${base.id} ${base.dist >= 1000 ? `${(base.dist / 1000).toFixed(2)} km` : `${base.dist.toFixed(0)} m`} · bearing ${base.bearing.toFixed(0).padStart(3, '0')}°` : ''}
+          </em>
+          {alert.level === 'low' && alert.turnBackInM != null && <span>Turn-back point in {fmtM(alert.turnBackInM)}</span>}
+          <small>Route sufficiency check · 20% reserve (JZ-P06, experimental) · display only, the replay's plan is unchanged</small>
+        </div>
+      )}
 
-      <div className="pov__scan">
-        <button type="button" className="pov__scan-btn" onClick={onScan} disabled={!canScan} title={canScan ? 'Scan the ground around the drone with its camera (R)' : 'No drone in this run'}>
-          <kbd>R</kbd> Scan · drone camera
-        </button>
-        {scan && (
-          <div className="pov__legend" aria-live="polite">
-            <span className="pov__kicker">
-              Scan from {scan.fromId} · r {SCAN_RADIUS_M} m
-            </span>
-            {(Object.keys(SCAN_CLASS_INFO) as ScanClass[]).map((c) => (
-              <span key={c} className="pov__legend-row">
-                <i style={{ background: SCAN_CLASS_INFO[c].color }} aria-hidden />
-                {SCAN_CLASS_INFO[c].label}
-                <b>{scan.counts[c]}</b>
-              </span>
-            ))}
-            <p className="pov__note">Orbital CTX slope (prior, ~60 m smoothing) shown from the drone's position. Display only: not a new observation; map version unchanged. Bands are display thresholds pending science approval.</p>
+      {/* Bottom dock: drone camera (left), every key control in one place (centre), scan readout (right). */}
+      <div className="pov__dock">
+        <div className="pov__dock-cam">{droneCam}</div>
+        <div className="pov__keys" role="toolbar" aria-label="First-person controls">
+          <div className="pov__keys-row">
+            <button type="button" className="pov__key" onClick={onScan} disabled={!canScan} title={canScan ? 'Scan the ground around the drone with its camera (R)' : 'No drone in this run'}>
+              <kbd>R</kbd> Scan
+            </button>
+            <button type="button" className="pov__key" aria-pressed={droneCamOn} onClick={onDroneCam} disabled={!canDroneCam} title={canDroneCam ? 'Drone camera window (C)' : 'No drone camera here'}>
+              <kbd>C</kbd> Drone cam
+            </button>
+            <button type="button" className="pov__key" aria-pressed={helmetLight} onClick={onHelmetLight} disabled={!canHelmetLight} title={canHelmetLight ? "Astronaut's helmet lights (L)" : 'No astronaut in this run'}>
+              <kbd>L</kbd> Lights {helmetLight ? 'on' : 'off'}
+            </button>
+            <button type="button" className="pov__key" aria-pressed={sway} onClick={() => onSway(!sway)} title="Camera sway while walking or driving (display only)">
+              <kbd>B</kbd> Sway {sway ? 'on' : 'off'}
+            </button>
+            <button type="button" className="pov__key" onClick={onExit} title="Back to the third-person view (V)">
+              <kbd>V</kbd> Third person
+            </button>
           </div>
-        )}
+          <div className="pov__hints">
+            <span>Drag · look</span>
+            <span>Wheel · zoom</span>
+            <span>Double-click · recentre</span>
+          </div>
+        </div>
+        <div className="pov__dock-scan">
+          {scan && (
+            <div className="pov__legend" aria-live="polite">
+              <span className="pov__kicker">
+                Scan from {scan.fromId} · r {SCAN_RADIUS_M} m
+              </span>
+              {(Object.keys(SCAN_CLASS_INFO) as ScanClass[]).map((c) => (
+                <span key={c} className="pov__legend-row">
+                  <i style={{ background: SCAN_CLASS_INFO[c].color }} aria-hidden />
+                  {SCAN_CLASS_INFO[c].label}
+                  <b>{scan.counts[c]}</b>
+                </span>
+              ))}
+              <p className="pov__note">Orbital CTX slope (prior, ~60 m smoothing) shown from the drone's position. Display only: not a new observation; map version unchanged. Bands are display thresholds pending science approval.</p>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="pov__hints">
-        <span>Drag · look</span>
-        <span>Wheel · zoom</span>
-        <span>Double-click · recentre</span>
-        <button type="button" className="pov__exit" aria-pressed={sway} onClick={() => onSway(!sway)} title="Camera sway while walking or driving (display only)">
-          <kbd>B</kbd> Sway {sway ? 'on' : 'off'}
-        </button>
-        <button type="button" className="pov__exit" onClick={onExit}>
-          <kbd>V</kbd> Third person
-        </button>
+      {/* Power-on sequence: the screen opens like a display switching on, then a short boot log. */}
+      <div className="pov__power" aria-hidden />
+      <div className="pov__boot" aria-hidden>
+        <span>MGE · HUD</span>
+        <span>Power ··· ok</span>
+        <span>Link · replay ({sourceLabel})</span>
+        <span>Nav · compass · map ··· ok</span>
+        <span>{AGENT_NAME[agent.agent_kind]} {agent.agent_id} · online</span>
       </div>
     </div>
   );

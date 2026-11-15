@@ -72,6 +72,8 @@ interface Props {
   kind: AgentKind | null;
   /** Walking/driving sway of the camera (display only; off with reduced motion by default). */
   sway: boolean;
+  /** Low-power rendering: keep pixel ratio 1 instead of supersampling. */
+  lite?: boolean;
 }
 
 /**
@@ -80,7 +82,7 @@ interface Props {
  * double-click recentres. The agent's own model is hidden while seen from inside. Only the camera
  * moves; no pose or data is changed. The orbit controls are disabled meanwhile (MissionScene).
  */
-export function FirstPersonCamera({ target, kind, sway }: Props) {
+export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const scene = useThree((s) => s.scene);
   const gl = useThree((s) => s.gl);
@@ -105,10 +107,10 @@ export function FirstPersonCamera({ target, kind, sway }: Props) {
     povState.active = true;
     // Highest quality while seen from the ground: supersample the frame (capped for the GPU).
     const device = window.devicePixelRatio || 1;
-    setDpr(Math.min(POV_DPR_MAX, device * POV_DPR_SCALE));
+    setDpr(lite ? 1 : Math.min(POV_DPR_MAX, device * POV_DPR_SCALE));
     return () => {
       povState.active = false;
-      setDpr(Math.min(MAP_DPR_MAX, Math.max(1, device)));
+      setDpr(lite ? 1 : Math.min(MAP_DPR_MAX, Math.max(1, device)));
       if (hidden.current) hidden.current.visible = true;
       hidden.current = null;
       const s = saved.current;
@@ -121,7 +123,7 @@ export function FirstPersonCamera({ target, kind, sway }: Props) {
         camera.updateProjectionMatrix();
       }
     };
-  }, [target, kind, camera, controls, setDpr]);
+  }, [target, kind, camera, controls, setDpr, lite]);
 
   // Drag to look, wheel to zoom, double-click to recentre.
   useEffect(() => {

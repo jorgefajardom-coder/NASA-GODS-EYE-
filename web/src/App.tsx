@@ -16,6 +16,11 @@ import {
   type Selection,
 } from './lib/management';
 import { MissionScene } from './components/MissionScene';
+import { FlatMap } from './components/FlatMap';
+import { DroneCamFrame } from './components/DroneCam';
+import { resourceAlert } from './lib/resourceAlert';
+import { SceneBoundary } from './components/SceneBoundary';
+import { detectRenderTier } from './lib/gpu';
 import { ManagementList } from './components/ManagementList';
 import { DetailsPanel } from './components/DetailsPanel';
 import { HUD_MAP_PX, RadialHud, type HudOption } from './components/RadialHud';
@@ -29,7 +34,7 @@ import { AtmosDetails, AtmosList } from './components/AtmosPanel';
 import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
 import { CameraBar } from './components/CameraBar';
-import { FirstPersonHud, POV_MINIMAP_PX } from './components/FirstPersonHud';
+import { FirstPersonHud } from './components/FirstPersonHud';
 import type { ScanRequest } from './components/DroneScan';
 import { scanCells, scanSummary, type ScanClass } from './lib/scan';
 import { slopeDegrees } from './lib/slope';
@@ -45,6 +50,8 @@ const params = new URLSearchParams(window.location.search);
 /** Evaluator view shows the hidden reference DEM. Off by default; enable with ?evaluator=1. */
 const EVALUATOR = params.get('evaluator') === '1';
 const RUN_ID = params.get('run') ?? 'demo';
+/** Rendering tier, probed once: full 3D, lite 3D (software / slow GPU) or a 2D map without WebGL. */
+const RENDER_TIER = detectRenderTier();
 const RUN_DIR = `replay/${RUN_ID}`;
 
 type Load = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; bundle: ReplayBundle };
@@ -103,7 +110,11 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const follow = camView !== 'free' && camView !== 'base';
   // First or third person while following an agent (V toggles; no effect on the free/base cameras).
   const [firstPerson, setFirstPerson] = useState(false);
-  const pov = follow && firstPerson;
+  /** Drone camera window: on by default with a full GPU (it renders the scene a second time). */
+  const [droneCam, setDroneCam] = useState(RENDER_TIER === 'full');
+  /** Astronaut helmet lights (L), display only. */
+  const [helmetLight, setHelmetLight] = useState(false);
+  const pov = follow && firstPerson && RENDER_TIER !== 'map2d';
   // First-person camera sway: a per-viewer preference, off by default with reduced motion.
   const [povSway, setPovSwayState] = useState<boolean>(() => {
     try {
@@ -203,6 +214,11 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const setFollow = useCallback((on: boolean) => setCamView(on && agentId ? agentId : 'free'), [agentId]);
   const hasBase = m.pois.some((p) => p.kind === 'base');
   const drone = view.state?.agents.find((a) => a.agent_kind === 'DRONE') ?? null;
+  // First person only (not on the 2D map), and not while the main view already looks through the drone.
+  const canDroneCam = !!drone && RENDER_TIER !== 'map2d' && pov && camView !== drone.agent_id;
+  const showDroneCam = droneCam && canDroneCam;
+  const povAgent = pov ? view.state?.agents.find((a) => a.agent_id === camView) ?? null : null;
+  const povAlert = povAgent ? resourceAlert(resourceLines(bundle, t, povAgent, view.activeRoute, budgets[povAgent.agent_id]), budgets[povAgent.agent_id], view.activeRoute, povAgent.agent_id, povAgent.pose.position) : null;
   const runScan = useCallback(() => {
     if (!drone) return;
     const { x, y } = drone.pose.position;
@@ -264,6 +280,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'KeyV') setFirstPerson((v) => !v);
       else if (e.code === 'KeyB' && pov) setPovSway(!povSway);
       else if (e.code === 'KeyR') runScan();
+      else if (e.code === 'KeyC') setDroneCam((c) => !c);
+      else if (e.code === 'KeyL') setHelmetLight((v) => !v);
       else if (e.code === 'KeyQ') rotateView(-ROTATE_STEP_RAD);
       else if (e.code === 'KeyE') rotateView(ROTATE_STEP_RAD);
     };
@@ -301,8 +319,31 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     return () => ro.disconnect();
   }, []);
 
+  // The agent dial (menu + map), shared by the third-person column and the first-person HUD.
+  const radialHud = (
+    <RadialHud
+      who={agent ? `${AGENT_NAME[agent.agent_kind]} · ${agent.agent_id}` : 'No agent'}
+      center={
+        // The 2D map only with no option or Route; every other option fills the circle with its own gauge.
+        hudOption && hudOption !== 'route' ? (
+          <HudGauge option={hudOption} size={HUD_MAP_PX} bundle={bundle} view={view} t={t} agent={agent} route={view.activeRoute} budget={agent ? budgets[agent.agent_id] : undefined} atmosphere={bundle.atmosphere} />
+        ) : (
+          <Minimap bundle={bundle} view={view} agentId={agentId} size={HUD_MAP_PX} />
+        )
+      }
+      active={hudOption}
+      onSelect={setHudOption}
+      warn={hudWarn}
+      hints={hudHints}
+    />
+  );
+
   return (
     <div className={`app${pov ? ' app--pov' : ''}`} ref={appRef}>
+      {RENDER_TIER === 'map2d' ? (
+        <FlatMap bundle={bundle} view={view} selectedAgentId={agentId} reason="map2d" />
+      ) : (
+      <SceneBoundary fallback={<FlatMap bundle={bundle} view={view} selectedAgentId={agentId} reason="failed" />}>
       <MissionScene
         bundle={bundle}
         view={view}
@@ -329,21 +370,32 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         firstPerson={firstPerson}
         scan={scan}
         povSway={povSway}
+        lite={RENDER_TIER === 'lite'}
+        droneCam={showDroneCam}
+        helmetLight={helmetLight}
       />
+      </SceneBoundary>
+      )}
       <div className="vignette" aria-hidden />
       {pov && agent && (
         <FirstPersonHud
           agent={view.state?.agents.find((a) => a.agent_id === camView) ?? agent}
           sourceLabel={displayState({ mode: 'REPLAY', source: m.source_mode ?? 'UNKNOWN' }).label}
           pois={m.pois.filter((p) => p.revealed_at_s <= t)}
-          lines={hudLines}
-          budget={budgets[camView]}
           scan={scan}
           canScan={!!drone}
           onScan={runScan}
           onExit={() => setFirstPerson(false)}
           route={view.activeRoute}
-          minimap={<Minimap bundle={bundle} view={view} agentId={camView} size={POV_MINIMAP_PX} />}
+          dial={radialHud}
+          alert={povAlert}
+          droneCam={showDroneCam && drone ? <DroneCamFrame droneId={drone.agent_id} onClose={() => setDroneCam(false)} /> : null}
+          droneCamOn={showDroneCam}
+          canDroneCam={canDroneCam}
+          onDroneCam={() => setDroneCam((v) => !v)}
+          helmetLight={helmetLight}
+          canHelmetLight={!!view.state?.agents.some((a) => a.agent_kind === 'HUMAN')}
+          onHelmetLight={() => setHelmetLight((v) => !v)}
           sway={povSway}
           onSway={setPovSway}
         />
@@ -374,6 +426,9 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             onFirstPerson={setFirstPerson}
             canScan={!!drone}
             onScan={runScan}
+            helmetLight={helmetLight}
+            canHelmetLight={!!view.state?.agents.some((a) => a.agent_kind === 'HUMAN')}
+            onHelmetLight={() => setHelmetLight((v) => !v)}
           />
           <div className="prompts">
             <button type="button" className="chip" aria-pressed={freePan} onClick={() => setFreePan((g) => !g)} title="On: left drag slides the map, right drag orbits. Off: left drag orbits, right drag slides. Wheel zooms.">
@@ -433,21 +488,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             details && <DetailsPanel data={details} portrait={sel.kind === 'agent' ? PORTRAITS[sel.id] ?? null : null} />
           )}
           {/* One stacked column: the details scroll, the dial keeps its height below them. */}
-          <RadialHud
-            who={agent ? `${AGENT_NAME[agent.agent_kind]} · ${agent.agent_id}` : 'No agent'}
-            center={
-              // The 2D map only with no option or Route; every other option fills the circle with its own gauge.
-              hudOption && hudOption !== 'route' ? (
-                <HudGauge option={hudOption} size={HUD_MAP_PX} bundle={bundle} view={view} t={t} agent={agent} route={view.activeRoute} budget={agent ? budgets[agent.agent_id] : undefined} atmosphere={bundle.atmosphere} />
-              ) : (
-                <Minimap bundle={bundle} view={view} agentId={agentId} size={HUD_MAP_PX} />
-              )
-            }
-            active={hudOption}
-            onSelect={setHudOption}
-            warn={hudWarn}
-            hints={hudHints}
-          />
+          {radialHud}
         </aside>
 
         <AlertBanner alert={alert} />
