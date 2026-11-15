@@ -325,7 +325,10 @@ flowchart LR
 - Management list of agents, tasks and routes, contextual details panel, event
   inspector and replan alerts built only from received objects.
 - Agent HUD: heading-up minimap plus six gauges (oxygen, energy, time, route,
-  atmosphere, dose), amber when a route leaves under 15 % of the starting budget.
+  atmosphere, dose), amber when a route leaves under 15 % of the starting budget. A second
+  press on the oxygen button shows the CO₂ the astronaut has exhaled (oxygen used × an assumed
+  respiratory quotient of 0.85; the suit's CO₂ removal capacity is not modelled); a third
+  press goes back to the map.
 - Live Earth and Mars clocks (NASA GISS Mars24: MTC, LMST at Jezero, sol, Ls),
   independent of the replay time.
 - Cameras: Map, Astronaut, Rover, Drone and Base; grab-to-drag map and 45° view rotation.

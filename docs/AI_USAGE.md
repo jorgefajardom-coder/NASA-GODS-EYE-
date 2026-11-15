@@ -883,3 +883,8 @@ Odyssey GRS, MSL RAD, Guo et al. 2018); the 4 h Marswalk dose is a linear
 display estimate without shielding or solar particle events. No image, video,
 audio or NASA observation was generated; scientific review of the wording and
 organizer endorsement remain open.
+
+The same assistance added the HUD's exhaled-CO₂ gauge (`web/src/lib/co2.ts`, the second
+press of the oxygen button, with tests): a display estimate from the replay's oxygen line
+and an assumed respiratory quotient of 0.85, pending scientific review; no CO₂ data or
+suit capacity is generated.

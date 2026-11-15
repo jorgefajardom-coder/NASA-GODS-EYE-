@@ -8,6 +8,7 @@ import { pressureField, SCALE_HEIGHT_M } from '../lib/atmosMap';
 import { fmtDuration } from '../lib/format';
 import { heightGrid } from '../lib/layers';
 import { resourceLines, type ResourceLine } from '../lib/resources';
+import { RESPIRATORY_QUOTIENT, co2FromOxygen } from '../lib/co2';
 import { HUD_ICON, type HudOption } from './RadialHud';
 
 const V = 168; // drawing grid (viewBox), scaled to the circle
@@ -267,6 +268,23 @@ export function HudGauge({ option, size, bundle, view, t, agent, route, budget, 
       <FillSvg title={`Oxygen ${amount(r.remaining, 'L')} of ${amount(b, 'L')}: ${detail(r)}`}>
         <OxygenGauge r={r} budget={b} />
       </FillSvg>
+    );
+  }
+  if (option === 'co2') {
+    // Exhaled CO2 from the oxygen used (respiratory quotient); the suit's removal capacity is not modelled.
+    const o = line('oxygen');
+    const c = o ? co2FromOxygen(o, budget?.oxygen_l ?? null) : null;
+    if (!c) return <RadialBar f={null} color={AMBER} option="co2" value="CO₂ n/a" sub="crew only" title="Exhaled CO2 is tracked for the astronaut only" />;
+    const route = c.routeAddsL == null ? '' : `; the route in force adds ${amount(c.routeAddsL, 'L')}`;
+    return (
+      <RadialBar
+        f={c.budgetL ? c.exhaledL / c.budgetL : null}
+        color={AMBER}
+        option="co2"
+        value={amount(c.exhaledL, 'L', 1)}
+        sub={c.perHour == null ? 'CO₂ exhaled' : `${amount(c.perHour, 'L/h', 1)} exhaled`}
+        title={`CO2 exhaled ${amount(c.exhaledL, 'L')} of ${amount(c.budgetL, 'L')} for the whole oxygen supply${route}. Estimate: oxygen used x respiratory quotient ${RESPIRATORY_QUOTIENT} (assumed); the suit's CO2 removal capacity is not modelled. Display only`}
+      />
     );
   }
   if (option === 'energy') {

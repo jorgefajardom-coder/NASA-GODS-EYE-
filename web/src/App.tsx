@@ -38,6 +38,7 @@ import { detectRenderTier } from './lib/gpu';
 import { ManagementList } from './components/ManagementList';
 import { DetailsPanel } from './components/DetailsPanel';
 import { HUD_MAP_PX, RadialHud, type HudOption } from './components/RadialHud';
+import { co2FromOxygen } from './lib/co2';
 import { HudGauge } from './components/HudGauge';
 import { resourceLines } from './lib/resources';
 import { fmtDuration, isTrustedRoute } from './lib/format';
@@ -233,6 +234,11 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     hudHints[l.key] = l.key === 'time' ? fmtDuration(l.remaining) : l.remaining == null ? 'no data' : `${l.remaining.toFixed(0)} ${l.unit}`;
   }
   if (agent?.agent_kind !== 'HUMAN') hudHints.oxygen = 'not applicable';
+  else {
+    const o2 = hudLines.find((l) => l.key === 'oxygen');
+    const c = o2 ? co2FromOxygen(o2, agent ? budgets[agent.agent_id]?.oxygen_l ?? null : null) : null;
+    hudHints.co2 = c ? `${c.exhaledL.toFixed(1)} L exhaled (est.)` : 'no data';
+  }
   if (view.activeRoute && (!isTrustedRoute(view.activeRoute) || view.state?.mission_state === 'REPLAN')) hudWarn.add('route');
   hudHints.route = view.activeRoute ? view.activeRoute.route_id : 'none';
   if (agent?.agent_kind === 'HUMAN' && bundle.atmosphere) hudHints.dose = `${fmtMicroSv(crewDose(bundle.atmosphere, t).usv)} µSv`;
