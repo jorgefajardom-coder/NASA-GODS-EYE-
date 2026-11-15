@@ -1,0 +1,40 @@
+{
+  "source_sha": "3c82d72f972109113216039bff5cfd491df5f1ba",
+  "source_root": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\.local\\rigid-adaptive-study/frozen-main",
+  "output_dir": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\.local\\rigid-adaptive-study/published-step-controls",
+  "prior_root": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\evidence\\overnight-mission-research-20261115-v3",
+  "profiles_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\.local\\rigid-adaptive-study/frozen-main/config/science_profiles.proposed.json",
+  "script_path": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA/scripts/run_rigid_adaptive_study.py",
+  "map_records": [
+    "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\evidence\\overnight-mission-research-20261115-v3\\public/bright-256.json",
+    "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\evidence\\overnight-mission-research-20261115-v3\\public/hawksbill-256.json",
+    "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\evidence\\overnight-mission-research-20261115-v3\\public/bunsen-256.json"
+  ],
+  "families": [
+    "unchanged"
+  ],
+  "designs": [
+    "broad"
+  ],
+  "indices": 1,
+  "agents": [
+    "human_1",
+    "rover_1"
+  ],
+  "modes": [
+    "FAST",
+    "SAFE"
+  ],
+  "workers": 3,
+  "deadline_utc": "2026-11-15T22:21:00Z",
+  "search_limits": {
+    "max_labels": 1000000,
+    "timeout_s": 8.0
+  },
+  "max_sigma_m": 3.0,
+  "grade_consistent_projection": false,
+  "vary_budgets": true,
+  "vary_reserves": true,
+  "observation_duration_s": 120,
+  "footprint_radius_m": 12
+}

@@ -1,0 +1,856 @@
+{
+  "classification": "SIMULATED_EXPLANATORY_CASES",
+  "selection_rule": "First sorted example per category, include adverse and null outcomes; preserve all raw cases separately",
+  "examples": {
+    "primary_preserved_without_geometric_change": {
+      "category": "primary_preserved_without_geometric_change",
+      "block_id": "bright-256-blocked-0-broad",
+      "design": "broad",
+      "sector": "bright",
+      "family": "blocked",
+      "side_m": 256,
+      "index": 0,
+      "agent_id": "human_1",
+      "mode": "FAST",
+      "initial_status": "FEASIBLE",
+      "base": [
+        -78.0,
+        -106.0,
+        -2367.712646484375
+      ],
+      "goal": [
+        -18.0,
+        -74.0,
+        -2366.960693359375
+      ],
+      "common_reached": [
+        [
+          -78.0,
+          -106.0,
+          -2367.712646484375
+        ],
+        [
+          -74.0,
+          -102.0,
+          -2367.73291015625
+        ],
+        [
+          -70.0,
+          -98.0,
+          -2367.73486328125
+        ],
+        [
+          -66.0,
+          -94.0,
+          -2367.718994140625
+        ],
+        [
+          -62.0,
+          -90.0,
+          -2367.6708984375
+        ]
+      ],
+      "common_remaining": {
+        "energy_wh": 215.3164635736213,
+        "oxygen_l": 42.6233372178545,
+        "time_s": 1832.6391692317059
+      },
+      "observation": {
+        "source_kind": "SIMULATED",
+        "observation_id": "bright-256-blocked-0-broad:human_1:FAST:paid",
+        "cells": 29,
+        "reported_obstacle_cells": 0,
+        "sha256": "eb8fc4a61e73fd1f88c53203997c21e895306edde2ce0635084b8690f7215674"
+      },
+      "opportunity": {
+        "activity": "inspect",
+        "appearance_phase": "AFTER_SHARED_REACHED_OBSERVATION",
+        "available": true,
+        "capable_kinds": [
+          "human"
+        ],
+        "duration_s": 600.0,
+        "event_id": "bright-256-blocked-0-broad:public-opportunity",
+        "event_semantics": "EXOGENOUS_SIMULATED_PUBLIC_MISSION_NOTICE_NOT_SENSOR_DISCOVERY",
+        "inspection_evidence": "primary_B_service_required_before_optional",
+        "position": [
+          -18.0,
+          -74.0,
+          -2366.960693359375
+        ],
+        "prerequisite": "PRIMARY_B_COMPLETED",
+        "source_kind": "SIMULATED_PUBLIC_TYPED_EVENT",
+        "task_scope": "additional_inspection_not_sampling_workflow"
+      },
+      "strategies": {
+        "RIGID": {
+          "status": "PRIMARY_COMPLETED",
+          "primary_completed": true,
+          "returned": true,
+          "unknown": false,
+          "optional_unknown": false,
+          "optional_completed": 0,
+          "geometry_changed": false,
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "FIXED_INITIAL_ITINERARY"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "FIXED_TASK_SET"
+            }
+          ],
+          "remaining": {
+            "energy_wh": 185.10234828656843,
+            "oxygen_l": 36.4535327213621,
+            "time_s": 1560.3468372832376
+          },
+          "reserve_margins": {
+            "energy_wh": 153.10234828656843,
+            "oxygen_l": 30.053532721362103,
+            "time_s": 1272.3468372832376
+          },
+          "elapsed_s": 1319.6531627167624,
+          "energy_wh": 134.8976517134317,
+          "oxygen_l": 27.54646727863791,
+          "resource_violation": false,
+          "reserve_violation": false,
+          "pose": [
+            -78.0,
+            -106.0,
+            -2367.712646484375
+          ],
+          "completion_credit": 1,
+          "n_post_observation_queries": 0
+        },
+        "ADAPTIVE": {
+          "status": "PRIMARY_COMPLETED",
+          "primary_completed": true,
+          "returned": true,
+          "unknown": false,
+          "optional_unknown": false,
+          "optional_completed": 1,
+          "geometry_changed": false,
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "CURRENT_MAP_AND_RESOURCES"
+            },
+            {
+              "action": "ACCEPT_OPTIONAL",
+              "event_id": "bright-256-blocked-0-broad:public-opportunity",
+              "reason": "CAPABILITY_PRECEDENCE_DIRECTED_RETURN_AND_RESERVES_FIT"
+            }
+          ],
+          "remaining": {
+            "energy_wh": 125.42234828656845,
+            "oxygen_l": 24.26671444611543,
+            "time_s": 960.3468372832373
+          },
+          "reserve_margins": {
+            "energy_wh": 93.42234828656845,
+            "oxygen_l": 17.86671444611543,
+            "time_s": 672.3468372832373
+          },
+          "elapsed_s": 1919.6531627167624,
+          "energy_wh": 194.5776517134317,
+          "oxygen_l": 39.733285553884585,
+          "resource_violation": false,
+          "reserve_violation": false,
+          "pose": [
+            -78.0,
+            -106.0,
+            -2367.712646484375
+          ],
+          "completion_credit": 1,
+          "n_post_observation_queries": 2
+        }
+      },
+      "selection": "First sorted catalogue example satisfying a declared explanatory category; not a prevalence estimate."
+    },
+    "new_optional_work_completed": {
+      "category": "new_optional_work_completed",
+      "block_id": "bright-256-blocked-0-broad",
+      "design": "broad",
+      "sector": "bright",
+      "family": "blocked",
+      "side_m": 256,
+      "index": 0,
+      "agent_id": "human_1",
+      "mode": "FAST",
+      "initial_status": "FEASIBLE",
+      "base": [
+        -78.0,
+        -106.0,
+        -2367.712646484375
+      ],
+      "goal": [
+        -18.0,
+        -74.0,
+        -2366.960693359375
+      ],
+      "common_reached": [
+        [
+          -78.0,
+          -106.0,
+          -2367.712646484375
+        ],
+        [
+          -74.0,
+          -102.0,
+          -2367.73291015625
+        ],
+        [
+          -70.0,
+          -98.0,
+          -2367.73486328125
+        ],
+        [
+          -66.0,
+          -94.0,
+          -2367.718994140625
+        ],
+        [
+          -62.0,
+          -90.0,
+          -2367.6708984375
+        ]
+      ],
+      "common_remaining": {
+        "energy_wh": 215.3164635736213,
+        "oxygen_l": 42.6233372178545,
+        "time_s": 1832.6391692317059
+      },
+      "observation": {
+        "source_kind": "SIMULATED",
+        "observation_id": "bright-256-blocked-0-broad:human_1:FAST:paid",
+        "cells": 29,
+        "reported_obstacle_cells": 0,
+        "sha256": "eb8fc4a61e73fd1f88c53203997c21e895306edde2ce0635084b8690f7215674"
+      },
+      "opportunity": {
+        "activity": "inspect",
+        "appearance_phase": "AFTER_SHARED_REACHED_OBSERVATION",
+        "available": true,
+        "capable_kinds": [
+          "human"
+        ],
+        "duration_s": 600.0,
+        "event_id": "bright-256-blocked-0-broad:public-opportunity",
+        "event_semantics": "EXOGENOUS_SIMULATED_PUBLIC_MISSION_NOTICE_NOT_SENSOR_DISCOVERY",
+        "inspection_evidence": "primary_B_service_required_before_optional",
+        "position": [
+          -18.0,
+          -74.0,
+          -2366.960693359375
+        ],
+        "prerequisite": "PRIMARY_B_COMPLETED",
+        "source_kind": "SIMULATED_PUBLIC_TYPED_EVENT",
+        "task_scope": "additional_inspection_not_sampling_workflow"
+      },
+      "strategies": {
+        "RIGID": {
+          "status": "PRIMARY_COMPLETED",
+          "primary_completed": true,
+          "returned": true,
+          "unknown": false,
+          "optional_unknown": false,
+          "optional_completed": 0,
+          "geometry_changed": false,
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "FIXED_INITIAL_ITINERARY"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "FIXED_TASK_SET"
+            }
+          ],
+          "remaining": {
+            "energy_wh": 185.10234828656843,
+            "oxygen_l": 36.4535327213621,
+            "time_s": 1560.3468372832376
+          },
+          "reserve_margins": {
+            "energy_wh": 153.10234828656843,
+            "oxygen_l": 30.053532721362103,
+            "time_s": 1272.3468372832376
+          },
+          "elapsed_s": 1319.6531627167624,
+          "energy_wh": 134.8976517134317,
+          "oxygen_l": 27.54646727863791,
+          "resource_violation": false,
+          "reserve_violation": false,
+          "pose": [
+            -78.0,
+            -106.0,
+            -2367.712646484375
+          ],
+          "completion_credit": 1,
+          "n_post_observation_queries": 0
+        },
+        "ADAPTIVE": {
+          "status": "PRIMARY_COMPLETED",
+          "primary_completed": true,
+          "returned": true,
+          "unknown": false,
+          "optional_unknown": false,
+          "optional_completed": 1,
+          "geometry_changed": false,
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "CURRENT_MAP_AND_RESOURCES"
+            },
+            {
+              "action": "ACCEPT_OPTIONAL",
+              "event_id": "bright-256-blocked-0-broad:public-opportunity",
+              "reason": "CAPABILITY_PRECEDENCE_DIRECTED_RETURN_AND_RESERVES_FIT"
+            }
+          ],
+          "remaining": {
+            "energy_wh": 125.42234828656845,
+            "oxygen_l": 24.26671444611543,
+            "time_s": 960.3468372832373
+          },
+          "reserve_margins": {
+            "energy_wh": 93.42234828656845,
+            "oxygen_l": 17.86671444611543,
+            "time_s": 672.3468372832373
+          },
+          "elapsed_s": 1919.6531627167624,
+          "energy_wh": 194.5776517134317,
+          "oxygen_l": 39.733285553884585,
+          "resource_violation": false,
+          "reserve_violation": false,
+          "pose": [
+            -78.0,
+            -106.0,
+            -2367.712646484375
+          ],
+          "completion_credit": 1,
+          "n_post_observation_queries": 2
+        }
+      },
+      "selection": "First sorted catalogue example satisfying a declared explanatory category; not a prevalence estimate."
+    },
+    "optional_work_declined_primary_preserved": {
+      "category": "optional_work_declined_primary_preserved",
+      "block_id": "bright-256-relief-0-broad",
+      "design": "broad",
+      "sector": "bright",
+      "family": "relief",
+      "side_m": 256,
+      "index": 0,
+      "agent_id": "human_1",
+      "mode": "FAST",
+      "initial_status": "FEASIBLE",
+      "base": [
+        78.0,
+        -22.0,
+        -2361.387939453125
+      ],
+      "goal": [
+        22.0,
+        -98.0,
+        -2367.978759765625
+      ],
+      "common_reached": [
+        [
+          78.0,
+          -22.0,
+          -2361.387939453125
+        ],
+        [
+          74.0,
+          -26.0,
+          -2361.79150390625
+        ],
+        [
+          70.0,
+          -30.0,
+          -2362.20361328125
+        ],
+        [
+          70.0,
+          -34.0,
+          -2362.5185546875
+        ],
+        [
+          66.0,
+          -38.0,
+          -2362.903564453125
+        ],
+        [
+          62.0,
+          -42.0,
+          -2363.33349609375
+        ]
+      ],
+      "common_remaining": {
+        "energy_wh": 214.29463332612303,
+        "oxygen_l": 42.41467670286772,
+        "time_s": 1823.3762987168852
+      },
+      "observation": {
+        "source_kind": "SIMULATED",
+        "observation_id": "bright-256-relief-0-broad:human_1:FAST:paid",
+        "cells": 29,
+        "reported_obstacle_cells": 0,
+        "sha256": "bb8a1037df710476687f4461b2f4e6e2f747340e38ca20040ff43518eceb3cd8"
+      },
+      "opportunity": {
+        "activity": "inspect",
+        "appearance_phase": "AFTER_SHARED_REACHED_OBSERVATION",
+        "available": true,
+        "capable_kinds": [
+          "human"
+        ],
+        "duration_s": 600.0,
+        "event_id": "bright-256-relief-0-broad:public-opportunity",
+        "event_semantics": "EXOGENOUS_SIMULATED_PUBLIC_MISSION_NOTICE_NOT_SENSOR_DISCOVERY",
+        "inspection_evidence": "primary_B_service_required_before_optional",
+        "position": [
+          22.0,
+          -98.0,
+          -2367.978759765625
+        ],
+        "prerequisite": "PRIMARY_B_COMPLETED",
+        "source_kind": "SIMULATED_PUBLIC_TYPED_EVENT",
+        "task_scope": "additional_inspection_not_sampling_workflow"
+      },
+      "strategies": {
+        "RIGID": {
+          "status": "PRIMARY_COMPLETED",
+          "primary_completed": true,
+          "returned": true,
+          "unknown": false,
+          "optional_unknown": false,
+          "optional_completed": 0,
+          "geometry_changed": false,
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "FIXED_INITIAL_ITINERARY"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "FIXED_TASK_SET"
+            }
+          ],
+          "remaining": {
+            "energy_wh": 169.82742901660026,
+            "oxygen_l": 33.3343526725658,
+            "time_s": 1470.168122691963
+          },
+          "reserve_margins": {
+            "energy_wh": 137.82742901660026,
+            "oxygen_l": 26.9343526725658,
+            "time_s": 1182.168122691963
+          },
+          "elapsed_s": 1409.8318773080364,
+          "energy_wh": 150.17257098339962,
+          "oxygen_l": 30.6656473274342,
+          "resource_violation": false,
+          "reserve_violation": false,
+          "pose": [
+            78.0,
+            -22.0,
+            -2361.387939453125
+          ],
+          "completion_credit": 1,
+          "n_post_observation_queries": 0
+        },
+        "ADAPTIVE": {
+          "status": "PRIMARY_COMPLETED",
+          "primary_completed": true,
+          "returned": true,
+          "unknown": false,
+          "optional_unknown": false,
+          "optional_completed": 0,
+          "geometry_changed": true,
+          "decisions": [
+            {
+              "action": "DETOUR",
+              "reason": "CURRENT_MAP_AND_RESOURCES"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "INVALID_START_Z",
+              "status": "ERROR"
+            }
+          ],
+          "remaining": {
+            "energy_wh": 169.8274290166003,
+            "oxygen_l": 33.33435267256579,
+            "time_s": 1470.1681226919632
+          },
+          "reserve_margins": {
+            "energy_wh": 137.8274290166003,
+            "oxygen_l": 26.934352672565794,
+            "time_s": 1182.1681226919632
+          },
+          "elapsed_s": 1409.8318773080364,
+          "energy_wh": 150.17257098339962,
+          "oxygen_l": 30.6656473274342,
+          "resource_violation": false,
+          "reserve_violation": false,
+          "pose": [
+            78.0,
+            -22.0,
+            -2361.387939453125
+          ],
+          "completion_credit": 1,
+          "n_post_observation_queries": 2
+        }
+      },
+      "selection": "First sorted catalogue example satisfying a declared explanatory category; not a prevalence estimate."
+    },
+    "adverse_primary_comparison": {
+      "category": "adverse_primary_comparison",
+      "block_id": "bright-512-blocked-0-broad",
+      "design": "broad",
+      "sector": "bright",
+      "family": "blocked",
+      "side_m": 512,
+      "index": 0,
+      "agent_id": "human_1",
+      "mode": "SAFE",
+      "initial_status": "FEASIBLE",
+      "base": [
+        -106.0,
+        -62.0,
+        -2366.50048828125
+      ],
+      "goal": [
+        -2.0,
+        -110.0,
+        -2368.80126953125
+      ],
+      "common_reached": [
+        [
+          -106.0,
+          -62.0,
+          -2366.50048828125
+        ],
+        [
+          -102.0,
+          -66.0,
+          -2366.65869140625
+        ],
+        [
+          -98.0,
+          -70.0,
+          -2366.766357421875
+        ],
+        [
+          -94.0,
+          -74.0,
+          -2366.88037109375
+        ],
+        [
+          -90.0,
+          -78.0,
+          -2367.016845703125
+        ],
+        [
+          -86.0,
+          -82.0,
+          -2367.175537109375
+        ],
+        [
+          -82.0,
+          -86.0,
+          -2367.338134765625
+        ]
+      ],
+      "common_remaining": {
+        "energy_wh": 213.58480896798383,
+        "oxygen_l": 42.2697286388599,
+        "time_s": 1817.2585881846821
+      },
+      "observation": {
+        "source_kind": "SIMULATED",
+        "observation_id": "bright-512-blocked-0-broad:human_1:SAFE:paid",
+        "cells": 29,
+        "reported_obstacle_cells": 0,
+        "sha256": "150c252762bd3fb9ad7d639ef5ab616043f24ec53b2abefe38b8cfe6022229b6"
+      },
+      "opportunity": {
+        "activity": "inspect",
+        "appearance_phase": "AFTER_SHARED_REACHED_OBSERVATION",
+        "available": true,
+        "capable_kinds": [
+          "human"
+        ],
+        "duration_s": 600.0,
+        "event_id": "bright-512-blocked-0-broad:public-opportunity",
+        "event_semantics": "EXOGENOUS_SIMULATED_PUBLIC_MISSION_NOTICE_NOT_SENSOR_DISCOVERY",
+        "inspection_evidence": "primary_B_service_required_before_optional",
+        "position": [
+          -2.0,
+          -110.0,
+          -2368.80126953125
+        ],
+        "prerequisite": "PRIMARY_B_COMPLETED",
+        "source_kind": "SIMULATED_PUBLIC_TYPED_EVENT",
+        "task_scope": "additional_inspection_not_sampling_workflow"
+      },
+      "strategies": {
+        "RIGID": {
+          "status": "PRIMARY_COMPLETED",
+          "primary_completed": true,
+          "returned": true,
+          "unknown": false,
+          "optional_unknown": false,
+          "optional_completed": 0,
+          "geometry_changed": false,
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "FIXED_INITIAL_ITINERARY"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "FIXED_TASK_SET"
+            }
+          ],
+          "remaining": {
+            "energy_wh": 168.92460418854873,
+            "oxygen_l": 33.14999338781635,
+            "time_s": 1431.6265126751264
+          },
+          "reserve_margins": {
+            "energy_wh": 136.92460418854873,
+            "oxygen_l": 26.749993387816353,
+            "time_s": 1143.6265126751264
+          },
+          "elapsed_s": 1448.3734873248736,
+          "energy_wh": 151.0753958114513,
+          "oxygen_l": 30.85000661218364,
+          "resource_violation": false,
+          "reserve_violation": false,
+          "pose": [
+            -106.0,
+            -62.0,
+            -2366.50048828125
+          ],
+          "completion_credit": 1,
+          "n_post_observation_queries": 0
+        },
+        "ADAPTIVE": {
+          "status": "UNKNOWN",
+          "primary_completed": false,
+          "returned": true,
+          "unknown": true,
+          "optional_unknown": false,
+          "optional_completed": 0,
+          "geometry_changed": false,
+          "decisions": [
+            {
+              "action": "UNKNOWN",
+              "reason": "SEARCH_LIMIT"
+            }
+          ],
+          "remaining": {
+            "energy_wh": 207.93260787004968,
+            "oxygen_l": 41.11553380582249,
+            "time_s": 1774.5171763693643
+          },
+          "reserve_margins": {
+            "energy_wh": 175.93260787004968,
+            "oxygen_l": 34.71553380582249,
+            "time_s": 1486.5171763693643
+          },
+          "elapsed_s": 1105.4828236306355,
+          "energy_wh": 112.0673921299503,
+          "oxygen_l": 22.884466194177513,
+          "resource_violation": false,
+          "reserve_violation": false,
+          "pose": [
+            -106.0,
+            -62.0,
+            -2366.50048828125
+          ],
+          "completion_credit": 0,
+          "n_post_observation_queries": 2
+        }
+      },
+      "selection": "First sorted catalogue example satisfying a declared explanatory category; not a prevalence estimate."
+    },
+    "unresolved_adaptive_search": {
+      "category": "unresolved_adaptive_search",
+      "block_id": "bright-512-blocked-0-broad",
+      "design": "broad",
+      "sector": "bright",
+      "family": "blocked",
+      "side_m": 512,
+      "index": 0,
+      "agent_id": "human_1",
+      "mode": "SAFE",
+      "initial_status": "FEASIBLE",
+      "base": [
+        -106.0,
+        -62.0,
+        -2366.50048828125
+      ],
+      "goal": [
+        -2.0,
+        -110.0,
+        -2368.80126953125
+      ],
+      "common_reached": [
+        [
+          -106.0,
+          -62.0,
+          -2366.50048828125
+        ],
+        [
+          -102.0,
+          -66.0,
+          -2366.65869140625
+        ],
+        [
+          -98.0,
+          -70.0,
+          -2366.766357421875
+        ],
+        [
+          -94.0,
+          -74.0,
+          -2366.88037109375
+        ],
+        [
+          -90.0,
+          -78.0,
+          -2367.016845703125
+        ],
+        [
+          -86.0,
+          -82.0,
+          -2367.175537109375
+        ],
+        [
+          -82.0,
+          -86.0,
+          -2367.338134765625
+        ]
+      ],
+      "common_remaining": {
+        "energy_wh": 213.58480896798383,
+        "oxygen_l": 42.2697286388599,
+        "time_s": 1817.2585881846821
+      },
+      "observation": {
+        "source_kind": "SIMULATED",
+        "observation_id": "bright-512-blocked-0-broad:human_1:SAFE:paid",
+        "cells": 29,
+        "reported_obstacle_cells": 0,
+        "sha256": "150c252762bd3fb9ad7d639ef5ab616043f24ec53b2abefe38b8cfe6022229b6"
+      },
+      "opportunity": {
+        "activity": "inspect",
+        "appearance_phase": "AFTER_SHARED_REACHED_OBSERVATION",
+        "available": true,
+        "capable_kinds": [
+          "human"
+        ],
+        "duration_s": 600.0,
+        "event_id": "bright-512-blocked-0-broad:public-opportunity",
+        "event_semantics": "EXOGENOUS_SIMULATED_PUBLIC_MISSION_NOTICE_NOT_SENSOR_DISCOVERY",
+        "inspection_evidence": "primary_B_service_required_before_optional",
+        "position": [
+          -2.0,
+          -110.0,
+          -2368.80126953125
+        ],
+        "prerequisite": "PRIMARY_B_COMPLETED",
+        "source_kind": "SIMULATED_PUBLIC_TYPED_EVENT",
+        "task_scope": "additional_inspection_not_sampling_workflow"
+      },
+      "strategies": {
+        "RIGID": {
+          "status": "PRIMARY_COMPLETED",
+          "primary_completed": true,
+          "returned": true,
+          "unknown": false,
+          "optional_unknown": false,
+          "optional_completed": 0,
+          "geometry_changed": false,
+          "decisions": [
+            {
+              "action": "KEEP",
+              "reason": "FIXED_INITIAL_ITINERARY"
+            },
+            {
+              "action": "DECLINE_OPTIONAL",
+              "reason": "FIXED_TASK_SET"
+            }
+          ],
+          "remaining": {
+            "energy_wh": 168.92460418854873,
+            "oxygen_l": 33.14999338781635,
+            "time_s": 1431.6265126751264
+          },
+          "reserve_margins": {
+            "energy_wh": 136.92460418854873,
+            "oxygen_l": 26.749993387816353,
+            "time_s": 1143.6265126751264
+          },
+          "elapsed_s": 1448.3734873248736,
+          "energy_wh": 151.0753958114513,
+          "oxygen_l": 30.85000661218364,
+          "resource_violation": false,
+          "reserve_violation": false,
+          "pose": [
+            -106.0,
+            -62.0,
+            -2366.50048828125
+          ],
+          "completion_credit": 1,
+          "n_post_observation_queries": 0
+        },
+        "ADAPTIVE": {
+          "status": "UNKNOWN",
+          "primary_completed": false,
+          "returned": true,
+          "unknown": true,
+          "optional_unknown": false,
+          "optional_completed": 0,
+          "geometry_changed": false,
+          "decisions": [
+            {
+              "action": "UNKNOWN",
+              "reason": "SEARCH_LIMIT"
+            }
+          ],
+          "remaining": {
+            "energy_wh": 207.93260787004968,
+            "oxygen_l": 41.11553380582249,
+            "time_s": 1774.5171763693643
+          },
+          "reserve_margins": {
+            "energy_wh": 175.93260787004968,
+            "oxygen_l": 34.71553380582249,
+            "time_s": 1486.5171763693643
+          },
+          "elapsed_s": 1105.4828236306355,
+          "energy_wh": 112.0673921299503,
+          "oxygen_l": 22.884466194177513,
+          "resource_violation": false,
+          "reserve_violation": false,
+          "pose": [
+            -106.0,
+            -62.0,
+            -2366.50048828125
+          ],
+          "completion_credit": 0,
+          "n_post_observation_queries": 2
+        }
+      },
+      "selection": "First sorted catalogue example satisfying a declared explanatory category; not a prevalence estimate."
+    }
+  }
+}

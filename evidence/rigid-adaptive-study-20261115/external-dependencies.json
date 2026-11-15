@@ -1,0 +1,22 @@
+{
+  "schema": "mge-research-external-dependency-closure-1.0.0",
+  "captured_at_utc": "2026-11-15T21:48:46.237111+00:00",
+  "reason": "Lazy imported allocation helper and its campaign analysis input are not included by the pre-worker loaded-module manifest",
+  "limitation": "This supplements the unchanged study manifest; it is a post-start dependency closure, not proof of a hash recorded before the first case.",
+  "files": [
+    {
+      "path": "src/mge_mission/mge_mission/environment_pilots.py",
+      "sha256": "fa3c3e584a1716a1851af6588df5a6c0b10b6cf79ed8a3b5a268a39d4d978093",
+      "bytes": 5588,
+      "mtime_utc": "2026-11-15T14:28:48.462712+00:00",
+      "scope": "UNPUBLISHED_LOCAL_EXTENSION"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/campaign-campaign_analysis.json",
+      "sha256": "a4aafe7c9e97b0fee84141075b7198cc9a4083d10be9643d8909039eea0a0e1f",
+      "bytes": 157914,
+      "mtime_utc": "2026-11-15T05:42:26.409622+00:00",
+      "scope": "PROPOSED_RESEARCH_CAMPAIGN_INPUT"
+    }
+  ]
+}

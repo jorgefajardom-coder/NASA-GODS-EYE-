@@ -1,0 +1,40 @@
+{
+  "reason": "Normalize duplicate Windows CR characters and trailing blank report lines; JSON values and scientific records unchanged. Exact report/log originals remain gzip archived.",
+  "files": [
+    {
+      "path": "source-review-directed-final.json",
+      "original_sha256": "3dfacd6f3d68d25beb555ee5d74f71d5ef829ddae753dd5fb6f31022f4a0373e",
+      "published_sha256": "e0f112e922770e4d3b6ed5773a6f9fc3143863a734c5bfdaa7423b23d1736b34",
+      "original_preserved_as": "source-review-directed-final.json.original.gz",
+      "original_gzip_sha256": "7e526a1ef8a7af30ac33789bea92c1aa92da0d4c96b0a252a82ec6918fad3a1c"
+    },
+    {
+      "path": "source-review-main-final.json",
+      "original_sha256": "531002170efd97d2041c892a594b09f69d4845c6ba8d2b8bfd15886751a808d1",
+      "published_sha256": "f920f0b9baf8058f34bdfcca7a1f31869430498df25bfa34d127ad1a9a457f1a",
+      "original_preserved_as": "source-review-main-final.json.original.gz",
+      "original_gzip_sha256": "a1d4c176c958ccce9f51e9fe986df1f5157c753ce9e714beb8c66e420e66a79a"
+    },
+    {
+      "path": "source-review-published-step-final.json",
+      "original_sha256": "c598b8a9df09ae8df34aee178aedb9f0a6b73f215475fdb0f3827efb7597b3bc",
+      "published_sha256": "4d2e198246cfda4e58918c54c934dd3c4210f4b1eed4e7540778b84cf48fcd70",
+      "original_preserved_as": "source-review-published-step-final.json.original.gz",
+      "original_gzip_sha256": "40ccd9626661942f7bdcc79796614e99001c26dd308fc2efb9214424ace68fb6"
+    },
+    {
+      "path": "source-review-strict-sigma-final.json",
+      "original_sha256": "f998e29b220466e4113b39842043bdb98b36fd3150d774564a8aecb246fba7da",
+      "published_sha256": "2442b244bd3d2b0522ae9ef279df69a2b6b5dce64e8a398efec9eaecf286a079",
+      "original_preserved_as": "source-review-strict-sigma-final.json.original.gz",
+      "original_gzip_sha256": "df54b4e12e2e37c0b26422578ec982796693278aa0f9021442ef6797e8ad2a05"
+    },
+    {
+      "path": "validation-base/validation-web-test-final.log",
+      "original_sha256": "ae065bf4a48b2f250bf6029cfcf6881b29b218e4c81c93569d14020816445495",
+      "published_sha256": "c5dac78e8863fd7a181de18297709b29a702dd1db7021eb0e8c68d91725b863f",
+      "original_preserved_as": "validation-base/validation-web-test-final.log.original.gz",
+      "original_gzip_sha256": "1572685a63c374db14f7ecc1248cc5c8172a6264e3f4007e13420109cebb016b"
+    }
+  ]
+}

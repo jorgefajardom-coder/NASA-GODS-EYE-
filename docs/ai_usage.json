@@ -6,6 +6,25 @@
   "human_review": "pending module owners",
   "uses": [
     {
+      "tool": "OpenAI Codex",
+      "kind": "paired_rigid_adaptive_analytical_research",
+      "generation": "AI-assisted experimental consumer, synthetic mission records, statistical analysis, audit tooling, English explanatory prose and numeric plots",
+      "paths": [
+        "docs/wiki/10-Adaptive-Planning-Study.md",
+        "docs/wiki/assets/rigid-adaptive-20261115",
+        "evidence/rigid-adaptive-study-20261115",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "docs/handoffs/david.md"
+      ],
+      "use": "Compare fixed and always-replanning analytical policies on matched independently seeded mission scenarios. Retain original outcomes, unavailable cases, strict controls, search limits and separate directed and large-window extensions. Published planning and science modules are consumed without production changes.",
+      "metadata": "SIMULATED classification, input/module/profile/map hashes, raw compressed catalogue hashes, deterministic seed namespace, frozen statistical protocol, audit records and visible AI-generated labels on all result plots.",
+      "scientific_approval_change": false,
+      "production_implementation_change": false,
+      "operational_execution_claim": false,
+      "owner_authorization": "One-hour local analytical experiment and publication of its results in the English Wiki"
+    },
+    {
       "tool": "Higgsfield (Seed Audio 1.0 by ByteDance) for the voice; Claude (Anthropic) through Claude Code for the music script, editing scripts and this declaration",
       "kind": "submission_video_voice_over_declaration",
       "generation": "AI-generated speech from team-written text with preset voices; AI-assisted music synthesis code and video editing scripts, directed by the owner",
