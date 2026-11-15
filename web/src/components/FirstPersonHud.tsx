@@ -44,6 +44,9 @@ interface Props {
   helmetLight: boolean;
   canHelmetLight: boolean;
   onHelmetLight: () => void;
+  /** Terrain lit as by day whatever the hour (I). */
+  artificialLight: boolean;
+  onArtificialLight: () => void;
   /** Camera sway on/off (B). */
   sway: boolean;
   onSway: (on: boolean) => void;
@@ -54,7 +57,7 @@ interface Props {
  * and site bearings, the shared agent dial (resources live in its menu), and the drone-camera scan control and readout. Every
  * value comes from the replay or from lib/scan; nothing here is a live measurement.
  */
-export function FirstPersonHud({ agent, terrainMeta, sourceLabel, pois, scan, canScan, onScan, onExit, route, dial, alert, droneCam, droneCamOn, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, sway, onSway }: Props) {
+export function FirstPersonHud({ agent, terrainMeta, sourceLabel, pois, scan, canScan, onScan, onExit, route, dial, alert, droneCam, droneCamOn, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, artificialLight, onArtificialLight, sway, onSway }: Props) {
   const tape = useRef<HTMLDivElement>(null);
   const readout = useRef<HTMLSpanElement>(null);
   const pitch = useRef<HTMLSpanElement>(null);
@@ -197,6 +200,9 @@ export function FirstPersonHud({ agent, terrainMeta, sourceLabel, pois, scan, ca
             </button>
             <button type="button" className="pov__key" aria-pressed={helmetLight} onClick={onHelmetLight} disabled={!canHelmetLight} title={canHelmetLight ? "Astronaut's helmet lights (L)" : 'No astronaut in this run'}>
               <kbd>L</kbd> Lights {helmetLight ? 'on' : 'off'}
+            </button>
+            <button type="button" className="pov__key" aria-pressed={artificialLight} onClick={onArtificialLight} title="Artificial light: the terrain lit as by day whatever the hour; the sky keeps the real time (I)">
+              <kbd>I</kbd> Artificial light
             </button>
             <button type="button" className="pov__key" aria-pressed={sway} onClick={() => onSway(!sway)} title="Camera sway while walking or driving (display only)">
               <kbd>B</kbd> Sway {sway ? 'on' : 'off'}

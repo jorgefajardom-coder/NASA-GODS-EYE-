@@ -115,6 +115,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [droneCam, setDroneCam] = useState(RENDER_TIER === 'full');
   /** Astronaut helmet lights (L), display only. */
   const [helmetLight, setHelmetLight] = useState(false);
+  /** Artificial light (I): terrain lit as by day whatever the real hour at the site. */
+  const [artificialLight, setArtificialLight] = useState(false);
   const pov = follow && firstPerson && RENDER_TIER !== 'map2d';
   // First-person camera sway: a per-viewer preference, off by default with reduced motion.
   const [povSway, setPovSwayState] = useState<boolean>(() => {
@@ -283,6 +285,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'KeyR') runScan();
       else if (e.code === 'KeyC') setDroneCam((c) => !c);
       else if (e.code === 'KeyL') setHelmetLight((v) => !v);
+      else if (e.code === 'KeyI') setArtificialLight((v) => !v);
       else if (e.code === 'KeyQ') rotateView(-ROTATE_STEP_RAD);
       else if (e.code === 'KeyE') rotateView(ROTATE_STEP_RAD);
     };
@@ -374,6 +377,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         lite={RENDER_TIER === 'lite'}
         droneCam={showDroneCam}
         helmetLight={helmetLight}
+        artificialLight={artificialLight}
       />
       </SceneBoundary>
       )}
@@ -398,6 +402,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           helmetLight={helmetLight}
           canHelmetLight={!!view.state?.agents.some((a) => a.agent_kind === 'HUMAN')}
           onHelmetLight={() => setHelmetLight((v) => !v)}
+          artificialLight={artificialLight}
+          onArtificialLight={() => setArtificialLight((v) => !v)}
           sway={povSway}
           onSway={setPovSway}
         />
@@ -431,6 +437,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             helmetLight={helmetLight}
             canHelmetLight={!!view.state?.agents.some((a) => a.agent_kind === 'HUMAN')}
             onHelmetLight={() => setHelmetLight((v) => !v)}
+            artificialLight={artificialLight}
+            onArtificialLight={() => setArtificialLight((v) => !v)}
           />
           <div className="prompts">
             <button type="button" className="chip" aria-pressed={freePan} onClick={() => setFreePan((g) => !g)} title="On: left drag slides the map, right drag orbits. Off: left drag orbits, right drag slides. Wheel zooms.">

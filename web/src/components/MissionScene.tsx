@@ -77,12 +77,14 @@ interface Props {
   droneCam?: boolean;
   /** Astronaut helmet lights on (L). */
   helmetLight?: boolean;
+  /** Light the terrain as by day whatever the hour (I). */
+  artificialLight?: boolean;
 }
 
 /** Horizon haze colour: dusty Martian daytime sky, darkened so the panels stay readable. */
 const SKY = '#6e5242';
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, scan, povSway, lite = false, droneCam = false, helmetLight = false }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, scan, povSway, lite = false, droneCam = false, helmetLight = false, artificialLight = false }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const sunLight = useRef<THREE.DirectionalLight>(null);
   const hemiLight = useRef<THREE.HemisphereLight>(null);
@@ -139,7 +141,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       <color attach="background" args={[SKY]} />
       <fog attach="fog" args={[SKY, extent * 2.5, reach]} />
       {/* Sun and stars at the real present time at the site (same instant as the Jezero clock). */}
-      <SkyDome latDeg={meta.origin_lat_deg ?? 18.44} lonEastDeg={meta.origin_lon_deg ?? JEZERO_LON_E_DEG} sunLight={sunLight} hemiLight={hemiLight} lightDistance={extent * 1.37} />
+      <SkyDome latDeg={meta.origin_lat_deg ?? 18.44} lonEastDeg={meta.origin_lon_deg ?? JEZERO_LON_E_DEG} sunLight={sunLight} hemiLight={hemiLight} lightDistance={extent * 1.37} artificialLight={artificialLight} />
       <hemisphereLight ref={hemiLight} args={['#ffe2c8', '#2a1a12', 0.4]} />
       <directionalLight ref={sunLight} position={SUN_FROM.clone().multiplyScalar(extent * 1.37).toArray()} intensity={2.6} color="#fff1e0" />
       <TerrainView

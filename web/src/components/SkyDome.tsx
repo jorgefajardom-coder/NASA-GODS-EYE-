@@ -25,6 +25,8 @@ const SUN_LOW = new THREE.Color('#ffc996');
 const NIGHT_FILL = new THREE.Color('#8fa3c8');
 /** Night fill: from almost overhead, slightly from the east, so relief still reads. */
 const NIGHT_DIR = new THREE.Vector3(0.25, 1, 0.1).normalize();
+/** Artificial light: the viewer's original display direction (high, from the west-south-west). */
+const ARTIFICIAL_DIR = new THREE.Vector3(-1.2, 0.55, 0.35).normalize();
 
 /** ENU direction -> Three.js direction (x, y, z) = (east, up, -north). */
 const toThree = ([e, n, u]: Enu, out: THREE.Vector3) => out.set(e, u, -n);
@@ -107,9 +109,14 @@ interface Props {
   hemiLight?: RefObject<THREE.HemisphereLight | null>;
   /** Distance of the key light from the scene centre (m). */
   lightDistance?: number;
+  /**
+   * Artificial light (I): light the terrain as by day whatever the hour, from the fixed display
+   * direction, while the sky keeps the real time (stars stay at night). A viewing aid, not sunlight.
+   */
+  artificialLight?: boolean;
 }
 
-export function SkyDome({ latDeg, lonEastDeg, sunLight, hemiLight, lightDistance = 2700 }: Props) {
+export function SkyDome({ latDeg, lonEastDeg, sunLight, hemiLight, lightDistance = 2700, artificialLight = false }: Props) {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const scene = useThree((s) => s.scene);
   const dpr = useThree((s) => s.viewport.dpr);
@@ -183,6 +190,11 @@ export function SkyDome({ latDeg, lonEastDeg, sunLight, hemiLight, lightDistance
 
   const state = useRef({ nextSun: 0, nextStars: 0, sun: new THREE.Vector3(), key: new THREE.Vector3(), tmp: new THREE.Vector3(), zen: new THREE.Color(), hor: new THREE.Color() });
 
+  // Apply a change of the artificial light at once instead of at the next once-a-second update.
+  useEffect(() => {
+    state.current.nextSun = 0;
+  }, [artificialLight]);
+
   useFrame(({ clock }) => {
     const g = group.current;
     if (!g) return;
@@ -213,17 +225,23 @@ export function SkyDome({ latDeg, lonEastDeg, sunLight, hemiLight, lightDistance
       const up = Math.max(s.sun.y, Math.sin((3 * Math.PI) / 180));
       s.tmp.set(s.sun.x, 0, s.sun.z).normalize().multiplyScalar(Math.sqrt(1 - up * up)).setY(up);
       s.key.copy(NIGHT_DIR).lerp(s.tmp, lit).normalize();
+      if (artificialLight) s.key.copy(ARTIFICIAL_DIR);
       SUN_FROM.copy(s.key);
       SUN_DIR.copy(s.key).negate();
       const L = sunLight?.current;
       if (L) {
         L.position.copy(s.key).multiplyScalar(lightDistance);
-        L.intensity = 0.7 + 1.9 * lit;
-        const warm = THREE.MathUtils.smoothstep(sun.elDeg, 2, 25);
-        L.color.copy(SUN_LOW).lerp(SUN_HIGH, warm).lerp(NIGHT_FILL, 1 - lit);
+        if (artificialLight) {
+          L.intensity = 2.6;
+          L.color.copy(SUN_HIGH);
+        } else {
+          L.intensity = 0.7 + 1.9 * lit;
+          const warm = THREE.MathUtils.smoothstep(sun.elDeg, 2, 25);
+          L.color.copy(SUN_LOW).lerp(SUN_HIGH, warm).lerp(NIGHT_FILL, 1 - lit);
+        }
       }
       const H = hemiLight?.current;
-      if (H) H.intensity = 0.28 + 0.12 * day;
+      if (H) H.intensity = artificialLight ? 0.4 : 0.28 + 0.12 * day;
     }
     starMat.uniforms.uPx.value = dpr;
     if (catalogue && now >= s.nextStars) {
