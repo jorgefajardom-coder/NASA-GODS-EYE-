@@ -1,5 +1,23 @@
 # Jesus - integrate providers through the canonical interfaces
 
+Future guide: [science extension tree](../science_extension_tree.md). Jesus
+leads G2, C2/C3 and F2/F3 proposals and reviews integration evidence. Maintain
+D-DEL-03 and verified parent gates. New unlisted ideas may be assessed in an
+isolated local branch for discussion on 15-Nov-2026 (Bogota), without publishing
+an extension, deployment or displacement of delivery work.
+
+## Delivery priority after PR28 — owner-confirmed 14 November 2026
+
+Follow [PDF tasks JE-1..5](../delivery_closure_plan.md) and accepted
+[D-DEL-03](../decisions/2026-11-14-delivery-freeze.md). Basic reconciliation
+is published at main9198b3d; semantic/scientific freeze and three-role acceptance
+remain open. Confirm organizer availability/cutoff by 08:00, select run/fallback
+with David by 10:00, freeze features at 12:00 and send the reviewable package
+at 14:00 for intended submission at 20:00 on 15 Nov, all Bogota time. Preserve
+at least four hours' review margin, explicit endorsement and platform receipt.
+Initial organizer contact need not wait for a package. Publish tested fixes and
+honest artifacts, not the pending local cost backend or new expansion scope.
+
 ## Audit reconciliation rc.2 — current candidate over main6bcf208
 
 Read the [current gap/evidence matrix](../audit_reconciliation.md) and

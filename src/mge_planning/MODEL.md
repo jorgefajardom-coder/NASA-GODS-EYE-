@@ -141,3 +141,31 @@ Distinct snapshot objects clear it. Arrays must remain read-only; deliberately
 reenabling NumPy writes violates the API contract. Full-route checking still
 costs work proportional to pending segments; no real-time throughput is claimed.
 See [policy inputs, phase mapping and proof boundaries](../../docs/replan_policy.md).
+
+## F03.3 remaining-availability admission guard
+
+One ReplanPolicy instance belongs to one immutable mission template, run and
+agent. Its first admitted remaining time/energy/human-oxygen cannot exceed the
+mission's original allocation. Subsequent values must be nonincreasing, with
+strict comparison and no resource-credit tolerance. Unexplained increases yield
+UNKNOWN with TIME_AVAILABILITY_INCREASE, ENERGY_AVAILABILITY_INCREASE or
+OXYGEN_AVAILABILITY_INCREASE, invalidate the active route and make no request.
+Rejected updates never raise the stored bound. Reserve-depleted observations
+also retain their lower bound before STOP_REQUIRED. Original reserves, phase,
+cursor and service checks remain; stale-route/progress rejection keeps precedence.
+
+This is an observed-value admission bound, NOT a consumed-resource ledger: no
+travel, wait, service, cost estimate or reserve is subtracted here. Supplied
+remaining availability stays the caller's authority. There is no replenishment
+protocol; robots still have no oxygen. Correcting telemetry alone cannot clear
+invalidation. A different externally authorized route may recover the latch
+only with compatible phase/progress/service/map and nonincreased availability;
+route replacement never resets the bound.
+
+A genuinely new mission requires a new policy instance supplied by the mission
+owner, even for the same run/agent. Reusing the old instance with a different
+mission template fails closed. The policy cannot authenticate authorization or
+prevent misuse of a fresh instance; no reset/recharge or automatic mission
+transition is inferred from an event ID, request or route. Restarts/persistence
+and any future legitimate replenishment need a separately reviewed integration
+contract. Search/science formulas, heuristics, SAFE and ROS definitions are unchanged.

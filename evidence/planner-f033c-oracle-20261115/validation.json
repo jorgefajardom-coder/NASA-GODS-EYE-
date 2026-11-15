@@ -1,0 +1,30 @@
+{
+  "results": {
+    "oracle.junit.xml": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 12
+    },
+    "python_full.junit.xml": {
+      "tests": 1105,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 20,
+      "passed": 1085
+    }
+  },
+  "repository": "passed",
+  "whitespace": "passed",
+  "native_ros": "not executed",
+  "warning": "Existing Starlette/httpx deprecation",
+  "sha256": {
+    "tests/planning/scientific_oracle.py": "48c8df13d3e0390fc7defab12d75e32079d1d5b419abc08eb7a485aabffe4bb7",
+    "tests/planning/test_scientific_oracle.py": "704b610e81adb94de78dd9f4d130dfc9d8ab51537f60ce27cdd01e4b573309dd",
+    "src/mge_mission/mge_mission/models.py": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "config/science_profiles.proposed.json": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea"
+  },
+  "production_backend_wired": false,
+  "pr28_inspection": "Metadata/body only; draft 7f0ebaa; no implementation copied"
+}

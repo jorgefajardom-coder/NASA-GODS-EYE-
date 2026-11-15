@@ -1,0 +1,130 @@
+{
+  "main": "6bcf208868e37b7e15e9189fac11de96e7414eff",
+  "head": "921f1d06f5caff85c42d323af757b882b3b05d4c",
+  "synthetic_graph_only": true,
+  "points": {
+    "S": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "H": [
+      2.0,
+      0.0,
+      0.2
+    ],
+    "D": [
+      2.0,
+      1.5,
+      0.0
+    ],
+    "G": [
+      4.0,
+      0.0,
+      0.0
+    ],
+    "P": [
+      -0.37,
+      0.0,
+      0.0
+    ]
+  },
+  "itineraries": [
+    {
+      "outbound": [
+        "S",
+        "H",
+        "G"
+      ],
+      "return": [
+        "G",
+        "S"
+      ],
+      "clearance_synthetic_m": 2.0,
+      "science": {
+        "time_s": 10.560422416896674,
+        "energy_wh": 1.3907683454271502,
+        "oxygen_l": 0.28399867775948684
+      },
+      "legacy": {
+        "time_s": 10.589151923842586,
+        "energy_wh": 1.3389536920007628,
+        "oxygen_l": 0.44521855649967745
+      }
+    },
+    {
+      "outbound": [
+        "S",
+        "D",
+        "G"
+      ],
+      "return": [
+        "G",
+        "S"
+      ],
+      "clearance_synthetic_m": 4.0,
+      "science": {
+        "time_s": 10.800432017280691,
+        "energy_wh": 1.25315012600504,
+        "oxygen_l": 0.2558966631572704
+      },
+      "legacy": {
+        "time_s": 10.800432017280691,
+        "energy_wh": 1.2531501260050402,
+        "oxygen_l": 0.4541017814164747
+      }
+    }
+  ],
+  "edges": [
+    [
+      "S",
+      "H",
+      2.0
+    ],
+    [
+      "H",
+      "G",
+      2.0
+    ],
+    [
+      "S",
+      "D",
+      4.0
+    ],
+    [
+      "D",
+      "G",
+      4.0
+    ],
+    [
+      "G",
+      "S",
+      5.0
+    ]
+  ],
+  "route_flip": {
+    "available": {
+      "time_s": 100.0,
+      "energy_wh": 2.36,
+      "oxygen_l": 100.0
+    },
+    "reserves": {
+      "time_s": 1.0,
+      "energy_wh": 1.0,
+      "oxygen_l": 1.0
+    },
+    "legacy_selected": [
+      "S",
+      "H",
+      "G",
+      "S"
+    ],
+    "science_selected": [
+      "S",
+      "D",
+      "G",
+      "S"
+    ],
+    "tested": "test_complete_route_selection_changes_with_published_costs"
+  }
+}

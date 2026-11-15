@@ -1,6 +1,12 @@
 # Integration matrix and acceptance gates
 
-## Current rc.2 reconciliation — main6bcf208 input
+## Current rc.2 reconciliation — published main9198b3d
+
+PR28 publishes the reviewed F/E mapping, estimated-terrain and recorded-replay
+cut. Original main6bcf208 inputs and older inventories remain historical. The
+scientific cost backend/context and full three-role mission remain open.
+[Delivery closure](delivery_closure_plan.md) and [D-DEL-03](decisions/2026-11-14-delivery-freeze.md)
+now prioritize submission and pause extensions; they do not freeze ICD semantics.
 
 The [current audit reconciliation](audit_reconciliation.md) supersedes the
 inventories below. Those describe rc.1's historical sources, not current main.

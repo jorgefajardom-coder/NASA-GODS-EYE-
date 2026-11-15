@@ -1,5 +1,23 @@
 # Jorge - preserve and adapt the existing 3D viewer
 
+Future guide: [science extension tree](../science_extension_tree.md). Jorge
+leads G3 reproduction and reviews map-scale/decision-display evidence. The
+guide/image do not reopen implementation. New unlisted ideas may be assessed
+in an isolated local branch for discussion on 15-Nov-2026 (Bogota), without
+extension push/merge/deployment or displacement of delivery work.
+
+## Delivery priority after PR28 — owner-confirmed 14 November 2026
+
+Follow [PDF tasks JO-1..4](../delivery_closure_plan.md) and
+[D-DEL-03](../decisions/2026-11-14-delivery-freeze.md). Use the already bundled
+recorded recovery as the evidenced fallback; keep the illustrative demo separate.
+Verify exact public revision/package in private browser/from two machines and
+prepare English video <=30 s or deck <=7 slides with credits/watermarks.
+David reviews any mission-margin/context panel; do not promise a live safety
+check or guaranteed return. Actual-stop/analog rover imagery needs Daniel's
+coverage/provenance. Feature freeze is 15 Nov 12:00 Bogota; v1 media 13:00 and
+organizer package 14:00, submission target 20:00 with explicit endorsement.
+
 ## Audit reconciliation rc.2 — current candidate over main6bcf208
 
 Read the [current gap/evidence matrix](../audit_reconciliation.md) first.

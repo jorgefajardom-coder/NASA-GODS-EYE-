@@ -1,5 +1,79 @@
 # Required AI-use declaration
 
+## Root README summary for judges
+
+Claude Code (Anthropic) assisted the integration owner in writing the
+one-screen English summary for judges at the top of the root README: problem,
+approach, public viewer link, the NASA resources with their actual role
+(planner input, display context or held-back reference) and the stated
+limitations. Every statement is drawn from the existing data-source register,
+the viewer source table and the recorded-recovery evidence. The team status
+moved below it, with the 20:00 submission target from D-DEL-03. No code, data,
+observation, mission result, approval, image, video or audio was generated.
+The affected paths are listed in ai_usage.json.
+## Science extension tree and reproducible diagram
+
+OpenAI Codex assisted the proposed 22-node guide (four common gates and eighteen
+extensions), structured source, Markdown/SVG/PNG renderer, owner-navigation
+updates and the latest local-idea clarification of D-DEL-03. The guide records
+future questions, responsible leads/reviewers, AND dependencies, acceptance and
+stop conditions; no capability or completed milestone is asserted.
+
+`docs/assets/science-tree/science-tree.png` and `.svg` are code-rendered planning
+diagrams, not image-model output or NASA observational imagery. They retain a
+visible `AI-generated` label and embedded tool/source metadata. The renderer's
+Pillow output was visually inspected for legibility; the source and image parity
+check is reproducible. No image-generation model, NASA branding, terrain,
+observation, mission measurement or new experiment result was generated. This
+documentation preserves the delivery freeze and permits only the owner's bounded
+local assessment of unlisted ideas for the 15-Nov-2026 discussion.
+
+## Local per-agent campaign and EVA proposal
+
+OpenAI Codex assisted primary-source research, per-patch analytical workloads,
+phase-by-phase duration/resource calculations, sensitivity diagnostics and a
+standalone reproducer for separate rover, human EVA and drone episodes. The
+proposal, source register, derived data and validation artifacts are listed in
+ai_usage.json. No runtime configuration, profile, owner implementation or
+approved receipt is changed; all new work remains local without publication.
+
+NASA/JPL publications provide cited hardware facts and terrestrial/lunar analog
+context. Distances, ascents, station counts, phase allocations, waits and new
+budgets are explicitly generated engineering proposals, not mapped routes,
+NASA prescriptions, physical capacities, observations or executed science.
+Adverse rejections and unestimated drone sleep/thermal/charging demand remain
+visible. No recharge, new mock, terrain, media, scientific approval or execution
+evidence is generated. Prior declarations and media metadata are preserved.
+
+## Local scientific patch survey
+
+OpenAI Codex assisted the primary-source literature search, interpretation of
+the owner's supplied report, 17-sector candidate catalogues, proposed map
+requests to Daniel, scale/resource calculations and their standalone reproducer,
+source/validation records and mission-owned scientific documentation. Affected
+paths are listed in ai_usage.json. The survey remains local during the owner's
+separate reconciliation audit, without commits, pushes or merges.
+
+Published NASA/USGS/instrument-team observations and historical waypoint values
+are cited or copied with provenance. Candidate selection, geographic query
+envelopes and model costs are generated research proposals/diagnostics, not new
+NASA terrain, mineral detections, physical measurements or mission results.
+No raster or evaluator array is generated, read into this research from the
+private reference directory, or promoted to planning input. No media, new mock,
+discovery/task producer, scientific approval or runtime change is supplied.
+
+## Delivery conclusions and owner-confirmed freeze
+
+OpenAI Codex assisted comparing the owner's five-page delivery PDF with the
+Conciliación/Rama David chats and published main9198b3d, recording the explicit
+scope/time replies, updating publication metadata and per-owner delivery tasks,
+and adding a judge-facing summary. The local science/campaign reports were read
+for conclusions only; their numeric drafts, data and the pending cost backend
+were not imported. The original PDF is private reference material, not a new
+source of official rules or scientific approval. These changes generate
+documentation/metadata only, not code, terrain, observations, scientific results,
+images, video or audio. Existing source credits and mandatory declarations remain.
+
 ## Audit contract reconciliation rc.2
 
 OpenAI Codex assisted with the causal observation fix, explicit estimated-prior
@@ -738,3 +812,43 @@ THIRD_PARTY_NOTICES.md). The browser tab icon
 the team, not with AI; only its black background was removed and it was resized.
 An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
 images uses NASA logos, flags or mission marks or is presented as NASA data.
+
+## Proposal publication after reconciliation
+
+OpenAI Codex assisted publication of the local scientific patch/campaign proposal,
+reconciliation of both AI registers with main9198b3d and fresh software checks.
+All prior disclosures/media metadata are retained; approvals remain unchanged.
+Evidence: evidence/mission-proposal-publication-20261115.
+
+## F03.3 main-only resource audit
+
+OpenAI Codex assisted reading only published main c58e7f6, comparing existing search/science cost APIs, constructing explicit synthetic characterization tests and documenting the audit. Paths: docs/planner_f033_resource_audit.md and evidence/planner-f033-audit-20261114. Production code, coefficients, MissionManager and ROS contracts were not modified. Existing public main profile values were consumed unchanged; no scientific measurements or media generated. Test passes confirm existing discrepancies and do not approve model equivalence or physical execution.
+
+## F03.3 remaining-availability guard
+
+OpenAI Codex assisted the planner-only availability admission guard and human/rover regressions based on published main0339bbd, plus MODEL/handoff/audit updates and actual test evidence. Paths: src/mge_planning/mge_planning/replan.py; tests/planning/test_f033_resource_guard.py; src/mge_planning/MODEL.md; docs/planner_handoff.md; docs/replan_policy.md; docs/planner_f033_resource_audit.md; evidence/planner-f033-guard-20261114. No search/science formula, ROS field or MissionManager change, scientific observations or media generated. The previous numerical audit and disclosures were backed up and preserved. New mission/authorization, restart and replenishment decisions remain integration responsibilities.
+
+## F03.3 delivery review
+
+OpenAI Codex assisted the mainb5dc681 delivery comparison, local commit/PR drafts, fresh software validation evidence and a separate local-only future cost-backend proposal. Evidence is under evidence/planner-f033-delivery-20261114. The proposal is not implemented or included in the guard payload. ROS startup failures and previous hash-matched ROS results are explicitly distinguished. No publication, model change or scientific observation is produced by this preparation.
+
+## F03.3-B experimental cost adapter
+
+OpenAI Codex assisted planner resource_costs.py, test_resource_costs.py, the F03.3-B technical report and evidence/planner-f033b-20261114. The adapter reuses published mission functions; tests compare stored David vectors. Outputs are software estimates, not observations or model approval. Search, MissionManager and ROS remain unchanged.
+
+## F03.3-C independent oracle
+
+OpenAI Codex assisted tests/planning/scientific_oracle.py, test_scientific_oracle.py, docs/planner_f033c_oracle.md and evidence/planner-f033c-oracle-20261115. Tiny synthetic graphs and clearances are test inputs, not physical data. Costs delegate to published mission functions. Production search, ROS and authorization remain unchanged; PR28 coordination metadata was read without copying its implementation.
+
+## F03.3 main synchronization and review preparation
+
+OpenAI Codex assisted reconciliation of mandatory disclosures and preparation of the review PR. Current software validation outputs are retained in evidence/planner-f033-pr-sync-20261115. Both branches disclosures are preserved; no scientific measurements, production backend activation or operational approval are inferred. Native ROS is blocked before execution by WSL resources.
+
+## Private-browser replay check
+
+Claude Code (Anthropic) assisted the browser check script
+`evidence/web-private-replay-20261115/reproduce_private_replay.mjs`, its
+evidence record and the matching README wording. The script reads the built
+viewer and the existing recorded package; it generated no mission data,
+observation, measurement, image, video or audio. Its outputs are software
+check results, not an AC-08 acceptance.

@@ -1,8 +1,17 @@
-# Audit reconciliation — contract candidate 1.0.0-rc.2
+# Audit reconciliation — published software cut 1.0.0-rc.2
+
+Publication update, 14 November 2026: PR28 merged reviewed source `7f0ebaa`
+as main `9198b3d`. F/E mapping protections, experimental estimated planning
+and exact recorded recovery/replay are integrated. The source/reference matrix
+below retains the original audit and still-open approval boundaries. D-COST-02
+already selects the scientific API; its implementation/context is the next
+local cut, not an undecided choice or part of PR28. See
+[delivery conclusions and accepted freeze](delivery_closure_plan.md).
 
 Reference: published main `6bcf208868e37b7e15e9189fac11de96e7414eff`, fetched
 14 November 2026. Working branch: `codex/audit-contract-reconciliation`.
-This is a review candidate, not a frozen contract or a release. The audit's
+This audit began as a review candidate; publication does not freeze contracts
+or create a release. The audit's
 scientific-purpose priority 1 / objection A is excluded: the owner is handling
 target selection in another chat. Existing A/B coordinates, approved scenario
 values, durations and science approvals are preserved.
@@ -13,7 +22,7 @@ values, durations and science approvals are preserved.
 |---|---|---|---|
 | B: one execution | Web demo script is illustrative; it cannot prove mission decisions. | Intact recorder package from real data/mapping/planner plus MOCK mission/kinematic human execution, with file hashes/source lock and [completed Chrome QA](../evidence/audit-reconciliation-20261115/runtime-v1/browser.json). | Proven narrower human recovery; private-browser/public-deployment acceptance and three-role scientific execution remain separate. |
 | C: scan | The display reads orbital slope, creates no TerrainObservation and changes no map/version. | Rename controls to orbital slope preview and explain display-only behavior before activation. Labels derive native/grid spacing from the loaded scenario. | No sensor or task-execution claim; a future sensor needs a traced observation producer. |
-| D: resources | Legacy PlanRoute loses activity identity; scientific and search equations disagree. | [Fresh exact-source comparison and context proposal](audit_cost_execution_gaps.md): one agreement, six disagreements; authorization BLOCKED. Preserve the published cost packet and existing audit API. | David/Diego/Jesus select shared kernel or proven conservative bound, bind request context and execute full itinerary/interval checks. |
+| D: resources | Legacy PlanRoute loses activity identity; scientific and search equations disagree. | [Fresh exact-source comparison and context proposal](audit_cost_execution_gaps.md): one agreement, six disagreements; authorization BLOCKED. D-COST-02 selects the existing scientific API. | David/Diego/Jesus complete/review that backend and request context, then full itinerary/interval checks; local implementation is outside PR28. |
 | E: estimated prior | Default mapping requires local coverage; default 1 m threshold also excludes the 2.5 m prior. | Explicit illustrative exploration policy permits candidate search over valid estimates under declared sigma/slope bounds. Coverage and sigma remain unchanged; policy ID/hash travels with map metadata. Independent planner profiles still apply. | Review candidate semantics/limits and actual hold/inspection policy; no blanket FREE or scientific approval. |
 | F: delayed observation | Reproduced recent obstacle followed by older FREE observation erasing danger. | Current-base and global nonolder observation clock, atomic rejection, duplicate-ID no-op, strict frame/clock adapter, missing/UNKNOWN obstacle evidence preserves danger. | Delayed disjoint footprints are conservatively rejected too; concurrent/per-cell fusion is future work. |
 | §5: scenario identity | 128 m scientific crop and 2 km illustrative scene differ in origin, grid and datum. | Recorded raster geometry/IDs are preserved. Camera frames actual absolute heights; optional overlays require scenario compatibility. Native 20 m is distinct from 4 m computation. | No precise geologic contact attribution at 128 m scale from unregistered SIM3464; contextual atmosphere is not telemetry. |

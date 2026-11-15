@@ -1,0 +1,159 @@
+{
+  "recorded_at": "2026-11-15T00:25:38.320075+00:00",
+  "base_main": "0339bbddaa8e68704b8a56861a7f6694953b3e9f",
+  "branch": "feat/planner",
+  "synchronization": "Fast-forward to published main; no new commit and no other branch implementation imported",
+  "results": {
+    "baseline_planning": {
+      "tests": 283,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 283,
+      "omissions": []
+    },
+    "focused": {
+      "tests": 123,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 123,
+      "omissions": []
+    },
+    "windows_full": {
+      "tests": 1045,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 20,
+      "passed": 1025,
+      "omissions": [
+        {
+          "name": "tests.contract.test_generated_conversion",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_interfaces",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mission_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mission_service",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mock_recovery",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_planner_service",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_profile_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_planner_concurrency",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_replay_package",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_terrain_batch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_execution",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_mission",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_mock",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_planner",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_terrain",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[outside]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-guard-final-full\\\\test_symlinks_cannot_open_exte0\\\\outside.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-guard-final-full\\\\test_symlinks_cannot_open_exte0\\\\run\\\\public.json'"
+        },
+        {
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[reference]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-guard-final-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\reference\\\\hidden.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-guard-final-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\public.json'"
+        },
+        {
+          "name": "test_package_symlink_escape_is_rejected",
+          "reason": "Host does not permit creating symlink fixtures"
+        },
+        {
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        },
+        {
+          "name": "test_symlinked_public_archive_cannot_escape_package",
+          "reason": "Host does not allow symlink fixture: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-guard-final-full\\\\test_symlinked_public_archive_0\\\\outside.npz' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-guard-final-full\\\\test_symlinked_public_archive_0\\\\public\\\\terrain.npz'"
+        }
+      ]
+    },
+    "jazzy": {
+      "tests": 947,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "passed": 946,
+      "omissions": [
+        {
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        }
+      ]
+    }
+  },
+  "new_parameterized_cases": 26,
+  "source_sha256": {
+    "src/mge_planning/mge_planning/replan.py": "208e5d6d87eca67c2fe78a7c453344a1439479ad649448ab334ced3297e810fe",
+    "tests/planning/test_f033_resource_guard.py": "5f04c333f317986d98bc88fb706e227d0d8213629a3a5ff3bf5f98f9c8ba0fcb",
+    "src/mge_planning/mge_planning/core.py": "f59b51ccdd53218ecaa425b3fc7963fe43f3bfd95d1157a3aa687b9378c950d9",
+    "src/mge_planning/mge_planning/adapter.py": "0df229b7c0bb57fe6d2ecabb1059d210d4f47aff152ef2251b40926c350cd66c",
+    "src/mge_mission/mge_mission/models.py": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "src/mge_mission/mge_mission/manager.py": "e19bf4676f65b8362d47febecffc8a03d2391d441673e5380e2071b5a1b66beb"
+  },
+  "unchanged_production": [
+    "src/mge_planning/mge_planning/core.py",
+    "src/mge_planning/mge_planning/adapter.py",
+    "src/mge_planning/mge_planning/node.py",
+    "src/mge_mission",
+    "src/mge_interfaces"
+  ],
+  "local_audit_preserved": "Verified backup tmp/f033-guard-backup; previous evidence bytes unchanged, disclosures unioned, report updated with historical scope intact",
+  "first_regression": "One existing PROGRESS_ROLLBACK reason-priority test initially failed; ordering corrected without weakening existing tests",
+  "behavioral_limits": [
+    "One serial policy instance per immutable mission/run/agent",
+    "Strict comparisons without extra resource tolerance",
+    "No consumption debit, estimate ledger or replenishment authorization",
+    "New mission requires externally created new instance",
+    "Corrected input alone does not clear invalidation; authorized compatible route adoption does not reset the bound",
+    "No restart persistence or protection against callers improperly recreating instances",
+    "No cost/science formula, ROS or MissionManager change"
+  ],
+  "ros": "Eight packages built; six messages and two services inspected; planning/contracts/mission/unit executed; integration/Gazebo not rerun",
+  "warnings": [
+    "Existing Starlette/httpx deprecation warning in full Windows suite"
+  ],
+  "committed": false,
+  "pushed": false
+}

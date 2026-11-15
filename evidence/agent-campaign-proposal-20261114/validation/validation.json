@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "agent-campaign-local-validation-20261114",
+  "analysis_run_id": "agent-campaign-analytic-proposal-20261114",
+  "classification": "LOCAL_SOFTWARE_AND_ANALYTICAL_MODEL_VALIDATION_NOT_EXECUTION",
+  "recorded_at_utc": "2026-11-15T02:56:05.448136+00:00",
+  "reviewed_on_local": "2026-11-14",
+  "timezone": "America/Bogota",
+  "source_revision": "c3ec4c1f1515dbc981ba82eed2ab1f54e9586264",
+  "branch": "feat/mission",
+  "working_tree_dirty": true,
+  "versions": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "node": "v24.18.0",
+    "npm": "12.0.1",
+    "pinned_node": "24.18.0",
+    "numpy": "2.5.4",
+    "PyYAML": "6.0.3"
+  },
+  "publication_policy": "Local only per owner; no fetch, commit, push or merge",
+  "analytical_checks": {
+    "cases": 3,
+    "primary_references": 15,
+    "all_input_hashes_verified": true,
+    "typed_phase_sums_and_no_robot_oxygen": true,
+    "directed_returns_charged": true,
+    "sample_documentation_counted_once": true,
+    "causal_rover_wait_matches_human_EVA": true,
+    "sortie_costs_accumulate_without_reset_or_recharge": true,
+    "nominal_envelopes_fit_by_construction": 9,
+    "joint_adverse_envelopes_rejected": 9,
+    "drop_sample_does_not_invent_route_shortening": true,
+    "whole_drone_campaign_unknown": true,
+    "fresh_reproduction_command": [
+      "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+      "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\evidence\\agent-campaign-proposal-20261114\\reproduce_agent_campaign.py",
+      "--output",
+      "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\tmp\\agent-campaign-verify-3210c6585d.json"
+    ],
+    "fresh_reproduction_equal_except_timestamp_and_command": true,
+    "overwrite_refusal_exit_code": 1,
+    "overwrite_target_unchanged": true
+  },
+  "control_scenario_readiness": {
+    "findings": 0,
+    "missing_inputs": 6,
+    "experimental_scenario_approval_retained": true,
+    "runtime_authorized": false
+  },
+  "checks": [
+    {
+      "name": "python",
+      "command": [
+        "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "--basetemp=tmp/pytest-agent-campaign-3210c6585d",
+        "--junitxml=C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\evidence\\agent-campaign-proposal-20261114\\validation\\python.junit.xml",
+        "-q"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA",
+      "exit_code": 0,
+      "tests": 998,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 19,
+      "passed": 979
+    },
+    {
+      "name": "repository",
+      "command": [
+        "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+        "scripts/check_repository.py"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA",
+      "exit_code": 0
+    },
+    {
+      "name": "web-test",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "test"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\web",
+      "exit_code": 0,
+      "passed": 161,
+      "skipped": 1,
+      "notes": "Optional MGE_REPLAY_PACKAGE not supplied"
+    },
+    {
+      "name": "web-build",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "run",
+        "build"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\web",
+      "exit_code": 0
+    },
+    {
+      "name": "Ubuntu 24.04 / Jazzy colcon and ROS exchange",
+      "status": "NOT_RUN_THIS_ANALYTICAL_CUT",
+      "reason": "No runtime/interfaces change; no services started during parallel reconciliation audit. Windows ROS skips do not pass target-platform acceptance."
+    }
+  ],
+  "preservation": {
+    "runtime_config_tests_web_data_equal_HEAD": true,
+    "prior_survey_artifacts_unchanged": true,
+    "all_previous_AI_records_and_media_metadata_retained": true,
+    "new_AI_record_this_cut": 1,
+    "local_AI_records_since_HEAD": 2,
+    "no_staged_changes": true
+  },
+  "artifact_sha256": {
+    "assumptions.proposed.json": "eb8108f3ac31585c65aee630ce9951b5181a1865191c70167f25e1e449d3c14b",
+    "campaign_analysis.json": "a4aafe7c9e97b0fee84141075b7198cc9a4083d10be9643d8909039eea0a0e1f",
+    "README.md": "3e6e2909293f838f36894ec0cab203064ad02f1f63436cbf1d50ef7d3f6536c3",
+    "reproduce_agent_campaign.py": "add4c9a24a7ef96f0b8b756c97badfb9e1732d3a74f5ec1aa731bcb77e7607ad",
+    "sources.json": "1b32d14f8a1a5315f2dd0f6683e2466f56f7488a8cc06f8ffe26eb456e6631d8",
+    "validation/control-readiness.json": "8899b8367325ddf876adaf7f388d6b910b8f2fe0aa651201effd2d20fc2fe054",
+    "validation/git-diff-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "validation/overwrite-refusal.log": "2260ffa41d73e377aaca91092aca8f94fb1bd9faeced00af7ea410bb4a93f305",
+    "validation/python.junit.xml": "35d14f8e108b3587086341b32411154e35740b8ece960f34c9255fea81ccf68a",
+    "validation/python.log": "9e47666b4dc72100180762e4c0458fff2f27195b0ffabdba156a899ea3f178bd",
+    "validation/repository-final.log": "b9bcb2ddade0cb2e0bc348ce5136bc030862ca986c6c9522f1db03043e1aba2d",
+    "validation/repository.log": "b9bcb2ddade0cb2e0bc348ce5136bc030862ca986c6c9522f1db03043e1aba2d",
+    "validation/reproducer.log": "2b315a02599c4ea1ff40c910b9ed52dee5a58716d2d308b0bf4b7abbbe33bb61",
+    "validation/web-build.log": "3675b2f0a37a9c12e7e6ffd7f4fce99f946087314afda7a3274bf182cc9d2e05",
+    "validation/web-test.log": "2093fcafc3b22a5e37b65e890196a3d7d4c687af44e5ec120347332e92d258e3"
+  },
+  "documentation_sha256": {
+    "docs/agent_campaign_proposal.md": "ab9da2e3a4953f9cd84e2db2ee27b7cbf4dd1283a1133c5b7bc5dc63438977f8",
+    "docs/science_decisions.md": "fb3ef9d5f910f3b013fd3bfd2721c8d472d99a4c8e036224d41f747d55ab139b",
+    "docs/handoffs/david.md": "040b59850141ed60f19bfcbf018dd64ffc01cdc40e30152ac6ddd00e31f75335",
+    "docs/AI_USAGE.md": "ed5559d355fc5de1e2887d3548b9b4d1abfc5775fd020aa4ec24e77943078576",
+    "docs/ai_usage.json": "c039fd2e0440338a24da1fe4d2daa81304d6bf5bc306a0ce93983b201aacb6c1"
+  },
+  "scientific_approval": false,
+  "mission_execution_authorized": false,
+  "integrated_mission_executed": false,
+  "final_checks": [
+    {
+      "command": [
+        "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+        "scripts/check_repository.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "finalized_at_utc": "2026-11-15T02:59:49.527776+00:00",
+  "validation_harness_notes": "Initial preservation assertion stopped before checks because the original document title was separated from its body by the new disclosures. Corrected to verify the retained body and title; all previous JSON declarations and non-uses fields are also preserved. No product/test failure occurred."
+}

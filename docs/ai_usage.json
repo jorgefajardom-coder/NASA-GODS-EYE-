@@ -6,6 +6,93 @@
   "human_review": "pending module owners",
   "uses": [
     {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "readme_judge_summary",
+      "generation": "AI-assisted documentation from existing repository records, directed and reviewed by the integration owner",
+      "paths": [
+        "README.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Write a one-screen English summary for judges at the top of the root README (problem, approach, public viewer link, NASA resources and their actual role, stated limitations), drawn only from the existing data-source register, viewer source table and recorded-recovery evidence; move the team status below it and state the 20:00 submission target from D-DEL-03. Documentation only; no code, data, observation, mission result, approval, image, video or audio was generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "science_extension_tree_and_diagram",
+      "generation": "AI-assisted proposed research guide, structured source and reproducible diagram code",
+      "paths": [
+        "AGENTS.md", "README.md", "docs/science_extension_tree.md",
+        "docs/assets/science-tree/tree.json", "docs/assets/science-tree/render.py",
+        "docs/assets/science-tree/science-tree.png", "docs/assets/science-tree/science-tree.svg",
+        "docs/decisions/2026-11-14-delivery-freeze.md", "docs/delivery_closure_plan.md",
+        "docs/research_hypotheses.md", "docs/team.md", "docs/team_continuation_plan.md",
+        "docs/handoffs/david.md", "docs/handoffs/daniel.md", "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md", "docs/handoffs/jorge.md", "docs/AI_USAGE.md", "docs/ai_usage.json"
+      ],
+      "use": "Document four common gates and eighteen proposed extensions with named leads/reviewers, AND dependencies and verifiable acceptance/stop rules. Generate marked PNG/SVG planning diagrams from the same source and preserve the owner's freeze plus bounded local assessment of unlisted ideas for 15-Nov-2026. Code-rendered with Python/Pillow, no image-generation model or NASA branding; no new terrain, observations, experimental results or approvals."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "local_per_agent_campaign_and_EVA_proposal",
+      "generation": "AI-assisted primary-source synthesis, proposed workloads, standalone analytical code and derived model diagnostics",
+      "paths": [
+        "docs/agent_campaign_proposal.md",
+        "docs/science_decisions.md",
+        "docs/handoffs/david.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/agent-campaign-proposal-20261114",
+        "evidence/mission-proposal-publication-20261115"
+      ],
+      "use": "Prepare separate rover reconnaissance/accompaniment, human EVA and per-sortie drone resource proposals for the requested Bunsen, Bright Angel and Hawksbill patches. Price declared analytical distances, ascents, activities, waits and directed returns through the unchanged proposed scientific API; compare reserve policy and joint adverse endpoints, retain failed envelopes and unknown full drone-campaign energy. Cite primary mission/hardware/analog facts without treating derived allocations as physical capacities, mapped routes, observations or new NASA data. Preserve approved JZ-P01..07 values, profiles, receipts, shared contracts and all owner implementations. Work remains local, without fetch/commit/push/merge, mocks, terrain/media generation, recharge credit, scientific approval or integrated execution. Owner subsequently authorized publication after reconciliation; preserve both main and mission disclosures, merge main9198b3d unchanged and retain fresh software verification. Publication does not approve proposed budgets or scientific profiles."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "local_scientific_patch_survey_and_map_requests",
+      "generation": "AI-assisted source synthesis, proposed research catalogues, derived geographic queries, analytical diagnostics and standalone reproduction code",
+      "paths": [
+        "docs/science_patch_survey.md",
+        "docs/science_patch_map_requests.md",
+        "docs/science_decisions.md",
+        "docs/handoffs/david.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/science-patch-survey-20261114"
+      ],
+      "use": "Review primary NASA/JPL/USGS/instrument and scientific sources for 17 candidate sectors, distinguish physical patch extent, computational grid and native data support, derive ideal flat resource ceilings using unchanged profiles and approved allocations, and prepare georeferencing-pending requests for Daniel. Historical NASA waypoint values are copied with provenance; candidate selection and query envelopes are generated proposals, not observational truth, current A/B, hidden tasks or execution evidence. Retain all approvals/gates, private evaluator isolation and owner implementations. Work remains local during the reconciliation audit, without commits, pushes or merges; no raster, media, mock, scientific measurement or new approval is generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "delivery_documentation_reconciliation",
+      "generation": "AI-assisted synthesis and owner-confirmed planning update",
+      "paths": [
+        "AGENTS.md",
+        "README.md",
+        "docs/delivery_closure_plan.md",
+        "docs/decisions/2026-11-14-delivery-freeze.md",
+        "docs/CONTRACT_BASELINE.md",
+        "docs/contract_baseline.json",
+        "docs/ICD.md",
+        "docs/INTEGRATION_MATRIX.md",
+        "docs/audit_reconciliation.md",
+        "docs/verification.md",
+        "docs/science_decisions.md",
+        "docs/competition.md",
+        "docs/team.md",
+        "docs/team_continuation_plan.md",
+        "docs/mission_checklist.md",
+        "docs/research_hypotheses.md",
+        "docs/handoffs/david.md",
+        "docs/handoffs/daniel.md",
+        "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md",
+        "docs/handoffs/jorge.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Reconcile all 20 delivery-PDF recommendations with published PR28 and the two chats; record the owner's freeze of extensions and retained 15 Nov 20:00 Bogota submission target. Summarize science/campaign review direction without importing local numerical drafts, new targets or the unpublished cost backend. Correct publication/evidence metadata while preserving historical audit inputs, semantic and scientific gates. Documentation only; no new code, datasets, measurements, observations, approvals or media generated."
+    },
+    {
       "tool": "OpenAI Codex",
       "kind": "audit_contract_reconciliation_rc2",
       "generation": "AI-assisted contract reconciliation, code, tests, documentation and controlled SIMULATED software-run evidence",
@@ -1344,9 +1431,101 @@
         "web/tests/arrivalQuad.test.ts"
       ],
       "use": "Viewer display only: opening terrain formation where the whole layer rises from flat to its true relief zone by zone (low ground first, rising ground lit); terrain heights that morph instead of jumping when the layer or map version changes; first-person camera from the followed agent with a cartographic HUD (compass tape, site bearings, resources as received), a route guide drawn from the received route (draped line, next-waypoint beacon, distance and time left scaled from the route estimate), a heading-up minimap and an optional camera sway; interface entrance animation with the agent dial spinning in; text descriptions for language models and other readers (llms.txt, about page, page metadata and JSON-LD, a static summary, and window.mge.state() returning the displayed replay state as JSON), written from the repository documentation and the replay manifest; drone-camera scan that draws the existing orbital CTX slope in display bands around the drone (no observation is made, the map version is unchanged, bands await science approval); GitHub Actions workflow that tests, builds and publishes the public viewer to the gh-pages branch. No data, measurements, images, video or audio generated. Rover camera rig (real camera nodes, stereo eye, mast slew and Mastcam-Z zoom limits, arm deploy/stow poses solved over the model joints, arm close-up), zone selector with real NASA card imagery and its card-to-scene transition, minimap surroundings, removal of the world arrows and of the map version line. Camera specifications are NASA/peer-reviewed values; mast slew and zoom speeds and the stowed arm pose are labelled display assumptions. Four more zone scenes (Gusev/Spirit, Elysium/InSight, Meridiani/Opportunity at Endeavour crater, Valles Marineris/Melas) built by AI-assisted scripts: DEM crops of NASA Trek DEM files, Spirit and Opportunity stops from the PDS Geosciences Node corrected traverses, and the same generated (simulated) mission story as the other demos in their timeline, routes and rasters; the terrain, imagery and stops are NASA data, the story is simulated. The zone card images are the scenes' NASA Trek orthomosaics, not generated. Numbered rover camera keys in the camera bar; each site of every scene states its source (NASA, chosen by the generator on NASA terrain, or fictitious). POIs C and D replaced by real NASA science sites (samples, drill holes, contact-science targets) where the mission has them, selected by an AI-assisted script; science-POI dossier (CONT-JOR-01) drafted with AI assistance from cited primary sources, pending David's audit. Astronaut sites of interest (real Three Forks sample depot, real science stop, habitat area by the NASA Exploration Zone slope criterion) added by AI-assisted code. Water, ice and radiation context per world, documented only (Mars Odyssey GRS water, MSL RAD Gale dose, RAD dose-pressure relation of Guo et al. 2018 applied per scene and flagged outside its measured range; ice not imported) added by AI-assisted code. The zone selector opens on every load right after the intro and shows cards only. Zone selector rebuilt as a Mars globe (Viking MDIM 2.1 tiles, real zone positions, radial static card, horizon from the Melas DEM); zone synopses are AI-assisted summaries of public mission facts. Travel transition without black bands (cover fit) and an arrival that warps the zone's NASA orbital image onto the projected terrain footprint before fading into the scene (AI-assisted display code; the image itself is NASA data, not generated)."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "main_only_resource_audit_and_characterization_tests",
+      "generation": "AI-assisted audit documentation and synthetic test construction; actual local execution outputs",
+      "paths": [
+        "docs/planner_f033_resource_audit.md",
+        "evidence/planner-f033-audit-20261114"
+      ],
+      "use": "Compare published main c58e7f6 resource APIs and unchanged profile coefficients; characterize numeric disagreement, reserve boundaries and trusted-input budget reset risk. No production model, ROS or MissionManager edit; no physical measurements or scientific approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "remaining_availability_admission_guard",
+      "generation": "AI-assisted planner code, synthetic regression tests and documentation; actual software-test outputs",
+      "paths": [
+        "src/mge_planning/mge_planning/replan.py",
+        "tests/planning/test_f033_resource_guard.py",
+        "src/mge_planning/MODEL.md",
+        "docs/planner_handoff.md",
+        "docs/replan_policy.md",
+        "docs/planner_f033_resource_audit.md",
+        "evidence/planner-f033-guard-20261114"
+      ],
+      "use": "Reject unexplained within-mission increases without search or budget debit, preserve latched invalidation/reserves and external authorization semantics. Base is published main0339bbd only. No changes to cost/science formulas, MissionManager, ROS contracts or scientific observations."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "remaining_resource_guard_delivery_review",
+      "generation": "AI-assisted delivery documentation and separate conceptual proposal; actual local test outputs",
+      "paths": [
+        "evidence/planner-f033-delivery-20261114",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Reconcile the guard payload with published mainb5dc681 without importing PR code, preserve local audits and main disclosures, draft the local commit/PR and a separate unimplemented backend proposal. Record current Windows/web checks and blocked ROS attempts separately from historical hash-matched Jazzy evidence."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "experimental_scientific_cost_adapter",
+      "generation": "AI-assisted planner code, tests and documentation; actual software validation outputs",
+      "paths": [
+        "src/mge_planning/mge_planning/resource_costs.py",
+        "tests/planning/test_resource_costs.py",
+        "docs/planner_f033b_cost_adapter.md",
+        "evidence/planner-f033b-20261114"
+      ],
+      "use": "Delegate to published mission science API, compare stored vectors, strict reserves and pending activities. No scientific approval, search wiring, ROS contract or execution accounting change."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "independent_scientific_itinerary_oracle",
+      "generation": "AI-assisted synthetic tests, graph construction and documentation; actual software outputs",
+      "paths": [
+        "tests/planning/scientific_oracle.py",
+        "tests/planning/test_scientific_oracle.py",
+        "docs/planner_f033c_oracle.md",
+        "evidence/planner-f033c-oracle-20261115"
+      ],
+      "use": "Exhaustive tiny directed itineraries and resource-constrained route selection, without production search changes or copying open PR code. No physical clearance validation or scientific approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_review_synchronization",
+      "generation": "AI-assisted disclosure reconciliation and validation documentation; actual software outputs",
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/planner-f033-pr-sync-20261115"
+      ],
+      "use": "Merge published main preserving planner history and mandatory disclosures; record local Python/web checks and blocked native ROS accurately. No science model, mission authority or production search activation."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "browser_check_script_and_evidence_record",
+      "generation": "AI-assisted generation, requested by the repository owner",
+      "paths": [
+        "evidence/web-private-replay-20261115/reproduce_private_replay.mjs",
+        "evidence/web-private-replay-20261115/README.md",
+        "evidence/web-private-replay-20261115/run/result.json",
+        "evidence/web-private-replay-20261115/run/windows.json"
+      ],
+      "use": "Automated private-browser replay check of the built viewer with every backend off (AC-08 evidence input). Reads the build and the existing recorded package; the JSON files are the script's software check output. No mission data, observation, measurement or media was generated; AC-08 acceptance is not claimed."
     }
   ],
   "generated_media": [
+    {
+      "kind": "code_rendered_planning_diagram",
+      "paths": ["docs/assets/science-tree/science-tree.png", "docs/assets/science-tree/science-tree.svg"],
+      "tool": "OpenAI Codex-assisted Python/Pillow and SVG renderer",
+      "watermark": "Visible AI-generated planning-diagram label in both outputs; embedded source SHA-256 and AI-use metadata",
+      "source": "docs/assets/science-tree/tree.json",
+      "use": "Proposed extension dependencies and leads; not observational data, implemented capabilities, completed milestones or scientific approval",
+      "nasa_branding": false
+    },
     {
       "path": "web/public/assets/portraits/human_1.webp",
       "kind": "ai_generated_image",

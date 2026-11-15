@@ -230,6 +230,7 @@ class ReplanPolicy:
         self._geometry_cache = GeometryCache()
         self._map_snapshot = None
         self._retry_key, self._retry_count = None, 0
+        self._remaining_floor = None  # Observed availability bound, never a consumption ledger.
 
     def evaluate(self, *, terrain: TerrainGrid, profile: MotionProfile, state: ReplanState,
                  event: ReplanEvent, now_s: float) -> ReplanDecision:
@@ -317,9 +318,24 @@ class ReplanPolicy:
         self._map_snapshot = terrain
         self._phase_index = phase_index
         changed_route = active.route_id != self._route_id
+        if not changed_route and (phase_index, state.next_waypoint) < self._progress:
+            return decision(ReplanAction.UNKNOWN, "PROGRESS_ROLLBACK", True)
+        if changed_route and (active.route_id in self._retired_routes or
+                (self._route_id is not None and active.map_version_used != terrain.map_version)):
+            return decision(ReplanAction.UNKNOWN, "STALE_ROUTE_ADOPTION", True)
+        # A new authorized route is not a new mission/resource allocation. Check
+        # before adoption can clear invalidation; rejected increases never move
+        # the bound upward. The first state is bounded by the mission allocation.
+        available = (state.remaining.time_s, state.remaining.energy_wh,
+                     state.remaining.oxygen_l)
+        ceiling = self._remaining_floor or (m.budget.time_s, m.budget.energy_wh,
+                                            m.budget.oxygen_l)
+        for current, previous, reason in zip(available, ceiling, (
+                "TIME_AVAILABILITY_INCREASE", "ENERGY_AVAILABILITY_INCREASE",
+                "OXYGEN_AVAILABILITY_INCREASE")):
+            if current is not None and current > previous:
+                return decision(ReplanAction.UNKNOWN, reason, True)
         if changed_route:
-            if active.route_id in self._retired_routes or (self._route_id is not None and active.map_version_used != terrain.map_version):
-                return decision(ReplanAction.UNKNOWN, "STALE_ROUTE_ADOPTION", True)
             if self._route_id is not None:
                 self._retired_routes.add(self._route_id)
                 self._invalidated = False
@@ -327,8 +343,6 @@ class ReplanPolicy:
             self._progress = (-1, 0)
             self._pending, self._deviated = None, False
             self._retry_key, self._retry_count = None, 0
-        if (phase_index, state.next_waypoint) < self._progress:
-            return decision(ReplanAction.UNKNOWN, "PROGRESS_ROLLBACK", True)
         self._progress = (phase_index, state.next_waypoint)
         if state.service_remaining_s > m.service_time_s or (state.phase == MissionPhase.RETURN and state.service_remaining_s != 0):
             return decision(ReplanAction.UNKNOWN, "SERVICE_STATE_INVALID", True)
@@ -349,6 +363,9 @@ class ReplanPolicy:
                 (remaining.energy_wh, remaining.reserve_wh, "ENERGY_RESERVE_DEPLETED"),
                 (remaining.oxygen_l, remaining.reserve_oxygen_l, "OXYGEN_RESERVE_DEPLETED")):
             if actual is not None and actual < reserve:
+                # Depleted telemetry is still an observed availability bound.
+                # A later route adoption must not turn it into replenishment.
+                self._remaining_floor = available
                 return decision(ReplanAction.STOP_REQUIRED, reason, True)
         try:
             if _start_z_mismatch(terrain, state.pose, m.agent_kind, profile,
@@ -371,6 +388,9 @@ class ReplanPolicy:
             return decision(ReplanAction.UNKNOWN, "RETURN_CONTEXT_MISMATCH", True)
         if state.phase == MissionPhase.OUTBOUND and m.require_return and not future:
             return decision(ReplanAction.UNKNOWN, "RETURN_CONTEXT_MISSING", True)
+        # Commit only after context/progress/service/position admission. This is
+        # an atomic observation of supplied values: no cost or reserve is debited.
+        self._remaining_floor = available
         pending = (state.pose,) + leg[state.next_waypoint:]
         if len(pending) == 1:
             pending += (leg[-1],)

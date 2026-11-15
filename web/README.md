@@ -288,10 +288,13 @@ The code, scripts, tests and the simulated fixture were written with AI assistan
 
 Terrain detail is limited by the 20 m source: close-ups look smooth. The 1 m HiRISE DTM covers this area and could provide real detail, but it is the hidden evaluator reference and must not reveal unknown terrain in the normal view.
 
-The viewer shows only the simulated demo; no recorded MOCK package is offered or used. A live
-gateway, planner-integrated routes, scientific model agreement and a completed three-role mission
-remain separate acceptances. This cut does not claim AC-08 (private-browser replay with every
-backend off) passed before its browser evidence is recorded. Percentages are
+The viewer's selector offers only the simulated demo; no recorded MOCK package is offered there.
+The recorded entry consumes real planner output and the public terrain package
+through the recorder, with strict snapshot/raster validation. A live gateway,
+scientific model agreement and a completed three-role mission remain separate
+acceptances. An automated private-browser replay check with every
+backend off is recorded in `../evidence/web-private-replay-20261115/`; AC-08 is
+not claimed as accepted (headless run, one machine, MOCK recorded package). Percentages are
 relative to the first received sample, not to a certified budget.
 The vehicle, drone and astronaut motion was checked in the dev server on one machine, mostly from
 still frames; the rover over steep relief and the drone climbing over a wall were not watched live.

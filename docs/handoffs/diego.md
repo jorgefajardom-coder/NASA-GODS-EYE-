@@ -1,5 +1,22 @@
 # Diego - preserve the advanced planner and reconcile resource costs
 
+Future guide: [science extension tree](../science_extension_tree.md). Diego
+leads G1, B2/B3 and E1-E3 proposals, with all cross-branch prerequisites and
+scientific review intact. No task is activated by the diagram. New unlisted
+ideas may be assessed locally for discussion on 15-Nov-2026 (Bogota); no
+extension push/merge/deployment or frozen-baseline change is authorized.
+
+## Delivery priority after PR28 — owner-confirmed 14 November 2026
+
+Follow [PDF tasks DI-1..3](../delivery_closure_plan.md) and
+[D-DEL-03](../decisions/2026-11-14-delivery-freeze.md). Support time-boxed C3
+closure and select the existing real-planner/MOCK recovery fallback at the
+10:00 cut if full evidence is missing; provide English planner text. Estimated
+planning and continuous MOCK recovery are published, not new missing features.
+D-COST-02 chooses the scientific API, but the later local backend/context is
+not in PR28 or this docs cut; preserve model/profile gates and pending review.
+Pause scaling/new scenes. Submit target 15 Nov 20:00 Bogota; remind JES-07.
+
 ## Audit reconciliation rc.2 — current candidate over main6bcf208
 
 Read the [current gap/evidence matrix](../audit_reconciliation.md) and

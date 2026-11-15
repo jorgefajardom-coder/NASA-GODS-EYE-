@@ -1,0 +1,57 @@
+{
+  "classification": "SOFTWARE_VALIDATION_NOT_MISSION_EXECUTION",
+  "published_main": "9198b3d8b3257dfd452d240ee9708cb038c3bb42",
+  "proposal_commit": "90a6c2389dace7a8243ce81996554425a82909a4",
+  "recorded_at_utc": "2026-11-15T03:06:24.977523+00:00",
+  "checks": [
+    {
+      "name": "python",
+      "command": [
+        "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "--basetemp=tmp/pytest-proposal-publication",
+        "--junitxml=C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\evidence\\mission-proposal-publication-20261115\\python.junit.xml"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "repository",
+      "command": [
+        "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+        "scripts/check_repository.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "web-test",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "test"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "web-build",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "run",
+        "build"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "ROS_Jazzy": "NOT_RUN: documentation/research-only delta; prior ROS evidence not relabelled",
+  "runtime_equal_main": true,
+  "profile_approval": false,
+  "new_budget_approval": false,
+  "cost_agreement": false,
+  "artifact_sha256": {
+    "python.junit.xml": "b9e3f796f310e2174ca4690bd32d5d426267e3aa1a501ead459c50cf3d955282",
+    "python.log": "80b003215ae334e705fe7e653c2f4fdb6fdf067e7e5e02a45bf83718797ef77a",
+    "repository.log": "b9bcb2ddade0cb2e0bc348ce5136bc030862ca986c6c9522f1db03043e1aba2d",
+    "web-build.log": "238478f3f3ab5fef3f861ddbb692aa84aa3db76d6976c6bfee65c4472a40a11f",
+    "web-test.log": "43ec3c847cb77f2ad72e3cc0297664495446b4e6ca564cdf15e2cc2b66f2cd00"
+  }
+}

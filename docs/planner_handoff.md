@@ -1,5 +1,20 @@
 # Diego's planner handoff
 
+F03.3 availability-guard review cut: based ONLY on published main0339bbd.
+Local audit documents/disclosures were hash-backed up under ignored
+tmp/f033-guard-backup, main was incorporated by fast-forward (no new commit),
+and both local audit declarations and main disclosures were retained.
+ReplanPolicy now rejects unexplained increases in remaining time, energy or
+human O2 before a search or route adoption. It retains the lower admitted bound
+through duplicate/stale events, reserve exhaustion and authorized route changes.
+It never debits consumption; reserves and all existing phase/service/progress
+checks remain. Corrected input keeps invalidation until a different externally
+authorized route is supplied. A new mission needs a new policy instance; no
+automatic reset or replenishment is supported. MissionManager/ROS/science models
+are unchanged. See MODEL.md, planner_f033_resource_audit.md and the new guard
+evidence for tests and caller/restart limitations. This working tree is not
+committed or published.
+
 Branch: **feat/planner**. Continue here; do not restart from the original scaffold.
 Integration review: Jesus. Scientific profiles/mission acceptance: David.
 
@@ -183,3 +198,16 @@ section and evidence/planner-pr12-ground-z-20261114 for exact execution results.
 Takeover command: fetch origin, switch feat/planner, pull --ff-only, read this
 file, MODEL.md and latest integration_log.md entry, then run the checks. Keep
 incremental commits and mandatory AI/provenance disclosures.
+
+Delivery revalidation against published main `b5dc681` (fast-forward, no new
+commit): the intervening changes affect web/Pages and disclosures, not planner
+code or cost models. Planning 309 passed; focused F03.3/F03.4/D-07 123 passed;
+Windows suite 1025 passed / 20 skipped. Web 170 passed / 1 skipped; build passed.
+Fresh Jazzy validation is blocked before execution by WSL
+`HCS/ERROR_NO_SYSTEM_RESOURCES`; the earlier 946 passed / 1 skipped result is
+historical, with unchanged guarded-source hashes, not a new integration pass.
+See `evidence/planner-f033-delivery-20261114/validation.json` for the delivery cut.
+
+This module-review cut is not submission readiness. Before final submission,
+Jesus (David backup) must record local-organizer notification and endorsement,
+allowing at least four hours or the longer requested local review lead time.

@@ -1,12 +1,15 @@
 {
   "baseline_version": "1.0.0-rc.2",
-  "status": "candidate_pending_owner_review",
+  "status": "published_not_frozen_pending_owner_review",
   "reference_main_sha": "6bcf208868e37b7e15e9189fac11de96e7414eff",
   "candidate_branch": "codex/audit-contract-reconciliation",
   "recorded_at_utc": "2026-11-15T01:39:56.327903+00:00",
-  "source_scope": "Published main and observed remote refs; working-tree candidate semantics require their own exact commit/content validation record before publication.",
+  "source_scope": "Original main6bcf208 audit and remote inventory retained as historical inputs. Reconciliation source7f0ebaa was published by PR28 at main9198b3d; semantic freeze and scientific approval remain pending.",
   "publication": {
-    "published_to_main": false,
+    "published_to_main": true,
+    "pull_request": 28,
+    "reviewed_source_sha": "7f0ebaaefa90b7ae48505f8e06d22f2660e5d491",
+    "merge_sha": "9198b3d8b3257dfd452d240ee9708cb038c3bb42",
     "frozen": false,
     "release": false
   },
@@ -83,8 +86,10 @@
     "atomic_rejection": true
   },
   "validation": {
-    "fresh_rc2_ros_consumer_status": "pending_integration_record",
-    "fresh_rc2_browser_bundle_status": "pending_integration_record",
+    "fresh_rc2_ros_consumer_status": "passed_runtime_v1_recorded_software_scope",
+    "fresh_rc2_browser_bundle_status": "passed_runtime_v1_ordinary_chrome_private_and_public_acceptance_open",
+    "runtime_record": "evidence/audit-reconciliation-20261115/runtime-v1/README.md",
+    "browser_record": "evidence/audit-reconciliation-20261115/runtime-v1/browser.json",
     "new_published_main_cost_report": "evidence/audit-reconciliation-20261115/cost/conformance.json",
     "cost_result": {
       "AGREE": 1,

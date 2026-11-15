@@ -1,0 +1,370 @@
+{
+  "schema_version": "1.0.0",
+  "classification": "LITERATURE_CANDIDATE_SURVEY",
+  "status": "proposed_pending_georegistration",
+  "source_revision": "c3ec4c1",
+  "mission_input": false,
+  "scientific_approval": false,
+  "execution_authorized": false,
+  "observation_scope": "Published mission evidence only; this survey creates no terrain observations, tasks, completed work or execution evidence.",
+  "dimension_semantics": "All window/context side lengths below are proposed square map-request sizes in metres, not NASA operational requirements, verified footprints or authorised travel distances.",
+  "sources": {
+    "JZ-S01": {
+      "title": "Redox-driven mineral and organic associations in Jezero Crater, Mars",
+      "url": "https://www.nature.com/articles/s41586-025-09413-0",
+      "published_on": "2025-09-10",
+      "locator": "Abstract; Figure 1 and caption; Figure 2; Outcrop-scale observations",
+      "kind": "peer_reviewed_primary_paper",
+      "verified_via": "Full primary article text and figure captions opened in browser",
+      "finding": "Documents Bright Angel outcrops, several proximity targets, approximate 110 m and 50 m separations, and unresolved biological interpretation.",
+      "limits": "Published science context is not a georegistered crop or evidence of life; geographic coordinates were not extracted."
+    },
+    "JZ-S02": {
+      "title": "Spatially distributed complex organic matter detected in an ancient river valley in Jezero crater, Mars",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13292988/",
+      "doi": "10.1126/sciadv.adx0047",
+      "published_on": "2026-06-24",
+      "locator": "Abstract; Discussion and conclusions",
+      "kind": "peer_reviewed_primary_paper",
+      "verified_via": "Primary paper full text hosted by NIH/PMC",
+      "finding": "Raman measurements document robust organic-carbon detections in Bright Angel mudstones; the instrument cannot establish biotic versus abiotic origin.",
+      "limits": "Organic material is not confirmed life and is not detectable from the terrain model."
+    },
+    "JZ-S03": {
+      "title": "NASA Says Mars Rover Discovered Potential Biosignature Last Year",
+      "url": "https://www.jpl.nasa.gov/news/nasa-says-mars-rover-discovered-potential-biosignature-last-year/",
+      "published_on": "2025-09-10",
+      "locator": "Bright Angel/Neretva Vallis context; definition of potential biosignature",
+      "kind": "NASA_JPL_mission_release",
+      "verified_via": "Official JPL article full text",
+      "finding": "Neretva Vallis is approximately 400 m wide; the Bright Angel finding remains a potential biosignature requiring further investigation.",
+      "limits": "The channel-width statement supplies context, not a local route or bounding polygon."
+    },
+    "JZ-S04": {
+      "title": "Exploring the Jezero Delta Front: Overview of Results from the Mars 2020 Perseverance Rover's Second Science Campaign",
+      "url": "https://ntrs.nasa.gov/api/citations/20230000588/downloads/Williams%20et%20al_LPSC%202023%20Delta%20Front%20Overview%20abstract_v5.pdf",
+      "published_year": 2023,
+      "locator": "Figure 1; Campaign Overview, pages 1-2",
+      "kind": "NASA_NTRS_primary_conference_abstract",
+      "verified_via": "Two-page primary PDF text",
+      "finding": "Maps delta-front targets, stratigraphic sampling and failed abrasions; the floor/delta contact was not clearly exposed at the surface.",
+      "limits": "Do not use the malformed traverse-distance number in browser PDF extraction; no exact crop coordinates were derived."
+    },
+    "JZ-S05": {
+      "title": "Overview of the Bedrock Geochemistry and Mineralogy Observed by SuperCam During Perseverance's Delta Front Campaign",
+      "url": "https://ntrs.nasa.gov/citations/20230000534",
+      "published_year": 2023,
+      "locator": "NTRS abstract, second paragraph",
+      "kind": "NASA_NTRS_primary_conference_abstract",
+      "verified_via": "Official NTRS abstract",
+      "finding": "Hawksbill Gap and Cape Nukshak are approximately 400 m apart and expose basal delta rocks with varied alteration histories.",
+      "limits": "A separation between two localities does not specify their bounding rectangle or a traversable connection."
+    },
+    "JZ-S06": {
+      "title": "Comet Geyser: Perseverance's 21st Rock Core",
+      "url": "https://science.nasa.gov/blog/comet-geyser-perseverances-21st-rock-core/",
+      "published_on": "2024-04-16",
+      "locator": "Bunsen Peak composition and origin discussion; final travel paragraph",
+      "kind": "NASA_mission_update",
+      "verified_via": "Official NASA article full text",
+      "finding": "Bunsen Peak's sampled rock contains carbonate and silica; its origin remained under investigation, with difficult block-and-sand terrain discussed farther along the journey.",
+      "limits": "Do not label the whole Margin Unit as a confirmed ancient shoreline or infer material strength from the DEM."
+    },
+    "JZ-S07": {
+      "title": "NASA's Perseverance Mars Rover to Take Bite Out of Krokodillen",
+      "url": "https://www.nasa.gov/missions/mars-2020-perseverance/perseverance-rover/nasas-perseverance-mars-rover-to-take-bite-out-of-krokodillen/",
+      "published_on": "2025-05-19",
+      "locator": "Opening paragraphs describing location, boundary and plateau area",
+      "kind": "NASA_mission_release",
+      "verified_via": "Official NASA article; publication date independently verified by root agent",
+      "finding": "Krokodillen is an approximately 30 ha rocky plateau west and south of Witch Hazel Hill, near the rim/plains geological boundary.",
+      "limits": "Area alone gives neither polygon shape nor a safe access corridor."
+    },
+    "JZ-S08": {
+      "title": "Clay Minerals From Mars' Most Ancient Past?",
+      "url": "https://science.nasa.gov/blog/clay-minerals-from-mars-most-ancient-past/",
+      "published_on": "2025-06-23",
+      "locator": "Krokodillen, Strong Island and Laknes discussion; final paragraph",
+      "kind": "NASA_mission_update",
+      "verified_via": "Official NASA article full text",
+      "finding": "SuperCam detected clay signatures in Krokodillen bedrock; their spatial variability motivated further contextual exploration.",
+      "limits": "No uniform mineral distribution or exact target coordinates are supplied by this survey."
+    },
+    "JZ-S09": {
+      "title": "NASA's Perseverance Mars Rover Studies Trove of Rocks on Crater Rim",
+      "url": "https://www.nasa.gov/missions/mars-2020-perseverance/perseverance-rover/nasas-perseverance-mars-rover-studies-trove-of-rocks-on-crater-rim/",
+      "published_on": "2025-04-10",
+      "locator": "Opening discussion; Oldest Sample Yet?",
+      "kind": "NASA_JPL_mission_release",
+      "verified_via": "Official NASA article full text",
+      "finding": "Describes diverse crater-rim rocks, a roughly 135 m-high slope and approximately 110 m and 160 m separations between investigations.",
+      "limits": "Distances are contextual, not exact route lengths or proof that all targets fit a selected window."
+    },
+    "JZ-S10": {
+      "title": "Stratigraphy Preserved on the Jezero Crater Rim Reveals Repeated Impacts on Early Mars",
+      "url": "https://doi.org/10.1029/2026JE009779",
+      "published_on": "2026-07-15",
+      "locator": "Abstract; Plain Language Summary; conclusions",
+      "kind": "peer_reviewed_primary_paper",
+      "verified_via": "Primary JGR Planets article full text",
+      "finding": "Studies a roughly 75 m-thick Broom Point succession, deformation and evidence interpreted as repeated ancient impacts.",
+      "limits": "Stratigraphic thickness is not horizontal crop size, operational climb distance or terrain safety."
+    },
+    "JZ-S11": {
+      "title": "Mars Sample Return HiRISE Mosaics for Terrain Relative Navigation",
+      "url": "https://www.usgs.gov/data/mars-sample-return-hirise-mosaics-terrain-relative-navigation",
+      "doi": "10.5066/P13CPYYU",
+      "published_on": "2025-02-05",
+      "locator": "Data-release overview",
+      "kind": "USGS_data_release",
+      "verified_via": "Official USGS release overview; detailed DOI landing page returned 403",
+      "finding": "Eight HiRISE stereo pairs support DEM/orthoimage mosaics extending west of earlier Jezero products and aligned to the existing terrain products.",
+      "limits": "Exact footprints, per-candidate coverage, post spacing and current-project registration were not verified; no prior/evaluator role change is authorised."
+    },
+    "JZ-S12": {
+      "title": "HiRISE DTM: Candidate Landing Site for 2020 Mission in Jezero Crater",
+      "url": "https://www.uahirise.org/dtm/ESP_045994_1985",
+      "locator": "Product metadata and linked DTM/orthoimage directory",
+      "kind": "HiRISE_primary_product_catalog",
+      "verified_via": "Official HiRISE product page and directory listing",
+      "finding": "A public 1 m/pixel DTM with associated orthoimages exists; its reported center is 18.4 N, 77.44 E.",
+      "limits": "The center is product metadata, not any candidate POI; exact bounds and coverage of each candidate remain unchecked."
+    },
+    "JZ-S13": {
+      "title": "Mars Rock Samples",
+      "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+      "locator": "Comet Geyser, Sapphire Canyon, Hazeltop and crater-rim sample entries; linked PDS initial reports",
+      "kind": "NASA_mission_sample_catalog",
+      "verified_via": "Official NASA catalog and PDS link destinations",
+      "finding": "Names sampled rocks and locations and links their PDS initial reports, supporting archival follow-up for georegistration.",
+      "limits": "Linked volumes 2 and 4 exceeded browser size limits; no coordinates were read from those reports."
+    }
+  },
+  "data_products": [
+    {
+      "product_id": "DTEEC_045994_1985_046060_1985_U01",
+      "source_id": "JZ-S12",
+      "catalog_url": "https://www.uahirise.org/dtm/ESP_045994_1985",
+      "directory_url": "https://www.uahirise.org/PDS/DTM/ESP/ORB_045900_045999/ESP_045994_1985_ESP_046060_1985/",
+      "declared_dtm_spacing_m": 1.0,
+      "reported_product_center_deg": {"latitude": 18.4, "longitude": 77.44},
+      "coordinate_semantics": "Rounded product-center metadata only; latitude convention not independently checked from the label; not a candidate POI coordinate.",
+      "exact_footprint": null,
+      "candidate_coverage_verified": false,
+      "registered_to_current_dataset": false,
+      "project_prior_or_evaluator_role": "unassigned_pending_owner_review"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "JZ-ROI-01",
+      "name": "Bright Angel - Beaver Falls, Neretva Vallis",
+      "region": "Western Jezero inlet channel, northern Bright Angel outcrops",
+      "science_question": "How do mudstone facies, contacts and alteration vary over a short documented corridor?",
+      "observed_basis": [
+        "Published rover investigations document several targets in the Beaver Falls workspace, including Cheyava Falls, Apollo Temple and Steamboat Mountain.",
+        "The Nature Figure 1 caption places Beaver Falls about 110 m upslope of Walhalla Glades and Grapevine Canyon about 50 m downslope of that workspace.",
+        "Published Raman and mineralogical studies establish scientifically interesting organic-bearing mudstones, without confirming biological origin.",
+        "Neretva Vallis is reported as approximately 400 m wide."
+      ],
+      "proposed_secondary_opportunities": [
+        "Inspect contrasting textures and fracture or vein exposures encountered within the selected public corridor, if independently visible in the declared inputs.",
+        "Compare an accessible adjacent lithology before considering optional sampling; do not count the already-published target names as new software discoveries.",
+        "Use local reconnaissance to test whether the selected contact or workspace can be approached and returned from within unchanged reserves."
+      ],
+      "local_window_sides_m_proposed": [128, 256],
+      "context_sides_m_proposed": [512, 1024],
+      "priority": "first_shortlist",
+      "source_ids": ["JZ-S01", "JZ-S02", "JZ-S03", "JZ-S11", "JZ-S13"],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "data_readiness": {
+        "georegistration": "pending_exact_target_anchor_and_crop_bounds",
+        "dem": "public_product_coverage_and_registration_check_required",
+        "orthoimage": "public_product_coverage_and_registration_check_required",
+        "science_layer": "published_context_exists_not_imported_as_registered_layer",
+        "prior_evaluator_partition": "pending_owner_review_no_role_change",
+        "operational_ready": false
+      },
+      "limitations": [
+        "No exact 128 m crop is verified; a workspace is different from the full channel and both margins.",
+        "A 20 m DEM cannot reveal submetre nodules, organic material or mineral chemistry.",
+        "No route, soil mechanics, instrument capability or consumable feasibility has been demonstrated for this proposed crop."
+      ]
+    },
+    {
+      "id": "JZ-ROI-02",
+      "name": "Hawksbill Gap - Hogwallow Flats - Skinner and Wildcat Ridge",
+      "region": "Western Jezero delta front",
+      "science_question": "Can a local section preserve meaningful changes in sedimentary facies and alteration while offering alternative inspection targets?",
+      "observed_basis": [
+        "Published campaign maps and sample records document stratigraphic investigations and multiple real sampling targets.",
+        "The campaign also documents failed abrasions associated with target fracturing or subsidence, providing real examples of scientific interest without assured sample suitability."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare changes in layering, visible grain or clast character and fracture exposures along a selected accessible outcrop section.",
+        "Evaluate an alternative nearby inspection target when the primary surface is unsuitable for contact work, using explicit public evidence rather than DEM-derived material strength."
+      ],
+      "local_window_sides_m_proposed": [128, 256],
+      "context_sides_m_proposed": [512, 1024],
+      "priority": "first_shortlist",
+      "source_ids": ["JZ-S04", "JZ-S05", "JZ-S13"],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "data_readiness": {
+        "georegistration": "pending_exact_outcrop_anchor_and_crop_bounds",
+        "dem": "public_product_coverage_and_registration_check_required",
+        "orthoimage": "public_product_coverage_and_registration_check_required",
+        "science_layer": "campaign_map_and_sample_context_exist_not_registered_to_current_grid",
+        "prior_evaluator_partition": "pending_owner_review_no_role_change",
+        "operational_ready": false
+      },
+      "limitations": [
+        "Do not claim that all named targets fit one proposed square or can be visited within one resource allocation.",
+        "Potential preservation of biosignatures is not confirmed life or an automatic detection of organic matter.",
+        "No rock strength, friction or sample suitability is inferred from elevation."
+      ]
+    },
+    {
+      "id": "JZ-ROI-03",
+      "name": "Cape Nukshak - Enchanted Lake - Cannery Passage",
+      "region": "Basal western Jezero delta and adjacent crater floor",
+      "science_question": "What can exposed basal layers establish about the delta/floor relationship when the contact is partly obscured?",
+      "observed_basis": [
+        "Published mission observations identify Enchanted Lake as low delta sedimentary exposures near Cape Nukshak.",
+        "The floor/delta contact was not clearly resolved at the surface because of cover and erosion; radar informed its interpretation.",
+        "Hawksbill Gap and Cape Nukshak are reported as approximately 400 m apart."
+      ],
+      "proposed_secondary_opportunities": [
+        "Inspect separate exposed layers or edges of cover along a selected corridor without inventing a visible contact where it is hidden.",
+        "Use the contrast between observable outcrop and obscured context as an explicit incomplete-evidence case."
+      ],
+      "local_window_sides_m_proposed": [128, 256],
+      "context_sides_m_proposed": [512, 1024],
+      "priority": "reserve_stratigraphic_contact_case",
+      "source_ids": ["JZ-S04", "JZ-S05", "JZ-S13"],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "data_readiness": {
+        "georegistration": "pending_exposure_anchor_and_crop_bounds",
+        "dem": "public_product_coverage_and_registration_check_required",
+        "orthoimage": "public_product_coverage_and_registration_check_required",
+        "science_layer": "published_surface_and_radar_interpretations_not_imported_as_observations",
+        "prior_evaluator_partition": "pending_owner_review_no_role_change",
+        "operational_ready": false
+      },
+      "limitations": [
+        "A 128 m square cannot span two localities 400 m apart.",
+        "No radar capability or subsurface observation is added to the simulated agents.",
+        "An inferred subsurface relationship does not establish a directly observable surface boundary."
+      ]
+    },
+    {
+      "id": "JZ-ROI-04",
+      "name": "Margin Unit - Bunsen Peak",
+      "region": "Western Jezero Margin Unit",
+      "science_question": "How does an accessible carbonate/silica-bearing workspace relate to the surrounding unit and its alteration history?",
+      "observed_basis": [
+        "Published Comet Geyser sample investigations identify carbonate and silica at Bunsen Peak.",
+        "The cited mission update explicitly keeps the rock's origin under investigation."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare exposed surfaces, adjacent textures and fracture or vein features where visible in declared public imagery.",
+        "Choose an optional comparison target only after compatible inspection and return-resource checks; no mineral classification is generated from the DEM."
+      ],
+      "local_window_sides_m_proposed": [128, 256],
+      "context_sides_m_proposed": [512, 1024],
+      "priority": "first_shortlist",
+      "source_ids": ["JZ-S06", "JZ-S11", "JZ-S13"],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "data_readiness": {
+        "georegistration": "pending_Bunsen_Peak_anchor_and_crop_bounds",
+        "dem": "public_product_coverage_and_registration_check_required",
+        "orthoimage": "public_product_coverage_and_registration_check_required",
+        "science_layer": "sample_composition_and_unit_context_exist_not_registered_to_current_grid",
+        "prior_evaluator_partition": "pending_owner_review_no_role_change",
+        "operational_ready": false
+      },
+      "limitations": [
+        "The whole Margin Unit is not assumed to be a confirmed ancient shoreline or uniform carbonate exposure.",
+        "Origin and alteration hypotheses are not resolved by this literature survey.",
+        "A local workspace and its operational route remain to be independently selected and validated."
+      ]
+    },
+    {
+      "id": "JZ-ROI-05",
+      "name": "Krokodillen - Laknes and Strong Island context",
+      "region": "Outer western Jezero crater rim, downslope west and south of Witch Hazel Hill",
+      "science_question": "How do clay-bearing exposures and other materials vary across the rim/plains boundary?",
+      "observed_basis": [
+        "NASA describes an approximately 30 ha rocky plateau near an important rim/plains geological boundary.",
+        "Published SuperCam observations at Krokodillen identify clay signatures with spatial variability and contextual follow-up around abrasion workspaces."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare accessible exposures with differing published or newly evidenced spectral/texture character rather than assuming uniform clay distribution.",
+        "Investigate an additional local contact or surface only when it is visible and does not compromise primary work and return."
+      ],
+      "local_window_sides_m_proposed": [128, 256],
+      "context_sides_m_proposed": [1024],
+      "priority": "reserve_larger_context_case",
+      "source_ids": ["JZ-S07", "JZ-S08", "JZ-S11", "JZ-S13"],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "data_readiness": {
+        "georegistration": "pending_plateau_outline_target_anchor_and_crop_bounds",
+        "dem": "western_extension_coverage_and_current_dataset_registration_unverified",
+        "orthoimage": "western_extension_coverage_and_current_dataset_registration_unverified",
+        "science_layer": "published_clay_evidence_exists_not_imported_as_registered_layer",
+        "prior_evaluator_partition": "pending_owner_review_no_role_change",
+        "operational_ready": false
+      },
+      "limitations": [
+        "A 128 m square covers only 1.6384 ha; the reported 30 ha plateau has an unverified irregular footprint.",
+        "A 512 m square has 26.2144 ha area and is not demonstrated to cover the plateau; 1 km is a proposed context request, not a travel requirement.",
+        "No complete mineral distribution or exact Strong Island/Laknes coordinates are supplied."
+      ]
+    },
+    {
+      "id": "JZ-ROI-06",
+      "name": "Witch Hazel Hill - Broom Point and Tablelands context",
+      "region": "Outer western Jezero crater rim",
+      "science_question": "Can diverse ancient rocks, deformation and impact-related stratigraphy be investigated without exceeding access and return constraints?",
+      "observed_basis": [
+        "Published rover investigations describe diverse rocks on a roughly 135 m-high slope, with nearby investigations separated by about 110 m and 160 m.",
+        "A 2026 primary study examines an approximately 75 m-thick Broom Point succession and interprets evidence for repeated ancient impacts.",
+        "Published sample context identifies Tablelands as a serpentinite target; this is archival mission evidence, not a model-derived detection."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare accessible stratigraphic or textural contrasts from a selected low-relief workspace, if public data justify access.",
+        "Use a scientifically attractive but resource-infeasible target as an explicit rejection case rather than relaxing reserves to obtain acceptance."
+      ],
+      "local_window_sides_m_proposed": [128, 256],
+      "context_sides_m_proposed": [1024, 2048],
+      "priority": "reserve_accessibility_and_resource_negative_case",
+      "source_ids": ["JZ-S09", "JZ-S10", "JZ-S11", "JZ-S13"],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "data_readiness": {
+        "georegistration": "pending_slope_exposure_anchor_and_crop_bounds",
+        "dem": "western_extension_coverage_and_current_dataset_registration_unverified",
+        "orthoimage": "western_extension_coverage_and_current_dataset_registration_unverified",
+        "science_layer": "published_stratigraphy_and_samples_exist_not_registered_to_current_grid",
+        "prior_evaluator_partition": "pending_owner_review_no_role_change",
+        "operational_ready": false
+      },
+      "limitations": [
+        "The reported 75 m is stratigraphic thickness, not a horizontal crop side or safe climb distance.",
+        "The full 135 m relief is not assumed to be traversed by any proposed local mission.",
+        "Scientific diversity does not establish human or rover access, material strength, feasible service or return within current budgets."
+      ]
+    }
+  ],
+  "limitations": [
+    "Candidate names are published mission-locality names; they are not operational task identifiers or claims of new discoveries.",
+    "Exact geographic crop bounds, base locations, cell centres, current-dataset coverage and executable routes remain unverified.",
+    "This catalog neither changes approved scenario values nor imports a science layer, observation, planner or evaluator dataset.",
+    "Public HiRISE asset availability does not authorise reusing data reserved for the evaluator as a planning prior.",
+    "No coefficients, physical tolerances, scientific profiles or operational budgets are approved by this survey."
+  ]
+}
