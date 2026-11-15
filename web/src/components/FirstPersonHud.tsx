@@ -201,8 +201,8 @@ export function FirstPersonHud({ agent, terrainMeta, sourceLabel, pois, scan, ca
             <button type="button" className="pov__key" aria-pressed={helmetLight} onClick={onHelmetLight} disabled={!canHelmetLight} title={canHelmetLight ? "Astronaut's helmet lights (L)" : 'No astronaut in this run'}>
               <kbd>L</kbd> Lights {helmetLight ? 'on' : 'off'}
             </button>
-            <button type="button" className="pov__key" aria-pressed={artificialLight} onClick={onArtificialLight} title="Artificial light: the terrain lit as by day whatever the hour; the sky keeps the real time (I)">
-              <kbd>I</kbd> Artificial light
+            <button type="button" className="pov__key" aria-pressed={!artificialLight} onClick={onArtificialLight} title={artificialLight ? 'Show the terrain with the real light of the hour at the site (I)' : 'Artificial light: the terrain lit as by day whatever the hour (I)'}>
+              <kbd>I</kbd> {artificialLight ? 'Real light' : 'Artificial light'}
             </button>
             <button type="button" className="pov__key" aria-pressed={sway} onClick={() => onSway(!sway)} title="Camera sway while walking or driving (display only)">
               <kbd>B</kbd> Sway {sway ? 'on' : 'off'}

@@ -115,8 +115,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [droneCam, setDroneCam] = useState(RENDER_TIER === 'full');
   /** Astronaut helmet lights (L), display only. */
   const [helmetLight, setHelmetLight] = useState(false);
-  /** Artificial light (I): terrain lit as by day whatever the real hour at the site. */
-  const [artificialLight, setArtificialLight] = useState(false);
+  /** Artificial light (I), on by default: terrain lit as by day; off shows the real light at the site's hour. */
+  const [artificialLight, setArtificialLight] = useState(true);
   const pov = follow && firstPerson && RENDER_TIER !== 'map2d';
   // First-person camera sway: a per-viewer preference, off by default with reduced motion.
   const [povSway, setPovSwayState] = useState<boolean>(() => {
