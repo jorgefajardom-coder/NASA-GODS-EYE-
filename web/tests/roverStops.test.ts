@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { STOP_ARRIVE_M, isStationary, stopLabel, stopUnderAgent, stopsNear } from '../src/lib/roverStops';
+import { STOP_ARRIVE_M, isStationary, stopLabel, stopUnderAgent, stopsNear, tourStepTime } from '../src/lib/roverStops';
 import type { RoverStop } from '../src/types/replay';
 
 const stop = (rmc: string, x: number, y: number, sol = 13): RoverStop => {
@@ -28,5 +28,25 @@ describe('rover stops', () => {
 
   it('labels a stop by sol and identifier', () => {
     expect(stopLabel(stops[1])).toBe('sol 14 · stop 3_110');
+  });
+});
+
+describe('photo tour stepping', () => {
+  const tour: RoverStop[] = [stop('3_0', 0, 0), stop('3_110', 10, 0), stop('3_386', 20, 0)].map((s, i) => ({ ...s, tour_arrival_s: 100 + i * 200 }));
+
+  it('goes to the next arrival after the current time', () => {
+    expect(tourStepTime(tour, 0, 1)).toBe(100);
+    expect(tourStepTime(tour, 100, 1)).toBe(300);
+    expect(tourStepTime(tour, 500, 1)).toBeNull();
+  });
+
+  it('goes back to the previous arrival, skipping the stop it has just reached', () => {
+    expect(tourStepTime(tour, 320, -1)).toBe(300);
+    expect(tourStepTime(tour, 301, -1)).toBe(100);
+    expect(tourStepTime(tour, 100, -1)).toBeNull();
+  });
+
+  it('ignores stops without a tour arrival', () => {
+    expect(tourStepTime(stops, 0, 1)).toBeNull();
   });
 });

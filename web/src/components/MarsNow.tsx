@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { rawImages, useRawImages } from '../lib/rawImagesStore';
 import { stopLabel } from '../lib/roverStops';
 import type { RoverStop } from '../types/replay';
@@ -10,8 +11,23 @@ import type { RoverStop } from '../types/replay';
  * newest images from where the rover is now, which is not the replay's site. Nothing is requested
  * until the person presses the load button; the images are not terrain data. Display only.
  */
-export function MarsNowFrame({ stop, onClose }: { stop: RoverStop | null; onClose: () => void }) {
+/** Photo tour controls: the images load by themselves because the person pressed the tour button. */
+export interface TourControls {
+  index: number;
+  total: number;
+  onPrev: () => void;
+  onNext: () => void;
+  onStop: () => void;
+}
+
+export function MarsNowFrame({ stop, onClose, tour }: { stop: RoverStop | null; onClose: () => void; tour?: TourControls | null }) {
   const state = useRawImages();
+  const stopId = stop?.rmc ?? null;
+  // On the tour, each stop loads its own images on arrival (once per stop; the sol is cached).
+  useEffect(() => {
+    if (tour && stop) void rawImages.loadStop(stop);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!tour, stopId]);
   const wanted = stop?.rmc ?? null;
   // Images loaded for another place are not shown as this one's.
   const matches = state.status === 'ready' && state.forStop === wanted;
@@ -21,7 +37,7 @@ export function MarsNowFrame({ stop, onClose }: { stop: RoverStop | null; onClos
   return (
     <div className="marsnow" role="region" aria-label={stop ? 'Real Perseverance images of this stop' : 'Mars now: real Perseverance image'}>
       <div className="marsnow__bar">
-        <span>{stop ? `Real stop · ${stopLabel(stop)}` : `Real · Perseverance${img ? ` · sol ${img.sol}` : ''}`}</span>
+        <span>{stop ? `Real stop${tour ? ` ${tour.index + 1}/${tour.total}` : ''} · ${stopLabel(stop)}` : `Real · Perseverance${img ? ` · sol ${img.sol}` : ''}`}</span>
         <button type="button" onClick={onClose} title="Close (M)" aria-label="Close the real images window">
           ×
         </button>
@@ -31,6 +47,8 @@ export function MarsNowFrame({ stop, onClose }: { stop: RoverStop | null; onClos
           <img src={img.mediumUrl} alt={`Perseverance ${img.instrument}, sol ${img.sol}`} referrerPolicy="no-referrer" />
         ) : state.status === 'loading' ? (
           <p>Loading from NASA…</p>
+        ) : tour && !stop ? (
+          <p>Driving to the next real stop…</p>
         ) : (
           <>
             <p>
@@ -59,6 +77,19 @@ export function MarsNowFrame({ stop, onClose }: { stop: RoverStop | null; onClos
               ›
             </button>
           </span>
+        </div>
+      )}
+      {tour && (
+        <div className="marsnow__tour" role="group" aria-label="Photo tour">
+          <button type="button" onClick={tour.onPrev} aria-label="Previous stop">
+            ⏮ Stop
+          </button>
+          <button type="button" onClick={tour.onNext} aria-label="Next stop">
+            Stop ⏭
+          </button>
+          <button type="button" onClick={tour.onStop}>
+            End tour
+          </button>
         </div>
       )}
       <small className="marsnow__note">{stop ? 'Real photos of this spot · not terrain data' : 'Not the replay’s site · not terrain data'}</small>

@@ -77,3 +77,20 @@ describe('raw images of a rover stop', () => {
     expect(s.getState()).toMatchObject({ status: 'error', message: 'NASA lists no raw image for stop 3_110' });
   });
 });
+
+
+describe('raw images cache per sol', () => {
+  it('reads a sol once for all the stops of that sol', async () => {
+    let calls = 0;
+    const at = (id: string, drive: string) => ({ ...img(1), imageid: id, site: 3, drive });
+    const s = createRawImagesStore(async () => {
+      calls++;
+      return { ok: true, status: 200, json: async () => ({ images: [at('a', '0'), at('b', '110')] }) };
+    });
+    await s.loadStop({ sol: 13, site: 3, drive: 0, rmc: '3_0' });
+    await s.loadStop({ sol: 13, site: 3, drive: 110, rmc: '3_110' });
+    expect(calls).toBe(1);
+    const st = s.getState();
+    expect(st.status === 'ready' && st.images.map((i) => i.id)).toEqual(['b']);
+  });
+});

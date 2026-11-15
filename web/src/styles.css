@@ -3059,3 +3059,12 @@ input[type='checkbox'] {
 .stop-tag--on .site-icon {
   stroke: #1b1208;
 }
+
+/* Photo tour controls inside the stop-images window */
+.marsnow__tour {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 3px 6px;
+  border-top: 1px solid var(--line-soft);
+}

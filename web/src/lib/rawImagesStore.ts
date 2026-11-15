@@ -20,22 +20,29 @@ type FetchLike = (url: string, init?: { signal?: AbortSignal }) => Promise<{ ok:
 export function createRawImagesStore(fetchFn: FetchLike) {
   let state: RawImagesState = { status: 'idle' };
   let ctl: AbortController | null = null;
+  /** Images already read for a sol (a tour passes many stops of the same sol): never fetched twice. */
+  const solCache = new Map<number, RawImage[]>();
   const listeners = new Set<() => void>();
   const set = (s: RawImagesState) => {
     state = s;
     listeners.forEach((l) => l());
   };
 
-  async function run(url: string, pick: (all: RawImage[]) => RawImage[], forStop: string | null, emptyMessage: string): Promise<void> {
+  async function run(url: string, pick: (all: RawImage[]) => RawImage[], forStop: string | null, emptyMessage: string, cached?: () => RawImage[] | null): Promise<void> {
     ctl?.abort();
     const mine = new AbortController();
     ctl = mine;
     const timer = setTimeout(() => mine.abort(), TIMEOUT_MS);
     set({ status: 'loading' });
     try {
-      const res = await fetchFn(url, { signal: mine.signal });
-      if (!res.ok) throw new Error(`NASA feed answered ${res.status}`);
-      const images = pick(parseRawImages(await res.json()));
+      const hit = cached?.() ?? null;
+      let images: RawImage[];
+      if (hit) images = pick(hit);
+      else {
+        const res = await fetchFn(url, { signal: mine.signal });
+        if (!res.ok) throw new Error(`NASA feed answered ${res.status}`);
+        images = pick(parseRawImages(await res.json()));
+      }
       if (images.length === 0) throw new Error(emptyMessage);
       if (ctl === mine) set({ status: 'ready', images, index: 0, forStop: forStop });
     } catch (e) {
@@ -51,7 +58,17 @@ export function createRawImagesStore(fetchFn: FetchLike) {
 
   /** The images NASA lists for one rover stop (same sol, site and drive); none is an honest result. */
   const loadStop = (stop: { sol: number; site: number; drive: number; rmc: string }): Promise<void> =>
-    run(rawFeedUrlForSol(stop.sol), (all) => pickRawImages(imagesAtStop(all, stop.site, stop.drive), SHOWN), stop.rmc, `NASA lists no raw image for stop ${stop.rmc}`);
+    run(
+      rawFeedUrlForSol(stop.sol),
+      (all) => {
+        const sol = solCache.get(stop.sol) ?? all;
+        solCache.set(stop.sol, sol);
+        return pickRawImages(imagesAtStop(sol, stop.site, stop.drive), SHOWN);
+      },
+      stop.rmc,
+      `NASA lists no raw image for stop ${stop.rmc}`,
+      () => solCache.get(stop.sol) ?? null,
+    );
 
   /** Moves the selected image by `step`, wrapping around. */
   function step(by: number): void {

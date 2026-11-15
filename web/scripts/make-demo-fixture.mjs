@@ -377,7 +377,7 @@ r2Ret[r2Ret.length - 1] = { ...A };
 const T_AT_B = even(T_R2 + len(r2Out) / HUMAN.speed);
 const T_B_DONE = T_AT_B + SERVICE_B_S;
 const T_HOME = even(T_B_DONE + len(r2Ret) / HUMAN.speed);
-const T_END = T_HOME + 10;
+let T_END = T_HOME + 10; // extended below by the rover's photo tour
 
 // ------------------------------------------------------------------ POIs revealed by the survey (fictitious sites)
 const roverSl = slBelief2;
@@ -425,7 +425,7 @@ const ROVER_HEADING0 = 0.7;
  */
 const wrapPi = (a) => Math.atan2(Math.sin(a), Math.cos(a));
 const TURN_MIN_RAD = (5 * Math.PI) / 180;
-function drivePlan(pts, t0, heading, mode) {
+function drivePlan(pts, t0, heading, mode, speed = ROVER.speed, extra = {}) {
   const segs = [];
   let t = t0;
   let h = heading;
@@ -436,11 +436,11 @@ function drivePlan(pts, t0, heading, mode) {
     const dh = wrapPi(want - h);
     if (Math.abs(dh) > TURN_MIN_RAD) {
       const dur = Math.abs(dh) / ((ROVER.turn_deg_s * Math.PI) / 180);
-      segs.push({ t0: t, t1: t + dur, mode, turn: { at: pts[k - 1], from: h, by: dh } });
+      segs.push({ t0: t, t1: t + dur, mode, turn: { at: pts[k - 1], from: h, by: dh }, ...extra });
       t += dur;
     }
-    segs.push({ t0: t, t1: t + leg / ROVER.speed, mode, pts: [pts[k - 1], pts[k]] });
-    t += leg / ROVER.speed;
+    segs.push({ t0: t, t1: t + leg / speed, mode, pts: [pts[k - 1], pts[k]], speed, ...extra });
+    t += leg / speed;
     h = want;
   }
   return { segs, end: t, heading: h };
@@ -450,6 +450,43 @@ const T_ROVER_AT_C = even(roverOutPlan.end);
 const T_ROVER_DONE = T_ROVER_AT_C + SERVICE_C_S;
 const roverBackPlan = drivePlan(roverBack, T_ROVER_DONE, roverOutPlan.heading, 'RETURNING');
 const T_ROVER_HOME = even(roverBackPlan.end);
+
+// ------------------------------------------------------------------ photo tour
+// After the story ends, the rover drives through EVERY real Perseverance stop of the crop in the order
+// NASA's rover visited them (by sol), pausing at each so its mission images can be shown. Illustrative:
+// the speed is faster than real hardware and resource use is NOT modelled during the tour (the rover's
+// time and energy are held at their values when the tour starts).
+const TOUR = { speed: 2.0, dwell_s: 40 };
+const T_TOUR = even(Math.max(T_HOME, T_ROVER_HOME) + 20);
+const tourStops = stopsFile.stops;
+const snapStop = (p) => nearestFreeAt(p.x, p.y, ROVER.slope);
+function tourLeg(a, b) {
+  const sa = snapStop(a);
+  const sb = snapStop(b);
+  const path = sa && sb ? search(belief2, sigma2, ROVER.slope, sa, sb) : null;
+  return dropCollinear(path ? [a, ...path.slice(1, -1), b] : [a, b]);
+}
+const tourSegs = [];
+const tourArrival = [];
+let tourT = T_TOUR;
+let tourHeading = roverBackPlan.heading;
+let tourHere = { x: ROVER_HOME.x, y: ROVER_HOME.y };
+let tourStraightLegs = 0;
+for (const st of tourStops) {
+  const to = { x: st.x_m, y: st.y_m };
+  const pts = tourLeg(tourHere, to);
+  if (pts.length === 2 && dist(tourHere, to) > 60) tourStraightLegs += 1;
+  const plan = drivePlan(pts, tourT, tourHeading, 'MOVING', TOUR.speed, { tour: true });
+  tourSegs.push(...plan.segs);
+  tourT = plan.end;
+  tourHeading = plan.heading;
+  tourArrival.push(even(tourT));
+  tourSegs.push({ t0: tourT, t1: tourT + TOUR.dwell_s, mode: 'WORKING', tour: true });
+  tourT += TOUR.dwell_s;
+  tourHere = to;
+}
+const T_TOUR_END = even(tourT);
+T_END = T_TOUR_END + 10;
 
 // ------------------------------------------------------------------ routes
 function routeBudget(out, back, startT) {
@@ -502,7 +539,7 @@ function evalSegs(segs, t, speed, startPose) {
     if (t < s.t0) break;
     mode = s.mode;
     if (s.pts) {
-      const d = Math.min((Math.min(t, s.t1) - s.t0) * speed, len(s.pts));
+      const d = Math.min((Math.min(t, s.t1) - s.t0) * (s.speed ?? speed), len(s.pts));
       pose = pointAlong(s.pts, d);
     } else if (s.turn) {
       // Turn on the spot: position held, heading swept at a constant rate.
@@ -514,7 +551,7 @@ function evalSegs(segs, t, speed, startPose) {
 }
 function timeIn(segs, t, modes) {
   let sum = 0;
-  for (const s of segs) if (modes.has(s.mode)) sum += Math.max(0, Math.min(t, s.t1) - s.t0);
+  for (const s of segs) if (!s.tour && modes.has(s.mode)) sum += Math.max(0, Math.min(t, s.t1) - s.t0);
   return sum;
 }
 const MOVING = new Set(['MOVING', 'RETURNING']);
@@ -554,7 +591,9 @@ const roverSegs = [
   { t0: T_ROVER_AT_C, t1: T_ROVER_DONE, mode: 'WORKING' },
   ...roverBackPlan.segs,
   { t0: roverBackPlan.end, t1: T_ROVER_HOME, mode: 'RETURNING' },
-  { t0: T_ROVER_HOME, t1: Infinity, mode: 'IDLE' },
+  { t0: T_ROVER_HOME, t1: T_TOUR, mode: 'IDLE' },
+  ...tourSegs,
+  { t0: T_TOUR_END, t1: Infinity, mode: 'IDLE' },
 ];
 const heading0 = (to) => Math.atan2(to.y - A.y, to.x - A.x);
 
@@ -584,8 +623,9 @@ function roverAt(t) {
   const working = timeIn(roverSegs, t, new Set(['WORKING']));
   return {
     id: ROVER.id, kind: 'ROVER', mode, pose, z: heightAt(reference, pose.x, pose.y),
-    time: ROVER.time_budget_s - t,
-    energy: ROVER.energy_budget_wh - (moving + working) * ROVER.wh_moving - (t - moving - working) * ROVER.wh_idle,
+    // Resource use is not modelled during the photo tour: time and energy stay at their values at its start.
+    time: ROVER.time_budget_s - Math.min(t, T_TOUR),
+    energy: ROVER.energy_budget_wh - (moving + working) * ROVER.wh_moving - (Math.min(t, T_TOUR) - moving - working) * ROVER.wh_idle,
     oxygen: null,
   };
 }
@@ -633,6 +673,9 @@ ev(T_AT_B, 'TASK_STATE_CHANGED', { causality_id: goalOk, task_id: 'main:reach', 
 ev(T_B_DONE, 'TASK_STATE_CHANGED', { causality_id: goalOk, task_id: 'main:reach', agent_id: HUMAN.id, previous_state: 'EXECUTING', new_state: 'DONE', reason_code: 'PRIMARY_GOAL_COMPLETE', detail: 'Primary goal B completed.' });
 ev(T_B_DONE, 'MISSION_STATE_CHANGED', { causality_id: goalOk, previous_state: 'ACTIVE', new_state: 'RETURNING', reason_code: 'PRIMARY_GOAL_COMPLETE', detail: 'Returning to base A on the return leg of r2.' });
 ev(T_HOME, 'MISSION_STATE_CHANGED', { causality_id: r2Pub, previous_state: 'RETURNING', new_state: 'COMPLETE', reason_code: 'RETURNED_TO_BASE', detail: 'Astronaut back at base A. Goal completed, return verified under the model, no budget violation.' });
+const tourReq = ev(T_TOUR, 'TASK_DISCOVERED', { causality_id: 'tour-req', task_id: 'tour:stops', agent_id: ROVER.id, new_state: 'DISCOVERED', reason_code: 'PHOTO_TOUR', detail: `Photo tour: the rover will visit all ${tourStops.length} real Perseverance stops of this map (sol ${tourStops[0].sol} to ${tourStops.at(-1).sol}), in the order NASA's rover visited them. Illustrative speed; resource use is not modelled during the tour.` });
+ev(T_TOUR + DT, 'TASK_STATE_CHANGED', { causality_id: tourReq, task_id: 'tour:stops', agent_id: ROVER.id, previous_state: 'DISCOVERED', new_state: 'EXECUTING', reason_code: 'PHOTO_TOUR_STARTED', detail: 'Rover leaves base for the first real stop.' });
+ev(T_TOUR_END, 'TASK_STATE_CHANGED', { causality_id: tourReq, task_id: 'tour:stops', agent_id: ROVER.id, previous_state: 'EXECUTING', new_state: 'DONE', reason_code: 'PHOTO_TOUR_COMPLETE', detail: `Rover visited all ${tourStops.length} real stops.` });
 
 // ------------------------------------------------------------------ frames
 function missionAt(t) {
@@ -649,7 +692,12 @@ function missionAt(t) {
 const baseP = { x: A.x, y: A.y, z: r2d(heightAt(prior, A.x, A.y)) };
 const goalP = { x: B.x, y: B.y, z: r2d(heightAt(prior, B.x, B.y)) };
 const frames = [];
-for (let t = 0; t <= T_END; t += DT) {
+// Every 2 s during the story, every 4 s during the photo tour (only the rover moves then; the viewer
+// interpolates between samples).
+const frameTimes = [];
+for (let t = 0; t < T_END; t += t >= T_HOME + 10 ? 2 * DT : DT) frameTimes.push(t);
+frameTimes.push(T_END);
+for (const t of frameTimes) {
   const m = missionAt(t);
   const lastSeq = events.filter((e) => e.timestamp_sim_s <= t).reduce((s, e) => Math.max(s, e.seq), 0);
   frames.push({
@@ -704,6 +752,8 @@ const manifest = {
   geology: { file: 'geology.json' },
   // Real Perseverance stops inside the crop (scripts/extract-rover-waypoints.mjs); position and identifiers only.
   rover_stops: { file: 'rover_stops.json' },
+  // The rover's photo tour of every real stop (after the story ends). Illustrative speed; resources not modelled.
+  photo_tour: { agent_id: ROVER.id, start_s: T_TOUR, end_s: T_TOUR_END, stops: tourStops.length, speed_mps: TOUR.speed, dwell_s: TOUR.dwell_s },
   // Weather and radiation context (scripts/extract-atmosphere.mjs: MEDA, REMS, RAD). Display only.
   atmosphere: { file: 'atmosphere.json' },
   // Surroundings from the same CTX DTM (20 km, 100 m box average) and orthomosaic (40 m). Context only.
@@ -746,7 +796,8 @@ const roverStops = {
   source: stopsFile.source,
   base_stop: stopA?.rmc ?? null,
   goal_stop: stopB?.rmc ?? null,
-  stops: stopsFile.stops.map((st) => ({ ...st, z_m: r2d(heightAt(prior, st.x_m, st.y_m)) })),
+  tour: { agent_id: ROVER.id, start_s: T_TOUR, end_s: T_TOUR_END, speed_mps: TOUR.speed, dwell_s: TOUR.dwell_s },
+  stops: stopsFile.stops.map((st, k) => ({ ...st, z_m: r2d(heightAt(prior, st.x_m, st.y_m)), tour_arrival_s: tourArrival[k] })),
 };
 
 mkdirSync(OUT, { recursive: true });
@@ -777,4 +828,5 @@ console.log(`terrain: ${ROWS}x${COLS} @ ${RES} m, local z offset ${ZOFF} m, reli
 console.log(`A->B route r1 ${Math.round(L1)} m, r2 out ${Math.round(len(r2Out))} m, r2 back ${Math.round(len(r2Ret))} m, clearance ${routes[1].min_clearance_m} m`);
 console.log(`scarp: ${forbidden2.length} forbidden cells, max observed slope ${maxSlopeObserved.toFixed(1)} deg, ${observed.length} observed cells`);
 console.log(`rover budget ${ROVER.energy_budget_wh} Wh; C ${Math.round(C.l)} m (${wh(roverRoundTrip(C.l))}), D ${Math.round(D.l)} m (${wh(roverRoundTrip(D.l))}), usable ${wh(usable)}`);
+console.log(`photo tour: ${tourStops.length} stops, ${T_TOUR}s to ${T_TOUR_END}s, ${tourStraightLegs} long legs without a search path`);
 console.log(`times: obs ${T_OBS}s, invalid ${T_INVALID}s, replanned ${T_R2}s, at B ${T_AT_B}s, home ${T_HOME}s, end ${T_END}s, ${frames.length} frames, ${events.length} events`);

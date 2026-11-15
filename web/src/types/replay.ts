@@ -70,6 +70,8 @@ export interface ReplayManifest {
   context?: { file: string; image?: string };
   /** Real Perseverance stops inside the crop (scripts/extract-rover-waypoints.mjs): position and identifiers only. */
   rover_stops?: { file: string };
+  /** The rover's photo tour of every real stop, after the story: replay times and illustrative parameters. */
+  photo_tour?: { agent_id: string; start_s: number; end_s: number; stops: number; speed_mps: number; dwell_s: number };
   vertical_exaggeration_default: number;
   control_points: ControlPoint[];
   pois: PointOfInterest[];
@@ -138,6 +140,8 @@ export interface RoverStop {
   x_m: number;
   y_m: number;
   z_m: number;
+  /** Replay time (s) at which the rover arrives at this stop during the photo tour. */
+  tour_arrival_s?: number;
 }
 
 export interface RoverStops {

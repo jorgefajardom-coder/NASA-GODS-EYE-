@@ -19,7 +19,7 @@
     "tool": "Claude (Anthropic) through Claude Code",
     "observational_data": "Only the terrain heights come from NASA/USGS data; everything else here is simulated."
   },
-  "duration_s": 3046,
+  "duration_s": 22624,
   "local_z_offset_m": -2538,
   "imagery": {
     "file": "ctx_ortho.png",
@@ -42,6 +42,14 @@
   },
   "rover_stops": {
     "file": "rover_stops.json"
+  },
+  "photo_tour": {
+    "agent_id": "rover_1",
+    "start_s": 3056,
+    "end_s": 22614,
+    "stops": 226,
+    "speed_mps": 2,
+    "dwell_s": 40
   },
   "atmosphere": {
     "file": "atmosphere.json"

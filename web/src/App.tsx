@@ -19,7 +19,7 @@ import { MissionScene } from './components/MissionScene';
 import { FlatMap } from './components/FlatMap';
 import { DroneCamFrame } from './components/DroneCam';
 import { MarsNowFrame } from './components/MarsNow';
-import { stopUnderAgent } from './lib/roverStops';
+import { stopUnderAgent, tourStepTime } from './lib/roverStops';
 import { resourceAlert } from './lib/resourceAlert';
 import { SCAN_CONFIG } from './scanner/ScanConfig';
 import { triggerScan } from './scanner/ScanController';
@@ -227,12 +227,39 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const povStop = povAgent ? stopUnderAgent(roverStops, povAgent.pose.position.x, povAgent.pose.position.y, povAgent.mode) : null;
   const povStopId = povStop?.rmc ?? null;
   const [closedStop, setClosedStop] = useState<string | null>(null);
+  // The rover's photo tour of every real stop: drives the rover through them (the replay has that phase
+  // after the story) and opens each stop's images on arrival. The button is the person's request for them.
+  const photoTour = m.photo_tour ?? null;
+  const [tourOn, setTourOn] = useState(false);
+  const startTour = () => {
+    if (!photoTour) return;
+    setTourOn(true);
+    followAgent(photoTour.agent_id);
+    setFirstPerson(true);
+    setClosedStop(null);
+    setMarsNow(true);
+    setSpeed(10);
+    setT(photoTour.start_s);
+    setPlaying(true);
+  };
+  const stepTour = (dir: 1 | -1) => {
+    const to = tourStepTime(roverStops, t, dir);
+    if (to != null) setT(to);
+  };
+  // Following sets 1x; the tour is long, so it plays at the top speed (the person can change it).
+  useEffect(() => {
+    if (tourOn && follow) setSpeed(10);
+  }, [tourOn, follow]);
+  useEffect(() => {
+    if (tourOn && photoTour && t >= photoTour.end_s) setTourOn(false);
+  }, [tourOn, photoTour, t]);
   useEffect(() => {
     if (!povStopId) setClosedStop(null); // left the stop: the next arrival opens it again
     else if (povStopId !== closedStop) setMarsNow(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [povStopId]);
-  const povAlert = povAgent ? resourceAlert(resourceLines(bundle, t, povAgent, view.activeRoute, budgets[povAgent.agent_id]), budgets[povAgent.agent_id], view.activeRoute, povAgent.agent_id, povAgent.pose.position) : null;
+  // No resource alert on the photo tour: its resource use is not modelled.
+  const povAlert = povAgent && !tourOn ? resourceAlert(resourceLines(bundle, t, povAgent, view.activeRoute, budgets[povAgent.agent_id]), budgets[povAgent.agent_id], view.activeRoute, povAgent.agent_id, povAgent.pose.position) : null;
   // While following, picking another agent in the list moves the camera to it.
   useEffect(() => {
     if (follow && sel.kind === 'agent' && sel.id && sel.id !== camView) setCamView(sel.id);
@@ -403,7 +430,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           alert={povAlert}
           droneCam={showDroneCam && drone ? <DroneCamFrame droneId={drone.agent_id} onClose={() => setDroneCam(false)} bundle={bundle} view={view} /> : null}
           droneCamOn={showDroneCam}
-          marsNow={marsNow ? <MarsNowFrame stop={povStop} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} /> : null}
+          marsNow={marsNow ? <MarsNowFrame stop={povStop} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: () => { setTourOn(false); setPlaying(false); } } : null} /> : null}
           stops={roverStops}
           marsNowOn={marsNow}
           onMarsNow={() => setMarsNow((v) => !v)}
@@ -455,6 +482,11 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             <button type="button" className="chip" aria-pressed={freePan} onClick={() => setFreePan((g) => !g)} title="On: left drag slides the map, right drag orbits. Off: left drag orbits, right drag slides. Wheel zooms.">
               <kbd>G</kbd> Grab map
             </button>
+            {photoTour && (
+              <button type="button" className="chip" aria-pressed={tourOn} onClick={tourOn ? () => { setTourOn(false); setPlaying(false); } : startTour} title="The rover drives through every real Perseverance stop of this map and shows NASA's images of each (needs a network; illustrative speed)">
+                Photo tour
+              </button>
+            )}
             <button type="button" className="chip" onClick={playPause}>
               <kbd>Space</kbd> {playing ? 'Pause' : 'Play'}
             </button>

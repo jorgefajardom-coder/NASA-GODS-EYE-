@@ -37,5 +37,16 @@ export function stopUnderAgent(stops: readonly RoverStop[], x: number, y: number
   return stopsNear(stops, x, y, STOP_ARRIVE_M)[0]?.stop ?? null;
 }
 
+/**
+ * Replay time of the next (dir 1) or previous (dir -1) stop of the photo tour, or null when there is
+ * none. Going back from within a few seconds of an arrival jumps to the stop before it.
+ */
+export function tourStepTime(stops: readonly RoverStop[], t: number, dir: 1 | -1): number | null {
+  const times = stops.map((s) => s.tour_arrival_s).filter((v): v is number => typeof v === 'number').sort((a, b) => a - b);
+  if (dir > 0) return times.find((v) => v > t + 1) ?? null;
+  const before = times.filter((v) => v < t - 5);
+  return before.length ? before[before.length - 1] : null;
+}
+
 /** Short label: "sol 13 · stop 3_0". */
 export const stopLabel = (s: RoverStop): string => `sol ${s.sol} · stop ${s.rmc}`;
