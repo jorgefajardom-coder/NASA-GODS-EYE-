@@ -1634,6 +1634,64 @@
         "evidence/pr38-data-reconciliation-20261115"
       ],
       "use": "Require an actual canonical DEM before auxiliary generation, bind optional visual layers to dataset/full geometry/axes/prior checksum, constrain paths and validate hashes and array/PNG contents, bound HTTP Range reads before body consumption, and classify DN/slope categories as unapproved visual proxies. Existing acquired NPZ/PNG/geology bytes and scientific parameters are unchanged. No new observations, NASA data, traversability approval or LIVE mission."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "height_contract_reconciliation",
+      "generation": "AI-assisted runtime code, display geometry, regression tests and verification documentation",
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/CONTRACT_BASELINE.md",
+        "docs/ICD.md",
+        "docs/ai_usage.json",
+        "docs/decisions/2026-11-14-delivery-freeze.md",
+        "docs/delivery_closure_plan.md",
+        "docs/height_reconciliation_handoff.md",
+        "scripts/record_estimated_recovery.sh",
+        "src/mge_bringup/config/agents.yaml",
+        "src/mge_bringup/config/agents_jezero.yaml",
+        "src/mge_planning/mge_planning/adapter.py",
+        "src/mge_sim/mge_sim/executor.py",
+        "src/mge_sim/mge_sim/initial_conditions.py",
+        "src/mge_sim/mge_sim/kinematics.py",
+        "src/mge_sim/mge_sim/mock_agents.py",
+        "src/mge_sim/package.xml",
+        "tests/contract/test_executor_height.py",
+        "tests/integration/ground_fixture.py",
+        "tests/integration/test_estimated_exploration.py",
+        "tests/integration/test_vertical_execution.py",
+        "tests/planning/test_adapter.py",
+        "tests/planning/test_simulated_ground_initialization.py",
+        "tests/unit/test_initial_conditions.py",
+        "tests/unit/test_kinematics.py",
+        "web/src/components/AgentLayer.tsx",
+        "web/src/components/BaseModel.tsx",
+        "web/src/components/MissionScene.tsx",
+        "web/src/components/PovRoute.tsx",
+        "web/src/components/TerrainView.tsx",
+        "web/src/lib/terrainSurface.ts",
+        "web/tests/terrainSurface.test.ts"
+      ],
+      "use": "Initialize a new explicitly SIMULATED public-prior scene with a parked drone; preserve finite XYZ in execution; bind planner snapshot georeference/provenance; co-register the animated rendered mesh and display consumers. Preserve old recordings and scientific, physical and three-role acceptance gates. New recorder output is MOCK software evidence, not observational NASA data or validated LIVE execution."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "height_recovery_recording_and_presentation",
+      "generation": "AI-assisted recording workflow, SIMULATED test observation, code, tests and evidence receipts",
+      "paths": [
+        "README.md",
+        "web/README.md",
+        "web/src/App.tsx",
+        "web/src/data/replayAdapter.ts",
+        "web/tests/recordedEntry.test.ts",
+        "web/tests/recordedRecoveryPackage.test.ts",
+        "web/public/replay/recorded-recovery-002",
+        "evidence/height-reconciliation-20261115",
+        "docs/height_reconciliation_handoff.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Expose an exact separately identified MOCK software recovery recording and verify its runtime source hashes, initial parked-drone height, stop/replan/return and offline consumer. Preserve authoritative XYZ, the historical package and the six illustrative selector entries. No observational NASA data, physical validation or complete three-agent mission is generated; analytical pilot publication gates are unchanged."
     }
   ],
   "generated_media": [

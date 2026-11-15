@@ -267,4 +267,3 @@ def test_auxiliary_layers_can_be_removed_without_affecting_default_terrain(tmp_p
     tile = load_public_terrain(sample_copy / "manifest.json")
     assert tile.prior.shape == (32, 32)
     assert load_auxiliary_terrain_layers(sample_copy / "manifest.json", tile=tile, strict=False) is None
-
