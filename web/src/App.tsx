@@ -385,7 +385,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           route={view.activeRoute}
           dial={radialHud}
           alert={povAlert}
-          droneCam={showDroneCam && drone ? <DroneCamFrame droneId={drone.agent_id} onClose={() => setDroneCam(false)} /> : null}
+          droneCam={showDroneCam && drone ? <DroneCamFrame droneId={drone.agent_id} onClose={() => setDroneCam(false)} bundle={bundle} view={view} /> : null}
           droneCamOn={showDroneCam}
           canDroneCam={canDroneCam}
           onDroneCam={() => setDroneCam((v) => !v)}

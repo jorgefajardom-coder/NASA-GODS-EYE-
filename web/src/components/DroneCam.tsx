@@ -1,5 +1,8 @@
 import { useFrame, useThree } from '@react-three/fiber';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { ReplayBundle } from '../types/replay';
+import type { ReplayView } from '../lib/replay';
+import { DroneMap } from './DroneMap';
 import * as THREE from 'three';
 
 /**
@@ -72,23 +75,35 @@ export function DroneCamRenderer({ droneName }: { droneName: string | null }) {
   return null;
 }
 
-/** Frame of the drone camera window (transparent inside: the canvas shows through). */
-export function DroneCamFrame({ droneId, onClose, className = '' }: { droneId: string; onClose: () => void; className?: string }) {
+/** Frame of the drone window: CAM (transparent inside, the canvas draws the drone's view) or MAP (the drone's survey map). */
+export function DroneCamFrame({ droneId, onClose, className = '', bundle, view }: { droneId: string; onClose: () => void; className?: string; bundle: ReplayBundle; view: ReplayView }) {
+  const [tab, setTab] = useState<'cam' | 'map'>('cam');
+  // The 3D window is drawn only on the CAM tab; the MAP tab is a 2D canvas.
+  useEffect(() => () => void (droneCamSlot.el = null), []);
   return (
     <div
-      className={`dronecam ${className}`}
+      className={`dronecam dronecam--${tab} ${className}`}
       ref={(el) => {
-        droneCamSlot.el = el;
+        droneCamSlot.el = tab === 'cam' ? el : null;
       }}
-      role="img"
-      aria-label={`Drone camera of ${droneId}: the replayed flight seen from under the drone, looking ahead`}
+      role="group"
+      aria-label={`Drone window of ${droneId}`}
     >
+      {tab === 'map' && <DroneMap bundle={bundle} view={view} droneId={droneId} />}
       <span className="dronecam__label">
-        <i aria-hidden /> Drone cam · {droneId}
+        <i aria-hidden /> Drone · {droneId}
       </span>
-      <span className="dronecam__src">Replay · simulated pose</span>
-      <span className="dronecam__cross" aria-hidden />
-      <button type="button" className="dronecam__close" onClick={onClose} title="Close the drone camera (C)">
+      <span className="dronecam__tabs" role="tablist" aria-label="Drone window view">
+        <button type="button" role="tab" aria-selected={tab === 'cam'} onClick={() => setTab('cam')} title="Drone camera: the replayed flight seen from the drone">
+          Cam
+        </button>
+        <button type="button" role="tab" aria-selected={tab === 'map'} onClick={() => setTab('map')} title="Drone map: the terrain the drone has surveyed so far (simulated observations in the replay, not a LiDAR measurement)">
+          Map
+        </button>
+      </span>
+      <span className="dronecam__src">{tab === 'cam' ? 'Replay · simulated pose' : 'Simulated survey · replay, not LiDAR'}</span>
+      {tab === 'cam' && <span className="dronecam__cross" aria-hidden />}
+      <button type="button" className="dronecam__close" onClick={onClose} title="Close the drone window (C)">
         ×
       </button>
     </div>
