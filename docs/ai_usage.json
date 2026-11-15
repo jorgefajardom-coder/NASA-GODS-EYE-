@@ -1623,6 +1623,18 @@
         "evidence/planner-terrain-local"
       ],
       "use": "Generate synthetic analytical terrain tests and non-authorizing raster diagnostics; record real computational outcomes. No NASA observation, operational activation, scientific approval or physical certification."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "synthetic_local_surface_experiment",
+      "paths": [
+        "src/mge_planning/mge_planning/local_surface.py",
+        "tests/planning/test_local_surface.py",
+        "docs/planner_terrain_mobility_f02.md",
+        "docs/planner_handoff.md",
+        "evidence/planner-terrain-f02"
+      ],
+      "use": "Generate explicit synthetic cell-surface fixtures and Python-only reuse of unchanged A* with full evidence checks. Record actual software estimates and tests. No physical observations, operational activation or scientific approval."
     }
   ],
   "generated_media": [

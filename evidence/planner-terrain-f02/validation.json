@@ -1,0 +1,33 @@
+{
+  "base": "d162cd869409381bf5b3e10bf31ed8db6cf064f6",
+  "branch": "feat/planner-terrain-mobility-experiment",
+  "new_cases_passed": 76,
+  "full_passed": 1344,
+  "full_failed": 0,
+  "full_skipped": 22,
+  "full_warning": "Existing Starlette/httpx deprecation",
+  "python": "3.12.3 (tags/v3.12.3:f6650f9, Apr  9 2024, 14:05:25) [MSC v.1938 64 bit (AMD64)]",
+  "packages": {
+    "pytest": "8.4.2",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  },
+  "command": "python -m pytest -q -o junit_family=xunit1 --basetemp=tmp/f02-verified --junitxml=tmp/f02-verified.xml",
+  "sha256": {
+    "src/mge_planning/mge_planning/local_surface.py": "48fc1ae15e2421bea80704ab47612dea788e23f1cd0ea1978e6143cdc42a1ca9",
+    "tests/planning/test_local_surface.py": "4db21723fddecf7eb8e20754b191896dcdaefaa3ff9b1888acddf47924a61289",
+    "src/mge_planning/mge_planning/core.py": "4decebff1b0b0a1bfcb0f29c8e82dc314ddf1af05440fa8070359ad42deb8662",
+    "src/mge_planning/mge_planning/replan.py": "96bf1073633645e3352f158f3416f614ed95d741f534de735460c9d762cc359b",
+    "src/mge_planning/mge_planning/resource_costs.py": "4c5b15d6452bdc9f667f9835f7a0980f34097a80c0b7226dd91eecdebf93c8d7",
+    "config/science_profiles.proposed.json": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea"
+  },
+  "historical_evidence": "All earlier evidence directories retain their original source revisions. No fresh ROS or web execution: no shared execution/ROS paths changed. Existing Python contracts and actual Python MissionManager consumers are included in full run.",
+  "scope": "Synthetic computational surface model only; no operational or physical acceptance.",
+  "full_junit_sha256": "6448d4a9663e5bd71af7e29ffe38f6cd72d987746dd4e761bd02f008c131466d",
+  "checks": {
+    "repository": "passed",
+    "diff_check": "passed; repeated at staging gate",
+    "shared_sources_unchanged": true,
+    "prepared_branch": "d737e0fa969746a69cf0b141aa50e52eaf642e7f"
+  }
+}

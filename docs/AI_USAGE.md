@@ -892,3 +892,7 @@ OpenAI Codex assisted tests/planning/test_mvp_mission_consumer.py, docs/planner_
 ## F-TERRAIN-01 local diagnostics
 
 OpenAI Codex assisted terrain_diagnostics.py, test_terrain_diagnostics.py, planner_terrain_mobility_review.md and evidence/planner-terrain-local. All new terrain and paired jump samples are explicitly synthetic analytical fixtures. Diagnostics do not authorize routes or alter production admission, profiles, science equations, mapping, public data or ROS. Computation timings are local software measurements, not physical mobility validation.
+
+## F-TERRAIN-02 synthetic local-surface experiment
+
+OpenAI Codex assisted local_surface.py, test_local_surface.py, planner_terrain_mobility_f02.md, planner handoff and evidence/planner-terrain-f02. Analytic synthetic grids and explicit trial parameters exercise the unchanged A* on a fine raster. All outputs are software estimates and diagnostics, not Mars observations or physical certification. No production default, shared core, scientific coefficients, MissionManager, ROS, public data or frozen delivery revision is altered.

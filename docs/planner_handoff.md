@@ -1,5 +1,13 @@
 # Diego's planner handoff
 
+F-TERRAIN-02 is LOCAL ONLY on the terrain experiment branch. See
+planner_terrain_mobility_f02.md and evidence/planner-terrain-f02:76 new synthetic
+cases and full1344 passed/22 skipped. Unmodified A* runs on an explicit complete
+fine synthetic surface; original step/slope/resource gates remain. Only its
+returned filtered evaluation_grid can be used for subsequent policy checks.
+Measured/orbital runtime providers, physical evidence and owner approvals remain
+blocked. No ROS activation, frozen-delivery change or publication.
+
 MVP-PL-01 local validation over d81407de: actual scientific Python A* candidates
 are now exercised against the unchanged real MissionManager in twelve synthetic
 consumer cases. FAST/SAFE, explicit inspect, directed return, remaining resources,
