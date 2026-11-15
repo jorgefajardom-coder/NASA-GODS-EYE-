@@ -34,6 +34,7 @@ import { EventInspector } from './components/EventInspector';
 import { GeologyDetails, GeologyList } from './components/GeologyPanel';
 import { AtmosDetails, AtmosList } from './components/AtmosPanel';
 import { Minimap } from './components/Minimap';
+import { SitesList } from './components/SitesList';
 import { Timeline } from './components/Timeline';
 import { CameraBar } from './components/CameraBar';
 import { FirstPersonHud } from './components/FirstPersonHud';
@@ -411,7 +412,10 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           ) : mode === 'atmos' ? (
             <AtmosList data={bundle.atmosphere} t={t} duration={duration} />
           ) : (
-            <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
+            <>
+              <ManagementList groups={groups} selected={sel} onSelect={setSelection} />
+              <SitesList pois={m.pois} t={t} from={agent?.pose.position ?? null} />
+            </>
           )}
           <CameraBar
             agents={view.state?.agents ?? []}

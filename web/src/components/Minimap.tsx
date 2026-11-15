@@ -5,6 +5,7 @@ import type { Point } from '../types/icd';
 import { tacticalBase } from '../lib/tacticalMap';
 import { yawFromQuaternion } from '../lib/coords';
 import { headingFromNorth } from '../lib/management';
+import { drawSiteIcon, siteKind } from '../lib/siteKinds';
 
 const DEFAULT_SIZE = 168;
 /** Ground radius shown around the agent (m). */
@@ -89,8 +90,7 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     }
     for (const p of bundle.manifest.pois.filter((q) => q.revealed_at_s <= view.t)) {
       const [x, y] = toPx(p.position);
-      g.fillStyle = '#E8F4FF';
-      g.fillRect(x - 2.5, y - 2.5, 5, 5);
+      drawSiteIcon(g, p.kind, x, y, 13, siteKind(p.kind).color);
     }
     for (const a of view.state?.agents ?? []) {
       if (a.agent_id === agent?.agent_id) continue;

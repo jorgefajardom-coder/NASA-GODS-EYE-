@@ -7,13 +7,14 @@ import { povState } from './FirstPersonCamera';
 import { fmtM } from './PovRoute';
 import type { ResourceAlert } from '../lib/resourceAlert';
 import { TerrainScanButton } from './TerrainScanButton';
+import { SiteIcon } from './SiteIcon';
+import { siteKind } from '../lib/siteKinds';
 
 /** Visible width of the compass tape (deg either side of the heading). */
 const TAPE_HALF_DEG = 60;
 const CARDINALS: Array<[number, string]> = [
   [0, 'N'], [45, 'NE'], [90, 'E'], [135, 'SE'], [180, 'S'], [225, 'SW'], [270, 'W'], [315, 'NW'],
 ];
-const POI_LABEL: Record<string, string> = { base: 'BASE', primary_goal: 'GOAL', poi: 'POI' };
 
 interface Props {
   agent: AgentState;
@@ -55,7 +56,7 @@ export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, 
   const pitch = useRef<HTMLSpanElement>(null);
   const marks = useRef<HTMLDivElement>(null);
   const pos = agent.pose.position;
-  const sites = pois.map((p) => ({ id: p.id, kind: p.kind, bearing: bearingDeg(pos.x, pos.y, p.position.x, p.position.y), dist: Math.hypot(p.position.x - pos.x, p.position.y - pos.y) }));
+  const sites = pois.map((p) => ({ id: p.id, label: p.label, kind: p.kind, bearing: bearingDeg(pos.x, pos.y, p.position.x, p.position.y), dist: Math.hypot(p.position.x - pos.x, p.position.y - pos.y) }));
   const base = sites.find((x) => x.kind === 'base') ?? null;
   const sitesRef = useRef(sites);
   sitesRef.current = sites;
@@ -110,9 +111,9 @@ export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, 
         </div>
         <div className="pov__sites" ref={marks}>
           {sites.map((s) => (
-            <span key={s.id} className={`pov__site pov__site--${s.kind}`} title={`${POI_LABEL[s.kind] ?? s.kind} ${s.id}: bearing ${s.bearing.toFixed(0)}°, ${s.dist.toFixed(0)} m (straight line)`}>
-              <i aria-hidden />
-              <b>{POI_LABEL[s.kind] ?? 'SITE'} {s.id}</b>
+            <span key={s.id} className={`pov__site pov__site--${s.kind}`} style={{ color: siteKind(s.kind).color }} title={`${siteKind(s.kind).title} ${s.label}: bearing ${s.bearing.toFixed(0)}°, ${s.dist.toFixed(0)} m (straight line)`}>
+              <SiteIcon kind={s.kind} size={16} />
+              <b>{s.label}</b>
               <em>{s.dist >= 1000 ? `${(s.dist / 1000).toFixed(2)} km` : `${s.dist.toFixed(0)} m`}</em>
             </span>
           ))}

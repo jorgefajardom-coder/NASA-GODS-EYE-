@@ -22,7 +22,7 @@ export interface ControlPoint {
 export interface PointOfInterest {
   id: string;
   label: string;
-  kind: 'base' | 'primary_goal' | 'poi';
+  kind: 'base' | 'primary_goal' | 'poi' | 'science' | 'landmark' | 'landing';
   position: Point;
   /** Simulated time at which the POI becomes known. Base and goal are known from t=0. */
   revealed_at_s: number;

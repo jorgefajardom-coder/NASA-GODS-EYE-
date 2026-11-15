@@ -4,6 +4,7 @@ import type { ReplayView } from '../lib/replay';
 import type { Point } from '../types/icd';
 import { tacticalBase } from '../lib/tacticalMap';
 import type { RenderTier } from '../lib/gpu';
+import { drawSiteIcon, siteKind } from '../lib/siteKinds';
 
 const KIND_COLOR = { HUMAN: '#E8F4FF', DRONE: '#65CBE8', ROVER: '#D8AD66' } as const;
 
@@ -84,10 +85,9 @@ export function FlatMap({ bundle, view, selectedAgentId, reason }: { bundle: Rep
     g.textBaseline = 'middle';
     for (const p of bundle.manifest.pois.filter((q) => q.revealed_at_s <= view.t)) {
       const [x, y] = toPx(p.position);
-      g.fillStyle = p.kind === 'base' ? '#F0A050' : '#E8F4FF';
-      g.fillRect(x - 3.5, y - 3.5, 7, 7);
+      drawSiteIcon(g, p.kind, x, y, 16, siteKind(p.kind).color);
       g.fillStyle = 'rgba(232,244,255,0.85)';
-      g.fillText(p.label, x + 7, y);
+      g.fillText(p.label, x + 11, y);
     }
     for (const a of view.state?.agents ?? []) {
       const [x, y] = toPx(a.pose.position);
