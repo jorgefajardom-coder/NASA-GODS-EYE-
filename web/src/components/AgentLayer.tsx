@@ -29,6 +29,8 @@ interface Props {
   t: number;
   verticalExaggeration: number;
   showLabels: boolean;
+  /** Agent whose label is hidden (seen from inside in the first-person view). */
+  hideLabelFor?: string | null;
   /** Replay running; freezes the walk cycle when false. */
   playing: boolean;
   /** Replay speed multiplier and per-agent simulated ground speed, for the walk cycle rate. */
@@ -48,7 +50,7 @@ interface Props {
  * Models are enlarged with camera distance so they stay readable on a 2 km map; the
  * enlargement is visual only and does not change any position.
  */
-export function AgentLayer({ agents, t, verticalExaggeration, showLabels, playing, replaySpeed, speeds, selectedId, groundHeight, trueScale }: Props) {
+export function AgentLayer({ agents, t, verticalExaggeration, showLabels, hideLabelFor = null, playing, replaySpeed, speeds, selectedId, groundHeight, trueScale }: Props) {
   // Drawn ground height at a Three.js (x, z), for the rover's per-wheel suspension.
   const groundAtWorld = useMemo(
     () => (x: number, z: number) => {
@@ -113,7 +115,7 @@ export function AgentLayer({ agents, t, verticalExaggeration, showLabels, playin
                   </Suspense>
                 </ModelBoundary>
               )}
-              {showLabels && (
+              {showLabels && a.agent_id !== hideLabelFor && (
                 <Html position={[0, LABEL_HEIGHT_M[a.agent_kind], 0]} center zIndexRange={LABEL_Z} className={`agent-label agent-label--${a.agent_kind.toLowerCase()}`}>
                   <strong>{KIND_LABEL[a.agent_kind]}</strong> <span>{a.mode.toLowerCase()}</span>
                 </Html>

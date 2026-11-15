@@ -1,0 +1,65 @@
+name: Publish web viewer
+
+# Builds the offline replay viewer from main and publishes it to the gh-pages branch, which
+# GitHub Pages serves (https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/). It replaces the
+# manual "chore(pages): publish the web viewer build" commits. The build only contains the public
+# sample replays (data/sample/replay); the evaluator reference (data/reference) is never copied.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'data/sample/replay/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: web/.nvmrc
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Test and build
+        working-directory: web
+        run: |
+          npm ci
+          npm test
+          npm run build
+      - name: Refuse to publish evaluator-only data
+        run: |
+          if [ -d web/dist/evaluator ] || grep -rl '"reference"' web/dist/replay 2>/dev/null | grep -q .; then
+            echo "Evaluator reference found in the build; refusing to publish." >&2
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: pages
+      - name: Commit the build to gh-pages
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          rsync -a --delete --exclude .git web/dist/ pages/
+          touch pages/.nojekyll
+          cd pages
+          git add -A
+          if git diff --cached --quiet; then
+            echo "The published site is already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "chore(pages): publish the web viewer build from main ${SHA::7}"
+          git push origin gh-pages

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from './types/replay';
-import { assetUrl, loadEvaluatorReference, loadReplay } from './data/replayAdapter';
+import { assetUrl, DEFAULT_RUN_ENTRY, RECORDED_RECOVERY_ENTRY, loadEvaluatorReference, loadReplay } from './data/replayAdapter';
 import { REFERENCE_SOURCES } from './data/referenceSources';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from './lib/smoothing';
 import { firstMotionTime, viewAt } from './lib/replay';
@@ -29,6 +29,12 @@ import { AtmosDetails, AtmosList } from './components/AtmosPanel';
 import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
 import { CameraBar } from './components/CameraBar';
+import { FirstPersonHud, POV_MINIMAP_PX } from './components/FirstPersonHud';
+import type { ScanRequest } from './components/DroneScan';
+import { scanCells, scanSummary, type ScanClass } from './lib/scan';
+import { slopeDegrees } from './lib/slope';
+import { displayState } from './lib/provenance';
+import { aboutData, stateSnapshot } from './lib/stateSnapshot';
 import { Intro, introWanted } from './components/Intro';
 import { PORTRAITS } from './lib/portraits';
 import { rotateView, ROTATE_STEP_RAD } from './components/ViewRotator';
@@ -38,7 +44,8 @@ import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './c
 const params = new URLSearchParams(window.location.search);
 /** Evaluator view shows the hidden reference DEM. Off by default; enable with ?evaluator=1. */
 const EVALUATOR = params.get('evaluator') === '1';
-const RUN_ID = params.get('run') ?? 'demo';
+// The URL/selector identifies a package folder; its recorded run_id is kept intact.
+const RUN_ID = params.get('run') ?? DEFAULT_RUN_ENTRY;
 const RUN_DIR = `replay/${RUN_ID}`;
 
 type Load = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; bundle: ReplayBundle };
@@ -91,10 +98,34 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showControlPoints, setShowControlPoints] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
   // Intro clip first (unless reduced motion or ?nointro=1); the terrain grows in once it ends.
-  const [introDone, setIntroDone] = useState(() => !introWanted());
+  const [introDone, setIntroDone] = useState(() => RUN_ID === RECORDED_RECOVERY_ENTRY || !introWanted());
   // Camera: 'free' (map), 'base', or the id of the agent it follows.
   const [camView, setCamView] = useState<string>('free');
   const follow = camView !== 'free' && camView !== 'base';
+  // First or third person while following an agent (V toggles; no effect on the free/base cameras).
+  const [firstPerson, setFirstPerson] = useState(false);
+  const pov = follow && firstPerson;
+  // First-person camera sway: a per-viewer preference, off by default with reduced motion.
+  const [povSway, setPovSwayState] = useState<boolean>(() => {
+    try {
+      const v = localStorage.getItem('mge.povSway');
+      if (v === '1' || v === '0') return v === '1';
+    } catch {
+      /* per-viewer convenience only */
+    }
+    return !(typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+  });
+  const setPovSway = useCallback((v: boolean) => {
+    setPovSwayState(v);
+    try {
+      localStorage.setItem('mge.povSway', v ? '1' : '0');
+    } catch {
+      /* per-viewer convenience only */
+    }
+  }, []);
+  // Drone-camera scan (display only): orbital slope bands around the drone, see lib/scan.
+  const slope = useMemo(() => slopeDegrees(bundle.rasters.prior, m.terrain_meta.rows, m.terrain_meta.cols, m.terrain_meta.resolution_m), [bundle, m.terrain_meta]);
+  const [scan, setScan] = useState<(ScanRequest & { counts: Record<ScanClass, number>; fromId: string }) | null>(null);
   // Grab-to-drag is the default for the free camera: left drag slides the map, right drag orbits.
   const [freePan, setFreePan] = useState(true);
   // The follow view plays at 1x so the walk is drawn at its natural pace (legs synced to the
@@ -172,6 +203,13 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   }, []);
   const setFollow = useCallback((on: boolean) => setCamView(on && agentId ? agentId : 'free'), [agentId]);
   const hasBase = m.pois.some((p) => p.kind === 'base');
+  const drone = view.state?.agents.find((a) => a.agent_kind === 'DRONE') ?? null;
+  const runScan = useCallback(() => {
+    if (!drone) return;
+    const { x, y } = drone.pose.position;
+    const marks = scanCells(m.terrain_meta, slope, x, y);
+    setScan((prev) => ({ seq: (prev?.seq ?? 0) + 1, x, y, marks, counts: scanSummary(marks), fromId: drone.agent_id }));
+  }, [drone, m.terrain_meta, slope]);
   // While following, picking another agent in the list moves the camera to it.
   useEffect(() => {
     if (follow && sel.kind === 'agent' && sel.id && sel.id !== camView) setCamView(sel.id);
@@ -224,12 +262,34 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'Home') restart();
       else if (e.code === 'KeyF') setFollow(!follow);
       else if (e.code === 'KeyG') setFreePan((g) => !g);
+      else if (e.code === 'KeyV') setFirstPerson((v) => !v);
+      else if (e.code === 'KeyB' && pov) setPovSway(!povSway);
+      else if (e.code === 'KeyR') runScan();
       else if (e.code === 'KeyQ') rotateView(-ROTATE_STEP_RAD);
       else if (e.code === 'KeyE') rotateView(ROTATE_STEP_RAD);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [playPause, seek, restart, t, follow, setFollow]);
+  }, [playPause, seek, restart, t, follow, setFollow, runScan, pov, povSway, setPovSway]);
+
+  // Machine-readable view of the replay for language models and test agents: window.mge.state()
+  // returns what is on screen as JSON (see public/llms.txt). Read-only; it changes nothing.
+  const snapshotInput = useRef({ view, playing, speed, mode, layer, camView, pov });
+  snapshotInput.current = { view, playing, speed, mode, layer, camView, pov };
+  useEffect(() => {
+    const w = window as unknown as { mge?: unknown };
+    w.mge = {
+      about: aboutData(bundle),
+      docs: { llms: './llms.txt', about: './about.html' },
+      state: () => {
+        const c = snapshotInput.current;
+        return stateSnapshot(bundle, c.view, { playing: c.playing, speed: c.speed, tab: c.mode, layer: c.layer, camera: c.camView, firstPerson: c.pov });
+      },
+    };
+    return () => {
+      delete w.mge;
+    };
+  }, [bundle]);
 
   // The footer wraps to more lines on narrow screens; the panels above it sit on its measured height.
   const appRef = useRef<HTMLDivElement>(null);
@@ -243,7 +303,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   }, []);
 
   return (
-    <div className="app" ref={appRef}>
+    <div className={`app${pov ? ' app--pov' : ''}`} ref={appRef}>
       <MissionScene
         bundle={bundle}
         view={view}
@@ -267,15 +327,37 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         showContext={showContext}
         geology={mode === 'geology' && showGeoMap && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
         cutaway={mode === 'geology' && showCut && bundle.geology ? bundle.geology : null}
+        firstPerson={firstPerson}
+        scan={scan}
+        povSway={povSway}
       />
       <div className="vignette" aria-hidden />
+      {pov && agent && (
+        <FirstPersonHud
+          agent={view.state?.agents.find((a) => a.agent_id === camView) ?? agent}
+          terrainMeta={m.terrain_meta}
+          sourceLabel={displayState({ mode: 'REPLAY', source: m.source_mode ?? 'UNKNOWN' }).label}
+          pois={m.pois.filter((p) => p.revealed_at_s <= t)}
+          lines={hudLines}
+          budget={budgets[camView]}
+          scan={scan}
+          canScan={!!drone}
+          onScan={runScan}
+          onExit={() => setFirstPerson(false)}
+          route={view.activeRoute}
+          minimap={<Minimap bundle={bundle} view={view} agentId={camView} size={POV_MINIMAP_PX} />}
+          sway={povSway}
+          onSway={setPovSway}
+        />
+      )}
       {!introDone && <Intro onDone={() => setIntroDone(true)} />}
 
-      <div className="overlay">
+      {/* The interface waits behind the intro, then enters (panels slide in, the dial spins in). */}
+      <div className={`overlay ${introDone ? 'overlay--enter' : 'overlay--waiting'}`}>
         <div className="left">
           <TitleBlock manifest={m} runId={RUN_ID} />
           <ModeTabs mode={mode} onMode={setMode} />
-          <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR && !!bundle.rasters.reference} />
+          <LayerStrip layer={layer} onLayer={setLayer} evaluator={EVALUATOR && !!bundle.rasters.reference} terrainMeta={m.terrain_meta} />
           {mode === 'geology' ? (
             <GeologyList data={bundle.geology} selected={geoUnit} onSelect={setGeoUnit} showMap={showGeoMap} onShowMap={setShowGeoMap} showCut={showCut} onShowCut={setShowCut} />
           ) : mode === 'atmos' ? (
@@ -290,6 +372,10 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             onFree={() => setCamView('free')}
             onBase={() => setCamView('base')}
             onAgent={followAgent}
+            firstPerson={firstPerson}
+            onFirstPerson={setFirstPerson}
+            canScan={!!drone}
+            onScan={runScan}
           />
           <div className="prompts">
             <button type="button" className="chip" aria-pressed={freePan} onClick={() => setFreePan((g) => !g)} title="On: left drag slides the map, right drag orbits. Off: left drag orbits, right drag slides. Wheel zooms.">
@@ -384,7 +470,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           {m.disclaimer} {trueScale ? 'Agents and base at true size.' : 'Agents are enlarged with distance (visual only).'}{' '}
           <details className="credits">
             <summary>Credits</summary>
-            Terrain: NASA/USGS Mars 2020 TRN CTX DTM mosaic, USGS Astrogeology Science Center (provisional 2 km crop).
+            Terrain: {m.terrain_meta.dataset_id}, {m.terrain_meta.cols * m.terrain_meta.resolution_m} × {m.terrain_meta.rows * m.terrain_meta.resolution_m} m in the recorded datum.
+            <ul>{m.terrain_meta.sources.map((source) => <li key={source}>{source}</li>)}</ul>
             {m.imagery && <> Surface image: {m.imagery.title}, {m.imagery.credit}, via JPL Mars Trek (resampled to {m.imagery.resolution_m} m).</>} "Animated Astronaut Character in Space Suit Loop" (
             <a href="https://skfb.ly/o9nHu" target="_blank" rel="noreferrer">
               https://skfb.ly/o9nHu

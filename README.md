@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="web/public/assets/brand/mars-gods-eye-logo.webp" alt="Mars God's Eye logo: an eye whose iris is Mars, a rover on the horizon. AI-generated with ChatGPT and edited; watermarked." width="280" />
+</p>
+
 # MARS GODS EYE
 
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
@@ -16,9 +20,13 @@ observations, replays and successful builds are labelled as such and are not
 mission evidence.
 
 - **Web viewer (public preview):** <https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/>
-  — static build of `main`, published on the `gh-pages` branch (each publish commit names
-  its source revision).
-  It plays saved runs in REPLAY mode only; it is not connected to a gateway.
+  — static build of `main`, published automatically on the `gh-pages` branch by
+  `.github/workflows/pages.yml` on every push to `main` that touches the viewer (each publish
+  commit names its source revision).
+  It plays saved runs in REPLAY mode only; it is not connected to a gateway. A text description
+  for language models and readers without WebGL is at
+  [`llms.txt`](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/llms.txt) and
+  [`about.html`](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/about.html).
 - **Team deadline:** 2026-11-15 23:59 America/Bogota (UTC-05:00). Confirm any
   earlier local judging cutoff separately.
 - **Delivery gate pending:** local organizer notification and explicit
@@ -47,21 +55,16 @@ mission evidence.
 
 ## System overview
 
-```text
- public NASA/USGS data ──> mge_data ──> mge_mapping ──> terrain prior / belief (map versions)
-                                                          │
- agents (MOCK static or kinematic, mge_sim) ──────────────┤
-                                                          v
-                      mge_planning (PlanRoute: FAST/SAFE A*, replan policy)
-                                                          │ candidates
-                                                          v
-                      mge_mission (MissionManager: authority, resources, tasks)
-                                                          │ authoritative state
-                                                          v
-                      mge_gateway (REST + WebSocket, replay recorder)
-                                                          │ static replay package
-                                                          v
-                      web/ (React + Three.js viewer, offline REPLAY)
+```mermaid
+flowchart TD
+    data["Public NASA/USGS data"] --> mge_data["mge_data<br/>provenance"]
+    mge_data --> mapping["mge_mapping<br/>terrain prior / belief<br/>(map versions)"]
+    sim["mge_sim<br/>agents: MOCK static or kinematic"] -->|observations, poses| mapping
+    mapping --> planning["mge_planning<br/>PlanRoute: FAST / SAFE A*, replan policy"]
+    planning -->|route candidates| mission["mge_mission<br/>MissionManager: authority, resources, tasks"]
+    mission -->|authorized routes| sim
+    mission -->|authoritative state| gateway["mge_gateway<br/>REST + WebSocket, replay recorder"]
+    gateway -->|static replay package| web["web/<br/>React + Three.js viewer, offline REPLAY"]
 ```
 
 MissionManager alone owns mission state, task eligibility and active-route
@@ -70,21 +73,53 @@ state and the web viewer only displays it; it never plans routes. Missing
 producers use deterministic, visibly labelled MOCK providers, and exactly one
 provider may own each canonical ROS service in a launch profile.
 
+### Map change and replanning
+
+When an observation contradicts the terrain estimate, the route in force is
+re-checked on the new map version and the mission authority decides
+([D-EST-01](docs/decisions/2026-11-14-estimated-terrain-planning.md),
+[replan policy](docs/replan_policy.md)). The policy only recommends; it never
+authorizes a route or commands a stop. Integrated execution of this loop on one
+run (step 4) is still open.
+
+```mermaid
+sequenceDiagram
+    participant A as Agent (drone, rover or astronaut)
+    participant M as mge_mapping
+    participant P as mge_planning (replan policy)
+    participant MM as MissionManager
+    participant G as Gateway / recorder
+    participant V as Web viewer (replay)
+    A->>M: Observation (simulated in MOCK runs)
+    M->>M: New map version (belief, sigma, observed cells)
+    M-->>G: MAP_UPDATED
+    MM->>P: Re-check the route in force on the new map
+    P-->>MM: Keep, or invalidate with a candidate
+    alt Route invalidated
+        MM->>A: Hold or stop (agreed behaviour)
+        MM-->>G: ROUTE_INVALIDATED
+        MM->>MM: Authorize, reject or abort the candidate (resources and return reserve)
+        MM-->>G: ROUTE_PUBLISHED (new route)
+    end
+    G-->>V: Recorded package: states, routes, events, map versions
+```
+
 ## Branches and pull requests
 
-Snapshot of the remote on 2026-11-14 (`origin/main` = `5898e7d`). See
+Snapshot of the remote on 2026-11-14 (`origin/main` = `b5dc681`). See
 [docs/team.md](docs/team.md) for the authoritative ownership record.
 
 | Branch | Owner | State |
 | --- | --- | --- |
-| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#21 merged |
-| `feat/ux` | Jorge | Web viewer; merged in PRs #5 and #19 (offline viewer, agent HUD, public raster input, intro) |
+| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#26 merged |
+| `feat/ux` | Jorge | Web viewer; PRs #5, #19, #23 and #27 are merged in main (offline viewer, public raster input, intro, first person, orbital preview, route guide and text access). PR #27 publication baseline: `6bcf208` |
 | `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI; last merged in PR #18 |
 | `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service; merged in PRs #2 and #12 |
-| `feat/data` | Daniel | Public terrain data, mapping, provenance and control points; merged in PR #8 |
-| `feat/mission` | David | Mission authority, resource profiles and acceptance; merged in PRs #10 and #14 |
+| `feat/data` | Daniel | Public terrain data, mapping, provenance and control points; merged in PRs #8 and #24 (configurable terrain region) |
+| `feat/mission` | David | Mission authority, resource profiles and acceptance; merged in PRs #10, #14 and #25 (activity cost evidence) |
 | `codex/mission-replay-recovery` | Jesus (with Jorge's history) | Continuous-pose replan recovery after a stop and strict web replay validation; merged in PR #21 |
-| `gh-pages` | Jorge + Jesus | Published static viewer build from `main` |
+| `fix/recorder-shutdown` | Jesus | Recorder shutdown and replanning on new maps; merged in PR #26 |
+| `gh-pages` | Jorge + Jesus | Static viewer build from `main`, published by the Pages workflow |
 | `feature/web-replay-viewer` | Jorge | Historical viewer branch, ancestor of `feat/ux`; PR #6 closed, preserved |
 | `docs/agents-policy`, `codex/*` (other) | Owner / Jesus | Merged documentation and reconciliation branches, kept for traceability |
 
@@ -110,13 +145,36 @@ React 19, TypeScript, Three.js (`@react-three/fiber`, `drei`) and Vite, with
 fonts bundled and no CDN or network dependency. Details, architecture and
 acceptance status are in [web/README.md](web/README.md).
 
+```mermaid
+flowchart LR
+    subgraph packages["Saved runs (static files)"]
+        demo["public/replay/demo<br/>simulated fixture"]
+        rec["data/sample/replay/run_id<br/>gateway recordings"]
+    end
+    demo --> adapter["replayAdapter / gatewayReplay<br/>validate: run, schema, clock,<br/>routes, public rasters"]
+    rec --> adapter
+    adapter -->|"refused if LIVE<br/>or inconsistent"| error["Error screen"]
+    adapter --> view["viewAt(t)<br/>state, routes, events,<br/>map version at replay time"]
+    view --> scene["3D scene<br/>terrain layers, agents,<br/>routes, scan"]
+    view --> panels["Panels and HUD<br/>list, details, dial,<br/>timeline, first person"]
+    view --> text["window.mge.state()<br/>JSON for models"]
+    ref["data/reference<br/>(evaluator only)"] -.->|"dev server with ?evaluator=1;<br/>never in the build"| scene
+```
+
 ### Runs and data handling
 
 - REPLAY mode only. The status block shows `REPLAY · <source_mode>` (`MOCK`,
   `SIMULATION` or `UNKNOWN`); a package that claims `LIVE` is refused.
-- Run selector (or `?run=<id>`): `demo`, a simulated mission on a provisional
-  real CTX crop of Jezero, and `mock-vertical-001`, a package recorded by the
-  gateway's `replay_recorder` from the MOCK vertical (flat synthetic grid).
+- Featured/default entry: `recorded-recovery-001`, an unchanged recorder package
+  on Daniel's 128 m Jezero crop (32×32 computational cells at 4 m; CTX source
+  spacing 20 m). Real data/mapping/planner providers are paired with MOCK mission
+  and kinematic execution. The human stops, replans, resumes and returns; rover
+  and drone remain idle. Its final `READY` state is not scientific `COMPLETE`.
+- The selector and `?run=<entry>` also retain `demo`, the separate generated
+  story on a provisional 2 km CTX crop at 20 m, and `mock-vertical-001`, the
+  historical recorded flat-MOCK sample. A folder entry can differ from the
+  immutable `run_id` inside its files. Never combine metrics or layers between
+  these scenes. Browser/backend-off acceptance of this cut remains to be recorded.
 - Reads gateway replay packages (ICD §7) and their public raster attachment
   `files.public_rasters` (`mge-public-rasters-1.0.0`), checked against the package;
   mismatches fail with `PUBLIC_RASTERS_INVALID`, and non-MOCK packages without it
@@ -128,8 +186,12 @@ acceptance status are in [web/README.md](web/README.md).
 
 ### Interface
 
-- Intro screen: skippable AI-generated video with a burned-in `AI-generated`
-  watermark, followed by a layered terrain reveal (`?nointro=1` or reduced motion skips it).
+- Intro screen for the illustrative demo: skippable AI-generated video with a burned-in `AI-generated`
+  watermark (`?nointro=1` or reduced motion skips it). The interface then enters: the panels
+  slide in, the timeline rises and the agent dial spins into place.
+- Terrain formation: the layer appears flat and its relief rises to the true shape in 5 s,
+  valleys first and ridges last, with rising ground lit. Switching layers or a new map version
+  morphs the heights in 1.8 s instead of jumping. Display only.
 - Modes: Exploration, Ground layers, Atmos and Mission replay.
 - Terrain layers: Orbital map, Updated map (per map version), Slope (Horn 3x3),
   Uncertainty (sigma) and, for the evaluator only, Reference.
@@ -146,24 +208,44 @@ acceptance status are in [web/README.md](web/README.md).
 - Live Earth and Mars clocks (NASA GISS Mars24: MTC, LMST at Jezero, sol, Ls),
   independent of the replay time.
 - Cameras: Map, Astronaut, Rover, Drone and Base; grab-to-drag map and 45° view rotation.
+- First person (`V`) from the followed astronaut, rover or drone: drag to look, wheel to zoom
+  (18°–110°), supersampled rendering. Its HUD has a compass tape with site bearings, the agent's
+  resources, a heading-up minimap and a route guide: the route in force draped on the ground,
+  a beacon on the next waypoint, its distance, the distance left and the time left scaled from
+  the route's own estimate. Optional camera sway (`B`) while walking or driving.
+- Orbital slope preview (`R`): displays prior-derived slope cells within 160 m of
+  the drone position in display bands (< 8°, 8–15°, ≥ 15°, NoData). It is a visual
+  lookup, not a camera observation or mission command; map, sigma and routes do
+  not change. The legend separates the computational grid from native source
+  spacing; the bands are display choices, not validated safety limits.
+- Text access for language models: `llms.txt`, `about.html`, page metadata with JSON-LD, a
+  static summary for readers without JavaScript, and `window.mge.state()`, which returns the
+  displayed replay state as JSON (always labelled REPLAY).
 - Timeline at 1×, 5× and 10×, starting 4 s before the first agent moves.
 - Display-only motion: monotone cubic (PCHIP) pose interpolation, astronaut with
   planted feet and shadow, rover steering and suspension, drone rotor spin-up,
   terrain clearance and downwash dust. None of it changes a position in the data.
 
-Keys: `F` follow camera, `G` grab map, `Q` / `E` rotate view, `Space` play/pause,
-`←` `→` ±5 s, `Home` restart.
+Keys: `F` follow camera, `V` first person, `R` drone scan, `B` camera sway (first person),
+`G` grab map, `Q` / `E` rotate view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 
 ### What is real in the viewer
 
 Everything not listed as real is labelled in the interface as simulated,
 illustrative, synthetic or AI-generated.
 
+The recorded recovery uses Daniel's public 128 m dataset and recorded planner
+output with explicitly simulated observations and MOCK execution. Its four files
+are `manifest.json`, `timeline.jsonl`, `snapshot.json` and `public_rasters.json`.
+The source table below describes the separate 2 km illustrative demo where noted;
+its geology, imagery and environmental layers are not silently attached to the
+recorded scene. Optional layers must match their declared frame and datum.
+
 | Layer or element | Source | Status |
 | --- | --- | --- |
 | Elevation (Orbital map) | MRO/CTX DTM, Mars 2020 TRN mosaic, USGS Astrogeology ([DOI 10.5066/P906QQT8](https://doi.org/10.5066/P906QQT8)), 2 km crop at 20 m | Real, provisional crop |
 | Contour lines | Derived from that elevation every 10 m | Derived from real data |
-| Slope | Horn 3x3 on that elevation (as `gdaldem slope`), 20 m grid, about 60 m window | Derived from real data; lower bound, not a hazard map |
+| Demo slope | Horn 3×3 on that prior, 20 m grid / 60 m computational window | Derived orbital estimate; unresolved local hazards, not a hazard measurement |
 | Surroundings (optional) | Same CTX DTM over 20 km, box-averaged to 100 m, and the CTX orthomosaic at 40 m | Real, context only; not part of the mission map |
 | Block walls | Display of the crop as a solid block | Plain rock tone, no subsurface claim |
 | Surface image | MRO/CTX orthomosaic `JEZ_ctx_B_soc_008`, via [JPL Mars Trek](https://trek.nasa.gov/mars/), 6 m resampled to 5 m | Real, contrast-stretched for display |
@@ -180,11 +262,16 @@ illustrative, synthetic or AI-generated.
 | Updated map (v2) | CTX prior plus a simulated drone observation over a scarp added to the hidden reference | **Synthetic** adverse case |
 | Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
 | Shadows, footprints, dust, rotor blur, wheel and steering motion | Derived in the viewer from the drawn poses | **Cosmetic display** only |
+| Terrain formation, height morph, interface entrance, camera sway | Viewer animations on the drawn surface and camera | **Cosmetic display**; no height or pose in the data changes |
+| Orbital slope preview | Prior-derived slope around the drone position, using the current run's grid | **Display only**: not an observation or route update; display bands are unvalidated |
+| First-person route guide | Route in force as recorded; time left = route `travel_time_s` × distance share left | Drawn from the received route; time left is an **estimate**, not a prediction |
 | Rover and drone models | NASA/JPL-Caltech Perseverance and Ingenuity 3D models | Real models, agency branding removed |
 | Astronaut model | Sketchfab, LasquetiSpice, CC BY 4.0 | Third-party asset |
 | Astronaut portrait (details panel) | Generated with ChatGPT (OpenAI), `web/public/assets/portraits/human_1.webp` | **AI-generated** image, visible `AI-generated` watermark |
 | Surface base | `base-marciana-v2`, generated with OpenAI Codex, prepared by `web/scripts/blender/prepare_base.py` | **AI-generated** 3D model |
 | Intro screen | Generated with Kling, `web/public/assets/intro/mars-gods-eye-intro.webm` | **AI-generated** video, `AI-generated` watermark burned into every frame; audio track declared, played muted |
+| Team logo (README, about page, link preview) | Generated with ChatGPT (OpenAI) and edited by the team, `web/public/assets/brand/mars-gods-eye-logo.webp` and `og-image.png` | **AI-generated** image, visible `AI-generated` watermark in every version |
+| Browser tab icon | Illustration of Mars made by the team, `web/public/favicon.ico` and PNG sizes (32, 48, 180, 512 px) | Team-made image, not AI-generated; background removed and resized |
 | Evaluator reference | MRO/HiRISE DTM ([DOI 10.5066/P9REJ9JN](https://doi.org/10.5066/P9REJ9JN)) | Real; isolated, never in the public build |
 
 Credits and licences are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md),
@@ -226,6 +313,22 @@ CI (`.github/workflows/ci.yml`, "CI checks") runs three jobs: `python`
 (repository check and pytest), `web` (`npm test` and `npm run build`) and `ros`
 (Jazzy build, interface inspection and the MOCK vertical end to end). The dedicated ROS job
 compiles ROS; Python checks on Windows cannot replace it.
+
+`.github/workflows/pages.yml` ("Publish web viewer") runs on pushes to `main` that touch
+`web/` or the sample replays: it tests and builds the viewer, refuses a build containing
+evaluator reference data, and commits `web/dist` to `gh-pages` (no force push).
+
+```mermaid
+flowchart LR
+    pr["Pull request to main"] --> ci["CI checks<br/>python · web · ros"]
+    ci --> review["Owner review<br/>(Jesus integration, David science)"]
+    review --> main["Merge to main"]
+    main -->|"web/ or sample replays changed"| pages["Publish web viewer<br/>npm test · npm run build"]
+    pages --> guard{"Evaluator data<br/>in the build?"}
+    guard -->|yes| stop["Refuse to publish"]
+    guard -->|no| ghp["Commit web/dist to gh-pages"]
+    ghp --> site["GitHub Pages<br/>public viewer"]
+```
 
 ## ROS target: Ubuntu 24.04 / ROS 2 Jazzy
 

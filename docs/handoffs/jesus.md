@@ -1,5 +1,20 @@
 # Jesus - integrate providers through the canonical interfaces
 
+## Audit reconciliation rc.2 — current candidate over main6bcf208
+
+Read the [current gap/evidence matrix](../audit_reconciliation.md) and
+[cost/context/interval proposal](../audit_cost_execution_gaps.md) first.
+PR19/21 are integrated; preserve their recorder, strict viewer and acknowledged
+continuous recovery. Next deliverable: review current-base/nonolder observation
+filtering and versioned estimated-map policy with Daniel/Diego, then bind explicit
+activity/wait/model context and accepted execution evidence to real MissionNode.
+Reuse the scientific EvidenceRecorder; do not create a second mission authority
+or journal. Three role commands, service/wait debit and optional public discovery
+remain open. The featured MOCK human recovery is a same-run software cut only.
+Historical scaffold/raster/stop gaps below retain their original dates; consult
+the current evidence before repeating work. Organizer endorsement is still a
+delivery/readiness gate under AGENTS.md section 15, not closed by this cut.
+
 ## Current continuation — 14 November 2026, main 5ab1387
 
 Follow [CONT-JES-01..05](../team_continuation_plan.md#jesús--three-role-execution-recording-and-deployment-integration):

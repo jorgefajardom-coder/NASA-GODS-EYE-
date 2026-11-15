@@ -1,0 +1,60 @@
+{
+ "schema_version": "1.0.0",
+ "run_id": "it-execution",
+ "mode": "REPLAY",
+ "map_version": 2,
+ "timestamp_sim_s": 1794707968.1554365,
+ "recorded_from": "LIVE",
+ "source_mode": "MOCK",
+ "clock_source": "system",
+ "time_start_sim_s": 1794707851.262857,
+ "record_count": 128,
+ "event_count": 9,
+ "terrain_meta": {
+  "header": {
+   "stamp": {
+    "sec": 1794707858,
+    "nanosec": 708661037
+   },
+   "frame_id": "map"
+  },
+  "run_id": "it-execution",
+  "dataset_id": "jezero_mvp",
+  "map_version": 2,
+  "origin_x_m": -64.0,
+  "origin_y_m": -64.0,
+  "resolution_m": 4.0,
+  "rows": 32,
+  "cols": 32,
+  "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+  "origin_lat_deg": 18.45,
+  "origin_lon_deg": 77.45,
+  "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+  "nodata_value": null,
+  "sources": [
+   "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+   "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+   "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+  ],
+  "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+ },
+ "agents": [
+  {
+   "agent_id": "drone_1",
+   "agent_kind": "DRONE"
+  },
+  {
+   "agent_id": "human_1",
+   "agent_kind": "HUMAN"
+  },
+  {
+   "agent_id": "rover_1",
+   "agent_kind": "ROVER"
+  }
+ ],
+ "files": {
+  "timeline": "timeline.jsonl",
+  "snapshot": "snapshot.json",
+  "public_rasters": "public_rasters.json"
+ }
+}

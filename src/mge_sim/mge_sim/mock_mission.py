@@ -29,7 +29,9 @@ E = MissionEvent
 # Planner answers that only mean "the new map batch has not arrived yet".
 TRANSIENT = {'MAP_NOT_READY', 'SNAPSHOT_INCOMPLETE', 'MAP_VERSION_MISMATCH',
              'SNAPSHOT_CHANGED_DURING_SEARCH'}
-MAX_RETRIES = 20
+# About 30 s at RETRY_PERIOD_S: assembling a new map batch can take several
+# seconds on a loaded machine, and 20 tries (5 s) blocked runs with STALE_MAP.
+MAX_RETRIES = 120
 # The planner search is time-limited, so SEARCH_LIMIT can be an effect of load
 # (for instance while it ingests a new map batch). A few more tries tell that
 # apart from a search that really does not fit in the limit.

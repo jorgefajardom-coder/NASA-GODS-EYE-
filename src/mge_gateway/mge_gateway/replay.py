@@ -67,6 +67,8 @@ class ReplayWriter:
 
     def record(self, kind, payload):
         """kind: 'event' | 'state' | 'terrain_meta'. Returns True if recorded."""
+        if self._timeline.closed:
+            return False        # a closed package is never extended
         if kind == 'event':
             accepted = self.store.apply_event(payload)
         elif kind == 'state':
@@ -93,6 +95,8 @@ class ReplayWriter:
 
     def write_public_rasters(self, attachment):
         """Replace the attachment; the manifest names it from then on."""
+        if self._timeline.closed:
+            return
         if attachment.get('run_id') != self.store.run_id:
             raise ValueError('public rasters of another run')
         write_json(os.path.join(self.dir, RASTERS), attachment)
@@ -121,4 +125,8 @@ class ReplayWriter:
                    **({'public_rasters': RASTERS} if self._rasters else {})}))
 
     def close(self):
+        """Close the timeline and leave the summary matching it; safe to call twice."""
+        if self._timeline.closed:
+            return
         self._timeline.close()
+        self._write_summary()

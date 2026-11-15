@@ -262,3 +262,13 @@ Ubuntu/Jazzy, colcon e intercambio ROS no ejecutados en este corte analítico.
 El [registro completo](../evidence/agent-campaign-proposal-20261114/validation/validation.json)
 conserva comandos, versiones, hashes, omisiones y límites. Son verificaciones
 de software y del cálculo, sin evidencias nuevas de ejecución de misión.
+
+## Publication after reconciliation
+
+The owner authorized integration after reconciliation. Published main9198b3d
+(PR28) is incorporated unchanged. The earlier local-only status describes
+the preparation cut; this publication preserves all proposed/approval states.
+D-COST-02 accepts reuse of the scientific API as implementation direction;
+profile approval, cost-context agreement and execution evidence remain open.
+The rc.2 contract record is not a scientific approval or a semantic freeze.
+Original analysis/report hashes and pinned c3ec4c1 reproduction remain historical.

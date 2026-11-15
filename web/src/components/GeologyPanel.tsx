@@ -115,6 +115,7 @@ export function GeologyDetails({ data, unitId }: { data: GeologyData | undefined
         <p className="muted small">Select a unit to see its description, composition and interpretation.</p>
       )}
       <p className="geo-source">
+        {data.source.registration_note} Regional context only; boundaries do not identify an exact sampling cell.{' '}
         <a href={data.source.doi} target="_blank" rel="noreferrer">
           USGS SIM 3464 ({data.source.year})
         </a>{' '}

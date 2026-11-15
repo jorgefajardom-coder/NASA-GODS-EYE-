@@ -1,4 +1,5 @@
 import type { AgentState } from '../types/icd';
+import { ORBITAL_PREVIEW_LABEL, ORBITAL_PREVIEW_LIMIT } from '../lib/terrainPresentation';
 import { rotateView, ROTATE_STEP_RAD } from './ViewRotator';
 
 const KIND_ORDER: AgentState['agent_kind'][] = ['HUMAN', 'ROVER', 'DRONE'];
@@ -12,13 +13,19 @@ interface Props {
   onFree: () => void;
   onBase: () => void;
   onAgent: (id: string) => void;
+  /** First or third person while an agent is followed. */
+  firstPerson: boolean;
+  onFirstPerson: (on: boolean) => void;
+  canScan: boolean;
+  onScan: () => void;
 }
 
 /**
  * Camera picker: the free map camera, one follow camera per agent (astronaut, rover, drone)
  * and a fixed view of the base. Only the camera moves; no pose or data is changed.
  */
-export function CameraBar({ agents, view, hasBase, onFree, onBase, onAgent }: Props) {
+export function CameraBar({ agents, view, hasBase, onFree, onBase, onAgent, firstPerson, onFirstPerson, canScan, onScan }: Props) {
+  const following = view !== 'free' && view !== 'base';
   const sorted = [...agents].sort((a, b) => KIND_ORDER.indexOf(a.agent_kind) - KIND_ORDER.indexOf(b.agent_kind));
   const many = (kind: AgentState['agent_kind']) => agents.filter((a) => a.agent_kind === kind).length > 1;
   return (
@@ -38,6 +45,19 @@ export function CameraBar({ agents, view, hasBase, onFree, onBase, onAgent }: Pr
           Base
         </button>
       )}
+      <button
+        type="button"
+        className="chip"
+        aria-pressed={following && firstPerson}
+        disabled={!following}
+        title={following ? 'Switch between the over-the-shoulder view and the agent’s own eyes (V)' : 'Follow an agent first (Astronaut, Rover or Drone)'}
+        onClick={() => onFirstPerson(!firstPerson)}
+      >
+        <kbd>V</kbd> {following && firstPerson ? '1st person' : '3rd person'}
+      </button>
+      <button type="button" className="chip" disabled={!canScan} title={canScan ? `${ORBITAL_PREVIEW_LABEL} at the drone position (R). ${ORBITAL_PREVIEW_LIMIT}` : 'No drone in this run'} onClick={onScan}>
+        <kbd>R</kbd> {ORBITAL_PREVIEW_LABEL}
+      </button>
       <span className="camera-bar__rotate" role="group" aria-label="Rotate the view">
         <button type="button" className="chip" title="Rotate the view left (Q). Also: right drag or Shift + drag." aria-label="Rotate view left" onClick={() => rotateView(-ROTATE_STEP_RAD)}>
           <kbd>Q</kbd> ⟲

@@ -26,7 +26,7 @@ export interface GeologyData {
     registration_note: string;
     response_sha256: string;
   };
-  frame: { crs: string; origin_x_m: number; origin_y_m: number; width_m: number; height_m: number };
+  frame: { crs: string; origin_x_m: number; origin_y_m: number; width_m: number; height_m: number; dataset_id?: string; origin_lat_deg?: number; origin_lon_deg?: number; vertical_datum?: string };
   units: GeologyUnit[];
   polygons: Array<{ unit: string; rings: Array<Array<[number, number]>> }>;
 }
