@@ -13,7 +13,7 @@ entry offered; MOCK packages are no longer offered (see the Run selector below).
 
 | Part | What it is |
 |---|---|
-| Featured recorded recovery | Unchanged recorder output on Daniel's **128 m public Jezero crop**, 32×32 at 4 m; CTX native spacing 20 m. Real data/mapping/planner, MOCK mission/kinematic executor. Human stop/replan/resume/return; rover and drone idle. Ends `READY`, not scientific `COMPLETE` |
+| Recorded recovery (`?run=recorded-recovery-001`, not in the selector) | Unchanged recorder output on Daniel's **128 m public Jezero crop**, 32×32 at 4 m; CTX native spacing 20 m. Real data/mapping/planner, MOCK mission/kinematic executor. Human stop/replan/resume/return; rover and drone idle. Ends `READY`, not scientific `COMPLETE` |
 | Demo terrain | **Real**: a separate provisional 2 km crop of the NASA/USGS Mars 2020 TRN CTX DTM (20 m, Jezero), resampled to a local ENU grid |
 | Demo mission, agents, routes, events | **Generated illustrative story** (`scripts/make-demo-fixture.mjs`); its routes come from a substitute slope-constrained search, not the integrated planner. Rover/drone speeds and motion are simulated |
 | Demo adverse case | **Synthetic**: a scarp added to the hidden evaluator reference; it is not in the CTX data |
@@ -26,13 +26,20 @@ entry offered; MOCK packages are no longer offered (see the Run selector below).
 | Rover, drone, base models | NASA/JPL models with branding removed; the base is **AI-generated** (OpenAI Codex) and prepared in Blender |
 | Astronaut portrait | **AI-generated** (ChatGPT), shown beside human_1 in the details panel with a burned-in `AI-generated` watermark |
 | Intro screen | **AI-generated** video (Kling), skippable, with one discreet `AI-GENERATED · KLING` mark burned into every frame (no second label on screen); its audio track is declared and the clip plays muted |
-| Team logo and link preview | **AI-generated** image (ChatGPT, edited by the team) with a visible `AI-generated` watermark (`public/assets/brand/`) |
+| Team logo | **AI-generated** image (ChatGPT, edited by the team) with a visible `AI-generated` watermark (`public/assets/brand/`) |
+| Link preview | **Real NASA image**: Viking global colour mosaic PIA00407 (NASA/JPL/USGS), centred on black, no text (`public/assets/brand/og-image.png`) |
 | Tab icon | Illustration of Mars made by the team (`public/favicon.ico`, PNG sizes up to 512 px); not AI-generated |
 | Slope layer | Derived from the orbital prior with Horn 3×3 at the run's grid spacing; source and grid spacing are displayed separately. Not a local hazard measurement |
 | Demo surroundings (option, off by default) | Same CTX DTM over 20 km (100 m box average, `scripts/extract-ctx-context.mjs`) and CTX orthomosaic at 40 m; context only, checked for matching origin/datum/source before loading |
 | Orbital slope preview | The orbital slope above, redrawn around the drone position in display bands; **not an observation or command**, no data changes |
 | First-person route guide | The recorded route in force; the time left is the route's `travel_time_s` scaled by the share of distance left, an **estimate** |
 | Terrain formation, height morph, interface entrance, camera sway | **Cosmetic display** animations; no height or pose in the data changes |
+| Route sufficiency alert | **Estimate**: route cost spread per metre against what is left, finishing vs walking back, 20 % JZ-P06 reserve ([rationale](../docs/route_resource_sufficiency.md)); pending science review, display only |
+| Sun and sky | Sun from Mars24 at the real present time and site; sky colours are a display rendering |
+| Stars | **Real catalogue**: Yale Bright Star Catalogue V ≤ 5.5 placed with the IAU 2009 Mars rotation model (`public/assets/sky/bright_stars.json`) |
+| Artificial light (default), night fill, helmet lights | **Display** lighting choices, not sunlight or suit specifications; *Real light* (`I`) shows the hour's real light |
+| Drone camera window | The scene drawn again from the replayed drone pose; **not a camera feed** |
+| Lite 3D and 2D map tiers | Same replay with reduced 3D settings, or drawn in Canvas 2D without WebGL |
 
 The 2 km demo and Daniel's validated public 128 m package are distinct scenes,
 with different origins and height conventions. Their metrics and optional layers
