@@ -56,7 +56,7 @@ MRO CTX Jezero orthomosaic, controlled (Mars 2020 Terrain Relative Navigation), 
 
 "Global Color Views of Mars" (PIA00407), Viking Orbiter global color mosaic, NASA/JPL/USGS, NASA Photojournal (https://science.nasa.gov/photojournal/global-color-views-of-mars/).
 
-- `web/public/assets/brand/og-image.png`: the 6787 × 6787 px JPEG (SHA-256 `fc62a86416794444988338e55591d23290e1de2c7c32f3613b872caa8413ea2f`) scaled to 560 px and centred on black in a 1200 × 630 card with Pillow; no text, no detail added. Colors are as published (NASA notes they are adjusted for visibility, not natural color).
+- `web/public/assets/brand/og-image.jpg`: the 6787 × 6787 px JPEG (SHA-256 `fc62a86416794444988338e55591d23290e1de2c7c32f3613b872caa8413ea2f`) scaled to 560 px and centred on black in a 1200 × 630 card with Pillow and saved as JPEG (quality 88, about 69 KB, small enough for chat-app link previews); no text, no detail added. Colors are as published (NASA notes they are adjusted for visibility, not natural color).
 - Usage terms: NASA imagery is generally not copyrighted; see NASA's media usage guidelines (https://www.nasa.gov/nasa-brand-center/images-and-media/). No NASA logo or mark is used.
 
 ## Star catalogue and Mars sky model

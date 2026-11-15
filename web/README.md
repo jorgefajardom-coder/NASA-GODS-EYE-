@@ -33,7 +33,7 @@ packages are neither offered nor used by the viewer (see the Run selector below)
 | Astronaut portrait | **AI-generated** (ChatGPT), shown beside human_1 in the details panel with a burned-in `AI-generated` watermark |
 | Intro screen | **AI-generated** video (Kling), skippable, with one discreet `AI-GENERATED · KLING` mark burned into every frame (no second label on screen); its audio track is declared and the clip plays muted |
 | Team logo | **AI-generated** image (ChatGPT, edited by the team) with a visible `AI-generated` watermark (`public/assets/brand/`) |
-| Link preview | **Real NASA image**: Viking global colour mosaic PIA00407 (NASA/JPL/USGS), centred on black, no text (`public/assets/brand/og-image.png`) |
+| Link preview | **Real NASA image**: Viking global colour mosaic PIA00407 (NASA/JPL/USGS), centred on black, no text (`public/assets/brand/og-image.jpg`) |
 | Tab icon | Illustration of Mars made by the team (`public/favicon.ico`, PNG sizes up to 512 px); not AI-generated |
 | Slope layer | Derived from the orbital prior with Horn 3×3 at the run's grid spacing; source and grid spacing are displayed separately. Not a local hazard measurement |
 | Demo surroundings (option, off by default) | Same CTX DTM over 20 km (100 m box average, `scripts/extract-ctx-context.mjs`) and CTX orthomosaic at 40 m; context only, checked for matching origin/datum/source before loading |

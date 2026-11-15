@@ -1566,7 +1566,7 @@
     "data/sample/preview_ctx_prior.png is a deterministic grayscale plot of the observational MRO/CTX DEM array, not an AI-generated image.",
     "The Codex frontend scaffold in web/ was replaced by the mission viewer; its stale-route guard and ICD-WEB-V1 envelope types were moved into web/src/lib/format.ts and web/src/types/icd.ts.",
     "web/public/assets/models/rover.glb and drone.glb are official NASA/JPL-Caltech models. Their branding cleanup is a flat fill or a copy of an already cleaned texture, not generative inpainting, so they contain no AI-generated imagery.",
-    "web/public/assets/brand/og-image.png (link preview) is the NASA/JPL/USGS Viking global color mosaic of Mars (PIA00407, NASA Photojournal), centred on black with Pillow (no text); it is not AI-generated and contains no NASA logos, flags or mission marks.",
+    "web/public/assets/brand/og-image.jpg (link preview) is the NASA/JPL/USGS Viking global color mosaic of Mars (PIA00407, NASA Photojournal), centred on black with Pillow (no text); it is not AI-generated and contains no NASA logos, flags or mission marks.",
     "web/public/assets/sky/bright_stars.json is copied by web/scripts/extract_bright_stars.py from the Yale Bright Star Catalogue (BSC5); it is catalogue data, not AI-generated data. The sky, Sun and helmet-light visuals are display only.",
     "The drone orbital slope preview (web/src/components/DroneScan.tsx) was removed and replaced by the first-person terrain scan (web/src/scanner/, TerrainScanner.tsx).",
     "Mission coefficients remain proposed; accepting a lunar analog approach does not approve quantitative Mars EVA limits.",

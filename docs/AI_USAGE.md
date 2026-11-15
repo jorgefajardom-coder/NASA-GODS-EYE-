@@ -805,7 +805,7 @@ The team logo (`web/public/assets/brand/mars-gods-eye-logo.webp`) was generated
 with ChatGPT (OpenAI) and edited by the team. A band with a visible
 `AI-generated logo (ChatGPT, edited)` label is burned into the image, and it
 stays visible in the README and the about page. The link preview
-(`og-image.png`) is the NASA/JPL/USGS Viking global color mosaic of Mars (PIA00407),
+(`og-image.jpg`) is the NASA/JPL/USGS Viking global color mosaic of Mars (PIA00407),
 centred on black with Pillow (no text); it is not AI-generated (credits in
 THIRD_PARTY_NOTICES.md). The browser tab icon
 (`web/public/favicon.ico` and its PNG sizes) is an illustration of Mars made by
