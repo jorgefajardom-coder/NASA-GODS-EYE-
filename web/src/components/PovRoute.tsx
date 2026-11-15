@@ -20,6 +20,7 @@ interface Props {
   /** Agent position (ENU, as received). */
   position: Point;
   groundHeight: (x: number, y: number) => number | null;
+  groundRevision?: () => number;
   verticalExaggeration: number;
 }
 
@@ -28,7 +29,7 @@ interface Props {
  * travelled dimmed, the part ahead bright) and a beacon on the next waypoint. Drawn exactly from
  * the received route; nothing is planned here.
  */
-export function PovRoute({ route, position, groundHeight, verticalExaggeration }: Props) {
+export function PovRoute({ route, position, groundHeight, groundRevision, verticalExaggeration }: Props) {
   const style = ROUTE_STATUS_STYLE[route.status];
   const path = route.outbound_path;
   const progress = routeProgress(path, position);
@@ -37,7 +38,8 @@ export function PovRoute({ route, position, groundHeight, verticalExaggeration }
       const h = groundHeight(p.x, p.y);
       return [p.x, (h ?? p.z) * verticalExaggeration + LIFT_M, -p.y];
     };
-    return { at, all: densifyPath(path, DRAPE_STEP_M).map(at) };
+    const points = densifyPath(path, DRAPE_STEP_M);
+    return { at, points, all: points.map(at) };
   }, [path, groundHeight, verticalExaggeration]);
   const ahead = useMemo(() => {
     if (!progress) return [];
@@ -47,7 +49,19 @@ export function PovRoute({ route, position, groundHeight, verticalExaggeration }
   const beacon = useRef<THREE.Group>(null);
   const aheadLine = useRef<Line2>(null);
   const allLine = useRef<Line2>(null);
+  const anchor = useRef<THREE.Group>(null);
+  const lastGround = useRef<number | null>(null);
   useFrame(({ clock }) => {
+    const revision = groundRevision?.() ?? 0;
+    if (lastGround.current !== revision) {
+      lastGround.current = revision;
+      allLine.current?.geometry.setPositions(drape.points.flatMap(drape.at));
+      if (progress) {
+        const points = densifyPath([position, ...path.slice(progress.nextIndex)], DRAPE_STEP_M);
+        aheadLine.current?.geometry.setPositions(points.flatMap(drape.at));
+        anchor.current?.position.set(...drape.at(progress.next));
+      }
+    }
     const b = beacon.current;
     if (b) b.position.y = Math.sin(clock.elapsedTime * 1.6) * 0.15;
     // Terrain scan: the route in force is emphasised while the scan effects last.
@@ -63,7 +77,7 @@ export function PovRoute({ route, position, groundHeight, verticalExaggeration }
     <group name="pov-route">
       <Line ref={allLine} points={drape.all} color={style.color} lineWidth={2} transparent opacity={0.35} dashed={style.dashed} dashSize={3} gapSize={3} />
       {ahead.length > 1 && <Line ref={aheadLine} points={ahead} color={style.color} lineWidth={4} dashed={style.dashed} dashSize={3} gapSize={3} />}
-      <group position={[wx, wy, wz]}>
+      <group ref={anchor} position={[wx, wy, wz]}>
         <group ref={beacon}>
           <mesh position={[0, BEACON_M / 2, 0]}>
             <cylinderGeometry args={[0.06, 0.06, BEACON_M, 8]} />

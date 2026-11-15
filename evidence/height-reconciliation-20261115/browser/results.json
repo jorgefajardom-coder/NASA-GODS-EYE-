@@ -1,0 +1,584 @@
+{
+  "baseSha": "f7938f503e8adabcf7cc677e8913cf251096d632",
+  "url": "http://127.0.0.1:4199/",
+  "backend": "not started",
+  "method": "Chrome headless CDP; temporary devtools hook reads actual R3F stores/props; no product source mutation",
+  "zones": [
+    {
+      "name": "Jezero crater",
+      "card": "01 / 06\nJEZERO CRATER\nPerseverance\nN ↑\n3.4 km\n\nAn ancient lake crater with a river delta. Perseverance has explored it since 2021 and sealed the first samples meant for return to Earth.\n\nWater 3.5 wt%\nRadiation 0.69 mSv/day · est.\n18.49° N · 77.43° E\nOrbital image",
+      "travel": true
+    },
+    {
+      "name": "Gale crater",
+      "card": "02 / 06\nGALE CRATER\nCuriosity\nN ↑\n3.4 km\n\nA 154 km crater around Mount Sharp. Curiosity has climbed its layered rocks since 2012, reading the record of long-lived ancient lakes.\n\nWater 5.4 wt%\nRadiation 0.64 mSv/day · measured\n4.73° S · 137.39° E\nOrbital image",
+      "travel": true
+    },
+    {
+      "name": "Gusev crater",
+      "card": "03 / 06\nGUSEV CRATER\nSpirit\nN ↑\n3.4 km\n\nA crater once thought to hold a lake. Spirit drove from its landing site to the Columbia Hills and Home Plate between 2004 and 2010.\n\nWater 7.3 wt%\nRadiation 0.70 mSv/day · est.\n14.58° S · 175.50° E\nOrbital image",
+      "travel": true
+    },
+    {
+      "name": "Elysium Planitia",
+      "card": "04 / 06\nELYSIUM PLANITIA\nInSight\nN ↑\n3.4 km\n\nA smooth volcanic plain chosen as a safe, flat site for the InSight lander, which listened to marsquakes from 2018 to 2022.\n\nWater 5.2 wt%\nRadiation 0.69 mSv/day · est.\n4.50° N · 135.62° E\nOrbital image",
+      "travel": true
+    },
+    {
+      "name": "Meridiani Planum",
+      "card": "05 / 06\nMERIDIANI PLANUM\nOpportunity\nN ↑\n3.4 km\n\nHematite-rich plains. Opportunity drove more than 45 km here from 2004 to 2018 and spent its last years on the rim of Endeavour crater.\n\nWater 5.3 wt%\nRadiation 0.71 mSv/day · est.\n2.27° S · 5.37° W\nOrbital image",
+      "travel": true
+    },
+    {
+      "name": "Valles Marineris",
+      "card": "06 / 06\nVALLES MARINERIS\nNo landed mission\nN ↑\n3.4 km\n\nMelas Chasma, part of the largest canyon system in the Solar System. No spacecraft has ever landed here.\n\nWater 3.4 wt%\nRadiation 0.67 mSv/day · est.\n12.87° S · 69.06° W\nOrbital image",
+      "travel": true
+    }
+  ],
+  "gale2976": {
+    "ready": true,
+    "time": {
+      "sim_s": 2976,
+      "duration_s": 24588,
+      "playing": false,
+      "speed": 10
+    },
+    "layer": "belief",
+    "position": [
+      -588.05,
+      -287.6643688201904,
+      -3599.95
+    ],
+    "triangleHeight": -287.6643688201904,
+    "sampler": -287.6643688201904,
+    "footDelta": 0,
+    "revision": 3,
+    "subdivision": 1,
+    "sampleVertexY": 302.3999938964844,
+    "vertices": 403750,
+    "rawHuman": {
+      "x": -588.05,
+      "y": 3599.95,
+      "z": -288.01
+    }
+  },
+  "pausedMorph": [
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "prior",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 18,
+      "subdivision": 1,
+      "sampleVertexY": -269,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "prior",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 1,
+      "subdivision": 1,
+      "sampleVertexY": -269.0001525878906,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "prior",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 2,
+      "subdivision": 1,
+      "sampleVertexY": -269.00115966796875,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "prior",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 3,
+      "subdivision": 1,
+      "sampleVertexY": -269.0035400390625,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "prior",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 4,
+      "subdivision": 1,
+      "sampleVertexY": -269.00762939453125,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "prior",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 5,
+      "subdivision": 1,
+      "sampleVertexY": -269.01348876953125,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "prior",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 6,
+      "subdivision": 1,
+      "sampleVertexY": -269.02099609375,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "prior",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 7,
+      "subdivision": 1,
+      "sampleVertexY": -269.02984619140625,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "prior",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 8,
+      "subdivision": 1,
+      "sampleVertexY": -269.0396728515625,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    }
+  ],
+  "pausedMorphBack": [
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "belief",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 15,
+      "subdivision": 1,
+      "sampleVertexY": -269.0964660644531,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "belief",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 1,
+      "subdivision": 1,
+      "sampleVertexY": -269.0963134765625,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "belief",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 2,
+      "subdivision": 1,
+      "sampleVertexY": -269.0953674316406,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "belief",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 3,
+      "subdivision": 1,
+      "sampleVertexY": -269.0930480957031,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "belief",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 4,
+      "subdivision": 1,
+      "sampleVertexY": -269.0890808105469,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "belief",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 5,
+      "subdivision": 1,
+      "sampleVertexY": -269.08343505859375,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "belief",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 6,
+      "subdivision": 1,
+      "sampleVertexY": -269.07623291015625,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "belief",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 7,
+      "subdivision": 1,
+      "sampleVertexY": -269.06768798828125,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    },
+    {
+      "ready": true,
+      "time": {
+        "sim_s": 2976,
+        "duration_s": 24588,
+        "playing": false,
+        "speed": 1
+      },
+      "layer": "belief",
+      "position": [
+        -588.05,
+        -287.6643688201904,
+        -3599.95
+      ],
+      "triangleHeight": -287.6643688201904,
+      "sampler": -287.6643688201904,
+      "footDelta": 0,
+      "revision": 8,
+      "subdivision": 1,
+      "sampleVertexY": -269.0581970214844,
+      "vertices": 403750,
+      "rawHuman": {
+        "x": -588.05,
+        "y": 3599.95,
+        "z": -288.01
+      }
+    }
+  ],
+  "final": {
+    "ready": true,
+    "time": {
+      "sim_s": 2976,
+      "duration_s": 24588,
+      "playing": false,
+      "speed": 1
+    },
+    "layer": "belief",
+    "position": [
+      -588.05,
+      -287.6643688201904,
+      -3599.95
+    ],
+    "triangleHeight": -287.6643688201904,
+    "sampler": -287.6643688201904,
+    "footDelta": 0,
+    "revision": 15,
+    "subdivision": 1,
+    "sampleVertexY": -269.00341796875,
+    "vertices": 403750,
+    "rawHuman": {
+      "x": -588.05,
+      "y": 3599.95,
+      "z": -288.01
+    }
+  },
+  "exceptions": [],
+  "failedRequests": []
+}

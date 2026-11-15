@@ -9,7 +9,7 @@
  *  - Ice: the Subsurface Water Ice Mapping project (SWIM 2.0, -60 to 60 N) covers these latitudes, but its
  *    server was unreachable when this was built, so no ice value is imported (recorded as such).
  *  - Radiation: MSL RAD measured at Gale 0.21 +/- 0.04 mGy/day absorbed and 0.64 +/- 0.12 mSv/day dose
- *    equivalent (Hassler et al. 2014, Science 343), with a mean quality factor <Q> = 3.05 +/- 0.3. Guo et al. 2018
+ *    equivalent (Hassler et al. 2014, Science 343), with a mean quality factor <Q> = 3.05 +/- 0.3. Guo et al. 2017
  *    (JGR Planets, doi:10.1002/2016JE005206, section 3.3) fitted the measured anticorrelation of the RAD dose rate
  *    with surface pressure: -kappa = c0 + c1 * Phi, c0 = 0.28 +/- 0.03 uGy/day/Pa, c1 = -2.9 +/- 0.6 e-4
  *    uGy/day/Pa/MV, measured between about 700 and 950 Pa; at Phi = 500 MV (the period of Hassler et al.)
@@ -35,7 +35,7 @@ if (!tabPath) throw new Error('usage: node scripts/extract-zone-environment.mjs 
 const outPath = outArg ?? join(HERE, 'data', 'zone_environment.json');
 const SCALE_HEIGHT_M = 11100;
 const RAD = { absorbed_mgy_per_day: 0.21, absorbed_sigma_mgy_per_day: 0.04, dose_equivalent_msv_per_day: 0.64, dose_equivalent_sigma_msv_per_day: 0.12, quality_factor: 3.05, quality_factor_sigma: 0.3 };
-// Guo et al. 2018, section 3.3: -kappa = c0 + c1 * Phi (uGy/day/Pa), at Phi = 500 MV.
+// Guo et al. 2017, section 3.3: -kappa = c0 + c1 * Phi (uGy/day/Pa), at Phi = 500 MV.
 const PHI_MV = 500;
 const C0 = 0.28, C0_SIGMA = 0.03, C1 = -2.9e-4, C1_SIGMA = 0.6e-4;
 const KAPPA = C0 + C1 * PHI_MV;
@@ -100,7 +100,7 @@ for (const [w, crop] of Object.entries(crops)) {
         dose_equivalent_msv_per_day: Number(de.toFixed(2)),
         dose_equivalent_sigma_msv_per_day: Number(deSigma.toFixed(2)),
         within_rad_pressure_range: inside,
-        note: w === 'gale' ? 'measured by MSL RAD here' : inside ? 'from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2018)' : 'from the RAD dose-pressure relation OUTSIDE its measured 700-950 Pa range: Guo et al. 2018 state this extrapolation is not yet verified',
+        note: w === 'gale' ? 'measured by MSL RAD here' : inside ? 'from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2017)' : 'from the RAD dose-pressure relation OUTSIDE its measured 700-950 Pa range: Guo et al. 2017 state this extrapolation is not yet verified',
       };
     })(),
   };
@@ -110,7 +110,7 @@ const out = {
   sources: {
     water: { title: 'Mars Odyssey GRS, H2O concentration, smoothed 5 x 5 degree map (ODY-M-GRS-5-ELEMENTS-V1.0, H2O_SR_5X5)', url: 'https://pds-geosciences.wustl.edu/ody/ody-m-grs-5-elements-v1/odgm_xxxx/data/smoothed/h2o_sr_5x5.tab', sha256: createHash('sha256').update(text).digest('hex'), reference: 'Boynton et al. 2007, JGR 112, E12S99, doi:10.1029/2007JE002887' },
     ice: { title: 'Subsurface Water Ice Mapping (SWIM 2.0)', url: 'https://swim.psi.edu/SWIM2Products.php', status: 'unreachable' },
-    radiation: { measurement: 'Hassler et al. 2014, Science 343, 1244797, doi:10.1126/science.1244797 (MSL RAD, Gale; <Q> = 3.05 +/- 0.3)', dependence: 'Guo et al. 2018, JGR Planets, doi:10.1002/2016JE005206, section 3.3: -kappa = 0.28 - 2.9e-4 * Phi uGy/day/Pa, measured at 700-950 Pa; Phi = 500 MV used', insight_pressure: 'Lange et al. 2022, JGR Planets 127, e2022JE007190, section 2.2', scale_height: 'NASA Mars Fact Sheet, scale height 11.1 km, https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html' },
+    radiation: { measurement: 'Hassler et al. 2014, Science 343, 1244797, doi:10.1126/science.1244797 (MSL RAD, Gale; <Q> = 3.05 +/- 0.3)', dependence: 'Guo et al. 2017, JGR Planets, doi:10.1002/2016JE005206, section 3.3: -kappa = 0.28 - 2.9e-4 * Phi uGy/day/Pa, measured at 700-950 Pa; Phi = 500 MV used', insight_pressure: 'Lange et al. 2022, JGR Planets 127, e2022JE007190, section 2.2', scale_height: 'NASA Mars Fact Sheet, scale height 11.1 km, https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html' },
     retrieved: new Date().toISOString().slice(0, 10),
   },
   worlds,

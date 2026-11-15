@@ -37,7 +37,12 @@ import { homeRig, nudgeMast, roverRig, selectCamera, zoomBy } from '../lib/rover
 /** The lens sits a little ahead of the node's origin, so the camera is not inside its own housing (m). */
 const LENS_AHEAD_M = { mast: 0.14, body: 0.06, arm: 0.1 } as const;
 /** Stabilisation of the rover's view (s): a short low-pass on position and direction, so no shake reaches it. */
-const ROVER_STAB_TAU_S = 0.12;
+const ROVER_STAB_TAU_S = 0.15;
+/** The view direction is smoothed a little more, so a pivot turn swings the view gently (position never lags). */
+const ROVER_DIR_TAU_S = 0.3;
+/** On a camera change the view eases to the new camera over CUT_EASE_S, with this time constant (s). */
+const CUT_EASE_S = 0.35;
+const CUT_TAU_S = 0.09;
 
 export const povState = { headingDeg: 0, pitchDeg: 0, fovDeg: 70, active: false };
 
@@ -111,7 +116,7 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
   // A request to turn towards where a photo was taken (lib/photoAim): eased in, cancelled by a drag.
   const turn = useRef<{ seen: number; yaw: number | null; pitch: number | null }>({ seen: aimRequest.token, yaw: null, pitch: null });
   // The rover's view: last camera cut seen, and the stabilised eye and direction.
-  const rov = useRef({ cut: -1, eye: new THREE.Vector3(), dir: new THREE.Vector3(), pos: new THREE.Vector3(), d: new THREE.Vector3(), q: new THREE.Quaternion(), side: new THREE.Vector3() });
+  const rov = useRef({ cut: -1, ease: 0, base: new THREE.Vector3(), rel: new THREE.Vector3(), tmp: new THREE.Vector3(), eye: new THREE.Vector3(), dir: new THREE.Vector3(), pos: new THREE.Vector3(), d: new THREE.Vector3(), q: new THREE.Quaternion(), side: new THREE.Vector3() });
 
   // Enter / leave: remember the third-person offset and the lens, restore them on exit.
   useEffect(() => {
@@ -249,21 +254,38 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
       r.pos.addScaledVector(r.side, (roverRig.side === 'left' ? 0.5 : -0.5) * cam.baselineM);
     }
     r.pos.addScaledVector(r.d, LENS_AHEAD_M[cam.mount]);
+    const fov = cameraFovDeg(cam, roverRig.focalMm);
+    // Entering the rover's view starts on the camera; a later camera change eases there quickly instead of
+    // jumping (the photo tour switches between Navcam, Mastcam-Z and the Hazcams), then the usual stabiliser.
+    let k = 1;
+    let kDir = 1;
     if (r.cut !== roverRig.cut) {
+      if (r.cut !== -1) r.ease = CUT_EASE_S;
       r.cut = roverRig.cut;
-      r.eye.copy(r.pos);
+    }
+    if (r.cut !== -1) {
+      k = 1 - Math.exp(-dt / (r.ease > 0 ? CUT_TAU_S : ROVER_STAB_TAU_S));
+      kDir = r.ease > 0 ? k : 1 - Math.exp(-dt / ROVER_DIR_TAU_S);
+      r.ease = Math.max(0, r.ease - dt);
+    }
+    // The eye is smoothed relative to the rover, never in the world: a world lag fell behind a rover driving at
+    // replay speed and put the camera inside its body for a moment.
+    obj.getWorldPosition(r.base);
+    r.tmp.copy(r.pos).sub(r.base);
+    if (k >= 1) {
+      r.rel.copy(r.tmp);
       r.dir.copy(r.d);
     } else {
-      const k = 1 - Math.exp(-dt / ROVER_STAB_TAU_S);
-      r.eye.lerp(r.pos, k);
-      r.dir.lerp(r.d, k).normalize();
+      r.rel.lerp(r.tmp, k);
+      r.dir.lerp(r.d, kDir).normalize();
     }
+    r.eye.copy(r.base).add(r.rel);
     camera.position.copy(r.eye);
     camera.up.set(0, 1, 0);
     camera.lookAt(aim.current.copy(r.eye).add(r.dir));
-    const fov = cameraFovDeg(cam, roverRig.focalMm);
+    // The lens changes with the same easing, so a switch from a wide Hazcam to a zoomed Mastcam-Z does not jump.
     if (Math.abs(camera.fov - fov) > 0.01) {
-      camera.fov = fov;
+      camera.fov = k >= 1 || Math.abs(camera.fov - fov) < 0.05 ? fov : camera.fov + (fov - camera.fov) * k;
       camera.updateProjectionMatrix();
     }
     povState.headingDeg = headingFromThree(r.dir.x, r.dir.z);

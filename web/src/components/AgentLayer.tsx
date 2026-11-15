@@ -66,26 +66,31 @@ export function AgentLayer({ agents, t, verticalExaggeration, showLabels, hideLa
         // The drone keeps its true height above the drawn ground: exaggerating its absolute z with the
         // relief would bury it when it is parked (pose z below the drawn, smoothed surface).
         const p = a.pose.position;
-        const ground = groundHeight(p.x, p.y);
-        // Below 1 m the drone counts as landed (agl 0): its parked height comes from another terrain
-        // model than the drawn one, and that small difference must not leave the legs in the air.
-        const rawAgl = a.agent_kind === 'DRONE' && ground != null ? droneAgl(p.z, ground) : 0;
-        const agl = rawAgl < DRONE_LANDED_M ? 0 : rawAgl;
-        const [x, gy, z] = enuToThree(ground == null ? p : { ...p, z: ground }, verticalExaggeration);
         const yaw = yawFromQuaternion(a.pose.orientation);
-        // A flying drone never passes through the drawn relief: it keeps a floor above the
-        // highest ground around it and ramps up ahead of walls on its heading (see droneFloor).
-        const airborne = a.agent_kind === 'DRONE' && a.mode !== 'IDLE';
-        const floorY = airborne ? droneFloor(groundHeight, p.x, p.y, yaw, verticalExaggeration) : null;
-        const y = floorY == null ? gy + agl : Math.max(gy + agl, floorY);
+        const samplePose = () => {
+          const ground = groundHeight(p.x, p.y);
+          // Below 1 m the drone counts as landed (agl 0): its parked height comes from another terrain
+          // model than the drawn one, and that small difference must not leave the legs in the air.
+          const rawAgl = a.agent_kind === 'DRONE' && ground != null ? droneAgl(p.z, ground) : 0;
+          const agl = rawAgl < DRONE_LANDED_M ? 0 : rawAgl;
+          const [x, gy, z] = enuToThree(ground == null ? p : { ...p, z: ground }, verticalExaggeration);
+          // A flying drone never passes through the drawn relief: it keeps a floor above the
+          // highest ground around it and ramps up ahead of walls on its heading (see droneFloor).
+          const airborne = a.agent_kind === 'DRONE' && a.mode !== 'IDLE';
+          const floorY = airborne ? droneFloor(groundHeight, p.x, p.y, yaw, verticalExaggeration) : null;
+          const y = floorY == null ? gy + agl : Math.max(gy + agl, floorY);
+          return { position: [x, y, z] as [number, number, number], groundY: gy, floorY };
+        };
+        const drawn = samplePose();
         return (
           <SmoothedPose
             key={a.agent_id}
-            position={[x, y, z]}
-            groundY={gy}
+            position={drawn.position}
+            groundY={drawn.groundY}
+            samplePose={samplePose}
             t={t}
-            floorY={floorY}
-            groundAt={a.agent_kind === 'DRONE' ? groundAtWorld : undefined}
+            floorY={drawn.floorY}
+            groundAt={groundAtWorld}
             yaw={yaw}
             faceTravel={a.agent_kind === 'HUMAN'}
             name={`agent-${a.agent_id}`}
@@ -217,6 +222,7 @@ function SmoothedPose({
   climbMps,
   floorY = null,
   groundAt,
+  samplePose,
   t,
   children,
 }: {
@@ -233,6 +239,8 @@ function SmoothedPose({
    * on its pad, lags its data or after a seek, and the terrain between them can be higher.
    */
   groundAt?: (x: number, z: number) => number | null;
+  /** Re-sample animated terrain even while playback is paused. */
+  samplePose?: () => { position: [number, number, number]; groundY: number; floorY: number | null };
   yaw: number;
   /**
    * Face the direction of travel while moving (and keep it when stopping) instead of the recorded
@@ -264,6 +272,12 @@ function SmoothedPose({
     const g = group.current;
     if (!g) return;
     const dt = Math.min(dtRaw, 0.1);
+    const pose = samplePose?.();
+    if (pose) {
+      target.current.set(...pose.position);
+      ground.current = pose.groundY;
+      floor.current = pose.floorY;
+    }
     const t = target.current;
     const horizontal = Math.hypot(g.position.x - t.x, g.position.z - t.z);
     // Replay time jumped (Restart, seek backwards, or ahead by more than REPLAY_JUMP_S): the agent
@@ -333,6 +347,12 @@ function SmoothedPose({
         g.position.y += (t.y - g.position.y) * k;
       }
       if (!pinned) g.rotation.y = dampAngle(g.rotation.y, drawnYaw, dt, AGENT_POSE_TAU_S);
+    }
+    if (!climbMps && groundAt) {
+      // Horizontal display smoothing must not leave the feet below/above the
+      // actual triangle at the drawn position, especially during a paused morph.
+      const h = groundAt(g.position.x, g.position.z);
+      if (h != null) g.position.y = h;
     }
     g.userData.agl = Math.max(0, g.position.y - ground.current);
   }, -2);

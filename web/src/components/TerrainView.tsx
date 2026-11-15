@@ -6,16 +6,11 @@ import type { TerrainMeta } from '../types/icd';
 import type { RasterSet } from '../types/replay';
 import { elevationColor, finiteRange, heightGrid, sigmaColor, slopeColor, versionKey, type TerrainLayer } from '../lib/layers';
 import { slopeDegrees } from '../lib/slope';
-import { bilinear, upsampleGrid } from '../lib/terrainSmooth';
+import { bilinear } from '../lib/terrainSmooth';
+import { createTerrainSurface, type TerrainSurface } from '../lib/terrainSurface';
+export { MESH_SUBDIVISION, meshSubdivision } from '../lib/terrainSurface';
 import { growthClock, zoneDelay, zoneGlow, zoneShare } from './TerrainGrowth';
 
-/** Mesh vertices per source cell interval. Source cell centres are always vertices (J-01). */
-export const MESH_SUBDIVISION = 3;
-/** Vertices the terrain mesh aims for: building and lighting more of them freezes the opening for seconds. */
-const MESH_VERTEX_BUDGET = 700_000;
-/** Mesh subdivision per source cell: up to 3, fewer on a large map so it stays within the vertex budget. */
-export const meshSubdivision = (meta: { rows: number; cols: number }): number =>
-  Math.max(1, Math.min(MESH_SUBDIVISION, Math.floor(Math.sqrt(MESH_VERTEX_BUDGET / (meta.rows * meta.cols)))));
 /** Distance (m) at which the cosmetic ground grain has faded out; the first-person view reaches farther. */
 export const DETAIL_FAR_M = 180;
 export const DETAIL_FAR_POV_M = 480;
@@ -131,6 +126,8 @@ vec3 groundNormal(vec3 surfPos, vec3 surfNorm, float h, float faceDir) {
 `;
 
 interface Props {
+  /** Shared live geometry for ground-adhered consumers, including its morph. */
+  surface?: TerrainSurface;
   meta: TerrainMeta;
   rasters: RasterSet;
   layer: TerrainLayer;
@@ -157,8 +154,9 @@ interface Props {
  * same ENU point coincide. Triangles touching NoData are not drawn. Contour lines are drawn
  * in the shader from the true height of each fragment.
  */
-export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery, overlay, surfaceDetail = true, detailFarM = DETAIL_FAR_M }: Props) {
+export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery, overlay, surfaceDetail = true, detailFarM = DETAIL_FAR_M, surface: providedSurface }: Props) {
   const heights = heightGrid(rasters, layer, mapVersion);
+  const surface = useMemo(() => providedSurface ?? createTerrainSurface(meta, heights), [providedSurface, meta, heights]);
   const version = rasters.versions[versionKey(rasters, mapVersion)];
   const imageTexture = useImageryTexture(imagery?.url ?? null);
   const texture = overlay?.texture ?? imageTexture;
@@ -170,8 +168,8 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
 
   const geometry = useMemo(() => {
     const { rows, cols } = meta;
-    const f = meshSubdivision(meta);
-    const fine = upsampleGrid(heights, rows, cols, f);
+    const f = surface.subdivision;
+    const fine = surface.fine;
     const R = fine.rows;
     const C = fine.cols;
     const step = meta.resolution_m / f;
@@ -180,7 +178,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     const [lo, hi] = finiteRange(rasters.prior);
     const observed = new Set(highlightObserved && layer === 'belief' ? version.observed : []);
 
-    const positions = new Float32Array(R * C * 3);
+    const positions = surface.positions;
     const colors = new Float32Array(R * C * 3);
     const uvs = new Float32Array(R * C * 2);
     for (let r = 0; r < R; r++) {
@@ -188,9 +186,6 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
         const i = r * C + c;
         const h = fine.data[i];
         // Three.js frame: x east, y up, z = -north. The vertical exaggeration is applied on the mesh scale.
-        positions[i * 3] = x0 + c * step;
-        positions[i * 3 + 1] = h ?? 0;
-        positions[i * 3 + 2] = -(y0 + r * step);
         // Image coordinates: u east, v north (texture flipY puts image row 0, the north edge, at v = 1).
         if (ext) {
           uvs[i * 2] = (x0 + c * step - ext.origin_x_m) / ext.width_m;
@@ -210,27 +205,14 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
       }
     }
 
-    const index: number[] = [];
-    for (let r = 0; r < R - 1; r++) {
-      for (let c = 0; c < C - 1; c++) {
-        const a = r * C + c;
-        const b = a + 1;
-        const d = a + C;
-        const e = d + 1;
-        if (fine.data[a] == null || fine.data[b] == null || fine.data[d] == null || fine.data[e] == null) continue;
-        // Counter-clockwise seen from above (+Y in Three.js).
-        index.push(a, b, d, b, e, d);
-      }
-    }
-
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     g.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     g.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-    g.setIndex(index);
+    g.setIndex(new THREE.BufferAttribute(surface.indices, 1));
     g.computeVertexNormals();
     return g;
-  }, [meta, rasters, heights, version, layer, highlightObserved, draped, ext, slope]);
+  }, [meta, rasters, surface, version, layer, highlightObserved, draped, ext, slope]);
 
   const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 }, uTint: { value: 1 }, uDetail: { value: 1 }, uDetailFar: { value: DETAIL_FAR_M } }), []);
   useEffect(() => {
@@ -308,7 +290,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
   }, [material, texture, draped]);
 
   // Height morph: a new grid (layer switch, new map version) eases from the heights on screen to the
-  // new ones instead of jumping. Display only; agents and routes read the new grid at once.
+  // new ones instead of jumping. Ground consumers sample this same live vertex buffer.
   const shown = useRef<Float32Array | null>(null);
   // True heights and colours of the current geometry, for the opening growth.
   const rest = useRef<{ y: Float32Array; color: Float32Array; delay: Float32Array } | null>(null);
@@ -325,7 +307,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
       let lo = Infinity;
       let hi = -Infinity;
       for (let i = 0; i < y.length; i++) {
-        y[i] = arr[i * 3 + 1];
+        y[i] = surface.restHeights[i];
         if (y[i] < lo) lo = y[i];
         if (y[i] > hi) hi = y[i];
       }
@@ -355,7 +337,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     pos.needsUpdate = true;
     geometry.computeVertexNormals();
     morph.current = { from, to, t: 0 };
-  }, [geometry]);
+  }, [geometry, surface]);
   // Opening growth: each zone rises from flat on its own schedule and is lit while it rises.
   useFrame(() => {
     const r = rest.current;
@@ -379,11 +361,12 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     }
     pos.needsUpdate = true;
     colAttr.needsUpdate = true;
+    surface.revision++;
     // Normals and the bounding sphere stay those of the finished terrain: recomputing them for every
     // vertex on every frame took long enough on a large map to freeze the animation into a few frames.
     growing.current = growthClock.active;
     if (!growing.current) morph.current = null; // the growth has set the true heights: nothing left to morph
-  });
+  }, -3);
   useFrame((_, dt) => {
     const m = morph.current;
     if (!m || growthClock.active) return;
@@ -392,10 +375,11 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     const pos = geometry.getAttribute('position') as THREE.BufferAttribute;
     morphHeights(m.from, m.to, p, pos.array as Float32Array);
     pos.needsUpdate = true;
+    surface.revision++;
     geometry.computeVertexNormals();
     geometry.computeBoundingSphere();
     if (p >= 1) morph.current = null;
-  });
+  }, -3);
 
   useEffect(() => () => geometry.dispose(), [geometry]);
   useEffect(() => () => material.dispose(), [material]);

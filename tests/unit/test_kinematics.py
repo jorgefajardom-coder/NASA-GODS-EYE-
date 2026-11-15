@@ -64,9 +64,9 @@ def test_stop_halts_in_place_and_never_resumes():
 def test_path_must_start_at_the_agent():
     with pytest.raises(ExecutionRefused, match='does not start'):
         PathFollower(OUT, Rates(1.0, 0.0, 0.0), (0.5, 0.0, 0.0))
-    # Height comes from the path (belief surface), not the configured agent z.
-    follower = PathFollower(OUT, Rates(1.0, 0.0, 0.0), (0.0, 0.0, -2571.0))
-    assert follower.position == OUT[0]
+    # Matching XY cannot replace a received altitude with the path surface.
+    with pytest.raises(ExecutionRefused, match='XYZ'):
+        PathFollower(OUT, Rates(1.0, 0.0, 0.0), (0.0, 0.0, -2571.0))
     with pytest.raises(ExecutionRefused, match='two points'):
         PathFollower(OUT[:1], Rates(1.0, 0.0, 0.0), OUT[0])
 
@@ -82,3 +82,45 @@ def test_repeated_waypoint_and_three_dimensional_segments():
     assert follower.position == pytest.approx((1.5, 0.0, 2.0))
     assert on_segment(follower.position, *slope)
     assert follower.state == MOVING
+
+
+@pytest.mark.parametrize('point', [(0., 0.), (0., 0., math.nan), (0., math.inf, 0.),
+                                  (0., 0., True), ('0', 0., 0.)])
+@pytest.mark.parametrize('position', ['start', 'first', 'later'])
+def test_finite_xyz_is_required_for_current_pose_and_every_waypoint(point, position):
+    path, start = list(OUT), OUT[0]
+    if position == 'start':
+        start = point
+    else:
+        path[0 if position == 'first' else 1] = point
+    with pytest.raises(ExecutionRefused, match='finite XYZ'):
+        PathFollower(path, Rates(1., 0., 0.), start)
+
+
+def test_full_xyz_tolerance_accepts_small_serialization_difference_only():
+    PathFollower(OUT, Rates(1., 0., 0.), (0., 0., 5e-7))
+    with pytest.raises(ExecutionRefused, match='XYZ'):
+        PathFollower(OUT, Rates(1., 0., 0.), (0., 0., 1.01e-6))
+
+
+def test_halted_follower_resumes_only_from_its_exact_xyz_on_a_new_route():
+    path = [(0., 0., -2500.), (3., 0., -2499.8)]
+    first = PathFollower(path, Rates(1., .2, .1), path[0])
+    first.advance(1.)
+    first.stop()
+    stopped = first.position
+    assert first.advance(20.) == 0. and first.position == stopped
+    assert first.state == HALTED
+    projected = (stopped[0], stopped[1], path[0][2])
+    with pytest.raises(ExecutionRefused, match='XYZ'):
+        PathFollower([projected, path[1]], first.rates, stopped)
+    resumed = PathFollower([stopped, path[1]], first.rates, stopped)
+    assert resumed.position == stopped
+    resumed.advance(1.)
+    assert resumed.position != stopped
+
+
+def test_drone_flight_pose_cannot_execute_a_candidate_starting_on_the_surface():
+    surface = [(0., 0., -2500.), (1., 0., -2500.)]
+    with pytest.raises(ExecutionRefused, match='XYZ'):
+        PathFollower(surface, Rates(1., 0., 0.), (0., 0., -2490.))

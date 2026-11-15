@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PerspectiveCamera, Vector3 } from 'three';
 import { expect, it } from 'vitest';
-import { RECORDED_RECOVERY_ENTRY } from '../src/data/replayAdapter';
+import { RECORDED_RECOVERY_ENTRY, HEIGHT_RECOVERY_ENTRY } from '../src/data/replayAdapter';
 import {
   fromGatewayPackage, parseJsonLines, type GatewayManifest, type GatewaySnapshot, type PublicRasters,
 } from '../src/data/gatewayReplay';
@@ -12,9 +12,9 @@ import { terrainFraming } from '../src/lib/terrainPresentation';
 /** Mandatory consumer of the actual featured recorder output. No generated
  * substitute and no environment-dependent skip: a broken default must fail CI.
  */
-it('opens the featured recorder package with its recorded decision change and absolute datum', () => {
+it.each([RECORDED_RECOVERY_ENTRY, HEIGHT_RECOVERY_ENTRY])('opens exact recorder package %s with its decision change and absolute datum', (entry) => {
   // The recorder package is consumed by name; the viewer's default entry is a separate choice.
-  const dir = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'replay', RECORDED_RECOVERY_ENTRY);
+  const dir = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'replay', entry);
   for (const name of ['manifest.json', 'timeline.jsonl', 'snapshot.json', 'public_rasters.json']) {
     expect(existsSync(join(dir, name)), `Missing featured recording: ${name}`).toBe(true);
   }
@@ -45,6 +45,18 @@ it('opens the featured recorder package with its recorded decision change and ab
   for (const id of ['rover_1', 'drone_1']) {
     expect(positions(id).size).toBe(1);
     expect(agents.filter((agent) => agent.agent_id === id).every((agent) => agent.mode === 'IDLE')).toBe(true);
+  }
+
+  if (entry === HEIGHT_RECOVERY_ENTRY) {
+    expect(manifest.run_id).toBe('height-recovery-20261115-01');
+    for (const state of agents.filter((a) => a.agent_id === 'drone_1')) {
+      const { x, y, z } = state.pose.position;
+      const meta = bundle.manifest.terrain_meta;
+      const row = Math.floor((y - meta.origin_y_m) / meta.resolution_m);
+      const col = Math.floor((x - meta.origin_x_m) / meta.resolution_m);
+      expect(z).toBe(rasters.prior[row * meta.cols + col]);
+      expect(z).toBeLessThan(-2000); // Absolute datum, not a missing-height zero.
+    }
   }
 
   // The recording is drawn in its absolute datum, not translated to the demo's

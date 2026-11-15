@@ -6,3 +6,6 @@
 *.yml text eol=lf
 *.yaml text eol=lf
 *.npz binary
+
+# Published Wiki tools are byte-sealed by their original export manifest.
+docs/wiki/tools/*.py -text

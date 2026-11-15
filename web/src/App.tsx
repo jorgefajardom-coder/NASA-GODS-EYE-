@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from './types/replay';
-import { assetUrl, DEFAULT_RUN_ENTRY, RECORDED_RECOVERY_ENTRY, loadEvaluatorReference, loadReplay } from './data/replayAdapter';
+import { assetUrl, DEFAULT_RUN_ENTRY, isRecordedRecoveryEntry, loadEvaluatorReference, loadReplay } from './data/replayAdapter';
 import { REFERENCE_SOURCES } from './data/referenceSources';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from './lib/smoothing';
 import { firstMotionTime, viewAt } from './lib/replay';
@@ -38,6 +38,8 @@ import { detectRenderTier } from './lib/gpu';
 import { ManagementList } from './components/ManagementList';
 import { DetailsPanel } from './components/DetailsPanel';
 import { HUD_MAP_PX, RadialHud, type HudOption } from './components/RadialHud';
+import { co2FromOxygen } from './lib/co2';
+import { zoneCrewDose } from './lib/zoneEnvironment';
 import { HudGauge } from './components/HudGauge';
 import { resourceLines } from './lib/resources';
 import { fmtDuration, isTrustedRoute } from './lib/format';
@@ -121,9 +123,9 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showLabels, setShowLabels] = useState(true);
   // Intro clip first (unless reduced motion or ?nointro=1); the terrain grows in once it ends.
   // On load the intro plays first, then the zone selector opens; arriving from it (travel) opens the scene directly.
-  const [startWithZones] = useState(() => RUN_ID !== RECORDED_RECOVERY_ENTRY && !arrivalPending(RUN_ID));
+  const [startWithZones] = useState(() => !isRecordedRecoveryEntry(RUN_ID) && !arrivalPending(RUN_ID));
   // Arriving from the zone selector skips the intro: the zone's map image fades straight into its terrain.
-  const [introDone, setIntroDone] = useState(() => RUN_ID === RECORDED_RECOVERY_ENTRY || !introWanted() || arrivalPending(RUN_ID));
+  const [introDone, setIntroDone] = useState(() => isRecordedRecoveryEntry(RUN_ID) || !introWanted() || arrivalPending(RUN_ID));
   // Without an intro (reduced motion or ?nointro=1) the selector opens at once; otherwise when the intro ends.
   const [zonesOpen, setZonesOpen] = useState(() => startWithZones && introDone);
   // The terrain grows in and the panels enter only once the start menu is left, never behind it.
@@ -233,9 +235,18 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     hudHints[l.key] = l.key === 'time' ? fmtDuration(l.remaining) : l.remaining == null ? 'no data' : `${l.remaining.toFixed(0)} ${l.unit}`;
   }
   if (agent?.agent_kind !== 'HUMAN') hudHints.oxygen = 'not applicable';
+  else {
+    const o2 = hudLines.find((l) => l.key === 'oxygen');
+    const c = o2 ? co2FromOxygen(o2, agent ? budgets[agent.agent_id]?.oxygen_l ?? null : null) : null;
+    hudHints.co2 = c ? `${c.exhaledL.toFixed(1)} L exhaled (est.)` : 'no data';
+  }
   if (view.activeRoute && (!isTrustedRoute(view.activeRoute) || view.state?.mission_state === 'REPLAN')) hudWarn.add('route');
   hudHints.route = view.activeRoute ? view.activeRoute.route_id : 'none';
-  if (agent?.agent_kind === 'HUMAN' && bundle.atmosphere) hudHints.dose = `${fmtMicroSv(crewDose(bundle.atmosphere, t).usv)} µSv`;
+  if (agent?.agent_kind === 'HUMAN') {
+    const zoneDose = zoneCrewDose(RUN_ID, t);
+    if (zoneDose) hudHints.dose = `${fmtMicroSv(zoneDose.usv)} µSv`;
+    else if (bundle.atmosphere) hudHints.dose = `${fmtMicroSv(crewDose(bundle.atmosphere, t).usv)} µSv`;
+  }
   // Following an agent shows its telemetry too; F toggles following the selected agent.
   const followAgent = useCallback((id: string) => {
     setCamView(id);
@@ -267,7 +278,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     setFirstPerson(true); // the tour is seen from the rover's own camera; V steps back behind the rover
     setClosedStop(null);
     setMarsNow(true);
-    setSpeed(10);
+    setSpeed(5);
     setT(photoTour.start_s);
     setPlaying(true);
   };
@@ -275,9 +286,10 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     const to = tourStepTime(roverStops, t, dir);
     if (to != null) setT(to);
   };
-  // Following sets 1x; the tour is long, so it plays at the top speed (the person can change it).
+  // Following sets 1x; the tour is long, so it plays faster, at 5x so the rover's own camera stays smooth (the
+  // person can still pick 10x).
   useEffect(() => {
-    if (tourOn && follow) setSpeed(10);
+    if (tourOn && follow) setSpeed(5);
   }, [tourOn, follow]);
   const marsNowNode = marsNow ? <MarsNowFrame stop={povStop} mission={bundle.roverStops?.mission} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: () => { setTourOn(false); setPlaying(false); } } : null} /> : null;
   // At each stop the replay holds while the images load, then the rover "takes" them one after another:
@@ -496,7 +508,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       center={
         // The 2D map only with no option or Route; every other option fills the circle with its own gauge.
         hudOption && hudOption !== 'route' ? (
-          <HudGauge option={hudOption} size={HUD_MAP_PX} bundle={bundle} view={view} t={t} agent={agent} route={view.activeRoute} budget={agent ? budgets[agent.agent_id] : undefined} atmosphere={bundle.atmosphere} />
+          <HudGauge option={hudOption} size={HUD_MAP_PX} bundle={bundle} view={view} t={t} agent={agent} route={view.activeRoute} budget={agent ? budgets[agent.agent_id] : undefined} atmosphere={bundle.atmosphere} runId={RUN_ID} />
         ) : (
           <Minimap bundle={bundle} view={view} agentId={agentId} size={HUD_MAP_PX} />
         )
@@ -607,7 +619,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           {mode === 'geology' ? (
             <GeologyList data={bundle.geology} selected={geoUnit} onSelect={setGeoUnit} showMap={showGeoMap} onShowMap={setShowGeoMap} showCut={showCut} onShowCut={setShowCut} />
           ) : mode === 'atmos' ? (
-            <AtmosList data={bundle.atmosphere} t={t} duration={duration} />
+            <AtmosList data={bundle.atmosphere} t={t} duration={duration} runId={RUN_ID} />
           ) : (
             <>
               <ManagementList groups={groups} selected={sel} onSelect={setSelection} />

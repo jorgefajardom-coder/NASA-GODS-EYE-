@@ -821,6 +821,21 @@ the team, not with AI; only its black background was removed and it was resized.
 An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
 images uses NASA logos, flags or mission marks or is presented as NASA data.
 
+## Optional auxiliary NASA/USGS terrain layers and HTTP range optimization
+
+Google Antigravity assisted the data and mapping owner with bounded HTTP 206
+keep-alive/block-cache optimizations in `scripts/prepare_jezero_terrain.py` and
+with a standalone auxiliary layer pipeline (`scripts/prepare_jezero_aux_layers.py`,
+`src/mge_data/mge_data/core.py`, `src/mge_data/mge_data/node.py`, and
+`tests/contracts/test_data_manifest.py`). The pipeline keeps `data/sample/terrain.npz`
+and `data/sample/manifest.json` unchanged by default while producing separate,
+cell-aligned auxiliary files (`jezero_aux_layers.npz`, `ctx_ortho.png`,
+`geology.json`, `aux_layers_manifest.json`) derived via GDAL/rasterio and ArcGIS
+REST from the official USGS Mars 2020 TRN MRO/CTX 6 m/px controlled orthomosaic
+and USGS SIM 3464 geologic map. `data/sample/ctx_ortho.png` is a deterministic
+north-up grayscale crop of the observational MRO/CTX orthomosaic, not an
+AI-generated image.
+
 ## Proposal publication after reconciliation
 
 OpenAI Codex assisted publication of the local scientific patch/campaign proposal,
@@ -880,3 +895,45 @@ the jsdom navigation regressions, and the validation record under
 software evidence; no image, video, NASA observation or mission result was
 generated. Existing asset declarations and watermarks remain intact. This cut
 does not close AC-08, steps 4/5, scientific approvals or organizer endorsement.
+
+## Zone water and radiation display and project page text
+
+Claude Code (Anthropic) assisted the display of the existing per-zone water and
+radiation context (`web/src/lib/zoneEnvironment.ts`, the Atmos panel and zone
+cards, with tests) and the English project-page draft `docs/project_page.md`.
+The values come unchanged from `web/scripts/data/zone_environment.json` (Mars
+Odyssey GRS, MSL RAD, Guo et al. 2018); the 4 h Marswalk dose is a linear
+display estimate without shielding or solar particle events. No image, video,
+audio or NASA observation was generated; scientific review of the wording and
+organizer endorsement remain open.
+
+The same assistance added the HUD's exhaled-CO₂ gauge (`web/src/lib/co2.ts`, the second
+press of the oxygen button, with tests): a display estimate from the replay's oxygen line
+and an assumed respiratory quotient of 0.85, pending scientific review; no CO₂ data or
+suit capacity is generated. It also switched the HUD dose gauge to each zone's surface
+rate from the existing zone environment data, with NASA's 600 mSv career limit as scale
+context; no dose value was generated.
+
+## PR37 scientific presentation corrections — 15 November 2026
+
+OpenAI Codex assisted the HUD/context code, source-year corrections, project-page draft and regression tests listed in `ai_usage.json` under `pr37_scientific_presentation_corrections`. RAD dose equivalent is not converted into NASA effective dose or a career-limit percentage. An unavailable CO2 rate remains unavailable. No new measured data, numerical radiation inputs, scientific profile or approval was generated. Owner scientific review remains pending.
+
+## PR38 auxiliary-context reconciliation — 15 November 2026
+
+OpenAI Codex assisted strict DEM/metadata/hash/path and public-array validation, bounded HTTP Range handling, synthetic regression fixtures, a ROS consumer test, and the auxiliary visual-context contract. The complete file scope is registered in `ai_usage.json` under `pr38_auxiliary_context_reconciliation`. Acquired imagery/geology/NPZ bytes were preserved; interpreted DN/slope categories are estimated visual proxies without navigation authorization. No new scientific parameter, measured observation or approval was generated.
+
+## Height contract reconciliation — 15 November 2026
+
+OpenAI Codex assisted the initial-condition resolver, executor XYZ guards, immutable planner metadata binding, shared rendered-triangle sampler and regression tests listed in `ai_usage.json` under `height_contract_reconciliation`. New scene heights are explicitly SIMULATED initial conditions derived from the declared public prior, not measured observations. Historical packages are retained unchanged. New recordings and browser captures preserve MOCK/REPLAY and required marks; no scientific approval, physical validation or complete three-agent mission is asserted.
+
+## Height-corrected software recovery recording — 15 November 2026
+
+OpenAI Codex assisted recording workflow, new URL-entry integration, tests and audit receipts for `height-recovery-20261115-01` / `recorded-recovery-002`. The exact MOCK recording includes AI-assisted code and a deterministic SIMULATED observation, not new observational NASA data. Its scene initialization parks the drone; the human alone executes stop/replan/return. File scope and evidence are registered as `height_recovery_recording_and_presentation`; source/pose identities and historical package bytes are preserved. Capture/edited media retains visible labels and metadata.
+
+## Final delivery candidate reconciliation — 15 November 2026
+
+OpenAI Codex assisted local integration of PR37/PR38 and the height/replay cut, structured conflict resolution preserving both mandatory disclosure histories, a trailing-blank-line correction and delivery handoff documentation. Registered as `final_delivery_candidate_reconciliation`. Actual checks, deferred work and human gates are distinguished in `final_delivery_candidate.md`; no automatic main merge, physical validation or external submission was performed.
+
+## Same-run browser video — 15 November 2026
+
+OpenAI Codex assisted Chrome capture/edit scripts, English overlays/subtitles, metadata and technical review for `web/public/media/height-recovery-002.mp4`. The actual viewer replays the exact MOCK software run; the edit does not generate NASA observations or mission telemetry. Visible `AI-generated edit | SIMULATED | NOT LIVE` and existing portrait marks remain readable. Capture metadata locks viewerf7938f5, execution742eed5 and all four recorder files. No image-generation model or NASA branding was used to create the capture/edit. Third-party source terms remain; raw frames/browser profiles/caches are excluded. Final owner merge, organizer endorsement and submission approval remain pending.
