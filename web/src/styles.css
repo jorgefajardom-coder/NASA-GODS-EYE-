@@ -2572,16 +2572,16 @@ input[type='checkbox'] {
 .pov__heading span { animation-delay: 2.1s; }
 .pov::before { animation-delay: 1.95s; }
 
-/* Smaller agent dial in first person. */
+/* Agent dial in first person: the same size as in third person (smaller only on small screens). */
 .pov__dial {
   top: 56px;
   right: 16px;
-  scale: 0.62;
+  scale: 1;
   transform-origin: top right;
 }
 @media (max-width: 900px), (max-height: 700px) {
   .pov__dial {
-    scale: 0.5;
+    scale: 0.72;
   }
 }
 
