@@ -177,6 +177,8 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     const y0 = meta.origin_y_m + meta.resolution_m / 2;
     const [lo, hi] = finiteRange(rasters.prior);
     const observed = new Set(highlightObserved && layer === 'belief' ? version.observed : []);
+    // Cells the recorded map marks impassable (obstacles, too steep) get a rust tint under their rocks.
+    const impassable = new Set(highlightObserved ? version.impassable ?? [] : []);
 
     const positions = surface.positions;
     const colors = new Float32Array(R * C * 3);
@@ -200,7 +202,9 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
           rgb = s == null ? [0.25, 0.25, 0.25] : slopeColor(s); // grey = border cells without a full 3x3 window
         }
         else rgb = elevationColor(h, lo, hi);
-        if (observed.has(Math.round(r / f) * cols + Math.round(c / f))) rgb = [rgb[0] * 0.7 + 0.04, rgb[1] * 0.7 + 0.2, rgb[2] * 0.7 + 0.24];
+        const cell = Math.round(r / f) * cols + Math.round(c / f);
+        if (impassable.has(cell)) rgb = [rgb[0] * 0.55 + 0.38, rgb[1] * 0.45 + 0.06, rgb[2] * 0.45 + 0.04];
+        else if (observed.has(cell)) rgb = [rgb[0] * 0.7 + 0.04, rgb[1] * 0.7 + 0.2, rgb[2] * 0.7 + 0.24];
         colors.set(rgb, i * 3);
       }
     }

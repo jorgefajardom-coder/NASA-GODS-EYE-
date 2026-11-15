@@ -104,7 +104,13 @@ export interface RasterSet {
    */
   reference?: (number | null)[];
   /** One belief/sigma pair per map_version. */
-  versions: Record<string, { belief: (number | null)[]; sigma: (number | null)[]; observed: number[] }>;
+  versions: Record<string, {
+    belief: (number | null)[];
+    sigma: (number | null)[];
+    observed: number[];
+    /** Optional: cells the mapping's human traversability marks forbidden (obstacles, too steep). */
+    impassable?: number[];
+  }>;
 }
 
 export interface ReplayFrame {

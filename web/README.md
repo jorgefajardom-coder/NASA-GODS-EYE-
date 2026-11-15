@@ -141,6 +141,12 @@ The rover and drone are the official NASA/JPL models with all branding removed, 
 
 Up close (under about 200 m of camera distance) the ground gets procedural grain: grit, pebble speckle and metre-scale undulation (no ripples: their crests read as lines and alias into moiré) computed in the shader from the ground position. It is **cosmetic, not measured** (the data stops at 5–20 m), fades out at mission scale, is not drawn on the uncertainty layer or the geologic map, and can be turned off in the view options.
 
+**Obstacle rocks (recorded runs with `impassable` cells).** Cells a recorded map version marks impassable (the mapping's human traversability: observed obstacles or slopes too steep) get a rust tint and a cluster of rocks (`src/lib/obstacleRocks.ts`, `src/components/ObstacleRocks.tsx`). The rocks are a **drawing of the planner mask, not measured rocks**:
+
+- **Sizes are deliberately enlarged for use.** Under the Golombek and Rapp (1997) rock size law used for Mars landing-site hazards, F(D) = k exp(-q D) with q = 1.79 + 0.152/k (k = 0.05 here, an illustrative value), most rocks are a few decimetres across. At the 128 m scale of the crop they are invisible and the obstacle sections could not be read, so the viewer draws each blocked cell's main rock from **1.5 m** upward, the boulder size that HiRISE (25 cm/px) rock counts for landing-site hazard maps start resolving (Golombek et al.), and only the smaller rocks around it follow the size law. Cells inside a continuous blocked band (two or more blocked neighbours) are drawn as an outcrop section of two or three blocks, 25 % larger and taller, so a ridge reads as one obstacle.
+- **Style follows the USGS geologic unit** of the cell when the run's dataset has a public geologic map (`public/geology/<dataset_id>.json`, attached only when frame, dataset, origin and datum match): `Njf` (Jezero floor unit, mafic, dark-toned) gives dark angular blocks, `Nle` (Lower etched unit, light- to intermediate-toned, etched) lighter flat slabs. The whole `jezero_mvp` crop lies on `Nle`. Colours and shapes are an artistic reading of the unit descriptions.
+- Every rock centre stays inside its cell, so none is drawn off the terrain. Sizes, shapes and the enlargement are display choices pending owner review; they change nothing the planner or mission uses.
+
 The terrain is drawn smoothed between the current run's cells, with contour
 lines every 10 m (bold every 50 m) at true elevation. Smoothing does not improve
 source resolution. Contours can be turned off in the view options.

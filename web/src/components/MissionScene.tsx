@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { TerrainLayer } from '../lib/layers';
-import { finiteRange, retrospectiveShapeAllowed, shapeGrid } from '../lib/layers';
+import { finiteRange, retrospectiveShapeAllowed, shapeGrid, versionKey } from '../lib/layers';
 import { createTerrainSurface, terrainSurfaceHeight } from '../lib/terrainSurface';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
@@ -32,6 +32,7 @@ import { SiteMarkers } from './SiteMarkers';
 import { RoverStopMarkers } from './RoverStopMarkers';
 import { BaseModel, CLUSTER_OFFSET } from './BaseModel';
 import { ContextTerrain } from './ContextTerrain';
+import { ObstacleRocks } from './ObstacleRocks';
 
 interface Props {
   bundle: ReplayBundle;
@@ -99,6 +100,13 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   // Renderer and consumers share the live Float32 vertices, including animation.
   const surface = useMemo(() => createTerrainSurface(meta, grid), [meta, grid]);
   const groundHeight = useCallback((x: number, y: number) => terrainSurfaceHeight(surface, x, y), [surface]);
+  // Geologic unit of each terrain cell (USGS SIM 3464), for the style of obstacle rocks.
+  const rockUnitAt = useMemo(() => {
+    const g = bundle.geology;
+    if (!g || meta.rows !== meta.cols) return undefined;
+    const grid = rasterizeUnits(g, meta.cols);
+    return (cell: number) => (grid[cell] >= 0 ? g.units[grid[cell]].symbol : null);
+  }, [bundle.geology, meta.rows, meta.cols]);
   // Orbital slope of the run (prior, Horn 3x3), for the terrain scan classes.
   const priorSlope = useMemo(() => slopeDegrees(bundle.rasters.prior, meta.rows, meta.cols, meta.resolution_m), [bundle.rasters.prior, meta]);
   const followed = view.state?.agents.some((a) => a.agent_id === followAgentId) ? followAgentId : null;
@@ -184,6 +192,15 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       {/* The route is a map overlay: hidden in the follow view, where it reads as a line painted on the ground. */}
       {/* Route lines, site markers, the base and the agents appear once the terrain has grown. */}
       {grown && !followed && <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />}
+      {grown && (
+        <ObstacleRocks
+          meta={meta}
+          unitAt={rockUnitAt}
+          cells={bundle.rasters.versions[versionKey(bundle.rasters, mapVersion)]?.impassable}
+          groundHeight={groundHeight}
+          verticalExaggeration={exaggeration}
+        />
+      )}
       {grown && bundle.manifest.pois.filter((p) => p.kind === 'base').map((p) => (
         <BaseModel key={p.id} site={p.position} verticalExaggeration={exaggeration} groundHeight={groundHeight} />
       ))}
