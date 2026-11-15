@@ -8,17 +8,17 @@ terrain, with a saved-run replay that needs no ROS, Gazebo or network.
 ## Status
 
 **REPLAY mode only**. The live link is shown as offline: the gateway
-is not connected to the viewer. The viewer opens the simulated `demo`, the only
-entry offered; MOCK packages are no longer offered (see the Run selector below).
+is not connected to the viewer. The viewer opens only the simulated `demo`; recorded MOCK
+packages are neither offered nor used by the viewer (see the Run selector below).
 
 | Part | What it is |
 |---|---|
-| Recorded recovery (`?run=recorded-recovery-001`, not in the selector) | Unchanged recorder output on Daniel's **128 m public Jezero crop**, 32×32 at 4 m; CTX native spacing 20 m. Real data/mapping/planner, MOCK mission/kinematic executor. Human stop/replan/resume/return; rover and drone idle. Ends `READY`, not scientific `COMPLETE` |
+| Recorded recovery package (`recorded-recovery-001`) | **Not used by the viewer.** Kept in `public/replay/` only for the team's contract and consumer tests; it declares `source_mode` MOCK and ends `READY`, not scientific `COMPLETE` |
 | Demo terrain | **Real**: a separate provisional 2 km crop of the NASA/USGS Mars 2020 TRN CTX DTM (20 m, Jezero), resampled to a local ENU grid |
 | Demo mission, agents, routes, events | **Generated illustrative story** (`scripts/make-demo-fixture.mjs`); its routes come from a substitute slope-constrained search, not the integrated planner. Rover/drone speeds and motion are simulated |
 | Demo adverse case | **Synthetic**: a scarp added to the hidden evaluator reference; it is not in the CTX data |
 | Demo POIs C and D | Fictitious |
-| Gateway replay `mock-vertical-001` | **Recorded MOCK run** from Jesús's `replay_recorder`: flat synthetic grid, straight-line MOCK planner, no Mars data |
+| Gateway sample `mock-vertical-001` | **Not used by the viewer.** Test package in `../data/sample/replay/` (flat synthetic grid, no Mars data) |
 | Uncertainty, budgets, consumption | Illustrative assumptions, not certified limits |
 | Atmos tab, HUD atmosphere and dose | NASA weather summaries and published radiation averages (other sites/periods); not the conditions of the simulated run. The HUD pressure map is a barometric **estimate** from one MEDA value, not a measured field |
 | Earth and Mars clocks | Your device clock; Mars time from the NASA GISS Mars24 algorithm (real present time, not the replay's) |
@@ -183,15 +183,15 @@ the reference is not available.
 
 The **Run** selector under the title (or `?run=<id>`) opens another saved run:
 
-The run selector offers only the simulated `demo` (`OFFERED_RUNS` in `src/data/replayAdapter.ts`): MOCK runs are not used in the viewer. The MOCK packages below stay in the repository for the team's contract and consumer tests and remain loadable with `?run=<id>` for review.
+The run selector offers only the simulated `demo` (`OFFERED_RUNS` in `src/data/replayAdapter.ts`). The viewer does not use MOCK runs. Their packages remain in the repository for the team's tests and still load with `?run=<id>`, but only for review.
 
 | Run | Source |
 |---|---|
-| `recorded-recovery-001` | Four unchanged canonical files from the recovered recorder run; internal `run_id` is retained independently of this entry folder. Real Jezero data/planner with MOCK authority/kinematic execution; recovery of the human, rover/drone idle; final `READY` |
+| `recorded-recovery-001` | Test package (not offered). Recorder output on the 128 m public Jezero crop; its `run_id` is kept independently of the folder name |
 | `demo` (default) | Simulated mission on the real CTX crop (`public/replay/demo/`) |
-| `mock-vertical-001` | Package recorded by the gateway's `replay_recorder` from the MOCK vertical (Jesús, `../data/sample/replay/`, ICD §7). Flat synthetic grid, straight-line MOCK planner, 5.4 s of wall-clock time |
+| `mock-vertical-001` | Test package (not offered) from the gateway's `replay_recorder`, `../data/sample/replay/` (ICD §7) |
 
-The featured package lives under `public/replay/recorded-recovery-001/`.
+The recovery test package lives under `public/replay/recorded-recovery-001/`.
 Historical gateway samples are read unchanged from `../data/sample/replay/<run_id>/`:
 Vite serves them in development and copies them into `dist/replay/` on build.
 `src/data/gatewayReplay.ts` validates `manifest.json`, `timeline.jsonl` and the
@@ -201,11 +201,10 @@ it, reads the public raster attachment `files.public_rasters` (`mge-public-raste
 cells. The attachment is checked against the package (run, dataset, geometry, grid, cell values,
 observed indices, every map version the states use) and refused with `PUBLIC_RASTERS_INVALID` on
 any mismatch; no version falls back to another and an evaluator or reference key is refused.
-Without an attachment only a MOCK package over a declared flat grid is drawn, as an explicitly
-labelled illustration; any other package fails with `PUBLIC_RASTERS_REQUIRED`.
-The historical sample `mock-vertical-001` predates the attachment, so it retains that explicit flat
-illustration. The featured recovery carries its recorded Jezero rasters.
-A MOCK grid shows no latitude or longitude.
+Without an attachment only a package over a declared flat grid is drawn, as an explicitly
+labelled illustration; any other package fails with `PUBLIC_RASTERS_REQUIRED`. The sample
+`mock-vertical-001` predates the attachment, so it keeps that flat illustration, which shows no
+latitude or longitude. The recovery package carries its recorded Jezero rasters.
 
 ## Architecture
 
@@ -229,7 +228,7 @@ A MOCK grid shows no latitude or longitude.
 | `src/lib/scan.ts`, `droneHazards.ts`, `routeProgress.ts`, `routeSufficiency.ts`, `marsSky.ts`, `gpu.ts` | Terrain scan slope bands and bearings; drone hazard report from observed cells; route progress and sufficiency estimate; Mars sky and sun; WebGL tier probe |
 | `src/scanner/`, `src/hooks/useTerrainScanner.ts` | Terrain scan state machine, controller, shaders, indicators and optional sounds |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
-| `src/components/` | Terrain, routes, agents, sites, astronaut and vehicle models (wheels, steering joints, rotors, downwash), cameras (`CameraBar`, `FollowCamera`, `ViewRotator`), agent HUD (`RadialHud`, `HudGauge`), live clocks, interface panels |
+| `src/components/` | 3D scene (`MissionScene`, `TerrainView`, `ContextTerrain`, `CutawayBlock`, `RouteOverlay`, `SiteMarkers`, `AgentLayer`), astronaut, vehicle and base models (wheels, steering joints, rotors, `Downwash`, `FootDust`), cameras (`CameraBar`, `FollowCamera`, `FirstPersonCamera`, `ViewRotator`), first-person HUD (`FirstPersonHud`, `PovRoute`), agent dial (`RadialHud`, `HudGauge`, `Minimap`), drone window (`DroneCam` with its Hazards tab `DroneMap`), `TerrainScanner`, sky (`SkyDome`), panels (`DetailsPanel`, `ManagementList`, `LayerPanel`, `GeologyPanel`, `AtmosPanel`, `EventInspector`), `Timeline`, `LiveClocks`, `Intro`, `FlatMap` and `SceneBoundary` fallbacks |
 | `scripts/` | Terrain crop, orthomosaic, context terrain, geology and atmosphere extraction, fixture generation, GLB branding strip, Blender base preparation |
 
 ## Data contract
@@ -273,10 +272,9 @@ The code, scripts, tests and the simulated fixture were written with AI assistan
 
 Terrain detail is limited by the 20 m source: close-ups look smooth. The 1 m HiRISE DTM covers this area and could provide real detail, but it is the hidden evaluator reference and must not reveal unknown terrain in the normal view.
 
-The recorded entry consumes real planner output and the public terrain package
-through the recorder, with strict snapshot/raster validation. A live gateway,
-scientific model agreement and a completed three-role mission remain separate
-acceptances. This cut does not claim AC-08 (private-browser replay with every
+The viewer shows only the simulated demo; no recorded MOCK package is offered or used. A live
+gateway, planner-integrated routes, scientific model agreement and a completed three-role mission
+remain separate acceptances. This cut does not claim AC-08 (private-browser replay with every
 backend off) passed before its browser evidence is recorded. Percentages are
 relative to the first received sample, not to a certified budget.
 The vehicle, drone and astronaut motion was checked in the dev server on one machine, mostly from
