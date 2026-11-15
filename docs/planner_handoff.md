@@ -1,5 +1,21 @@
 # Diego's planner handoff
 
+MVP-PL-01 local validation over d81407de: actual scientific Python A* candidates
+are now exercised against the unchanged real MissionManager in twelve synthetic
+consumer cases. FAST/SAFE, explicit inspect, directed return, remaining resources,
+map invalidation, continuous restart, stale identities, model gates and bounded
+failures are covered. See planner_mvp_pl01.md and evidence/planner-mvp-pl01-local.
+Fetched main7ad6050 contains PR33; no new Python/ROS consumer changes were found,
+and no merge or frozen-baseline/runtime activation was performed. The owner
+reports Jesus/David's C2 technical review closed; scientific parameter approval,
+ROS context transport, full role execution and organizer endorsement remain
+separate. Test-local illustrative admission does not approve production profiles.
+Current results: new12, planning465 and Windows full1236 passed/22 skipped;
+native Jazzy1117 passed/1 skipped, existing selected ROS integrations8 passed.
+Eight packages/interfaces checked; repository and web checks passed. Native
+pytest7.4.4 and Node24.18.1 deviate from declared/pinned versions; exact outcomes,
+initial environment failures and remaining CI/mission gates are recorded in JSON.
+
 Local final C2 audit: rejected scientific context/resource snapshots no longer
 lower the admitted availability bound. Correcting inputs retains invalidation;
 real admitted decreases still block replenishment. Default-limit cold-request

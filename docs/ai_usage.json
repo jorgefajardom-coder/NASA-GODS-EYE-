@@ -1417,6 +1417,20 @@
         "evidence/planner-f033c2-audit-local"
       ],
       "use": "Reject malformed scientific snapshots without admitting fictitious resource reductions; preserve monotonic guard and authorization latch. Compare default-limit legacy/scientific FAST/SAFE on unchanged public Jezero primary scenario and existing synthetic D07 control. No private reference input, observation, model formula/coefficients, ROS/MissionManager, approval or production activation changes."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "local_planner_mvp_consumer_validation",
+      "generation": "AI-assisted synthetic regression tests, test-only boundary translation, documentation and software evidence",
+      "paths": [
+        "tests/planning/test_mvp_mission_consumer.py",
+        "docs/planner_mvp_pl01.md",
+        "docs/planner_handoff.md",
+        "evidence/planner-mvp-pl01-local",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Exercise actual scientific Python A* results through the existing actual MissionManager audit with explicit activity context, remaining resources, FAST/SAFE, map invalidation, continuous restart, identity/model/budget/search-limit rejection and explicit base return. Synthetic grid and telemetry; manager approval flags/profile labels are test-local only. No production code, coefficients, ROS contracts, runtime scientific activation, frozen delivery revision or publication is changed. Outcomes are software validation, not physical or three-role scientific mission acceptance."
     }
   ],
   "generated_media": [

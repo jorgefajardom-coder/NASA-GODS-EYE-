@@ -1,0 +1,528 @@
+[
+  {
+    "test": "test_real_python_consumer_replans_from_remaining_pose_and_returns[FAST]",
+    "trace": {
+      "initial": {
+        "run_id": "mvp-pl-01-synthetic",
+        "request_id": "mvp-pl-01-synthetic:primary:plan:1",
+        "route_id": "route-d12c57a33b737c056a7100f2",
+        "agent_id": "human_1",
+        "mode": "FAST",
+        "map_version_used": 1,
+        "status": "FEASIBLE",
+        "reason_code": "FEASIBLE_UNDER_MODEL",
+        "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+        "outbound_path": [
+          {
+            "x": 6.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 10.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 14.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 18.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 22.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 26.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 30.0,
+            "y": 14.0,
+            "z": 0.0
+          }
+        ],
+        "return_path": [
+          {
+            "x": 30.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 26.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 22.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 18.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 14.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 10.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 6.0,
+            "y": 14.0,
+            "z": 0.0
+          }
+        ],
+        "travel_time_s": 67.60230409216369,
+        "energy_est_wh": 7.678134005360215,
+        "oxygen_est_l": 1.5678958414262196,
+        "min_clearance_m": 5.25,
+        "reserve_time_s": 932.3976959078364,
+        "reserve_wh": 92.32186599463978,
+        "reserve_oxygen_l": 98.43210415857378
+      },
+      "remaining": {
+        "run_id": "mvp-pl-01-synthetic",
+        "request_id": "mvp-pl-01-synthetic:primary:plan:2",
+        "agent_id": "human_1",
+        "agent_kind": "HUMAN",
+        "start": {
+          "x": 7.0,
+          "y": 14.0,
+          "z": 0.0
+        },
+        "goal": {
+          "x": 30.0,
+          "y": 14.0,
+          "z": 0.0
+        },
+        "return_to": {
+          "x": 6.0,
+          "y": 14.0,
+          "z": 0.0
+        },
+        "require_return": true,
+        "mode": "FAST",
+        "map_version": 2,
+        "service_time_s": 10.0,
+        "time_budget_s": 998.7999519980799,
+        "energy_budget_wh": 99.86076109711055,
+        "oxygen_budget_l": 99.97156703742696,
+        "reserve_time_s": 10.0,
+        "reserve_wh": 1.0,
+        "reserve_oxygen_l": 1.0,
+        "state_revision": 2,
+        "service_activity": "inspect"
+      },
+      "replanned": {
+        "run_id": "mvp-pl-01-synthetic",
+        "request_id": "mvp-pl-01-synthetic:primary:plan:2",
+        "route_id": "route-cbe8eef43c5cc40439bde34a",
+        "agent_id": "human_1",
+        "mode": "FAST",
+        "map_version_used": 2,
+        "status": "FEASIBLE",
+        "reason_code": "FEASIBLE_UNDER_MODEL",
+        "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+        "outbound_path": [
+          {
+            "x": 7.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 6.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 10.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          {
+            "x": 14.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          {
+            "x": 18.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 22.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 26.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          {
+            "x": 30.0,
+            "y": 14.0,
+            "z": 0.0
+          }
+        ],
+        "return_path": [
+          {
+            "x": 30.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 26.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          {
+            "x": 22.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 18.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 14.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 10.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          {
+            "x": 6.0,
+            "y": 14.0,
+            "z": 0.0
+          }
+        ],
+        "travel_time_s": 84.70878914669271,
+        "energy_est_wh": 9.662961451825984,
+        "oxygen_est_l": 1.973203002917511,
+        "min_clearance_m": 1.607022603955159,
+        "reserve_time_s": 914.0911628513873,
+        "reserve_wh": 90.19779964528458,
+        "reserve_oxygen_l": 97.99836403450945
+      },
+      "return": {
+        "run_id": "mvp-pl-01-synthetic",
+        "request_id": "mvp-pl-01-synthetic:return:plan:3",
+        "route_id": "route-18bbce47c7bf15cf57486e5f",
+        "agent_id": "human_1",
+        "mode": "FAST",
+        "map_version_used": 2,
+        "status": "FEASIBLE",
+        "reason_code": "FEASIBLE_UNDER_MODEL",
+        "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+        "outbound_path": [
+          {
+            "x": 7.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 6.0,
+            "y": 14.0,
+            "z": 0.0
+          }
+        ],
+        "return_path": [],
+        "travel_time_s": 1.2000480019200768,
+        "energy_est_wh": 0.1392389028894489,
+        "oxygen_est_l": 0.028432962573030043,
+        "min_clearance_m": 5.25,
+        "reserve_time_s": 997.5999039961598,
+        "reserve_wh": 99.72152219422111,
+        "reserve_oxygen_l": 99.94313407485393
+      }
+    }
+  },
+  {
+    "test": "test_real_python_consumer_replans_from_remaining_pose_and_returns[SAFE]",
+    "trace": {
+      "initial": {
+        "run_id": "mvp-pl-01-synthetic",
+        "request_id": "mvp-pl-01-synthetic:primary:plan:1",
+        "route_id": "route-8392dd8bc3652888407f677e",
+        "agent_id": "human_1",
+        "mode": "SAFE",
+        "map_version_used": 1,
+        "status": "FEASIBLE",
+        "reason_code": "FEASIBLE_UNDER_MODEL",
+        "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+        "outbound_path": [
+          {
+            "x": 6.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 10.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 14.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 18.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 22.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 26.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 30.0,
+            "y": 14.0,
+            "z": 0.0
+          }
+        ],
+        "return_path": [
+          {
+            "x": 30.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 26.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 22.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 18.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 14.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 10.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 6.0,
+            "y": 14.0,
+            "z": 0.0
+          }
+        ],
+        "travel_time_s": 67.60230409216369,
+        "energy_est_wh": 7.678134005360215,
+        "oxygen_est_l": 1.5678958414262196,
+        "min_clearance_m": 5.25,
+        "reserve_time_s": 932.3976959078364,
+        "reserve_wh": 92.32186599463978,
+        "reserve_oxygen_l": 98.43210415857378
+      },
+      "remaining": {
+        "run_id": "mvp-pl-01-synthetic",
+        "request_id": "mvp-pl-01-synthetic:primary:plan:2",
+        "agent_id": "human_1",
+        "agent_kind": "HUMAN",
+        "start": {
+          "x": 7.0,
+          "y": 14.0,
+          "z": 0.0
+        },
+        "goal": {
+          "x": 30.0,
+          "y": 14.0,
+          "z": 0.0
+        },
+        "return_to": {
+          "x": 6.0,
+          "y": 14.0,
+          "z": 0.0
+        },
+        "require_return": true,
+        "mode": "SAFE",
+        "map_version": 2,
+        "service_time_s": 10.0,
+        "time_budget_s": 998.7999519980799,
+        "energy_budget_wh": 99.86076109711055,
+        "oxygen_budget_l": 99.97156703742696,
+        "reserve_time_s": 10.0,
+        "reserve_wh": 1.0,
+        "reserve_oxygen_l": 1.0,
+        "state_revision": 2,
+        "service_activity": "inspect"
+      },
+      "replanned": {
+        "run_id": "mvp-pl-01-synthetic",
+        "request_id": "mvp-pl-01-synthetic:primary:plan:2",
+        "route_id": "route-07e2c77cb7305fcc29a97167",
+        "agent_id": "human_1",
+        "mode": "SAFE",
+        "map_version_used": 2,
+        "status": "FEASIBLE",
+        "reason_code": "FEASIBLE_UNDER_MODEL",
+        "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+        "outbound_path": [
+          {
+            "x": 7.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 6.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 10.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          {
+            "x": 14.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          {
+            "x": 18.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 22.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 26.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 30.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          {
+            "x": 30.0,
+            "y": 14.0,
+            "z": 0.0
+          }
+        ],
+        "return_path": [
+          {
+            "x": 30.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 30.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          {
+            "x": 26.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 22.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 18.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 14.0,
+            "y": 6.0,
+            "z": 0.0
+          },
+          {
+            "x": 10.0,
+            "y": 10.0,
+            "z": 0.0
+          },
+          {
+            "x": 6.0,
+            "y": 14.0,
+            "z": 0.0
+          }
+        ],
+        "travel_time_s": 90.3325638989011,
+        "energy_est_wh": 10.315475539047494,
+        "oxygen_est_l": 2.106448153772186,
+        "min_clearance_m": 3.92157287525381,
+        "reserve_time_s": 908.4673880991788,
+        "reserve_wh": 89.54528555806306,
+        "reserve_oxygen_l": 97.86511888365477
+      },
+      "return": {
+        "run_id": "mvp-pl-01-synthetic",
+        "request_id": "mvp-pl-01-synthetic:return:plan:3",
+        "route_id": "route-a94204391f95fe22c190250a",
+        "agent_id": "human_1",
+        "mode": "SAFE",
+        "map_version_used": 2,
+        "status": "FEASIBLE",
+        "reason_code": "FEASIBLE_UNDER_MODEL",
+        "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+        "outbound_path": [
+          {
+            "x": 7.0,
+            "y": 14.0,
+            "z": 0.0
+          },
+          {
+            "x": 6.0,
+            "y": 14.0,
+            "z": 0.0
+          }
+        ],
+        "return_path": [],
+        "travel_time_s": 1.2000480019200768,
+        "energy_est_wh": 0.1392389028894489,
+        "oxygen_est_l": 0.028432962573030043,
+        "min_clearance_m": 5.25,
+        "reserve_time_s": 997.5999039961598,
+        "reserve_wh": 99.72152219422111,
+        "reserve_oxygen_l": 99.94313407485393
+      }
+    }
+  }
+]
