@@ -6,6 +6,10 @@ Owner-requested fixes on `feat/ux`, starting at
 runtime/test files by SHA-256 in [validation.json](validation.json); the fixes
 are committed separately. Original review reproductions remain local.
 
+The final cut reconciles Jorge's concurrent `afdf0e8` / `eff6297` transition
+changes with both corrections. The current validation/browser records describe
+that combined tree; the initial records remain in the earlier correction commit.
+
 ## Corrected behavior
 
 - No WebGL: the application preserves the 2D replay and offers DOM zone cards.

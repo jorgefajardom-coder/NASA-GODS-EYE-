@@ -150,6 +150,11 @@ fixes, regressions and conditional merge. Existing scene, arrival, preview,
 licence and source-attribution work is retained; no other chat's implementation
 or local research is imported.
 
+The final publication cut also preserves Jorge's concurrent `afdf0e8` and
+`eff6297` arrival-transition fixes. Both histories are merged without rewriting;
+the combined web build and browser checks are repeated. Earlier file hashes
+in the correction commits remain historical validation of their own cut.
+
 The selector honours the 2D tier and catches later context-allocation failure.
 DOM cards, next/previous, enter and escape remain usable. Shared image state
 carries mission/latest-or-stop/sol identity; Atmos accepts only latest

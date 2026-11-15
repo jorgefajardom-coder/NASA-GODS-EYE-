@@ -3214,7 +3214,7 @@ input[type='checkbox'] {
   width: var(--w);
   height: var(--h);
   overflow: hidden;
-  animation: zones-fly 0.75s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+  animation: zones-fly 0.42s cubic-bezier(0.6, 0, 0.3, 1) forwards;
 }
 /* Cover, never contain: the photo fills the screen edge to edge (no black bands); the arrival starts from the same crop. */
 .zones__flight img { display: block; width: 100%; height: 100%; object-fit: cover; filter: sepia(0.75) hue-rotate(-14deg) saturate(1.7) brightness(0.95); }

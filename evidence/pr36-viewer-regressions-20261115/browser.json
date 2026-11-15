@@ -1,6 +1,6 @@
 {
   "classification": "AUTOMATED_LOCAL_SOFTWARE_CHECK_NOT_ACCEPTANCE",
-  "recorded_at_utc": "2026-11-15T15:32:38.843Z",
+  "recorded_at_utc": "2026-11-15T15:36:03.192Z",
   "flags": [
     "--headless=new",
     "--disable-webgl",
@@ -12,7 +12,7 @@
   "served_from": "file-only static server on 127.0.0.1",
   "records": [
     {
-      "name": "main-final",
+      "name": "main-reconciled",
       "root_children": 1,
       "has_state": true,
       "webgl": false,
@@ -24,7 +24,7 @@
       "visible_text_length": 1704
     },
     {
-      "name": "pr36-final",
+      "name": "pr36-reconciled",
       "root_children": 1,
       "has_state": true,
       "webgl": false,

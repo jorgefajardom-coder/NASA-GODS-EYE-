@@ -3,61 +3,60 @@ npm notice run vitest run
 
  RUN  v3.2.4 <repo>/web
 
- ✓ tests/imagery.test.ts (3 tests) 55ms
- ✓ tests/modelBranding.test.ts (4 tests) 42ms
- ✓ tests/baseModel.test.ts (4 tests) 61ms
- ✓ tests/geology.test.ts (4 tests) 119ms
- ✓ tests/terrainScanner.test.ts (7 tests) 64ms
- ✓ tests/slope.test.ts (5 tests) 179ms
+ ✓ tests/imagery.test.ts (3 tests) 45ms
+ ✓ tests/baseModel.test.ts (4 tests) 38ms
+ ✓ tests/geology.test.ts (4 tests) 106ms
+ ✓ tests/modelBranding.test.ts (4 tests) 36ms
+ ✓ tests/slope.test.ts (5 tests) 149ms
+ ✓ tests/terrainScanner.test.ts (7 tests) 82ms
  ✓ tests/recordedRecoveryPackage.test.ts (1 test) 32ms
- ✓ tests/timelineEndpoint.test.ts (7 tests) 29ms
- ✓ tests/worlds.test.ts (9 tests) 71ms
- ✓ tests/droneHazards.test.ts (3 tests) 39ms
- ✓ tests/gatewayReplay.test.ts (9 tests) 188ms
- ✓ tests/replay.test.ts (23 tests) 28ms
- ✓ tests/gatewayIntegrity.test.ts (37 tests | 1 skipped) 221ms
- ✓ tests/astronaut.test.ts (10 tests) 404ms
- ✓ tests/referenceIsolation.test.ts (2 tests) 882ms
-   ✓ evaluator reference isolation (R05) > is not in any public replay fixture  879ms
+ ✓ tests/worlds.test.ts (9 tests) 47ms
+ ✓ tests/timelineEndpoint.test.ts (7 tests) 27ms
+ ✓ tests/droneHazards.test.ts (3 tests) 31ms
+ ✓ tests/gatewayIntegrity.test.ts (37 tests | 1 skipped) 156ms
+ ✓ tests/replay.test.ts (23 tests) 24ms
+ ✓ tests/gatewayReplay.test.ts (9 tests) 207ms
+ ✓ tests/astronaut.test.ts (10 tests) 383ms
+ ✓ tests/referenceIsolation.test.ts (2 tests) 742ms
+   ✓ evaluator reference isolation (R05) > is not in any public replay fixture  740ms
  ✓ tests/marsSky.test.ts (6 tests) 11ms
- ✓ tests/terrainGrowth.test.ts (5 tests) 13ms
- ✓ tests/terrainPresentation.test.ts (8 tests) 9ms
  ✓ tests/terrainSmooth.test.ts (7 tests) 11ms
- ✓ tests/contextTerrain.test.ts (3 tests) 8ms
- ✓ tests/roverCameras.test.ts (6 tests) 6ms
+ ✓ tests/rawImagesStore.test.ts (13 tests) 14ms
+ ✓ tests/terrainGrowth.test.ts (5 tests) 16ms
+ ✓ tests/terrainPresentation.test.ts (8 tests) 10ms
+ ✓ tests/roverRig.test.ts (5 tests) 6ms
+ ✓ tests/contextTerrain.test.ts (3 tests) 9ms
  ✓ tests/perseveranceRaw.test.ts (7 tests) 8ms
- ✓ tests/rawImagesStore.test.ts (13 tests) 12ms
- ✓ tests/roverRig.test.ts (5 tests) 8ms
- ✓ tests/management.test.ts (12 tests) 9ms
- ✓ tests/stateSnapshot.test.ts (3 tests) 9ms
- ✓ tests/terrainMorph.test.ts (2 tests) 7ms
- ✓ tests/povSway.test.ts (3 tests) 11ms
- ✓ tests/zoneGlobe.test.ts (6 tests) 5ms
- ✓ tests/recordedEntry.test.ts (5 tests) 15ms
- ✓ tests/photoAim.test.ts (5 tests) 5ms
  ✓ tests/marsClock.test.ts (5 tests) 6ms
- ✓ tests/resourceAlert.test.ts (10 tests) 5ms
- ✓ tests/atmos.test.ts (6 tests) 5ms
- ✓ tests/roverStops.test.ts (7 tests) 5ms
- ✓ tests/routeProgress.test.ts (5 tests) 6ms
- ✓ tests/scan.test.ts (4 tests) 5ms
+ ✓ tests/povSway.test.ts (3 tests) 11ms
+ ✓ tests/management.test.ts (12 tests) 9ms
+ ✓ tests/stateSnapshot.test.ts (3 tests) 11ms
+ ✓ tests/recordedEntry.test.ts (5 tests) 15ms
+ ✓ tests/terrainMorph.test.ts (2 tests) 7ms
+ ✓ tests/routeProgress.test.ts (5 tests) 5ms
+ ✓ tests/roverCameras.test.ts (6 tests) 7ms
+ ✓ tests/photoAim.test.ts (5 tests) 5ms
+ ✓ tests/zoneGlobe.test.ts (6 tests) 5ms
  ✓ tests/coords.test.ts (7 tests) 5ms
+ ✓ tests/resourceAlert.test.ts (10 tests) 5ms
+ ✓ tests/strata.test.ts (2 tests) 4ms
+ ✓ tests/atmos.test.ts (6 tests) 6ms
+ ✓ tests/roverStops.test.ts (7 tests) 5ms
+ ✓ tests/smoothing.test.ts (5 tests) 4ms
+ ✓ tests/scan.test.ts (4 tests) 4ms
  ✓ tests/arrivalQuad.test.ts (4 tests) 4ms
- ✓ tests/labelDeclutter.test.ts (5 tests) 4ms
- ✓ tests/strata.test.ts (2 tests) 5ms
- ✓ tests/tacticalMap.test.ts (3 tests) 4ms
- ✓ tests/provenance.test.ts (3 tests) 3ms
- ✓ tests/gpu.test.ts (4 tests) 3ms
  ✓ tests/resources.test.ts (4 tests) 5ms
- ✓ tests/atmosMap.test.ts (2 tests) 3ms
+ ✓ tests/labelDeclutter.test.ts (5 tests) 4ms
+ ✓ tests/tacticalMap.test.ts (3 tests) 4ms
+ ✓ tests/gpu.test.ts (4 tests) 3ms
+ ✓ tests/provenance.test.ts (3 tests) 3ms
+ ✓ tests/atmosMap.test.ts (2 tests) 4ms
  ✓ tests/siteKinds.test.ts (3 tests) 3ms
- ✓ tests/smoothing.test.ts (5 tests) 5ms
  ✓ tests/agentLayer.test.ts (2 tests) 2ms
- ✓ tests/rawImagesProvenance.test.ts (5 tests) 39ms
- ✓ tests/zoneSelectorFallback.test.ts (2 tests) 46ms
+ ✓ tests/rawImagesProvenance.test.ts (5 tests) 40ms
+ ✓ tests/zoneSelectorFallback.test.ts (2 tests) 42ms
 
  Test Files  51 passed (51)
       Tests  311 passed | 1 skipped (312)
-   Start at  10:28:34
-   Duration  4.21s (transform 2.41s, setup 0ms, collect 9.69s, tests 2.73s, environment 2.00s, prepare 12.79s)
-
+   Start at  10:34:39
+   Duration  4.02s (transform 2.08s, setup 0ms, collect 8.99s, tests 2.42s, environment 2.15s, prepare 11.61s)

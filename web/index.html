@@ -87,6 +87,16 @@
           veil.setAttribute('aria-hidden', 'true');
           veil.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#05080b;overflow:hidden;pointer-events:none';
           var img = document.createElement('img');
+          // Nothing is painted until the photo is ready: the browser keeps the previous page's last frame (the same
+          // full-screen photo) instead of flashing the dark background for a frame.
+          var root = document.documentElement;
+          root.style.visibility = 'hidden';
+          var show = function () {
+            root.style.visibility = '';
+          };
+          img.onload = show;
+          img.onerror = show;
+          setTimeout(show, 1500);
           img.src = a.image;
           img.alt = '';
           img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.75) hue-rotate(-14deg) saturate(1.7) brightness(.95)';

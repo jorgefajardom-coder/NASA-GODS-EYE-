@@ -9,7 +9,7 @@ import { arrivalView, coverQuad, easeInOut, lerpQuad, quadMatrix3d, type Quad } 
 /** Session key that carries the card image across the page load, for the arrival fade. */
 export const ARRIVAL_KEY = 'mge-zone-arrival';
 /** Card-to-screen zoom before the page changes (ms). */
-const TRAVEL_MS = 750;
+const TRAVEL_MS = 420;
 
 /** Whether this load comes from the selector (the arrival fade will show), without consuming it. */
 export function arrivalPending(runId: string): boolean {
@@ -39,10 +39,10 @@ function removeVeil() {
 }
 
 /** Arrival timing (ms): least and most time full screen before laying down, the lay-down itself, the fade. */
-const ARRIVE_HOLD_MIN = 350;
+const ARRIVE_HOLD_MIN = 0;
 const ARRIVE_HOLD_MAX = 6000;
-const ARRIVE_FIT = 1400;
-const ARRIVE_FADE = 800;
+const ARRIVE_FIT = 650;
+const ARRIVE_FADE = 380;
 
 /**
  * After travelling from the selector, the zone's card image (the same north-up orthomosaic that is draped on the
@@ -62,11 +62,17 @@ export function ZoneArrival({ runId }: { runId: string }) {
     arrivalView.quad = null;
     const reduced = prefersReducedMotion();
     const t0 = performance.now();
-    let fitAt = -1;
-    let fadeAt = -1;
+    // Landing and fade advance per frame, at most one 30 fps step at a time: the scene builds its terrain right as
+    // the landing starts, and with a wall-clock timer those stalled frames skipped the landing to its end.
+    const STEP_MAX = 1000 / 30;
+    let fit = -1;
+    let fade = -1;
+    let prevT = t0;
     let last: Quad | null = null;
     let raf = 0;
     const frame = (t: number) => {
+      const step = Math.min(STEP_MAX, Math.max(0, t - prevT));
+      prevT = t;
       const img = imgRef.current;
       const wrap = wrapRef.current;
       const w = img?.naturalWidth ?? 0;
@@ -76,21 +82,22 @@ export function ZoneArrival({ runId }: { runId: string }) {
         const quad = arrivalView.quad;
         if (quad) last = quad;
         const held = t - t0;
-        if (fitAt < 0 && fadeAt < 0) {
-          if (quad && !reduced && held > ARRIVE_HOLD_MIN) fitAt = t;
-          else if (held > (reduced ? ARRIVE_HOLD_MIN : ARRIVE_HOLD_MAX)) fadeAt = t;
-        }
+        if (fit < 0 && fade < 0) {
+          if (quad && !reduced && held > ARRIVE_HOLD_MIN) fit = 0;
+          else if (held > (reduced ? ARRIVE_HOLD_MIN : ARRIVE_HOLD_MAX)) fade = 0;
+        } else if (fit >= 0 && fit < ARRIVE_FIT) fit += step;
+        else if (fade >= 0) fade += step;
         let q = cover;
         let edge = 0;
-        if (fitAt >= 0 && last) {
-          const k = Math.min(1, (t - fitAt) / ARRIVE_FIT);
+        if (fit >= 0 && last) {
+          const k = Math.min(1, fit / ARRIVE_FIT);
           q = lerpQuad(cover, last, easeInOut(k));
           edge = k;
-          if (k >= 1 && fadeAt < 0) fadeAt = t;
+          if (k >= 1 && fade < 0) fade = 0;
         }
         let op = 1;
-        if (fadeAt >= 0) {
-          const f = Math.min(1, (t - fadeAt) / ARRIVE_FADE);
+        if (fade >= 0) {
+          const f = Math.min(1, fade / ARRIVE_FADE);
           op = 1 - f * f;
           if (f >= 1) {
             setGone(true);
