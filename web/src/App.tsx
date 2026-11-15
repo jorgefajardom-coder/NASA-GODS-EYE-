@@ -20,6 +20,7 @@ import { FlatMap } from './components/FlatMap';
 import { DroneCamFrame } from './components/DroneCam';
 import { MarsNowFrame } from './components/MarsNow';
 import { stopUnderAgent, tourStepTime } from './lib/roverStops';
+import { startLabelDeclutter } from './lib/labelDeclutter';
 import { resourceAlert } from './lib/resourceAlert';
 import { SCAN_CONFIG } from './scanner/ScanConfig';
 import { triggerScan } from './scanner/ScanController';
@@ -352,6 +353,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
 
   // The footer wraps to more lines on narrow screens; the panels above it sit on its measured height.
   const appRef = useRef<HTMLDivElement>(null);
+  // Floating 3D labels never cover each other: the lower-priority one waits until there is room (zoomed out).
+  useEffect(() => (appRef.current ? startLabelDeclutter(appRef.current) : undefined), []);
   useEffect(() => {
     const app = appRef.current;
     const foot = app?.querySelector('.disclaimer') as HTMLElement | null;
