@@ -15,6 +15,7 @@ packages are neither offered nor used by the viewer (see the Run selector below)
 |---|---|
 | Recorded recovery package (`recorded-recovery-001`) | **Not used by the viewer.** Kept in `public/replay/` only for the team's contract and consumer tests; it declares `source_mode` MOCK and ends `READY`, not scientific `COMPLETE` |
 | Demo terrain | **Real**: a provisional 3.4 km × 7.6 km crop of the NASA/USGS Mars 2020 TRN CTX DTM (centre 18.490° N, 77.435° E) that joins the Perseverance landing area (south) with the terrain 5.4 km to its north (the earlier demo area), drawn on an **8 m display grid** (425 × 950 cells) interpolated from the **20 m** source: finer cells, no new detail |
+| Gale world (`?run=gale-demo`, arrows in the map view) | **Real**: a 3.4 km × 7.6 km crop of the NASA/USGS MSL Gale crater DEM mosaic (1 m, HiRISE and CTX stereo; only its 8 m overview is read, about 1.7 MB) at the foot of Mount Sharp, relief about 900 m, draped with the MRO CTX Gale mosaic (Trek layer `Gale_CTX_BlockAdj_dd`, 10 m/px). Curiosity's real stops (sol 751 to 4462, thinned to at least 80 m apart: 166 of the crop's) are marked and toured. NASA's Curiosity raw-image feed gives only the **sol** of each image, so a stop shows that sol's images (the rover may have moved); 30 hops between stops are straight lines because the slope search finds no rover path. No surroundings, geology or weather layers for this world. The mission story is simulated, as in Jezero |
 | Real Perseverance stops | **Real NASA positions**: 226 rover stops (sol 13 to 708) inside the crop, from NASA's public traverse feed (MMGIS waypoints); position and identifiers only, no image stored. Drawn as camera icons in 3D, on the minimap and the first-person compass. Base A and goal B sit on two of them. Standing still on a stop in first person opens a window that loads, on request, the raw images NASA lists for that exact stop (same sol, site and drive) |
 | Demo mission, agents, routes, events | **Generated illustrative story** (`scripts/make-demo-fixture.mjs`); its routes come from a substitute slope-constrained search, not the integrated planner. Rover/drone speeds and motion are simulated |
 | Demo adverse case | **Synthetic**: a scarp added to the hidden evaluator reference; it is not in the CTX data |
@@ -61,7 +62,7 @@ npm run dev        # development server (vite)
 npm run build      # tsc -b && vite build into dist/
 npm run preview    # serve the production build
 npm test           # vitest run
-npm run typecheck  # tsc -b --noEmit
+npm run fixture    # regenerate the replay fixture from scripts/data/ctx_crop.json (`WORLD=gale npm run fixture` for the Gale world)
 npm run fixture    # regenerate the replay fixture from scripts/data/ctx_crop.json
 ```
 

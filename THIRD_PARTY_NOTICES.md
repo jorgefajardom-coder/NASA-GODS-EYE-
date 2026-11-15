@@ -87,6 +87,15 @@ Official 3D models by NASA/JPL-Caltech: "Mars Perseverance Rover, 3D Model" (htt
 - Mars 2020 Perseverance MEDA and MSL Curiosity REMS daily weather summaries from the NASA Mars weather feed (https://mars.nasa.gov/rss/api/?feed=weather&feedtype=json&category=mars2020 and `category=msl`), credit NASA/JPL-Caltech/CAB(CSIC-INTA). CAB provides these summaries for outreach purposes; the science data is archived at PDS. Values are copied (Jezero) or grouped into medians per 15° of solar longitude (Gale).
 - MSL RAD surface dose rates from Hassler, D. M., et al. (2014), Mars' surface radiation environment measured with the Mars Science Laboratory's Curiosity rover, Science 343, 1244797, https://doi.org/10.1126/science.1244797 (published values only).
 
+## Gale crater terrain (Curiosity world)
+
+MSL Gale crater DEM mosaic, 1 m, v3 (MRO HiRISE and CTX stereo), USGS Astrogeology Science Center / NASA.
+
+- Source: https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Mars/MSL/MSL_Gale_DEM_Mosaic_1m_v3.tif (3.7 GB; its MD5 as published, `bc4cbabf8b06d24f3b25400f0468933b`, is also recorded in `web/scripts/data/gale/ctx_crop.json`). Only the 8 m overview in the `.ovr` file is read, by range requests (about 1.7 MB); the full file is not stored.
+- `web/scripts/data/gale/ctx_crop.json`: the 3.4 km × 7.6 km crop (425 × 950 cells of 8 m, cubic resampling of the overview) made by `web/scripts/extract-gale-crop.mjs`. The 8 m cells add no detail. Licence terms were not verified here; see the USGS product page.
+- `web/public/replay/gale-demo/ctx_ortho.png`: 340 × 760 px (10 m/px) from the JPL Mars Trek layer `Gale_CTX_BlockAdj_dd` (MRO CTX Gale crater mosaic, NASA/JPL-Caltech/MSSS), level-12 tiles SHA-256 `d219b220a363b4b68f9f855376b8fd91d1c4954f97ea13b5b67a945f474ebe89`, made by `web/scripts/extract-ctx-ortho.mjs` with a 1st to 99th percentile contrast stretch.
+- Curiosity stops: `web/scripts/data/gale/rover_waypoints.json` and `web/public/replay/gale-demo/rover_stops.json`, from NASA's MMGIS MSL waypoints (https://mars.nasa.gov/mmgis-maps/MSL/Layers/json/MSL_waypoints.json), thinned to at least 80 m apart, positions and identifiers only. Curiosity raw images are read from NASA's public feed only when the person asks.
+
 ## Perseverance rover stops
 
 Mars 2020 Perseverance waypoints (MMGIS M20 layer), NASA/JPL-Caltech, https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json.
