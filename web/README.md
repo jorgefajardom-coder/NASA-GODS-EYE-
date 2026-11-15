@@ -7,12 +7,15 @@ terrain, with a saved-run replay that needs no ROS, Gazebo or network.
 
 ## Status
 
-**REPLAY mode only**. The gateway is not connected to the viewer. The default
-entry opens the six-zone selector with the illustrative Jezero demo. Recorded
-MOCK packages remain separate URL-selected entries:
-`?run=recorded-recovery-002` loads the height-corrected human recovery with a
-parked drone; `?run=recorded-recovery-001` preserves the historical recording.
-Neither recording demonstrates coordinated three-role execution or scientific COMPLETE.
+**3D replay with an optional read-only gateway status panel.** The scene and
+timeline always consume saved runs. With `?gateway=<url>`, a separate status line
+and details panel inspect a running gateway; they send no goals and do not drive
+the 3D scene. Connection state does not certify a LIVE mission; MOCK remains MOCK.
+The default entry opens the six-zone selector with the illustrative Jezero demo.
+Recorded packages remain separate URL-selected entries:
+`?run=recorded-recovery-002` loads height-corrected human recovery with a parked
+drone; `?run=recorded-recovery-001` preserves the historical recording. Neither
+recording demonstrates coordinated three-role execution or scientific COMPLETE.
 
 | Part | What it is |
 |---|---|

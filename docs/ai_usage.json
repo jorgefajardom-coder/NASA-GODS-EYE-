@@ -1661,9 +1661,17 @@
         "web/src/lib/co2.ts",
         "web/tests/co2.test.ts",
         "web/src/components/RadialHud.tsx",
-        "web/src/components/HudGauge.tsx"
+        "web/src/components/HudGauge.tsx",
+        "web/src/lib/gatewayLive.ts",
+        "web/src/components/LiveGatewayPanel.tsx",
+        "web/tests/gatewayLive.test.ts",
+        "web/src/components/Frame.tsx",
+        "web/README.md",
+        "web/src/components/FirstPersonHud.tsx",
+        "web/tests/photoTourExit.test.ts",
+        "web/tests/liveGatewayPanel.test.ts"
       ],
-      "use": "Display the existing per-zone water (Mars Odyssey GRS) and radiation (MSL RAD and RAD's dose-pressure relation) context from web/scripts/data/zone_environment.json in the Atmos tab of every zone and on the zone cards, with a 4 h Marswalk example dose; draft the English project-page text that maps the challenge to delivered and pending items. Add the HUD's exhaled-CO2 gauge on the oxygen button (oxygen used x an assumed respiratory quotient of 0.85, pending review; suit CO2 removal capacity not modelled). Use each zone's surface dose rate in the HUD dose gauge, with NASA's 600 mSv career limit (NASA-STD-3001) as scale context. The numeric values and their sources are unchanged NASA-derived data, not generated; the example dose is a linear display estimate without shielding or solar events. No media generated; no scientific approval or milestone closure."
+      "use": "Display the existing per-zone water (Mars Odyssey GRS) and radiation (MSL RAD and RAD's dose-pressure relation) context from web/scripts/data/zone_environment.json in the Atmos tab of every zone and on the zone cards, with a 4 h Marswalk example dose; draft the English project-page text that maps the challenge to delivered and pending items. Add the HUD's exhaled-CO2 gauge on the oxygen button (oxygen used x an assumed respiratory quotient of 0.85, pending review; suit CO2 removal capacity not modelled). Use each zone's surface dose rate in the HUD dose gauge, with NASA's 600 mSv career limit (NASA-STD-3001) as scale context. Add the opt-in read-only live gateway panel (?gateway=), tested with synthetic gateway envelopes and checked against a running MOCK ROS stack; it labels a MOCK stack MOCK and sends no goals; the redundant fixed Offline headline in the top-right status was removed, so the connection is shown only in the panel. Add an Exit photo tour button (and Esc) to the rover HUD; it changes no data. The gateway panel is one thin line in the top-right status column with a details dropdown, so it does not cover the map. The numeric values and their sources are unchanged NASA-derived data, not generated; the example dose is a linear display estimate without shielding or solar events. No media generated; no scientific approval or milestone closure."
     },
     {
       "tool": "OpenAI Codex",
@@ -1813,6 +1821,81 @@
         "docs/ai_usage.json"
       ],
       "use": "Capture the actual combined viewer replaying height-recovery-20261115-01 without seeks, annotate honestly and preserve visible global/portrait AI marks. Lock source/build/package/video hashes, retain original third-party terms, exclude browser profiles/raw frames, and distinguish review candidate publication from final submission approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "pr39_gateway_contract_reconciliation",
+      "generation": "AI-assisted read-only gateway validation/recovery code, regression tests, bounded real HTTP/WebSocket consumer harness and review documentation; preserve concurrent main photo-tour/terrain/menu changes during reconciliation; restrict retrospective stable terrain to explicitly illustrative SIMULATION scenes and preserve current-version recorded geometry",
+      "paths": [
+        "web/src/lib/gatewayLive.ts",
+        "web/src/components/LiveGatewayPanel.tsx",
+        "web/tests/gatewayLive.test.ts",
+        "web/tests/liveGatewayPanel.test.ts",
+        "README.md",
+        "web/README.md",
+        "docs/project_page.md",
+        "web/public/about.html",
+        "web/public/llms.txt",
+        "docs/pr39_gateway_review.md",
+        "evidence/pr39-gateway-contract-20261115",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        ".gitattributes",
+        "docs/final_delivery_candidate.md",
+        "web/src/App.tsx",
+        "web/src/lib/layers.ts",
+        "web/src/components/MissionScene.tsx",
+        "web/tests/terrainShape.test.ts"
+      ],
+      "scope": "Software consumer validation only. Actual unchanged gateway/RunStore is fed the existing public MOCK recorded-recovery-002 package; no ROS execution, goals, generated NASA observations, scientific approval or verified LIVE mission in this review."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "viewer_terrain_shape_and_zone_menu_fix",
+      "generation": "AI-assisted code and tests; no data, imagery or NASA observation generated",
+      "paths": [
+        "web/src/lib/layers.ts",
+        "web/src/components/MissionScene.tsx",
+        "web/src/components/ZoneSelector.tsx",
+        "web/src/data/worlds.ts",
+        "web/tests/terrainShape.test.ts",
+        "web/tests/worlds.test.ts",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Draw the updated-map ground from the run's last map version for the whole replay, so observed ground no longer rises suddenly when an agent observes it (observed-cell tints and uncertainty still follow the current version); open the zone menu on the Jezero card without entering the scene."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "demo_generator_crop_edge_margins",
+      "generation": "AI-assisted generator code and test; regenerated SIMULATED replay fixtures; no NASA observation generated",
+      "paths": [
+        "web/scripts/make-demo-fixture.mjs",
+        "web/tests/worlds.test.ts",
+        "web/public/replay/demo",
+        "web/public/replay/gale-demo",
+        "web/public/replay/meridiani-demo",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "web/src/lib/roverStops.ts",
+        "web/src/lib/siteKinds.ts",
+        "web/src/App.tsx",
+        "web/tests/photoTourTitle.test.ts"
+      ],
+      "use": "Keep the simulated agents off the terrain crop edge: base A and goal B at least 150 m inside, drone and rover pads at least 60 m inside, photo-tour stops visited from at least 20 m inside (within the viewer's 25 m arrival radius) and tour legs outside a 30 m edge band. Regenerated Jezero, Gale and Meridiani; Gusev, Elysium and Valles Marineris are byte-identical. Rover stop markers keep their real NASA positions. The photo-tour button names the zone's own rover and promises no photos where NASA's raw-image feed has none (Spirit, Opportunity)."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "pr42_delivery_integration_reconciliation",
+      "generation": "AI-assisted disclosure-history reconciliation, editorial continuation hashes, read-only native Wiki verification receipt and review prose",
+      "paths": [
+        ".gitattributes",
+        "docs/wiki/audit/editorial-20261115/manifest.json",
+        "evidence/pr42-native-publication-20261115",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "scope": "Owner approved PR39/42 and native synchronization. Existing native commit82534db is preserved;39 media hashes and18HTTP endpoints verified without repeating publication. No generated media, scientific approval, LIVE mission or organizer endorsement is asserted."
     }
   ],
   "generated_media": [

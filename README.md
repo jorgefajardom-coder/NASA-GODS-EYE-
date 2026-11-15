@@ -35,7 +35,7 @@ or [open the corrected recorded recovery](https://jorgefajardom-coder.github.io/
 The latter is a separately identified ROS software recording: one kinematic MOCK
 astronaut stops, replans and returns after a SIMULATED terrain contradiction;
 rover and parked drone remain idle. It ends READY, not scientific COMPLETE.
-The browser consumes saved files; it is not connected to a live planner/gateway.
+The 3D scene consumes saved files. An optional read-only gateway panel can show a running stack; it sends no goals and does not drive the scene.
 [Source locks, validation and limitations](evidence/height-reconciliation-20261115/README.md)
 accompany this exact package. The historical recording remains unchanged.
 [Scientific foundations and analytical pilot results](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki).
@@ -374,6 +374,13 @@ flowchart LR
   no game assets used.
 - The astronaut faces the direction it walks (display), also in recorded packages whose human
   orientation is constant.
+- Live ROS gateway panel (opt-in, `?gateway=http://127.0.0.1:8010`): a read-only panel that
+  connects to a running `mge_gateway` (health, manifest, snapshot and the `/api/events`
+  WebSocket, with snapshot polling as fallback) and shows the provenance label from the
+  gateway's `source_mode` (a MOCK stack shows MOCK, never LIVE), run, dataset, mission state,
+  agents and the newest events. It sends no goals and does not drive the 3D scene, which
+  still plays saved runs; the gateway serves no terrain rasters yet. The gateway accepts the
+  `http://localhost:5173` origin by default. See "Run the viewer against ROS" below.
 - Text access for language models: `llms.txt`, `about.html`, page metadata with JSON-LD, a
   static summary for readers without JavaScript, and `window.mge.state()`, which returns the
   displayed replay state as JSON (always labelled REPLAY).
@@ -449,7 +456,7 @@ Credits and licences are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md),
 AI use in [docs/AI_USAGE.md](docs/AI_USAGE.md), and the viewer details in
 [web/README.md](web/README.md).
 
-Known gaps: the viewer does not consume a live gateway; the recorded recovery
+Known gaps: the 3D scene does not play a live gateway (only the read-only panel does); the recorded recovery
 package has public rasters but no draped imagery, so it shows a plain-coloured
 128 m block, and `mock-vertical-001` remains a flat MOCK grid; AC-08 has an automated private-browser replay record with every backend off
 ([evidence](evidence/web-private-replay-20261115/README.md)) but is not accepted: no person-operated or
@@ -614,6 +621,25 @@ are explicitly illustrative. Nothing here is a moving mission or a NASA measurem
   for replanning from a halted pose exist behind an explicit opt-in (disabled by
   default); PR #21 added the acknowledged-stop recovery that resumes from the
   exact stopped pose (see [the recovery handoff](docs/mission_replay_recovery.md)).
+
+### Run the viewer against ROS
+
+Checked on 2026-11-15 on Windows with WSL 2 (Ubuntu 24.04, ROS 2 Jazzy):
+`colcon build` of the 8 packages, `tests/integration/test_vertical_execution.py` and
+`test_vertical_mock.py` (12 passed), then this live session. If port 8000 is taken (for
+example by Docker), use another one:
+
+```sh
+ros2 launch mge_bringup vertical_mock.launch.py run_id:=ros-live-001 port:=8010   terrain:=real planner:=real profiles_file:=$PWD/config/planner_profiles.illustrative.json   agents:=kinematic allow_continuous_starts:=true record:=true record_dir:=$PWD/evidence/live
+```
+
+WSL forwards `127.0.0.1:8010` to Windows. Start the viewer's dev server on port 5173
+(`npm run dev` in `web/`) and open `http://localhost:5173/?gateway=http://127.0.0.1:8010`:
+the panel connects, and a goal sent to `/api/mission/goal` appears in it within a second.
+Without a simulated observation the integrated planner still answers `UNKNOWN` and the
+mission goes to `BLOCKED` (a legitimate result under D-EST-01). Stopping the launch with
+Ctrl+C makes the recorder close `evidence/live/ros-live-001/`, which the viewer opens as
+`REPLAY · MOCK` when copied to `web/public/replay/` (not committed).
 
 ### Gateway API
 

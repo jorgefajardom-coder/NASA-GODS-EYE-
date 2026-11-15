@@ -52,6 +52,8 @@ interface Props {
   /** Camera sway on/off (B). */
   sway: boolean;
   onSway: (on: boolean) => void;
+  /** While the rover's photo tour runs: leaves it (button and Esc), back to the normal third-person view. */
+  onEndTour?: (() => void) | null;
 }
 
 /**
@@ -59,7 +61,7 @@ interface Props {
  * and site bearings, the shared agent dial (resources live in its menu), and the drone-camera scan control and readout. Every
  * value comes from the replay or from lib/scan; nothing here is a live measurement.
  */
-export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, droneCam, droneCamOn, stops, marsNow, marsNowOn, onMarsNow, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, artificialLight, onArtificialLight, sway, onSway }: Props) {
+export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, droneCam, droneCamOn, stops, marsNow, marsNowOn, onMarsNow, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, artificialLight, onArtificialLight, sway, onSway, onEndTour }: Props) {
   const isRover = agent.agent_kind === 'ROVER';
   const tape = useRef<HTMLDivElement>(null);
   const readout = useRef<HTMLSpanElement>(null);
@@ -110,6 +112,12 @@ export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, 
   return (
     <div className="pov" role="region" aria-label={`First-person view: ${AGENT_NAME[agent.agent_kind]} ${agent.agent_id}`}>
       <div className="pov__frame" aria-hidden />
+
+      {onEndTour && (
+        <button type="button" className="pov__exit-tour" onClick={onEndTour} title="Leave the photo tour and go back to the normal view (Esc)">
+          <span aria-hidden>✕</span> Exit photo tour <kbd>Esc</kbd>
+        </button>
+      )}
 
       <div className="pov__compass" aria-label="Compass">
         <div className="pov__tape" ref={tape}>

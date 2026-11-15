@@ -404,13 +404,13 @@
   "payload_files": [
     {
       "path": "docs/ai_usage.json",
-      "size_bytes": 115694,
-      "sha256": "ce1342df794da132bb16b6271018b509bdfca2edc87f3efd9ee9f6956960eb13"
+      "size_bytes": 120836,
+      "sha256": "cd1689d249948e68774211f34264f105bed677f7dffaaf5f145beebfd960a11a"
     },
     {
       "path": "docs/AI_USAGE.md",
-      "size_bytes": 65717,
-      "sha256": "aeb4c07547791b87a204cddf3aa4aa79e4b82229b796830d0439be5ae0801e1b"
+      "size_bytes": 69873,
+      "sha256": "81bdeb7c217f30a5895668ddbe255ac0032b58c08da80e5a5fc2bbf2f7ed4916"
     },
     {
       "path": "docs/handoffs/david.md",

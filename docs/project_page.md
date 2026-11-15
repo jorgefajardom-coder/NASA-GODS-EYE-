@@ -53,8 +53,9 @@ public after the reviewed merge and Pages deployment; verify before submitting.
    the zone's orbital image, its water and its daily radiation dose.
 2. **Explore an illustrative Marswalk.** The scene generator supplies example
    routes and resources. Some stops use published NASA science-site locations;
-   their scientific selection remains pending review. The deployed browser does
-   not call the ROS planner or a live gateway.
+   their scientific selection remains pending review. The browser does not control
+   the ROS planner; an optional read-only gateway panel can inspect a running
+   stack independently of the saved 3D scene.
 3. **Inspect the presentation.** The helmet view shows a compass, minimap,
    resource estimates, route and return alerts. These are replay/model context,
    not measured suit telemetry or certified safety decisions. Exhaled CO2 uses

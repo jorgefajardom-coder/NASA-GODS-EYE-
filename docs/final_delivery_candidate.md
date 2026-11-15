@@ -36,3 +36,7 @@ The published [scientific Wiki](https://github.com/jorgefajardom-coder/NASA-GODS
 Wiki verification uses the original publication audit against the exact frozen2c6ba9e Git export. All Wiki/evidence payload bytes and the original manifest are preserved; the two active AI registers are legitimate continuation files and preserve every original main entry. See `evidence/height-reconciliation-20261115/wiki-continuation-check.json`.
 
 A scoped `.gitattributes` rule preserves the published Wiki tools' original byte seals. Their CRLF bytes are unchanged; normalizing them under the repository-wide forced Python LF rule would invalidate the existing publication manifest. Other source conventions remain unchanged.
+
+## Subsequent integration status — PR41 and PR39
+
+PR41 was explicitly authorized by the owner and merged at main `7ff5a077dfe70e181e960a2d638e3a1e955591c1`; post-merge CI and Pages deployment succeeded. All four recorded-recovery-002 files and its three media companions were verified byte-identical on Pages. PR37 and PR38 closed through their preserved ancestry. The earlier deferred-PR39 paragraph describes this historical cut; the subsequent consumer corrections and current review gates are documented in [PR39 gateway review](pr39_gateway_review.md). No execution/replay evidence or organizer acceptance gate is retroactively changed.

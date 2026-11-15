@@ -1,0 +1,116 @@
+{
+  "kind": "bounded public export of final PR39 gateway consumer validation",
+  "source_cut": "cut-2-q0io40sg",
+  "tested_source_head": "8ed14b796bcf5de261b719f8dc8c68a8b1ed7ffe",
+  "tested_source_tree_dirty": true,
+  "frozen_source_sha256": {
+    "src/mge_gateway/mge_gateway/app.py": "f95e9d5d20219ff0c09dd801b462f01a4e999d68c01102bfed3a80b92d286066",
+    "src/mge_gateway/mge_gateway/store.py": "8895c9e0d263e86e947385473188d91997b359f685ead14bfe6553412b8a4432",
+    "web/src/lib/gatewayLive.ts": "c8dfee78335621ba982597828306051f3802c1680bd711f68e8b5a8f4f60abd6",
+    "web/src/lib/provenance.ts": "31a5dfbcae84b592f13350d958485c86878efe9072aabfb6d6ff98c990e8550b"
+  },
+  "public_replay_entry": "recorded-recovery-002",
+  "public_package_sha256": {
+    "manifest.json": "9d482349f04486cdd282718ee60604a47a55345f90718dbe8def7c9db28f1333",
+    "public_rasters.json": "dd55524231b3bb8b4f277ac2d2d9f7f513f1ba50bb148ed018188ac89f4c91c7",
+    "snapshot.json": "27bdf34f96d4f2075ac0aef501bdf13de2c556d1e43facf0082c3d719a0a806d",
+    "timeline.jsonl": "d3ff67332252e1a38513c33be177d4e535b395d71fd1ad3f035a7b75f6b46cb5"
+  },
+  "scope": {
+    "replay_fed": true,
+    "producer": "actual unchanged mge_gateway app/RunStore via real loopback HTTP/WebSocket",
+    "source_mode": "MOCK",
+    "ros_graph_executed": false,
+    "mission_goals_sent": 0,
+    "validated_live": false,
+    "new_mission_execution": false,
+    "three_role_acceptance": false,
+    "client_get_requests": 17,
+    "websocket_connections": 4,
+    "consumer_groups_passed": 5
+  },
+  "sealed_validation_sha256": "e5df77096d818c020ee90e0bb408895a0225bbb71be766fcabe84cebf340209f",
+  "original_artifact_hashes": {
+    "producer-v2.py": {
+      "bytes": 9191,
+      "sha256": "2afe5239e49ed7ffa17b754ea844506014982a11139f90588d560fe6fc195d00"
+    },
+    "consumer-v2.mjs": {
+      "bytes": 11078,
+      "sha256": "39b25ea138b04a346e7f159fb9d5885a0bcb6adb377d46294e5c409d70104b22"
+    },
+    "README.md": {
+      "bytes": 2855,
+      "sha256": "dee4c93477cd5b46b202dd5ff9caaeddf00dd979b7aee77c422c0b3f56cdc4db"
+    },
+    "ready.json": {
+      "bytes": 13390,
+      "sha256": "07bdde7aa271cc907bbcaaf9bba6791496299175916457a4cc7e89783a34dea5"
+    },
+    "consumer-report.json": {
+      "bytes": 17366,
+      "sha256": "0dcb8f16691abf8279663c234b20d4345e4bcb37e971b46698de0dcbb39564cf"
+    },
+    "producer-report.json": {
+      "bytes": 58380,
+      "sha256": "a53534fca1fc636c178eeb97ff3013887b48378a51f9e4b48617e48507c64d6d"
+    },
+    "actual-responses.json": {
+      "bytes": 89858,
+      "sha256": "ee3308cedfbb8f39160c1ab0b7d75a4756d1327deddfe70ac66bfee5dd9e8c70"
+    }
+  },
+  "original_to_public_layout": {
+    "validation.json": "validation.json",
+    "producer-v2.py": "scripts/producer-v2.py",
+    "consumer-v2.mjs": "scripts/consumer-v2.mjs",
+    "README.md": "original-README.md",
+    "ready.json": "ready.json",
+    "consumer-report.json": "consumer-report.json",
+    "producer-report.json": "producer-report.json",
+    "actual-responses.json": "actual-responses.json"
+  },
+  "files": {
+    "actual-responses.json": {
+      "bytes": 89858,
+      "sha256": "ee3308cedfbb8f39160c1ab0b7d75a4756d1327deddfe70ac66bfee5dd9e8c70"
+    },
+    "consumer-report.json": {
+      "bytes": 17366,
+      "sha256": "0dcb8f16691abf8279663c234b20d4345e4bcb37e971b46698de0dcbb39564cf"
+    },
+    "original-README.md": {
+      "bytes": 2855,
+      "sha256": "dee4c93477cd5b46b202dd5ff9caaeddf00dd979b7aee77c422c0b3f56cdc4db"
+    },
+    "producer-report.json": {
+      "bytes": 58380,
+      "sha256": "a53534fca1fc636c178eeb97ff3013887b48378a51f9e4b48617e48507c64d6d"
+    },
+    "README.md": {
+      "bytes": 6511,
+      "sha256": "91530de0cb49accff39683bb01b89a892a3b35c03d613560d1fc0957d05b64ff"
+    },
+    "ready.json": {
+      "bytes": 13390,
+      "sha256": "07bdde7aa271cc907bbcaaf9bba6791496299175916457a4cc7e89783a34dea5"
+    },
+    "scripts/consumer-v2.mjs": {
+      "bytes": 11078,
+      "sha256": "39b25ea138b04a346e7f159fb9d5885a0bcb6adb377d46294e5c409d70104b22"
+    },
+    "scripts/producer-v2.py": {
+      "bytes": 9191,
+      "sha256": "2afe5239e49ed7ffa17b754ea844506014982a11139f90588d560fe6fc195d00"
+    },
+    "validation.json": {
+      "bytes": 2866,
+      "sha256": "e5df77096d818c020ee90e0bb408895a0225bbb71be766fcabe84cebf340209f"
+    }
+  },
+  "ai_usage": {
+    "ai_assisted": true,
+    "tool": "OpenAI Codex",
+    "scope": "Local consumer validation scripts and descriptions; bounded public evidence export, README and manifest. Recorded input mission payloads are unchanged public MOCK data."
+  }
+}
