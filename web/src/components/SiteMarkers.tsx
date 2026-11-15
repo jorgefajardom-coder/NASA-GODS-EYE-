@@ -48,7 +48,7 @@ export function SiteMarkers({ pois, controlPoints, showControlPoints, tasks, t, 
                 <meshBasicMaterial color={color} transparent opacity={0.8} />
               </mesh>
               <Html position={[0, 13, 0]} center zIndexRange={LABEL_Z} className={`site-label site-label--${p.kind}`}>
-                <SiteIcon kind={p.kind} size={14} color={color} /> {p.label}
+                <SiteIcon kind={p.kind} size={18} color={color} /> {p.label}
                 {state ? <em> · {state.toLowerCase()}</em> : null}
               </Html>
               </ScaleWithDistance>

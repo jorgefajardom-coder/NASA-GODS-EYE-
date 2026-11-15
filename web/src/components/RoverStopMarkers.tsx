@@ -64,7 +64,7 @@ export function RoverStopMarkers({ stops, agent, verticalExaggeration }: { stops
               <Diamond on={on} />
               {dist != null && (
                 <Html position={[0, FLOAT_M + 1.5, 0]} center zIndexRange={LABEL_Z} className={`stop-tag${on ? ' stop-tag--on' : ''}`}>
-                  <SiteIcon kind="photo" size={14} />
+                  <SiteIcon kind="photo" size={20} />
                   <b>{stopLabel(s)}</b>
                   <em>{dist >= 1000 ? `${(dist / 1000).toFixed(2)} km` : `${Math.round(dist)} m`}</em>
                 </Html>

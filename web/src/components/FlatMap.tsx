@@ -83,15 +83,15 @@ export function FlatMap({ bundle, view, selectedAgentId, reason }: { bundle: Rep
 
     for (const st of bundle.roverStops?.stops ?? []) {
       const [x, y] = toPx({ x: st.x_m, y: st.y_m, z: 0 });
-      drawSiteIcon(g, 'photo', x, y, 10, siteKind('photo').color);
+      drawSiteIcon(g, 'photo', x, y, 12, siteKind('photo').color);
     }
     g.font = '600 12px "Barlow Condensed", sans-serif';
     g.textBaseline = 'middle';
     for (const p of bundle.manifest.pois.filter((q) => q.revealed_at_s <= view.t)) {
       const [x, y] = toPx(p.position);
-      drawSiteIcon(g, p.kind, x, y, 16, siteKind(p.kind).color);
+      drawSiteIcon(g, p.kind, x, y, 20, siteKind(p.kind).color);
       g.fillStyle = 'rgba(232,244,255,0.85)';
-      g.fillText(p.label, x + 11, y);
+      g.fillText(p.label, x + 14, y);
     }
     for (const a of view.state?.agents ?? []) {
       const [x, y] = toPx(a.pose.position);

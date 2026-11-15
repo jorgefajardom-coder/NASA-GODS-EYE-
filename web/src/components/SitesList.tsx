@@ -19,7 +19,7 @@ export function SitesList({ pois, t, from }: { pois: PointOfInterest[]; t: numbe
       <ul className="sites__list">
         {known.map((p) => (
           <li key={p.id} className="sites__row" title={`${siteKind(p.kind).title}${from ? ' · straight-line distance from the selected agent' : ''}`}>
-            <SiteIcon kind={p.kind} size={16} />
+            <SiteIcon kind={p.kind} size={18} />
             <span>{p.label}</span>
             <em>{from ? fmtDist(Math.hypot(p.position.x - from.x, p.position.y - from.y)) : siteKind(p.kind).short}</em>
           </li>

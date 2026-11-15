@@ -122,7 +122,7 @@ export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, 
         <div className="pov__sites" ref={marks}>
           {sites.map((s) => (
             <span key={s.id} className={`pov__site pov__site--${s.kind}`} style={{ color: siteKind(s.kind).color }} title={`${siteKind(s.kind).title} ${s.label}: bearing ${s.bearing.toFixed(0)}°, ${s.dist.toFixed(0)} m (straight line)`}>
-              <SiteIcon kind={s.kind} size={16} />
+              <SiteIcon kind={s.kind} size={20} />
               <b>{s.label}</b>
               <em>{s.dist >= 1000 ? `${(s.dist / 1000).toFixed(2)} km` : `${s.dist.toFixed(0)} m`}</em>
             </span>

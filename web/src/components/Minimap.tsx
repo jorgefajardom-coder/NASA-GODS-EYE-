@@ -90,12 +90,12 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     }
     for (const p of bundle.manifest.pois.filter((q) => q.revealed_at_s <= view.t)) {
       const [x, y] = toPx(p.position);
-      drawSiteIcon(g, p.kind, x, y, 13, siteKind(p.kind).color);
+      drawSiteIcon(g, p.kind, x, y, 16, siteKind(p.kind).color);
     }
     // Real rover stops in range: small camera icons (display only).
     for (const st of bundle.roverStops?.stops ?? []) {
       const [x, y] = toPx({ x: st.x_m, y: st.y_m, z: 0 });
-      if (Math.hypot(x - c, y - c) < c - 6) drawSiteIcon(g, 'photo', x, y, 9, siteKind('photo').color);
+      if (Math.hypot(x - c, y - c) < c - 6) drawSiteIcon(g, 'photo', x, y, 11, siteKind('photo').color);
     }
     for (const a of view.state?.agents ?? []) {
       if (a.agent_id === agent?.agent_id) continue;

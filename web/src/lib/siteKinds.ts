@@ -40,21 +40,26 @@ export function siteColor(kind: string, taskState?: string): string {
   return siteKind(kind).color;
 }
 
-/** Draws a site icon centred on (x, y) in a box of `size` px on a 2D canvas. */
+/**
+ * Draws a site badge centred on (x, y), `size` px across, on a 2D canvas: the same dark disc, coloured
+ * ring and line icon as the SVG `SiteIcon`, so a site reads the same on every view.
+ */
 export function drawSiteIcon(g: CanvasRenderingContext2D, kind: string, x: number, y: number, size: number, color: string): void {
   g.save();
   g.translate(x - size / 2, y - size / 2);
-  g.scale(size / 24, size / 24);
-  g.lineWidth = 2;
-  g.lineJoin = 'round';
-  g.lineCap = 'round';
-  // Dark backing so the icon reads over any terrain colour.
-  const p = new Path2D(siteKind(kind).path);
-  g.strokeStyle = 'rgba(3,10,20,0.85)';
-  g.lineWidth = 4.5;
-  g.stroke(p);
+  g.scale(size / 32, size / 32); // the badge is drawn on a 32 x 32 grid
+  g.beginPath();
+  g.arc(16, 16, 14.2, 0, Math.PI * 2);
+  g.fillStyle = 'rgba(9,13,17,0.9)';
+  g.fill();
   g.strokeStyle = color;
   g.lineWidth = 2;
-  g.stroke(p);
+  g.stroke();
+  g.translate(7.6, 7.6);
+  g.scale(0.7, 0.7);
+  g.lineWidth = 2.4;
+  g.lineJoin = 'round';
+  g.lineCap = 'round';
+  g.stroke(new Path2D(siteKind(kind).path));
   g.restore();
 }
