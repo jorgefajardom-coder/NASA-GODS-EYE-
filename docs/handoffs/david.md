@@ -73,3 +73,93 @@ Review `git status`, `git diff` and `git diff --check`. Keep commits atomic and 
 Jesus reviews integration; David approves scientific assumptions/success.
 Software tests, replay and synthetic fixtures do not establish a validated
 LIVE mission. No push, merge or release is implied by this handoff alone.
+
+## Continuation packet: costs, durations and success evidence
+
+Current isolated mission baseline: `09d7d6a`. Read-only comparison used main
+`2f50ae697b34fe82e575b386936d0d5e4d74db64` and planner
+`69101e983c9a9668ba852460c484b5db8f12a1a5`. This continuation does not merge
+their producer/executor changes or modify planner, data, mapping, simulation,
+gateway, viewer or wire contracts. The older audited heads above remain
+historical context, not a claim that those branches have stopped advancing.
+
+The publication recheck fetched main `9614816081acc7779e6a565f5f4ebad8b0bd5287`
+(viewer PR #19). Its delta from the reviewed main affects viewer/assets and
+related documentation, not planner/data/simulation/interfaces or D-EST-01.
+Planner remains `69101e9`; integration remains `c42ca24`. No merge is performed.
+
+- Review the [cost packet](../cost_agreement_handoff.md) and
+  [machine-readable contract](../../config/cost_agreement.experimental.json).
+  The export contains 38 base vectors and seven activity-duration cases,
+  preserving directed return, service/wait separation, current remaining
+  resources, reserves and exact model/profile/configuration hashes. No planner
+  substitute or new mock is introduced.
+- The published planner comparison is one agreement / six disagreements,
+  authorization BLOCKED. In particular the approved 120 s human light-work
+  service differs from the projected fixed heavy-work service power. Preserve
+  MODEL_NOT_AGREED/MODEL_MISMATCH; finite examples alone do not prove global
+  model identity. Diego must consume the scientific API or establish reviewed
+  equivalence and agree activity/wait identity bound to run/request context.
+- David requested the [duration source review and pilot](../activity_duration_research.md)
+  before asking Diego and Jesús to incorporate timings. The 30/60/180 s lunar
+  model primitives are not complete sample cycles. Approximately 600 s for a
+  documented D-RATS sample informs a proposed mixed workflow; its 420/180 s
+  phase split is an engineering assumption. A 300 s inspection is likewise
+  pending, not a measured NASA average. No new duration is approved.
+- The additional 600 s mixed workflow plus the unchanged primary probe exceeds
+  all three human usable budgets: 1001.12 s / 110.10 Wh / 22.48 L against
+  960 s / 80 Wh / 20 L after reserves. Extra optional travel is excluded.
+  Preserve the approved JZ-P01..07 configuration, including the 120 s check-in
+  and 180 s sampling example, until an explicit scenario revision is approved.
+- The [success contract](../mission_success_contract.md) and
+  [criteria JSON](../../config/mission_success.experimental.json) are prepared,
+  not runtime acceptance. The present manager's Boolean completion input does
+  not prove 120 s of service or unfinished-work progress; the reviewed executor
+  averages route costs into movement rather than implementing stationary
+  service/wait. Jesús owns the producer contract. Await public task/traversal
+  inputs and implement only the agreed mission consumer. Arrival, animation,
+  stop acknowledgement and a calculated route are insufficient evidence.
+- Honor main's D-EST-01 distinction between valid estimated prior, NoData and
+  verified execution. Do not fabricate observations or lower uncertainty to
+  obtain a path. Daniel/Diego own coordinated estimated-planning implementation;
+  the proposed next-segment execution hold/inspection policy needs Jesús review.
+
+Retained commands, results, source versions and configuration hashes belong
+under `evidence/mission-cost-closure-20261114/`: `conformance`, `vectors-final`,
+`pilot-final`, `readiness` and `validation`. Initial vectors/pilot are analytical
+diagnostics from an earlier worktree snapshot. Consult the validation record
+for actual completed checks; this handoff does not assert pending checks passed.
+CONT-DAV-01/02 remain prepared for joint review. Profiles, cost agreement,
+execution evidence and operational authorization are separate open gates.
+
+Validation of this isolated snapshot: Windows Python 740 passed / 16 skipped;
+Ubuntu 24.04.4/Jazzy 550 passed / one skipped after eight packages built and
+six messages/two services inspected; frontend 84 passed and build passed;
+repository check passed after the generated linked artifacts were present.
+The Windows skips cover ROS and unavailable symlink privileges. Jazzy skips
+the optional materialized planner snapshot; the separate published-source
+conformance report remains BLOCKED. Existing controlled ROS test providers
+are software harnesses, not a new mock or verified integrated execution.
+
+At scope freeze/readiness/pre-submission, remind Jesús to obtain and record the
+local organizer's explicit endorsement with review margin; David is backup.
+No organizer contact, endorsement, external team message or A/B/C execution is
+performed by this packet.
+
+## Requested merge reconciliation
+
+The owner requested conflict resolution and integration after the two pushes.
+The scenario approval commit `09d7d6a` is already in main through PR14. The
+remaining packet `ec819e5` is reconciled with published main
+`5898e7d74c3eb00a018a2061a9b2264d947f12a8`. Two content conflicts in the
+mandatory AI registers retain both sides, including all main media declarations.
+Owner implementations and shared contracts are retained from main unchanged.
+Earlier source/validation records remain historical snapshots, not replaced.
+
+The [fresh comparison](../../evidence/mission-reconciliation-20261114/conformance-main/conformance.json)
+against that main planner still reports one agreement and six disagreements,
+authorization BLOCKED. The [new readiness](../../evidence/mission-reconciliation-20261114/readiness/scenario_diagnostic.json)
+preserves approved experimental values, zero findings and six pending inputs.
+This Git merge does not close scientific or execution gates. Fresh combined
+checks and exact tested source hashes are retained with the
+[reconciliation evidence](../../evidence/mission-reconciliation-20261114/README.md).

@@ -25,8 +25,12 @@ through its published loader, not relabelled as dataset.delivery 1.0.0.
 
 `PUBLIC_PACKAGE_VALIDATED` refers to those checks only. The delivered sample
 has a 32 by 32 grid at 4 m, derived from a native 20 m CTX prior. The finer grid
-does not increase source resolution. Its initially unobserved cells remain
-unknown for execution; no synthetic observations are supplied by this tool.
+does not increase source resolution. Valid unobserved prior cells remain
+estimated, distinct from NoData. Published decision D-EST-01 allows hypothetical
+planning over that prior; it does not verify an executed corridor. This tool
+preserves masks and uncertainty and supplies no synthetic observations. See
+[the mission success contract](mission_success_contract.md) for the reviewed
+main decision and the remaining producer bindings.
 
 The candidate binds the actual manifest/public files, mission input, profile
 registry and science-model source by SHA-256. It reports missing base/B,

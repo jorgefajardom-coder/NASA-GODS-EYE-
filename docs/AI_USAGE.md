@@ -1,5 +1,42 @@
 # Required AI-use declaration
 
+## Mission cost agreement and activity-duration research
+
+OpenAI Codex assisted with the mission-owned cost-contract proposal, analytical
+vector exporter, primary-source activity-duration review, duration-impact pilot,
+contract-consistency tests and explicit success-evidence criteria. The work
+also updates mission scenario references, the estimated-prior limitation text,
+scientific decisions, handoff and retained diagnostic/validation records.
+Affected files and evidence are enumerated in ai_usage.json.
+
+NASA publications supply cited model assumptions and analog task observations;
+the 300 s inspection alternative and mixed 600 s workflow phase allocation are
+explicit engineering assumptions pending review. Pilot costs are generated
+model diagnostics, not astronaut measurements, completed tasks or mission
+results. Daniel's public terrain arrays and the original approved scenario
+values/receipt remain unchanged. Published main/planner are inspected without
+copying their implementations or changing shared messages. No mock, discovery,
+execution observation, image, video, audio, scientific dataset, external message
+or new scientific approval is produced. Existing profile/cost/execution gates
+remain pending; criteria documentation does not close runtime acceptance.
+
+## Mission branch reconciliation
+
+OpenAI Codex assisted reconciling mission ec819e5 with main5898e7d, retaining
+all contributor disclosures, generated-media records and both histories.
+Fresh software validation and exact-source cost diagnostics are retained under
+`evidence/mission-reconciliation-20261114/`. Existing owner implementations,
+ROS fields, scenario-value approval and operational/scientific gates remain
+unchanged. This merge is not a new mission result or scientific approval.
+
+## Mission publication refresh
+
+OpenAI Codex assisted retaining both sides' mandatory disclosures after README
+PR22 advanced main to b0acc1c during PR25 validation. Mission entries precede
+the main entries to avoid competing append conflicts. All main records and
+media metadata remain intact; runtime sources match validated 5c66178 exactly.
+No scientific value, operational approval or execution result is changed.
+
 ## Experimental continuous recovery
 
 OpenAI Codex assisted the owner-requested NON_CELL_CENTER recovery. The opted-in
@@ -616,6 +653,18 @@ launch arguments, gateway API, CI jobs and open milestones. The data
 provenance table and the AI declarations already on main are kept unchanged.
 No code, data, mission result, image, video or audio was generated. The
 affected paths are listed in ai_usage.json.
+
+## Replay recorder shutdown fix
+
+Claude Code (Anthropic) assisted the integration owner in fixing a shutdown
+race in the replay recorder: a signal now only asks the node to stop between
+callbacks, the writer closes idempotently and a closed package is never
+extended, with unit tests in `tests/unit/test_replay.py`. It also keeps planner
+searches valid while other agent kinds complete the same map batch
+(`mge_planning`, tests in `tests/planning/test_adapter.py`) and gives the MOCK
+mission more time for the planner to assemble a new map version. No data,
+mission result, image, video or audio was generated. The affected paths are listed in
+ai_usage.json.
 
 ## Viewer first-person view, drone scan and Pages publishing
 

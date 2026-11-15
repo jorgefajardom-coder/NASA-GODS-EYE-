@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "pilot_id": "human-activity-duration-review-01",
+  "status": "pending_review",
+  "owner": "David",
+  "recorded_on": "2026-11-14",
+  "scope": "Analytic duration/cost pilot only; no astronaut, executor, observation or mission run",
+  "approved_scenario_unchanged": "JZ-APP-20261114-01",
+  "cases": [
+    {
+      "case_id": "approved_check_in_120s",
+      "agent_id": "human_1",
+      "activity": "inspect",
+      "duration_s": 120,
+      "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=21",
+      "source_locator": "Table 4 supports light-work classification only; duration is approved JZ-P03",
+      "evidence_kind": "approved_experimental_assumption",
+      "task_scope": "brief stationary visual check-in",
+      "note": "No source establishes 120 s as a complete geological inspection. This preserves the approved baseline.",
+      "application": "comparison_only"
+    },
+    {
+      "case_id": "inspection_300s_sensitivity",
+      "agent_id": "human_1",
+      "activity": "inspect",
+      "duration_s": 300,
+      "source_url": "https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf",
+      "source_locator": "pp.1-2 contextual documentation and approximately 10 min complete-sample experience, not isolated inspection timing",
+      "evidence_kind": "engineering_assumption_pending_review",
+      "task_scope": "stationary contextual observation only",
+      "note": "Five minutes is an explicit analytical alternative below the reported full-workflow duration, not a measured inspection mean.",
+      "application": "replace_primary_service"
+    },
+    {
+      "case_id": "hand_pickup_30s",
+      "agent_id": "human_1",
+      "activity": "inspect",
+      "duration_s": 30,
+      "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20",
+      "source_locator": "Section 3.1, Table 3, printed p.12 / PDF p.20",
+      "evidence_kind": "published_lunar_model_assumption",
+      "task_scope": "collection without tools only",
+      "note": "Light-work costing alias; no complete sample documentation or inspection task completion is implied.",
+      "application": "additional_after_primary"
+    },
+    {
+      "case_id": "hammering_60s",
+      "agent_id": "human_1",
+      "activity": "sample",
+      "duration_s": 60,
+      "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20",
+      "source_locator": "Section 3.1, Table 3, printed p.12 / PDF p.20",
+      "evidence_kind": "published_lunar_model_assumption",
+      "task_scope": "hammering acquisition only",
+      "note": "Not a measured full sample cycle; heavy-work mapping reuses the proposed profile.",
+      "application": "additional_after_primary"
+    },
+    {
+      "case_id": "trenching_180s",
+      "agent_id": "human_1",
+      "activity": "sample",
+      "duration_s": 180,
+      "source_url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20",
+      "source_locator": "Section 3.1, Table 3, printed p.12 / PDF p.20",
+      "evidence_kind": "published_lunar_model_assumption",
+      "task_scope": "trenching acquisition only",
+      "note": "Matches the approved JZ-P07 numerical example, but does not make three minutes a complete documented sample.",
+      "application": "additional_after_primary"
+    },
+    {
+      "case_id": "documented_sample_600s_mixed",
+      "agent_id": "human_1",
+      "schedule": [
+        {
+          "activity": "inspect",
+          "duration_s": 420
+        },
+        {
+          "activity": "sample",
+          "duration_s": 180
+        }
+      ],
+      "source_url": "https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf",
+      "source_locator": "pp.1-2, Geologic Field Protocols and Time and Task Management",
+      "evidence_kind": "reported_analog_total_with_engineering_phase_allocation",
+      "task_scope": "one complete documented-sample workflow",
+      "note": "Approximately 600 s total is reported D-RATS experience. The 420 s light / 180 s heavy split is OUR assumption, not measured by that source. Documentation is inside the 600 s, never added again.",
+      "application": "additional_after_primary"
+    },
+    {
+      "case_id": "sampling_block_600s_heavy_bound",
+      "agent_id": "human_1",
+      "activity": "sample",
+      "duration_s": 600,
+      "source_url": "https://ntrs.nasa.gov/api/citations/20205003610/downloads/ARGOS%20ICES%202020%20-Final%20for%20Export%20Control.pdf",
+      "source_locator": "Section II.C.1, PDF pp.6-7; 10 min sampling block per subsite after contextual work",
+      "evidence_kind": "prescribed_analog_block_with_engineering_power_bound",
+      "task_scope": "sampling block, not time per sample or entire station",
+      "note": "Ten minutes was prescribed. Applying heavy power throughout is our conservative analytical bound; context before this block is not included.",
+      "application": "comparison_only"
+    }
+  ],
+  "limitations": [
+    "No universal Mars inspection duration was established by the reviewed sources.",
+    "30/60/180 s describe different acquisition primitives, not a statistical interval for one activity.",
+    "No gravity-only conversion from lunar/terrestrial durations to Mars is justified.",
+    "Profiles, durations outside the approved baseline, cost agreement and execution bindings remain unapproved."
+  ]
+}
