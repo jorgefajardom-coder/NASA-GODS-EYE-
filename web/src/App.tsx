@@ -21,6 +21,7 @@ import { DroneCamFrame } from './components/DroneCam';
 import { MarsNowFrame } from './components/MarsNow';
 import { rawImages, useRawImages } from './lib/rawImagesStore';
 import { photoDirection, requestAim } from './lib/photoAim';
+import { DEFAULT_ROVER_CAMERA, mountOf, roverCameraOf } from './lib/roverCameras';
 import type { RawImage } from './lib/perseveranceRaw';
 import type { RoverStop } from './types/replay';
 import { stopUnderAgent, tourStepTime } from './lib/roverStops';
@@ -299,13 +300,16 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     const shoot = () => {
       if (n >= images.length) {
         doneStop.current = povStopId;
+        requestAim({ pitchDeg: -10, fovDeg: DEFAULT_ROVER_CAMERA.vFovDeg, mount: 'mast' }); // back to the Navcam on the mast, looking ahead
         back();
         setPlaying(true);
         return;
       }
       rawImages.select(n);
+      // The real camera that took the photo: its lens and where it sits on the rover.
+      const cam = roverCameraOf(images[n].instrument, mission);
       const dir = photoDirection(images[n], stop?.yaw_deg, mission);
-      if (dir) requestAim(dir);
+      requestAim({ azimuthDeg: dir?.azimuthDeg, pitchDeg: dir?.pitchDeg, fovDeg: cam?.vFovDeg ?? null, mount: mountOf(cam, images[n].instrument, images[n].vector) });
       n += 1;
       timer = window.setTimeout(shoot, SHOT_MS);
     };

@@ -8,6 +8,8 @@
  * world with the rover's published yaw at that stop (degrees clockwise from north), so the direction
  * is approximate: the replay's own rover heading is not the real one.
  */
+import type { CameraMount } from './roverCameras';
+
 export interface PhotoPointing {
   instrument: string;
   /** Pointing vector in the rover frame (x forward, y right, z down), or null. */
@@ -70,10 +72,22 @@ export function shortestTurnDeg(from: number, to: number): number {
  * Request to turn the camera: the cameras read it each frame and ease towards it. A new `token`
  * is a new request; dragging the view cancels the turn in progress.
  */
-export const aimRequest = { token: 0, azimuthDeg: 0, pitchDeg: 0 };
+export const aimRequest: { token: number; azimuthDeg: number | null; pitchDeg: number | null; fovDeg: number | null; mount: CameraMount | null } = {
+  token: 0,
+  azimuthDeg: 0,
+  pitchDeg: 0,
+  fovDeg: null,
+  mount: null,
+};
 
-export function requestAim(d: Pick<PhotoDirection, 'azimuthDeg' | 'pitchDeg'>): void {
-  aimRequest.azimuthDeg = d.azimuthDeg;
-  aimRequest.pitchDeg = d.pitchDeg;
+/**
+ * Asks the rover's camera to turn (azimuth, pitch), to change lens (vertical field of view) and to
+ * move to a mount; a null field is left as it is.
+ */
+export function requestAim(d: { azimuthDeg?: number | null; pitchDeg?: number | null; fovDeg?: number | null; mount?: CameraMount | null }): void {
+  aimRequest.azimuthDeg = d.azimuthDeg ?? null;
+  aimRequest.pitchDeg = d.pitchDeg ?? null;
+  aimRequest.fovDeg = d.fovDeg ?? null;
+  aimRequest.mount = d.mount ?? null;
   aimRequest.token += 1;
 }

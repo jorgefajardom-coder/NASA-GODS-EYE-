@@ -104,7 +104,7 @@ export function FollowCamera({ target, framing = AGENT_FRAMING, mirrorHud = fals
     if (aimRequest.token !== sw.seen) {
       sw.seen = aimRequest.token;
       sw.azimuth = aimRequest.azimuthDeg;
-      sw.pitch = aimRequest.pitchDeg;
+      sw.pitch = aimRequest.pitchDeg ?? 0;
     }
     if (sw.azimuth != null) {
       const off = camera.position.clone().sub(controls.target);
