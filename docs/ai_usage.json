@@ -6,6 +6,16 @@
   "human_review": "pending module owners",
   "uses": [
     {
+      "tool": "Higgsfield (Seed Audio 1.0 by ByteDance) for the voice; Claude (Anthropic) through Claude Code for the music script, editing scripts and this declaration",
+      "kind": "submission_video_voice_over_declaration",
+      "generation": "AI-generated speech from team-written text with preset voices; AI-assisted music synthesis code and video editing scripts, directed by the owner",
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Declare the AI-generated English voice-over of the three 30-second submission videos (kept outside the repository; listed with hashes under generated_media), plus the code-synthesised music and the AI-assisted editing scripts. The picture is screen recordings of the project's viewer; the Perseverance photos shown are real NASA/JPL-Caltech raw images. No data, observation, mission result or NASA branding was generated."
+    },
+    {
       "tool": "OpenAI Codex and image_gen",
       "kind": "english_scientific_wiki_with_reproducible_graphics",
       "generation": "AI-assisted English explanatory prose, documentation-only drawing/audit code, conceptual illustration, model plots and marked GIFs",
@@ -1893,6 +1903,38 @@
       "watermark": "AI-generated (burned into the pixels; legible at the 280 px README display width)",
       "use": "Team logo at the top of the README and on the about page. Not NASA data; no NASA logos, flags or mission marks.",
       "sha256": "6fbeb71f00e30f11db70da83f2d73af895fd648c868befe55530a6c80e6b3314"
+    },
+    {
+      "kind": "ai_generated_voice_over",
+      "files": [
+        {
+          "name": "mars-gods-eye-demo.mp4",
+          "title": "Mars Gods Eye - Demo",
+          "voice": "Andre (preset)",
+          "sha256": "b27466a439e4e726c44b204563bd2c4776fabed41b994045c8e21a0572c5db1d"
+        },
+        {
+          "name": "mars-gods-eye-d.mp4",
+          "title": "Mars Gods Eye - Houston, we have a bug",
+          "voice": "Andre (preset)",
+          "sha256": "c55b9a6cba9caaabf9c31a016ba22deecbdd1e6ed7575e5bd66e8ff3131ca56e"
+        },
+        {
+          "name": "mars-gods-eye-a.mp4",
+          "title": "Mars Gods Eye - The map was wrong",
+          "voice": "Gideon (preset)",
+          "sha256": "0be1250327d747ece4e74f8b0368e18f27a07a078b6d57faa2aca3ef79a9f4de"
+        }
+      ],
+      "stored": "Outside the repository (Git-ignored .local/video/); submission media",
+      "tool": "Higgsfield text-to-speech, model Seed Audio 1.0 (ByteDance), built-in preset voices; text written by the team; no cloned or recorded human voice",
+      "editing": "Head and tail silence trimmed, pauses shortened, tempo 1.06-1.07x on the Andre cuts, mixed under synthesised music with ffmpeg",
+      "metadata": "MP4 comment tag in each file starting 'AI use: the voice-over is AI-generated speech (Higgsfield, Seed Audio 1.0, preset voice ...)'",
+      "verification": "Spoken words checked against the script with a local speech-to-text model (faster-whisper small.en)",
+      "other_ai_use": "Music and sound effects synthesised by a Python script written with Claude (Anthropic) through Claude Code (no generative audio model, no samples); shot timing, on-screen type and capture/render scripts written with Claude through Claude Code",
+      "picture": "Screen recordings of the project's web viewer, not AI-generated video; the AI-generated logo and astronaut portrait shown keep their burned-in AI-generated marks; the three Perseverance photos in the demo video are real NASA/JPL-Caltech raw images (sol 13), not AI-generated",
+      "use": "Narration of the 30-second submission videos. Not data, not a measurement and not a crew voice; the videos label the replan as a recorded run with MOCK execution and claim no live mission.",
+      "nasa_branding": false
     },
     {
       "path": "web/public/media/height-recovery-002.mp4",
