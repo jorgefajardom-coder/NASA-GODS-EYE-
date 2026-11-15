@@ -47,3 +47,10 @@ describe('recorded recovery entry', () => {
     expect(about).not.toMatch(/2 km|SIM 3464|MEDA|orthomosaic/);
   });
 });
+
+describe('run selector', () => {
+  it('offers only the documented standard entry', async () => {
+    const { OFFERED_RUNS } = await import('../src/data/replayAdapter');
+    expect(OFFERED_RUNS.map((r) => r.id)).toEqual([DEFAULT_RUN_ENTRY]);
+  });
+});

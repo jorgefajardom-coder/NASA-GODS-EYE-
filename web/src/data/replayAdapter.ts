@@ -17,6 +17,12 @@ export const RUNS: ReadonlyArray<{ id: string; label: string; note?: string }> =
   { id: 'mock-vertical-001', label: 'Gateway replay mock-vertical-001 (MOCK)' },
 ];
 
+/**
+ * Runs offered in the selector: only the documented standard entry (DEFAULT_RUN_ENTRY). The other
+ * catalogue entries stay loadable with ?run=<id> for tests and review, but are not offered.
+ */
+export const OFFERED_RUNS = RUNS.filter((run) => run.id === DEFAULT_RUN_ENTRY);
+
 export class ReplayLoadError extends Error {}
 
 /** Resolves a path relative to the deployed site, never to the domain root. */

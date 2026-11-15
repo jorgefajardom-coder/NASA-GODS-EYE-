@@ -178,6 +178,8 @@ the reference is not available.
 
 The **Run** selector under the title (or `?run=<id>`) opens another saved run:
 
+The run selector offers only the documented standard entry, `recorded-recovery-001` (`OFFERED_RUNS` in `src/data/replayAdapter.ts`). The other entries below stay loadable with `?run=<id>` for tests and review.
+
 | Run | Source |
 |---|---|
 | `recorded-recovery-001` (default) | Four unchanged canonical files from the recovered recorder run; internal `run_id` is retained independently of this entry folder. Real Jezero data/planner with MOCK authority/kinematic execution; recovery of the human, rover/drone idle; final `READY` |

@@ -3,7 +3,7 @@ import type { ReplayManifest } from '../types/replay';
 import type { AgentState } from '../types/icd';
 import type { MissionAlert } from '../lib/management';
 import { fmtSimTime } from '../lib/format';
-import { RUNS } from '../data/replayAdapter';
+import { OFFERED_RUNS, RUNS } from '../data/replayAdapter';
 import { displayState } from '../lib/provenance';
 import { terrainResolutionLabel } from '../lib/terrainPresentation';
 
@@ -36,12 +36,13 @@ export function TitleBlock({ manifest, runId }: { manifest: ReplayManifest; runI
       <label className="title__run">
         <span>Run</span>
         <select value={runId} onChange={(e) => openRun(e.target.value)} aria-label="Saved run">
-          {RUNS.map((r) => (
+          {OFFERED_RUNS.map((r) => (
             <option key={r.id} value={r.id}>
               {r.label}
             </option>
           ))}
-          {!RUNS.some((r) => r.id === runId) && <option value={runId}>{runId}</option>}
+          {/* A run opened with ?run= that is not offered still shows its own name. */}
+          {!OFFERED_RUNS.some((r) => r.id === runId) && <option value={runId}>{entry?.label ?? runId}</option>}
         </select>
       </label>
     </header>
