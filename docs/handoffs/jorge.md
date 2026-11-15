@@ -121,3 +121,25 @@ LIVE mission. No push, merge or release is implied by this handoff alone.
 - Still open from this handoff: strict canonical package validation with Daniel's raster
   sidecar, `displayState` labels in the status block, three control points, and
   backend-off evidence.
+
+## Status update from feat/ux (15 November 2026)
+
+- Source: `feat/ux` `6bc549b` over main `7ad6050` (merge base `464afa7`), 38 commits
+  not yet in main; no PR opened for them yet.
+- Added: Perseverance landing-area demo on an 8 m display grid (3.4 km × 7.6 km) with
+  226 real rover stops; Gale crater world (`gale-demo`) with 166 real Curiosity stops
+  and world arrows; raw-image panel and per-stop images fetched on request; rover photo
+  tour through every real stop, seen from the rover's own camera with fields of view
+  limited to Navcam/Mastcam-Z/Hazcam; drone hazard report replacing the survey map;
+  site icons, label decluttering, projected vehicle shadows, minimap trails.
+- Evidence (Windows): `npm test` 47 files, 281 passed, 1 skipped; `npm run build`
+  passed; `python scripts/check_repository.py` passed. `python -m pytest` not run
+  (pytest not installed on this machine); ROS checks not run here.
+- Still simulated: mission story, routes between stops, agent resources during the
+  tour, photo directions (approximate). Not changed: still open from the 14 November
+  update (strict canonical package with Daniel's sidecar, three control points,
+  backend-off evidence) and the J-06 video of an integrated run.
+- Next: open the incremental PR for these commits for Jesus's review; consume
+  planner routes, the processed terrain package and the live gateway when ready.
+- Reminder (AGENTS.md §15): organizer notification/endorsement evidence is still
+  missing; record it before declaring the package ready.
