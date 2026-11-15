@@ -47,6 +47,8 @@ def main(argv=None):
     choice.add_argument("--planner-ref")
     choice.add_argument("--planner-package", type=Path)
     parser.add_argument("--planner-revision")
+    parser.add_argument("--backend", choices=("scientific", "legacy"), default="scientific",
+                        help="Scientific production backend by default; legacy reproduces historical comparisons")
     parser.add_argument("--profiles", type=Path, default=ROOT / "config/science_profiles.proposed.json")
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -60,7 +62,7 @@ def main(argv=None):
     if args.planner_package:
         if not args.planner_revision:
             parser.error("--planner-package requires an exact --planner-revision")
-        report = run_conformance(args.planner_package, profiles, args.planner_revision)
+        report = run_conformance(args.planner_package, profiles, args.planner_revision, backend=args.backend)
     else:
         scratch = ROOT / "tmp"
         scratch.mkdir(exist_ok=True)
@@ -71,7 +73,7 @@ def main(argv=None):
             if not temporary.is_relative_to(scratch.resolve()):
                 raise ValueError("temporary planner snapshot must remain within the workspace")
             package, revision = snapshot_from_ref(args.planner_ref, temporary)
-            report = run_conformance(package, profiles, revision)
+            report = run_conformance(package, profiles, revision, backend=args.backend)
     report.update(run_id=args.run_id, recorded_at_utc=datetime.now(timezone.utc).isoformat(),
                   profile_registry_sha256=hashlib.sha256(args.profiles.read_bytes()).hexdigest(),
                   command=[sys.executable, *sys.argv])

@@ -168,6 +168,13 @@ result tables and independent cost/coordinate audits.
 
 ## Project status for the team
 
+The [operational scientific-cost integration](docs/scientific_cost_integration.md)
+connects the shared segment/activity API to the actual planner search and its ROS
+producer/consumer. Scientific mode requires an immutable registered context;
+legacy costs require explicit compatibility opt-in. The additive service and
+changed default prerequisite are a documented interface-package 2.0.0 migration.
+Profile approval and executed-mission acceptance retain their separate gates.
+
 Mars Gods Eye plans and replays crewed surface missions (astronaut, rover and
 drone) over real Mars terrain at Jezero crater: orbital terrain priors, a
 resource-aware route planner, a mission authority, a ROS 2 simulation vertical

@@ -21,7 +21,9 @@ from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy
 from rosgraph_msgs.msg import Clock
-from mge_interfaces.srv import PlanRoute
+from mge_interfaces.srv import PlanRoute, RegisterPlanningContext
+from mge_mission.models import MODEL_ID
+from mge_mission.planning_context import context_for_request, context_to_wire, profile_registry_sha256
 
 ROOT = Path(__file__).resolve().parents[2]
 RUN_ID = 'synthetic-real-mission-handoff'
@@ -119,7 +121,9 @@ raise SystemExit(service.run())
             # across DDS topics. Probe the canonical producer before sending the
             # single mission goal; never turn UNKNOWN into an approved route.
             planner = clock_node.create_client(PlanRoute, '/mge/planner/plan_route')
+            registration = clock_node.create_client(RegisterPlanningContext, '/mge/planner/register_context')
             wait_for(planner.service_is_ready)
+            wait_for(registration.service_is_ready)
             attempts = [0]
             last_reason = [None]
             def planner_ready():
@@ -135,6 +139,11 @@ raise SystemExit(service.run())
                     point.x, point.y, point.z = 2.5, 2.5, 0.0
                 request.time_budget_s, request.energy_budget_wh = 3600.0, 600.0
                 request.oxygen_budget_l = 150.0
+                context = context_for_request(request, MODEL_ID,
+                    profile_registry_sha256(ROOT / 'config/scenario_demo.yaml'))
+                registered = registration.call_async(context_to_wire(context, RegisterPlanningContext.Request()))
+                wait_for(registered.done, timeout=10)
+                assert registered.result().accepted
                 future = planner.call_async(request)
                 wait_for(future.done, timeout=10)
                 decision = future.result().decision
@@ -148,6 +157,7 @@ raise SystemExit(service.run())
                 return False
             wait_for(planner_ready)
             clock_node.destroy_client(planner)
+            clock_node.destroy_client(registration)
             answer = httpx.post(f'{BASE}/api/mission/goal', json=GOAL, timeout=10)
             assert answer.status_code == 200 and answer.json()['accepted'] is True, answer.text
             wait_for(lambda: snapshot()['mission_state']['reason_code'] == 'MODEL_NOT_AGREED')

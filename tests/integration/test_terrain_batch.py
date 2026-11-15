@@ -182,6 +182,7 @@ def probe(request, tmp_path_factory):
         # Keep search bounded while allowing shared CI runners scheduling slack.
         run('mge_planning', 'planning_node', profiles_file=PROFILES,
             allow_illustrative_profiles='true', snapshot_contract_confirmed='true',
+            allow_legacy_cost_model='true',
             search_timeout_s=10.0),
     ]
     rclpy.init()

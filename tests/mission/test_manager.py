@@ -103,6 +103,23 @@ def test_accepted_goal_is_idempotent_and_does_not_complete(manager, profiles):
         snapshot.mission_state = "COMPLETE"
 
 
+def test_pending_context_refreshes_remaining_resources_without_pose_change(manager):
+    assert manager.set_goal(goal()).accepted
+    first = manager.pending_plan()
+    assert manager.update_agent(replace(agent(stamp=1), time_remaining_s=990., energy_remaining_wh=995.,
+                                        oxygen_remaining_l=499.))
+    assert manager.pending_plan() == first
+    assert manager.refresh_pending_resources()
+    refreshed = manager.pending_plan()
+    assert refreshed.request_id != first.request_id
+    assert refreshed.start == first.start and refreshed.state_revision == first.state_revision
+    assert (refreshed.time_budget_s, refreshed.energy_budget_wh, refreshed.oxygen_budget_l) == (990., 995., 499.)
+    assert manager.update_agent(replace(agent(stamp=2), time_remaining_s=990., energy_remaining_wh=995.,
+                                        oxygen_remaining_l=499.))
+    assert manager.pending_plan() == refreshed  # Timestamp-only telemetry is not a new budget snapshot.
+    assert not manager.refresh_pending_resources()
+
+
 def test_conflicting_id_cannot_change_goal(manager):
     assert manager.set_goal(goal()).accepted
     assert manager.set_goal(goal(goal=A)).reason_code == "REQUEST_ID_CONFLICT"

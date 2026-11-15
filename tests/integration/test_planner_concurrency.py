@@ -62,6 +62,7 @@ def stack():
     node = planning.make_node_class()(parameter_overrides=[
         Parameter('profiles_file', value=str(profiles)),
         Parameter('allow_illustrative_profiles', value=True),
+        Parameter('allow_legacy_cost_model', value=True),
         Parameter('snapshot_contract_confirmed', value=True),
     ])
     meta = metadata()

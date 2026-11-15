@@ -1,17 +1,15 @@
 {
-  "baseline_version": "1.0.0-rc.2",
-  "status": "published_not_frozen_pending_owner_review",
-  "reference_main_sha": "6bcf208868e37b7e15e9189fac11de96e7414eff",
+  "baseline_version": "2.0.0-rc.1",
+  "status": "candidate_scientific_cost_context_pending_owner_review",
+  "reference_main_sha": "d13a4b3f1035260cebf9f065472c56cc53158401",
   "candidate_branch": "codex/audit-contract-reconciliation",
-  "recorded_at_utc": "2026-11-15T01:39:56.327903+00:00",
-  "source_scope": "Original main6bcf208 audit and remote inventory retained as historical inputs. Reconciliation source7f0ebaa was published by PR28 at main9198b3d; semantic freeze and scientific approval remain pending.",
+  "recorded_at_utc": "2026-11-15T23:31:41.673308+00:00",
+  "source_scope": "Candidate operational scientific cost integration. Existing message/service fields retain their bytes. Scientific PlanRoute now requires an immutable registered context by default; explicit legacy server opt-in preserves historical comparisons. Semantic owner review and profile approval remain separate.",
   "publication": {
-    "published_to_main": true,
-    "pull_request": 28,
-    "reviewed_source_sha": "7f0ebaaefa90b7ae48505f8e06d22f2660e5d491",
-    "merge_sha": "9198b3d8b3257dfd452d240ee9708cb038c3bb42",
+    "published_to_main": false,
     "frozen": false,
-    "release": false
+    "release": false,
+    "candidate_branch": "codex/operational-scientific-costs"
   },
   "branch_heads": {
     "codex/contract-reconciliation": "46d4f71e3ceaecdb50bfb3e6e9c73feaf8fcffa1",
@@ -35,7 +33,7 @@
     "main": "6bcf208868e37b7e15e9189fac11de96e7414eff"
   },
   "ros_contract": "ICD-ROS2-V1",
-  "ros_package_version": "1.0.0",
+  "ros_package_version": "2.0.0",
   "ros_definition_sha256": {
     "src/mge_interfaces/msg/AgentState.msg": "092bee669dd50629df3dee3275dad61ee5e79b2de7ed64979536f3f630824917",
     "src/mge_interfaces/msg/MissionEvent.msg": "2ab226661e7c381e92b79138d452b08fb69d3e597797dd272bbe55d09e0428e6",
@@ -44,6 +42,7 @@
     "src/mge_interfaces/msg/TerrainMeta.msg": "adfe37bf914ffed6549d5c24ba98709d4319091f78f3ae4c478fc9f62c6bc9a2",
     "src/mge_interfaces/msg/TerrainObservation.msg": "60479b9c0a274ab86b95db230ee1799d35cfe1b68874c867891e8d4ae5ad7218",
     "src/mge_interfaces/srv/PlanRoute.srv": "0fa6e2f7cd89a397f2b1b71d704ff82552d5583f921fdbd2d57020dc058bb5ad",
+    "src/mge_interfaces/srv/RegisterPlanningContext.srv": "3113e619bc33dc5e0e581922ef66e3dc4024cbed3a16b6ca8db352eaf5bd5ca9",
     "src/mge_interfaces/srv/SetMissionGoal.srv": "114f3e4fc8fcd582cef0bfa53301eb946db99f3c412f1b010dd068d0fec5d262"
   },
   "ros_definitions_changed": false,
@@ -142,7 +141,119 @@
       "initial_audit_main_sha": "f75c54e929576c6780d559c9daa24d06ccf0a0b8",
       "integrated_planner_pr": 2,
       "concurrent_main_merge": "Main PR #2 merged externally by Jesus; reconciliation branch incorporates main without merging other owner PRs."
+    },
+    "1.0.0-rc.2": {
+      "baseline_version": "1.0.0-rc.2",
+      "status": "published_not_frozen_pending_owner_review",
+      "reference_main_sha": "6bcf208868e37b7e15e9189fac11de96e7414eff",
+      "candidate_branch": "codex/audit-contract-reconciliation",
+      "recorded_at_utc": "2026-11-15T01:39:56.327903+00:00",
+      "source_scope": "Original main6bcf208 audit and remote inventory retained as historical inputs. Reconciliation source7f0ebaa was published by PR28 at main9198b3d; semantic freeze and scientific approval remain pending.",
+      "publication": {
+        "published_to_main": true,
+        "pull_request": 28,
+        "reviewed_source_sha": "7f0ebaaefa90b7ae48505f8e06d22f2660e5d491",
+        "merge_sha": "9198b3d8b3257dfd452d240ee9708cb038c3bb42",
+        "frozen": false,
+        "release": false
+      },
+      "branch_heads": {
+        "codex/contract-reconciliation": "46d4f71e3ceaecdb50bfb3e6e9c73feaf8fcffa1",
+        "codex/docs-estimated-terrain-decision": "d367d6ee1946cc90f1fa36f56d11afa3c90c2d51",
+        "codex/docs-organizer-endorsement": "34264a3e26bd93ea56a11f71f33dbfaf26fd01fe",
+        "codex/docs-probable-mission-plan": "42551acc7807f173b1129fb36c7e7731365cad45",
+        "codex/docs-team-continuation": "d83ab2323adeff2b7a0d0a32450663739b6cfe66",
+        "codex/mission-replay-recovery": "a303db0f8fecbc53400cb7e3c5bfec5e10f1eebd",
+        "codex/mission-service-handoff": "cc3b333824f92573fd11cf6d9af46867b5280029",
+        "codex/rename-ci-checks": "461689bbad2100cf9fd4db16656bccdd6ba1baef",
+        "docs/agents-policy": "7840d2884e5d07bdf76c3fdbeb62068afd86b947",
+        "docs/readme-overview": "3e326cfb9e0d1de7257b813f7196c096a8a5607c",
+        "feat/data": "6cb129027b34e8fa5a173e064dfc5b65a44f67ce",
+        "feat/integration": "c42ca246018e677bfb68cf4ace29a6c5be2c223e",
+        "feat/mission": "c3ec4c1f1515dbc981ba82eed2ab1f54e9586264",
+        "feat/planner": "69101e983c9a9668ba852460c484b5db8f12a1a5",
+        "feat/ux": "58227de05d0c73e0aff1de4d5d7fe9be43e904c0",
+        "feature/web-replay-viewer": "73f22dba432ed69c351699c1d712f5d515df4c78",
+        "fix/recorder-shutdown": "4bf98edf4991f1101e28f1bc0a9259909e397f7d",
+        "gh-pages": "81ca4dca57215cb6f3727f3b06cabd924e07ba22",
+        "main": "6bcf208868e37b7e15e9189fac11de96e7414eff"
+      },
+      "ros_contract": "ICD-ROS2-V1",
+      "ros_package_version": "1.0.0",
+      "ros_definition_sha256": {
+        "src/mge_interfaces/msg/AgentState.msg": "092bee669dd50629df3dee3275dad61ee5e79b2de7ed64979536f3f630824917",
+        "src/mge_interfaces/msg/MissionEvent.msg": "2ab226661e7c381e92b79138d452b08fb69d3e597797dd272bbe55d09e0428e6",
+        "src/mge_interfaces/msg/MissionState.msg": "e99548dfe3696addb7fea4922bdeee7b881b4dbbf206aa829500763fe469e427",
+        "src/mge_interfaces/msg/RouteDecision.msg": "a892199a64ce7ac533ec208674d225548152668b2121b80cce6b95b5ab75485f",
+        "src/mge_interfaces/msg/TerrainMeta.msg": "adfe37bf914ffed6549d5c24ba98709d4319091f78f3ae4c478fc9f62c6bc9a2",
+        "src/mge_interfaces/msg/TerrainObservation.msg": "60479b9c0a274ab86b95db230ee1799d35cfe1b68874c867891e8d4ae5ad7218",
+        "src/mge_interfaces/srv/PlanRoute.srv": "0fa6e2f7cd89a397f2b1b71d704ff82552d5583f921fdbd2d57020dc058bb5ad",
+        "src/mge_interfaces/srv/SetMissionGoal.srv": "114f3e4fc8fcd582cef0bfa53301eb946db99f3c412f1b010dd068d0fec5d262"
+      },
+      "ros_definitions_changed": false,
+      "gateway_schema_version": "1.0.0",
+      "replay_schema_version": "1.0.0",
+      "public_raster_schema_version": "mge-public-rasters-1.0.0",
+      "viewer_schema_version": "mge-web-0.1-draft",
+      "dataset_schema_version": "1.0.0",
+      "launch_receipt_baseline_version": "1.0.0-rc.1",
+      "exploration_policy": {
+        "schema_version": "mge-exploration-policy-1.0.0",
+        "policy_id": "estimated-prior-illustrative-01",
+        "path": "config/exploration_policy.illustrative.json",
+        "sha256": "a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd",
+        "default_without_file": "observed_only",
+        "explicit_mode": "estimated_or_observed",
+        "limits": {
+          "human": {
+            "max_sigma_m": 3.0,
+            "max_slope_deg": 10.0
+          },
+          "rover": {
+            "max_sigma_m": 3.0,
+            "max_slope_deg": 20.0
+          },
+          "drone": {
+            "max_sigma_m": 3.0,
+            "max_slope_deg": 90.0
+          }
+        },
+        "provenance_binding": "policy ID/schema/mode/candidate-only meaning and exact file SHA-256 in TerrainMeta.sources",
+        "status": "illustrative_candidate_semantics_pending_owner_review"
+      },
+      "observation_causality": {
+        "status": "candidate_semantics_pending_owner_review",
+        "new_observation_base": "exact current map version",
+        "timestamp": "no earlier than globally last accepted observation; equal timestamps permitted with distinct current-base inputs",
+        "duplicate": "already-applied IDs have no second effect",
+        "obstacle": "missing or UNKNOWN evidence cannot clear confirmed obstacle; explicit current nonolder FREE may supersede it",
+        "atomic_rejection": true
+      },
+      "validation": {
+        "fresh_rc2_ros_consumer_status": "passed_runtime_v1_recorded_software_scope",
+        "fresh_rc2_browser_bundle_status": "passed_runtime_v1_ordinary_chrome_private_and_public_acceptance_open",
+        "runtime_record": "evidence/audit-reconciliation-20261115/runtime-v1/README.md",
+        "browser_record": "evidence/audit-reconciliation-20261115/runtime-v1/browser.json",
+        "new_published_main_cost_report": "evidence/audit-reconciliation-20261115/cost/conformance.json",
+        "cost_result": {
+          "AGREE": 1,
+          "DISAGREE": 6,
+          "NOT_FEASIBLE": 0,
+          "ERROR": 0,
+          "authorization": "BLOCKED"
+        },
+        "not_established": [
+          "scientific_model_agreement",
+          "typed_activity_context_and_progress_binding",
+          "three_role_scientific_execution",
+          "physical_or_LIVE_mission"
+        ]
+      },
+      "owner": "Jesus (integration); David (scientific approval)",
+      "approval": "pending Daniel/Diego/Jorge/David/Jesus review; not frozen; no profile/cost/scientific/mission approval",
+      "history_note": "The rc.1 object is retained exactly as recorded at its older audit. Its status/ref/implementation observations are historical; later main integrations supersede them."
     }
   },
-  "history_note": "The rc.1 object is retained exactly as recorded at its older audit. Its status/ref/implementation observations are historical; later main integrations supersede them."
+  "history_note": "The rc.1 object is retained exactly as recorded at its older audit. Its status/ref/implementation observations are historical; later main integrations supersede them.",
+  "planning_context_schema": "mge-planning-cost-context-1.0.0"
 }

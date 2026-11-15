@@ -1,5 +1,11 @@
 # Planner/science model conformance
 
+The current diagnostic defaults to the operational scientific facade used by
+PlanningNode. Select `--backend legacy` to reproduce historical projected-cost
+comparisons. See [scientific cost integration](scientific_cost_integration.md)
+for the typed ROS context, actual-search/service regressions and migration.
+The historical 1/7 reports below remain immutable evidence of the old backend.
+
 This probe compares a published planner snapshot with the declared mission
 science model. Its classification is **MODEL_CONFORMANCE**, using synthetic
 known-public inputs. It is not an A/B/C mission benchmark, a simulated

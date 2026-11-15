@@ -1,5 +1,18 @@
 # Contract reconciliation baseline 1.0.0-rc.2
 
+## Candidate 2.0.0-rc.1: operational scientific costs
+
+The working candidate adds `RegisterPlanningContext.srv` while retaining every
+existing IDL byte. Interface package 2.0.0 reflects the new default requirement
+to register an immutable cost/activity context before PlanRoute. Explicit legacy
+server opt-in supports historical callers. The machine-readable lock retains
+the original rc.2 data under `historical_baselines` and records all nine current
+definitions. See [scientific cost integration](scientific_cost_integration.md)
+for producer/consumer semantics and migration. Owner review, coefficient approval,
+execution evidence and contract freeze remain separate; this is not a release.
+
+The following published rc.2 record is historical relative to this candidate.
+
 Status: **published in main through PR28; not frozen, no release or scientific
 approval**. Reviewed source `7f0ebaaefa90b7ae48505f8e06d22f2660e5d491` was
 merged as `9198b3d8b3257dfd452d240ee9708cb038c3bb42`. The original audit input

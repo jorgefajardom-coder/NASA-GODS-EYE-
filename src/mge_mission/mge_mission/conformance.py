@@ -110,7 +110,7 @@ def _load_dependencies():
 
 
 @contextmanager
-def _isolated_core(package):
+def _isolated_core(package, *, scientific=False):
     """Register only private module aliases; leave public sys.path untouched.
 
     The package initializer is hashed but not executed. Core source is compiled
@@ -129,6 +129,14 @@ def _isolated_core(package):
     sys.modules[name] = module
     try:
         exec(compile((package / "core.py").read_bytes(), str(package / "core.py"), "exec"), module.__dict__)
+        if scientific:
+            backend_name = alias + ".resource_costs"
+            backend_path = package / "resource_costs.py"
+            backend_spec = importlib.util.spec_from_file_location(backend_name, backend_path)
+            backend = importlib.util.module_from_spec(backend_spec)
+            sys.modules[backend_name] = backend
+            exec(compile(backend_path.read_bytes(), str(backend_path), "exec"), backend.__dict__)
+            module.scientific_backend = backend
         yield module
     finally:
         for key in tuple(sys.modules):
@@ -224,14 +232,17 @@ def _cases(profiles):
             ("drone_observe", selected["drone"], 0.0, "observe", 30.0, 0.0)]
 
 
-def run_conformance(planner_package_path, profiles, planner_revision):
+def run_conformance(planner_package_path, profiles, planner_revision, *, backend="scientific"):
     """Run seven actual planner calls; always leave route authorization BLOCKED."""
+    if backend not in {"scientific", "legacy"}:
+        raise ValueError("backend must be scientific or explicitly selected legacy")
     package, provenance = _verified_source(planner_package_path, planner_revision)
     profile_snapshot = _profile_snapshot(profiles)
     report = {
         "schema_version": "1.0.0", "classification": "MODEL_CONFORMANCE",
         "synthetic": True, "authorization": "BLOCKED", "scientific_approval_changed": False,
         "status": "NOT_RUN", "reason_code": "NOT_STARTED", "planner": provenance,
+        "cost_backend": backend,
         "science": {"model_id": models.MODEL_ID,
                     "model_source_sha256": _digest(Path(models.__file__).read_bytes()),
                     "probe_source_sha256": _digest(Path(__file__).read_bytes()),
@@ -252,8 +263,9 @@ def run_conformance(planner_package_path, profiles, planner_revision):
     report["dependencies"] = versions
     projection = export_planner_profiles(profiles)
     report["planner_projection"] = projection
+    report["planner_projection_cost_rates_applied"] = backend == "legacy"
     try:
-        with _isolated_core(package) as core:
+        with _isolated_core(package, scientific=backend == "scientific") as core:
             for case_id, profile, grade, activity, service, wait in cases:
                 case = {"case_id": case_id, "agent_id": profile.agent_id, "status": "ERROR"}
                 report["cases"].append(case)
@@ -286,7 +298,15 @@ def run_conformance(planner_package_path, profiles, planner_revision):
                                                start=start, goal=goal, return_to=start, require_return=True,
                                                mode="FAST", budget=resources, service_time_s=service + wait,
                                                reserve_time_s=10.0)
-                    decision = core.plan_route(terrain=grid, request=request, profile=motion)
+                    if backend == "scientific":
+                        shared = core.scientific_backend
+                        activities = (shared.Activity(case_id + ":service", activity, service),
+                                      shared.Activity(case_id + ":wait", "wait", wait))
+                        decision = shared.scientific_plan_route(
+                            terrain=grid, request=request, motion_profile=motion,
+                            scientific_profile=profile, activities=activities)
+                    else:
+                        decision = core.plan_route(terrain=grid, request=request, profile=motion)
                     status = _field(decision, "status")
                     case["planner_status"] = getattr(status, "value", status)
                     case["planner_reason_code"] = _field(decision, "reason_code")

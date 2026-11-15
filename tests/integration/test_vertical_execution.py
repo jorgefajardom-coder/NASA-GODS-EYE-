@@ -122,7 +122,7 @@ class Stack:
         self.package = os.path.join(record_dir, RUN_ID)
         self.proc = subprocess.Popen(
             ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',
-             f'port:={PORT}', 'terrain:=real', 'planner:=real', f'profiles_file:={PROFILES}',
+             f'port:={PORT}', 'terrain:=real', 'planner:=real', 'allow_legacy_cost_model:=true', f'profiles_file:={PROFILES}',
              f'agents_file:={agents_file}',
              'agents:=kinematic', 'allow_continuous_starts:=true',
              'record:=true', f'record_dir:={record_dir}', *extra_launch_args],

@@ -1033,3 +1033,7 @@ The records are analytical experiments on public CTX terrain with explicitly hyp
 OpenAI Codex assisted the English scientific synthesis in `README.md`: the research question, terrain/model explanation and balanced summary of the already published fixed/adaptive study. The numerical claims retain the PR47 source catalogues, nominal empirical resampling intervals, separate batch denominators and existing approval states. This edit generates no new experimental results, media, profile values or production code. Existing AI declarations and marked assets are preserved.
 
 Documentation-only preparation and verification helpers are retained locally under `.local/readme-science-update`; their use is recorded in the machine-readable entry.
+
+## Operational scientific cost integration — 15 November 2026
+
+OpenAI Codex assisted the native scientific-cost search integration, typed immutable planning context, real ROS producer/consumer, compatibility migration, regression tests and this documentation. `docs/ai_usage.json` lists every affected delivered path. The existing scientific formulas and profile coefficients are reused; their approval status is unchanged. Declared synthetic maps support software/model tests, not new NASA observations or physical mission completion. Original evidence and all previous AI declarations remain intact. Local preparation and verification helpers are recorded as internal provenance.
