@@ -1,6 +1,7 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { attachScanUniforms, SCAN_PARS_GLSL, SCAN_TERRAIN_GLSL } from '../scanner/shaders';
 import type { TerrainMeta } from '../types/icd';
 import type { RasterSet } from '../types/replay';
 import { elevationColor, finiteRange, heightGrid, sigmaColor, slopeColor, versionKey, type TerrainLayer } from '../lib/layers';
@@ -230,11 +231,12 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
       shader.uniforms.uTint = uniforms.uTint;
       shader.uniforms.uDetail = uniforms.uDetail;
       shader.uniforms.uDetailFar = uniforms.uDetailFar;
+      attachScanUniforms(shader); // first-person terrain scan (scanner/shaders)
       shader.vertexShader = shader.vertexShader
         .replace('#include <common>', '#include <common>\nvarying float vRealH;\nvarying vec2 vGround;')
         .replace('#include <begin_vertex>', '#include <begin_vertex>\nvRealH = position.y;\nvGround = position.xz;');
       shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', `#include <common>\nvarying float vRealH;\nvarying vec2 vGround;\nuniform float uContour;\nuniform float uOffset;\nuniform float uTint;\nuniform float uDetail;\nuniform float uDetailFar;\n${SURFACE_DETAIL_GLSL}`)
+        .replace('#include <common>', `#include <common>\nvarying float vRealH;\nvarying vec2 vGround;\nuniform float uContour;\nuniform float uOffset;\nuniform float uTint;\nuniform float uDetail;\nuniform float uDetailFar;\n${SURFACE_DETAIL_GLSL}\n${SCAN_PARS_GLSL}`)
         // Cosmetic surface grain (not measured): fades in below ~200 m of camera distance.
         .replace(
           '#include <color_fragment>',
@@ -271,10 +273,11 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
             float lM = (1.0 - smoothstep(0.8, 1.8, abs(fract(xM - 0.5) - 0.5) / max(dM, 1e-5))) * (1.0 - smoothstep(0.12, 0.45, dM));
             float k = uContour * max(0.22 * lm, 0.6 * lM);
             gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.79, 0.84, 0.87), k);
-          }`,
+          }
+          ${SCAN_TERRAIN_GLSL}`,
         );
     };
-    m.customProgramCacheKey = () => 'terrain-contours-v9';
+    m.customProgramCacheKey = () => 'terrain-contours-v10-scan';
     return m;
   }, [uniforms]);
 

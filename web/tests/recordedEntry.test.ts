@@ -6,6 +6,7 @@ import { createElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import { CameraBar } from '../src/components/CameraBar';
 import { TitleBlock } from '../src/components/Frame';
+import { TerrainScanButton } from '../src/components/TerrainScanButton';
 import { DEFAULT_RUN_ENTRY, RECORDED_RECOVERY_ENTRY, RUNS } from '../src/data/replayAdapter';
 import { fromGatewayPackage, parseJsonLines, type GatewayManifest } from '../src/data/gatewayReplay';
 import { aboutData } from '../src/lib/stateSnapshot';
@@ -32,13 +33,15 @@ describe('recorded recovery entry', () => {
     expect(html).toContain('Not a scientific COMPLETE mission');
   });
 
-  it('labels the visual slope operation before it has been activated', () => {
+  it('no longer offers the drone orbital preview; the terrain scan labels itself display only', () => {
     const noop = () => {};
-    const html = renderToStaticMarkup(createElement(CameraBar, { agents: [], view: 'free', hasBase: false,
-      onFree: noop, onBase: noop, onAgent: noop, firstPerson: false, onFirstPerson: noop, canScan: true, onScan: noop }));
-    expect(html).toContain(ORBITAL_PREVIEW_LABEL);
-    expect(html).toContain('no new observation');
-    expect(html).not.toContain('with its camera');
+    const bar = renderToStaticMarkup(createElement(CameraBar, { agents: [], view: 'free', hasBase: false,
+      onFree: noop, onBase: noop, onAgent: noop, firstPerson: false, onFirstPerson: noop }));
+    expect(bar).not.toContain(ORBITAL_PREVIEW_LABEL);
+    expect(bar).not.toContain('with its camera');
+    const key = renderToStaticMarkup(createElement(TerrainScanButton));
+    expect(key).toContain('Terrain scan');
+    expect(key).toMatch(/Display only, not a sensor|Scanner/);
   });
 
   it('does not attribute demo geology, imagery or a 2 km crop to a recorder package', () => {

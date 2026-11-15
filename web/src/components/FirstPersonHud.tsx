@@ -1,15 +1,12 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import type { AgentState, RouteDecision, TerrainMeta } from '../types/icd';
+import type { AgentState, RouteDecision } from '../types/icd';
 import type { PointOfInterest } from '../types/replay';
 import { AGENT_NAME } from '../lib/management';
-import { fmtDuration } from '../lib/format';
-import { angleDiffDeg, bearingDeg, SCAN_CLASS_INFO, SCAN_RADIUS_M, type ScanClass } from '../lib/scan';
-import { ORBITAL_PREVIEW_LABEL, ORBITAL_PREVIEW_LIMIT, orbitalSlopeNote } from '../lib/terrainPresentation';
+import { angleDiffDeg, bearingDeg } from '../lib/scan';
 import { povState } from './FirstPersonCamera';
-import { remainingTimeS, routeProgress } from '../lib/routeProgress';
-import { ROUTE_STATUS_STYLE } from '../lib/format';
 import { fmtM } from './PovRoute';
 import type { ResourceAlert } from '../lib/resourceAlert';
+import { TerrainScanButton } from './TerrainScanButton';
 
 /** Visible width of the compass tape (deg either side of the heading). */
 const TAPE_HALF_DEG = 60;
@@ -20,17 +17,12 @@ const POI_LABEL: Record<string, string> = { base: 'BASE', primary_goal: 'GOAL', 
 
 interface Props {
   agent: AgentState;
-  terrainMeta: TerrainMeta;
   /** Mode chip text, e.g. "REPLAY · SIMULATION": never shown as a live mission. */
   sourceLabel: string;
   pois: PointOfInterest[];
-  /** Scan state: null before the first scan; counts per band of the last one. */
-  scan: { counts: Record<ScanClass, number>; fromId: string } | null;
-  canScan: boolean;
-  onScan: () => void;
   onExit: () => void;
-  /** Route in force (any agent); its guide is shown only when it belongs to this agent. */
-  route: RouteDecision | null;
+  /** Route in force (any agent); the draped route and waypoint are drawn in the scene (PovRoute). */
+  route?: RouteDecision | null;
   /** The agent dial of the third-person view (menu with resources, atmosphere, route... and the heading-up map). */
   dial: ReactNode;
   /** Resource alert of this agent (lib/resourceAlert), or null. */
@@ -57,15 +49,12 @@ interface Props {
  * and site bearings, the shared agent dial (resources live in its menu), and the drone-camera scan control and readout. Every
  * value comes from the replay or from lib/scan; nothing here is a live measurement.
  */
-export function FirstPersonHud({ agent, terrainMeta, sourceLabel, pois, scan, canScan, onScan, onExit, route, dial, alert, droneCam, droneCamOn, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, artificialLight, onArtificialLight, sway, onSway }: Props) {
+export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, droneCam, droneCamOn, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, artificialLight, onArtificialLight, sway, onSway }: Props) {
   const tape = useRef<HTMLDivElement>(null);
   const readout = useRef<HTMLSpanElement>(null);
   const pitch = useRef<HTMLSpanElement>(null);
   const marks = useRef<HTMLDivElement>(null);
   const pos = agent.pose.position;
-  const own = route && route.agent_id === agent.agent_id && route.outbound_path.length > 1 ? route : null;
-  const progress = own ? routeProgress(own.outbound_path, pos) : null;
-  const left = own && progress ? remainingTimeS(progress, own.travel_time_s) : null;
   const sites = pois.map((p) => ({ id: p.id, kind: p.kind, bearing: bearingDeg(pos.x, pos.y, p.position.x, p.position.y), dist: Math.hypot(p.position.x - pos.x, p.position.y - pos.y) }));
   const base = sites.find((x) => x.kind === 'base') ?? null;
   const sitesRef = useRef(sites);
@@ -134,36 +123,6 @@ export function FirstPersonHud({ agent, terrainMeta, sourceLabel, pois, scan, ca
         </div>
       </div>
 
-      <div className="pov__id">
-        <span className="pov__kicker">POV · {AGENT_NAME[agent.agent_kind]}</span>
-        <strong>{agent.agent_id}</strong>
-        <span className="pov__mode">{sourceLabel}</span>
-        <span className="pov__state">{agent.mode}</span>
-      </div>
-
-      <div className="pov__nav" aria-label="Route guide">
-        {own && progress ? (
-          <>
-            <span className="pov__kicker">
-              Route {own.route_id} · <span style={{ color: ROUTE_STATUS_STYLE[own.status].color }}>{ROUTE_STATUS_STYLE[own.status].label}</span>
-            </span>
-            <div className="pov__nav-next">
-              <b>{progress.nextIndex === own.outbound_path.length - 1 ? 'END' : `WP ${progress.nextIndex}`}</b>
-              <strong>{fmtM(progress.toNextM)}</strong>
-            </div>
-            <span className="pov__nav-row">
-              Left on route <b>{fmtM(progress.remainingM)}</b>
-            </span>
-            <span className="pov__nav-row" title="The route's own travel-time estimate, scaled by the share of distance left (not a prediction)">
-              Time left (route est.) <b>{left == null ? 'not given' : fmtDuration(left)}</b>
-            </span>
-            {progress.offRouteM > 15 && <span className="pov__nav-row pov__nav-row--warn">Off the drawn route by {fmtM(progress.offRouteM)}</span>}
-          </>
-        ) : (
-          <span className="pov__kicker">No route in force for {agent.agent_id}</span>
-        )}
-      </div>
-
       {/* The same agent dial as in third person: its menu and, at the centre, the heading-up map. */}
       <div className="pov__dial">{dial}</div>
 
@@ -192,9 +151,7 @@ export function FirstPersonHud({ agent, terrainMeta, sourceLabel, pois, scan, ca
         <div className="pov__dock-cam">{droneCam}</div>
         <div className="pov__keys" role="toolbar" aria-label="First-person controls">
           <div className="pov__keys-row">
-            <button type="button" className="pov__key" onClick={onScan} disabled={!canScan} title={canScan ? `${ORBITAL_PREVIEW_LIMIT} (R)` : 'No drone in this run'}>
-              <kbd>R</kbd> {ORBITAL_PREVIEW_LABEL}
-            </button>
+            <TerrainScanButton />
             <button type="button" className="pov__key" aria-pressed={droneCamOn} onClick={onDroneCam} disabled={!canDroneCam} title={canDroneCam ? 'Drone camera window (C)' : 'No drone camera here'}>
               <kbd>C</kbd> Drone cam
             </button>
@@ -217,27 +174,14 @@ export function FirstPersonHud({ agent, terrainMeta, sourceLabel, pois, scan, ca
             <span>Double-click · recentre</span>
           </div>
         </div>
-        <div className="pov__dock-scan">
-          {scan && (
-            <div className="pov__legend" aria-live="polite">
-              <span className="pov__kicker">
-                Orbital preview at {scan.fromId} · r {SCAN_RADIUS_M} m
-              </span>
-              {(Object.keys(SCAN_CLASS_INFO) as ScanClass[]).map((c) => (
-                <span key={c} className="pov__legend-row">
-                  <i style={{ background: SCAN_CLASS_INFO[c].color }} aria-hidden />
-                  {SCAN_CLASS_INFO[c].label}
-                  <b>{scan.counts[c]}</b>
-                </span>
-              ))}
-              <p className="pov__note">{orbitalSlopeNote(terrainMeta)}</p>
-            </div>
-          )}
-        </div>
+        {/* Right column kept empty so the keys stay centred. */}
+        <div className="pov__dock-scan" />
       </div>
 
       {/* Power-on sequence: the screen opens like a display switching on, then a short boot log. */}
-      <div className="pov__power" aria-hidden />
+      <div className="pov__power" aria-hidden>
+        <i />
+      </div>
       <div className="pov__boot" aria-hidden>
         <span>MGE · HUD</span>
         <span>Power ··· ok</span>

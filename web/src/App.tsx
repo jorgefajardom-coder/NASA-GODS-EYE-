@@ -19,6 +19,8 @@ import { MissionScene } from './components/MissionScene';
 import { FlatMap } from './components/FlatMap';
 import { DroneCamFrame } from './components/DroneCam';
 import { resourceAlert } from './lib/resourceAlert';
+import { SCAN_CONFIG } from './scanner/ScanConfig';
+import { triggerScan } from './scanner/ScanController';
 import { SceneBoundary } from './components/SceneBoundary';
 import { detectRenderTier } from './lib/gpu';
 import { ManagementList } from './components/ManagementList';
@@ -35,9 +37,6 @@ import { Minimap } from './components/Minimap';
 import { Timeline } from './components/Timeline';
 import { CameraBar } from './components/CameraBar';
 import { FirstPersonHud } from './components/FirstPersonHud';
-import type { ScanRequest } from './components/DroneScan';
-import { scanCells, scanSummary, type ScanClass } from './lib/scan';
-import { slopeDegrees } from './lib/slope';
 import { displayState } from './lib/provenance';
 import { aboutData, stateSnapshot } from './lib/stateSnapshot';
 import { Intro, introWanted } from './components/Intro';
@@ -136,9 +135,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       /* per-viewer convenience only */
     }
   }, []);
-  // Drone-camera scan (display only): orbital slope bands around the drone, see lib/scan.
-  const slope = useMemo(() => slopeDegrees(bundle.rasters.prior, m.terrain_meta.rows, m.terrain_meta.cols, m.terrain_meta.resolution_m), [bundle, m.terrain_meta]);
-  const [scan, setScan] = useState<(ScanRequest & { counts: Record<ScanClass, number>; fromId: string }) | null>(null);
   // Grab-to-drag is the default for the free camera: left drag slides the map, right drag orbits.
   const [freePan, setFreePan] = useState(true);
   // The follow view plays at 1x so the walk is drawn at its natural pace (legs synced to the
@@ -222,12 +218,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const showDroneCam = droneCam && canDroneCam;
   const povAgent = pov ? view.state?.agents.find((a) => a.agent_id === camView) ?? null : null;
   const povAlert = povAgent ? resourceAlert(resourceLines(bundle, t, povAgent, view.activeRoute, budgets[povAgent.agent_id]), budgets[povAgent.agent_id], view.activeRoute, povAgent.agent_id, povAgent.pose.position) : null;
-  const runScan = useCallback(() => {
-    if (!drone) return;
-    const { x, y } = drone.pose.position;
-    const marks = scanCells(m.terrain_meta, slope, x, y);
-    setScan((prev) => ({ seq: (prev?.seq ?? 0) + 1, x, y, marks, counts: scanSummary(marks), fromId: drone.agent_id }));
-  }, [drone, m.terrain_meta, slope]);
   // While following, picking another agent in the list moves the camera to it.
   useEffect(() => {
     if (follow && sel.kind === 'agent' && sel.id && sel.id !== camView) setCamView(sel.id);
@@ -272,6 +262,12 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement | null)?.tagName;
       if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+      // First person: the scan key (Q by default) triggers the terrain scan, once per press (no auto-repeat).
+      if (pov && e.code === SCAN_CONFIG.key) {
+        e.preventDefault();
+        if (!e.repeat) triggerScan();
+        return;
+      }
       if (e.code === 'Space' && tag !== 'BUTTON') {
         e.preventDefault();
         playPause();
@@ -282,7 +278,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'KeyG') setFreePan((g) => !g);
       else if (e.code === 'KeyV') setFirstPerson((v) => !v);
       else if (e.code === 'KeyB' && pov) setPovSway(!povSway);
-      else if (e.code === 'KeyR') runScan();
       else if (e.code === 'KeyC') setDroneCam((c) => !c);
       else if (e.code === 'KeyL') setHelmetLight((v) => !v);
       else if (e.code === 'KeyI') setArtificialLight((v) => !v);
@@ -291,7 +286,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [playPause, seek, restart, t, follow, setFollow, runScan, pov, povSway, setPovSway]);
+  }, [playPause, seek, restart, t, follow, setFollow, pov, povSway, setPovSway]);
 
   // Machine-readable view of the replay for language models and test agents: window.mge.state()
   // returns what is on screen as JSON (see public/llms.txt). Read-only; it changes nothing.
@@ -372,7 +367,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         geology={mode === 'geology' && showGeoMap && bundle.geology ? { data: bundle.geology, selected: geoUnit } : null}
         cutaway={mode === 'geology' && showCut && bundle.geology ? bundle.geology : null}
         firstPerson={firstPerson}
-        scan={scan}
         povSway={povSway}
         lite={RENDER_TIER === 'lite'}
         droneCam={showDroneCam}
@@ -385,12 +379,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       {pov && agent && (
         <FirstPersonHud
           agent={view.state?.agents.find((a) => a.agent_id === camView) ?? agent}
-          terrainMeta={m.terrain_meta}
           sourceLabel={displayState({ mode: 'REPLAY', source: m.source_mode ?? 'UNKNOWN' }).label}
           pois={m.pois.filter((p) => p.revealed_at_s <= t)}
-          scan={scan}
-          canScan={!!drone}
-          onScan={runScan}
           onExit={() => setFirstPerson(false)}
           route={view.activeRoute}
           dial={radialHud}
@@ -432,8 +422,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             onAgent={followAgent}
             firstPerson={firstPerson}
             onFirstPerson={setFirstPerson}
-            canScan={!!drone}
-            onScan={runScan}
             helmetLight={helmetLight}
             canHelmetLight={!!view.state?.agents.some((a) => a.agent_kind === 'HUMAN')}
             onHelmetLight={() => setHelmetLight((v) => !v)}

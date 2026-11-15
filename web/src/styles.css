@@ -1967,34 +1967,6 @@ input[type='checkbox'] {
   height: 26px;
   border-left: 1px solid var(--blue);
 }
-.pov__id {
-  position: absolute;
-  top: 34px;
-  left: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.pov__id strong {
-  font-family: var(--f-title);
-  font-size: 26px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  line-height: 1;
-}
-.pov__mode,
-.pov__state {
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.pov__mode {
-  color: var(--amber);
-}
-.pov__state {
-  color: var(--gray);
-}
 .pov__reticle {
   position: absolute;
   left: 50%;
@@ -2085,17 +2057,12 @@ input[type='checkbox'] {
   white-space: nowrap;
 }
 @media (max-width: 900px) {
-  .pov__id {
-    top: 108px;
-    left: 24px;
-  }
   .pov__hints span {
     display: none;
   }
 }
 
-/* First person: route guide (top left, under the agent id) and the heading-up minimap (top right). */
-.pov__nav {
+/* First person: route guide (top left {
   position: absolute;
   top: 128px;
   left: 40px;
@@ -2105,39 +2072,6 @@ input[type='checkbox'] {
   gap: 3px;
   padding: 8px 0 0 10px;
   border-left: 1px solid var(--line);
-}
-.pov__nav-next {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-.pov__nav-next b {
-  font-family: var(--f-mono);
-  font-weight: 500;
-  font-size: 12px;
-  color: var(--gray);
-}
-.pov__nav-next strong {
-  font-family: var(--f-title);
-  font-size: 28px;
-  font-weight: 600;
-  line-height: 1;
-}
-.pov__nav-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--gray);
-}
-.pov__nav-row b {
-  font-family: var(--f-mono);
-  font-weight: 400;
-  font-size: 12px;
-  color: var(--titanium);
-}
-.pov__nav-row--warn {
-  color: var(--amber);
 }
 .pov__key[aria-pressed='false'] {
   color: var(--gray);
@@ -2159,11 +2093,6 @@ input[type='checkbox'] {
   font-size: 12px;
 }
 @media (max-width: 900px) {
-  .pov__nav {
-    top: 190px;
-    left: 24px;
-    width: min(240px, calc(50% - 32px));
-  }
 }
 
 /* ---------------------------------------------------------------- startup entrance
@@ -2342,12 +2271,6 @@ input[type='checkbox'] {
 .pov__compass {
   animation: pov-from-top 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s both;
 }
-.pov__id {
-  animation: pov-from-left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.28s both;
-}
-.pov__nav {
-  animation: pov-from-left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.38s both;
-}
 .pov__reticle {
   animation: pov-lock 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s both;
 }
@@ -2442,8 +2365,6 @@ input[type='checkbox'] {
   .pov::after,
   .pov__frame,
   .pov__compass,
-  .pov__id,
-  .pov__nav,
   .pov__reticle,
   .pov__reticle span,
   .pov__legend,
@@ -2566,20 +2487,36 @@ input[type='checkbox'] {
   inset: 0;
   pointer-events: none;
   z-index: 6;
-  background: rgba(3, 8, 12, 0.92);
-  animation: pov-power 0.8s cubic-bezier(0.6, 0, 0.2, 1) both;
 }
+/* Two black halves cover the view, then part from the centre line. */
+.pov__power::before,
 .pov__power::after {
   content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: #000;
+}
+.pov__power::before {
+  top: 0;
+  animation: pov-shutter-up 1.95s cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+.pov__power::after {
+  bottom: 0;
+  animation: pov-shutter-down 1.95s cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+.pov__power i {
   position: absolute;
   left: 0;
   right: 0;
   top: 50%;
   height: 2px;
   translate: 0 -50%;
+  z-index: 1;
   background: #d8f3ff;
   box-shadow: 0 0 24px 6px rgba(159, 227, 255, 0.7);
-  animation: pov-power-line 0.8s cubic-bezier(0.6, 0, 0.2, 1) both;
+  animation: pov-power-line 1.95s cubic-bezier(0.6, 0, 0.2, 1) both;
 }
 .pov__boot {
   position: absolute;
@@ -2595,28 +2532,29 @@ input[type='checkbox'] {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #9fe3ff;
-  animation: pov-boot-out 0.3s ease-in 1.55s both;
+  animation: pov-boot-out 0.2s ease-in 1.35s both;
 }
 .pov__boot span {
   opacity: 0;
   animation: pov-type 0.12s steps(2) both;
 }
-.pov__boot span:nth-child(1) { animation-delay: 0.45s; color: #e8f4ff; }
-.pov__boot span:nth-child(2) { animation-delay: 0.65s; }
-.pov__boot span:nth-child(3) { animation-delay: 0.85s; }
-.pov__boot span:nth-child(4) { animation-delay: 1.05s; }
-.pov__boot span:nth-child(5) { animation-delay: 1.25s; color: #e8f4ff; }
-@keyframes pov-power {
-  0% { clip-path: inset(50% 0 50% 0); background: rgba(216, 243, 255, 0.9); }
-  35% { clip-path: inset(49.6% 0 49.6% 0); background: rgba(216, 243, 255, 0.9); }
-  70% { clip-path: inset(0 0 0 0); background: rgba(159, 227, 255, 0.25); }
-  100% { clip-path: inset(0 0 0 0); background: rgba(3, 8, 12, 0); }
+.pov__boot span:nth-child(1) { animation-delay: 0.3s; color: #e8f4ff; }
+.pov__boot span:nth-child(2) { animation-delay: 0.5s; }
+.pov__boot span:nth-child(3) { animation-delay: 0.7s; }
+.pov__boot span:nth-child(4) { animation-delay: 0.9s; }
+.pov__boot span:nth-child(5) { animation-delay: 1.05s; color: #e8f4ff; }
+@keyframes pov-shutter-up {
+  0%, 72% { translate: 0 0; }
+  100% { translate: 0 -100%; }
+}
+@keyframes pov-shutter-down {
+  0%, 72% { translate: 0 0; }
+  100% { translate: 0 100%; }
 }
 @keyframes pov-power-line {
-  0% { scale: 0 1; opacity: 1; }
-  35% { scale: 1 1; opacity: 1; }
-  70% { scale: 1 1; opacity: 0; }
-  100% { opacity: 0; }
+  0%, 62% { scale: 0 1; opacity: 0; }
+  72% { scale: 1 1; opacity: 1; }
+  100% { scale: 1 1; opacity: 0; }
 }
 @keyframes pov-type {
   from { opacity: 0; }
@@ -2626,15 +2564,13 @@ input[type='checkbox'] {
   to { opacity: 0; visibility: hidden; }
 }
 /* Instruments come up after the power-on. */
-.pov__frame { animation-delay: 0.7s; }
-.pov__compass { animation-delay: 1.55s; }
-.pov__id { animation-delay: 1.6s; }
-.pov__nav { animation-delay: 1.7s; }
-.pov__dial { animation-delay: 1.65s; }
-.pov__reticle { animation-delay: 1.85s; }
-.pov__dock { animation: pov-from-below 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 1.75s both; }
-.pov__heading span { animation-delay: 1.75s; }
-.pov::before { animation-delay: 0.55s; }
+.pov__frame { animation-delay: 1.9s; }
+.pov__compass { animation-delay: 2s; }
+.pov__dial { animation-delay: 2.1s; }
+.pov__reticle { animation-delay: 2.25s; }
+.pov__dock { animation: pov-from-below 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 2.15s both; }
+.pov__heading span { animation-delay: 2.1s; }
+.pov::before { animation-delay: 1.95s; }
 
 /* Smaller agent dial in first person. */
 .pov__dial {
@@ -2667,6 +2603,10 @@ input[type='checkbox'] {
 .pov__dock-scan {
   justify-self: end;
   width: min(280px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
 }
 .pov__keys {
   display: flex;
@@ -2771,7 +2711,7 @@ input[type='checkbox'] {
     bottom: 104px;
     grid-template-columns: minmax(0, 1fr) auto;
   }
-  .pov__dock-scan {
+  .pov__dock-scan .pov__legend {
     display: none;
   }
 }

@@ -16,9 +16,10 @@ import { FirstPersonCamera } from './FirstPersonCamera';
 import { DroneCamRenderer } from './DroneCam';
 import { SkyDome } from './SkyDome';
 import { HelmetLight } from './HelmetLight';
+import { TerrainScanner } from './TerrainScanner';
+import { slopeDegrees } from '../lib/slope';
 import { JEZERO_LON_E_DEG } from '../lib/marsClock';
 import { PovRoute } from './PovRoute';
-import { DroneScan, type ScanRequest } from './DroneScan';
 import { SUN_FROM } from '../lib/sun';
 import { terrainFraming } from '../lib/terrainPresentation';
 import { enuToThree } from '../lib/coords';
@@ -67,8 +68,6 @@ interface Props {
   cutaway: GeologyData | null;
   /** First-person view from the followed agent (ignored when no agent is followed). */
   firstPerson: boolean;
-  /** Last drone-camera scan to draw (display only), or null. */
-  scan: ScanRequest | null;
   /** Walking/driving sway of the first-person camera (display only). */
   povSway: boolean;
   /** Low-power rendering (software rasteriser or slow GPU): pixel ratio 1, no antialiasing, surface detail or surroundings. */
@@ -84,7 +83,7 @@ interface Props {
 /** Horizon haze colour: dusty Martian daytime sky, darkened so the panels stay readable. */
 const SKY = '#6e5242';
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, scan, povSway, lite = false, droneCam = false, helmetLight = false, artificialLight = false }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, povSway, lite = false, droneCam = false, helmetLight = false, artificialLight = false }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const sunLight = useRef<THREE.DirectionalLight>(null);
   const hemiLight = useRef<THREE.HemisphereLight>(null);
@@ -93,6 +92,8 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const grid = heightGrid(bundle.rasters, layer, mapVersion);
   // Same interpolation as the mesh, so agents stand on the surface that is drawn.
   const groundHeight = useCallback((x: number, y: number) => smoothHeightAt(meta, grid, x, y), [meta, grid]);
+  // Orbital slope of the run (prior, Horn 3x3), for the terrain scan classes.
+  const priorSlope = useMemo(() => slopeDegrees(bundle.rasters.prior, meta.rows, meta.cols, meta.resolution_m), [bundle.rasters.prior, meta]);
   const followed = view.state?.agents.some((a) => a.agent_id === followAgentId) ? followAgentId : null;
   const smoothing = CAMERA_SMOOTHING[cameraSmoothing];
   const followedKind = view.state?.agents.find((a) => a.agent_id === followed)?.agent_kind ?? null;
@@ -202,7 +203,6 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         hideLabelFor={pov ? followed : null}
       />
       )}
-      {grown && <DroneScan scan={scan} droneName={drone ? `agent-${drone.agent_id}` : null} groundHeight={groundHeight} verticalExaggeration={exaggeration} />}
       {baseAnchor && <group name={BASE_ANCHOR} position={baseAnchor} />}
       <FollowCamera target={cameraTarget} framing={followed ? undefined : BASE_FRAMING} />
       {/* Mounted after the follow camera: same frame priority, so it places the eye after the follow update. */}
@@ -210,6 +210,22 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       {(() => {
         const human = view.state?.agents.find((a) => a.agent_kind === 'HUMAN');
         return <HelmetLight agentName={grown && human ? `agent-${human.agent_id}` : null} on={helmetLight} />;
+      })()}
+      {(() => {
+        const human = view.state?.agents.find((a) => a.agent_kind === 'HUMAN');
+        const ok = grown && pov && followedKind === 'HUMAN' && !!human;
+        const reason = !human ? 'No astronaut in this run' : !pov || followedKind !== 'HUMAN' ? 'Follow the astronaut in first person to scan' : 'Terrain is still loading';
+        return (
+          <TerrainScanner
+            agentName={human ? `agent-${human.agent_id}` : null}
+            enabled={ok}
+            disabledReason={reason}
+            meta={meta}
+            slope={priorSlope}
+            groundHeight={groundHeight}
+            verticalExaggeration={exaggeration}
+          />
+        );
       })()}
       {/* Renders the frame (main view, then the drone window over it); always mounted. */}
       <DroneCamRenderer droneName={grown && droneCam && drone ? `agent-${drone.agent_id}` : null} />
