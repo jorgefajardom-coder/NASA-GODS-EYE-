@@ -55,7 +55,7 @@ import { rotateView, ROTATE_STEP_RAD } from './components/ViewRotator';
 import { LayerStrip, ViewOptions } from './components/LayerPanel';
 import { AlertBanner, ModeTabs, StatusBlock, TitleBlock, type UiMode } from './components/Frame';
 
-/** Time each photo of a stop is "taken" on the tour (ms): the camera turns, the shutter flashes, the photo lights up. */
+/** Time each photo of a stop is "taken" on the tour (ms): the rover's camera turns to it and the photo lights up. */
 const SHOT_MS = 1500;
 
 const params = new URLSearchParams(window.location.search);
@@ -268,14 +268,15 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   }, [tourOn, follow]);
   const marsNowNode = marsNow ? <MarsNowFrame stop={povStop} mission={bundle.roverStops?.mission} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: () => { setTourOn(false); setPlaying(false); } } : null} /> : null;
   // At each stop the replay holds while the images load, then the rover "takes" them one after another:
-  // the camera turns to where each photo was taken, the shutter flashes and the photo lights up in the
-  // window. Then the rover goes on.
+  // the view switches to the rover's own camera, which turns to where each photo was taken while the photo
+  // lights up in the window. Then the view goes back behind the rover and it drives on.
   const rawNow = useRawImages();
   const imagesReady = rawNow.status === 'ready' ? rawNow.preloaded && rawNow.forStop === povStopId : rawNow.status === 'error';
   const imagesRef = useRef<{ images: RawImage[]; stop: RoverStop | null }>({ images: [], stop: null });
   imagesRef.current = { images: rawNow.status === 'ready' ? rawNow.images : [], stop: povStop };
   const doneStop = useRef<string | null>(null);
-  const [flash, setFlash] = useState(0);
+  const firstPersonNow = useRef(false);
+  firstPersonNow.current = firstPerson;
   useEffect(() => {
     if (!tourOn || !marsNow || !povStopId) {
       doneStop.current = null; // left the stop: the next arrival shoots again
@@ -290,23 +291,32 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     const mission = bundle.roverStops?.mission?.name ?? 'Perseverance';
     let n = 0;
     let timer = 0;
+    // The photos are seen from the rover's camera; the view returns behind the rover when they are done.
+    const switched = !firstPersonNow.current && images.length > 0;
+    if (switched) setFirstPerson(true);
+    const back = () => {
+      if (switched) setFirstPerson(false);
+    };
     const shoot = () => {
       if (n >= images.length) {
         doneStop.current = povStopId;
+        back();
         setPlaying(true);
         return;
       }
       rawImages.select(n);
       const dir = photoDirection(images[n], stop?.yaw_deg, mission);
       if (dir) requestAim(dir);
-      setFlash((f) => f + 1);
       playShutter();
       n += 1;
       timer = window.setTimeout(shoot, SHOT_MS);
     };
     setPlaying(false);
-    timer = window.setTimeout(shoot, 450); // a beat for the camera to settle on the stop
-    return () => window.clearTimeout(timer);
+    timer = window.setTimeout(shoot, 650); // a beat for the rover's camera to settle on the stop
+    return () => {
+      window.clearTimeout(timer);
+      if (doneStop.current !== povStopId) back();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tourOn, marsNow, povStopId, imagesReady]);
   useEffect(() => {
@@ -481,7 +491,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       </SceneBoundary>
       )}
       <div className="vignette" aria-hidden />
-      {flash > 0 && <div key={flash} className="shutter" aria-hidden />}
       {tourOn && !hud && marsNowNode && <div className="marsnow-float">{marsNowNode}</div>}
       {hud && agent && (
         <FirstPersonHud

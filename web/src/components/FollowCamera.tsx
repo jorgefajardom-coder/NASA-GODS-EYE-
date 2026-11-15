@@ -29,7 +29,7 @@ const FOLLOW_MIN_DISTANCE_M = 0.3;
 const FREE_MIN_DISTANCE_M = 0.35; // same as MIN_ORBIT_DISTANCE_M in MissionScene
 
 /** Photo tour: further back and higher, so more of the rover and of its surroundings is seen. */
-export const TOUR_FRAMING: Framing = { distanceM: 12, heightM: 4.6, lookAtM: 1.1 };
+export const TOUR_FRAMING: Framing = { distanceM: 18, heightM: 7, lookAtM: 1.0 };
 
 /** Over-the-shoulder view of an agent. */
 export const AGENT_FRAMING: Framing = { distanceM: 6, heightM: 2.6, lookAtM: 1.25 };
