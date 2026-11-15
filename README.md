@@ -179,10 +179,10 @@ flowchart LR
 
 ### Interface
 
-- Intro screen: skippable AI-generated video with a burned-in `AI-generated`
-  watermark (`?nointro=1` or reduced motion skips it). The interface then enters: the panels
+- Intro screen: skippable AI-generated video with one burned-in `AI-GENERATED · KLING`
+  mark (`?nointro=1` or reduced motion skips it). The interface then enters: the panels
   slide in, the timeline rises and the agent dial spins into place.
-- Terrain formation: the layer appears flat and its relief rises to the true shape in 5 s,
+- Terrain formation: the layer appears flat and its relief rises to the true shape in 2.5 s,
   valleys first and ridges last, with rising ground lit. Switching layers or a new map version
   morphs the heights in 1.8 s instead of jumping. Display only.
 - Modes: Exploration, Ground layers, Atmos and Mission replay.
@@ -253,8 +253,9 @@ illustrative, synthetic or AI-generated.
 | Astronaut model | Sketchfab, LasquetiSpice, CC BY 4.0 | Third-party asset |
 | Astronaut portrait (details panel) | Generated with ChatGPT (OpenAI), `web/public/assets/portraits/human_1.webp` | **AI-generated** image, visible `AI-generated` watermark |
 | Surface base | `base-marciana-v2`, generated with OpenAI Codex, prepared by `web/scripts/blender/prepare_base.py` | **AI-generated** 3D model |
-| Intro screen | Generated with Kling, `web/public/assets/intro/mars-gods-eye-intro.webm` | **AI-generated** video, `AI-generated` watermark burned into every frame; audio track declared, played muted |
-| Team logo (README, about page, link preview) | Generated with ChatGPT (OpenAI) and edited by the team, `web/public/assets/brand/mars-gods-eye-logo.webp` and `og-image.png` | **AI-generated** image, visible `AI-generated` watermark in every version |
+| Intro screen | Generated with Kling, `web/public/assets/intro/mars-gods-eye-intro.webm` | **AI-generated** video, one `AI-GENERATED · KLING` mark burned into every frame; audio track declared, played muted |
+| Team logo (README, about page) | Generated with ChatGPT (OpenAI) and edited by the team, `web/public/assets/brand/mars-gods-eye-logo.webp` | **AI-generated** image, visible `AI-generated` watermark in every version |
+| Link preview | NASA/JPL/USGS Viking global color mosaic ([PIA00407](https://science.nasa.gov/photojournal/global-color-views-of-mars/)), centred on black without text, `web/public/assets/brand/og-image.png` | Real NASA image, not AI-generated; no NASA logos or mission marks |
 | Browser tab icon | Illustration of Mars made by the team, `web/public/favicon.ico` and PNG sizes (32, 48, 180, 512 px) | Team-made image, not AI-generated; background removed and resized |
 | Evaluator reference | MRO/HiRISE DTM ([DOI 10.5066/P9REJ9JN](https://doi.org/10.5066/P9REJ9JN)) | Real; isolated, never in the public build |
 

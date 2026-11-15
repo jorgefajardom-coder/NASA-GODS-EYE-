@@ -261,8 +261,10 @@ size and in any capture. It is an illustration, not a photograph of a crew membe
 data, and contains no NASA logos, flags or mission marks. One AI-generated video is included: `web/public/assets/intro/mars-gods-eye-intro.webm`,
 the skippable intro screen (5 s, project emblem, no NASA marks). It was generated with Kling
 and supplied by the owner (the file's AIGC metadata names Kling as content producer) and is
-used as supplied except for a visible `AI-generated` label burned into every frame (ffmpeg),
-so the mark stays in downloads and captures; the viewer also shows the mark over the clip.
+used as supplied except for one discreet `AI-GENERATED · KLING` mark burned into the
+bottom-right corner of every frame (ffmpeg overlay of a Pillow-rendered label, VP9
+re-encode), so the mark stays in downloads and captures; it is the only mark, and the
+viewer adds no second label over the clip.
 Its audio track is treated as AI-generated and declared here and in the file metadata; the
 viewer plays the clip muted. Machine-readable metadata:
 [ai_usage.json](ai_usage.json), the `aiDisclosure` field in `web/package.json` and
@@ -685,7 +687,12 @@ layers and map versions, the first-person camera and its HUD (route guide,
 minimap, optional sway), the interface entrance animation, the plain-text
 descriptions of the viewer for language models (llms.txt, about page, page
 metadata, window.mge.state()), the drone
-camera scan, their tests, and the workflow that publishes the public viewer to
+camera scan, the rendering fallback for browsers without a usable GPU (a lite
+3D tier and a 2D map without WebGL), the drone camera window, the first-person
+power-on, dock and resource alert, the astronaut helmet lights, the sky (Sun
+from Mars24, stars from the Yale Bright Star Catalogue with the IAU rotation
+model of Mars, key light following the Sun) and the star-extraction script,
+their tests, and the workflow that publishes the public viewer to
 GitHub Pages. The scan only redraws the slope already computed from the orbital
 CTX DTM prior around the drone in display bands; it is not an observation, it
 does not change the map version, and its bands are display thresholds pending
@@ -697,8 +704,10 @@ The affected paths are listed in ai_usage.json.
 The team logo (`web/public/assets/brand/mars-gods-eye-logo.webp`) was generated
 with ChatGPT (OpenAI) and edited by the team. A band with a visible
 `AI-generated logo (ChatGPT, edited)` label is burned into the image, and it
-stays visible in the README, the about page and the link preview
-(`og-image.png`, composed with Pillow). The browser tab icon
+stays visible in the README and the about page. The link preview
+(`og-image.png`) is the NASA/JPL/USGS Viking global color mosaic of Mars (PIA00407),
+centred on black with Pillow (no text); it is not AI-generated (credits in
+THIRD_PARTY_NOTICES.md). The browser tab icon
 (`web/public/favicon.ico` and its PNG sizes) is an illustration of Mars made by
 the team, not with AI; only its black background was removed and it was resized.
 An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
