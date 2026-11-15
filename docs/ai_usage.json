@@ -1596,6 +1596,44 @@
         "docs/ai_usage.json"
       ],
       "use": "Remove an unsupported RAD dose-equivalent to NASA effective-career-dose percentage, distinguish unavailable CO2 rates, correct Guo 2017 references without changing numerical data, and separate illustrative scenes, recorded MOCK recovery, analytical pilots and pending physical/three-role acceptance. No new observational data, profiles or scientific approval."
+    },
+    {
+      "tool": "Google Antigravity",
+      "kind": "optional_auxiliary_terrain_layers_and_http_range_optimization",
+      "generation": "AI-assisted ingestion script, optional ROS/RViz auxiliary layer loader/publisher and contract tests requested by the repository owner",
+      "paths": [
+        "scripts/prepare_jezero_terrain.py",
+        "scripts/prepare_jezero_aux_layers.py",
+        "src/mge_data/mge_data/core.py",
+        "src/mge_data/mge_data/node.py",
+        "tests/contracts/test_data_manifest.py",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Optimize bounded HTTP 206 range reads in prepare_jezero_terrain.py with keep-alive, shared block cache and coalesced prefetch; add standalone prepare_jezero_aux_layers.py and optional non-breaking loader/RViz publisher in mge_data for cell-aligned MRO/CTX 6 m/px orthomosaic reflectance, USGS SIM 3464 geologic units and orbital surface-facies/slope zones alongside height without modifying terrain.npz or manifest.json. Raster and vector outputs in data/sample/ are deterministic crops of official NASA/USGS products, not AI-generated data or imagery."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "pr38_auxiliary_context_reconciliation",
+      "generation": "AI-assisted producer/consumer guards, bounded HTTP code, labelled synthetic regression inputs and documentation",
+      "paths": [
+        "data/sample/aux_layers_manifest.json",
+        "docs/AI_USAGE.md",
+        "docs/AUXILIARY_LAYERS.md",
+        "docs/ICD.md",
+        "docs/ai_usage.json",
+        "docs/pr38_data_review.md",
+        "scripts/prepare_jezero_aux_layers.py",
+        "scripts/prepare_jezero_terrain.py",
+        "src/mge_data/mge_data/core.py",
+        "src/mge_data/mge_data/node.py",
+        "src/mge_data/package.xml",
+        "tests/contracts/test_auxiliary_layers.py",
+        "tests/contracts/test_http_range_reader.py",
+        "tests/integration/test_auxiliary_layers.py",
+        "evidence/pr38-data-reconciliation-20261115"
+      ],
+      "use": "Require an actual canonical DEM before auxiliary generation, bind optional visual layers to dataset/full geometry/axes/prior checksum, constrain paths and validate hashes and array/PNG contents, bound HTTP Range reads before body consumption, and classify DN/slope categories as unapproved visual proxies. Existing acquired NPZ/PNG/geology bytes and scientific parameters are unchanged. No new observations, NASA data, traversability approval or LIVE mission."
     }
   ],
   "generated_media": [

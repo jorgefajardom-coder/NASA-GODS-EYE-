@@ -591,3 +591,13 @@ retains profile approval, MODEL_NOT_AGREED/MODEL_MISMATCH, current run/map/pose,
 return reserve, idempotency and logical stop checks. The mock provider remains
 available for explicitly labelled contract tests. See
 [configuration and consumer proof](mission_integration_handoff.md).
+
+
+## Optional auxiliary visual-context topics (PR38 candidate)
+
+See [auxiliary schema1.0.0](AUXILIARY_LAYERS.md) for the optional immutable CTX
+DN and categorical display layers from data_node. Their OccupancyGrid values
+are color codes, never canonical traversability or navigation authorization.
+They remain separate from the stamped belief batch and require the sidecar
+prior-hash/full-georeference binding. No canonical message/service field or
+raster/replay version changes; scientific and consumer review remain pending.

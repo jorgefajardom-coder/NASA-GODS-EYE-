@@ -813,6 +813,21 @@ the team, not with AI; only its black background was removed and it was resized.
 An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
 images uses NASA logos, flags or mission marks or is presented as NASA data.
 
+## Optional auxiliary NASA/USGS terrain layers and HTTP range optimization
+
+Google Antigravity assisted the data and mapping owner with bounded HTTP 206
+keep-alive/block-cache optimizations in `scripts/prepare_jezero_terrain.py` and
+with a standalone auxiliary layer pipeline (`scripts/prepare_jezero_aux_layers.py`,
+`src/mge_data/mge_data/core.py`, `src/mge_data/mge_data/node.py`, and
+`tests/contracts/test_data_manifest.py`). The pipeline keeps `data/sample/terrain.npz`
+and `data/sample/manifest.json` unchanged by default while producing separate,
+cell-aligned auxiliary files (`jezero_aux_layers.npz`, `ctx_ortho.png`,
+`geology.json`, `aux_layers_manifest.json`) derived via GDAL/rasterio and ArcGIS
+REST from the official USGS Mars 2020 TRN MRO/CTX 6 m/px controlled orthomosaic
+and USGS SIM 3464 geologic map. `data/sample/ctx_ortho.png` is a deterministic
+north-up grayscale crop of the observational MRO/CTX orthomosaic, not an
+AI-generated image.
+
 ## Proposal publication after reconciliation
 
 OpenAI Codex assisted publication of the local scientific patch/campaign proposal,
@@ -894,3 +909,7 @@ context; no dose value was generated.
 ## PR37 scientific presentation corrections — 15 November 2026
 
 OpenAI Codex assisted the HUD/context code, source-year corrections, project-page draft and regression tests listed in `ai_usage.json` under `pr37_scientific_presentation_corrections`. RAD dose equivalent is not converted into NASA effective dose or a career-limit percentage. An unavailable CO2 rate remains unavailable. No new measured data, numerical radiation inputs, scientific profile or approval was generated. Owner scientific review remains pending.
+
+## PR38 auxiliary-context reconciliation — 15 November 2026
+
+OpenAI Codex assisted strict DEM/metadata/hash/path and public-array validation, bounded HTTP Range handling, synthetic regression fixtures, a ROS consumer test, and the auxiliary visual-context contract. The complete file scope is registered in `ai_usage.json` under `pr38_auxiliary_context_reconciliation`. Acquired imagery/geology/NPZ bytes were preserved; interpreted DN/slope categories are estimated visual proxies without navigation authorization. No new scientific parameter, measured observation or approval was generated.
