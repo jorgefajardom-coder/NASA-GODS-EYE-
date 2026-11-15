@@ -34,6 +34,8 @@ const DT = 2;
 const crop = JSON.parse(readFileSync(join(HERE, 'data', 'ctx_crop.json'), 'utf8'));
 const { rows: ROWS, cols: COLS, resolution_m: RES, origin_x_m: OX, origin_y_m: OY, local_z_offset_m: ZOFF } = crop.crop;
 const N = ROWS * COLS;
+// Cells per 20 m: index-based tuning below was written for 20 m cells; it scales with the cell size.
+const K = Math.max(1, Math.round(20 / RES));
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const r1d = (v) => Math.round(v * 10) / 10;
 const r2d = (v) => Math.round(v * 100) / 100;
@@ -58,7 +60,10 @@ function heightAt(grid, x, y) {
   return s * (1 - tr) + n * tr;
 }
 
+const slopeCache = new WeakMap();
 function slopes(grid) {
+  const hit = slopeCache.get(grid);
+  if (hit) return hit;
   const s = new Float32Array(N);
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
@@ -69,6 +74,7 @@ function slopes(grid) {
       s[r * COLS + c] = (Math.atan(Math.hypot(dx, dy)) * 180) / Math.PI;
     }
   }
+  slopeCache.set(grid, s);
   return s;
 }
 
@@ -198,7 +204,7 @@ function search(grid, sigma, limitDeg, from, to) {
 function nearestFree(grid, limitDeg, x, y) {
   const sl = slopes(grid);
   const o = cellOf(x, y);
-  for (let rad = 0; rad < 12; rad++) {
+  for (let rad = 0; rad < 12 * K; rad++) {
     for (let dr = -rad; dr <= rad; dr++) {
       for (let dc = -rad; dc <= rad; dc++) {
         const r = o.r + dr;
@@ -235,17 +241,50 @@ function candidates(r0, r1, c0, c1, lim) {
   for (let r = r0; r < r1; r++) for (let c = c0; c < c1; c++) if (free(r, c, lim)) out.push({ r, c, s: slPrior[r * COLS + c] });
   return out.sort((a, b) => a.s - b.s).slice(0, 6).map((k) => center(k.r, k.c));
 }
+// Real Perseverance stops inside the crop (scripts/extract-rover-waypoints.mjs). Base A and goal B sit
+// on two of them, so the astronaut stands on real stops, each with real mission images, at both ends.
+const stopsFile = JSON.parse(readFileSync(join(HERE, 'data', 'rover_waypoints.json'), 'utf8'));
+const stopsAt = (lim) => stopsFile.stops.map((st) => ({ st, p: nearestFreeAt(st.x_m, st.y_m, lim) })).filter((k) => k.p);
+function nearestFreeAt(x, y, lim) {
+  try {
+    const q = nearestFree(prior, lim * 2, x, y);
+    return dist(q, { x, y }) <= 12 ? q : null;
+  } catch {
+    return null;
+  }
+}
 let A = null;
 let B = null;
 let r1Out = null;
-outer: for (const a of candidates(8, 40, 62, 94, 5)) {
-  for (const b of candidates(58, 92, 6, 38, 6)) {
-    const p = search(prior, sigma1, HUMAN.slope, a, b);
+let stopA = null;
+let stopB = null;
+const baseStops = stopsAt(5).filter((k) => slPrior[cellOf(k.p.x, k.p.y).r * COLS + cellOf(k.p.x, k.p.y).c] < 5);
+const goalStops = stopsAt(6).filter((k) => slPrior[cellOf(k.p.x, k.p.y).r * COLS + cellOf(k.p.x, k.p.y).c] < 6);
+outer: for (const a of baseStops) {
+  for (const b of goalStops) {
+    const straight = dist(a.p, b.p);
+    if (straight < 900 || straight > 1900) continue;
+    const p = search(prior, sigma1, HUMAN.slope, a.p, b.p);
     if (p && len(p) > 1300 && len(p) < 2300) {
-      A = a;
-      B = b;
+      A = a.p;
+      B = b.p;
+      stopA = a.st;
+      stopB = b.st;
       r1Out = p;
       break outer;
+    }
+  }
+}
+if (!r1Out) {
+  outer2: for (const a of candidates(8 * K, 40 * K, 62 * K, 94 * K, 5)) {
+    for (const b of candidates(58 * K, 92 * K, 6 * K, 38 * K, 6)) {
+      const p = search(prior, sigma1, HUMAN.slope, a, b);
+      if (p && len(p) > 1300 && len(p) < 2300) {
+        A = a;
+        B = b;
+        r1Out = p;
+        break outer2;
+      }
     }
   }
 }
@@ -349,7 +388,13 @@ const sideOf = (i) => {
 };
 function bestPoi(side) {
   let best = null;
-  const pool = observedFree.filter((i) => (side < 0 ? sideOf(i) < -40 : sideOf(i) > 40)).filter((i) => i % 3 === 0);
+  const pool = observedFree
+    .filter((i) => (side < 0 ? sideOf(i) < -40 : sideOf(i) > 40))
+    .filter((i) => {
+      const r = Math.floor(i / COLS);
+      const c = i % COLS;
+      return r % K === 0 && c % K === 0 && (r / K + c / K) % 3 === 0; // a third of the 20 m lattice
+    });
   for (const i of pool) {
     const p = center(Math.floor(i / COLS), i % COLS);
     const path = search(belief2, sigma2, ROVER.slope, ROVER_HOME, p);
@@ -621,7 +666,7 @@ for (let t = 0; t <= T_END; t += DT) {
 // ------------------------------------------------------------------ write
 const priorJson = JSON.stringify(prior);
 const cp = crop.crop;
-const cpCells = [[14, 20], [50, 50], [84, 78]];
+const cpCells = [[14, 20], [50, 50], [84, 78]].map(([r, c]) => [r * K, c * K]);
 const manifest = {
   schema_version: SCHEMA,
   icd: 'ICD-ROS2-V1 (draft)',
@@ -633,7 +678,7 @@ const manifest = {
   illustrative: true,
   title: 'Demo run: corridor survey and replanning',
   summary: 'The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.',
-  disclaimer: 'Terrain: NASA/USGS CTX DTM crop (real, provisional). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.',
+  disclaimer: 'Terrain: NASA/USGS CTX DTM crop at the Perseverance landing area (real, provisional, 4 m display grid from a 20 m source). Rover stop markers: real Perseverance stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.',
   ai_disclosure: {
     ai_assisted: true,
     scope: 'Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.',
@@ -657,6 +702,8 @@ const manifest = {
   },
   // Geologic units of the crop (scripts/extract-geology.mjs, USGS SIM 3464). Approximate boundaries.
   geology: { file: 'geology.json' },
+  // Real Perseverance stops inside the crop (scripts/extract-rover-waypoints.mjs); position and identifiers only.
+  rover_stops: { file: 'rover_stops.json' },
   // Weather and radiation context (scripts/extract-atmosphere.mjs: MEDA, REMS, RAD). Display only.
   atmosphere: { file: 'atmosphere.json' },
   // Surroundings from the same CTX DTM (20 km, 100 m box average) and orthomosaic (40 m). Context only.
@@ -692,8 +739,19 @@ const manifest = {
   files: { rasters: 'rasters.json', timeline: 'timeline.json', routes: 'routes.json' },
 };
 
+// Real rover stops with their height on the orbital prior; base A and goal B sit on two of them.
+const roverStops = {
+  run_id: RUN_ID,
+  note: stopsFile.note,
+  source: stopsFile.source,
+  base_stop: stopA?.rmc ?? null,
+  goal_stop: stopB?.rmc ?? null,
+  stops: stopsFile.stops.map((st) => ({ ...st, z_m: r2d(heightAt(prior, st.x_m, st.y_m)) })),
+};
+
 mkdirSync(OUT, { recursive: true });
 writeFileSync(join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 2));
+writeFileSync(join(OUT, 'rover_stops.json'), JSON.stringify(roverStops));
 writeFileSync(join(OUT, 'routes.json'), JSON.stringify({ run_id: RUN_ID, routes }, null, 2));
 writeFileSync(join(OUT, 'timeline.json'), JSON.stringify({ schema_version: SCHEMA, run_id: RUN_ID, frames, events }));
 writeFileSync(

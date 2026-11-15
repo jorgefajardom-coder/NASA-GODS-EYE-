@@ -9,6 +9,11 @@
  *
  * Usage:
  *   node scripts/extract-ctx-crop.mjs <ctx.tif> <centre_row_px> <centre_col_px> [out.json]
+ *   CROP_LAT=18.444 CROP_LON=77.4455 CROP_RES=4 node scripts/extract-ctx-crop.mjs <ctx.tif> - - [out.json]
+ *
+ * Environment: CROP_LAT / CROP_LON (degrees, replace the centre pixel arguments when set) and
+ * CROP_RES (output cell size in metres, default 20; the crop stays 2 km wide). An output cell
+ * smaller than the 20 m source is a display resampling: it adds no detail.
  *
  * Source (USGS Astrogeology, NASA Mars 2020 Terrain Relative Navigation CTX DTM mosaic):
  *   https://astrogeology.usgs.gov/search/map/mars_2020_terrain_relative_navigation_ctx_dtm_mosaic
@@ -27,16 +32,17 @@ import { fileURLToPath } from 'node:url';
 import { fromFile } from 'geotiff';
 
 const [, , tifPath, rowArg, colArg, outArg] = process.argv;
-if (!tifPath || rowArg == null || colArg == null) {
+if (!tifPath || ((rowArg == null || colArg == null) && !process.env.CROP_LAT)) {
   console.error('usage: node scripts/extract-ctx-crop.mjs <ctx.tif> <centre_row_px> <centre_col_px> [out.json]');
   process.exit(1);
 }
 
 const R = 3396190; // Mars 2000 sphere, m
 const NATIVE_M = 20;
-const RES = 20; // output cell size, m (equal to native: no resolution gain)
-const ROWS = 100;
-const COLS = 100;
+const RES = Number(process.env.CROP_RES ?? 20); // output cell size, m (below 20 m it is a resampling: no resolution gain)
+const SPAN_M = 2000;
+const ROWS = Math.round(SPAN_M / RES);
+const COLS = Math.round(SPAN_M / RES);
 const OX = -(COLS * RES) / 2;
 const OY = -(ROWS * RES) / 2;
 const NODATA_LIMIT = -1e30;
@@ -49,8 +55,9 @@ const img = await tiff.getImage();
 const W = img.getWidth();
 const H = img.getHeight();
 const [west, , , north] = img.getBoundingBox();
-const rowC = Number(rowArg);
-const colC = Number(colArg);
+// The centre comes from CROP_LAT / CROP_LON when set (equirectangular on the Mars 2000 sphere), else from the pixel arguments.
+const rowC = process.env.CROP_LAT ? Math.round((north - (R * Number(process.env.CROP_LAT) * Math.PI) / 180) / NATIVE_M - 0.5) : Number(rowArg);
+const colC = process.env.CROP_LON ? Math.round(((R * Number(process.env.CROP_LON) * Math.PI) / 180 - west) / NATIVE_M - 0.5) : Number(colArg);
 
 // Centre of the crop in projected metres, then planetocentric lat/lon.
 const xC = west + (colC + 0.5) * NATIVE_M;
@@ -129,7 +136,7 @@ const crop = {
     centre_pixel: { row: rowC, col: colC },
     centre_lat_deg: Number(deg(lat0).toFixed(5)),
     centre_lon_deg: Number(deg(lon0).toFixed(5)),
-    method: 'bilinear resampling onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); same cell size as the source, so no resolution gain',
+    method: `bilinear resampling onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); ${RES} m cells from a ${NATIVE_M} m source, so no resolution gain${RES < NATIVE_M ? ' (display resampling)' : ''}`,
     origin_x_m: OX,
     origin_y_m: OY,
     resolution_m: RES,

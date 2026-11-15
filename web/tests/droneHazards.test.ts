@@ -19,8 +19,10 @@ describe('drone hazard report', () => {
 
   it('classifies the observed cells of map v2 from the updated heights', () => {
     const r = droneHazardReport(rasters, meta, 2, 0, 0);
-    expect(r.observedCount).toBe(157);
-    expect(r.counts.hazard + r.counts.caution + r.counts.changed + r.counts.clear).toBe(157);
+    const observed = rasters.versions[2].observed.length;
+    expect(observed).toBeGreaterThan(0);
+    expect(r.observedCount).toBe(observed);
+    expect(r.counts.hazard + r.counts.caution + r.counts.changed + r.counts.clear).toBe(observed);
     expect(r.counts.hazard).toBeGreaterThan(0); // the steep scarp the survey found
     expect(r.cells.filter((c) => c.changed).length).toBeGreaterThan(0); // contradicts the orbital estimate
     expect(r.maxSlopeDeg ?? 0).toBeGreaterThanOrEqual(15);

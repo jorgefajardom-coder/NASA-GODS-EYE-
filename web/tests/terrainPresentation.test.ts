@@ -61,7 +61,7 @@ describe('native information versus computational grid', () => {
 
   it('reads the demo source spacing without imposing it on an unspecified dataset', () => {
     expect(priorNativeSpacing(manifest.terrain_meta)).toBe(20);
-    expect(orbitalSlopeNote(manifest.terrain_meta)).toContain('60 m computational window');
+    expect(orbitalSlopeNote(manifest.terrain_meta)).toContain('12 m computational window');
     expect(terrainResolutionLabel({ ...canonical, sources: [] })).toContain('spacing not supplied');
   });
 });

@@ -64,8 +64,8 @@ export function geologyMatchesRun(data: GeologyData, manifest: ReplayManifest): 
       && close(f.origin_lon_deg, meta.origin_lon_deg) && f.vertical_datum === meta.vertical_datum;
   }
   return manifest.run_id === 'demo-sim-002' && meta.dataset_id === 'mars2020-trn-ctx-dtm-20m'
-    && close(meta.origin_lat_deg, 18.53545) && close(meta.origin_lon_deg, 77.42382)
-    && manifest.local_z_offset_m === -2495;
+    && close(meta.origin_lat_deg, 18.44401) && close(meta.origin_lon_deg, 77.44541)
+    && manifest.local_z_offset_m === -2568;
 }
 
 /** Context is a separate surface: require its datum, planetary origin, source
