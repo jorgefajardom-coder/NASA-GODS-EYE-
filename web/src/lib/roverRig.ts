@@ -9,7 +9,9 @@
  *   limited motor speed (display assumption, no published rate).
  * - The Hazcams are fixed to the body: they cannot be aimed. WATSON looks from the arm's turret, so the
  *   arm must be deployed first; the arm moves only while the rover stands still.
- * - Changing camera is a cut (another camera's image), not a morph of one lens into another.
+ * - Changing camera shows another camera's image; the view eases there in about a third of a second
+ *   (FirstPersonCamera) instead of jumping. Switching the eye of a stereo pair is not a cut: the eyes are
+ *   centimetres apart and the view just slides across.
  *
  * The state is one shared object read and stepped each frame by the rover model (VehicleModel) and
  * read by the first-person camera; React components only issue requests.
@@ -17,12 +19,12 @@
 import { CAMERA_ORDER, ROVER_CAMERAS, type RoverCameraId, type StereoSide } from './roverCameras';
 
 /** Mast head slew limit (deg/s) and acceleration (deg/s^2): display assumptions, see above. */
-export const MAST_RATE_DEG_S = 20;
-export const MAST_ACCEL_DEG_S2 = 40;
+export const MAST_RATE_DEG_S = 14;
+export const MAST_ACCEL_DEG_S2 = 24;
 export const MAST_EL_MIN = -90;
 export const MAST_EL_MAX = 90;
 /** Mastcam-Z zoom motor: the whole 26-110 mm range in about 4 s (display assumption). */
-export const ZOOM_MM_PER_S = 21;
+export const ZOOM_MM_PER_S = 15;
 /** Arm deploy or stow time in the viewer (s). The real arm takes minutes; the motion is compressed. */
 export const ARM_MOVE_S = 6;
 /**
@@ -152,7 +154,7 @@ export interface ShotRequest {
 
 /** Asks the rig for a camera and pointing; returns the token that `shotReady` reports once reached. */
 export function requestShot(s: RigState, r: ShotRequest): number {
-  if (s.camera !== r.camera || (r.side && r.side !== s.side)) s.cut += 1;
+  if (s.camera !== r.camera) s.cut += 1;
   s.camera = r.camera;
   if (r.side) s.side = r.side;
   if (r.camera === 'watson') {

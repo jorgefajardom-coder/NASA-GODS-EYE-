@@ -278,7 +278,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     setFirstPerson(true); // the tour is seen from the rover's own camera; V steps back behind the rover
     setClosedStop(null);
     setMarsNow(true);
-    setSpeed(10);
+    setSpeed(5);
     setT(photoTour.start_s);
     setPlaying(true);
   };
@@ -286,9 +286,10 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     const to = tourStepTime(roverStops, t, dir);
     if (to != null) setT(to);
   };
-  // Following sets 1x; the tour is long, so it plays at the top speed (the person can change it).
+  // Following sets 1x; the tour is long, so it plays faster, at 5x so the rover's own camera stays smooth (the
+  // person can still pick 10x).
   useEffect(() => {
-    if (tourOn && follow) setSpeed(10);
+    if (tourOn && follow) setSpeed(5);
   }, [tourOn, follow]);
   const marsNowNode = marsNow ? <MarsNowFrame stop={povStop} mission={bundle.roverStops?.mission} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: () => { setTourOn(false); setPlaying(false); } } : null} /> : null;
   // At each stop the replay holds while the images load, then the rover "takes" them one after another:
