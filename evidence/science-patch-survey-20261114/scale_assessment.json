@@ -1,0 +1,755 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "science-patch-scale-audit-20261114",
+  "classification": "ANALYTICAL_FLAT_RESOURCE_CEILINGS_AND_PUBLIC_DATA_SCALE_AUDIT",
+  "recorded_at_utc": "2026-11-15T01:54:11.504850+00:00",
+  "revision": "c3ec4c1f1515dbc981ba82eed2ab1f54e9586264",
+  "working_tree_dirty": true,
+  "assessment_code_sha256": "aee77450992ebb4699fd027d3c0f0d60d031e6da57e0cb4b8ce46c12611dff4a",
+  "command": [
+    "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+    "evidence/science-patch-survey-20261114/reproduce_scale_assessment.py"
+  ],
+  "python_version": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "numpy_version": "2.5.4",
+  "pyyaml_version": "6.0.3",
+  "model_id": "mge-science-1.0.0",
+  "source_identity": {
+    "config/mission_jezero.experimental.yaml": {
+      "working_tree_sha256": "b4f424dbd0c96fd7190502a0c5dc88d556de285d171568de12cce1e73b9324d1",
+      "git_blob_content_sha256": "b4f424dbd0c96fd7190502a0c5dc88d556de285d171568de12cce1e73b9324d1",
+      "git_blob_object_id": "f9f08c99f00499784119f986c9cd50a8566844d1",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 6390,
+      "git_blob_content_size_bytes": 6390,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": true
+    },
+    "config/science_profiles.proposed.json": {
+      "working_tree_sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "git_blob_content_sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "git_blob_object_id": "8bff09922bb72d83a81cf9fea9784b308e105ca4",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 29440,
+      "git_blob_content_size_bytes": 29440,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": true
+    },
+    "src/mge_mission/mge_mission/models.py": {
+      "working_tree_sha256": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+      "git_blob_content_sha256": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+      "git_blob_object_id": "d69eb1588cabc6136ed12eff5ee6d790eaa46b0d",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 15380,
+      "git_blob_content_size_bytes": 15380,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": true
+    },
+    "src/mge_mission/mge_mission/scenario.py": {
+      "working_tree_sha256": "430e8db97cc7a56d45afee956a0e2d742eb271739adc854f67b46f2ab22810db",
+      "git_blob_content_sha256": "430e8db97cc7a56d45afee956a0e2d742eb271739adc854f67b46f2ab22810db",
+      "git_blob_object_id": "9a372449959a155d3a06e1a67d017982a9327fbc",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 17915,
+      "git_blob_content_size_bytes": 17915,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": true
+    },
+    "src/mge_data/mge_data/core.py": {
+      "working_tree_sha256": "ede74196550787e3e8018638b4d1dae721df5eb72aa0513f2c5ea602ed3ab5f3",
+      "git_blob_content_sha256": "ede74196550787e3e8018638b4d1dae721df5eb72aa0513f2c5ea602ed3ab5f3",
+      "git_blob_object_id": "16924d9d86f87918033529e296f42fa706786727",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 22356,
+      "git_blob_content_size_bytes": 22356,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": true
+    },
+    "data/sample/manifest.json": {
+      "working_tree_sha256": "f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1",
+      "git_blob_content_sha256": "f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1",
+      "git_blob_object_id": "6f87b45863b2e22117b7c20d556cad32ad3db37c",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 2211,
+      "git_blob_content_size_bytes": 2211,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": true
+    },
+    "data/sample/terrain.npz": {
+      "working_tree_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+      "git_blob_content_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+      "git_blob_object_id": "3de2e07a55b54fa5af5848441d52b2f2c7b9dc18",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 9258,
+      "git_blob_content_size_bytes": 9258,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": null
+    },
+    "data/sample/mola_regional_context.npz": {
+      "working_tree_sha256": "b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6",
+      "git_blob_content_sha256": "b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6",
+      "git_blob_object_id": "fb065821881ac064607834440799de3a66095ef7",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 3496,
+      "git_blob_content_size_bytes": 3496,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": null
+    },
+    "config/terrain.yml": {
+      "working_tree_sha256": "7a5cc1e0e2e6c27027d22a2487917028380e0d8b792ad168bafed69eb2722568",
+      "git_blob_content_sha256": "7a5cc1e0e2e6c27027d22a2487917028380e0d8b792ad168bafed69eb2722568",
+      "git_blob_object_id": "7fadec3194157dff7b4800b5e793f1391b12d2f8",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 1921,
+      "git_blob_content_size_bytes": 1921,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": true
+    },
+    "data/sample/provenance_details.json": {
+      "working_tree_sha256": "8e9d506230f101c02c8f1ee319aad18cce47215d1d3eb79dfdeb1dd37d826911",
+      "git_blob_content_sha256": "8e9d506230f101c02c8f1ee319aad18cce47215d1d3eb79dfdeb1dd37d826911",
+      "git_blob_object_id": "0ddc66972943ea5f771c21bc13f3912438b6881a",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 10693,
+      "git_blob_content_size_bytes": 10693,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": true
+    },
+    "docs/science_approvals/jezero_scenario_20261114.json": {
+      "working_tree_sha256": "c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518",
+      "git_blob_content_sha256": "c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518",
+      "git_blob_object_id": "08a61d055a40e27b2c92419dc5097ade45c360c5",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 3797,
+      "git_blob_content_size_bytes": 3797,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": true
+    },
+    "config/mission_jezero.proposed.yaml": {
+      "working_tree_sha256": "e9cb9144a6861de71fbe0f633b9b3bc9f58c322666c1717c6523a948c5603a42",
+      "git_blob_content_sha256": "e9cb9144a6861de71fbe0f633b9b3bc9f58c322666c1717c6523a948c5603a42",
+      "git_blob_object_id": "e756d8d16151cfa507aa68b035554dd14ff77e7f",
+      "git_blob_object_id_algorithm": "sha1",
+      "sha256_meaning": "SHA-256 of file/content bytes, distinct from the Git object ID",
+      "working_tree_size_bytes": 5521,
+      "git_blob_content_size_bytes": 5521,
+      "bytes_identical": true,
+      "equivalent_after_CRLF_to_LF_normalization": true
+    }
+  },
+  "public_source_metadata": [
+    {
+      "mission": "MRO",
+      "instrument": "CTX",
+      "role": "prior",
+      "product_id": "JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0",
+      "native_resolution_m": 20.0,
+      "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/CTX/JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0.tif",
+      "manifest_sha256_field": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+      "manifest_sha256_field_scope": "Processed local NPZ artifact identified by the manifest, not the remote GeoTIFF bytes",
+      "remote_product_downloaded_or_hashed_in_this_assessment": false
+    },
+    {
+      "mission": "Mars Global Surveyor",
+      "instrument": "MOLA",
+      "role": "regional_context",
+      "product_id": "Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0)",
+      "native_resolution_m": 463.0,
+      "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/Mars_MGS_MOLA_DEM_mosaic_global_463m.tif",
+      "manifest_sha256_field": "b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6",
+      "manifest_sha256_field_scope": "Processed local NPZ artifact identified by the manifest, not the remote GeoTIFF bytes",
+      "remote_product_downloaded_or_hashed_in_this_assessment": false
+    }
+  ],
+  "public_tile": {
+    "dataset_id": "jezero_mvp",
+    "rows": 32,
+    "cols": 32,
+    "computational_cell_size_m": 4.0,
+    "extent_side_m": 128.0,
+    "native_prior_DTM_cell_size_m": 20.0,
+    "separate_CTX_orthomosaic_cell_size_m": 6.0,
+    "orthomosaic_metadata_basis": "Existing docs/data_sources.md and web/scripts/extract-ctx-ortho.mjs; image not loaded or fetched by this assessment",
+    "origin_lat_planetocentric_deg": 18.45,
+    "origin_lon_east_deg": 77.45,
+    "frame": "map local ENU metres",
+    "row_orientation": "south_to_north",
+    "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+    "nodata_count": 0,
+    "observed_count": 0,
+    "sigma_values_m": [
+      2.5
+    ],
+    "public_prior_elevation_min_m": -2573.977783203125,
+    "public_prior_elevation_max_m": -2566.835693359375,
+    "derived_extent_corners": [
+      {
+        "enu_xy_m": [
+          -64.0,
+          -64.0
+        ],
+        "lat_planetocentric_deg": 18.44892028128908,
+        "lon_east_deg": 77.4488617768402
+      },
+      {
+        "enu_xy_m": [
+          64.0,
+          -64.0
+        ],
+        "lat_planetocentric_deg": 18.44892028128908,
+        "lon_east_deg": 77.4511382231598
+      },
+      {
+        "enu_xy_m": [
+          -64.0,
+          64.0
+        ],
+        "lat_planetocentric_deg": 18.45107971871092,
+        "lon_east_deg": 77.4488617768402
+      },
+      {
+        "enu_xy_m": [
+          64.0,
+          64.0
+        ],
+        "lat_planetocentric_deg": 18.45107971871092,
+        "lon_east_deg": 77.4511382231598
+      }
+    ],
+    "coordinate_interpretation": "Corners derived from the public local transform, not independent surveyed controls"
+  },
+  "scenario_readiness": {
+    "status": "NOT_READY",
+    "dataset_status": "PUBLIC_PACKAGE_VALIDATED",
+    "findings": [],
+    "missing_inputs": [
+      "approval_evidence.dataset",
+      "approval_evidence.science",
+      "approval_evidence.resource_model_agreement",
+      "approval_evidence.snapshot_contract",
+      "mission.status=approved",
+      "approved_agent_profiles"
+    ],
+    "scenario_approval": {
+      "status": "APPROVED_EXPERIMENTAL_VALUES",
+      "approval_id": "JZ-APP-20261114-01",
+      "approved_by": "David",
+      "approved_on": "2026-11-14",
+      "decision_ids": [
+        "JZ-P01",
+        "JZ-P02",
+        "JZ-P03",
+        "JZ-P04",
+        "JZ-P05",
+        "JZ-P06",
+        "JZ-P07"
+      ],
+      "scope": "experimental_scenario_values_only",
+      "receipt_sha256": "c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518",
+      "profiles_approved": false,
+      "cost_agreement_approved": false,
+      "execution_evidence_approved": false,
+      "operational_authorization": false
+    }
+  },
+  "scale_table": [
+    {
+      "side_m": 128,
+      "area_m2": 16384,
+      "computational_cell_size_m": 4.0,
+      "cells_per_axis": 32,
+      "total_cells": 1024,
+      "cell_count_multiplier_over_current_128m": 1.0,
+      "native_CTX_DTM_20m_sample_spacings_per_axis": 6.4,
+      "native_CTX_DTM_20m_cell_areas_equivalent": 40.96000000000001,
+      "separate_CTX_6m_image_sample_spacings_per_axis": 21.333333333333332,
+      "larger_package_imported_or_verified": false
+    },
+    {
+      "side_m": 256,
+      "area_m2": 65536,
+      "computational_cell_size_m": 4.0,
+      "cells_per_axis": 64,
+      "total_cells": 4096,
+      "cell_count_multiplier_over_current_128m": 4.0,
+      "native_CTX_DTM_20m_sample_spacings_per_axis": 12.8,
+      "native_CTX_DTM_20m_cell_areas_equivalent": 163.84000000000003,
+      "separate_CTX_6m_image_sample_spacings_per_axis": 42.666666666666664,
+      "larger_package_imported_or_verified": false
+    },
+    {
+      "side_m": 512,
+      "area_m2": 262144,
+      "computational_cell_size_m": 4.0,
+      "cells_per_axis": 128,
+      "total_cells": 16384,
+      "cell_count_multiplier_over_current_128m": 16.0,
+      "native_CTX_DTM_20m_sample_spacings_per_axis": 25.6,
+      "native_CTX_DTM_20m_cell_areas_equivalent": 655.3600000000001,
+      "separate_CTX_6m_image_sample_spacings_per_axis": 85.33333333333333,
+      "larger_package_imported_or_verified": false
+    },
+    {
+      "side_m": 1024,
+      "area_m2": 1048576,
+      "computational_cell_size_m": 4.0,
+      "cells_per_axis": 256,
+      "total_cells": 65536,
+      "cell_count_multiplier_over_current_128m": 64.0,
+      "native_CTX_DTM_20m_sample_spacings_per_axis": 51.2,
+      "native_CTX_DTM_20m_cell_areas_equivalent": 2621.4400000000005,
+      "separate_CTX_6m_image_sample_spacings_per_axis": 170.66666666666666,
+      "larger_package_imported_or_verified": false
+    },
+    {
+      "side_m": 2048,
+      "area_m2": 4194304,
+      "computational_cell_size_m": 4.0,
+      "cells_per_axis": 512,
+      "total_cells": 262144,
+      "cell_count_multiplier_over_current_128m": 256.0,
+      "native_CTX_DTM_20m_sample_spacings_per_axis": 102.4,
+      "native_CTX_DTM_20m_cell_areas_equivalent": 10485.760000000002,
+      "separate_CTX_6m_image_sample_spacings_per_axis": 341.3333333333333,
+      "larger_package_imported_or_verified": false
+    }
+  ],
+  "resource_bounds_by_agent": {
+    "human_1": {
+      "kind": "human",
+      "model_id": "mge-science-1.0.0",
+      "profile_approval_status": "proposed",
+      "parameters": {
+        "body_mass_kg": 80.7,
+        "suit_mass_kg": 120.0,
+        "speed_m_s": 0.8333,
+        "slope_slowdown": 2.0,
+        "climb_efficiency": 0.25,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 10.0,
+        "max_step_m": 0.2,
+        "radius_m": 0.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0,
+        "oxygen_scale": 1.0
+      },
+      "activity_power_w": {
+        "walk": 417.7,
+        "wait": 358.08,
+        "inspect": 358.08,
+        "sample": 461.17
+      },
+      "budget": {
+        "time_s": 1200.0,
+        "energy_wh": 100.0,
+        "oxygen_l": 25.0,
+        "reserve_time_s": 240.0,
+        "reserve_wh": 20.0,
+        "reserve_oxygen_l": 5.0
+      },
+      "service": {
+        "activity": "inspect",
+        "duration_s": 120.0,
+        "cost": {
+          "time_s": 120.0,
+          "energy_wh": 11.936,
+          "oxygen_l": 2.437363655049335
+        }
+      },
+      "waiting": {
+        "activity": "wait",
+        "duration_s": 60.0,
+        "cost": {
+          "time_s": 60.0,
+          "energy_wh": 5.968,
+          "oxygen_l": 1.2186818275246676
+        }
+      },
+      "baseline_flat_bound": {
+        "one_metre_one_way_cost": {
+          "time_s": 1.2000480019200768,
+          "energy_wh": 0.1392389028894489,
+          "oxygen_l": 0.028432962573030043
+        },
+        "stationary_total_once": {
+          "time_s": 180.0,
+          "energy_wh": 17.904,
+          "oxygen_l": 3.6560454825740027
+        },
+        "constraints": {
+          "time_s": {
+            "initial_allocation": 1200.0,
+            "separate_reserve": 240.0,
+            "usable_after_reserve": 960.0,
+            "stationary_consumption_once": 180.0,
+            "residual_for_roundtrip_movement": 780.0,
+            "cost_per_metre_of_outbound_displacement_with_same_way_return": 2.4000960038401535,
+            "theoretical_one_way_displacement_limit_m": 324.987
+          },
+          "energy_wh": {
+            "initial_allocation": 100.0,
+            "separate_reserve": 20.0,
+            "usable_after_reserve": 80.0,
+            "stationary_consumption_once": 17.904,
+            "residual_for_roundtrip_movement": 62.096000000000004,
+            "cost_per_metre_of_outbound_displacement_with_same_way_return": 0.2784778057788978,
+            "theoretical_one_way_displacement_limit_m": 222.98365870241804
+          },
+          "oxygen_l": {
+            "initial_allocation": 25.0,
+            "separate_reserve": 5.0,
+            "usable_after_reserve": 20.0,
+            "stationary_consumption_once": 3.6560454825740027,
+            "residual_for_roundtrip_movement": 16.343954517426,
+            "cost_per_metre_of_outbound_displacement_with_same_way_return": 0.056865925146060085,
+            "theoretical_one_way_displacement_limit_m": 287.4120921350803
+          }
+        },
+        "limiting_metric": "energy_wh",
+        "approximate_theoretical_one_way_displacement_ceiling_m": 222.98365870241804,
+        "approximate_theoretical_total_travel_ceiling_m": 445.9673174048361,
+        "raw_float_cost_at_quotient": {
+          "time_s": 715.1821881733302,
+          "energy_wh": 80.00000000000001,
+          "oxygen_l": 16.33621752714032
+        },
+        "raw_float_reserve_margins_at_quotient": {
+          "time_s": 244.81781182666975,
+          "energy_wh": -1.4210854715202004e-14,
+          "oxygen_l": 3.6637824728596797
+        },
+        "display_radius_rounded_down_to_centimetres_m": 222.98,
+        "cost_at_rounded_down_display_radius": {
+          "time_s": 715.1734069362774,
+          "energy_wh": 79.99898113257863,
+          "oxygen_l": 16.33600947164248
+        },
+        "reserve_margins_at_rounded_down_display_radius": {
+          "time_s": 244.8265930637226,
+          "energy_wh": 0.0010188674213651439,
+          "oxygen_l": 3.6639905283575196
+        },
+        "candidate_accepted": false,
+        "mission_execution_authorized": false,
+        "numerical_policy": "The quotient is an approximate theoretical ceiling. A negative floating-point reserve margin remains negative; no ULP or tolerance budget credit is granted. Display truncation does not verify a route."
+      },
+      "additional_approved_180s_acquisition_only": {
+        "activity": "sample",
+        "duration_s": 180.0,
+        "cost": {
+          "time_s": 180.0,
+          "energy_wh": 23.058500000000002,
+          "oxygen_l": 4.708608398119562
+        },
+        "interpretation": "Resource-only sensitivity after the primary check-in. No task is created/assigned; discovery, completed public inspection and primary completion are still required. Extra optional travel/coordination is excluded. This acquisition primitive is not a documented complete sample cycle.",
+        "flat_bound": {
+          "one_metre_one_way_cost": {
+            "time_s": 1.2000480019200768,
+            "energy_wh": 0.1392389028894489,
+            "oxygen_l": 0.028432962573030043
+          },
+          "stationary_total_once": {
+            "time_s": 360.0,
+            "energy_wh": 40.962500000000006,
+            "oxygen_l": 8.364653880693565
+          },
+          "constraints": {
+            "time_s": {
+              "initial_allocation": 1200.0,
+              "separate_reserve": 240.0,
+              "usable_after_reserve": 960.0,
+              "stationary_consumption_once": 360.0,
+              "residual_for_roundtrip_movement": 600.0,
+              "cost_per_metre_of_outbound_displacement_with_same_way_return": 2.4000960038401535,
+              "theoretical_one_way_displacement_limit_m": 249.99
+            },
+            "energy_wh": {
+              "initial_allocation": 100.0,
+              "separate_reserve": 20.0,
+              "usable_after_reserve": 80.0,
+              "stationary_consumption_once": 40.962500000000006,
+              "residual_for_roundtrip_movement": 39.037499999999994,
+              "cost_per_metre_of_outbound_displacement_with_same_way_return": 0.2784778057788978,
+              "theoretical_one_way_displacement_limit_m": 140.18172791477136
+            },
+            "oxygen_l": {
+              "initial_allocation": 25.0,
+              "separate_reserve": 5.0,
+              "usable_after_reserve": 20.0,
+              "stationary_consumption_once": 8.364653880693565,
+              "residual_for_roundtrip_movement": 11.635346119306435,
+              "cost_per_metre_of_outbound_displacement_with_same_way_return": 0.056865925146060085,
+              "theoretical_one_way_displacement_limit_m": 204.6101613474336
+            }
+          },
+          "limiting_metric": "energy_wh",
+          "approximate_theoretical_one_way_displacement_ceiling_m": 140.18172791477136,
+          "approximate_theoretical_total_travel_ceiling_m": 280.3634558295427,
+          "raw_float_cost_at_quotient": {
+            "time_s": 696.4496049796504,
+            "energy_wh": 80.0,
+            "oxygen_l": 16.336217527140313
+          },
+          "raw_float_reserve_margins_at_quotient": {
+            "time_s": 263.5503950203496,
+            "energy_wh": 0.0,
+            "oxygen_l": 3.663782472859687
+          },
+          "display_radius_rounded_down_to_centimetres_m": 140.18,
+          "cost_at_rounded_down_display_radius": {
+            "time_s": 696.4454578183127,
+            "energy_wh": 79.9995188140859,
+            "oxygen_l": 16.336119267668266
+          },
+          "reserve_margins_at_rounded_down_display_radius": {
+            "time_s": 263.55454218168734,
+            "energy_wh": 0.0004811859140971819,
+            "oxygen_l": 3.6638807323317337
+          },
+          "candidate_accepted": false,
+          "mission_execution_authorized": false,
+          "numerical_policy": "The quotient is an approximate theoretical ceiling. A negative floating-point reserve margin remains negative; no ULP or tolerance budget credit is granted. Display truncation does not verify a route."
+        }
+      }
+    },
+    "rover_1": {
+      "kind": "rover",
+      "model_id": "mge-science-1.0.0",
+      "profile_approval_status": "proposed",
+      "parameters": {
+        "mass_kg": 1025.0,
+        "speed_m_s": 0.04,
+        "rolling_resistance": 0.05,
+        "slip": 0.1,
+        "drive_efficiency": 0.35,
+        "auxiliary_power_w": 100.0,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 20.0,
+        "max_step_m": 0.2,
+        "radius_m": 1.5,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "activity_power_w": {
+        "wait": 80.0,
+        "inspect": 200.0
+      },
+      "budget": {
+        "time_s": 1200.0,
+        "energy_wh": 60.0,
+        "reserve_time_s": 240.0,
+        "reserve_wh": 12.0
+      },
+      "service": {
+        "activity": "inspect",
+        "duration_s": 120.0,
+        "cost": {
+          "time_s": 120.0,
+          "energy_wh": 6.666666666666667,
+          "oxygen_l": null
+        }
+      },
+      "waiting": {
+        "activity": "wait",
+        "duration_s": 60.0,
+        "cost": {
+          "time_s": 60.0,
+          "energy_wh": 1.3333333333333333,
+          "oxygen_l": null
+        }
+      },
+      "baseline_flat_bound": {
+        "one_metre_one_way_cost": {
+          "time_s": 27.777777777777775,
+          "energy_wh": 0.9392746913580247,
+          "oxygen_l": null
+        },
+        "stationary_total_once": {
+          "time_s": 180.0,
+          "energy_wh": 8.0,
+          "oxygen_l": null
+        },
+        "constraints": {
+          "time_s": {
+            "initial_allocation": 1200.0,
+            "separate_reserve": 240.0,
+            "usable_after_reserve": 960.0,
+            "stationary_consumption_once": 180.0,
+            "residual_for_roundtrip_movement": 780.0,
+            "cost_per_metre_of_outbound_displacement_with_same_way_return": 55.55555555555555,
+            "theoretical_one_way_displacement_limit_m": 14.040000000000001
+          },
+          "energy_wh": {
+            "initial_allocation": 60.0,
+            "separate_reserve": 12.0,
+            "usable_after_reserve": 48.0,
+            "stationary_consumption_once": 8.0,
+            "residual_for_roundtrip_movement": 40.0,
+            "cost_per_metre_of_outbound_displacement_with_same_way_return": 1.8785493827160493,
+            "theoretical_one_way_displacement_limit_m": 21.293025548344698
+          }
+        },
+        "limiting_metric": "time_s",
+        "approximate_theoretical_one_way_displacement_ceiling_m": 14.040000000000001,
+        "approximate_theoretical_total_travel_ceiling_m": 28.080000000000002,
+        "raw_float_cost_at_quotient": {
+          "time_s": 960.0,
+          "energy_wh": 34.374833333333335,
+          "oxygen_l": null
+        },
+        "raw_float_reserve_margins_at_quotient": {
+          "time_s": 0.0,
+          "energy_wh": 13.625166666666665
+        },
+        "display_radius_rounded_down_to_centimetres_m": 14.04,
+        "cost_at_rounded_down_display_radius": {
+          "time_s": 959.9999999999999,
+          "energy_wh": 34.374833333333335,
+          "oxygen_l": null
+        },
+        "reserve_margins_at_rounded_down_display_radius": {
+          "time_s": 1.1368683772161603e-13,
+          "energy_wh": 13.625166666666665
+        },
+        "candidate_accepted": false,
+        "mission_execution_authorized": false,
+        "numerical_policy": "The quotient is an approximate theoretical ceiling. A negative floating-point reserve margin remains negative; no ULP or tolerance budget credit is granted. Display truncation does not verify a route."
+      }
+    },
+    "drone_1": {
+      "kind": "drone",
+      "model_id": "mge-science-1.0.0",
+      "profile_approval_status": "proposed",
+      "parameters": {
+        "mass_kg": 1.8,
+        "speed_m_s": 2.0,
+        "vertical_speed_m_s": 1.0,
+        "climb_efficiency": 0.5,
+        "gravity_m_s2": 3.71,
+        "max_slope_deg": 90.0,
+        "max_step_m": 1000000.0,
+        "radius_m": 0.6,
+        "localization_error_m": 0.25,
+        "max_sigma_m": 1.0
+      },
+      "activity_power_w": {
+        "ground_wait": 5.0,
+        "translate": 350.0,
+        "ascent": 350.0,
+        "descent": 230.0,
+        "hover": 230.0,
+        "observe": 230.0
+      },
+      "budget": {
+        "time_s": 180.0,
+        "energy_wh": 15.0,
+        "reserve_time_s": 36.0,
+        "reserve_wh": 3.0
+      },
+      "service": {
+        "activity": "observe",
+        "duration_s": 30.0,
+        "cost": {
+          "time_s": 30.0,
+          "energy_wh": 1.9166666666666667,
+          "oxygen_l": null
+        }
+      },
+      "waiting": {
+        "activity": "ground_wait",
+        "duration_s": 10.0,
+        "cost": {
+          "time_s": 10.0,
+          "energy_wh": 0.013888888888888888,
+          "oxygen_l": null
+        }
+      },
+      "baseline_flat_bound": {
+        "one_metre_one_way_cost": {
+          "time_s": 0.5,
+          "energy_wh": 0.04861111111111111,
+          "oxygen_l": null
+        },
+        "stationary_total_once": {
+          "time_s": 40.0,
+          "energy_wh": 1.9305555555555556,
+          "oxygen_l": null
+        },
+        "constraints": {
+          "time_s": {
+            "initial_allocation": 180.0,
+            "separate_reserve": 36.0,
+            "usable_after_reserve": 144.0,
+            "stationary_consumption_once": 40.0,
+            "residual_for_roundtrip_movement": 104.0,
+            "cost_per_metre_of_outbound_displacement_with_same_way_return": 1.0,
+            "theoretical_one_way_displacement_limit_m": 104.0
+          },
+          "energy_wh": {
+            "initial_allocation": 15.0,
+            "separate_reserve": 3.0,
+            "usable_after_reserve": 12.0,
+            "stationary_consumption_once": 1.9305555555555556,
+            "residual_for_roundtrip_movement": 10.069444444444445,
+            "cost_per_metre_of_outbound_displacement_with_same_way_return": 0.09722222222222222,
+            "theoretical_one_way_displacement_limit_m": 103.57142857142857
+          }
+        },
+        "limiting_metric": "energy_wh",
+        "approximate_theoretical_one_way_displacement_ceiling_m": 103.57142857142857,
+        "approximate_theoretical_total_travel_ceiling_m": 207.14285714285714,
+        "raw_float_cost_at_quotient": {
+          "time_s": 143.57142857142856,
+          "energy_wh": 12.0,
+          "oxygen_l": null
+        },
+        "raw_float_reserve_margins_at_quotient": {
+          "time_s": 0.4285714285714448,
+          "energy_wh": 0.0
+        },
+        "display_radius_rounded_down_to_centimetres_m": 103.57,
+        "cost_at_rounded_down_display_radius": {
+          "time_s": 143.57,
+          "energy_wh": 11.99986111111111,
+          "oxygen_l": null
+        },
+        "reserve_margins_at_rounded_down_display_radius": {
+          "time_s": 0.4300000000000068,
+          "energy_wh": 0.0001388888888893547
+        },
+        "candidate_accepted": false,
+        "mission_execution_authorized": false,
+        "numerical_policy": "The quotient is an approximate theoretical ceiling. A negative floating-point reserve margin remains negative; no ULP or tolerance budget credit is granted. Display truncation does not verify a route."
+      }
+    }
+  },
+  "method": "Subtract each separate reserve and the explicit service/wait costs. For each remaining resource, divide by twice estimate_segment(profile,(0,0,0),(1,0,0)). The smallest quotient limits ideal one-way displacement with retraced return. No search, terrain route or execution evidence is produced.",
+  "limitations": [
+    "Proposed profile coefficients remain unapproved; scenario-value approval does not approve costs or physical limits.",
+    "These ceilings are not reachable discs, surveyed footprints, sensor coverage, candidate acceptance or mission authorization.",
+    "Flat estimates exclude real grades, detours, obstacles, uncertainty, footprint clearance, added coordination and extra tasks.",
+    "Drone flat estimates exclude takeoff/landing, climb/descent, altitude, swept volume and validated flight.",
+    "Bilinear 20 m to 4 m resampling creates no sub-20 m native topographic information or independent measurements.",
+    "Native sample spacings and cell-area equivalents are scale ratios, not independent observational sample counts.",
+    "128 by 128 computational cells at 4 m mean 512 by 512 m, distinct from the current 128 by 128 m tile.",
+    "No remote GeoTIFF was downloaded or hashed today; manifest source SHA fields identify processed local artifacts.",
+    "No evaluator array, hidden reference file, planner module, observation or task producer was used."
+  ],
+  "candidate_accepted": false,
+  "task_assigned": false,
+  "integrated_mission_executed": false,
+  "scientific_approval": false,
+  "cost_agreement_approved": false,
+  "mission_execution_authorized": false
+}

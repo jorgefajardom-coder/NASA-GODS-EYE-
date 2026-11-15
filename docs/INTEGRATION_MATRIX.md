@@ -1,5 +1,36 @@
 # Integration matrix and acceptance gates
 
+## Current rc.2 reconciliation — published main9198b3d
+
+PR28 publishes the reviewed F/E mapping, estimated-terrain and recorded-replay
+cut. Original main6bcf208 inputs and older inventories remain historical. The
+scientific cost backend/context and full three-role mission remain open.
+[Delivery closure](delivery_closure_plan.md) and [D-DEL-03](decisions/2026-11-14-delivery-freeze.md)
+now prioritize submission and pause extensions; they do not freeze ICD semantics.
+
+The [current audit reconciliation](audit_reconciliation.md) supersedes the
+inventories below. Those describe rc.1's historical sources, not current main.
+Data/mapping, mission, strict recorded-raster viewer and continuous MOCK recovery
+are now integrated. The [current baseline](CONTRACT_BASELINE.md) pins source
+versions; the [cost/context proposal](audit_cost_execution_gaps.md) records the
+remaining incompatible boundary. Scientific-purpose selection is excluded.
+
+| Requirements / functions | Current implementation and testable boundary | Remaining acceptance |
+|---|---|---|
+| R03-R06 / F01-F02 | Public CTX plus separate MGS/MOLA ingest; four non-collinear controls; coherent public batches; footprint fusion and strict delayed-input rejection. `tests/mapping`, `test_mapping_observation_adapter`. | Data-owner review of rc.2 causal filtering and candidate exploration semantics. Native detail/sensor truth is not inferred. |
+| R07-R10 / F02-F05 | Real constrained planner, return/reserves, explicit continuous connector; estimated-policy candidate + one-cell contradiction/stop/replan consumer. | Scientific cost agreement remains BLOCKED; next-segment inspection policy and real manager execution are pending. |
+| R01,R11-R13 / F04-F05 | Real mission/task core, single authority and idempotency; public ROS goal/map/agent inputs. | Explicit model/activity context, interval work/traversal inputs, actual optional acceptance/rejection and three-role execution. |
+| R04,R05,R14,R15,R18 / F06 | Strict snapshot/count/route/raster validation, canonical same-run replay, scenario-bound optional layers and absolute-datum camera. | Fresh production-browser/offline record for this candidate and three-role mission/video acceptance remain separate. |
+| R02,R16 / F05,F07 | Labelled MOCK three-agent graph; controlled primary-human kinematic recovery and bounded search tests. | Rover/drone role execution, physics and frozen identical-condition policy comparisons are not demonstrated by this cut. |
+| R17 / F01,F06,F07 | Mandatory AI registers, source roles/terms, evaluator isolation and retained media watermarks. | Final competition submission and local organizer endorsement are delivery gates; this PR is not submission readiness. |
+
+All R01-R18 **system/scientific** acceptances remain distinct from software
+implementation. `REAL` below means existing owner code, not a validated LIVE
+mission. Current exact commands/results belong with the rc.2 evidence; do not
+reuse older test counts as proof for the new source.
+
+## Historical rc.1 inventory (superseded)
+
 Audit date: 2026-11-14 (America/Bogota). Initial main:
 `f75c54e929576c6780d559c9daa24d06ccf0a0b8`. Final refreshed main:
 `004b3b2c59a27794a1e49a61f48d0569bad020b2` (PR #2 merged externally).

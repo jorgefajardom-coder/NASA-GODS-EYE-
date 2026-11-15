@@ -1,10 +1,160 @@
 {
   "schema_version": "1.0.0",
   "recorded_on": "2026-11-14",
-  "status": "planner_integrated_contract_reconciliation_pending_review",
+  "status": "audit_reconciliation_rc2_pending_owner_review",
   "policy_url": "https://github.com/nasa/spaceapps/discussions/1849",
   "human_review": "pending module owners",
   "uses": [
+    {
+      "tool": "OpenAI Codex",
+      "kind": "local_per_agent_campaign_and_EVA_proposal",
+      "generation": "AI-assisted primary-source synthesis, proposed workloads, standalone analytical code and derived model diagnostics",
+      "paths": [
+        "docs/agent_campaign_proposal.md",
+        "docs/science_decisions.md",
+        "docs/handoffs/david.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/agent-campaign-proposal-20261114",
+        "evidence/mission-proposal-publication-20261115"
+      ],
+      "use": "Prepare separate rover reconnaissance/accompaniment, human EVA and per-sortie drone resource proposals for the requested Bunsen, Bright Angel and Hawksbill patches. Price declared analytical distances, ascents, activities, waits and directed returns through the unchanged proposed scientific API; compare reserve policy and joint adverse endpoints, retain failed envelopes and unknown full drone-campaign energy. Cite primary mission/hardware/analog facts without treating derived allocations as physical capacities, mapped routes, observations or new NASA data. Preserve approved JZ-P01..07 values, profiles, receipts, shared contracts and all owner implementations. Work remains local, without fetch/commit/push/merge, mocks, terrain/media generation, recharge credit, scientific approval or integrated execution. Owner subsequently authorized publication after reconciliation; preserve both main and mission disclosures, merge main9198b3d unchanged and retain fresh software verification. Publication does not approve proposed budgets or scientific profiles."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "local_scientific_patch_survey_and_map_requests",
+      "generation": "AI-assisted source synthesis, proposed research catalogues, derived geographic queries, analytical diagnostics and standalone reproduction code",
+      "paths": [
+        "docs/science_patch_survey.md",
+        "docs/science_patch_map_requests.md",
+        "docs/science_decisions.md",
+        "docs/handoffs/david.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/science-patch-survey-20261114"
+      ],
+      "use": "Review primary NASA/JPL/USGS/instrument and scientific sources for 17 candidate sectors, distinguish physical patch extent, computational grid and native data support, derive ideal flat resource ceilings using unchanged profiles and approved allocations, and prepare georeferencing-pending requests for Daniel. Historical NASA waypoint values are copied with provenance; candidate selection and query envelopes are generated proposals, not observational truth, current A/B, hidden tasks or execution evidence. Retain all approvals/gates, private evaluator isolation and owner implementations. Work remains local during the reconciliation audit, without commits, pushes or merges; no raster, media, mock, scientific measurement or new approval is generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "delivery_documentation_reconciliation",
+      "generation": "AI-assisted synthesis and owner-confirmed planning update",
+      "paths": [
+        "AGENTS.md",
+        "README.md",
+        "docs/delivery_closure_plan.md",
+        "docs/decisions/2026-11-14-delivery-freeze.md",
+        "docs/CONTRACT_BASELINE.md",
+        "docs/contract_baseline.json",
+        "docs/ICD.md",
+        "docs/INTEGRATION_MATRIX.md",
+        "docs/audit_reconciliation.md",
+        "docs/verification.md",
+        "docs/science_decisions.md",
+        "docs/competition.md",
+        "docs/team.md",
+        "docs/team_continuation_plan.md",
+        "docs/mission_checklist.md",
+        "docs/research_hypotheses.md",
+        "docs/handoffs/david.md",
+        "docs/handoffs/daniel.md",
+        "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md",
+        "docs/handoffs/jorge.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Reconcile all 20 delivery-PDF recommendations with published PR28 and the two chats; record the owner's freeze of extensions and retained 15 Nov 20:00 Bogota submission target. Summarize science/campaign review direction without importing local numerical drafts, new targets or the unpublished cost backend. Correct publication/evidence metadata while preserving historical audit inputs, semantic and scientific gates. Documentation only; no new code, datasets, measurements, observations, approvals or media generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "audit_contract_reconciliation_rc2",
+      "generation": "AI-assisted contract reconciliation, code, tests, documentation and controlled SIMULATED software-run evidence",
+      "paths": [
+        "README.md",
+        "config/exploration_policy.illustrative.json",
+        "docs/AI_USAGE.md",
+        "docs/CONTRACT_BASELINE.md",
+        "docs/ICD.md",
+        "docs/INTEGRATION_MATRIX.md",
+        "docs/ai_usage.json",
+        "docs/audit_cost_execution_gaps.md",
+        "docs/audit_reconciliation.md",
+        "docs/contract_baseline.json",
+        "docs/data_sources.md",
+        "docs/decisions/2026-11-14-shared-scientific-cost-api.md",
+        "docs/handoffs/daniel.md",
+        "docs/handoffs/david.md",
+        "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md",
+        "docs/handoffs/jorge.md",
+        "docs/integration_log.md",
+        "docs/nasa_traceability.md",
+        "docs/verification.md",
+        "evidence/audit-reconciliation-20261115/cost/README.md",
+        "evidence/audit-reconciliation-20261115/cost/command.log",
+        "evidence/audit-reconciliation-20261115/cost/conformance.json",
+        "evidence/audit-reconciliation-20261115/cost/provenance.json",
+        "evidence/audit-reconciliation-20261115/runtime-v1/README.md",
+        "evidence/audit-reconciliation-20261115/runtime-v1/browser.json",
+        "evidence/audit-reconciliation-20261115/runtime-v1/build.log",
+        "evidence/audit-reconciliation-20261115/runtime-v1/contracts.junit.xml",
+        "evidence/audit-reconciliation-20261115/runtime-v1/contracts.log",
+        "evidence/audit-reconciliation-20261115/runtime-v1/estimated-run-result.json",
+        "evidence/audit-reconciliation-20261115/runtime-v1/exit-codes.json",
+        "evidence/audit-reconciliation-20261115/runtime-v1/integration.junit.xml",
+        "evidence/audit-reconciliation-20261115/runtime-v1/integration.log",
+        "evidence/audit-reconciliation-20261115/runtime-v1/interfaces.log",
+        "evidence/audit-reconciliation-20261115/runtime-v1/package-sha256.json",
+        "evidence/audit-reconciliation-20261115/runtime-v1/recording.log",
+        "evidence/audit-reconciliation-20261115/runtime-v1/source-lock.json",
+        "evidence/audit-reconciliation-20261115/runtime-v1/validation.json",
+        "evidence/audit-reconciliation-20261115/runtime-v1/windows.junit.xml",
+        "scripts/record_estimated_recovery.sh",
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "src/mge_data/README.md",
+        "src/mge_mapping/README.md",
+        "src/mge_mapping/mge_mapping/core.py",
+        "src/mge_mapping/mge_mapping/node.py",
+        "src/mge_mapping/mge_mapping/policy.py",
+        "tests/contract/test_mapping_observation_adapter.py",
+        "tests/contract/test_mission_launch.py",
+        "tests/integration/test_estimated_exploration.py",
+        "tests/integration/test_vertical_execution.py",
+        "tests/mapping/test_estimated_planner.py",
+        "tests/mapping/test_exploration_policy.py",
+        "tests/mapping/test_observation_causality.py",
+        "web/README.md",
+        "web/index.html",
+        "web/public/about.html",
+        "web/public/llms.txt",
+        "web/public/replay/recorded-recovery-001/manifest.json",
+        "web/public/replay/recorded-recovery-001/public_rasters.json",
+        "web/public/replay/recorded-recovery-001/snapshot.json",
+        "web/public/replay/recorded-recovery-001/timeline.jsonl",
+        "web/src/App.tsx",
+        "web/src/components/CameraBar.tsx",
+        "web/src/components/CutawayBlock.tsx",
+        "web/src/components/FirstPersonHud.tsx",
+        "web/src/components/Frame.tsx",
+        "web/src/components/GeologyPanel.tsx",
+        "web/src/components/LayerPanel.tsx",
+        "web/src/components/MissionScene.tsx",
+        "web/src/components/Timeline.tsx",
+        "web/src/data/replayAdapter.ts",
+        "web/src/lib/geology.ts",
+        "web/src/lib/layers.ts",
+        "web/src/lib/stateSnapshot.ts",
+        "web/src/lib/strata.ts",
+        "web/src/lib/terrainPresentation.ts",
+        "web/src/types/replay.ts",
+        "web/tests/recordedEntry.test.ts",
+        "web/tests/recordedRecoveryPackage.test.ts",
+        "web/tests/terrainPresentation.test.ts",
+        "web/tests/timelineEndpoint.test.ts"
+      ],
+      "use": "Reconcile public estimated/observed/NoData candidate semantics and exact causal observation clocks; preserve strict ROS fields, source uncertainty, planner profile constraints, mission authority and scientific approval gates. Feature the intact gateway-recorder human recovery package in the existing viewer with absolute-datum camera and scenario-bound labels/layers, keeping the scripted demo separate. Record exact source/configuration and package hashes, software tests and fresh cost disagreements. The test-created single-cell contradiction is SIMULATED, not a local NASA measurement. No new scientific target, profile approval, full scientific mission, three-role execution, media or evaluator reference is generated. Existing mandatory media disclosures/watermarks and all contributor attributions remain intact."
+    },
     {
       "tool": "OpenAI Codex",
       "kind": "mission_cost_duration_and_success_contract_packet",
@@ -61,14 +211,20 @@
       "kind": "experimental_continuous_recovery",
       "generation": "AI-assisted code, tests and documentation requested by the repository owner",
       "paths": [
-        "src/mge_planning/mge_planning/core.py", "src/mge_planning/mge_planning/replan.py",
-        "src/mge_sim/mge_sim/mock_mission.py", "src/mge_sim/mge_sim/recovery.py",
+        "src/mge_planning/mge_planning/core.py",
+        "src/mge_planning/mge_planning/replan.py",
+        "src/mge_sim/mge_sim/mock_mission.py",
+        "src/mge_sim/mge_sim/recovery.py",
         "src/mge_bringup/launch/vertical_mock.launch.py",
-        "tests/planning/test_continuous_recovery.py", "tests/planning/test_simulated_ground_initialization.py",
-        "tests/unit/test_recovery.py", "tests/contract/test_mock_recovery.py",
-        "tests/contract/test_mission_launch.py", "tests/integration/test_vertical_execution.py",
+        "tests/planning/test_continuous_recovery.py",
+        "tests/planning/test_simulated_ground_initialization.py",
+        "tests/unit/test_recovery.py",
+        "tests/contract/test_mock_recovery.py",
+        "tests/contract/test_mission_launch.py",
+        "tests/integration/test_vertical_execution.py",
         "tests/integration/test_terrain_batch.py",
-        "docs/ICD.md", "docs/mission_replay_recovery.md"
+        "docs/ICD.md",
+        "docs/mission_replay_recovery.md"
       ],
       "use": "Preserve bounded continuous XYZ, wait for stop acknowledgement, reject stale or resource-invalid candidates and retain spent allocations/reserves. Validate reauthorized motion, return and the same closed MOCK recorder package. No scientific or LIVE approval."
     },
@@ -77,8 +233,10 @@
       "kind": "strict_replay_validation",
       "generation": "AI-assisted code, tests and documentation requested by the repository owner",
       "paths": [
-        "web/src/data/gatewayReplay.ts", "web/src/data/replayAdapter.ts",
-        "web/tests/gatewayReplay.test.ts", "web/tests/gatewayIntegrity.test.ts"
+        "web/src/data/gatewayReplay.ts",
+        "web/src/data/replayAdapter.ts",
+        "web/tests/gatewayReplay.test.ts",
+        "web/tests/gatewayIntegrity.test.ts"
       ],
       "use": "Validate replay counts, route identity, recorded raster versions and snapshot closure, and test the same MOCK recorder package in the existing web consumer. No scientific or LIVE approval."
     },
@@ -1118,6 +1276,19 @@
         "web/src/components/TerrainGrowth.tsx",
         "web/tests/terrainGrowth.test.ts",
         "web/tests/terrainMorph.test.ts",
+        "web/src/components/PovRoute.tsx",
+        "web/src/lib/routeProgress.ts",
+        "web/tests/routeProgress.test.ts",
+        "web/tests/povSway.test.ts",
+        "web/src/components/RadialHud.tsx",
+        "web/index.html",
+        "web/public/llms.txt",
+        "web/public/about.html",
+        "web/public/robots.txt",
+        "web/public/sitemap.xml",
+        "web/src/lib/stateSnapshot.ts",
+        "web/tests/stateSnapshot.test.ts",
+        "web/public/assets/brand/og-image.png",
         "web/src/components/FirstPersonCamera.tsx",
         "web/src/components/FirstPersonHud.tsx",
         "web/src/components/DroneScan.tsx",
@@ -1131,7 +1302,7 @@
         "web/src/styles.css",
         ".github/workflows/pages.yml"
       ],
-      "use": "Viewer display only: opening terrain formation where the whole layer rises from flat to its true relief zone by zone (low ground first, rising ground lit); terrain heights that morph instead of jumping when the layer or map version changes; first-person camera from the followed agent with a cartographic HUD (compass tape, site bearings, resources as received); drone-camera scan that draws the existing orbital CTX slope in display bands around the drone (no observation is made, the map version is unchanged, bands await science approval); GitHub Actions workflow that tests, builds and publishes the public viewer to the gh-pages branch. No data, measurements, images, video or audio generated."
+      "use": "Viewer display only: opening terrain formation where the whole layer rises from flat to its true relief zone by zone (low ground first, rising ground lit); terrain heights that morph instead of jumping when the layer or map version changes; first-person camera from the followed agent with a cartographic HUD (compass tape, site bearings, resources as received), a route guide drawn from the received route (draped line, next-waypoint beacon, distance and time left scaled from the route estimate), a heading-up minimap and an optional camera sway; interface entrance animation with the agent dial spinning in; text descriptions for language models and other readers (llms.txt, about page, page metadata and JSON-LD, a static summary, and window.mge.state() returning the displayed replay state as JSON), written from the repository documentation and the replay manifest; drone-camera scan that draws the existing orbital CTX slope in display bands around the drone (no observation is made, the map version is unchanged, bands await science approval); GitHub Actions workflow that tests, builds and publishes the public viewer to the gh-pages branch. No data, measurements, images, video or audio generated."
     },
     {
       "tool": "OpenAI Codex",
@@ -1192,6 +1363,17 @@
         "evidence/planner-f033c-oracle-20261115"
       ],
       "use": "Exhaustive tiny directed itineraries and resource-constrained route selection, without production search changes or copying open PR code. No physical clearance validation or scientific approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_review_synchronization",
+      "generation": "AI-assisted disclosure reconciliation and validation documentation; actual software outputs",
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/planner-f033-pr-sync-20261115"
+      ],
+      "use": "Merge published main preserving planner history and mandatory disclosures; record local Python/web checks and blocked native ROS accurately. No science model, mission authority or production search activation."
     }
   ],
   "generated_media": [
@@ -1209,10 +1391,28 @@
       "kind": "ai_generated_video_with_audio_track",
       "tool": "Kling (Kuaishou) video generation, supplied by the owner; the file's AIGC metadata names ContentProducer 'kling' (ProduceID KLingMuse_f3500bd8-5e38-45c9-b8ab-e8ab688814eb)",
       "editing": "A visible 'AI-generated' label burned into the bottom-right corner of every frame with ffmpeg drawtext (VP9 re-encode); audio track and AIGC metadata copied unchanged (5.0 s, 1920 x 1080, VP9 video, Opus audio track)",
-      "watermark": "AI-generated (burned into the pixels of every frame, bottom-right; stays in downloads and captures of the file). The viewer also shows an 'AI-generated \u00b7 Kling' label over the clip (web/src/components/Intro.tsx)",
+      "watermark": "AI-generated (burned into the pixels of every frame, bottom-right; stays in downloads and captures of the file). The viewer also shows an 'AI-generated · Kling' label over the clip (web/src/components/Intro.tsx)",
       "audio": "The audio track is treated as AI-generated; it is declared here and in the AIGC metadata of the file; the viewer plays the clip muted",
       "use": "Opening intro screen of the viewer (skippable). Project emblem only; no NASA logos, flags or mission marks. Not data.",
       "sha256": "4897e14fcfc185e9ec623d1f4401807706193e1614eb780431675b8641f73581"
+    },
+    {
+      "path": "web/public/assets/brand/mars-gods-eye-logo.webp",
+      "kind": "ai_generated_image",
+      "tool": "ChatGPT (OpenAI) image generation, then edited by the team; supplied by the owner",
+      "editing": "A band below the 1254 x 1254 logo with a visible 'AI-generated logo (ChatGPT, edited)' label burned into the pixels with Pillow (1254 x 1364 WebP)",
+      "watermark": "AI-generated (burned into the pixels; legible at the 280 px README display width)",
+      "use": "Team logo at the top of the README and on the about page. Not NASA data; no NASA logos, flags or mission marks.",
+      "sha256": "6fbeb71f00e30f11db70da83f2d73af895fd648c868befe55530a6c80e6b3314"
+    },
+    {
+      "path": "web/public/assets/brand/og-image.png",
+      "kind": "ai_generated_image_in_composite",
+      "tool": "The watermarked logo above, composed with Pillow into a 1200 x 630 link preview with the title and a one-line description",
+      "editing": "Logo scaled to 540 px high beside text on black",
+      "watermark": "The logo's 'AI-generated logo (ChatGPT, edited)' band stays visible in the preview",
+      "use": "Link preview image (og:image / twitter:image) of the public viewer.",
+      "sha256": "c81d8c4fbe91cb28056dc316d8353fb15e056c269efc7fb75e7d3f62258f4803"
     }
   ],
   "scientific_datasets_generated": false,
@@ -1230,7 +1430,7 @@
     "Measured-results flags refer to physical/scientific measurements. Software validation and synthetic model diagnostics are recorded separately; no mission or A/B/C result is asserted.",
     "Main synchronization preserves mission and integrated viewer declarations; the provenance test moved from web/src/lib to web/tests in the viewer merge.",
     "Merged main contributor confirmation supersedes the earlier pending confirmation for the same retained dev/jesus commit; original history is preserved.",
-    "No generated bitmap, video or audio asset was included at scaffold time; the only generated image since is listed in generated_media."
+    "No generated bitmap, video or audio asset was included at scaffold time; the generated images and video since are listed in generated_media."
   ],
   "retained_contributions": [
     {
@@ -1295,5 +1495,6 @@
   "software_validation_results_recorded": true,
   "synthetic_model_diagnostics_recorded": true,
   "integrated_mission_results_recorded": false,
-  "uses_note_base_model": "base-marciana-v2: AI-generated 3D geometry (no images or video). Renders or captures that show it in the delivery should follow the AI-generated image/video watermark rule."
+  "uses_note_base_model": "base-marciana-v2: AI-generated 3D geometry (no images or video). Renders or captures that show it in the delivery should follow the AI-generated image/video watermark rule.",
+  "mock_software_recovery_recorded": true
 }

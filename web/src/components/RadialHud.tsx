@@ -88,6 +88,11 @@ export function RadialHud({ who, center, active, onSelect, warn, hints }: Props)
   return (
     <section className="rhud" aria-label={`Agent HUD: ${who}`}>
       <div className="rhud__dial" style={{ width: SIZE, height: SIZE }}>
+        {/* Slowly turning dashed rim (decorative) and the ring of options, which spins in on start. */}
+        <svg className="rhud__rim" viewBox={`0 0 ${SIZE} ${SIZE}`} width={SIZE} height={SIZE} aria-hidden>
+          <circle cx={C} cy={C} r={ORBIT_R + 24} className="rhud__rim-dash" />
+        </svg>
+        <div className="rhud__ring">
         <svg className="rhud__frame" viewBox={`0 0 ${SIZE} ${SIZE}`} width={SIZE} height={SIZE} aria-hidden>
           <circle cx={C} cy={C} r={ORBIT_R + 18} className="rhud__halo" />
           <circle cx={C} cy={C} r={ORBIT_R} className="rhud__orbit" />
@@ -118,9 +123,6 @@ export function RadialHud({ who, center, active, onSelect, warn, hints }: Props)
             );
           })}
         </svg>
-        <div className="rhud__map" style={{ width: HUD_MAP_PX, height: HUD_MAP_PX }}>
-          {center}
-        </div>
         {HUD_OPTIONS.map((o, i) => {
           const a = ((i * 60 - 90) * Math.PI) / 180;
           const on = active === o.id;
@@ -129,7 +131,7 @@ export function RadialHud({ who, center, active, onSelect, warn, hints }: Props)
               key={o.id}
               type="button"
               className={`rhud__btn${on ? ' rhud__btn--on' : ''}${warn.has(o.id) ? ' rhud__btn--warn' : ''}`}
-              style={{ left: C + Math.cos(a) * ORBIT_R - BTN_R, top: C + Math.sin(a) * ORBIT_R - BTN_R, width: BTN_R * 2, height: BTN_R * 2 }}
+              style={{ left: C + Math.cos(a) * ORBIT_R - BTN_R, top: C + Math.sin(a) * ORBIT_R - BTN_R, width: BTN_R * 2, height: BTN_R * 2, ['--i' as string]: i }}
               aria-pressed={on}
               aria-label={o.label}
               title={hints[o.id] ? `${o.label}: ${hints[o.id]}` : o.label}
@@ -141,6 +143,10 @@ export function RadialHud({ who, center, active, onSelect, warn, hints }: Props)
             </button>
           );
         })}
+        </div>
+        <div className="rhud__map" style={{ width: HUD_MAP_PX, height: HUD_MAP_PX }}>
+          {center}
+        </div>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import type { AgentState } from '../types/icd';
+import { ORBITAL_PREVIEW_LABEL, ORBITAL_PREVIEW_LIMIT } from '../lib/terrainPresentation';
 import { rotateView, ROTATE_STEP_RAD } from './ViewRotator';
 
 const KIND_ORDER: AgentState['agent_kind'][] = ['HUMAN', 'ROVER', 'DRONE'];
@@ -54,8 +55,8 @@ export function CameraBar({ agents, view, hasBase, onFree, onBase, onAgent, firs
       >
         <kbd>V</kbd> {following && firstPerson ? '1st person' : '3rd person'}
       </button>
-      <button type="button" className="chip" disabled={!canScan} title={canScan ? 'Scan the ground around the drone with its camera (R). Display only.' : 'No drone in this run'} onClick={onScan}>
-        <kbd>R</kbd> Scan
+      <button type="button" className="chip" disabled={!canScan} title={canScan ? `${ORBITAL_PREVIEW_LABEL} at the drone position (R). ${ORBITAL_PREVIEW_LIMIT}` : 'No drone in this run'} onClick={onScan}>
+        <kbd>R</kbd> {ORBITAL_PREVIEW_LABEL}
       </button>
       <span className="camera-bar__rotate" role="group" aria-label="Rotate the view">
         <button type="button" className="chip" title="Rotate the view left (Q). Also: right drag or Shift + drag." aria-label="Rotate view left" onClick={() => rotateView(-ROTATE_STEP_RAD)}>

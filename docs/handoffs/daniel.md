@@ -1,5 +1,32 @@
 # Daniel - deliver the canonical public dataset and coherent belief
 
+## Delivery priority after PR28 — owner-confirmed 14 November 2026
+
+Follow [PDF tasks DA-1..4](../delivery_closure_plan.md) and
+[D-DEL-03](../decisions/2026-11-14-delivery-freeze.md). Pause larger-map/scene
+and H-DAN-01 work until after submission; preserve completed studies. Current
+work is existing-crop coverage/ENU checks, source-traced rover-image curation
+where supportable, and the final NASA contribution table. MOLA ingestion and
+F/E protection are already published; do not redo them as missing features.
+New science shortlist/maps remain proposals. No recentering or A/B change
+without explicit owner decision and validation. Remind the organizer gate.
+
+## Audit reconciliation rc.2 — current candidate over main6bcf208
+
+Read the [current gap/evidence matrix](../audit_reconciliation.md) before the
+historical inventories below. `feat/data@6cb1290` is already in main: data
+loading, observation fusion, public batches and MGS/MOLA ingestion are implemented.
+Review current-base/nonolder observation rejection and preservation of obstacle
+evidence. Review the explicit estimated-prior policy jointly with Diego/Jesus;
+coverage and sigma must not be fabricated to obtain a path. Next deliverable:
+producer acceptance of the policy ID/hash, immutable batch semantics and the
+prior-only → one-cell contradiction → actual consumer case. Scientific limits
+still need David. Retain 128 m controls; larger-map work remains optional.
+
+The older scaffold/absent-ingestion statements below describe their dated cut,
+not current main. Sync your owned branch with reviewed main, preserving local
+work; this candidate becomes main only after its PR review/merge.
+
 ## Current continuation — 14 November 2026, main 5ab1387
 
 Follow [CONT-DAN-01..04](../team_continuation_plan.md#daniel--public-terrain-observations-and-larger-map-feasibility):

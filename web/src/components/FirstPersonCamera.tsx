@@ -38,10 +38,40 @@ export function headingFromThree(dx: number, dz: number): number {
   return (deg + 360) % 360;
 }
 
+/** Ground speed (m/s) below which the agent counts as standing still for the sway. */
+const STILL_MPS = 0.05;
+
+/**
+ * Display-only camera sway from the agent's drawn ground speed, so moving reads as walking or
+ * driving: the astronaut's head bobs once per step and rolls slightly, the rover's mast shakes
+ * finely, the hovering drone drifts gently. Offsets in metres (up, side) and radians (roll);
+ * `phase` advances with the step rate (see swayStepHz). No pose or data is changed.
+ */
+export function swayOffset(kind: AgentKind, speedMps: number, phase: number, timeS: number): { up: number; side: number; roll: number } {
+  const moving = Math.max(0, Math.min(1, (speedMps - STILL_MPS) / 0.4)); // eases in from standstill
+  if (kind === 'HUMAN') {
+    // Two vertical dips per stride (one per foot), one side-to-side sway per stride.
+    return { up: -0.035 * moving * Math.abs(Math.sin(phase)), side: 0.022 * moving * Math.sin(phase), roll: 0.006 * moving * Math.sin(phase) };
+  }
+  if (kind === 'ROVER') {
+    return { up: 0.008 * moving * Math.sin(timeS * 37) * Math.sin(timeS * 11), side: 0, roll: 0.002 * moving * Math.sin(timeS * 7) };
+  }
+  // Drone: a slow hover drift even when still, a little stronger in flight.
+  const k = 0.4 + 0.6 * moving;
+  return { up: 0.04 * k * Math.sin(timeS * 1.3), side: 0.03 * k * Math.sin(timeS * 0.9 + 1), roll: 0.004 * k * Math.sin(timeS * 1.1) };
+}
+
+/** Strides per second at a ground speed (Hz): about one per second at a 1 m/s walk. */
+export function swayStepHz(speedMps: number): number {
+  return speedMps < STILL_MPS ? 0 : Math.min(1.6, 0.55 + 0.5 * speedMps);
+}
+
 interface Props {
   /** Scene name of the followed agent group, or null when the view is off. */
   target: string | null;
   kind: AgentKind | null;
+  /** Walking/driving sway of the camera (display only; off with reduced motion by default). */
+  sway: boolean;
 }
 
 /**
@@ -50,13 +80,15 @@ interface Props {
  * double-click recentres. The agent's own model is hidden while seen from inside. Only the camera
  * moves; no pose or data is changed. The orbit controls are disabled meanwhile (MissionScene).
  */
-export function FirstPersonCamera({ target, kind }: Props) {
+export function FirstPersonCamera({ target, kind, sway }: Props) {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const scene = useThree((s) => s.scene);
   const gl = useThree((s) => s.gl);
   const controls = useThree((s) => s.controls) as OrbitControlsImpl | null;
   const setDpr = useThree((s) => s.setDpr);
   const look = useRef({ yaw: 0, pitch: 0, fov: 0 });
+  const motion = useRef<{ last: THREE.Vector3 | null; speed: number; phase: number; time: number }>({ last: null, speed: 0, phase: 0, time: 0 });
+  const right = useRef(new THREE.Vector3());
   const hidden = useRef<THREE.Object3D | null>(null);
   const saved = useRef<{ offset: THREE.Vector3; fov: number } | null>(null);
   const world = useRef(new THREE.Vector3());
@@ -68,6 +100,7 @@ export function FirstPersonCamera({ target, kind }: Props) {
     if (!target || !kind) return;
     const eye = EYE[kind];
     look.current = { yaw: 0, pitch: eye.pitchDeg, fov: eye.fovDeg };
+    motion.current = { last: null, speed: 0, phase: 0, time: 0 };
     saved.current = { offset: controls ? camera.position.clone().sub(controls.target) : new THREE.Vector3(-6, 2.6, 0), fov: camera.fov };
     povState.active = true;
     // Highest quality while seen from the ground: supersample the frame (capped for the GPU).
@@ -136,10 +169,11 @@ export function FirstPersonCamera({ target, kind }: Props) {
   }, [target, kind, gl]);
 
   // After the poses (-2) and the follow camera (same priority, mounted before this one).
-  useFrame(() => {
+  useFrame((_, dtRaw) => {
     if (!target || !kind) return;
     const obj = scene.getObjectByName(target);
     if (!obj) return;
+    const dt = Math.min(Math.max(dtRaw, 1e-4), 0.1);
     if (hidden.current !== obj) {
       if (hidden.current) hidden.current.visible = true;
       hidden.current = obj;
@@ -152,10 +186,24 @@ export function FirstPersonCamera({ target, kind }: Props) {
     fwd.current.set(Math.cos(heading), 0, -Math.sin(heading));
     camera.position.copy(world.current).addScaledVector(fwd.current, eye.forwardM);
     camera.position.y += eye.upM;
+    // Ground speed of the drawn agent (smoothed), for the sway.
+    const m = motion.current;
+    if (m.last) {
+      const v = Math.hypot(world.current.x - m.last.x, world.current.z - m.last.z) / dt;
+      m.speed += (Math.min(v, 30) - m.speed) * Math.min(1, dt * 4);
+    } else m.last = new THREE.Vector3();
+    m.last.copy(world.current);
+    m.time += dt;
+    m.phase += dt * Math.PI * 2 * swayStepHz(m.speed);
+    const s = sway ? swayOffset(kind, m.speed, m.phase, m.time) : { up: 0, side: 0, roll: 0 };
+    right.current.set(Math.sin(heading), 0, Math.cos(heading)); // to the agent's right
+    camera.position.y += s.up;
+    camera.position.addScaledVector(right.current, s.side);
     const yaw = heading + THREE.MathUtils.degToRad(l.yaw);
     const pitch = THREE.MathUtils.degToRad(l.pitch);
     aim.current.set(Math.cos(yaw) * Math.cos(pitch), Math.sin(pitch), -Math.sin(yaw) * Math.cos(pitch));
     camera.lookAt(aim.current.add(camera.position));
+    if (s.roll) camera.rotateZ(s.roll);
     if (Math.abs(camera.fov - l.fov) > 0.01) {
       camera.fov = l.fov;
       camera.updateProjectionMatrix();

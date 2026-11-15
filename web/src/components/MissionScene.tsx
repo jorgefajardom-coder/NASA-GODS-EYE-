@@ -13,8 +13,10 @@ import { FollowCamera, type Framing } from './FollowCamera';
 import { ViewRotator } from './ViewRotator';
 import { TerrainGrowth } from './TerrainGrowth';
 import { FirstPersonCamera } from './FirstPersonCamera';
+import { PovRoute } from './PovRoute';
 import { DroneScan, type ScanRequest } from './DroneScan';
 import { SUN_FROM } from '../lib/sun';
+import { terrainFraming } from '../lib/terrainPresentation';
 import { enuToThree } from '../lib/coords';
 import { CutawayBlock } from './CutawayBlock';
 import { DETAIL_FAR_M, DETAIL_FAR_POV_M, TerrainView } from './TerrainView';
@@ -63,12 +65,14 @@ interface Props {
   firstPerson: boolean;
   /** Last drone-camera scan to draw (display only), or null. */
   scan: ScanRequest | null;
+  /** Walking/driving sway of the first-person camera (display only). */
+  povSway: boolean;
 }
 
 /** Horizon haze colour: dusty Martian daytime sky, darkened so the panels stay readable. */
 const SKY = '#6e5242';
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, scan }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, scan, povSway }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
@@ -79,6 +83,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const smoothing = CAMERA_SMOOTHING[cameraSmoothing];
   const followedKind = view.state?.agents.find((a) => a.agent_id === followed)?.agent_kind ?? null;
   const pov = !!followed && firstPerson && !!followedKind;
+  const povAgent = pov ? view.state?.agents.find((a) => a.agent_id === followed) ?? null : null;
   const drone = view.state?.agents.find((a) => a.agent_kind === 'DRONE') ?? null;
   // Opening growth: the whole layer appears flat and its relief rises to the true shape, scaled
   // about the lowest ground. Agents, the base and labels show once it has finished.
@@ -98,6 +103,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   }, [base, meta, grid, exaggeration]);
   const cameraTarget = followed ? `agent-${followed}` : baseCamera && baseAnchor ? BASE_ANCHOR : null;
   const extent = Math.max(meta.rows, meta.cols) * meta.resolution_m;
+  // Fit to the public prior once per dataset/exaggeration, not to future frames.
+  // Replaying a map update must not reset the user's free camera.
+  const framing = useMemo(() => terrainFraming(meta, bundle.rasters.prior, exaggeration), [meta, bundle.rasters.prior, exaggeration]);
   const ctx = showContext ? bundle.context : undefined;
   // Far plane and haze reach the edge of the context terrain when there is one.
   const reach = ctx ? Math.max(ctx.frame.rows, ctx.frame.cols) * ctx.frame.resolution_m * 0.75 : extent * 6;
@@ -109,7 +117,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   return (
     <Canvas
       className={`scene${freePan ? ' scene--grab' : ''}`}
-      camera={{ position: [-0.75 * extent, 1.25 * extent, 1.7 * extent], fov: 38, near: 1, far: Math.max(extent * 10, reach * 2) }}
+      camera={{ position: framing.position, fov: 38, near: 1, far: Math.max(framing.far, reach * 2) }}
       dpr={[1, 1.75]}
       gl={{ antialias: true, powerPreference: 'high-performance', stencil: true /* the astronaut's projected shadow darkens each pixel once */ }}
       aria-label="3D view of the mission area"
@@ -181,15 +189,20 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       {baseAnchor && <group name={BASE_ANCHOR} position={baseAnchor} />}
       <FollowCamera target={cameraTarget} framing={followed ? undefined : BASE_FRAMING} />
       {/* Mounted after the follow camera: same frame priority, so it places the eye after the follow update. */}
-      <FirstPersonCamera target={pov ? `agent-${followed}` : null} kind={pov ? followedKind : null} />
+      <FirstPersonCamera target={pov ? `agent-${followed}` : null} kind={pov ? followedKind : null} sway={povSway} />
+      {/* First person: the followed agent's own route draped on the ground, with its next waypoint. */}
+      {grown && pov && povAgent && view.activeRoute?.agent_id === followed && view.activeRoute.outbound_path.length > 1 && (
+        <PovRoute route={view.activeRoute} position={povAgent.pose.position} groundHeight={groundHeight} verticalExaggeration={exaggeration} />
+      )}
       <OrbitControls
         makeDefault
+        target={framing.target}
         enabled={!pov}
         enableDamping
         dampingFactor={smoothing.orbitDamping}
         maxPolarAngle={Math.PI / 2.05}
         minDistance={MIN_ORBIT_DISTANCE_M}
-        maxDistance={extent * 2.5}
+        maxDistance={framing.scale * 2.5}
         zoomToCursor
         // Free pan grabs the ground plane (not the screen plane), so dragging slides the map like a chart.
         screenSpacePanning={!freePan}

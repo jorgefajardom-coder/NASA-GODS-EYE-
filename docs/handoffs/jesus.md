@@ -1,5 +1,32 @@
 # Jesus - integrate providers through the canonical interfaces
 
+## Delivery priority after PR28 — owner-confirmed 14 November 2026
+
+Follow [PDF tasks JE-1..5](../delivery_closure_plan.md) and accepted
+[D-DEL-03](../decisions/2026-11-14-delivery-freeze.md). Basic reconciliation
+is published at main9198b3d; semantic/scientific freeze and three-role acceptance
+remain open. Confirm organizer availability/cutoff by 08:00, select run/fallback
+with David by 10:00, freeze features at 12:00 and send the reviewable package
+at 14:00 for intended submission at 20:00 on 15 Nov, all Bogota time. Preserve
+at least four hours' review margin, explicit endorsement and platform receipt.
+Initial organizer contact need not wait for a package. Publish tested fixes and
+honest artifacts, not the pending local cost backend or new expansion scope.
+
+## Audit reconciliation rc.2 — current candidate over main6bcf208
+
+Read the [current gap/evidence matrix](../audit_reconciliation.md) and
+[cost/context/interval proposal](../audit_cost_execution_gaps.md) first.
+PR19/21 are integrated; preserve their recorder, strict viewer and acknowledged
+continuous recovery. Next deliverable: review current-base/nonolder observation
+filtering and versioned estimated-map policy with Daniel/Diego, then bind explicit
+activity/wait/model context and accepted execution evidence to real MissionNode.
+Reuse the scientific EvidenceRecorder; do not create a second mission authority
+or journal. Three role commands, service/wait debit and optional public discovery
+remain open. The featured MOCK human recovery is a same-run software cut only.
+Historical scaffold/raster/stop gaps below retain their original dates; consult
+the current evidence before repeating work. Organizer endorsement is still a
+delivery/readiness gate under AGENTS.md section 15, not closed by this cut.
+
 ## Current continuation — 14 November 2026, main 5ab1387
 
 Follow [CONT-JES-01..05](../team_continuation_plan.md#jesús--three-role-execution-recording-and-deployment-integration):

@@ -1,0 +1,49 @@
+# Mars Gods Eye — Mission Viewer
+
+> NASA Space Apps 2026 project (challenge: Interplanetary Survival Guide: Martian Map; team: Houston, We Have a Bug!). A 3D saved-run viewer. The featured entry, recorded-recovery-001, replays the same recorder package produced by an integrated human stop/replan/resume/return test on Daniel's 128 m public Jezero terrain. Data, mapping and planner providers are real implementations; mission authority and kinematic execution are MOCK, and observations are SIMULATED. Rover and drone states remain idle. The final READY state is not a scientific COMPLETE mission. A separate 2 km illustrative demo remains available. Neither entry is a validated LIVE mission or certified for real operations.
+
+Mission playback is a REPLAY of simulated data, not a live mission. The public orbital inputs retain their separate observational provenance.
+
+## What is real and what is simulated
+
+- Featured recording: public CTX prior and recorded belief/sigma/observed versions on a 32x32 grid at 4 m, 128 m across, with 20 m native CTX source spacing and separate MGS/MOLA regional context. Resampling adds no native detail. Absolute datum and recorded poses are preserved.
+- Separate illustrative demo: provisional 2 km NASA/USGS CTX crop on a 20 m grid, draped MRO CTX image (NASA/JPL-Caltech/MSSS/USGS, via JPL Mars Trek), and USGS SIM 3464 geology. Geology boundaries have about 100-200 m registration uncertainty and do not identify a precise sampling cell. These layers are not silently attached to the 128 m recording.
+- Historical references, not live weather: Perseverance MEDA daily summaries at Jezero (a few sols) and the published MSL RAD surface dose rate at Gale (Hassler et al. 2014), used for an estimated crew dose.
+- The illustrative demo's mission, routes, agent motion, budgets, scarp and POIs are generated data. The featured recording instead contains the planner's actual outputs and executed MOCK states; its budgets and observation inputs remain experimental. Vertical exaggeration is display only and is specified per run.
+- The browser never plans routes: it draws the routes and decisions recorded in the replay.
+
+## How to read the viewer
+
+- Mode label: top right, REPLAY with the package's source (MOCK for the featured recording, SIMULATION for the generated demo; never LIVE).
+- Tabs: Exploration (agents, tasks, routes), Ground layers (geologic map and schematic cut-away), Atmos (MEDA and RAD references), Mission replay (event log).
+- Terrain layers: Orbital map (prior), Updated map (per recorded map version), Slope (Horn 3x3 at the current grid spacing), Uncertainty (reported model sigma). The derivative window is 12 m on the 4 m recording grid and 60 m on the 20 m demo grid; both source and grid spacing are shown. Neither slope bands nor sigma certify passage.
+- Agent dial (bottom right): oxygen, energy, time, route, atmosphere and dose gauges around a heading-up minimap.
+- Cameras: Map, Astronaut, Rover, Drone, Base; V switches the followed agent between third and first person. In first person the HUD shows a compass, site bearings, resources, the route ahead with the next waypoint, and a minimap.
+- Orbital slope preview (R): redraws prior-derived slope around the drone position in display bands (< 8°, 8–15°, ≥ 15°). It is not a camera observation or mission command; map, uncertainty and routes remain unchanged. This limit is visible before activation.
+- Keyboard: Space play/pause, ←/→ ±5 s, Home restart, F follow the selected agent, G grab-to-drag map, Q/E rotate, V first person, R orbital slope preview, B camera sway in first person.
+- URL parameters: ?run=recorded-recovery-001 (default, intro omitted), ?run=demo (separate illustrative story), or ?run=mock-vertical-001 (historical flat-MOCK recording); ?nointro=1 skips the demo intro. Entry folders and internal run IDs are separate identifiers.
+
+## Machine-readable data
+
+- Featured recording: [manifest](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/replay/recorded-recovery-001/manifest.json), [timeline](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/replay/recorded-recovery-001/timeline.jsonl), [closing snapshot](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/replay/recorded-recovery-001/snapshot.json), and [public rasters](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/replay/recorded-recovery-001/public_rasters.json). They preserve the recorder's internal run_id and source provenance. The loader checks snapshot/timeline closure, counts, immutable route IDs, run/schema/time/map identity, raster geometry/versions and evaluator isolation before rendering.
+- [Demo run manifest](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/replay/demo/manifest.json): title, summary, disclaimer, provenance, terrain grid metadata, POIs, AI disclosure and file list.
+- [Demo timeline](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/replay/demo/timeline.json) and [routes](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/replay/demo/routes.json): mission states, agent poses, events and route decisions over simulated time.
+- In the running page, `window.mge.state()` returns the current replay state as JSON (time, mission state, map version, agents with pose and resources, active route, camera and layer), and `window.mge.about` repeats what is real and what is simulated.
+- Private-browser, backend-off acceptance (AC-08) must be recorded for this featured package; this description does not claim that check has passed. Optional geology/context appears only for matching scene metadata. The viewer never borrows the evaluator reference or another scene's rasters.
+
+## Docs
+
+- [About this viewer](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/about.html): features, controls, sources and limits in one page.
+- [Repository README](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-#readme): system overview (ROS 2 Jazzy simulation, planner, mission authority, gateway, replay recorder, this viewer), status and branches.
+- [Data sources](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/data_sources.md) and [NASA traceability](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/nasa_traceability.md).
+- [Replay contract](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/REPLAY_CONTRACT.md) and [interface contract (ICD)](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/ICD.md).
+- [Verification](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/verification.md) and [integration status](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/integration_log.md).
+
+## AI use (required declaration)
+
+- AI tools were used and are declared in [AI_USAGE.md](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/AI_USAGE.md) and [ai_usage.json](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/ai_usage.json), with the affected files.
+- The intro video (Kling) and the astronaut portrait (ChatGPT) are AI-generated and carry a visible "AI-generated" watermark. The simulated replay fixture was generated with AI-assisted code; it is not observational data.
+
+## Optional
+
+- [Mission checklist](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/mission_checklist.md), [requirements](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/requirements.md) and [science decisions](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/science_decisions.md).

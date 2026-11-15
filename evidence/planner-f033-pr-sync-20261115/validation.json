@@ -1,0 +1,138 @@
+{
+  "baseline_main": "29e9f97b3a4b17e86880afd2b47e4e984f9de4b4",
+  "planner_parent": "267be6b3a09e8474fe279c71cd0aa58e8cfbe6d3",
+  "merge_conflicts_resolved": [
+    "docs/AI_USAGE.md",
+    "docs/ai_usage.json"
+  ],
+  "results": {
+    "python_full": {
+      "tests": 1162,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 22,
+      "passed": 1140,
+      "omissions": [
+        {
+          "name": "tests.contract.test_generated_conversion",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_interfaces",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mission_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mission_service",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_mock_recovery",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_planner_service",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.contract.test_profile_launch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_estimated_exploration",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_planner_concurrency",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_replay_package",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_terrain_batch",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_execution",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_mission",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_mock",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_planner",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "tests.integration.test_vertical_terrain",
+          "reason": "collection skipped"
+        },
+        {
+          "name": "test_generated_ros_observation_uses_the_same_conversion_and_fusion_boundary",
+          "reason": "Requires built ROS 2 interfaces"
+        },
+        {
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[outside]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-pr-full\\\\test_symlinks_cannot_open_exte0\\\\outside.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-pr-full\\\\test_symlinks_cannot_open_exte0\\\\run\\\\public.json'"
+        },
+        {
+          "name": "test_symlinks_cannot_open_external_or_hidden_reference_files[reference]",
+          "reason": "This host does not permit creating test symlinks: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-pr-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\reference\\\\hidden.json' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-pr-full\\\\test_symlinks_cannot_open_exte1\\\\run\\\\public.json'"
+        },
+        {
+          "name": "test_package_symlink_escape_is_rejected",
+          "reason": "Host does not permit creating symlink fixtures"
+        },
+        {
+          "name": "test_actual_published_snapshot_probe_when_explicit_snapshot_is_available",
+          "reason": "Explicit published planner snapshot is not materialized"
+        },
+        {
+          "name": "test_symlinked_public_archive_cannot_escape_package",
+          "reason": "Host does not allow symlink fixture: [WinError 1314] El cliente no dispone de un privilegio requerido: 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-pr-full\\\\test_symlinked_public_archive_0\\\\outside.npz' -> 'C:\\\\Users\\\\Admin\\\\Desktop\\\\NASA-GODS-EYE-\\\\tmp\\\\f033-pr-full\\\\test_symlinked_public_archive_0\\\\public\\\\terrain.npz'"
+        }
+      ]
+    },
+    "focused": {
+      "tests": 86,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 86,
+      "omissions": []
+    }
+  },
+  "web": {
+    "passed": 201,
+    "skipped": 1,
+    "failed": 0,
+    "build": "passed",
+    "note": "Initial sandbox spawn EPERM; retry with process permission passed"
+  },
+  "repository_check": "passed",
+  "diff_check": "passed",
+  "warning": "Existing Starlette/httpx deprecation",
+  "ros": {
+    "status": "BLOCKED_BEFORE_EXECUTION",
+    "error": "HCS/ERROR_NO_SYSTEM_RESOURCES",
+    "native_build_or_tests_executed": false,
+    "ci_required": true
+  },
+  "source_sha256": {
+    "src/mge_planning/mge_planning/core.py": "f59b51ccdd53218ecaa425b3fc7963fe43f3bfd95d1157a3aa687b9378c950d9",
+    "src/mge_planning/mge_planning/replan.py": "208e5d6d87eca67c2fe78a7c453344a1439479ad649448ab334ced3297e810fe",
+    "src/mge_planning/mge_planning/resource_costs.py": "d5f5320f08b254b31afeb28e2584e558048cb6516ecad7747590da22e050ba6d",
+    "src/mge_mission/mge_mission/models.py": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52"
+  },
+  "approval": "No scientific or operational approval; no production scientific-backend wiring"
+}

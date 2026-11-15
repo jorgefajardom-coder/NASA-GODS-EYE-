@@ -1,5 +1,30 @@
 # Diego - preserve the advanced planner and reconcile resource costs
 
+## Delivery priority after PR28 — owner-confirmed 14 November 2026
+
+Follow [PDF tasks DI-1..3](../delivery_closure_plan.md) and
+[D-DEL-03](../decisions/2026-11-14-delivery-freeze.md). Support time-boxed C3
+closure and select the existing real-planner/MOCK recovery fallback at the
+10:00 cut if full evidence is missing; provide English planner text. Estimated
+planning and continuous MOCK recovery are published, not new missing features.
+D-COST-02 chooses the scientific API, but the later local backend/context is
+not in PR28 or this docs cut; preserve model/profile gates and pending review.
+Pause scaling/new scenes. Submit target 15 Nov 20:00 Bogota; remind JES-07.
+
+## Audit reconciliation rc.2 — current candidate over main6bcf208
+
+Read the [current gap/evidence matrix](../audit_reconciliation.md) and
+[cost/context/interval proposal](../audit_cost_execution_gaps.md) first.
+`feat/planner@69101e9` is already in main. Preserve its search and opted-in
+3-D continuous connector. The fresh published-source comparison still has
+1 agreement / 6 disagreements; do not enable model agreement. Next deliverable:
+shared executable costs or proven conservative bounds plus explicit activity,
+waiting and model/profile/context binding, reviewed with David/Jesus. Then run
+all directed itineraries, budget boundaries and actual mission consumer checks.
+Review estimated-mask semantics with Daniel: sigma stays 2.5 m, independent
+profile limits still apply, and candidate admissibility is not authorization.
+Historical centre-only/scaffold statements below predate the integrated PRs.
+
 ## Current continuation — 14 November 2026, main 5ab1387
 
 PR12 is integrated. Follow [CONT-DIE-01..03](../team_continuation_plan.md#diego--authorized-recovery-and-scalable-planning):

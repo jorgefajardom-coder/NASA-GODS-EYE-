@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0.0",
+  "classification": "MODEL_CONFORMANCE_DIAGNOSTIC",
+  "run_id": "audit-reconciliation-cost-20261115",
+  "recorded_at_utc": "2026-11-15T01:32:39.711004+00:00",
+  "published_baseline_revision": "6bcf208868e37b7e15e9189fac11de96e7414eff",
+  "working_tree_dirty": true,
+  "planner_source_selection": "Exact published Git snapshot materialized temporarily by the existing CLI; no planner implementation copied into another module",
+  "python_version": "3.12.14",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "command": [
+    "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+    "scripts/check_planner_conformance.py",
+    "--planner-ref",
+    "6bcf208868e37b7e15e9189fac11de96e7414eff",
+    "--profiles",
+    "config/science_profiles.proposed.json",
+    "--run-id",
+    "audit-reconciliation-cost-20261115",
+    "--output-dir",
+    "evidence/audit-reconciliation-20261115/cost"
+  ],
+  "command_exit_code": 0,
+  "result": {
+    "status": "COMPLETED",
+    "authorization": "BLOCKED",
+    "summary": {
+      "AGREE": 1,
+      "DISAGREE": 6,
+      "NOT_FEASIBLE": 0,
+      "ERROR": 0
+    }
+  },
+  "inputs_sha256": {
+    "scripts/check_planner_conformance.py": "d0da82efe00c209332d2c3ba4e793a5150f135e473fa36c0329385076d2aede1",
+    "src/mge_mission/mge_mission/conformance.py": "60cf240d8408252b9d34d0fd2e42c2b55f87d89fb68402262ba9738f84b0daaa",
+    "src/mge_mission/mge_mission/models.py": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "config/science_profiles.proposed.json": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "config/cost_agreement.experimental.json": "d1f5ff02b8381c3e3e8cb44c63f103ac333d0c6f252d55276a1b45c24e5a2148",
+    "config/mission_jezero.experimental.yaml": "b4f424dbd0c96fd7190502a0c5dc88d556de285d171568de12cce1e73b9324d1",
+    "config/mission_success.experimental.json": "b2128d4cd5b1b2d798de5761180edba929d5453d6d8e01e9fb8ee99245b69a90"
+  },
+  "artifact_sha256": {
+    "conformance.json": "31b6658afc8a14d6ac0c3c8992b279e5fe2cd53ae2aa6419ff8b1d8eab5424cf",
+    "command.log": "8ee5c5b52dbf51da8d52501317d199e5029ea6146ce2f454d5fe1a485b1c46db"
+  },
+  "limitations": [
+    "Seven synthetic model-comparison cases; no mission, execution, observation, task completion or scientific approval.",
+    "Published planner source was tested; concurrent uncommitted working-tree implementation changes are outside this comparison.",
+    "Disagreement is a completed diagnostic result; authorization remains BLOCKED.",
+    "The full exported vector set and end-to-end context/activity/execution consumers remain pending."
+  ]
+}

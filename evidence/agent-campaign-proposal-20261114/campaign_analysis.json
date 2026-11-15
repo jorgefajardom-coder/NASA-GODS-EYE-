@@ -1,0 +1,4969 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "agent-campaign-analytic-proposal-20261114",
+  "classification": "ANALYTICAL_DESIGN_REQUIREMENTS_NOT_ROUTES_OR_HARDWARE_CAPACITIES",
+  "recorded_at_utc": "2026-11-15T02:44:41.982148+00:00",
+  "revision": "c3ec4c1f1515dbc981ba82eed2ab1f54e9586264",
+  "working_tree_dirty": true,
+  "command": [
+    "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+    "evidence/agent-campaign-proposal-20261114/reproduce_agent_campaign.py",
+    "--output",
+    "tmp/agent-campaign-analysis-source-polished.json"
+  ],
+  "model_id": "mge-science-1.0.0",
+  "source_sha256": {
+    "config/science_profiles.proposed.json": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "config/mission_jezero.experimental.yaml": "b4f424dbd0c96fd7190502a0c5dc88d556de285d171568de12cce1e73b9324d1",
+    "config/mission_jezero.proposed.yaml": "e9cb9144a6861de71fbe0f633b9b3bc9f58c322666c1717c6523a948c5603a42",
+    "src/mge_mission/mge_mission/models.py": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "docs/science_approvals/jezero_scenario_20261114.json": "c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518",
+    "evidence/science-patch-survey-20261114/jezero_candidates.proposed.json": "62def911b0179e32e6b14c530f0edd530784582e51c56987181a4763ec4e099d",
+    "evidence/science-patch-survey-20261114/map_requests.proposed.json": "4269fb73df8de94a48d1be040deeb8f0b79890e2aac479ea8fe5130e0fe36546",
+    "evidence/agent-campaign-proposal-20261114/assumptions.proposed.json": "eb8108f3ac31585c65aee630ce9951b5181a1865191c70167f25e1e449d3c14b",
+    "evidence/agent-campaign-proposal-20261114/reproduce_agent_campaign.py": "add4c9a24a7ef96f0b8b756c97badfb9e1732d3a74f5ec1aa731bcb77e7607ad"
+  },
+  "assumptions": {
+    "schema_version": "1.0.0",
+    "status": "PROPOSED_NOT_OPERATIONAL",
+    "classification": "ENGINEERING_DESIGN_WORKLOADS_NOT_MEASURED_PATCH_ROUTES",
+    "source_revision": "c3ec4c1f1515dbc981ba82eed2ab1f54e9586264",
+    "mission_input": false,
+    "scientific_approval": false,
+    "execution_authorized": false,
+    "sources": {
+      "profiles": {
+        "path": "config/science_profiles.proposed.json",
+        "scope": "Unchanged proposed powers, parameters and sensitivity endpoints; not calibrated Mars hardware"
+      },
+      "scenario": {
+        "path": "config/mission_jezero.experimental.yaml",
+        "scope": "Preserve approved 120 s visual check-in and 20 percent reserve policy as the controlled baseline; new allocations are unapproved"
+      },
+      "samples": {
+        "url": "https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf",
+        "scope": "Approximately 10 min documented sample in a terrestrial D-RATS analog; the 420/180 light/heavy split is our engineering assumption"
+      },
+      "power": {
+        "url": "https://www.jpl.nasa.gov/news/press_kits/mars_2020/landing/mission/spacecraft/power/",
+        "scope": "110 W beginning-of-mission MMRTG reference only, no generation credit or battery capacity assumption"
+      },
+      "sol": {
+        "url": "https://www.giss.nasa.gov/tools/mars24/help/notes.html",
+        "scope": "Mean Mars solar day: 24 hours 39 minutes 35.244 seconds; calendar reference only, not a daylight or thermal model"
+      },
+      "flight12": {
+        "url": "https://science.nasa.gov/mission/mars-2020-perseverance/ingenuity-mars-helicopter/",
+        "scope": "169.5 s historical Flight 12 comparison supplied for context; not a certified flight-time bound"
+      }
+    },
+    "reserve_fraction": 0.2,
+    "reserve_fraction_sensitivity": [
+      0.1,
+      0.2,
+      0.3
+    ],
+    "reserve_basis": {
+      "unit": "fraction of total allocation",
+      "source_id": "scenario",
+      "approval_status": "pending_for_new_campaigns",
+      "derivation": "Nominal requirement divided by 1-r; unused reserve is not consumed work"
+    },
+    "rounding": {
+      "human_time_s": 300,
+      "human_energy_wh": 25,
+      "human_oxygen_l": 5,
+      "rover_time_s": 1800,
+      "rover_energy_wh": 100,
+      "drone_time_s": 30,
+      "drone_energy_wh": 1
+    },
+    "rounding_basis": {
+      "origin": "engineering_design_workload_not_measured",
+      "approval_status": "pending",
+      "justification": "Readable requested allocations rounded upward; never comparison-tolerance budget credit"
+    },
+    "human": {
+      "primary_checkin_s": 120,
+      "sample_workflow_s": 600,
+      "sample_light_phase_s": 420,
+      "sample_heavy_phase_s": 180
+    },
+    "human_basis": {
+      "duration_unit": "s",
+      "source_ids": [
+        "scenario",
+        "samples"
+      ],
+      "approval_status": "pending",
+      "interpretation": "Check-in retains approved meaning; complete workflow includes documentation once; no optional inspection capability or work evidence is created"
+    },
+    "rover": {
+      "visual_station_s": 600,
+      "coordination_wait_s": 1800
+    },
+    "rover_basis": {
+      "duration_unit": "s",
+      "origin": "engineering_design_workload_not_measured",
+      "approval_status": "pending",
+      "interpretation": "Visual/geometric inspection block, not measured spectroscopy, drilling or chemical analysis; coordinate wait is a proposed schedule allowance"
+    },
+    "drone": {
+      "altitude_m": 10,
+      "observation_s": 30,
+      "takeoff_hover_surrogate_s": 5,
+      "landing_hover_surrogate_s": 5,
+      "ground_wait_s": 10
+    },
+    "drone_basis": {
+      "units": "m altitude; s phase durations",
+      "origin": "engineering_design_workload_not_measured",
+      "approval_status": "pending",
+      "interpretation": "Vertical segments and hover surrogates are disjoint costing assumptions, not aerodynamic takeoff/landing or obstacle clearance validation"
+    },
+    "joint_adverse": {
+      "distance_factor": 1.25,
+      "positive_ascent_factor": 1.5,
+      "service_duration_factor": 1.5,
+      "coordination_wait_duration_factor": 1.0,
+      "profile_endpoints": "Minimum speeds and efficiencies; maximum masses, grade slowdown, slip, rolling resistance, auxiliary/activity powers and oxygen multiplier where registered"
+    },
+    "joint_adverse_basis": {
+      "origin": "engineering_design_workload_not_measured",
+      "approval_status": "pending",
+      "interpretation": "Combined stress case, not a probability, confidence interval or proof of global worst case; failed resource margins are retained"
+    },
+    "calendar_reference": {
+      "sol_s": 88775.244,
+      "MMRTG_beginning_of_mission_reference_w": 110
+    },
+    "calendar_basis": {
+      "units": "s; W electrical",
+      "source_ids": [
+        "power",
+        "sol"
+      ],
+      "approval_status": "reference_only",
+      "interpretation": "One/two-sol standby thought experiment; full sleep, thermal, communications, recharge and state-of-charge model unavailable"
+    },
+    "cases": [
+      {
+        "id": "CAM-BUNSEN",
+        "candidate_id": "JZ-ROI-04",
+        "human_total_horizontal_m": 200,
+        "human_positive_ascent_m": 5,
+        "human_sample_workflows": 1,
+        "human_coordination_wait_s": 600,
+        "rover_total_horizontal_m": 500,
+        "rover_positive_ascent_m": 10,
+        "rover_visual_stations": 2,
+        "drone_sorties": 1,
+        "drone_outward_horizontal_m": 50
+      },
+      {
+        "id": "CAM-BRIGHT",
+        "candidate_id": "JZ-ROI-01",
+        "human_total_horizontal_m": 400,
+        "human_positive_ascent_m": 10,
+        "human_sample_workflows": 2,
+        "human_coordination_wait_s": 900,
+        "rover_total_horizontal_m": 800,
+        "rover_positive_ascent_m": 15,
+        "rover_visual_stations": 3,
+        "drone_sorties": 2,
+        "drone_outward_horizontal_m": 110
+      },
+      {
+        "id": "CAM-HAWKSBILL",
+        "candidate_id": "JZ-ROI-02",
+        "human_total_horizontal_m": 600,
+        "human_positive_ascent_m": 20,
+        "human_sample_workflows": 3,
+        "human_coordination_wait_s": 1200,
+        "rover_total_horizontal_m": 1200,
+        "rover_positive_ascent_m": 25,
+        "rover_visual_stations": 4,
+        "drone_sorties": 2,
+        "drone_outward_horizontal_m": 75
+      }
+    ],
+    "case_field_basis": {
+      "origin": "engineering_design_workload_not_measured",
+      "units": {
+        "*_m": "m",
+        "*_s": "s",
+        "*_workflows": "count",
+        "*_stations": "count",
+        "*_sorties": "count"
+      },
+      "approval_status": "pending",
+      "interpretation": "Distances include the full modeled return, positive ascent occurs once with directed descent on return. Named sectors motivate workload diversity but these are not measured routes, actual target coordinates or assigned tasks."
+    }
+  },
+  "adverse_profile_endpoint_changes": {
+    "human_1": [
+      {
+        "parameter": "profiles.human_1.parameters.oxygen_scale",
+        "nominal": 1,
+        "endpoint": "sensitivity_max",
+        "value": 1.25
+      },
+      {
+        "parameter": "profiles.human_1.parameters.body_mass_kg",
+        "nominal": 80.7,
+        "endpoint": "sensitivity_max",
+        "value": 100
+      },
+      {
+        "parameter": "profiles.human_1.parameters.suit_mass_kg",
+        "nominal": 120,
+        "endpoint": "sensitivity_max",
+        "value": 140
+      },
+      {
+        "parameter": "profiles.human_1.parameters.speed_m_s",
+        "nominal": 0.8333,
+        "endpoint": "sensitivity_min",
+        "value": 0.6
+      },
+      {
+        "parameter": "profiles.human_1.parameters.slope_slowdown",
+        "nominal": 2,
+        "endpoint": "sensitivity_max",
+        "value": 3
+      },
+      {
+        "parameter": "profiles.human_1.parameters.climb_efficiency",
+        "nominal": 0.25,
+        "endpoint": "sensitivity_min",
+        "value": 0.2
+      },
+      {
+        "parameter": "profiles.human_1.activity_power_w.walk",
+        "nominal": 417.7,
+        "endpoint": "sensitivity_max",
+        "value": 501.23999999999995
+      },
+      {
+        "parameter": "profiles.human_1.activity_power_w.wait",
+        "nominal": 358.08,
+        "endpoint": "sensitivity_max",
+        "value": 429.69599999999997
+      },
+      {
+        "parameter": "profiles.human_1.activity_power_w.inspect",
+        "nominal": 358.08,
+        "endpoint": "sensitivity_max",
+        "value": 429.69599999999997
+      },
+      {
+        "parameter": "profiles.human_1.activity_power_w.sample",
+        "nominal": 461.17,
+        "endpoint": "sensitivity_max",
+        "value": 553.404
+      }
+    ],
+    "rover_1": [
+      {
+        "parameter": "profiles.rover_1.parameters.mass_kg",
+        "nominal": 1025,
+        "endpoint": "sensitivity_max",
+        "value": 1230
+      },
+      {
+        "parameter": "profiles.rover_1.parameters.speed_m_s",
+        "nominal": 0.04,
+        "endpoint": "sensitivity_min",
+        "value": 0.02
+      },
+      {
+        "parameter": "profiles.rover_1.parameters.rolling_resistance",
+        "nominal": 0.05,
+        "endpoint": "sensitivity_max",
+        "value": 0.1
+      },
+      {
+        "parameter": "profiles.rover_1.parameters.slip",
+        "nominal": 0.1,
+        "endpoint": "sensitivity_max",
+        "value": 0.3
+      },
+      {
+        "parameter": "profiles.rover_1.parameters.drive_efficiency",
+        "nominal": 0.35,
+        "endpoint": "sensitivity_min",
+        "value": 0.25
+      },
+      {
+        "parameter": "profiles.rover_1.parameters.auxiliary_power_w",
+        "nominal": 100,
+        "endpoint": "sensitivity_max",
+        "value": 150
+      },
+      {
+        "parameter": "profiles.rover_1.activity_power_w.wait",
+        "nominal": 80,
+        "endpoint": "sensitivity_max",
+        "value": 96
+      },
+      {
+        "parameter": "profiles.rover_1.activity_power_w.inspect",
+        "nominal": 200,
+        "endpoint": "sensitivity_max",
+        "value": 240
+      }
+    ],
+    "drone_1": [
+      {
+        "parameter": "profiles.drone_1.parameters.mass_kg",
+        "nominal": 1.8,
+        "endpoint": "sensitivity_max",
+        "value": 2.16
+      },
+      {
+        "parameter": "profiles.drone_1.parameters.speed_m_s",
+        "nominal": 2,
+        "endpoint": "sensitivity_min",
+        "value": 1.6
+      },
+      {
+        "parameter": "profiles.drone_1.parameters.vertical_speed_m_s",
+        "nominal": 1,
+        "endpoint": "sensitivity_min",
+        "value": 0.8
+      },
+      {
+        "parameter": "profiles.drone_1.parameters.climb_efficiency",
+        "nominal": 0.5,
+        "endpoint": "sensitivity_min",
+        "value": 0.2
+      },
+      {
+        "parameter": "profiles.drone_1.activity_power_w.ground_wait",
+        "nominal": 5,
+        "endpoint": "sensitivity_max",
+        "value": 6
+      },
+      {
+        "parameter": "profiles.drone_1.activity_power_w.translate",
+        "nominal": 350,
+        "endpoint": "sensitivity_max",
+        "value": 420
+      },
+      {
+        "parameter": "profiles.drone_1.activity_power_w.ascent",
+        "nominal": 350,
+        "endpoint": "sensitivity_max",
+        "value": 420
+      },
+      {
+        "parameter": "profiles.drone_1.activity_power_w.descent",
+        "nominal": 230,
+        "endpoint": "sensitivity_max",
+        "value": 276
+      },
+      {
+        "parameter": "profiles.drone_1.activity_power_w.hover",
+        "nominal": 230,
+        "endpoint": "sensitivity_max",
+        "value": 276
+      },
+      {
+        "parameter": "profiles.drone_1.activity_power_w.observe",
+        "nominal": 230,
+        "endpoint": "sensitivity_max",
+        "value": 276
+      }
+    ]
+  },
+  "cases": [
+    {
+      "case": {
+        "id": "CAM-BUNSEN",
+        "candidate_id": "JZ-ROI-04",
+        "human_total_horizontal_m": 200,
+        "human_positive_ascent_m": 5,
+        "human_sample_workflows": 1,
+        "human_coordination_wait_s": 600,
+        "rover_total_horizontal_m": 500,
+        "rover_positive_ascent_m": 10,
+        "rover_visual_stations": 2,
+        "drone_sorties": 1,
+        "drone_outward_horizontal_m": 50
+      },
+      "nominal": {
+        "human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                100.0,
+                0,
+                5
+              ],
+              "cost": {
+                "time_s": 132.00528021120846,
+                "energy_wh": 19.45292931783938,
+                "oxygen_l": 3.9723410609538674
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 120,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 120.0,
+                "energy_wh": 11.936,
+                "oxygen_l": 2.437363655049335
+              }
+            },
+            {
+              "phase": "documented_sample_1_light",
+              "activity": "inspect",
+              "duration_input_s": 420,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 420.0,
+                "energy_wh": 41.776,
+                "oxygen_l": 8.530772792672673
+              }
+            },
+            {
+              "phase": "documented_sample_1_heavy",
+              "activity": "sample",
+              "duration_input_s": 180,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 23.058500000000002,
+                "oxygen_l": 4.708608398119562
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 59.68,
+                "oxygen_l": 12.186818275246676
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                100.0,
+                0,
+                5
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 132.00528021120846,
+                "energy_wh": 15.316279317839381,
+                "oxygen_l": 3.1276258830333052
+              }
+            }
+          ],
+          "total": {
+            "time_s": 1584.0105604224168,
+            "energy_wh": 171.21970863567876,
+            "oxygen_l": 34.96353006507542
+          },
+          "sample_workflows": 1,
+          "total_horizontal_m": 200,
+          "positive_ascent_m": 5,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": 95.9894395775832,
+            "energy_wh": 8.780291364321243,
+            "oxygen_l": 1.0364699349245825
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                250.0,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 6949.997779553779,
+                "energy_wh": 268.5068827653828,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 40.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 1584.0105604224168,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1584.0105604224168,
+                "energy_wh": 35.20023467605371,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                250.0,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 6949.997779553779,
+                "energy_wh": 201.43898153081486,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 18484.006119529975,
+            "energy_wh": 611.812765638918,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 9949.997779553778,
+          "human_end_offset_s": 11534.008339976195,
+          "rover_return_offset_s": 18484.006119529975,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": 235.99388047002503,
+            "energy_wh": 28.187234361082005
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "drone": {
+          "phases_per_sortie": [
+            {
+              "phase": "takeoff_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 5.0,
+                "energy_wh": 0.3194444444444444,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_ascent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 1.0093222222222222,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "outward_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                50,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 25.0,
+                "energy_wh": 2.4305555555555554,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "suspended_observation",
+              "activity": "observe",
+              "duration_input_s": 30,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 30.0,
+                "energy_wh": 1.9166666666666667,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "return_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                50,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 25.0,
+                "energy_wh": 2.4305555555555554,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_descent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 0.6388888888888888,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "landing_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 5.0,
+                "energy_wh": 0.3194444444444444,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "ground_wait",
+              "activity": "ground_wait",
+              "duration_input_s": 10,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 0.013888888888888888,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "per_sortie": {
+            "time_s": 120.0,
+            "energy_wh": 9.078766666666667,
+            "oxygen_l": null
+          },
+          "airborne_time_s": 110.0,
+          "historical_Flight12_reference_s": 169.5,
+          "exceeds_historical_reference": false,
+          "historical_record_is_certified_limit": false,
+          "sorties": 1,
+          "known_subset_total": {
+            "time_s": 120.0,
+            "energy_wh": 9.078766666666667,
+            "oxygen_l": null
+          },
+          "cumulative_consumption_after_each_sortie": [
+            {
+              "time_s": 120.0,
+              "energy_wh": 9.078766666666667,
+              "oxygen_l": null
+            }
+          ],
+          "energy_reset_between_sorties": false,
+          "recharge_credit_wh": 0,
+          "whole_campaign_energy_status": "NOT_ESTIMATED_SLEEP_THERMAL_RECHARGE_UNMODELED",
+          "whole_campaign_feasible": null,
+          "flight_validated": false,
+          "reserve_margins": {
+            "time_s": 0.0,
+            "energy_wh": 0.521233333333333
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        }
+      },
+      "requested_caps": {
+        "human": {
+          "requested": {
+            "time_s": 2100,
+            "energy_wh": 225,
+            "oxygen_l": 45
+          },
+          "separate_reserves": {
+            "time_s": 420.0,
+            "energy_wh": 45.0,
+            "oxygen_l": 9.0
+          },
+          "reserve_fraction": 0.2,
+          "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+        },
+        "rover": {
+          "requested": {
+            "time_s": 23400,
+            "energy_wh": 800
+          },
+          "separate_reserves": {
+            "time_s": 4680.0,
+            "energy_wh": 160.0
+          },
+          "reserve_fraction": 0.2,
+          "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+        },
+        "drone": {
+          "requested": {
+            "time_s": 150,
+            "energy_wh": 12
+          },
+          "separate_reserves": {
+            "time_s": 30.0,
+            "energy_wh": 2.4000000000000004
+          },
+          "reserve_fraction": 0.2,
+          "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+        }
+      },
+      "drone_per_sortie_cap": {
+        "requested": {
+          "time_s": 150,
+          "energy_wh": 12
+        },
+        "separate_reserves": {
+          "time_s": 30.0,
+          "energy_wh": 2.4000000000000004
+        },
+        "reserve_fraction": 0.2,
+        "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+      },
+      "joint_adverse": {
+        "human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                125.0,
+                0,
+                7.5
+              ],
+              "cost": {
+                "time_s": 245.83333333333334,
+                "energy_wh": 43.503194444444446,
+                "oxygen_l": 11.104338243280104
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 180.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 21.4848,
+                "oxygen_l": 5.484068223861004
+              }
+            },
+            {
+              "phase": "documented_sample_1_light",
+              "activity": "inspect",
+              "duration_input_s": 630.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 630.0,
+                "energy_wh": 75.1968,
+                "oxygen_l": 19.194238783513512
+              }
+            },
+            {
+              "phase": "documented_sample_1_heavy",
+              "activity": "sample",
+              "duration_input_s": 270.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 270.0,
+                "energy_wh": 41.5053,
+                "oxygen_l": 10.594368895769016
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 71.616,
+                "oxygen_l": 18.280227412870012
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                125.0,
+                0,
+                7.5
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 245.83333333333334,
+                "energy_wh": 34.22819444444445,
+                "oxygen_l": 8.736862968839066
+              }
+            }
+          ],
+          "total": {
+            "time_s": 2171.6666666666665,
+            "energy_wh": 287.5342888888889,
+            "oxygen_l": 73.39410452813271
+          },
+          "sample_workflows": 1,
+          "total_horizontal_m": 250.0,
+          "positive_ascent_m": 7.5,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": -491.6666666666665,
+            "energy_wh": -107.53428888888891,
+            "oxygen_l": -37.394104528132715
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                312.5,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 22347.128062752523,
+                "energy_wh": 1266.1345026146885,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 48.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 2171.6666666666665,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 2171.6666666666665,
+                "energy_wh": 57.91111111111111,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                312.5,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 22347.128062752523,
+                "energy_wh": 1048.8345026146885,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 50465.92279217171,
+            "energy_wh": 2540.8801163404883,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 25947.128062752523,
+          "human_end_offset_s": 28118.79472941919,
+          "rover_return_offset_s": 50465.92279217171,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": -31745.92279217171,
+            "energy_wh": -1900.8801163404883
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "drone": {
+          "phases_per_sortie": [
+            {
+              "phase": "takeoff_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 7.5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 7.5,
+                "energy_wh": 0.575,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_ascent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 18.75,
+                "energy_wh": 2.35445,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "outward_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                62.5,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 39.0625,
+                "energy_wh": 4.557291666666667,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "suspended_observation",
+              "activity": "observe",
+              "duration_input_s": 45.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 45.0,
+                "energy_wh": 3.45,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "return_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                62.5,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 39.0625,
+                "energy_wh": 4.557291666666667,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_descent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 18.75,
+                "energy_wh": 1.4375,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "landing_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 7.5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 7.5,
+                "energy_wh": 0.575,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "ground_wait",
+              "activity": "ground_wait",
+              "duration_input_s": 10,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 0.016666666666666666,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "per_sortie": {
+            "time_s": 185.625,
+            "energy_wh": 17.5232,
+            "oxygen_l": null
+          },
+          "airborne_time_s": 175.625,
+          "historical_Flight12_reference_s": 169.5,
+          "exceeds_historical_reference": true,
+          "historical_record_is_certified_limit": false,
+          "sorties": 1,
+          "known_subset_total": {
+            "time_s": 185.625,
+            "energy_wh": 17.5232,
+            "oxygen_l": null
+          },
+          "cumulative_consumption_after_each_sortie": [
+            {
+              "time_s": 185.625,
+              "energy_wh": 17.5232,
+              "oxygen_l": null
+            }
+          ],
+          "energy_reset_between_sorties": false,
+          "recharge_credit_wh": 0,
+          "whole_campaign_energy_status": "NOT_ESTIMATED_SLEEP_THERMAL_RECHARGE_UNMODELED",
+          "whole_campaign_feasible": null,
+          "flight_validated": false,
+          "reserve_margins": {
+            "time_s": -65.625,
+            "energy_wh": -7.9232
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        }
+      },
+      "drop_one_optional_sample_same_route": {
+        "nominal_human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                100.0,
+                0,
+                5
+              ],
+              "cost": {
+                "time_s": 132.00528021120846,
+                "energy_wh": 19.45292931783938,
+                "oxygen_l": 3.9723410609538674
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 120,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 120.0,
+                "energy_wh": 11.936,
+                "oxygen_l": 2.437363655049335
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 59.68,
+                "oxygen_l": 12.186818275246676
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                100.0,
+                0,
+                5
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 132.00528021120846,
+                "energy_wh": 15.316279317839381,
+                "oxygen_l": 3.1276258830333052
+              }
+            }
+          ],
+          "total": {
+            "time_s": 984.0105604224169,
+            "energy_wh": 106.38520863567877,
+            "oxygen_l": 21.724148874283184
+          },
+          "sample_workflows": 0,
+          "total_horizontal_m": 200,
+          "positive_ascent_m": 5,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": 695.9894395775831,
+            "energy_wh": 73.61479136432123,
+            "oxygen_l": 14.275851125716816
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "nominal_rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                250.0,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 6949.997779553779,
+                "energy_wh": 268.5068827653828,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 40.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 984.0105604224169,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 984.0105604224169,
+                "energy_wh": 21.866901342720375,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                250.0,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 6949.997779553779,
+                "energy_wh": 201.43898153081486,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 17884.006119529975,
+            "energy_wh": 598.4794323055847,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 9949.997779553778,
+          "human_end_offset_s": 10934.008339976195,
+          "rover_return_offset_s": 17884.006119529975,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": 835.993880470025,
+            "energy_wh": 41.52056769441526
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "adverse_human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                125.0,
+                0,
+                7.5
+              ],
+              "cost": {
+                "time_s": 245.83333333333334,
+                "energy_wh": 43.503194444444446,
+                "oxygen_l": 11.104338243280104
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 180.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 21.4848,
+                "oxygen_l": 5.484068223861004
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 71.616,
+                "oxygen_l": 18.280227412870012
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                125.0,
+                0,
+                7.5
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 245.83333333333334,
+                "energy_wh": 34.22819444444445,
+                "oxygen_l": 8.736862968839066
+              }
+            }
+          ],
+          "total": {
+            "time_s": 1271.6666666666667,
+            "energy_wh": 170.83218888888888,
+            "oxygen_l": 43.60549684885019
+          },
+          "sample_workflows": 0,
+          "total_horizontal_m": 250.0,
+          "positive_ascent_m": 7.5,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": 408.33333333333326,
+            "energy_wh": 9.16781111111112,
+            "oxygen_l": -7.605496848850187
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "adverse_rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                312.5,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 22347.128062752523,
+                "energy_wh": 1266.1345026146885,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 48.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 1271.6666666666667,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1271.6666666666667,
+                "energy_wh": 33.91111111111111,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                312.5,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 22347.128062752523,
+                "energy_wh": 1048.8345026146885,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 49565.92279217171,
+            "energy_wh": 2516.8801163404883,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 25947.128062752523,
+          "human_end_offset_s": 27218.79472941919,
+          "rover_return_offset_s": 49565.92279217171,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": -30845.92279217171,
+            "energy_wh": -1876.8801163404883
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "route_shortening_invented": false
+      },
+      "reserve_policy_sensitivity": {
+        "0.1": {
+          "human": {
+            "requested": {
+              "time_s": 1800,
+              "energy_wh": 200,
+              "oxygen_l": 40
+            },
+            "separate_reserves": {
+              "time_s": 180.0,
+              "energy_wh": 20.0,
+              "oxygen_l": 4.0
+            },
+            "reserve_fraction": 0.1,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "rover": {
+            "requested": {
+              "time_s": 21600,
+              "energy_wh": 700
+            },
+            "separate_reserves": {
+              "time_s": 2160.0,
+              "energy_wh": 70.0
+            },
+            "reserve_fraction": 0.1,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "drone": {
+            "requested": {
+              "time_s": 150,
+              "energy_wh": 11
+            },
+            "separate_reserves": {
+              "time_s": 15.0,
+              "energy_wh": 1.1
+            },
+            "reserve_fraction": 0.1,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          }
+        },
+        "0.2": {
+          "human": {
+            "requested": {
+              "time_s": 2100,
+              "energy_wh": 225,
+              "oxygen_l": 45
+            },
+            "separate_reserves": {
+              "time_s": 420.0,
+              "energy_wh": 45.0,
+              "oxygen_l": 9.0
+            },
+            "reserve_fraction": 0.2,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "rover": {
+            "requested": {
+              "time_s": 23400,
+              "energy_wh": 800
+            },
+            "separate_reserves": {
+              "time_s": 4680.0,
+              "energy_wh": 160.0
+            },
+            "reserve_fraction": 0.2,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "drone": {
+            "requested": {
+              "time_s": 150,
+              "energy_wh": 12
+            },
+            "separate_reserves": {
+              "time_s": 30.0,
+              "energy_wh": 2.4000000000000004
+            },
+            "reserve_fraction": 0.2,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          }
+        },
+        "0.3": {
+          "human": {
+            "requested": {
+              "time_s": 2400,
+              "energy_wh": 250,
+              "oxygen_l": 50
+            },
+            "separate_reserves": {
+              "time_s": 720.0,
+              "energy_wh": 75.0,
+              "oxygen_l": 15.0
+            },
+            "reserve_fraction": 0.3,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "rover": {
+            "requested": {
+              "time_s": 27000,
+              "energy_wh": 900
+            },
+            "separate_reserves": {
+              "time_s": 8100.0,
+              "energy_wh": 270.0
+            },
+            "reserve_fraction": 0.3,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "drone": {
+            "requested": {
+              "time_s": 180,
+              "energy_wh": 13
+            },
+            "separate_reserves": {
+              "time_s": 54.0,
+              "energy_wh": 3.9
+            },
+            "reserve_fraction": 0.3,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          }
+        }
+      },
+      "drone_awake_gap_thought_experiment": {
+        "gap_s": 18364.006119529975,
+        "power_w": 5.0,
+        "additional_energy_wh": 25.505564054902745,
+        "known_subset_plus_awake_proxy_wh": 34.584330721569415,
+        "interpretation": "Subtracts already priced flights/ground phases from rover episode; illustrative awake proxy only, not a sleep or full hardware model"
+      },
+      "rover_nominal_episode_within_one_sol_reference": true,
+      "mission_execution_authorized": false,
+      "operational_feasible": null
+    },
+    {
+      "case": {
+        "id": "CAM-BRIGHT",
+        "candidate_id": "JZ-ROI-01",
+        "human_total_horizontal_m": 400,
+        "human_positive_ascent_m": 10,
+        "human_sample_workflows": 2,
+        "human_coordination_wait_s": 900,
+        "rover_total_horizontal_m": 800,
+        "rover_positive_ascent_m": 15,
+        "rover_visual_stations": 3,
+        "drone_sorties": 2,
+        "drone_outward_horizontal_m": 110
+      },
+      "nominal": {
+        "human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                200.0,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 264.0105604224169,
+                "energy_wh": 38.90585863567876,
+                "oxygen_l": 7.944682121907735
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 120,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 120.0,
+                "energy_wh": 11.936,
+                "oxygen_l": 2.437363655049335
+              }
+            },
+            {
+              "phase": "documented_sample_1_light",
+              "activity": "inspect",
+              "duration_input_s": 420,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 420.0,
+                "energy_wh": 41.776,
+                "oxygen_l": 8.530772792672673
+              }
+            },
+            {
+              "phase": "documented_sample_1_heavy",
+              "activity": "sample",
+              "duration_input_s": 180,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 23.058500000000002,
+                "oxygen_l": 4.708608398119562
+              }
+            },
+            {
+              "phase": "documented_sample_2_light",
+              "activity": "inspect",
+              "duration_input_s": 420,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 420.0,
+                "energy_wh": 41.776,
+                "oxygen_l": 8.530772792672673
+              }
+            },
+            {
+              "phase": "documented_sample_2_heavy",
+              "activity": "sample",
+              "duration_input_s": 180,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 23.058500000000002,
+                "oxygen_l": 4.708608398119562
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 900,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 89.52,
+                "oxygen_l": 18.280227412870012
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                200.0,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 264.0105604224169,
+                "energy_wh": 30.632558635678762,
+                "oxygen_l": 6.2552517660666105
+              }
+            }
+          ],
+          "total": {
+            "time_s": 2748.0211208448336,
+            "energy_wh": 300.6634172713575,
+            "oxygen_l": 61.396287337478164
+          },
+          "sample_workflows": 2,
+          "total_horizontal_m": 400,
+          "positive_ascent_m": 10,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": 131.9788791551664,
+            "energy_wh": 19.336582728642497,
+            "oxygen_l": 2.6037126625218363
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                400.0,
+                0,
+                15
+              ],
+              "cost": {
+                "time_s": 11118.920866458573,
+                "energy_wh": 426.2277401176764,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_3",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 40.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 2748.0211208448336,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 2748.0211208448336,
+                "energy_wh": 61.067136018774086,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                400.0,
+                0,
+                15
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 11118.920866458573,
+                "energy_wh": 325.6258882658246,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 28585.86285376198,
+            "energy_wh": 952.920764402275,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 14718.920866458573,
+          "human_end_offset_s": 17466.941987303406,
+          "rover_return_offset_s": 28585.86285376198,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": 214.13714623801934,
+            "energy_wh": 7.07923559772496
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "drone": {
+          "phases_per_sortie": [
+            {
+              "phase": "takeoff_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 5.0,
+                "energy_wh": 0.3194444444444444,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_ascent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 1.0093222222222222,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "outward_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                110,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 55.0,
+                "energy_wh": 5.347222222222222,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "suspended_observation",
+              "activity": "observe",
+              "duration_input_s": 30,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 30.0,
+                "energy_wh": 1.9166666666666667,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "return_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                110,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 55.0,
+                "energy_wh": 5.347222222222222,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_descent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 0.6388888888888888,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "landing_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 5.0,
+                "energy_wh": 0.3194444444444444,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "ground_wait",
+              "activity": "ground_wait",
+              "duration_input_s": 10,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 0.013888888888888888,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "per_sortie": {
+            "time_s": 180.0,
+            "energy_wh": 14.9121,
+            "oxygen_l": null
+          },
+          "airborne_time_s": 170.0,
+          "historical_Flight12_reference_s": 169.5,
+          "exceeds_historical_reference": true,
+          "historical_record_is_certified_limit": false,
+          "sorties": 2,
+          "known_subset_total": {
+            "time_s": 360.0,
+            "energy_wh": 29.8242,
+            "oxygen_l": null
+          },
+          "cumulative_consumption_after_each_sortie": [
+            {
+              "time_s": 180.0,
+              "energy_wh": 14.9121,
+              "oxygen_l": null
+            },
+            {
+              "time_s": 360.0,
+              "energy_wh": 29.8242,
+              "oxygen_l": null
+            }
+          ],
+          "energy_reset_between_sorties": false,
+          "recharge_credit_wh": 0,
+          "whole_campaign_energy_status": "NOT_ESTIMATED_SLEEP_THERMAL_RECHARGE_UNMODELED",
+          "whole_campaign_feasible": null,
+          "flight_validated": false,
+          "reserve_margins": {
+            "time_s": 0.0,
+            "energy_wh": 0.5757999999999974
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        }
+      },
+      "requested_caps": {
+        "human": {
+          "requested": {
+            "time_s": 3600,
+            "energy_wh": 400,
+            "oxygen_l": 80
+          },
+          "separate_reserves": {
+            "time_s": 720.0,
+            "energy_wh": 80.0,
+            "oxygen_l": 16.0
+          },
+          "reserve_fraction": 0.2,
+          "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+        },
+        "rover": {
+          "requested": {
+            "time_s": 36000,
+            "energy_wh": 1200
+          },
+          "separate_reserves": {
+            "time_s": 7200.0,
+            "energy_wh": 240.0
+          },
+          "reserve_fraction": 0.2,
+          "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+        },
+        "drone": {
+          "requested": {
+            "time_s": 450,
+            "energy_wh": 38
+          },
+          "separate_reserves": {
+            "time_s": 90.0,
+            "energy_wh": 7.6000000000000005
+          },
+          "reserve_fraction": 0.2,
+          "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+        }
+      },
+      "drone_per_sortie_cap": {
+        "requested": {
+          "time_s": 240,
+          "energy_wh": 19
+        },
+        "separate_reserves": {
+          "time_s": 48.0,
+          "energy_wh": 3.8000000000000003
+        },
+        "reserve_fraction": 0.2,
+        "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+      },
+      "joint_adverse": {
+        "human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                250.0,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 491.6666666666667,
+                "energy_wh": 87.00638888888889,
+                "oxygen_l": 22.208676486560208
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 180.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 21.4848,
+                "oxygen_l": 5.484068223861004
+              }
+            },
+            {
+              "phase": "documented_sample_1_light",
+              "activity": "inspect",
+              "duration_input_s": 630.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 630.0,
+                "energy_wh": 75.1968,
+                "oxygen_l": 19.194238783513512
+              }
+            },
+            {
+              "phase": "documented_sample_1_heavy",
+              "activity": "sample",
+              "duration_input_s": 270.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 270.0,
+                "energy_wh": 41.5053,
+                "oxygen_l": 10.594368895769016
+              }
+            },
+            {
+              "phase": "documented_sample_2_light",
+              "activity": "inspect",
+              "duration_input_s": 630.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 630.0,
+                "energy_wh": 75.1968,
+                "oxygen_l": 19.194238783513512
+              }
+            },
+            {
+              "phase": "documented_sample_2_heavy",
+              "activity": "sample",
+              "duration_input_s": 270.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 270.0,
+                "energy_wh": 41.5053,
+                "oxygen_l": 10.594368895769016
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 900,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 107.42399999999999,
+                "oxygen_l": 27.420341119305014
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                250.0,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 491.6666666666667,
+                "energy_wh": 68.4563888888889,
+                "oxygen_l": 17.473725937678132
+              }
+            }
+          ],
+          "total": {
+            "time_s": 3863.3333333333335,
+            "energy_wh": 517.7757777777778,
+            "oxygen_l": 132.16402712596943
+          },
+          "sample_workflows": 2,
+          "total_horizontal_m": 500.0,
+          "positive_ascent_m": 15.0,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": -983.3333333333335,
+            "energy_wh": -197.77577777777776,
+            "oxygen_l": -68.16402712596943
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                500.0,
+                0,
+                22.5
+              ],
+              "cost": {
+                "time_s": 35750.42814072159,
+                "energy_wh": 2014.742839196733,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_3",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 48.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 3863.3333333333335,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 3863.3333333333335,
+                "energy_wh": 103.02222222222223,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                500.0,
+                0,
+                22.5
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 35750.42814072159,
+                "energy_wh": 1688.7928391967328,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 79864.18961477651,
+            "energy_wh": 4034.557900615688,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 40250.42814072159,
+          "human_end_offset_s": 44113.761474054925,
+          "rover_return_offset_s": 79864.18961477651,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": -51064.18961477651,
+            "energy_wh": -3074.557900615688
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "drone": {
+          "phases_per_sortie": [
+            {
+              "phase": "takeoff_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 7.5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 7.5,
+                "energy_wh": 0.575,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_ascent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 18.75,
+                "energy_wh": 2.35445,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "outward_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                137.5,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 85.9375,
+                "energy_wh": 10.026041666666666,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "suspended_observation",
+              "activity": "observe",
+              "duration_input_s": 45.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 45.0,
+                "energy_wh": 3.45,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "return_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                137.5,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 85.9375,
+                "energy_wh": 10.026041666666666,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_descent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 18.75,
+                "energy_wh": 1.4375,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "landing_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 7.5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 7.5,
+                "energy_wh": 0.575,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "ground_wait",
+              "activity": "ground_wait",
+              "duration_input_s": 10,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 0.016666666666666666,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "per_sortie": {
+            "time_s": 279.375,
+            "energy_wh": 28.4607,
+            "oxygen_l": null
+          },
+          "airborne_time_s": 269.375,
+          "historical_Flight12_reference_s": 169.5,
+          "exceeds_historical_reference": true,
+          "historical_record_is_certified_limit": false,
+          "sorties": 2,
+          "known_subset_total": {
+            "time_s": 558.75,
+            "energy_wh": 56.9214,
+            "oxygen_l": null
+          },
+          "cumulative_consumption_after_each_sortie": [
+            {
+              "time_s": 279.375,
+              "energy_wh": 28.4607,
+              "oxygen_l": null
+            },
+            {
+              "time_s": 558.75,
+              "energy_wh": 56.9214,
+              "oxygen_l": null
+            }
+          ],
+          "energy_reset_between_sorties": false,
+          "recharge_credit_wh": 0,
+          "whole_campaign_energy_status": "NOT_ESTIMATED_SLEEP_THERMAL_RECHARGE_UNMODELED",
+          "whole_campaign_feasible": null,
+          "flight_validated": false,
+          "reserve_margins": {
+            "time_s": -198.75,
+            "energy_wh": -26.5214
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        }
+      },
+      "drop_one_optional_sample_same_route": {
+        "nominal_human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                200.0,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 264.0105604224169,
+                "energy_wh": 38.90585863567876,
+                "oxygen_l": 7.944682121907735
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 120,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 120.0,
+                "energy_wh": 11.936,
+                "oxygen_l": 2.437363655049335
+              }
+            },
+            {
+              "phase": "documented_sample_1_light",
+              "activity": "inspect",
+              "duration_input_s": 420,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 420.0,
+                "energy_wh": 41.776,
+                "oxygen_l": 8.530772792672673
+              }
+            },
+            {
+              "phase": "documented_sample_1_heavy",
+              "activity": "sample",
+              "duration_input_s": 180,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 23.058500000000002,
+                "oxygen_l": 4.708608398119562
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 900,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 89.52,
+                "oxygen_l": 18.280227412870012
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                200.0,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 264.0105604224169,
+                "energy_wh": 30.632558635678762,
+                "oxygen_l": 6.2552517660666105
+              }
+            }
+          ],
+          "total": {
+            "time_s": 2148.0211208448336,
+            "energy_wh": 235.8289172713575,
+            "oxygen_l": 48.15690614668593
+          },
+          "sample_workflows": 1,
+          "total_horizontal_m": 400,
+          "positive_ascent_m": 10,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": 731.9788791551664,
+            "energy_wh": 84.17108272864249,
+            "oxygen_l": 15.843093853314073
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "nominal_rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                400.0,
+                0,
+                15
+              ],
+              "cost": {
+                "time_s": 11118.920866458573,
+                "energy_wh": 426.2277401176764,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_3",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 40.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 2148.0211208448336,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 2148.0211208448336,
+                "energy_wh": 47.73380268544075,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                400.0,
+                0,
+                15
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 11118.920866458573,
+                "energy_wh": 325.6258882658246,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 27985.86285376198,
+            "energy_wh": 939.5874310689417,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 14718.920866458573,
+          "human_end_offset_s": 16866.941987303406,
+          "rover_return_offset_s": 27985.86285376198,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": 814.1371462380193,
+            "energy_wh": 20.41256893105833
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "adverse_human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                250.0,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 491.6666666666667,
+                "energy_wh": 87.00638888888889,
+                "oxygen_l": 22.208676486560208
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 180.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 21.4848,
+                "oxygen_l": 5.484068223861004
+              }
+            },
+            {
+              "phase": "documented_sample_1_light",
+              "activity": "inspect",
+              "duration_input_s": 630.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 630.0,
+                "energy_wh": 75.1968,
+                "oxygen_l": 19.194238783513512
+              }
+            },
+            {
+              "phase": "documented_sample_1_heavy",
+              "activity": "sample",
+              "duration_input_s": 270.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 270.0,
+                "energy_wh": 41.5053,
+                "oxygen_l": 10.594368895769016
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 900,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 107.42399999999999,
+                "oxygen_l": 27.420341119305014
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                250.0,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 491.6666666666667,
+                "energy_wh": 68.4563888888889,
+                "oxygen_l": 17.473725937678132
+              }
+            }
+          ],
+          "total": {
+            "time_s": 2963.3333333333335,
+            "energy_wh": 401.0736777777778,
+            "oxygen_l": 102.37541944668689
+          },
+          "sample_workflows": 1,
+          "total_horizontal_m": 500.0,
+          "positive_ascent_m": 15.0,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": -83.33333333333348,
+            "energy_wh": -81.07367777777779,
+            "oxygen_l": -38.37541944668689
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "adverse_rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                500.0,
+                0,
+                22.5
+              ],
+              "cost": {
+                "time_s": 35750.42814072159,
+                "energy_wh": 2014.742839196733,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_3",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 48.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 2963.3333333333335,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 2963.3333333333335,
+                "energy_wh": 79.02222222222223,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                500.0,
+                0,
+                22.5
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 35750.42814072159,
+                "energy_wh": 1688.7928391967328,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 78964.18961477651,
+            "energy_wh": 4010.557900615688,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 40250.42814072159,
+          "human_end_offset_s": 43213.761474054925,
+          "rover_return_offset_s": 78964.18961477651,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": -50164.18961477651,
+            "energy_wh": -3050.557900615688
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "route_shortening_invented": false
+      },
+      "reserve_policy_sensitivity": {
+        "0.1": {
+          "human": {
+            "requested": {
+              "time_s": 3300,
+              "energy_wh": 350,
+              "oxygen_l": 70
+            },
+            "separate_reserves": {
+              "time_s": 330.0,
+              "energy_wh": 35.0,
+              "oxygen_l": 7.0
+            },
+            "reserve_fraction": 0.1,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "rover": {
+            "requested": {
+              "time_s": 32400,
+              "energy_wh": 1100
+            },
+            "separate_reserves": {
+              "time_s": 3240.0,
+              "energy_wh": 110.0
+            },
+            "reserve_fraction": 0.1,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "drone": {
+            "requested": {
+              "time_s": 420,
+              "energy_wh": 34
+            },
+            "separate_reserves": {
+              "time_s": 42.0,
+              "energy_wh": 3.4000000000000004
+            },
+            "reserve_fraction": 0.1,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          }
+        },
+        "0.2": {
+          "human": {
+            "requested": {
+              "time_s": 3600,
+              "energy_wh": 400,
+              "oxygen_l": 80
+            },
+            "separate_reserves": {
+              "time_s": 720.0,
+              "energy_wh": 80.0,
+              "oxygen_l": 16.0
+            },
+            "reserve_fraction": 0.2,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "rover": {
+            "requested": {
+              "time_s": 36000,
+              "energy_wh": 1200
+            },
+            "separate_reserves": {
+              "time_s": 7200.0,
+              "energy_wh": 240.0
+            },
+            "reserve_fraction": 0.2,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "drone": {
+            "requested": {
+              "time_s": 450,
+              "energy_wh": 38
+            },
+            "separate_reserves": {
+              "time_s": 90.0,
+              "energy_wh": 7.6000000000000005
+            },
+            "reserve_fraction": 0.2,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          }
+        },
+        "0.3": {
+          "human": {
+            "requested": {
+              "time_s": 4200,
+              "energy_wh": 450,
+              "oxygen_l": 90
+            },
+            "separate_reserves": {
+              "time_s": 1260.0,
+              "energy_wh": 135.0,
+              "oxygen_l": 27.0
+            },
+            "reserve_fraction": 0.3,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "rover": {
+            "requested": {
+              "time_s": 41400,
+              "energy_wh": 1400
+            },
+            "separate_reserves": {
+              "time_s": 12420.0,
+              "energy_wh": 420.0
+            },
+            "reserve_fraction": 0.3,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "drone": {
+            "requested": {
+              "time_s": 540,
+              "energy_wh": 43
+            },
+            "separate_reserves": {
+              "time_s": 162.0,
+              "energy_wh": 12.9
+            },
+            "reserve_fraction": 0.3,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          }
+        }
+      },
+      "drone_awake_gap_thought_experiment": {
+        "gap_s": 28225.86285376198,
+        "power_w": 5.0,
+        "additional_energy_wh": 39.20258729689164,
+        "known_subset_plus_awake_proxy_wh": 69.02678729689164,
+        "interpretation": "Subtracts already priced flights/ground phases from rover episode; illustrative awake proxy only, not a sleep or full hardware model"
+      },
+      "rover_nominal_episode_within_one_sol_reference": true,
+      "mission_execution_authorized": false,
+      "operational_feasible": null
+    },
+    {
+      "case": {
+        "id": "CAM-HAWKSBILL",
+        "candidate_id": "JZ-ROI-02",
+        "human_total_horizontal_m": 600,
+        "human_positive_ascent_m": 20,
+        "human_sample_workflows": 3,
+        "human_coordination_wait_s": 1200,
+        "rover_total_horizontal_m": 1200,
+        "rover_positive_ascent_m": 25,
+        "rover_visual_stations": 4,
+        "drone_sorties": 2,
+        "drone_outward_horizontal_m": 75
+      },
+      "nominal": {
+        "human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                300.0,
+                0,
+                20
+              ],
+              "cost": {
+                "time_s": 408.0163206528261,
+                "energy_wh": 63.887826982412626,
+                "oxygen_l": 13.046067986512464
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 120,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 120.0,
+                "energy_wh": 11.936,
+                "oxygen_l": 2.437363655049335
+              }
+            },
+            {
+              "phase": "documented_sample_1_light",
+              "activity": "inspect",
+              "duration_input_s": 420,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 420.0,
+                "energy_wh": 41.776,
+                "oxygen_l": 8.530772792672673
+              }
+            },
+            {
+              "phase": "documented_sample_1_heavy",
+              "activity": "sample",
+              "duration_input_s": 180,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 23.058500000000002,
+                "oxygen_l": 4.708608398119562
+              }
+            },
+            {
+              "phase": "documented_sample_2_light",
+              "activity": "inspect",
+              "duration_input_s": 420,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 420.0,
+                "energy_wh": 41.776,
+                "oxygen_l": 8.530772792672673
+              }
+            },
+            {
+              "phase": "documented_sample_2_heavy",
+              "activity": "sample",
+              "duration_input_s": 180,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 23.058500000000002,
+                "oxygen_l": 4.708608398119562
+              }
+            },
+            {
+              "phase": "documented_sample_3_light",
+              "activity": "inspect",
+              "duration_input_s": 420,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 420.0,
+                "energy_wh": 41.776,
+                "oxygen_l": 8.530772792672673
+              }
+            },
+            {
+              "phase": "documented_sample_3_heavy",
+              "activity": "sample",
+              "duration_input_s": 180,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 23.058500000000002,
+                "oxygen_l": 4.708608398119562
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 1200,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1200.0,
+                "energy_wh": 119.36,
+                "oxygen_l": 24.37363655049335
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                300.0,
+                0,
+                20
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 408.0163206528261,
+                "energy_wh": 47.34122698241263,
+                "oxygen_l": 9.667207274830215
+              }
+            }
+          ],
+          "total": {
+            "time_s": 3936.0326413056523,
+            "energy_wh": 437.0285539648253,
+            "oxygen_l": 89.24241903926207
+          },
+          "sample_workflows": 3,
+          "total_horizontal_m": 600,
+          "positive_ascent_m": 20,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": 143.9673586943477,
+            "energy_wh": 2.971446035174722,
+            "oxygen_l": 2.7575809607379256
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                600.0,
+                0,
+                25
+              ],
+              "cost": {
+                "time_s": 16681.1279853671,
+                "energy_wh": 647.8013946552591,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_3",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_4",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 40.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 3936.0326413056523,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 3936.0326413056523,
+                "energy_wh": 87.46739202901449,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                600.0,
+                0,
+                25
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 16681.1279853671,
+                "energy_wh": 480.1316415688392,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 41498.288612039854,
+            "energy_wh": 1388.733761586446,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 20881.1279853671,
+          "human_end_offset_s": 24817.160626672754,
+          "rover_return_offset_s": 41498.288612039854,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": 261.71138796014566,
+            "energy_wh": 51.26623841355399
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "drone": {
+          "phases_per_sortie": [
+            {
+              "phase": "takeoff_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 5.0,
+                "energy_wh": 0.3194444444444444,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_ascent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 1.0093222222222222,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "outward_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                75,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 37.5,
+                "energy_wh": 3.6458333333333335,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "suspended_observation",
+              "activity": "observe",
+              "duration_input_s": 30,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 30.0,
+                "energy_wh": 1.9166666666666667,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "return_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                75,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "cost": {
+                "time_s": 37.5,
+                "energy_wh": 3.6458333333333335,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_descent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                10
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 0.6388888888888888,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "landing_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 5.0,
+                "energy_wh": 0.3194444444444444,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "ground_wait",
+              "activity": "ground_wait",
+              "duration_input_s": 10,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 0.013888888888888888,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "per_sortie": {
+            "time_s": 145.0,
+            "energy_wh": 11.509322222222222,
+            "oxygen_l": null
+          },
+          "airborne_time_s": 135.0,
+          "historical_Flight12_reference_s": 169.5,
+          "exceeds_historical_reference": false,
+          "historical_record_is_certified_limit": false,
+          "sorties": 2,
+          "known_subset_total": {
+            "time_s": 290.0,
+            "energy_wh": 23.018644444444444,
+            "oxygen_l": null
+          },
+          "cumulative_consumption_after_each_sortie": [
+            {
+              "time_s": 145.0,
+              "energy_wh": 11.509322222222222,
+              "oxygen_l": null
+            },
+            {
+              "time_s": 290.0,
+              "energy_wh": 23.018644444444444,
+              "oxygen_l": null
+            }
+          ],
+          "energy_reset_between_sorties": false,
+          "recharge_credit_wh": 0,
+          "whole_campaign_energy_status": "NOT_ESTIMATED_SLEEP_THERMAL_RECHARGE_UNMODELED",
+          "whole_campaign_feasible": null,
+          "flight_validated": false,
+          "reserve_margins": {
+            "time_s": 22.0,
+            "energy_wh": 0.18135555555555527
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        }
+      },
+      "requested_caps": {
+        "human": {
+          "requested": {
+            "time_s": 5100,
+            "energy_wh": 550,
+            "oxygen_l": 115
+          },
+          "separate_reserves": {
+            "time_s": 1020.0,
+            "energy_wh": 110.0,
+            "oxygen_l": 23.0
+          },
+          "reserve_fraction": 0.2,
+          "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+        },
+        "rover": {
+          "requested": {
+            "time_s": 52200,
+            "energy_wh": 1800
+          },
+          "separate_reserves": {
+            "time_s": 10440.0,
+            "energy_wh": 360.0
+          },
+          "reserve_fraction": 0.2,
+          "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+        },
+        "drone": {
+          "requested": {
+            "time_s": 390,
+            "energy_wh": 29
+          },
+          "separate_reserves": {
+            "time_s": 78.0,
+            "energy_wh": 5.800000000000001
+          },
+          "reserve_fraction": 0.2,
+          "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+        }
+      },
+      "drone_per_sortie_cap": {
+        "requested": {
+          "time_s": 210,
+          "energy_wh": 15
+        },
+        "separate_reserves": {
+          "time_s": 42.0,
+          "energy_wh": 3.0
+        },
+        "reserve_fraction": 0.2,
+        "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+      },
+      "joint_adverse": {
+        "human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                375.0,
+                0,
+                30.0
+              ],
+              "cost": {
+                "time_s": 775.0,
+                "energy_wh": 145.00583333333333,
+                "oxygen_l": 37.0132318130873
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 180.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 21.4848,
+                "oxygen_l": 5.484068223861004
+              }
+            },
+            {
+              "phase": "documented_sample_1_light",
+              "activity": "inspect",
+              "duration_input_s": 630.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 630.0,
+                "energy_wh": 75.1968,
+                "oxygen_l": 19.194238783513512
+              }
+            },
+            {
+              "phase": "documented_sample_1_heavy",
+              "activity": "sample",
+              "duration_input_s": 270.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 270.0,
+                "energy_wh": 41.5053,
+                "oxygen_l": 10.594368895769016
+              }
+            },
+            {
+              "phase": "documented_sample_2_light",
+              "activity": "inspect",
+              "duration_input_s": 630.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 630.0,
+                "energy_wh": 75.1968,
+                "oxygen_l": 19.194238783513512
+              }
+            },
+            {
+              "phase": "documented_sample_2_heavy",
+              "activity": "sample",
+              "duration_input_s": 270.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 270.0,
+                "energy_wh": 41.5053,
+                "oxygen_l": 10.594368895769016
+              }
+            },
+            {
+              "phase": "documented_sample_3_light",
+              "activity": "inspect",
+              "duration_input_s": 630.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 630.0,
+                "energy_wh": 75.1968,
+                "oxygen_l": 19.194238783513512
+              }
+            },
+            {
+              "phase": "documented_sample_3_heavy",
+              "activity": "sample",
+              "duration_input_s": 270.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 270.0,
+                "energy_wh": 41.5053,
+                "oxygen_l": 10.594368895769016
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 1200,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1200.0,
+                "energy_wh": 143.232,
+                "oxygen_l": 36.560454825740024
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                375.0,
+                0,
+                30.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 775.0,
+                "energy_wh": 107.90583333333332,
+                "oxygen_l": 27.543330715323147
+              }
+            }
+          ],
+          "total": {
+            "time_s": 5630.0,
+            "energy_wh": 767.7347666666666,
+            "oxygen_l": 195.96690861585907
+          },
+          "sample_workflows": 3,
+          "total_horizontal_m": 750.0,
+          "positive_ascent_m": 30.0,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": -1550.0,
+            "energy_wh": -327.7347666666666,
+            "oxygen_l": -103.96690861585907
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                750.0,
+                0,
+                37.5
+              ],
+              "cost": {
+                "time_s": 53638.35105669854,
+                "energy_wh": 3049.8062940291056,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_3",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_4",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 48.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 5630.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 5630.0,
+                "energy_wh": 150.13333333333333,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                750.0,
+                0,
+                37.5
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 53638.35105669854,
+                "energy_wh": 2506.556294029106,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 118306.70211339708,
+            "energy_wh": 5994.495921391545,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 59038.35105669854,
+          "human_end_offset_s": 64668.35105669854,
+          "rover_return_offset_s": 118306.70211339708,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": -76546.70211339708,
+            "energy_wh": -4554.495921391545
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "drone": {
+          "phases_per_sortie": [
+            {
+              "phase": "takeoff_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 7.5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 7.5,
+                "energy_wh": 0.575,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_ascent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 18.75,
+                "energy_wh": 2.35445,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "outward_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                93.75,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 58.59375,
+                "energy_wh": 6.8359375,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "suspended_observation",
+              "activity": "observe",
+              "duration_input_s": 45.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 45.0,
+                "energy_wh": 3.45,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "return_translation",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                93.75,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "cost": {
+                "time_s": 58.59375,
+                "energy_wh": 6.8359375,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "vertical_descent",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                15.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 18.75,
+                "energy_wh": 1.4375,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "landing_hover_surrogate",
+              "activity": "hover",
+              "duration_input_s": 7.5,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 7.5,
+                "energy_wh": 0.575,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "ground_wait",
+              "activity": "ground_wait",
+              "duration_input_s": 10,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 10.0,
+                "energy_wh": 0.016666666666666666,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "per_sortie": {
+            "time_s": 224.6875,
+            "energy_wh": 22.080491666666667,
+            "oxygen_l": null
+          },
+          "airborne_time_s": 214.6875,
+          "historical_Flight12_reference_s": 169.5,
+          "exceeds_historical_reference": true,
+          "historical_record_is_certified_limit": false,
+          "sorties": 2,
+          "known_subset_total": {
+            "time_s": 449.375,
+            "energy_wh": 44.160983333333334,
+            "oxygen_l": null
+          },
+          "cumulative_consumption_after_each_sortie": [
+            {
+              "time_s": 224.6875,
+              "energy_wh": 22.080491666666667,
+              "oxygen_l": null
+            },
+            {
+              "time_s": 449.375,
+              "energy_wh": 44.160983333333334,
+              "oxygen_l": null
+            }
+          ],
+          "energy_reset_between_sorties": false,
+          "recharge_credit_wh": 0,
+          "whole_campaign_energy_status": "NOT_ESTIMATED_SLEEP_THERMAL_RECHARGE_UNMODELED",
+          "whole_campaign_feasible": null,
+          "flight_validated": false,
+          "reserve_margins": {
+            "time_s": -137.375,
+            "energy_wh": -20.960983333333335
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        }
+      },
+      "drop_one_optional_sample_same_route": {
+        "nominal_human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                300.0,
+                0,
+                20
+              ],
+              "cost": {
+                "time_s": 408.0163206528261,
+                "energy_wh": 63.887826982412626,
+                "oxygen_l": 13.046067986512464
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 120,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 120.0,
+                "energy_wh": 11.936,
+                "oxygen_l": 2.437363655049335
+              }
+            },
+            {
+              "phase": "documented_sample_1_light",
+              "activity": "inspect",
+              "duration_input_s": 420,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 420.0,
+                "energy_wh": 41.776,
+                "oxygen_l": 8.530772792672673
+              }
+            },
+            {
+              "phase": "documented_sample_1_heavy",
+              "activity": "sample",
+              "duration_input_s": 180,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 23.058500000000002,
+                "oxygen_l": 4.708608398119562
+              }
+            },
+            {
+              "phase": "documented_sample_2_light",
+              "activity": "inspect",
+              "duration_input_s": 420,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 420.0,
+                "energy_wh": 41.776,
+                "oxygen_l": 8.530772792672673
+              }
+            },
+            {
+              "phase": "documented_sample_2_heavy",
+              "activity": "sample",
+              "duration_input_s": 180,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 23.058500000000002,
+                "oxygen_l": 4.708608398119562
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 1200,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1200.0,
+                "energy_wh": 119.36,
+                "oxygen_l": 24.37363655049335
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                300.0,
+                0,
+                20
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 408.0163206528261,
+                "energy_wh": 47.34122698241263,
+                "oxygen_l": 9.667207274830215
+              }
+            }
+          ],
+          "total": {
+            "time_s": 3336.0326413056523,
+            "energy_wh": 372.1940539648253,
+            "oxygen_l": 76.00303784846983
+          },
+          "sample_workflows": 2,
+          "total_horizontal_m": 600,
+          "positive_ascent_m": 20,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": 743.9673586943477,
+            "energy_wh": 67.80594603517471,
+            "oxygen_l": 15.99696215153017
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "nominal_rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                600.0,
+                0,
+                25
+              ],
+              "cost": {
+                "time_s": 16681.1279853671,
+                "energy_wh": 647.8013946552591,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_3",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_4",
+              "activity": "inspect",
+              "duration_input_s": 600,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 600.0,
+                "energy_wh": 33.333333333333336,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 40.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 3336.0326413056523,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 3336.0326413056523,
+                "energy_wh": 74.13405869568116,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                600.0,
+                0,
+                25
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 16681.1279853671,
+                "energy_wh": 480.1316415688392,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 40898.288612039854,
+            "energy_wh": 1375.4004282531128,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 20881.1279853671,
+          "human_end_offset_s": 24217.160626672754,
+          "rover_return_offset_s": 40898.288612039854,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": 861.7113879601457,
+            "energy_wh": 64.59957174688725
+          },
+          "modeled_resource_envelope_fits": true,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "adverse_human": {
+          "phases": [
+            {
+              "phase": "outbound",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                375.0,
+                0,
+                30.0
+              ],
+              "cost": {
+                "time_s": 775.0,
+                "energy_wh": 145.00583333333333,
+                "oxygen_l": 37.0132318130873
+              }
+            },
+            {
+              "phase": "primary_visual_checkin_not_optional_inspection",
+              "activity": "inspect",
+              "duration_input_s": 180.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 180.0,
+                "energy_wh": 21.4848,
+                "oxygen_l": 5.484068223861004
+              }
+            },
+            {
+              "phase": "documented_sample_1_light",
+              "activity": "inspect",
+              "duration_input_s": 630.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 630.0,
+                "energy_wh": 75.1968,
+                "oxygen_l": 19.194238783513512
+              }
+            },
+            {
+              "phase": "documented_sample_1_heavy",
+              "activity": "sample",
+              "duration_input_s": 270.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 270.0,
+                "energy_wh": 41.5053,
+                "oxygen_l": 10.594368895769016
+              }
+            },
+            {
+              "phase": "documented_sample_2_light",
+              "activity": "inspect",
+              "duration_input_s": 630.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 630.0,
+                "energy_wh": 75.1968,
+                "oxygen_l": 19.194238783513512
+              }
+            },
+            {
+              "phase": "documented_sample_2_heavy",
+              "activity": "sample",
+              "duration_input_s": 270.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 270.0,
+                "energy_wh": 41.5053,
+                "oxygen_l": 10.594368895769016
+              }
+            },
+            {
+              "phase": "coordination_wait",
+              "activity": "wait",
+              "duration_input_s": 1200,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1200.0,
+                "energy_wh": 143.232,
+                "oxygen_l": 36.560454825740024
+              }
+            },
+            {
+              "phase": "directed_return",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                375.0,
+                0,
+                30.0
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 775.0,
+                "energy_wh": 107.90583333333332,
+                "oxygen_l": 27.543330715323147
+              }
+            }
+          ],
+          "total": {
+            "time_s": 4730.0,
+            "energy_wh": 651.0326666666666,
+            "oxygen_l": 166.17830093657653
+          },
+          "sample_workflows": 2,
+          "total_horizontal_m": 750.0,
+          "positive_ascent_m": 30.0,
+          "source": "Analytical workload only, not a terrain route",
+          "reserve_margins": {
+            "time_s": -650.0,
+            "energy_wh": -211.03266666666661,
+            "oxygen_l": -74.17830093657653
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "adverse_rover": {
+          "phases": [
+            {
+              "phase": "outbound_reconnaissance",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "end_analytic_enu_m": [
+                750.0,
+                0,
+                37.5
+              ],
+              "cost": {
+                "time_s": 53638.35105669854,
+                "energy_wh": 3049.8062940291056,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_1",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_2",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_3",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "visual_station_4",
+              "activity": "inspect",
+              "duration_input_s": 900.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 900.0,
+                "energy_wh": 60.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "pre_EVA_coordination",
+              "activity": "wait",
+              "duration_input_s": 1800,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 1800.0,
+                "energy_wh": 48.0,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "wait_during_actual_human_EVA",
+              "activity": "wait",
+              "duration_input_s": 4730.0,
+              "start_analytic_enu_m": null,
+              "end_analytic_enu_m": null,
+              "cost": {
+                "time_s": 4730.0,
+                "energy_wh": 126.13333333333334,
+                "oxygen_l": null
+              }
+            },
+            {
+              "phase": "directed_return_after_human",
+              "activity": null,
+              "duration_input_s": null,
+              "start_analytic_enu_m": [
+                750.0,
+                0,
+                37.5
+              ],
+              "end_analytic_enu_m": [
+                0,
+                0,
+                0
+              ],
+              "cost": {
+                "time_s": 53638.35105669854,
+                "energy_wh": 2506.556294029106,
+                "oxygen_l": null
+              }
+            }
+          ],
+          "total": {
+            "time_s": 117406.70211339708,
+            "energy_wh": 5970.495921391545,
+            "oxygen_l": null
+          },
+          "human_launch_offset_s": 59038.35105669854,
+          "human_end_offset_s": 63768.35105669854,
+          "rover_return_offset_s": 117406.70211339708,
+          "human_predeployment_charged_to_EVA": false,
+          "unpriced_extra_calendar_gap": false,
+          "timing_scope": "Episode ends at rover return; any additional night/hold interval needs a new cost, never free time",
+          "reserve_margins": {
+            "time_s": -75646.70211339708,
+            "energy_wh": -4530.495921391545
+          },
+          "modeled_resource_envelope_fits": false,
+          "candidate_authorized": false,
+          "tolerance_budget_credit": false
+        },
+        "route_shortening_invented": false
+      },
+      "reserve_policy_sensitivity": {
+        "0.1": {
+          "human": {
+            "requested": {
+              "time_s": 4500,
+              "energy_wh": 500,
+              "oxygen_l": 100
+            },
+            "separate_reserves": {
+              "time_s": 450.0,
+              "energy_wh": 50.0,
+              "oxygen_l": 10.0
+            },
+            "reserve_fraction": 0.1,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "rover": {
+            "requested": {
+              "time_s": 46800,
+              "energy_wh": 1600
+            },
+            "separate_reserves": {
+              "time_s": 4680.0,
+              "energy_wh": 160.0
+            },
+            "reserve_fraction": 0.1,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "drone": {
+            "requested": {
+              "time_s": 330,
+              "energy_wh": 26
+            },
+            "separate_reserves": {
+              "time_s": 33.0,
+              "energy_wh": 2.6
+            },
+            "reserve_fraction": 0.1,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          }
+        },
+        "0.2": {
+          "human": {
+            "requested": {
+              "time_s": 5100,
+              "energy_wh": 550,
+              "oxygen_l": 115
+            },
+            "separate_reserves": {
+              "time_s": 1020.0,
+              "energy_wh": 110.0,
+              "oxygen_l": 23.0
+            },
+            "reserve_fraction": 0.2,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "rover": {
+            "requested": {
+              "time_s": 52200,
+              "energy_wh": 1800
+            },
+            "separate_reserves": {
+              "time_s": 10440.0,
+              "energy_wh": 360.0
+            },
+            "reserve_fraction": 0.2,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "drone": {
+            "requested": {
+              "time_s": 390,
+              "energy_wh": 29
+            },
+            "separate_reserves": {
+              "time_s": 78.0,
+              "energy_wh": 5.800000000000001
+            },
+            "reserve_fraction": 0.2,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          }
+        },
+        "0.3": {
+          "human": {
+            "requested": {
+              "time_s": 5700,
+              "energy_wh": 625,
+              "oxygen_l": 130
+            },
+            "separate_reserves": {
+              "time_s": 1710.0,
+              "energy_wh": 187.5,
+              "oxygen_l": 39.0
+            },
+            "reserve_fraction": 0.3,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "rover": {
+            "requested": {
+              "time_s": 59400,
+              "energy_wh": 2000
+            },
+            "separate_reserves": {
+              "time_s": 17820.0,
+              "energy_wh": 600.0
+            },
+            "reserve_fraction": 0.3,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          },
+          "drone": {
+            "requested": {
+              "time_s": 420,
+              "energy_wh": 33
+            },
+            "separate_reserves": {
+              "time_s": 126.0,
+              "energy_wh": 9.9
+            },
+            "reserve_fraction": 0.3,
+            "scope": "Engineering requirement, not battery/suit capacity or physical availability"
+          }
+        }
+      },
+      "drone_awake_gap_thought_experiment": {
+        "gap_s": 41208.288612039854,
+        "power_w": 5.0,
+        "additional_energy_wh": 57.233734183388684,
+        "known_subset_plus_awake_proxy_wh": 80.25237862783312,
+        "interpretation": "Subtracts already priced flights/ground phases from rover episode; illustrative awake proxy only, not a sleep or full hardware model"
+      },
+      "rover_nominal_episode_within_one_sol_reference": true,
+      "mission_execution_authorized": false,
+      "operational_feasible": null
+    }
+  ],
+  "standby_calendar_thought_experiment": [
+    {
+      "sols": 1,
+      "elapsed_s": 88775.244,
+      "rover_wait_energy_wh_80w": 1972.7832,
+      "rover_wait_energy_wh_96w": 2367.33984,
+      "MMRTG_110w_gross_reference_wh": 2712.5769,
+      "generation_credit_wh": 0,
+      "battery_capacity_wh": null,
+      "state_of_charge_proven": false,
+      "net_feasibility": null
+    },
+    {
+      "sols": 2,
+      "elapsed_s": 177550.488,
+      "rover_wait_energy_wh_80w": 3945.5664,
+      "rover_wait_energy_wh_96w": 4734.67968,
+      "MMRTG_110w_gross_reference_wh": 5425.1538,
+      "generation_credit_wh": 0,
+      "battery_capacity_wh": null,
+      "state_of_charge_proven": false,
+      "net_feasibility": null
+    }
+  ],
+  "limitations": [
+    "Distances/ascent/stations are proposed workloads, not extracted terrain routes or completed work.",
+    "Conditional upon georegistration, public geometry/uncertainty, instruments, model agreement and separate approvals.",
+    "Joint adverse endpoints are a declared stress case, not confidence bounds or a global worst-case proof.",
+    "Human oxygen is metabolic dry-gas equivalent, excluding complete life-support losses; Wh is metabolic, not suit battery energy.",
+    "No wind cleaning, charging, generation, sleep or thermal capacity is assumed; gross energy is not stored battery availability.",
+    "Aircraft phases are surrogates; neither clearance nor aerodynamic/flight validation is established.",
+    "Campaign beyond the priced episode needs explicit gap costs; no idle interval is free and no sortie resets cumulative energy."
+  ],
+  "scientific_approval": false,
+  "cost_agreement_approved": false,
+  "mission_execution_authorized": false,
+  "integrated_mission_executed": false,
+  "new_mock_created": false
+}

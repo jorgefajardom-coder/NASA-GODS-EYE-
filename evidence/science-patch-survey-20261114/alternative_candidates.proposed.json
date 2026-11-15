@@ -1,0 +1,682 @@
+{
+  "schema_version": "1.0.0",
+  "classification": "LITERATURE_CANDIDATE_SURVEY",
+  "status": "proposed_pending_georegistration",
+  "recorded_on": "2026-11-14",
+  "source_revision": "c3ec4c1f1515dbc981ba82eed2ab1f54e9586264",
+  "mission_input": false,
+  "scientific_approval": false,
+  "execution_authorized": false,
+  "scope": "Alternative sectors outside the primary Jezero shortlist; literature research and map requests only",
+  "size_semantics": "Physical square side lengths in metres; engineering alternatives, not raster dimensions, route lengths or approved mission allocations",
+  "data_partition_policy": "Preserve current evaluator-reference isolation. A public catalog product is not automatically admissible planning input; agree any new public/held-out partition before import.",
+  "selection_priority": "Reuse Daniel's Jezero control and primary shortlist first; Mawrth is the strongest documented non-Jezero import study in this alternative set.",
+  "sources": {
+    "ALT-S01": {
+      "title": "View of Yellowknife Bay Formation, with Drilling Sites",
+      "organization": "NASA/JPL-Caltech/MSSS",
+      "url": "https://science.nasa.gov/photojournal/view-of-yellowknife-bay-formation-with-drilling-sites/",
+      "locator": "PIA17595, Description",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "published_rover_observation"
+    },
+    "ALT-S02": {
+      "title": "Curiosity Mars Rover's Approach to Pahrump Hills",
+      "organization": "NASA/JPL-Caltech/MSSS",
+      "url": "https://science.nasa.gov/resource/curiosity-mars-rovers-approach-to-pahrump-hills/",
+      "locator": "Description, four landscape features",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "published_rover_observation"
+    },
+    "ALT-S03": {
+      "title": "The Curiosity Rover's Exploration of Glen Torridon, Gale Crater, Mars: An Overview of the Campaign and Scientific Results",
+      "organization": "NASA NTRS; Bennett et al. 2022 primary paper",
+      "url": "https://ntrs.nasa.gov/api/citations/20230001618/downloads/JGR%20Planets%20-%202022%20-%20Bennett%20-%20The%20Curiosity%20Rover%20s%20Exploration%20of%20.pdf",
+      "locator": "Abstract, PDF p.1",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "published_primary_research"
+    },
+    "ALT-S04": {
+      "title": "Overview of the morphology and chemistry of diagenetic features in the clay-rich Glen Torridon Unit",
+      "organization": "USGS",
+      "url": "https://www.usgs.gov/publications/overview-morphology-and-chemistry-diagenetic-features-clay-rich-glen-torridon-unit",
+      "locator": "Publication record and abstract",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "published_primary_research"
+    },
+    "ALT-S05": {
+      "title": "Layering and Dark Mantle along a Tributary to Mawrth Vallis",
+      "organization": "NASA/JPL-Caltech/UArizona HiRISE",
+      "url": "https://hirise.lpl.arizona.edu/dtm/PSP_002074_2025",
+      "locator": "DTM caption, product links and map-scale metadata",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "official_DTM_catalog"
+    },
+    "ALT-S06": {
+      "title": "Compositional stratigraphy of clay-bearing layered deposits at Mawrth Vallis, Mars",
+      "organization": "USGS",
+      "url": "https://www.usgs.gov/publications/compositional-stratigraphy-clay-bearing-layered-deposits-mawrth-vallis-mars",
+      "locator": "Abstract; DOI 10.1029/2008GL034385",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "published_primary_research"
+    },
+    "ALT-S07": {
+      "title": "Mars 2020 candidate landing-site worksheet: NE Syrtis",
+      "organization": "JPL",
+      "url": "https://marsnext.jpl.nasa.gov/documents/LandingSiteWorksheet_NESyrtis_final.pdf",
+      "locator": "Summary of observations and key investigations, first page",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "primary_mission_workshop_proposal",
+      "access_limit": "Indexed primary text reviewed; repeated direct PDF fetches failed. Hypotheses and landing-site proposals are not operational approval."
+    },
+    "ALT-S08": {
+      "title": "HiRISE DTM catalog: Megabreccia at contact in northeast Syrtis Major region",
+      "organization": "NASA/JPL-Caltech/UArizona HiRISE",
+      "url": "https://www.uahirise.org/hiwish/maps/dtms.jsp",
+      "locator": "DTEED_052165_1975_052231_1975_A01 catalog row",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "official_DTM_catalog",
+      "access_limit": "Catalog entry verified; individual product page and exact footprint/resolution not verified."
+    },
+    "ALT-S09": {
+      "title": "Carbonate-Olivine Relationship in Nile Fossae, Mars",
+      "organization": "NASA/JPL/JHUAPL/UArizona/Brown",
+      "url": "https://science.nasa.gov/photojournal/carbonate-olivine-relationship-in-nile-fossae-mars/",
+      "locator": "PIA11730, Description; CRISM FRT00003E12 and HiRISE PSP_002888_2025",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "published_orbital_spectral_interpretation"
+    },
+    "ALT-S10": {
+      "title": "Orbital identification of carbonate-bearing rocks on Mars",
+      "organization": "USGS",
+      "url": "https://www.usgs.gov/publications/orbital-identification-carbonate-bearing-rocks-mars",
+      "locator": "Abstract; DOI 10.1126/science.1164759",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "published_primary_research"
+    },
+    "ALT-S11": {
+      "title": "Mars 2020 candidate landing-site worksheet: Eberswalde crater",
+      "organization": "JPL",
+      "url": "https://marsnext.jpl.nasa.gov/documents/LandingSiteWorksheet_Eberswalde_final.pdf",
+      "locator": "First page: observations, interpretations and unknowns",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "primary_mission_workshop_proposal"
+    },
+    "ALT-S12": {
+      "title": "Potential MSL Landing Site in Eberswalde Crater",
+      "organization": "NASA/JPL-Caltech/UArizona HiRISE",
+      "url": "https://www.uahirise.org/dtm/dtm.php?ID=ESP_016065_1560",
+      "locator": "DTM and orthoimage links; center and map-scale metadata",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "official_DTM_catalog"
+    },
+    "ALT-S13": {
+      "title": "A Closer Look at Holden Crater",
+      "organization": "NASA/JPL-Caltech/UArizona",
+      "url": "https://science.nasa.gov/photojournal/a-closer-look-at-holden-crater/",
+      "locator": "PIA21561, Description",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "published_orbital_image_and_spectral_interpretation"
+    },
+    "ALT-S14": {
+      "title": "Oxia Planum favoured for ExoMars surface mission",
+      "organization": "ESA",
+      "url": "https://www.esa.int/articles/oxia-planum-favoured-for-exomars-surface-mission",
+      "locator": "2018 archived site-selection discussion and geological context",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "primary_mission_site_selection",
+      "access_limit": "Historical launch schedules are obsolete and are not used. Site-selection safety statements do not establish safety for our agents."
+    },
+    "ALT-S15": {
+      "title": "Mars Rover Investigates Signs of Steamy Martian Past",
+      "organization": "NASA JPL",
+      "url": "https://www.jpl.nasa.gov/news/mars-rover-investigates-signs-of-steamy-martian-past/",
+      "locator": "10 December 2007, Home Plate silica observations and competing formation hypotheses",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "published_rover_observation_and_interpretation"
+    },
+    "ALT-S16": {
+      "title": "Rover Flight Director Report, 22 May 2007",
+      "organization": "NASA JPL",
+      "url": "https://www.jpl.nasa.gov/videos/rover-flight-director-report-7/",
+      "locator": "Transcript: Spirit APXS, Mini-TES and disturbed bright soil",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "primary_mission_operations_report"
+    },
+    "ALT-S17": {
+      "title": "Endurance Crater Overview",
+      "organization": "NASA/JPL/Cornell/OSU/MSSS",
+      "url": "https://science.nasa.gov/photojournal/endurance-crater-overview/",
+      "locator": "PIA06865, Description: rejected entry location and uncrossed inner dunes",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "primary_mission_operations_account"
+    },
+    "ALT-S18": {
+      "title": "Opportunity Mars Rover mission: Overview and selected results from Purgatory ripple to traverses to Endeavour crater",
+      "organization": "Arvidson et al. 2011 primary paper; NASA/JPL/USGS authors",
+      "url": "https://doi.org/10.1029/2010JE003746",
+      "accessible_primary_copy": "https://dspace.stir.ac.uk/bitstream/1893/17156/1/Arvidson2011_opportunity_mars_rover_mission.pdf",
+      "locator": "Abstract and Background Discussion, PDF pp.1-3",
+      "reviewed_on": "2026-11-14",
+      "evidence_type": "published_primary_research",
+      "access_limit": "DOI publisher redirect failed; author-repository PDF reviewed. Regional context, not the source of the Endurance maneuver account."
+    }
+  },
+  "candidates": [
+    {
+      "id": "ALT-ROI01",
+      "name": "Yellowknife Bay: Sheepbed to Gillespie Lake and Point Lake",
+      "region": "Gale crater",
+      "status": "proposed_pending_georegistration",
+      "science_question": "How do the locally exposed sedimentary members record changing lake and stream conditions?",
+      "observed_basis": [
+        "Curiosity images document the Sheepbed mudstone and overlying Gillespie Lake and Point Lake exposures."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare member contacts, bedding and changes in sediment texture if covered by the selected public crop."
+      ],
+      "local_window_sides_m_proposed": [
+        128,
+        256
+      ],
+      "context_sides_m_proposed": [
+        512,
+        1024
+      ],
+      "priority": "alternative",
+      "source_ids": [
+        "ALT-S01"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "published_rover_image": "PIA17595",
+        "dem_product_for_exact_crop": null,
+        "science_context": "Published rover lithostratigraphy; public orbital registration pending"
+      },
+      "limitations": [
+        "The source scene includes features approximately 8-30 m from the rover; it does not define a georeferenced 128 m crop.",
+        "This is a compact-station analogue, not evidence that arbitrary 128 m windows contain multiple members."
+      ]
+    },
+    {
+      "id": "ALT-ROI02",
+      "name": "Pahrump Hills: exposed basal Murray outcrop",
+      "region": "Gale crater",
+      "status": "proposed_pending_georegistration",
+      "science_question": "Which bedding and contact relationships can be compared within the basal sedimentary section?",
+      "observed_basis": [
+        "NASA describes approximately 18 m of vertical rock exposure alongside sand ripples in the Pahrump Hills scene."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare bedrock-ripple boundaries and lateral changes between exposed beds; do not assume sand trafficability."
+      ],
+      "local_window_sides_m_proposed": [
+        256,
+        512
+      ],
+      "context_sides_m_proposed": [
+        512,
+        1024
+      ],
+      "priority": "alternative",
+      "source_ids": [
+        "ALT-S02"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "published_rover_scene": "Curiosity Mastcam, sol 751",
+        "dem_product_for_exact_crop": null
+      },
+      "limitations": [
+        "The published 18 m is vertical section thickness, not horizontal route length.",
+        "A panoramic image is not a DEM, terrain mask or accepted approach route."
+      ]
+    },
+    {
+      "id": "ALT-ROI03",
+      "name": "Glen Torridon: clay-bearing trough toward Greenheugh contact",
+      "region": "Gale crater",
+      "status": "proposed_pending_georegistration",
+      "science_question": "How do sedimentary facies and later alteration vary toward the pediment contact?",
+      "observed_basis": [
+        "The published campaign documented lacustrine mudstones, more energetic sandstone facies and heterogeneous alteration across a 5 km traverse."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare cross-bedding, contact exposures and diagenetic features where public observations support them."
+      ],
+      "local_window_sides_m_proposed": [
+        256,
+        512
+      ],
+      "context_sides_m_proposed": [
+        1024,
+        2048
+      ],
+      "priority": "alternative",
+      "source_ids": [
+        "ALT-S03",
+        "ALT-S04"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "published_campaign_traverse_m": 5000,
+        "published_campaign_drill_sites": 11,
+        "dem_product_for_exact_crop": null
+      },
+      "limitations": [
+        "A 128 m station cannot represent the complete published campaign.",
+        "The selected contact window must be located and registered; no coordinate or rover reachability is inferred."
+      ]
+    },
+    {
+      "id": "ALT-ROI04",
+      "name": "Mawrth Vallis: layered exposures beside a dark-mantled tributary",
+      "region": "Mawrth Vallis",
+      "status": "proposed_pending_georegistration",
+      "science_question": "Can a local transect compare exposed clay-bearing horizons and the overlying dark mantle?",
+      "observed_basis": [
+        "HiRISE documents approximately 1.6 km-wide hills and a stereo DTM with associated orthoimages.",
+        "Published CRISM research identifies compositionally distinct stratigraphic horizons."
+      ],
+      "proposed_secondary_opportunities": [
+        "Investigate mantle edges, erosional windows and bed orientations before proposing any local sample."
+      ],
+      "local_window_sides_m_proposed": [
+        512,
+        1024
+      ],
+      "context_sides_m_proposed": [
+        2048
+      ],
+      "priority": "alternative",
+      "source_ids": [
+        "ALT-S05",
+        "ALT-S06"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "dtm_product_id": "DTEEC_002074_2025_002140_2025_U01",
+        "published_dtm_map_scale_m_per_pixel": 1,
+        "associated_orthoimages_verified": true,
+        "orthoimage_pixel_scale_verified": false,
+        "published_product_center": {
+          "latitude_deg": 22.45,
+          "longitude_east_deg": 341.7,
+          "role": "DTM_PRODUCT_CENTER_ONLY_NOT_POI_OR_BASE",
+          "reference_system_verification": "PENDING"
+        },
+        "science_layer": "CRISM mineral interpretation published; exact registered layer subset not imported"
+      },
+      "limitations": [
+        "Best documented alternative for a data-import study; it is not an integrated public package.",
+        "The catalog center is not a proposed base, target or crop center.",
+        "If HiRISE is evaluator reference, a newly agreed public/held-out partition is required before planning with these products."
+      ]
+    },
+    {
+      "id": "ALT-ROI05",
+      "name": "NE Syrtis: megabreccia and altered-unit contact sector",
+      "region": "Northeast Syrtis Major",
+      "status": "proposed_pending_georegistration",
+      "science_question": "Which contacts distinguish ancient disrupted materials from later igneous and aqueous alteration units?",
+      "observed_basis": [
+        "The JPL candidate dossier describes diverse basement, megabreccia and overlying altered units; the HiRISE catalog lists a contact-region DTM."
+      ],
+      "proposed_secondary_opportunities": [
+        "Inspect exposed contacts, block populations and fractures; competing alteration origins remain hypotheses."
+      ],
+      "local_window_sides_m_proposed": [
+        512,
+        1024
+      ],
+      "context_sides_m_proposed": [
+        2048,
+        4096
+      ],
+      "priority": "alternative",
+      "source_ids": [
+        "ALT-S07",
+        "ALT-S08"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "candidate_dtm_product_id": "DTEED_052165_1975_052231_1975_A01",
+        "individual_dtm_page_verified": false,
+        "dtm_resolution_verified": false,
+        "exact_coverage_verified": false
+      },
+      "limitations": [
+        "The JPL worksheet was reviewed through indexed text; direct retrieval was unavailable.",
+        "Catalog listing alone does not establish an image/DEM/science-layer overlap.",
+        "Steep mesas and large blocks are science context, not an approved walkable transect."
+      ]
+    },
+    {
+      "id": "ALT-ROI06",
+      "name": "Nili Fossae: olivine-carbonate-clay exposure in PIA11730",
+      "region": "Nili Fossae",
+      "status": "proposed_pending_georegistration",
+      "science_question": "How are carbonate-bearing exposures related to olivine, clay-bearing substrate and the upper rock cover?",
+      "observed_basis": [
+        "NASA publishes a roughly 3 km-wide CRISM/HiRISE composite showing the stratigraphic association of these materials."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare erosional contacts, retained cap rock and nearby sand derived from exposed materials if the crop covers them."
+      ],
+      "local_window_sides_m_proposed": [
+        512,
+        1024
+      ],
+      "context_sides_m_proposed": [
+        3072,
+        4096
+      ],
+      "priority": "alternative",
+      "source_ids": [
+        "ALT-S09",
+        "ALT-S10"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "hirise_image_id": "PSP_002888_2025",
+        "crism_observation_id": "FRT00003E12",
+        "registered_composite_published": true,
+        "dem_product_for_exact_crop": null
+      },
+      "limitations": [
+        "Mineral assignments derive from spectroscopy and interpretation, not DEM or visible color alone.",
+        "This exposure is not automatically on a route through NE Syrtis or Jezero.",
+        "Composite overlap does not yet provide the canonical terrain package or its uncertainty."
+      ]
+    },
+    {
+      "id": "ALT-ROI07",
+      "name": "Eberswalde: delta-front lobe and nearby inverted distributary",
+      "region": "Eberswalde crater",
+      "status": "proposed_pending_georegistration",
+      "science_question": "Which local exposures constrain delta architecture and the relationship between channels and fine deposits?",
+      "observed_basis": [
+        "The JPL worksheet describes a roughly 10 by 10 km delta with inverted channels, clay-bearing deposits and unresolved crater-floor materials."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare eroded lobe fronts, channel intersections and any supported contacts with impact-related or vein-bearing materials."
+      ],
+      "local_window_sides_m_proposed": [
+        512,
+        1024,
+        2048
+      ],
+      "context_sides_m_proposed": [
+        10240,
+        12288
+      ],
+      "priority": "alternative",
+      "source_ids": [
+        "ALT-S11",
+        "ALT-S12"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "dtm_product_id": "DTEEC_016065_1560_016210_1560_U01",
+        "published_dtm_map_scale_m_per_pixel": 1,
+        "associated_orthoimages_verified": true,
+        "published_product_center": {
+          "latitude_deg": -23.9,
+          "longitude_east_deg": 326.9,
+          "role": "DTM_PRODUCT_CENTER_ONLY_NOT_POI_OR_BASE",
+          "reference_system_verification": "PENDING"
+        },
+        "exact_target_lobe_coverage_verified": false
+      },
+      "limitations": [
+        "The DTM footprint must be checked against the selected lobe; the product center is not a mission target.",
+        "A local crop cannot represent the full delta.",
+        "HiRISE public/reference partition and new-site registration need owner agreement."
+      ]
+    },
+    {
+      "id": "ALT-ROI08",
+      "name": "Holden: southwestern layered deposits below alluvial material",
+      "region": "Holden crater",
+      "status": "proposed_pending_georegistration",
+      "science_question": "How do finely bedded deposits differ from the overlying alluvial cover?",
+      "observed_basis": [
+        "NASA describes southwestern exposures whose beds can be followed hundreds of metres to kilometres, with spectral indications of clays."
+      ],
+      "proposed_secondary_opportunities": [
+        "Examine stratigraphic boundaries and lateral continuity; compare alluvial and finer layered exposures."
+      ],
+      "local_window_sides_m_proposed": [
+        512,
+        1024
+      ],
+      "context_sides_m_proposed": [
+        2048,
+        4096
+      ],
+      "priority": "alternative",
+      "source_ids": [
+        "ALT-S13"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "published_hirise_scene": "PIA21561",
+        "published_image_map_scale_m_per_pixel": 0.25,
+        "dem_resolution_m": null
+      },
+      "limitations": [
+        "The 0.25 m figure is image map scale, not DEM resolution or vertical accuracy.",
+        "The breached-rim terrain does not imply a safe ingress or a feasible return.",
+        "A sector-specific public DEM and registration are pending."
+      ]
+    },
+    {
+      "id": "ALT-ROI09",
+      "name": "Oxia Planum: exposed clay-bearing terrain and surviving cover contact",
+      "region": "Oxia Planum",
+      "status": "proposed_pending_georegistration",
+      "science_question": "What relationships between clay-bearing bedrock, later cover and channel deposits can a selected local exposure resolve?",
+      "observed_basis": [
+        "ESA's site-selection account describes ancient clay-bearing rocks, channel context and locally retained later cover."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare erosion windows and exposed cover boundaries; channel-related features require confirmed crop overlap."
+      ],
+      "local_window_sides_m_proposed": [
+        512,
+        1024
+      ],
+      "context_sides_m_proposed": [
+        2048,
+        4096
+      ],
+      "priority": "researchreserve",
+      "source_ids": [
+        "ALT-S14"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "specific_verified_dtm_product": null,
+        "science_context": "Official orbital site-selection interpretation"
+      },
+      "limitations": [
+        "No specific downloadable DTM and exact overlap were verified in this survey.",
+        "Historical ExoMars schedule text is obsolete and not part of this proposal.",
+        "A historical site-selection safety margin is not agent-specific traversability."
+      ]
+    },
+    {
+      "id": "ALT-ROI10",
+      "name": "Home Plate eastern margin and silica-bearing soils",
+      "region": "Columbia Hills, Gusev crater",
+      "status": "proposed_pending_georegistration",
+      "science_question": "How might local exposures test the competing formation histories of silica-rich deposits?",
+      "observed_basis": [
+        "Spirit's disturbed soil revealed high silica; APXS and Mini-TES measurements supported the compositional interpretation."
+      ],
+      "proposed_secondary_opportunities": [
+        "Inspect already exposed bright soils and nearby stratification using an explicit instrument model; do not reproduce wheel damage as a sensing requirement."
+      ],
+      "local_window_sides_m_proposed": [
+        128,
+        256
+      ],
+      "context_sides_m_proposed": [
+        512,
+        1024
+      ],
+      "priority": "researchreserve",
+      "source_ids": [
+        "ALT-S15",
+        "ALT-S16"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "published_in_situ_instruments": [
+          "APXS",
+          "Mini-TES"
+        ],
+        "dem_product_for_exact_crop": null
+      },
+      "limitations": [
+        "The historical discovery was incidental; a simulator must not guarantee another discovery.",
+        "Silica is not identifiable from the DEM; a declared scientific sensor/result contract is needed.",
+        "The historical hot-spring/fumarole alternatives do not establish a biosignature or a safe present approach."
+      ]
+    },
+    {
+      "id": "ALT-ROI11",
+      "name": "Endurance: rim-to-exposed-section sector with dune exclusion",
+      "region": "Meridiani Planum",
+      "status": "proposed_pending_georegistration",
+      "science_question": "What stratigraphic and alteration contrasts can an accessible crater-wall sector reveal while rejecting an unsafe extension?",
+      "observed_basis": [
+        "NASA records a rejected entry location and a later refusal to cross inner dunes.",
+        "Regional Opportunity research relates sedimentary and alteration observations to wind and water processes."
+      ],
+      "proposed_secondary_opportunities": [
+        "Compare accessible beds and supported concretions/fractures; retain the inner dunes as a historical negative-access analogue, not a required destination."
+      ],
+      "local_window_sides_m_proposed": [
+        256,
+        512
+      ],
+      "context_sides_m_proposed": [
+        512,
+        1024
+      ],
+      "priority": "researchreserve",
+      "source_ids": [
+        "ALT-S17",
+        "ALT-S18"
+      ],
+      "proposed_exact_crop_bounds": null,
+      "proposed_base": null,
+      "proposed_primary_goal": null,
+      "data_readiness": {
+        "imported_public_package": false,
+        "canonical_loader_validation": "NOT_RUN",
+        "georegistration": "PENDING",
+        "traversability": "UNKNOWN",
+        "evaluation_partition": "PENDING_OWNER_AGREEMENT; preserve existing public/reference isolation",
+        "published_operations_scene": "PIA06865",
+        "dem_product_for_exact_crop": null
+      },
+      "limitations": [
+        "Do not reuse Opportunity's historical route as authorization for different agents.",
+        "The inner dunes are a rejected historical extension, not an approved POI to reach.",
+        "The regional 2011 paper is not the source for the 2004 entry/dune decisions.",
+        "New public terrain, uncertainty and instrument bindings are pending."
+      ]
+    }
+  ],
+  "shared_requests_to_data_owner": [
+    "Select a science-feature polygon from the cited primary material before fixing a crop center.",
+    "Return actual product IDs, footprints, hashes, native DEM and image scales, horizontal/vertical references, masks and uncertainty.",
+    "Verify co-registration of DEM, image and any spectral/geological layer with independent controls.",
+    "Provide a public canonical package and preserve unknown/NoData distinctions; do not synthesize observations or evaluator values.",
+    "Retain a small operational window within wider context; map size alone does not approve longer routes, more service or larger resource budgets."
+  ],
+  "limitations": [
+    "No alternative sector has been imported, georegistered, planned or executed by this artifact.",
+    "Secondary opportunities are proposed investigations, not guaranteed detections or completed tasks.",
+    "Orbital estimates and published science context do not certify local soil, traction, clearance or safe traversal.",
+    "Biosignature preservation potential does not establish ancient life.",
+    "Landing-site constraints must not be copied as universal EVA or robot safety thresholds."
+  ],
+  "ai_disclosure": {
+    "tool": "OpenAI Codex",
+    "use": "AI-assisted primary-source synthesis and proposed crop-size alternatives; no terrain, image, observation or execution data generated",
+    "project_register": "docs/ai_usage.json"
+  }
+}

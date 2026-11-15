@@ -1,5 +1,15 @@
 # Team continuation plan — 14 November 2026
 
+**Superseding delivery cut:** [current conclusions, PDF disposition and tasks](delivery_closure_plan.md)
+and accepted [D-DEL-03](decisions/2026-11-14-delivery-freeze.md) now govern priority.
+PR28 at main9198b3d publishes the basic estimated-map/observation/replay cut.
+Larger maps, new scenes/agents and H-DAN-01 are paused until after submission;
+the CONT-* checklist below is retained as the earlier engineering plan, not
+permission to continue extensions during the freeze. New patch/campaign research
+is summarized without adopting local draft coordinates or resource budgets.
+Submission target remains 15 November 20:00 America/Bogota, with earlier closure
+cuts and organizer review. Full mission acceptance remains open.
+
 Owner-requested next assignments, based on the five integration cuts discussed
 in the planning and Conciliación chats. This is a work plan, not completed
 acceptance, scientific approval, an ICD freeze or permission to bypass reviews.

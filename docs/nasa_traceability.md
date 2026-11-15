@@ -5,26 +5,26 @@ Jorge for public source access. Supports [the minimum mission checklist](mission
 R03-R06, R16 and R17. A citation, a valid JSON manifest and a completed import are
 different evidence states. No new acceptance is claimed by writing this register.
 
-This branch contains planning documentation. Links to planner inputs and
-computational evidence identify their published implementation revision; those
-code/data changes are not copied into this documentation branch.
+Current reconciliation reference: main `6bcf208`. This register describes the
+integrated implementation and the [new reconciliation](audit_reconciliation.md).
+Older cut-specific records remain historical evidence, not the current status.
 
 ## Current resource register
 
 | Source ID | Official product / role | Observed state and remaining proof |
 | --- | --- | --- |
-| NASA-CTX | MRO/CTX, [USGS DTM release, DOI 10.5066/P906QQT8](https://www.usgs.gov/data/mars-2020-terrain-relative-navigation-ctx-dtm-mosaic). Public prior. | A newly processed provisional crop is recorded in [the manifest](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/34c515b6b86f73336844e8b3614c70b144574ec3/data/planner_provisional/manifest.json) and [processing record](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/34c515b6b86f73336844e8b3614c70b144574ec3/docs/planner_provenance.md). Native post spacing 20 m; 4 m computational cells add no native detail. Import/finite samples do not verify ground traversal. Daniel's final release and consumer acceptance remain open. |
+| NASA-CTX | MRO/CTX, [USGS DTM release, DOI 10.5066/P906QQT8](https://www.usgs.gov/data/mars-2020-terrain-relative-navigation-ctx-dtm-mosaic). Public prior. | Daniel's [current public manifest](../data/sample/manifest.json) and [processing record](../data/sample/provenance_details.json) identify the integrated 128 m tile. Native post spacing 20 m; 4 m computational cells add no native detail. The earlier planner provisional crop is separate historical test input. Import/finite samples do not verify ground traversal. |
 | NASA-HIR | MRO/HiRISE, [USGS DTM release, DOI 10.5066/P9REJ9JN](https://www.usgs.gov/data/mars-2020-terrain-relative-navigation-hirise-dtm-mosaic). Isolated evaluator reference. | A private provisional crop/manifest exists locally under data/reference; excluded from Git/public runtime. Product post spacing 1 m. Topography is not mobility ground truth. Record source identity and evaluator configuration without exporting the full reference through planner/mission/web payloads. |
-| NASA-MOLA | MGS/MOLA, [PDS derived-topography bundle](https://pds.nasa.gov/ds-view/pds/viewBundle.jsp?identifier=urn%3Anasa%3Apds%3Amgs_mola_topography_derived&version=1.0). Regional context/area selection. | Exact collection, product/version and file still pending. Supply a regional derivative plus a recorded area-selection or validation decision. A CTX/HiRISE datum containing MOLA in its name is not proof of separate MGS data ingestion or contribution. |
+| NASA-MOLA | MGS/MOLA, [PDS derived-topography bundle](https://pds.nasa.gov/ds-view/pds/viewBundle.jsp?identifier=urn%3Anasa%3Apds%3Amgs_mola_topography_derived&version=1.0). Regional context/area selection. | Separately ingested `Mars_MGS_MOLA_DEM_mosaic_global_463m`; [manifest](../data/sample/manifest.json) records role/native spacing/hash and [source register](data_sources.md) records regional contribution and source window. This supersedes the pending-ingestion note. Its 463 m source does not establish local hazards or fine detail. |
 
-The provisional CTX derivative was retrieved on 14 November 2026 at 15:22:49 UTC
+The earlier planner provisional CTX derivative was retrieved on 14 November 2026 at 15:22:49 UTC
 and processed at 15:22:52 UTC. Its manifest contains the exact product ID,
 artifact/source-window hashes, source/target CRS, datum, NoData, resampling,
 processing versions and controls. Keep that manifest as the authoritative record
 rather than duplicating changing hashes here. Revalidate the actual bytes before
-binding a later run. The provisional manifest differs from the final proposed
-terrain schema; it must not be relabelled ready without an explicit reviewed
-adapter/schema decision and consumer tests.
+binding a later run. Daniel's current loader validates its distinct public
+manifest/artifact and four non-collinear control points. Do not relabel the
+historical planner provisional crop or mix the web demo's different scene.
 
 CTX and HiRISE are both MRO instruments. R03's meaningful MRO + MGS contribution
 is the team's requirement; official competition eligibility must be checked
@@ -112,12 +112,13 @@ No raw rover image, synthetic map or new measured result is added by this propos
 
 - [ ] Daniel verifies source/derived hashes and permitted distribution; David
   approves scientific scale, adaptation assumptions and the claimed contribution.
-- [ ] Consumers verify non-collinear controls and an asymmetric mask. Current
-  provisional diagonal-only controls are insufficient to rule out x/y swapping.
+- [ ] Preserve the loader's four non-collinear controls, including both
+  off-diagonal checks, and verify consumer ENU/grid order and asymmetric masks.
 - [ ] Jesus confirms that planner/mission/web runtime packages cannot read the
   held-out reference or future tasks; source citation does not grant runtime access.
 - [ ] Each presentation claim resolves to an actual recorded run or is explicitly
-  labelled proposed/unvalidated. The unverified CTX prior still returns UNKNOWN.
+  labelled proposed/unvalidated. Estimated-prior proposals under D-EST-01 are
+  distinct from verified passage; profiles may still return UNKNOWN.
 - [ ] Jorge preserves source access, simulation/replay labels and applicable
   required watermarks in the final browser view, captures and exports.
 - [ ] All owners reconcile [AI text](AI_USAGE.md), [AI metadata](ai_usage.json),
