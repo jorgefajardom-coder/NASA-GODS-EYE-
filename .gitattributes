@@ -9,3 +9,6 @@
 
 # Published Wiki tools are byte-sealed by their original export manifest.
 docs/wiki/tools/*.py -text
+
+# PR39 consumer receipts and harness hashes preserve the recorded bytes.
+evidence/pr39-gateway-contract-20261115/** -text

@@ -1,10 +1,10 @@
-import type { RasterSet } from '../types/replay';
+import type { RasterSet, ReplayManifest } from '../types/replay';
 
 export type TerrainLayer = 'prior' | 'belief' | 'slope' | 'sigma' | 'reference';
 
 export const LAYER_INFO: Record<TerrainLayer, { label: string; description: string }> = {
   prior: { label: 'Orbital map', description: 'Prior from orbit. Fixed for the whole run.' },
-  belief: { label: 'Updated map', description: 'Prior plus agent observations up to the current map version.' },
+  belief: { label: 'Updated map', description: 'Recorded and unclassified runs use the current replay map version. Explicit illustrative SIMULATION demos use the final retrospective surface for visual stability; observed-cell tints still follow the current map version.' },
   slope: {
     label: 'Slope',
     description:
@@ -17,6 +17,25 @@ export const LAYER_INFO: Record<TerrainLayer, { label: string; description: stri
   },
   reference: { label: 'Reference (evaluator)', description: 'Hidden ground truth used only to evaluate. The planner never sees it.' },
 };
+
+/** Highest map version available for an explicitly retrospective illustrative demo. */
+export function latestMapVersion(rasters: RasterSet): number {
+  return Math.max(...Object.keys(rasters.versions).map(Number));
+}
+
+/**
+ * Only an explicitly illustrative simulation may use a retrospective surface.
+ * Recorder and unknown sources retain their causal map history by default.
+ */
+export function retrospectiveShapeAllowed(manifest: Pick<ReplayManifest, 'illustrative' | 'source_mode'>): boolean {
+  return manifest.illustrative === true && manifest.source_mode === 'SIMULATION';
+}
+
+/** Belief and uncertainty share one surface; their tints/values retain the current version. */
+export function shapeGrid(rasters: RasterSet, layer: TerrainLayer, version: number, retrospectiveDemo = false): (number | null)[] {
+  const retrospective = retrospectiveDemo && (layer === 'belief' || layer === 'sigma');
+  return heightGrid(rasters, layer, retrospective ? latestMapVersion(rasters) : version);
+}
 
 /** Map version available at or before `version` (versions may skip numbers). */
 export function versionKey(rasters: RasterSet, version: number): string {
