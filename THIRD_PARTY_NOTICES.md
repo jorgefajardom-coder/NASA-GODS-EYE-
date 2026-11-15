@@ -115,6 +115,11 @@ Terrain, imagery and rover stops of the four scenes built after Jezero and Gale.
 - Spirit and Opportunity stops: PDS Geosciences Node (Washington University in St. Louis) interpolated traverse tables, https://an.rsl.wustl.edu/mera/AN/pages/mer/mer_traverse.htm. `MERA_traverse.csv` (Spirit, sols 1 to 2209), SHA-256 `fe55559872d2f556409c12793b4025437881bb24170b3a8ecfa8ed0b078390f5`: 108 stops inside the crop (sol 1 to 1866, thinned to 40 m apart). `MERB_traverse_5130.csv` (Opportunity), SHA-256 `bd0a50b39c62f021ce609170f72c00229ef9dd15459bf48fa5bb5f5c45ba553b`: 134 stops (sol 2630 to 4922, thinned to 80 m). Converted by `web/scripts/extract-mer-traverse.mjs`; Opportunity's table is in metres from its landing site, which the frontend ties to the published landing coordinates (1.9462° S, 354.4734° E), so its positions may be off by tens of metres. The PDS label marks these tables as not archived in PDS. Positions and identifiers only.
 - Usage terms not verified here: NASA mission data served by JPL Mars Trek and the PDS Geosciences Node.
 
+## Zone selector globe and horizon
+
+- Globe texture: JPL Mars Trek WMTS layer `Mars_Viking_MDIM21_ClrMosaic_global_232m` (Viking MDIM 2.1 colour mosaic, NASA/USGS), level 2, the 32 tiles stored as served in `web/public/zones/globe/` by `web/scripts/extract-globe-tiles.mjs` (all tiles SHA-256 `79bec030f5f21f8464f0e98b45b77266660d64a53863ddbfac682db153924596`, one hash per tile in `manifest.json`), stitched in the browser into a 2048 x 1024 equirectangular texture. Credit NASA/USGS, JPL Mars Trek. Usage terms not verified here: NASA mission data.
+- Horizon: two smoothed elevation profiles of the Melas Chasma scene DEM (MRO CTX stereo DEM 11S291E, see the zone scenes section), stretched to a decorative band by `web/scripts/extract-zone-horizon.mjs` (`web/src/data/zoneHorizon.json`); not to scale.
+
 ## Real science sites (POIs C and D)
 
 `web/scripts/extract-science-sites.mjs` writes `web/scripts/data/<zone>/science_sites.json`; each site is placed at the rover's own published position when it did that work. Names, sols and positions only.
