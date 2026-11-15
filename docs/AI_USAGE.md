@@ -681,7 +681,8 @@ data, observation, mission result, image, video or audio was generated.
 
 Claude Code (Anthropic) assisted the viewer owner with the opening terrain
 formation (the layer rises from flat zone by zone), the height morph between
-layers and map versions, the first-person camera and its HUD, the drone
+layers and map versions, the first-person camera and its HUD (route guide,
+minimap, optional sway), the interface entrance animation, the drone
 camera scan, their tests, and the workflow that publishes the public viewer to
 GitHub Pages. The scan only redraws the slope already computed from the orbital
 CTX DTM prior around the drone in display bands; it is not an observation, it

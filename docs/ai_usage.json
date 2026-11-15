@@ -1118,6 +1118,11 @@
         "web/src/components/TerrainGrowth.tsx",
         "web/tests/terrainGrowth.test.ts",
         "web/tests/terrainMorph.test.ts",
+        "web/src/components/PovRoute.tsx",
+        "web/src/lib/routeProgress.ts",
+        "web/tests/routeProgress.test.ts",
+        "web/tests/povSway.test.ts",
+        "web/src/components/RadialHud.tsx",
         "web/src/components/FirstPersonCamera.tsx",
         "web/src/components/FirstPersonHud.tsx",
         "web/src/components/DroneScan.tsx",
@@ -1131,7 +1136,7 @@
         "web/src/styles.css",
         ".github/workflows/pages.yml"
       ],
-      "use": "Viewer display only: opening terrain formation where the whole layer rises from flat to its true relief zone by zone (low ground first, rising ground lit); terrain heights that morph instead of jumping when the layer or map version changes; first-person camera from the followed agent with a cartographic HUD (compass tape, site bearings, resources as received); drone-camera scan that draws the existing orbital CTX slope in display bands around the drone (no observation is made, the map version is unchanged, bands await science approval); GitHub Actions workflow that tests, builds and publishes the public viewer to the gh-pages branch. No data, measurements, images, video or audio generated."
+      "use": "Viewer display only: opening terrain formation where the whole layer rises from flat to its true relief zone by zone (low ground first, rising ground lit); terrain heights that morph instead of jumping when the layer or map version changes; first-person camera from the followed agent with a cartographic HUD (compass tape, site bearings, resources as received), a route guide drawn from the received route (draped line, next-waypoint beacon, distance and time left scaled from the route estimate), a heading-up minimap and an optional camera sway; interface entrance animation with the agent dial spinning in; drone-camera scan that draws the existing orbital CTX slope in display bands around the drone (no observation is made, the map version is unchanged, bands await science approval); GitHub Actions workflow that tests, builds and publishes the public viewer to the gh-pages branch. No data, measurements, images, video or audio generated."
     }
   ],
   "generated_media": [
