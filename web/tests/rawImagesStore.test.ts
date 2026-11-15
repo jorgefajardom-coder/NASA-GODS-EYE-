@@ -158,6 +158,16 @@ describe('preloading the images of a stop', () => {
 });
 
 describe('a mission whose images are not in the feed (Spirit, Opportunity)', () => {
+  it('does not let an older pending load replace the unavailable mission result', async () => {
+    let release!: (value: { ok: boolean; status: number; json(): Promise<unknown> }) => void;
+    const s = createRawImagesStore(() => new Promise((resolve) => { release = resolve; }));
+    const older = s.load();
+    await s.loadStop({ sol: 100, site: 10, drive: 20, rmc: '10_20' }, { raw_category: 'none', image_match: 'none' });
+    release({ ok: true, status: 200, json: async () => ({ images: [img(1)] }) });
+    await older;
+    expect(s.getState()).toMatchObject({ status: 'error', query: { category: 'none', kind: 'stop', sol: 100, rmc: '10_20' } });
+  });
+
   it('answers at once that there is no image feed, without asking NASA', async () => {
     let calls = 0;
     const s = createRawImagesStore(async () => {

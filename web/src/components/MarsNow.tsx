@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { rawImages, useRawImages } from '../lib/rawImagesStore';
+import { rawImages, useRawImages, rawImagesRequestMatches } from '../lib/rawImagesStore';
 import { stopLabel } from '../lib/roverStops';
 import type { RoverMission, RoverStop } from '../types/replay';
 
@@ -29,15 +29,15 @@ export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { 
   useEffect(() => {
     if (tour && stop) void rawImages.loadStop(stop, mission);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [!!tour, stopId]);
-  const wanted = stop?.rmc ?? null;
+  }, [!!tour, stopId, stop?.sol, mission.raw_category, mission.image_match]);
   // Images loaded for another place are not shown as this one's.
-  const matches = state.status === 'ready' && state.forStop === wanted;
+  const requestMatches = rawImagesRequestMatches(state, mission.raw_category, stop);
+  const matches = state.status === 'ready' && requestMatches;
   const img = matches ? state.images[state.index] : null;
   const all = matches ? state.images : [];
   const grid = !!tour && !!stop && all.length > 1; // on the tour, every image of the stop is shown together
   const load = () => void (stop ? rawImages.loadStop(stop, mission) : rawImages.load(mission));
-  const failed = state.status === 'error';
+  const failed = state.status === 'error' && requestMatches;
   const noFeed = mission.image_match === 'none';
   return (
     <div className="marsnow" role="region" aria-label={stop ? `Real ${mission.name} images of this stop` : `Mars now: real ${mission.name} image`}>
@@ -55,10 +55,10 @@ export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { 
             ))}
           </div>
         ) : img ? (
-          <img src={img.mediumUrl} alt={`Perseverance ${img.instrument}, sol ${img.sol}`} referrerPolicy="no-referrer" />
+          <img src={img.mediumUrl} alt={`${mission.name} ${img.instrument}, sol ${img.sol}`} referrerPolicy="no-referrer" />
         ) : noFeed ? (
           <p>{stop ? `The real ${mission.name} stopped here on sol ${stop.sol}. ` : ''}NASA’s raw-image feed has no {mission.name} images: they are archived in the PDS, so none is shown here.</p>
-        ) : state.status === 'loading' ? (
+        ) : state.status === 'loading' && requestMatches ? (
           <p>Loading from NASA…</p>
         ) : tour && !stop ? (
           <p>Driving to the next real stop…</p>

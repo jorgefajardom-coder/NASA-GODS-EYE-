@@ -19,7 +19,7 @@ import { MissionScene } from './components/MissionScene';
 import { FlatMap } from './components/FlatMap';
 import { DroneCamFrame } from './components/DroneCam';
 import { MarsNowFrame } from './components/MarsNow';
-import { rawImages, useRawImages } from './lib/rawImagesStore';
+import { rawImages, useRawImages, rawImagesRequestMatches } from './lib/rawImagesStore';
 import { photoDirection, relativeToRover, requestAim } from './lib/photoAim';
 import { CAMERA_ORDER, mastcamFocalFromId, roverCameraOf } from './lib/roverCameras';
 import { homeRig, requestShot, roverRig, selectCamera, shotReady } from './lib/roverRig';
@@ -284,9 +284,10 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   // the view switches to the rover's own camera, which turns to where each photo was taken while the photo
   // lights up in the window. Then the view goes back behind the rover and it drives on.
   const rawNow = useRawImages();
-  const imagesReady = rawNow.status === 'ready' ? rawNow.preloaded && rawNow.forStop === povStopId : rawNow.status === 'error';
+  const imageRequestMatches = rawImagesRequestMatches(rawNow, bundle.roverStops?.mission?.raw_category ?? 'mars2020', povStop);
+  const imagesReady = imageRequestMatches && (rawNow.status === 'ready' ? rawNow.preloaded : rawNow.status === 'error');
   const imagesRef = useRef<{ images: RawImage[]; stop: RoverStop | null }>({ images: [], stop: null });
-  imagesRef.current = { images: rawNow.status === 'ready' ? rawNow.images : [], stop: povStop };
+  imagesRef.current = { images: rawNow.status === 'ready' && imageRequestMatches ? rawNow.images : [], stop: povStop };
   const doneStop = useRef<string | null>(null);
   const firstPersonNow = useRef(false);
   firstPersonNow.current = firstPerson;

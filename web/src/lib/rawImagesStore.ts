@@ -1,12 +1,17 @@
 import { useSyncExternalStore } from 'react';
 import { imagesAtStop, parseRawImages, pickRawImages, rawFeedUrl, rawFeedUrlForSol, type RawImage } from './perseveranceRaw';
 
+export type RawImagesQuery =
+  | { category: string; kind: 'latest' }
+  | { category: string; kind: 'stop'; sol: number; rmc: string };
+
 export type RawImagesState =
   | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'error'; message: string }
+  | { status: 'loading'; query: RawImagesQuery }
+  | { status: 'error'; message: string; query: RawImagesQuery }
   | {
       status: 'ready';
+      query: RawImagesQuery;
       images: RawImage[];
       index: number;
       /** RMC of the rover stop the images were taken at, or null for the latest ones. */
@@ -21,6 +26,14 @@ export interface StopMission {
   image_match: 'stop' | 'sol' | 'none';
 }
 const DEFAULT_MISSION: StopMission = { raw_category: 'mars2020', image_match: 'stop' };
+
+/** A shared result belongs only to the requested mission and latest/stop acquisition context. */
+export function rawImagesRequestMatches(state: RawImagesState, category: string, stop: { sol: number; rmc: string } | null = null): boolean {
+  if (state.status === 'idle' || state.query.category !== category) return false;
+  return stop
+    ? state.query.kind === 'stop' && state.query.rmc === stop.rmc && state.query.sol === stop.sol
+    : state.query.kind === 'latest';
+}
 
 const SHOWN = 9;
 const PRELOAD_TIMEOUT_MS = 15000;
@@ -60,12 +73,12 @@ export function createRawImagesStore(fetchFn: FetchLike, preload: (urls: string[
     listeners.forEach((l) => l());
   };
 
-  async function run(url: string, pick: (all: RawImage[]) => RawImage[], forStop: string | null, emptyMessage: string, cached?: () => RawImage[] | null): Promise<void> {
+  async function run(url: string, pick: (all: RawImage[]) => RawImage[], query: RawImagesQuery, emptyMessage: string, cached?: () => RawImage[] | null): Promise<void> {
     ctl?.abort();
     const mine = new AbortController();
     ctl = mine;
     const timer = setTimeout(() => mine.abort(), TIMEOUT_MS);
-    set({ status: 'loading' });
+    set({ status: 'loading', query });
     try {
       const hit = cached?.() ?? null;
       let images: RawImage[];
@@ -77,28 +90,30 @@ export function createRawImagesStore(fetchFn: FetchLike, preload: (urls: string[
       }
       if (images.length === 0) throw new Error(emptyMessage);
       if (ctl === mine) {
-        set({ status: 'ready', images, index: 0, forStop: forStop, preloaded: false });
+        set({ status: 'ready', query, images, index: 0, forStop: query.kind === 'stop' ? query.rmc : null, preloaded: false });
         void preload(images.flatMap((i) => [i.thumbUrl, i.mediumUrl])).then(() => {
           if (state.status === 'ready' && state.images === images) set({ ...state, preloaded: true });
         });
       }
     } catch (e) {
       if (ctl !== mine) return;
-      set({ status: 'error', message: mine.signal.aborted ? 'The NASA feed did not answer in time' : e instanceof Error ? e.message : 'Could not read the NASA feed' });
+      set({ status: 'error', query, message: mine.signal.aborted ? 'The NASA feed did not answer in time' : e instanceof Error ? e.message : 'Could not read the NASA feed' });
     } finally {
       clearTimeout(timer);
     }
   }
 
   /** The newest images from wherever the rover is now. */
-  const load = (mission: StopMission = DEFAULT_MISSION): Promise<void> => run(rawFeedUrl(FETCH, mission.raw_category), (all) => pickRawImages(all, SHOWN), null, 'The feed returned no usable images');
+  const load = (mission: StopMission = DEFAULT_MISSION): Promise<void> => run(rawFeedUrl(FETCH, mission.raw_category), (all) => pickRawImages(all, SHOWN), { category: mission.raw_category, kind: 'latest' }, 'The feed returned no usable images');
 
   /** The images NASA lists for one rover stop (same sol, site and drive); none is an honest result. */
   const loadStop = (stop: { sol: number; site: number; drive: number; rmc: string }, mission: StopMission = DEFAULT_MISSION): Promise<void> => {
+    const query: RawImagesQuery = { category: mission.raw_category, kind: 'stop', sol: stop.sol, rmc: stop.rmc };
     if (mission.image_match === 'none') {
       // The mission's images are not in the feed: an honest, immediate answer (the tour moves on).
       ctl?.abort();
-      set({ status: 'error', message: "No image feed: NASA's raw-image feed has no images of this mission (Spirit and Opportunity images are archived in the PDS)" });
+      ctl = null;
+      set({ status: 'error', query, message: "No image feed: NASA's raw-image feed has no images of this mission (Spirit and Opportunity images are archived in the PDS)" });
       return Promise.resolve();
     }
     const key = `${mission.raw_category}:${stop.sol}`;
@@ -110,7 +125,7 @@ export function createRawImagesStore(fetchFn: FetchLike, preload: (urls: string[
         solCache.set(key, sol);
         return pickRawImages(bySol ? sol : imagesAtStop(sol, stop.site, stop.drive), SHOWN);
       },
-      stop.rmc,
+      query,
       bySol ? `NASA lists no raw image for sol ${stop.sol}` : `NASA lists no raw image for stop ${stop.rmc}`,
       () => solCache.get(key) ?? null,
     );

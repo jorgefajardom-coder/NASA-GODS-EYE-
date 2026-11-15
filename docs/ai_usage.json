@@ -1514,6 +1514,22 @@
         "evidence/web-private-replay-20261115/run/windows.json"
       ],
       "use": "Automated private-browser replay check of the built viewer with every backend off (AC-08 evidence input). Reads the build and the existing recorded package; the JSON files are the script's software check output. No mission data, observation, measurement or media was generated; AC-08 acceptance is not claimed."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "viewer_raw_image_provenance_correction",
+      "generation": "AI-assisted code and regression tests requested by the repository owner",
+      "paths": [
+        "web/src/lib/rawImagesStore.ts",
+        "web/src/components/RawImagesPanel.tsx",
+        "web/src/components/MarsNow.tsx",
+        "web/src/App.tsx",
+        "web/tests/rawImagesStore.test.ts",
+        "web/tests/rawImagesProvenance.test.ts",
+        "web/package.json",
+        "web/package-lock.json"
+      ],
+      "use": "Bind shared raw-image results, loading and errors to mission and latest/stop query identity, including sol. DOM regressions use synthetic feed fixtures and a pinned jsdom development dependency. No NASA observations, images, mission outcomes or media generated; no scientific or delivery acceptance inferred."
     }
   ],
   "generated_media": [

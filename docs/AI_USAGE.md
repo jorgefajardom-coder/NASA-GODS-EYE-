@@ -852,3 +852,13 @@ evidence record and the matching README wording. The script reads the built
 viewer and the existing recorded package; it generated no mission data,
 observation, measurement, image, video or audio. Its outputs are software
 check results, not an AC-08 acceptance.
+
+## PR36 raw-image acquisition provenance correction
+
+OpenAI Codex assisted the owner-requested correction of shared image-query
+identity in `web/src/lib/rawImagesStore.ts`, its consumers in `App.tsx`,
+`RawImagesPanel.tsx` and `MarsNow.tsx`, and the raw-image regression tests.
+The tests use synthetic feed fixtures and jsdom, pinned as a development-only
+dependency. No NASA image, observation, mission result or media was generated.
+This software correction does not approve scientific models or close mission,
+replay or submission acceptance.
