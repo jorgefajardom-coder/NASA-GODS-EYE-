@@ -1,5 +1,17 @@
 # Required AI-use declaration
 
+## Root README summary for judges
+
+Claude Code (Anthropic) assisted the integration owner in writing the
+one-screen English summary for judges at the top of the root README: problem,
+approach, public viewer link, the NASA resources with their actual role
+(planner input, display context or held-back reference) and the stated
+limitations. Every statement is drawn from the existing data-source register,
+the viewer source table and the recorded-recovery evidence. The team status
+moved below it, with the 20:00 submission target from D-DEL-03. No code, data,
+observation, mission result, approval, image, video or audio was generated.
+The affected paths are listed in ai_usage.json.
+
 ## Local per-agent campaign and EVA proposal
 
 OpenAI Codex assisted primary-source research, per-patch analytical workloads,
@@ -33,6 +45,7 @@ NASA terrain, mineral detections, physical measurements or mission results.
 No raster or evaluator array is generated, read into this research from the
 private reference directory, or promoted to planning input. No media, new mock,
 discovery/task producer, scientific approval or runtime change is supplied.
+
 ## Delivery conclusions and owner-confirmed freeze
 
 OpenAI Codex assisted comparing the owner's five-page delivery PDF with the
