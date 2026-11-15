@@ -1809,9 +1809,13 @@
         "web/public/replay/gale-demo",
         "web/public/replay/meridiani-demo",
         "docs/AI_USAGE.md",
-        "docs/ai_usage.json"
+        "docs/ai_usage.json",
+        "web/src/lib/roverStops.ts",
+        "web/src/lib/siteKinds.ts",
+        "web/src/App.tsx",
+        "web/tests/photoTourTitle.test.ts"
       ],
-      "use": "Keep the simulated agents off the terrain crop edge: base A and goal B at least 150 m inside, drone and rover pads at least 60 m inside, photo-tour stops visited from at least 20 m inside (within the viewer's 25 m arrival radius) and tour legs outside a 30 m edge band. Regenerated Jezero, Gale and Meridiani; Gusev, Elysium and Valles Marineris are byte-identical. Rover stop markers keep their real NASA positions."
+      "use": "Keep the simulated agents off the terrain crop edge: base A and goal B at least 150 m inside, drone and rover pads at least 60 m inside, photo-tour stops visited from at least 20 m inside (within the viewer's 25 m arrival radius) and tour legs outside a 30 m edge band. Regenerated Jezero, Gale and Meridiani; Gusev, Elysium and Valles Marineris are byte-identical. Rover stop markers keep their real NASA positions. The photo-tour button names the zone's own rover and promises no photos where NASA's raw-image feed has none (Spirit, Opportunity)."
     }
   ],
   "generated_media": [

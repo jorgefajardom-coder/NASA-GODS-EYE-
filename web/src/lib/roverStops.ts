@@ -1,11 +1,21 @@
 import type { AgentMode } from '../types/icd';
-import type { RoverStop } from '../types/replay';
+import type { RoverMission, RoverStop } from '../types/replay';
 
 /**
  * Real Perseverance stops inside the run area (NASA MMGIS waypoints) and the rule that opens their
  * mission images: the selected agent stands on one. Display only: the stops never reach the map,
  * the planner or the replay's mission.
  */
+/**
+ * Tooltip of the photo-tour button, naming the zone's own rover. Spirit and Opportunity have no images in
+ * NASA's raw-image feed (`image_match: 'none'`), so the tour then promises the stops only.
+ */
+export function photoTourTitle(mission?: RoverMission): string {
+  const name = mission?.name ?? 'rover';
+  if (mission?.image_match === 'none') return `The rover drives through every real ${name} stop of this map (illustrative speed). NASA's raw-image feed has no ${name} images, so no photos are shown.`;
+  return `The rover drives through every real ${name} stop of this map and shows NASA's images of each (needs a network; illustrative speed)`;
+}
+
 /** An agent is "on" a stop when it is this close (m). */
 export const STOP_ARRIVE_M = 25;
 /** Stops listed in the compass and drawn with an icon in 3D are the ones within this range (m). */
