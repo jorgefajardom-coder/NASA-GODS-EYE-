@@ -19,6 +19,7 @@ import { MissionScene } from './components/MissionScene';
 import { FlatMap } from './components/FlatMap';
 import { DroneCamFrame } from './components/DroneCam';
 import { MarsNowFrame } from './components/MarsNow';
+import { useRawImages } from './lib/rawImagesStore';
 import { stopUnderAgent, tourStepTime } from './lib/roverStops';
 import { startLabelDeclutter } from './lib/labelDeclutter';
 import { WorldArrows } from './components/WorldArrows';
@@ -226,18 +227,20 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const povAgent = pov ? view.state?.agents.find((a) => a.agent_id === camView) ?? null : null;
   // The real Perseverance stop the first-person agent is standing on, if any: its images open by themselves.
   const roverStops = bundle.roverStops?.stops ?? [];
-  const povStop = povAgent ? stopUnderAgent(roverStops, povAgent.pose.position.x, povAgent.pose.position.y, povAgent.mode) : null;
+  const [tourOn, setTourOn] = useState(false);
+  // On the photo tour the rover's stop counts in third person too (the window shows beside the driving rover).
+  const stopAgent = pov ? povAgent : tourOn ? view.state?.agents.find((a) => a.agent_id === m.photo_tour?.agent_id) ?? null : null;
+  const povStop = stopAgent ? stopUnderAgent(roverStops, stopAgent.pose.position.x, stopAgent.pose.position.y, stopAgent.mode) : null;
   const povStopId = povStop?.rmc ?? null;
   const [closedStop, setClosedStop] = useState<string | null>(null);
   // The rover's photo tour of every real stop: drives the rover through them (the replay has that phase
   // after the story) and opens each stop's images on arrival. The button is the person's request for them.
   const photoTour = m.photo_tour ?? null;
-  const [tourOn, setTourOn] = useState(false);
   const startTour = () => {
     if (!photoTour) return;
     setTourOn(true);
     followAgent(photoTour.agent_id);
-    setFirstPerson(true);
+    setFirstPerson(false); // third person: the rover is seen driving; V switches to its eyes
     setClosedStop(null);
     setMarsNow(true);
     setSpeed(10);
@@ -252,6 +255,27 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   useEffect(() => {
     if (tourOn && follow) setSpeed(10);
   }, [tourOn, follow]);
+  const marsNowNode = marsNow ? <MarsNowFrame stop={povStop} mission={bundle.roverStops?.mission} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: () => { setTourOn(false); setPlaying(false); } } : null} /> : null;
+  // The rover waits at each stop until every image of it has loaded, then goes on.
+  const rawNow = useRawImages();
+  const [waitingImages, setWaitingImages] = useState(false);
+  const imagesReady = rawNow.status === 'ready' ? rawNow.preloaded && rawNow.forStop === povStopId : rawNow.status === 'error';
+  useEffect(() => {
+    if (!tourOn || !marsNow || !povStopId) {
+      if (waitingImages) {
+        setWaitingImages(false);
+        if (tourOn) setPlaying(true);
+      }
+      return;
+    }
+    if (!imagesReady && !waitingImages) {
+      setWaitingImages(true);
+      setPlaying(false);
+    } else if (imagesReady && waitingImages) {
+      setWaitingImages(false);
+      setPlaying(true);
+    }
+  }, [tourOn, marsNow, povStopId, imagesReady, waitingImages]);
   useEffect(() => {
     if (tourOn && photoTour && t >= photoTour.end_s) setTourOn(false);
   }, [tourOn, photoTour, t]);
@@ -423,6 +447,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       </SceneBoundary>
       )}
       <div className="vignette" aria-hidden />
+      {tourOn && !pov && marsNowNode && <div className="marsnow-float">{marsNowNode}</div>}
       {pov && agent && (
         <FirstPersonHud
           agent={view.state?.agents.find((a) => a.agent_id === camView) ?? agent}
@@ -434,7 +459,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           alert={povAlert}
           droneCam={showDroneCam && drone ? <DroneCamFrame droneId={drone.agent_id} onClose={() => setDroneCam(false)} bundle={bundle} view={view} /> : null}
           droneCamOn={showDroneCam}
-          marsNow={marsNow ? <MarsNowFrame stop={povStop} mission={bundle.roverStops?.mission} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: () => { setTourOn(false); setPlaying(false); } } : null} /> : null}
+          marsNow={marsNowNode}
           stops={roverStops}
           marsNowOn={marsNow}
           onMarsNow={() => setMarsNow((v) => !v)}

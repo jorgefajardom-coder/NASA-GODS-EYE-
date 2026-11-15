@@ -5,7 +5,15 @@ export type RawImagesState =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'error'; message: string }
-  | { status: 'ready'; images: RawImage[]; index: number; /** RMC of the rover stop the images were taken at, or null for the latest ones. */ forStop: string | null };
+  | {
+      status: 'ready';
+      images: RawImage[];
+      index: number;
+      /** RMC of the rover stop the images were taken at, or null for the latest ones. */
+      forStop: string | null;
+      /** True once every image has finished loading (or failed) in the browser: the tour waits for it. */
+      preloaded: boolean;
+    };
 
 /** How a mission's raw images are matched to a stop (see RoverMission). */
 export interface StopMission {
@@ -14,9 +22,26 @@ export interface StopMission {
 }
 const DEFAULT_MISSION: StopMission = { raw_category: 'mars2020', image_match: 'stop' };
 
-const SHOWN = 6;
+const SHOWN = 9;
+const PRELOAD_TIMEOUT_MS = 15000;
 const FETCH = 40;
 const TIMEOUT_MS = 12000;
+
+/** Loads every URL in the browser cache; resolves when all have finished, failed or the time is up. No browser, nothing to wait for. */
+export function preloadImages(urls: string[]): Promise<void> {
+  if (typeof Image === 'undefined' || urls.length === 0) return Promise.resolve();
+  const loads = urls.map(
+    (u) =>
+      new Promise<void>((res) => {
+        const im = new Image();
+        im.onload = () => res();
+        im.onerror = () => res();
+        im.referrerPolicy = 'no-referrer';
+        im.src = u;
+      }),
+  );
+  return Promise.race([Promise.all(loads).then(() => undefined), new Promise<void>((res) => setTimeout(res, PRELOAD_TIMEOUT_MS))]);
+}
 
 type FetchLike = (url: string, init?: { signal?: AbortSignal }) => Promise<{ ok: boolean; status: number; json(): Promise<unknown> }>;
 
@@ -24,7 +49,7 @@ type FetchLike = (url: string, init?: { signal?: AbortSignal }) => Promise<{ ok:
  * One shared, opt-in loader for the Perseverance raw images, used by the Atmos tab panel and by the
  * first-person "Mars now" window and compare view. Nothing is requested until `load()` is called.
  */
-export function createRawImagesStore(fetchFn: FetchLike) {
+export function createRawImagesStore(fetchFn: FetchLike, preload: (urls: string[]) => Promise<void> = preloadImages) {
   let state: RawImagesState = { status: 'idle' };
   let ctl: AbortController | null = null;
   /** Images already read for a sol (a tour passes many stops of the same sol): never fetched twice. */
@@ -51,7 +76,12 @@ export function createRawImagesStore(fetchFn: FetchLike) {
         images = pick(parseRawImages(await res.json()));
       }
       if (images.length === 0) throw new Error(emptyMessage);
-      if (ctl === mine) set({ status: 'ready', images, index: 0, forStop: forStop });
+      if (ctl === mine) {
+        set({ status: 'ready', images, index: 0, forStop: forStop, preloaded: false });
+        void preload(images.flatMap((i) => [i.thumbUrl, i.mediumUrl])).then(() => {
+          if (state.status === 'ready' && state.images === images) set({ ...state, preloaded: true });
+        });
+      }
     } catch (e) {
       if (ctl !== mine) return;
       set({ status: 'error', message: mine.signal.aborted ? 'The NASA feed did not answer in time' : e instanceof Error ? e.message : 'Could not read the NASA feed' });

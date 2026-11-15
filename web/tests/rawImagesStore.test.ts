@@ -117,3 +117,42 @@ describe('a mission whose images only carry the sol (Curiosity)', () => {
     expect(i.drive).toBeNull();
   });
 });
+
+describe('preloading the images of a stop', () => {
+  it('reports the images as preloaded only after every one has loaded', async () => {
+    let release: () => void = () => undefined;
+    const wait = new Promise<void>((res) => {
+      release = res;
+    });
+    const urls: string[][] = [];
+    const s = createRawImagesStore(ok([img(1), img(2)]), (u) => {
+      urls.push(u);
+      return wait;
+    });
+    await s.load();
+    const first = s.getState();
+    expect(first.status === 'ready' && first.preloaded).toBe(false);
+    expect(urls[0]).toContain('https://mars.nasa.gov/s1.jpg');
+    release();
+    await wait;
+    await Promise.resolve();
+    const done = s.getState();
+    expect(done.status === 'ready' && done.preloaded).toBe(true);
+  });
+
+  it('does not mark a newer set of images as preloaded when an older load finishes', async () => {
+    let releaseFirst: () => void = () => undefined;
+    const firstDone = new Promise<void>((res) => {
+      releaseFirst = res;
+    });
+    let n = 0;
+    const s = createRawImagesStore(ok([img(1)]), () => (n++ === 0 ? firstDone : new Promise<void>(() => undefined)));
+    await s.load();
+    await s.load(); // a second load replaces the images; its preload never ends here
+    releaseFirst();
+    await firstDone;
+    await Promise.resolve();
+    const st = s.getState();
+    expect(st.status === 'ready' && st.preloaded).toBe(false);
+  });
+});

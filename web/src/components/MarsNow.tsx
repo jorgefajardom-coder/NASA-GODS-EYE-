@@ -34,6 +34,8 @@ export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { 
   // Images loaded for another place are not shown as this one's.
   const matches = state.status === 'ready' && state.forStop === wanted;
   const img = matches ? state.images[state.index] : null;
+  const all = matches ? state.images : [];
+  const grid = !!tour && !!stop && all.length > 1; // on the tour, every image of the stop is shown together
   const load = () => void (stop ? rawImages.loadStop(stop, mission) : rawImages.load(mission));
   const failed = state.status === 'error';
   return (
@@ -45,7 +47,13 @@ export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { 
         </button>
       </div>
       <div className="marsnow__shot">
-        {img ? (
+        {grid ? (
+          <div className="marsnow__grid" aria-label={`${all.length} real images of this stop`}>
+            {all.map((i) => (
+              <img key={i.id} src={i.thumbUrl} alt={`${mission.name} ${i.instrument}, sol ${i.sol}`} referrerPolicy="no-referrer" title={`${i.instrument} · sol ${i.sol}`} />
+            ))}
+          </div>
+        ) : img ? (
           <img src={img.mediumUrl} alt={`Perseverance ${img.instrument}, sol ${img.sol}`} referrerPolicy="no-referrer" />
         ) : state.status === 'loading' ? (
           <p>Loading from NASA…</p>
@@ -68,7 +76,12 @@ export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { 
           </>
         )}
       </div>
-      {img && (
+      {grid && matches && (
+        <div className="marsnow__foot">
+          <span>{state.status === 'ready' && state.preloaded ? `${all.length} images loaded` : `Loading ${all.length} images…`}</span>
+        </div>
+      )}
+      {img && !grid && (
         <div className="marsnow__foot">
           <span title={`${img.instrument} · ${img.takenUtc} UTC`}>
             {img.instrument.replace(/_/g, ' ')} · {img.credit}
