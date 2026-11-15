@@ -143,3 +143,17 @@ LIVE mission. No push, merge or release is implied by this handoff alone.
   planner routes, the processed terrain package and the live gateway when ready.
 - Reminder (AGENTS.md §15): organizer notification/endorsement evidence is still
   missing; record it before declaring the package ready.
+
+## CONT-JOR-01 cut: science POI dossier (15 November 2026, feat/ux)
+
+- Delivered `docs/science_poi_dossier.md`: published landing-site, local-target and sampling criteria
+  (Herd et al. 2025, Vasavada 2022, Golombek et al. 2017, Squyres et al. 2003, Farley et al. 2020), the real
+  science sites used and a candidate matrix. Team rules are marked separately.
+- POIs C and D are now real NASA science sites on Jezero, Gale, Gusev and Meridiani (rover's published
+  position when it did that work); Elysium and Valles Marineris keep labelled fictitious POIs.
+- Astronaut sites added (dossier section 5): Three Forks sample depot (PDS), a real science stop near goal
+  B, and a habitat area meeting the NASA Exploration Zone slope criterion; resources not assessed.
+- Pending: David's audit/approval of the matrix and team rules; Daniel's import check; full-text
+  confirmation of the sections marked "to confirm". Not a frozen contract or approved experiment.
+- Reminder (AGENTS.md section 15): local organizer notification and endorsement are still missing before
+  final submission.
