@@ -1781,6 +1781,41 @@
         "docs/ai_usage.json"
       ],
       "use": "Capture the actual combined viewer replaying height-recovery-20261115-01 without seeks, annotate honestly and preserve visible global/portrait AI marks. Lock source/build/package/video hashes, retain original third-party terms, exclude browser profiles/raw frames, and distinguish review candidate publication from final submission approval."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "viewer_terrain_shape_and_zone_menu_fix",
+      "generation": "AI-assisted code and tests; no data, imagery or NASA observation generated",
+      "paths": [
+        "web/src/lib/layers.ts",
+        "web/src/components/MissionScene.tsx",
+        "web/src/components/ZoneSelector.tsx",
+        "web/src/data/worlds.ts",
+        "web/tests/terrainShape.test.ts",
+        "web/tests/worlds.test.ts",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Draw the updated-map ground from the run's last map version for the whole replay, so observed ground no longer rises suddenly when an agent observes it (observed-cell tints and uncertainty still follow the current version); open the zone menu on the Jezero card without entering the scene."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "demo_generator_crop_edge_margins",
+      "generation": "AI-assisted generator code and test; regenerated SIMULATED replay fixtures; no NASA observation generated",
+      "paths": [
+        "web/scripts/make-demo-fixture.mjs",
+        "web/tests/worlds.test.ts",
+        "web/public/replay/demo",
+        "web/public/replay/gale-demo",
+        "web/public/replay/meridiani-demo",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "web/src/lib/roverStops.ts",
+        "web/src/lib/siteKinds.ts",
+        "web/src/App.tsx",
+        "web/tests/photoTourTitle.test.ts"
+      ],
+      "use": "Keep the simulated agents off the terrain crop edge: base A and goal B at least 150 m inside, drone and rover pads at least 60 m inside, photo-tour stops visited from at least 20 m inside (within the viewer's 25 m arrival radius) and tour legs outside a 30 m edge band. Regenerated Jezero, Gale and Meridiani; Gusev, Elysium and Valles Marineris are byte-identical. Rover stop markers keep their real NASA positions. The photo-tour button names the zone's own rover and promises no photos where NASA's raw-image feed has none (Spirit, Opportunity)."
     }
   ],
   "generated_media": [
