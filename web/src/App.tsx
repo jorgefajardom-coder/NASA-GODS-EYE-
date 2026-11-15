@@ -39,6 +39,7 @@ import { ManagementList } from './components/ManagementList';
 import { DetailsPanel } from './components/DetailsPanel';
 import { HUD_MAP_PX, RadialHud, type HudOption } from './components/RadialHud';
 import { co2FromOxygen } from './lib/co2';
+import { zoneCrewDose } from './lib/zoneEnvironment';
 import { HudGauge } from './components/HudGauge';
 import { resourceLines } from './lib/resources';
 import { fmtDuration, isTrustedRoute } from './lib/format';
@@ -241,7 +242,11 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   }
   if (view.activeRoute && (!isTrustedRoute(view.activeRoute) || view.state?.mission_state === 'REPLAN')) hudWarn.add('route');
   hudHints.route = view.activeRoute ? view.activeRoute.route_id : 'none';
-  if (agent?.agent_kind === 'HUMAN' && bundle.atmosphere) hudHints.dose = `${fmtMicroSv(crewDose(bundle.atmosphere, t).usv)} µSv`;
+  if (agent?.agent_kind === 'HUMAN') {
+    const zoneDose = zoneCrewDose(RUN_ID, t);
+    if (zoneDose) hudHints.dose = `${fmtMicroSv(zoneDose.usv)} µSv`;
+    else if (bundle.atmosphere) hudHints.dose = `${fmtMicroSv(crewDose(bundle.atmosphere, t).usv)} µSv`;
+  }
   // Following an agent shows its telemetry too; F toggles following the selected agent.
   const followAgent = useCallback((id: string) => {
     setCamView(id);
@@ -502,7 +507,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       center={
         // The 2D map only with no option or Route; every other option fills the circle with its own gauge.
         hudOption && hudOption !== 'route' ? (
-          <HudGauge option={hudOption} size={HUD_MAP_PX} bundle={bundle} view={view} t={t} agent={agent} route={view.activeRoute} budget={agent ? budgets[agent.agent_id] : undefined} atmosphere={bundle.atmosphere} />
+          <HudGauge option={hudOption} size={HUD_MAP_PX} bundle={bundle} view={view} t={t} agent={agent} route={view.activeRoute} budget={agent ? budgets[agent.agent_id] : undefined} atmosphere={bundle.atmosphere} runId={RUN_ID} />
         ) : (
           <Minimap bundle={bundle} view={view} agentId={agentId} size={HUD_MAP_PX} />
         )

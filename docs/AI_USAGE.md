@@ -887,4 +887,6 @@ organizer endorsement remain open.
 The same assistance added the HUD's exhaled-CO₂ gauge (`web/src/lib/co2.ts`, the second
 press of the oxygen button, with tests): a display estimate from the replay's oxygen line
 and an assumed respiratory quotient of 0.85, pending scientific review; no CO₂ data or
-suit capacity is generated.
+suit capacity is generated. It also switched the HUD dose gauge to each zone's surface
+rate from the existing zone environment data, with NASA's 600 mSv career limit as scale
+context; no dose value was generated.

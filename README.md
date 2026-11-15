@@ -326,9 +326,11 @@ flowchart LR
   inspector and replan alerts built only from received objects.
 - Agent HUD: heading-up minimap plus six gauges (oxygen, energy, time, route,
   atmosphere, dose), amber when a route leaves under 15 % of the starting budget. A second
-  press on the oxygen button shows the CO₂ the astronaut has exhaled (oxygen used × an assumed
-  respiratory quotient of 0.85; the suit's CO₂ removal capacity is not modelled); a third
-  press goes back to the map.
+  press on the oxygen button shows the CO₂ the astronaut has exhaled, as a red tank like the
+  oxygen one (oxygen used × an assumed respiratory quotient of 0.85; the suit's CO₂ removal
+  capacity is not modelled); a third press goes back to the map. The dose gauge uses each
+  zone's own surface rate (measured at Gale, estimated elsewhere) and puts the dose in
+  proportion to NASA's 600 mSv career limit (NASA-STD-3001).
 - Live Earth and Mars clocks (NASA GISS Mars24: MTC, LMST at Jezero, sol, Ls),
   independent of the replay time.
 - Cameras: Map, Astronaut, Rover, Drone and Base; grab-to-drag map and 45° view rotation.
@@ -396,8 +398,9 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Atmos: Jezero weather | Perseverance MEDA daily summaries, NASA Mars weather feed | Real; outreach summary, not the PDS archive |
 | Atmos: annual cycle | Curiosity REMS daily summaries at Gale crater | Real, another site; reference only |
 | Atmos: radiation | MSL RAD surface averages, Hassler et al. (2014), [doi:10.1126/science.1244797](https://doi.org/10.1126/science.1244797) | Published values; Gale, unshielded estimate |
-| HUD: crew dose | RAD surface average times the replay time | **Estimate**, not a dosimeter reading |
+| HUD: crew dose | The zone's surface dose rate (MSL RAD at Gale; RAD's dose-pressure relation elsewhere) times the replay time, shown against NASA's 600 mSv career limit (NASA-STD-3001) | **Estimate**, not a dosimeter reading; no shielding or solar storms |
 | HUD: pressure map | Latest MEDA pressure scaled with height over the area (barometric law, 11.1 km scale height) | **Estimate**, not a measured field |
+| HUD: exhaled CO₂ | Oxygen used × an assumed respiratory quotient of 0.85 | **Estimate** pending review; no CO₂ data or suit scrubber capacity |
 | HUD: resource use | Drop between the two received samples around the replay time; route cost and reserve as published | Derived from the simulated run |
 | Earth and Mars clocks | Device clock; NASA GISS Mars24 algorithm (Allison and McEwen 2000) | Real present time, not the run's time |
 | Uncertainty (sigma) | Set by the demo fixture (1 m, 3 m on the surveyed crossing, 0.2 m once observed); the data package uses a constant 2.5 m | **Assumed, not measured** |

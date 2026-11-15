@@ -8,7 +8,8 @@ import { pressureField, SCALE_HEIGHT_M } from '../lib/atmosMap';
 import { fmtDuration } from '../lib/format';
 import { heightGrid } from '../lib/layers';
 import { resourceLines, type ResourceLine } from '../lib/resources';
-import { RESPIRATORY_QUOTIENT, co2FromOxygen } from '../lib/co2';
+import { RESPIRATORY_QUOTIENT, co2FromOxygen, type Co2Line } from '../lib/co2';
+import { NASA_CAREER_LIMIT_MSV, zoneCrewDose } from '../lib/zoneEnvironment';
 import { HUD_ICON, type HudOption } from './RadialHud';
 
 const V = 168; // drawing grid (viewBox), scaled to the circle
@@ -116,6 +117,26 @@ function OxygenGauge({ r, budget }: { r: ResourceLine; budget: number | null }) 
         <circle key={x} cx={x} cy={V - 14 - (i % 2) * 18} r={2 + (i % 3)} fill="#fff" opacity={0.5} className={`hg__bubble${i % 2 ? ' hg__bubble--late' : ''}`} />
       ))}
       <Caption y={70} lines={[['O₂', 'hg__t--icon'], [amount(r.remaining, 'L'), 'hg__t--big'], [budget ? `${Math.round(f * 100)} %` : ''], [r.lastsS == null ? 'not in use' : `lasts ${fmtDuration(r.lastsS)}`]]} />
+    </>
+  );
+}
+
+/**
+ * Exhaled CO2: the same tank as the oxygen gauge, in red, filling up as the astronaut breathes CO2 out (its full
+ * scale is the CO2 the whole oxygen supply would produce). An estimate: the suit's removal capacity is not modelled.
+ */
+function Co2Gauge({ c }: { c: Co2Line }) {
+  const f = c.budgetL ? clamp01(c.exhaledL / c.budgetL) : 0;
+  const level = V * (1 - f);
+  return (
+    <>
+      <rect x={0} y={0} width={V} height={V} fill="#1b0808" />
+      <rect x={0} y={level} width={V} height={V - level} fill={RED} opacity={0.55} className="hg__fill" />
+      <path d={`M0 ${level} q21 -6 42 0 t42 0 t42 0 t42 0 V${V} H0 Z`} fill={RED} opacity={0.35} className="hg__wave" />
+      {[30, 62, 104, 132].map((x, i) => (
+        <circle key={x} cx={x} cy={V - 14 - (i % 2) * 18} r={2 + (i % 3)} fill="#fff" opacity={0.5} className={`hg__bubble${i % 2 ? ' hg__bubble--late' : ''}`} />
+      ))}
+      <Caption y={70} lines={[['CO₂', 'hg__t--icon'], [amount(c.exhaledL, 'L', 1), 'hg__t--big'], [c.budgetL ? `${Math.round(f * 100)} % exhaled` : ''], [c.perHour == null || c.perHour < 1e-6 ? 'not breathing hard' : `${amount(c.perHour, 'L/h', 1)} est.`]]} />
     </>
   );
 }
@@ -239,6 +260,8 @@ interface Props {
   route: RouteDecision | null;
   budget: Budget | undefined;
   atmosphere: AtmosphereData | undefined;
+  /** Scene id from the page URL (zone of the per-zone radiation rate). */
+  runId: string;
 }
 
 /**
@@ -246,7 +269,7 @@ interface Props {
  * tank, the battery, radial bars for time and radiation dose, and the estimated pressure map for
  * the atmosphere. The 2D map shows only with no option or Route (see App). Display only.
  */
-export function HudGauge({ option, size, bundle, view, t, agent, route, budget, atmosphere }: Props) {
+export function HudGauge({ option, size, bundle, view, t, agent, route, budget, atmosphere, runId }: Props) {
   if (option === 'atmos') {
     return atmosphere ? <AtmosMap bundle={bundle} view={view} atmosphere={atmosphere} size={size} agentId={agent?.agent_id ?? null} /> : null;
   }
@@ -274,17 +297,18 @@ export function HudGauge({ option, size, bundle, view, t, agent, route, budget, 
     // Exhaled CO2 from the oxygen used (respiratory quotient); the suit's removal capacity is not modelled.
     const o = line('oxygen');
     const c = o ? co2FromOxygen(o, budget?.oxygen_l ?? null) : null;
-    if (!c) return <RadialBar f={null} color={AMBER} option="co2" value="CO₂ n/a" sub="crew only" title="Exhaled CO2 is tracked for the astronaut only" />;
+    if (!c)
+      return (
+        <FillSvg title="Exhaled CO2 is tracked for the astronaut only">
+          <rect x={0} y={0} width={V} height={V} fill="#1b0808" />
+          <Caption y={80} lines={[['CO₂ n/a', 'hg__t--big'], ['crew only']]} />
+        </FillSvg>
+      );
     const route = c.routeAddsL == null ? '' : `; the route in force adds ${amount(c.routeAddsL, 'L')}`;
     return (
-      <RadialBar
-        f={c.budgetL ? c.exhaledL / c.budgetL : null}
-        color={AMBER}
-        option="co2"
-        value={amount(c.exhaledL, 'L', 1)}
-        sub={c.perHour == null ? 'CO₂ exhaled' : `${amount(c.perHour, 'L/h', 1)} exhaled`}
-        title={`CO2 exhaled ${amount(c.exhaledL, 'L')} of ${amount(c.budgetL, 'L')} for the whole oxygen supply${route}. Estimate: oxygen used x respiratory quotient ${RESPIRATORY_QUOTIENT} (assumed); the suit's CO2 removal capacity is not modelled. Display only`}
-      />
+      <FillSvg title={`CO2 exhaled ${amount(c.exhaledL, 'L', 1)} of ${amount(c.budgetL, 'L')} for the whole oxygen supply${route}. Estimate: oxygen used x respiratory quotient ${RESPIRATORY_QUOTIENT} (assumed); the suit's CO2 removal capacity is not modelled. Display only`}>
+        <Co2Gauge c={c} />
+      </FillSvg>
     );
   }
   if (option === 'energy') {
@@ -312,7 +336,23 @@ export function HudGauge({ option, size, bundle, view, t, agent, route, budget, 
       />
     );
   }
-  // Radiation dose: the bar fills as the dose accumulates, on a scale up to the whole run.
+  // Radiation dose: the bar fills as the dose accumulates, on a scale up to the whole run. Each zone uses its own
+  // surface rate (MSL RAD measured at Gale, estimated elsewhere); the older Gale-only average is the fallback.
+  const zone = agent?.agent_kind === 'HUMAN' ? zoneCrewDose(runId, t) : null;
+  if (zone) {
+    const end = zoneCrewDose(runId, bundle.manifest.duration_s)!;
+    const how = zone.measuredHere ? 'measured here by MSL RAD (Hassler et al. 2014)' : `estimated from RAD's dose-pressure relation (Guo et al. 2018)${zone.withinRange ? '' : ', outside the pressure range RAD measured'}`;
+    return (
+      <RadialBar
+        f={end.usv ? zone.usv / end.usv : 0}
+        color={RED}
+        option="dose"
+        value={`${fmtMicroSv(zone.usv)} µSv`}
+        sub={`${zone.msvPerDay.toFixed(2)} mSv/day${zone.measuredHere ? '' : ' est.'}`}
+        title={`Radiation dose so far ${fmtMicroSv(zone.usv)} µSv (± ${fmtMicroSv(zone.sigmaUsv)}), whole run ${fmtMicroSv(end.usv)} µSv, at ${zone.msvPerDay.toFixed(2)} mSv/day ${how}. That is ${(zone.careerShare * 100).toFixed(4)} % of NASA's ${NASA_CAREER_LIMIT_MSV} mSv career limit (NASA-STD-3001). Unshielded surface average without solar storms; an estimate, not a dosimeter reading`}
+      />
+    );
+  }
   if (!agent || agent.agent_kind !== 'HUMAN' || !atmosphere) {
     return <RadialBar f={null} color={RED} option="dose" value={atmosphere ? 'crew only' : 'no data'} title="Radiation dose is tracked for the astronaut only" />;
   }

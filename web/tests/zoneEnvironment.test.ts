@@ -23,3 +23,21 @@ describe('zone water and radiation context', () => {
     expect(excursionDoseMsv(0.72, 4)).toBeCloseTo(0.12);
   });
 });
+
+describe('astronaut dose at each zone (HUD)', () => {
+  it('accumulates the zone rate over the replay time', async () => {
+    const { zoneCrewDose } = await import('../src/lib/zoneEnvironment');
+    const day = zoneCrewDose('gale-demo', 86400)!;
+    expect(day.usv).toBeCloseTo(640); // 0.64 mSv/day measured by MSL RAD
+    expect(day.measuredHere).toBe(true);
+    expect(zoneCrewDose('gale-demo', 0)!.usv).toBe(0);
+    expect(zoneCrewDose('demo', 3600)!.usv).toBeCloseTo((0.69 * 1000) / 24); // Jezero uses its own rate, not Gale's
+  });
+
+  it('puts the dose in proportion to NASA\'s career limit', async () => {
+    const { zoneCrewDose, NASA_CAREER_LIMIT_MSV } = await import('../src/lib/zoneEnvironment');
+    expect(NASA_CAREER_LIMIT_MSV).toBe(600);
+    expect(zoneCrewDose('gale-demo', 86400)!.careerShare).toBeCloseTo(0.64 / 600);
+    expect(zoneCrewDose('unknown-run', 100)).toBeNull();
+  });
+});
