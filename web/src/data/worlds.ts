@@ -28,6 +28,11 @@ export interface WorldInfo {
   imageCaption: string | null;
   /** Source page of the zone's data. */
   url: string;
+  /** Centre of the zone's scene crop (degrees, planetocentric, east positive): where its point sits on the globe. */
+  lat: number;
+  lon: number;
+  /** Two-sentence synopsis shown on the zone card. */
+  synopsis: string;
 }
 
 export const WORLDS: ReadonlyArray<WorldInfo> = [
@@ -44,6 +49,9 @@ export const WORLDS: ReadonlyArray<WorldInfo> = [
     image: 'replay/demo/ctx_ortho.png',
     imageCaption: 'MRO CTX Jezero orthomosaic over the scene crop, the image draped on its terrain',
     url: 'https://trek.nasa.gov/mars/',
+    lat: 18.4899,
+    lon: 77.43461,
+    synopsis: 'An ancient lake crater with a river delta. Perseverance has explored it since 2021 and sealed the first samples meant for return to Earth.',
   },
   {
     id: 'gale',
@@ -58,6 +66,9 @@ export const WORLDS: ReadonlyArray<WorldInfo> = [
     image: 'replay/gale-demo/ctx_ortho.png',
     imageCaption: 'MRO CTX Gale mosaic over the scene crop, the image draped on its terrain',
     url: 'https://science.nasa.gov/resource/curiositys-proposed-path-up-mount-sharp/',
+    lat: -4.7253,
+    lon: 137.3865,
+    synopsis: 'A 154 km crater around Mount Sharp. Curiosity has climbed its layered rocks since 2012, reading the record of long-lived ancient lakes.',
   },
   {
     id: 'gusev',
@@ -72,6 +83,9 @@ export const WORLDS: ReadonlyArray<WorldInfo> = [
     image: 'replay/gusev-demo/ctx_ortho.png',
     imageCaption: 'Columbia Hills visible mosaic (HiRISE/CTX/HRSC) over the scene crop, the image draped on its terrain',
     url: 'https://trek.nasa.gov/mars/',
+    lat: -14.5819,
+    lon: 175.502,
+    synopsis: 'A crater once thought to hold a lake. Spirit drove from its landing site to the Columbia Hills and Home Plate between 2004 and 2010.',
   },
   {
     id: 'elysium',
@@ -86,6 +100,9 @@ export const WORLDS: ReadonlyArray<WorldInfo> = [
     image: 'replay/insight-demo/ctx_ortho.png',
     imageCaption: 'MRO CTX InSight mosaic over the scene crop, the image draped on its terrain',
     url: 'https://trek.nasa.gov/mars/',
+    lat: 4.502,
+    lon: 135.623,
+    synopsis: 'A smooth volcanic plain chosen as a safe, flat site for the InSight lander, which listened to marsquakes from 2018 to 2022.',
   },
   {
     id: 'meridiani',
@@ -100,6 +117,9 @@ export const WORLDS: ReadonlyArray<WorldInfo> = [
     image: 'replay/meridiani-demo/ctx_ortho.png',
     imageCaption: 'MRO CTX South Meridiani mosaic over the scene crop, the image draped on its terrain',
     url: 'https://trek.nasa.gov/mars/',
+    lat: -2.2679,
+    lon: -5.369,
+    synopsis: 'Hematite-rich plains. Opportunity drove more than 45 km here from 2004 to 2018 and spent its last years on the rim of Endeavour crater.',
   },
   {
     id: 'melas',
@@ -114,6 +134,9 @@ export const WORLDS: ReadonlyArray<WorldInfo> = [
     image: 'replay/melas-demo/ctx_ortho.png',
     imageCaption: 'MRO CTX orthoimage B19_017187_1685 over the scene crop, the image draped on its terrain',
     url: 'https://trek.nasa.gov/mars/',
+    lat: -12.8716,
+    lon: -69.0574,
+    synopsis: 'Melas Chasma, part of the largest canyon system in the Solar System. No spacecraft has ever landed here.',
   },
 ];
 
