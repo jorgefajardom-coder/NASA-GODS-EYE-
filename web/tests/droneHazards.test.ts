@@ -30,9 +30,10 @@ describe('drone hazard report', () => {
   });
 
   it('links the drone map update to the route it invalidated', () => {
-    const before = droneReportEvents(timeline.events, 'drone_1', 300);
+    const tMap = timeline.events.find((e: { event_type: string }) => e.event_type === 'MAP_UPDATED').timestamp_sim_s as number;
+    const before = droneReportEvents(timeline.events, 'drone_1', tMap - 1);
     expect(before.mapUpdate).toBeNull();
-    const after = droneReportEvents(timeline.events, 'drone_1', 400);
+    const after = droneReportEvents(timeline.events, 'drone_1', tMap + 120);
     expect(after.mapUpdate?.event_type).toBe('MAP_UPDATED');
     expect(after.invalidated?.event_type).toBe('ROUTE_INVALIDATED');
   });

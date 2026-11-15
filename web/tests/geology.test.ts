@@ -46,7 +46,7 @@ describe('SIM 3464 units of the demo crop', () => {
     const { shares, uncovered } = unitShares(geo, rasterizeUnits(geo, 200));
     expect(uncovered).toBeLessThan(0.02);
     expect(shares.every((s) => s > 0)).toBe(true);
-    expect(geo.units.map((u) => u.name)).toEqual(expect.arrayContaining(['Jezero floor unit']));
-    for (const u of geo.units) expect(u.characteristics.length).toBeGreaterThan(0);
+    expect(geo.units.map((u) => u.name)).toEqual(expect.arrayContaining(['Jezero floor unit', 'Jezero fan 2 unit']));
+    expect(geo.units.find((u) => u.name === 'Jezero fan 2 unit')!.characteristics).toMatch(/carbonate/i);
   });
 });

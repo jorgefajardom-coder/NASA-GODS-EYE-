@@ -12,7 +12,7 @@
  *   CROP_LAT=18.444 CROP_LON=77.4455 CROP_RES=4 node scripts/extract-ctx-crop.mjs <ctx.tif> - - [out.json]
  *
  * Environment: CROP_LAT / CROP_LON (degrees, replace the centre pixel arguments when set) and
- * CROP_RES (output cell size in metres, default 20; the crop stays 2 km wide). An output cell
+ * CROP_RES (output cell size in metres, default 20), CROP_WIDTH_M and CROP_HEIGHT_M (default 2000 each). An output cell
  * smaller than the 20 m source is a display resampling: it adds no detail.
  *
  * Source (USGS Astrogeology, NASA Mars 2020 Terrain Relative Navigation CTX DTM mosaic):
@@ -40,9 +40,10 @@ if (!tifPath || ((rowArg == null || colArg == null) && !process.env.CROP_LAT)) {
 const R = 3396190; // Mars 2000 sphere, m
 const NATIVE_M = 20;
 const RES = Number(process.env.CROP_RES ?? 20); // output cell size, m (below 20 m it is a resampling: no resolution gain)
-const SPAN_M = 2000;
-const ROWS = Math.round(SPAN_M / RES);
-const COLS = Math.round(SPAN_M / RES);
+const WIDTH_M = Number(process.env.CROP_WIDTH_M ?? 2000);
+const HEIGHT_M = Number(process.env.CROP_HEIGHT_M ?? 2000);
+const ROWS = Math.round(HEIGHT_M / RES);
+const COLS = Math.round(WIDTH_M / RES);
 const OX = -(COLS * RES) / 2;
 const OY = -(ROWS * RES) / 2;
 const NODATA_LIMIT = -1e30;
@@ -66,7 +67,7 @@ const lat0 = yC / R;
 const lon0 = xC / R;
 
 // Read a window that surely covers the crop (plus margin for bilinear sampling).
-const half = Math.ceil((COLS * RES) / 2 / NATIVE_M / Math.cos(lat0)) + 4;
+const half = Math.ceil((Math.max(COLS, ROWS) * RES) / 2 / NATIVE_M / Math.cos(lat0)) + 4;
 const c0 = Math.max(0, colC - half);
 const c1 = Math.min(W, colC + half + 1);
 const r0 = Math.max(0, rowC - half);

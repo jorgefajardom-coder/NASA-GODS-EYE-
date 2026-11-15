@@ -678,7 +678,7 @@ const manifest = {
   illustrative: true,
   title: 'Demo run: corridor survey and replanning',
   summary: 'The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.',
-  disclaimer: 'Terrain: NASA/USGS CTX DTM crop at the Perseverance landing area (real, provisional, 4 m display grid from a 20 m source). Rover stop markers: real Perseverance stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.',
+  disclaimer: 'Terrain: NASA/USGS CTX DTM crop of the Perseverance landing area and the terrain north of it (real, provisional, ' + RES + ' m display grid from a 20 m source). Rover stop markers: real Perseverance stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.',
   ai_disclosure: {
     ai_assisted: true,
     scope: 'Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.',
