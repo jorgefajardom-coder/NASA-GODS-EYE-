@@ -1,5 +1,13 @@
 # Probable roadmap: minimum mission checklist
 
+**Current delivery priority:** [closure plan and PDF disposition](delivery_closure_plan.md)
+and [D-DEL-03](decisions/2026-11-14-delivery-freeze.md) supersede older desired
+cuts below: C3/fallback decision 15 Nov 10:00, function freeze 12:00, organizer
+package 14:00, intended submission 20:00, all America/Bogota and subject to the
+actual local cutoff/review margin. Expansion is paused. PR28 publishes basic
+mapping/estimated planning/replay; it does not close the scientific three-role
+mission or the full same-run video. Preserve all AC evidence gates.
+
 Next-work allocation after PR12/17: [team continuation plan](team_continuation_plan.md).
 It records the five Conciliación cuts, current tasks for all five owners,
 Daniel's ongoing map-size study, and Fajardo's new NASA-criteria/deployment
@@ -18,7 +26,8 @@ confirmation that the draft ICD is frozen. Follow [ownership](team.md),
 estimated and may be used to propose hypothetical routes before local
 observation. Contradicting observations invalidate the route and trigger the
 agreed hold/stop/replan behavior. This supersedes the blanket observation
-prerequisite for planning; implementation and integrated acceptance remain open.
+prerequisite for planning. PR28 publishes explicit illustrative estimated-policy
+planning; scientific limits/semantic review and full mission acceptance remain open.
 See [decision, owners and regression obligations](decisions/2026-11-14-estimated-terrain-planning.md).
 
 Demonstrate one simulated Jezero mission: human_1 leaves base A, reaches primary

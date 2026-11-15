@@ -1,5 +1,16 @@
 # Daniel - deliver the canonical public dataset and coherent belief
 
+## Delivery priority after PR28 — owner-confirmed 14 November 2026
+
+Follow [PDF tasks DA-1..4](../delivery_closure_plan.md) and
+[D-DEL-03](../decisions/2026-11-14-delivery-freeze.md). Pause larger-map/scene
+and H-DAN-01 work until after submission; preserve completed studies. Current
+work is existing-crop coverage/ENU checks, source-traced rover-image curation
+where supportable, and the final NASA contribution table. MOLA ingestion and
+F/E protection are already published; do not redo them as missing features.
+New science shortlist/maps remain proposals. No recentering or A/B change
+without explicit owner decision and validation. Remind the organizer gate.
+
 ## Audit reconciliation rc.2 — current candidate over main6bcf208
 
 Read the [current gap/evidence matrix](../audit_reconciliation.md) before the

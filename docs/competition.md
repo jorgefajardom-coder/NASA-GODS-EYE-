@@ -3,6 +3,14 @@
 **Not submission-ready.** David reviews scientific eligibility; Jesus reviews
 links/integration. Every member supplies provenance and required AI disclosures.
 
+Current closure targets: [delivery plan](delivery_closure_plan.md) and accepted
+[D-DEL-03](decisions/2026-11-14-delivery-freeze.md). Intended submission is
+15 November **20:00 America/Bogota**, reviewable package to organizer at 14:00,
+with at least four hours' review margin (or longer if requested). Confirm the
+actual local cutoff and availability early. These are team targets, not newly
+verified official rules; the checklist's source/format constraints still need
+final event review. No delivery checkbox is closed by the documentation update.
+
 Team deadline: **15 November 2026, 23:59 America/Bogota**. Confirm any earlier
 local judging cutoff. Save progress and explicitly press **Submit for Judging**;
 a repository push is not a competition submission.
@@ -22,7 +30,12 @@ a repository push is not a competition submission.
 - [ ] No submitted image/audio/video includes people under 18, per team guide.
 - [ ] Simulation, replay, hypothetical resources and uncertainty are labeled.
 - [ ] No physical safety certification or unmeasured performance is claimed.
+- [ ] Local organizer notified with package revision/links/time and required
+      lead time; contact details remain private (JES-07/AC-10).
+- [ ] Explicit organizer endorsement and required corrections recorded for
+      the final package before submission; silence is not approval.
 - [ ] Form is reviewed and submitted before the applicable cutoff.
+- [ ] Actual Submit for Judging confirmation retained with final revision.
 
 Required declarations override the optional-credit prohibitions in AGENTS.md.
 Update AI_USAGE.md and ai_usage.json as the work changes.

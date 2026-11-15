@@ -1,10 +1,12 @@
 # Contract reconciliation baseline 1.0.0-rc.2
 
-Status: **candidate on `codex/audit-contract-reconciliation`; not published in
-main, not frozen, no release**. Published input at this audit:
-`6bcf208868e37b7e15e9189fac11de96e7414eff`. The candidate includes working-tree
-semantic changes and needs owner review plus the current validation record.
-A successful older CI run does not validate these new changes.
+Status: **published in main through PR28; not frozen, no release or scientific
+approval**. Reviewed source `7f0ebaaefa90b7ae48505f8e06d22f2660e5d491` was
+merged as `9198b3d8b3257dfd452d240ee9708cb038c3bb42`. The original audit input
+`6bcf208868e37b7e15e9189fac11de96e7414eff` and source-lock remote inventory
+remain historical snapshots. The published F/E software and runtime-v1 evidence
+do not replace cross-owner semantic/parameter review or full mission acceptance.
+See [current closure and PDF disposition](delivery_closure_plan.md).
 
 This prerelease identifies the reconciliation record. ROS package/message/service
 versions and gateway/replay JSON `1.0.0` remain unchanged. The
@@ -50,14 +52,14 @@ non-FEASIBLE NaNs become JSON null; arbitrary NaN and all infinities are rejecte
    recovery waits for fresh stationary stop feedback and plans from actual
    remaining allocations with unchanged reserves. This has a narrower recorded
    recovery scope, documented in [the recovery handoff](mission_replay_recovery.md).
-4. **Candidate F: causal observations.** A new observation must use the current
+4. **Published F: causal observations.** A new observation must use the current
    base map and a timestamp no earlier than the last accepted observation
    globally. Already-applied IDs remain no-ops. Wrong run/frame/stamp, stale/future
    base, old clock or invalid footprint is rejected atomically. Missing or
    UNKNOWN obstacle evidence cannot clear a confirmed obstacle; explicit current,
    nonolder FREE evidence may supersede it. Reobserve delayed footprints rather
    than relabel old data. See [ICD observation rules](ICD.md).
-5. **Candidate E / D-EST-01.** Legacy startup remains `observed_only` when no
+5. **Published experimental E / D-EST-01.** Legacy startup remains `observed_only` when no
    exploration policy file is selected. Explicit
    `config/exploration_policy.illustrative.json` selects `estimated_or_observed`
    under schema `mge-exploration-policy-1.0.0`; per-kind illustrative max sigma is
@@ -65,10 +67,10 @@ non-FEASIBLE NaNs become JSON null; arbitrary NaN and all infinities are rejecte
    observed. NoData, confirmed obstacles and independent planner profile limits
    remain enforced. Policy identity/hash travel in TerrainMeta.sources. A planner
    profile capped at 1 m sigma may still reject the unchanged 2.5 m prior.
-6. **Exact recorded replay entry.** This candidate highlights
+6. **Exact recorded replay entry.** The published cut highlights
    `recorded-recovery-001`, preserving the underlying recorder run identity and
    package bytes. The scripted demo remains a separately labelled illustrative
-   example. Final browser/bundle/record checks belong to this candidate's evidence;
+   example. Final browser/bundle/record checks belong to runtime-v1 evidence;
    they do not establish scientific COMPLETE or three-role execution.
 7. **Cost and execution gates.** Same-route/schedule agreement, typed context,
    service progress, role execution and opportunistic evidence remain open.
