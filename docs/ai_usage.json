@@ -1099,6 +1099,16 @@
         "src/mge_sim/mge_sim/mock_mission.py"
       ],
       "use": "Stop the replay recorder on SIGINT/SIGTERM between callbacks so a record is never cut between its timeline line and the manifest/snapshot rewrite; close idempotently and never extend a closed package. Keep planner searches valid while other agent kinds complete the same map batch, and give the MOCK mission more time for the planner to assemble a new map version. No data, mission result or media was generated."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
+      "kind": "terrain_script_review_corrections",
+      "generation": "AI-assisted review corrections and tests for the configurable terrain region options, requested by the repository owner",
+      "paths": [
+        "scripts/prepare_jezero_terrain.py",
+        "tests/mapping/test_prepare_jezero_terrain.py"
+      ],
+      "use": "Read slope screening limits from the proposed science profiles instead of duplicated constants and label the summary as an estimate; refuse --sync-terrain-yml outside data/sample; drop an undocumented duplicate scale tier; add offline tests for parameter validation, slope screening and terrain.yml regeneration. No terrain data, observation, mission result or media was generated."
     }
   ],
   "generated_media": [
