@@ -1087,6 +1087,21 @@
     },
     {
       "tool": "Claude Code (Anthropic)",
+      "kind": "replay_recorder_shutdown_fix",
+      "generation": "AI-assisted bug fix and unit tests, directed by the integration owner",
+      "paths": [
+        "src/mge_gateway/mge_gateway/recorder.py",
+        "src/mge_gateway/mge_gateway/replay.py",
+        "tests/unit/test_replay.py",
+        "src/mge_planning/mge_planning/adapter.py",
+        "src/mge_planning/mge_planning/node.py",
+        "tests/planning/test_adapter.py",
+        "src/mge_sim/mge_sim/mock_mission.py"
+      ],
+      "use": "Stop the replay recorder on SIGINT/SIGTERM between callbacks so a record is never cut between its timeline line and the manifest/snapshot rewrite; close idempotently and never extend a closed package. Keep planner searches valid while other agent kinds complete the same map batch, and give the MOCK mission more time for the planner to assemble a new map version. No data, mission result or media was generated."
+    },
+    {
+      "tool": "Claude Code (Anthropic)",
       "kind": "terrain_script_review_corrections",
       "generation": "AI-assisted review corrections and tests for the configurable terrain region options, requested by the repository owner",
       "paths": [
