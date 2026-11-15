@@ -246,3 +246,5 @@ D-COST-02 accepts reuse of the scientific API as implementation direction;
 profile approval, cost-context agreement and execution evidence remain open.
 The rc.2 contract record is not a scientific approval or a semantic freeze.
 Original analysis/report hashes and pinned c3ec4c1 reproduction remain historical.
+
+Publication CI for 6e497a1: Python, web and ROS passed (run43670914573). ROS built/inspected all interfaces and passed the MOCK vertical integration suite. This remains software evidence, not scientific mission acceptance. See evidence/mission-proposal-publication-20261115/ci.json.
