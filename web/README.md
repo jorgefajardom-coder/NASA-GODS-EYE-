@@ -38,7 +38,7 @@ entry offered; MOCK packages are no longer offered (see the Run selector below).
 | Sun and sky | Sun from Mars24 at the real present time and site; sky colours are a display rendering |
 | Stars | **Real catalogue**: Yale Bright Star Catalogue V ≤ 5.5 placed with the IAU 2009 Mars rotation model (`public/assets/sky/bright_stars.json`) |
 | Artificial light (default), night fill, helmet lights | **Display** lighting choices, not sunlight or suit specifications; *Real light* (`I`) shows the hour's real light |
-| Drone camera window | The scene drawn again from the replayed drone pose; **not a camera feed** |
+| Drone camera window | The scene drawn again from the replayed drone pose; **not a camera feed**. Its Hazards tab reports steep cells and prior contradictions from the replay's **simulated** observations, not LiDAR |
 | Lite 3D and 2D map tiers | Same replay with reduced 3D settings, or drawn in Canvas 2D without WebGL |
 
 The 2 km demo and Daniel's validated public 128 m package are distinct scenes,
@@ -155,7 +155,7 @@ The HUD powers on when first person opens: the screen starts black while a short
 
 **Drone camera** (`C`, first person only, while not looking through the drone itself): a window in the dock shows the scene a second time from the drone, looking ahead along its heading and 35° down, so the ground it is flying over is always visible (`src/components/DroneCam.tsx`). It is the replayed pose (`REPLAY · simulated pose`), not a live video feed; off by default in the lite render tier.
 
-The drone window has two tabs. **Cam** is the view above. **Map** (`DroneMap.tsx`, `src/lib/droneSurvey.ts`) is the terrain map the drone has built so far, north up and centred on it within 300 m: the cells the map version in force marks as observed are drawn as a point cloud coloured by height, the rest as faint dots of the orbital estimate, with 100 m rings and the flight trail. In the demo nothing is observed until the drone's survey publishes map v2 (157 cells at 5:22). These observations are **simulated** in the replay; the drone carries no modelled LiDAR, and the window says so.
+The drone window has two tabs. **Cam** is the view above. **Hazards** (`DroneMap.tsx`, `src/lib/droneHazards.ts`) is the drone's hazard report, north up and centred on it within 300 m, with 100 m rings and the flight trail. It draws only the cells the map version in force marks as observed: steep cells (hazard) in red, moderate (caution) in amber, cells whose updated height contradicts the orbital prior by more than twice its sigma outlined in red, clear cells as faint cyan dots; it also gives the nearest hazard (distance and bearing) and a status line of what the report caused in the replay. Slope bands are the viewer's display bands (`src/lib/scan.ts`, pending science approval). These observations are **simulated** in the replay; the drone carries no modelled LiDAR, and the window says so. This tab replaces the earlier survey-map tab in the working tree (uncommitted at the time of this sync).
 
 **Helmet lights** (`L`, or *Lights* in the camera bar and the dock): EVA suits carry LED lamps on the helmet; the astronaut gets one cool-white spot light at helmet height aimed at the ground a few metres ahead (`src/components/HelmetLight.tsx`). Brightness and beam are display choices, not suit specifications.
 
@@ -226,6 +226,8 @@ A MOCK grid shows no latitude or longitude.
 | `src/lib/slope.ts` | Terrain slope from an elevation grid (Horn 3x3), used by the Slope layer |
 | `src/lib/atmos.ts`, `geology.ts`, `strata.ts`, `tacticalMap.ts`, `provenance.ts` | Atmos context, geologic units, schematic strata, minimap base image, REPLAY/source_mode display semantics |
 | `src/data/referenceSources.ts` | Status of the mandatory NASA reference resources |
+| `src/lib/scan.ts`, `droneHazards.ts`, `routeProgress.ts`, `routeSufficiency.ts`, `marsSky.ts`, `gpu.ts` | Terrain scan slope bands and bearings; drone hazard report from observed cells; route progress and sufficiency estimate; Mars sky and sun; WebGL tier probe |
+| `src/scanner/`, `src/hooks/useTerrainScanner.ts` | Terrain scan state machine, controller, shaders, indicators and optional sounds |
 | `src/lib/format.ts`, `layers.ts` | Honest formatting ("Not estimated") and colour scales |
 | `src/components/` | Terrain, routes, agents, sites, astronaut and vehicle models (wheels, steering joints, rotors, downwash), cameras (`CameraBar`, `FollowCamera`, `ViewRotator`), agent HUD (`RadialHud`, `HudGauge`), live clocks, interface panels |
 | `scripts/` | Terrain crop, orthomosaic, context terrain, geology and atmosphere extraction, fixture generation, GLB branding strip, Blender base preparation |
@@ -243,7 +245,7 @@ Replay fixture layout (`public/replay/<run_id>/`, demo run `demo-sim-002`, `mode
 
 ## Acceptance tests
 
-Automated suite on 2026-11-14: 29 files, 181 tests passed and 1 skipped (`npm test`); `npm run build` passes.
+Automated suite run on 2026-11-14 23:21 (`npm test`, working tree of `feat/ux` with uncommitted drone hazard changes): 38 files passed (38); 233 tests passed, 1 skipped (234). Build not run in this sync.
 
 | Test | Status |
 |---|---|
