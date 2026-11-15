@@ -112,7 +112,7 @@ Snapshot of the remote on 2026-11-14 (`origin/main` = `b5dc681`). See
 | Branch | Owner | State |
 | --- | --- | --- |
 | `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#26 merged |
-| `feat/ux` | Jorge | Web viewer; PRs #5, #19, #23 and #27 are merged in main (offline viewer, public raster input, intro, first person, orbital preview, route guide and text access). PR #29 open: first-person rework, drone camera, helmet and artificial light, Mars sky, route sufficiency alerts, render tiers, demo-only run selector |
+| `feat/ux` | Jorge | Web viewer; PRs #5, #19, #23 and #27 are merged in main (offline viewer, public raster input, intro, first person, orbital preview (since replaced by the terrain scan), route guide and text access). PR #29 open: first-person rework, drone camera, helmet and artificial light, Mars sky, route sufficiency alerts, render tiers, demo-only run selector |
 | `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI; last merged in PR #18 |
 | `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service; merged in PRs #2 and #12 |
 | `feat/data` | Daniel | Public terrain data, mapping, provenance and control points; merged in PRs #8 and #24 (configurable terrain region) |
@@ -221,12 +221,11 @@ flowchart LR
   independent of the replay time.
 - Cameras: Map, Astronaut, Rover, Drone and Base; grab-to-drag map and 45° view rotation.
 - First person (`V`) from the followed astronaut, rover or drone: drag to look, wheel to zoom
-  (18°–110°), supersampled rendering. It powers on like a display switching on (bright line,
+  (18°–110°), supersampled rendering. It opens from black and powers on like a display (shutters,
   short boot log, then each instrument). Its HUD has a compass tape with site bearings, the
-  same agent dial as in third person (menu with resources and the heading-up map), a route
-  guide (the route in force draped on the ground, the next waypoint, distance and time left
-  from the route's own estimate) and one bottom dock with the drone camera, every key control
-  and the scan readout. The 20 km surroundings are always drawn and contours hidden, so the
+  same agent dial as in third person (menu with resources and the heading-up map), the route
+  in force draped on the ground with the next waypoint and its distance, and one bottom dock
+  with the drone camera and every key control. The 20 km surroundings are always drawn and contours hidden, so the
   ground reaches the horizon. Optional camera sway (`B`).
 - Drone camera (`C`, first person): a window showing the scene from the drone, looking ahead
   and 35° down, from the replayed pose (not a video feed).
@@ -238,11 +237,13 @@ flowchart LR
   turn-back point), red *Turn back* and red *Return to base now*. Rationale and NASA sources
   in [docs/route_resource_sufficiency.md](docs/route_resource_sufficiency.md); assumptions
   pending David's review; display only, no live safety check or guaranteed return.
-- Orbital slope preview (`R`): displays prior-derived slope cells within 160 m of
-  the drone position in display bands (< 8°, 8–15°, ≥ 15°, NoData). It is a visual
-  lookup, not a camera observation or mission command; map, sigma and routes do
-  not change. The legend separates the computational grid from native source
-  spacing; the bands are display choices, not validated safety limits.
+- Terrain scan (`Q` in first person): a 50 m visual pulse from the astronaut that follows the
+  relief, draws temporary contours and edges, shows the run's orbital slope classes and NoData
+  as small surface-aligned symbols, and lights footprints and the route; 3 s recharge. Display
+  only, not a sensor or observation. Inspired by the Odradek scanner of *Death Stranding*;
+  no game assets used.
+- The astronaut faces the direction it walks (display), also in recorded packages whose human
+  orientation is constant.
 - Text access for language models: `llms.txt`, `about.html`, page metadata with JSON-LD, a
   static summary for readers without JavaScript, and `window.mge.state()`, which returns the
   displayed replay state as JSON (always labelled REPLAY).
@@ -251,7 +252,7 @@ flowchart LR
   planted feet and shadow, rover steering and suspension, drone rotor spin-up,
   terrain clearance and downwash dust. None of it changes a position in the data.
 
-Keys: `F` follow camera, `V` first person, `R` orbital slope preview, `C` drone camera
+Keys: `F` follow camera, `V` first person, `Q` terrain scan (first person; rotates the view otherwise), `C` drone camera
 (first person), `L` helmet lights, `I` artificial / real light, `B` camera sway (first person),
 `G` grab map, `Q` / `E` rotate view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 
@@ -289,8 +290,8 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
 | Shadows, footprints, dust, rotor blur, wheel and steering motion | Derived in the viewer from the drawn poses | **Cosmetic display** only |
 | Terrain formation, height morph, interface entrance, camera sway | Viewer animations on the drawn surface and camera | **Cosmetic display**; no height or pose in the data changes |
-| Orbital slope preview | Prior-derived slope around the drone position, using the current run's grid | **Display only**: not an observation or route update; display bands are unvalidated |
-| First-person route guide | Route in force as recorded; time left = route `travel_time_s` × distance share left | Drawn from the received route; time left is an **estimate**, not a prediction |
+| Terrain scan | Prior-derived slope classes and NoData around the astronaut, using the current run's grid | **Display only**: not an observation, sensor or route update; display bands are unvalidated |
+| First-person route | Route in force as recorded, draped on the ground, with the next waypoint and its distance | Drawn from the received route |
 | Route sufficiency alert | Route cost spread per metre, remaining amounts, 20 % reserve (JZ-P06) | **Estimate** for display; experimental reserve, not a NASA standard; pending science review |
 | Sun position and sky | NASA GISS Mars24 at the real present time and site latitude/longitude | Real computed position; sky colours are a display rendering |
 | Stars | Yale Bright Star Catalogue (Hoffleit & Warren 1991), V ≤ 5.5, IAU 2009 Mars rotation model | Real catalogue positions; no planets, moons, refraction or proper motion |
