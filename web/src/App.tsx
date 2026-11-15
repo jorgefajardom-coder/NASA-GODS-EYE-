@@ -698,6 +698,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         </div>
 
         <aside className="right">
+          {/* The running ROS gateway, if any, as one thin line at the top of the status column. */}
+          {GATEWAY && <LiveGatewayPanel base={GATEWAY} />}
           <StatusBlock
             manifest={m}
             missionState={view.state?.mission_state ?? 'IDLE'}
@@ -721,7 +723,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         </aside>
 
         <AlertBanner alert={alert} />
-        {GATEWAY && <LiveGatewayPanel base={GATEWAY} />}
         {camView === 'free' && !pov && !zonesOpen && (
           <button type="button" className="zones-open" onClick={() => setZonesOpen(true)} title="Select zone (Z)">
             <kbd>Z</kbd> Zones

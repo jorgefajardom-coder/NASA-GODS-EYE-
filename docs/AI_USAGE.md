@@ -901,6 +901,9 @@ removed, since the panel already shows the connection; that status now describes
 An *Exit photo tour* button (also Esc) in the rover HUD (`web/src/components/FirstPersonHud.tsx`,
 `web/src/App.tsx`, `web/tests/photoTourExit.test.ts`) leaves the photo tour from anywhere; it
 changes no data.
+The gateway panel was then reduced to one thin line at the top of the status column (where
+*Offline* used to be) with a dropdown for the details (`web/tests/liveGatewayPanel.test.ts`, synthetic
+MOCK state), so it no longer covers the map.
 
 ## PR37 scientific presentation corrections — 15 November 2026
 
