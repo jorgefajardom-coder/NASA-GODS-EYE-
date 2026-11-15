@@ -1259,7 +1259,6 @@
         "web/src/lib/roverStops.ts",
         "web/src/lib/photoAim.ts",
         "web/tests/photoAim.test.ts",
-        "web/src/lib/shutterSound.ts",
         "web/src/lib/labelDeclutter.ts",
         "web/tests/labelDeclutter.test.ts",
         "web/src/lib/projectedShadow.ts",

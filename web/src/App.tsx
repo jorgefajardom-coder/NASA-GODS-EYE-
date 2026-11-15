@@ -21,7 +21,6 @@ import { DroneCamFrame } from './components/DroneCam';
 import { MarsNowFrame } from './components/MarsNow';
 import { rawImages, useRawImages } from './lib/rawImagesStore';
 import { photoDirection, requestAim } from './lib/photoAim';
-import { playShutter } from './lib/shutterSound';
 import type { RawImage } from './lib/perseveranceRaw';
 import type { RoverStop } from './types/replay';
 import { stopUnderAgent, tourStepTime } from './lib/roverStops';
@@ -307,7 +306,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       rawImages.select(n);
       const dir = photoDirection(images[n], stop?.yaw_deg, mission);
       if (dir) requestAim(dir);
-      playShutter();
       n += 1;
       timer = window.setTimeout(shoot, SHOT_MS);
     };
