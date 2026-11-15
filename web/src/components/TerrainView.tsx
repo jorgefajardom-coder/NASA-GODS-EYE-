@@ -1,5 +1,5 @@
-import { useThree } from '@react-three/fiber';
-import { useEffect, useMemo, useState } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import type { TerrainMeta } from '../types/icd';
 import type { RasterSet } from '../types/replay';
@@ -12,6 +12,20 @@ export const MESH_SUBDIVISION = 3;
 /** Distance (m) at which the cosmetic ground grain has faded out; the first-person view reaches farther. */
 export const DETAIL_FAR_M = 180;
 export const DETAIL_FAR_POV_M = 480;
+/** Time (s) for the mesh to morph to new heights (layer switch, new map version) instead of jumping. */
+export const HEIGHT_MORPH_S = 1.8;
+
+/** Smooth start and stop of the height morph. */
+export function morphEase(p: number): number {
+  const x = Math.max(0, Math.min(1, p));
+  return x * x * x * (x * (x * 6 - 15) + 10); // smootherstep: zero speed and acceleration at both ends
+}
+
+/** Heights between `from` and `to` at progress p (eased), written into `out` (every 3rd value, y). */
+export function morphHeights(from: Float32Array, to: Float32Array, p: number, out: Float32Array): void {
+  const k = morphEase(p);
+  for (let i = 1; i < out.length; i += 3) out[i] = from[i] + (to[i] - from[i]) * k;
+}
 export const CONTOUR_MINOR_M = 10;
 export const CONTOUR_MAJOR_M = 50;
 
@@ -263,6 +277,47 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     material.map = draped ? texture : null;
     material.needsUpdate = true;
   }, [material, texture, draped]);
+
+  // Height morph: a new grid (layer switch, new map version) eases from the heights on screen to the
+  // new ones instead of jumping. Display only; agents and routes read the new grid at once.
+  const shown = useRef<Float32Array | null>(null);
+  const morph = useRef<{ from: Float32Array; to: Float32Array; t: number } | null>(null);
+  useLayoutEffect(() => {
+    const pos = geometry.getAttribute('position') as THREE.BufferAttribute;
+    const arr = pos.array as Float32Array;
+    const prev = shown.current;
+    shown.current = arr;
+    if (!prev || prev.length !== arr.length) {
+      morph.current = null;
+      return;
+    }
+    let differs = false;
+    for (let i = 1; i < arr.length; i += 3) {
+      if (Math.abs(prev[i] - arr[i]) > 1e-4) {
+        differs = true;
+        break;
+      }
+    }
+    if (!differs) return;
+    const to = arr.slice();
+    const from = prev.slice();
+    morphHeights(from, to, 0, arr);
+    pos.needsUpdate = true;
+    geometry.computeVertexNormals();
+    morph.current = { from, to, t: 0 };
+  }, [geometry]);
+  useFrame((_, dt) => {
+    const m = morph.current;
+    if (!m) return;
+    m.t += Math.min(dt, 0.1);
+    const p = m.t / HEIGHT_MORPH_S;
+    const pos = geometry.getAttribute('position') as THREE.BufferAttribute;
+    morphHeights(m.from, m.to, p, pos.array as Float32Array);
+    pos.needsUpdate = true;
+    geometry.computeVertexNormals();
+    geometry.computeBoundingSphere();
+    if (p >= 1) morph.current = null;
+  });
 
   useEffect(() => () => geometry.dispose(), [geometry]);
   useEffect(() => () => material.dispose(), [material]);
