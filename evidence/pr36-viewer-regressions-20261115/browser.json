@@ -1,0 +1,171 @@
+{
+  "classification": "AUTOMATED_LOCAL_SOFTWARE_CHECK_NOT_ACCEPTANCE",
+  "recorded_at_utc": "2026-11-15T15:32:38.843Z",
+  "flags": [
+    "--headless=new",
+    "--disable-webgl",
+    "--disable-gpu",
+    "--incognito",
+    "fresh temporary user-data-dir",
+    "prefers-reduced-motion: reduce"
+  ],
+  "served_from": "file-only static server on 127.0.0.1",
+  "records": [
+    {
+      "name": "main-final",
+      "root_children": 1,
+      "has_state": true,
+      "webgl": false,
+      "exceptions": [],
+      "consoleErrors": [],
+      "checks": {},
+      "closing": null,
+      "browser": "Chrome/157.0.8103.51",
+      "visible_text_length": 1704
+    },
+    {
+      "name": "pr36-final",
+      "root_children": 1,
+      "has_state": true,
+      "webgl": false,
+      "exceptions": [],
+      "consoleErrors": [],
+      "checks": {
+        "flat_selector": true,
+        "next_zone": true,
+        "previous_zone": true,
+        "back_to_map": true,
+        "recorded_source": true,
+        "recorded_end": true
+      },
+      "closing": {
+        "schema": "mge.viewer-state/1",
+        "source": {
+          "mode": "REPLAY",
+          "label": "REPLAY · MOCK",
+          "run_id": "it-execution",
+          "title": "Gateway replay it-execution",
+          "disclaimer": "Recorded replay with MOCK providers; agent execution or mission authority may be simulated. Not a validated live mission. Terrain: recorded public rasters (mge-public-rasters-1.0.0). Clock: wall clock (no simulator)."
+        },
+        "time": {
+          "sim_s": 116.9,
+          "duration_s": 116.89257955551147,
+          "playing": false,
+          "speed": 1
+        },
+        "mission": {
+          "state": "READY",
+          "reason_code": "",
+          "map_version": 2,
+          "primary_agent_id": "human_1",
+          "active_task": "primary (primary, no state)"
+        },
+        "agents": [
+          {
+            "id": "drone_1",
+            "kind": "DRONE",
+            "mode": "IDLE",
+            "position_enu_m": {
+              "x": -10,
+              "y": -14,
+              "z": 0
+            },
+            "heading_deg_from_north": 90,
+            "energy_wh": 100,
+            "oxygen_l": null,
+            "time_s": 600
+          },
+          {
+            "id": "human_1",
+            "kind": "HUMAN",
+            "mode": "IDLE",
+            "position_enu_m": {
+              "x": -14,
+              "y": -14,
+              "z": -2571.2
+            },
+            "heading_deg_from_north": 90,
+            "energy_wh": 979.6102905273438,
+            "oxygen_l": 998.8838500976562,
+            "time_s": 14288.3818359375
+          },
+          {
+            "id": "rover_1",
+            "kind": "ROVER",
+            "mode": "IDLE",
+            "position_enu_m": {
+              "x": -14,
+              "y": -10,
+              "z": -2571.33
+            },
+            "heading_deg_from_north": 90,
+            "energy_wh": 2000,
+            "oxygen_l": null,
+            "time_s": 14400
+          }
+        ],
+        "active_route": {
+          "id": "route-57c75744bdf778e27cc1fa94",
+          "agent_id": "human_1",
+          "status": "FEASIBLE",
+          "mode": "FAST",
+          "map_version_used": 2,
+          "waypoints": 12,
+          "travel_time_s": 109.21807861328125,
+          "energy_est_wh": 19.95041847229004,
+          "oxygen_est_l": 1.092180848121643
+        },
+        "invalidated_routes": [
+          "route-16d41790d0df8f9f6426fa20"
+        ],
+        "recent_events": [
+          {
+            "t_s": 5.1,
+            "type": "MISSION_STATE_CHANGED",
+            "agent_id": "",
+            "detail": "Mission state PLANNING -> READY."
+          },
+          {
+            "t_s": 7.4,
+            "type": "MAP_UPDATED",
+            "agent_id": "",
+            "detail": "Map updated to version 2."
+          },
+          {
+            "t_s": 7.4,
+            "type": "ROUTE_INVALIDATED",
+            "agent_id": "",
+            "detail": "Route was computed on an older map version."
+          },
+          {
+            "t_s": 7.4,
+            "type": "MISSION_STATE_CHANGED",
+            "agent_id": "",
+            "detail": "Mission state READY -> REPLAN."
+          },
+          {
+            "t_s": 7.5,
+            "type": "ROUTE_PUBLISHED",
+            "agent_id": "human_1",
+            "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety."
+          },
+          {
+            "t_s": 7.5,
+            "type": "MISSION_STATE_CHANGED",
+            "agent_id": "",
+            "detail": "Mission state REPLAN -> READY."
+          }
+        ],
+        "view": {
+          "tab": "exploration",
+          "terrain_layer": "belief",
+          "camera": "free",
+          "first_person": false
+        }
+      },
+      "browser": "Chrome/157.0.8103.51",
+      "visible_text_length": 354
+    }
+  ],
+  "media_generated": false
+}

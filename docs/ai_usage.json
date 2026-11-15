@@ -1530,6 +1530,19 @@
         "web/package-lock.json"
       ],
       "use": "Bind shared raw-image results, loading and errors to mission and latest/stop query identity, including sol. DOM regressions use synthetic feed fixtures and a pinned jsdom development dependency. No NASA observations, images, mission outcomes or media generated; no scientific or delivery acceptance inferred."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "viewer_webgl_fallback_correction_and_validation",
+      "generation": "AI-assisted code, regression tests and software validation record requested by the repository owner",
+      "paths": [
+        "web/src/components/ZoneSelector.tsx",
+        "web/src/App.tsx",
+        "web/src/styles.css",
+        "web/tests/zoneSelectorFallback.test.ts",
+        "evidence/pr36-viewer-regressions-20261115"
+      ],
+      "use": "Keep zone selection available in 2D and after failed WebGL context allocation; validate navigation and the existing recorded MOCK replay. Software check outputs are not generated NASA observations or mission results; no media generated, scientific approval or milestone closure."
     }
   ],
   "generated_media": [

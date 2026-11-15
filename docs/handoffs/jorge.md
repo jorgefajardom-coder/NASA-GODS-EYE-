@@ -142,6 +142,30 @@ LIVE mission. No push, merge or release is implied by this handoff alone.
 
 ## Status update from feat/ux (15 November 2026)
 
+### PR36 owner-requested review corrections — 15 November 2026
+
+Source `40a59741e0a68276f92932d25faeeadfd8f80906` over published main
+`64985e7b4b69ac9683661db4842885d5a8293695`. The owner requested both review
+fixes, regressions and conditional merge. Existing scene, arrival, preview,
+licence and source-attribution work is retained; no other chat's implementation
+or local research is imported.
+
+The selector honours the 2D tier and catches later context-allocation failure.
+DOM cards, next/previous, enter and escape remain usable. Shared image state
+carries mission/latest-or-stop/sol identity; Atmos accepts only latest
+Perseverance results, and the mission window/tour checks its own acquisition
+context. Historical Curiosity images cannot be relabelled as current
+Perseverance imagery. Synthetic feed fixtures are software test inputs.
+
+See [the exact-file validation record](../../evidence/pr36-viewer-regressions-20261115/README.md)
+for commands, hashes, browser checks and unexecuted local checks. Python/web/ROS
+CI on the final published PR head is required before merge. These corrections
+change no canonical ROS/replay schema, scientific parameter, dataset or recorded
+mission. Steps 4/5, full three-role execution, scientific model approval and
+formal AC-08 acceptance remain open. JES-07/AC-10 still requires Jesús to record
+organizer notification and explicit endorsement of the submission revision;
+David is backup, with at least four hours' review margin or longer if requested.
+
 - Source: `feat/ux` `6bc549b` over main `7ad6050` (merge base `464afa7`), 38 commits
   not yet in main; no PR opened for them yet.
 - Added: Perseverance landing-area demo on an 8 m display grid (3.4 km × 7.6 km) with

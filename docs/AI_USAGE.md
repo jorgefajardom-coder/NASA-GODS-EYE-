@@ -862,3 +862,13 @@ The tests use synthetic feed fixtures and jsdom, pinned as a development-only
 dependency. No NASA image, observation, mission result or media was generated.
 This software correction does not approve scientific models or close mission,
 replay or submission acceptance.
+
+## PR36 zone-selector fallback correction
+
+OpenAI Codex assisted the owner-requested WebGL allocation fallback in
+`web/src/components/ZoneSelector.tsx`, its App tier binding and fallback styles,
+the jsdom navigation regressions, and the validation record under
+`evidence/pr36-viewer-regressions-20261115/`. The tests and browser checks are
+software evidence; no image, video, NASA observation or mission result was
+generated. Existing asset declarations and watermarks remain intact. This cut
+does not close AC-08, steps 4/5, scientific approvals or organizer endorsement.

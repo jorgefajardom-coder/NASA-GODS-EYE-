@@ -581,6 +581,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       {zonesOpen && (
         <ZoneSelector
           runId={RUN_ID}
+          globeEnabled={RENDER_TIER !== 'map2d'}
           instant={!entered}
           onClose={() => {
             setZonesOpen(false);

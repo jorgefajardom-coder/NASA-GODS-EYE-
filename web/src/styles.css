@@ -3243,6 +3243,13 @@ input[type='checkbox'] {
   .zones *, .zones__globe { transition: none !important; }
 }
 
+.zones__flat-title { position: absolute; top: 4vh; left: 0; right: 0; text-align: center; color: var(--zones-ink); }
+.zones__flat-title h2 { margin: 0; font: 600 30px var(--f-title); letter-spacing: 0.2em; text-transform: uppercase; }
+.zones__flat-title p { margin: 6px 0 0; color: var(--zones-accent-2); }
+.zones--flat .zones__title, .zones--flat .zones__marks { display: none; }
+.zones--flat .zones__card { left: 50%; top: 48%; width: min(360px, calc(100vw - 100px)); max-height: calc(100dvh - 240px); overflow: auto; transform: translate(-50%, -50%); opacity: 1; }
+.zones--flat .zones__card--swap { opacity: 0.4; }
+
 .camera-bar__rovercams { display: inline-flex; gap: 3px; }
 .camera-bar__num { min-width: 26px; text-align: center; font-variant-numeric: tabular-nums; }
 .sites__src { margin-left: 6px; font: 600 9px/1 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 4px; border-radius: 3px; border: 1px solid currentColor; vertical-align: middle; }

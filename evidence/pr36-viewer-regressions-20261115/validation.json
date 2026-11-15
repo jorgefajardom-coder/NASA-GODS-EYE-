@@ -1,0 +1,71 @@
+{
+  "schema": "mge.pr36-viewer-regression-validation/1",
+  "starting_source_sha": "40a59741e0a68276f92932d25faeeadfd8f80906",
+  "published_main_sha": "64985e7b4b69ac9683661db4842885d5a8293695",
+  "git_head_during_record": "829cd7f2d1fb22cee86d4506caf28094ca606374",
+  "source_identity": "Exact runtime/test file hashes; zone correction was uncommitted during local validation.",
+  "sha256": {
+    "web/src/App.tsx": "c69e243dff056ffd9d1fbb5b45fd989abe1dfa666de8195da319da4800f6fb08",
+    "web/src/components/ZoneSelector.tsx": "12e6af83019126a268296289e2de077f9bb87861a0c6234d98947af6cfe32b1b",
+    "web/src/components/RawImagesPanel.tsx": "99751068a7b85698f031dc80d9081a01921572a5c15f981722ea383bb8d58f62",
+    "web/src/components/MarsNow.tsx": "c058a06cf4ff3e5fdc4aafb83fed23eb0ed1c14b96bf6380bbb7e88146afd56d",
+    "web/src/lib/rawImagesStore.ts": "fb2a0f76842d5ac937a7b554b8b8259565547507877621da790bdf4617d8dcd2",
+    "web/src/styles.css": "ad926697339d5b9989807a3e57fabe7d507dc3a0e7a5294cc33cbe88005b2987",
+    "web/tests/rawImagesProvenance.test.ts": "7f605b7235a81f40a9e12df7ccb57c21e336e719751ba23577d5c581ff4d23f8",
+    "web/tests/zoneSelectorFallback.test.ts": "709b76be97d7341416c331390a8232eb1729e56229e2fe209289a167e643ed6c",
+    "web/tests/rawImagesStore.test.ts": "39790269a9a475b5ad8f0305c48afa30943e30172a2b6779a32f4ebe7718489d",
+    "web/package.json": "d1d80483e3fa6ca47b8ecc0378a364f688dca36bcd33d714560ff3dac6485548",
+    "web/package-lock.json": "febbc5bf21493bf6a6c18e8cf6011fdf175ee98fa731295395fd0a014b589c7e"
+  },
+  "node": "v24.18.0",
+  "commands": [
+    {
+      "command": "npm ci / npm install --save-dev --save-exact jsdom@26.1.0",
+      "result": "PASS; dependency lock updated only for the test environment and existing MIT metadata"
+    },
+    {
+      "command": "npm test",
+      "result": "PASS",
+      "passed": 311,
+      "skipped": 1,
+      "files": 51
+    },
+    {
+      "command": "npm run build",
+      "result": "PASS"
+    },
+    {
+      "command": "py -3.14 scripts/check_repository.py",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "not_run_locally": [
+    {
+      "command": "python -m pytest",
+      "reason": "The local Python 3.14 installation has no pytest; final-head Python CI is required."
+    },
+    {
+      "command": "colcon build / ROS integration",
+      "reason": "No ROS files changed; final-head ROS CI is required, not inferred from old runs."
+    }
+  ],
+  "browser": "browser.json",
+  "build_index_sha256": "31cff333ca8750ba78d80aeae6664c73fa883c7a9776ccf0a620b729fb941138",
+  "recorded_package": {
+    "entry": "recorded-recovery-001",
+    "run_id": "it-execution",
+    "source_mode": "MOCK",
+    "sha256": {
+      "manifest.json": "0de1f538e86292d74229bdc176321c883d9521e1092c19e823ee4395af3b558b",
+      "public_rasters.json": "dd600f9eabdfdd9a30d4e77ba41a3aec1d3604ef0b52e03e45661e3606ca67f0",
+      "snapshot.json": "1110104b956b77602189e22fb11aa6cc5728830cf7fed07dd6d13ebd06ae93b0",
+      "timeline.jsonl": "e61d833e24ed44f284c006921025fc95259d99758fe4b19473024fbb08ab65fe"
+    }
+  },
+  "acceptance_gates_closed": [],
+  "ai_disclosure": "OpenAI Codex assisted fixes, synthetic regression fixtures and this software record. No NASA observation or media generated. See docs/AI_USAGE.md and docs/ai_usage.json."
+}

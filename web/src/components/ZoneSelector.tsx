@@ -171,13 +171,14 @@ async function globeCanvas(): Promise<HTMLCanvasElement> {
  * terrain it is draped on and fades into it (ZoneArrival). It opens right after the intro on load (instantly, so the scene never shows behind it);
  * travelling to the zone already loaded simply enters it. Keys: left/right, Enter to travel, Esc to go back.
  */
-export function ZoneSelector({ runId, onClose, instant = false }: { runId: string; onClose: () => void; instant?: boolean }) {
+export function ZoneSelector({ runId, onClose, instant = false, globeEnabled = true }: { runId: string; onClose: () => void; instant?: boolean; globeEnabled?: boolean }) {
   const [i, setI] = useState(() => initialZoneIndex(runId));
   const [shown, setShown] = useState(i);
   const [swap, setSwap] = useState(false);
   const [on, setOn] = useState(false);
   const [flight, setFlight] = useState<{ rect: DOMRect; image: string } | null>(null);
   const [tip, setTip] = useState<{ x: number; y: number; zone: WorldInfo } | null>(null);
+  const [globeUnavailable, setGlobeUnavailable] = useState(!globeEnabled);
   const stageRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const sketchRef = useRef<HTMLImageElement>(null);
@@ -212,8 +213,20 @@ export function ZoneSelector({ runId, onClose, instant = false }: { runId: strin
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
+    if (!globeEnabled) {
+      setGlobeUnavailable(true);
+      return;
+    }
     const reduced = prefersReducedMotion();
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    } catch {
+      // GPU probing can succeed even when a later context allocation fails.
+      setGlobeUnavailable(true);
+      return;
+    }
+    setGlobeUnavailable(false);
     renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
     renderer.domElement.className = 'zones__globe';
     stage.prepend(renderer.domElement);
@@ -435,7 +448,7 @@ export function ZoneSelector({ runId, onClose, instant = false }: { runId: strin
       renderer.dispose();
       renderer.domElement.remove();
     };
-  }, []);
+  }, [globeEnabled]);
 
   const travel = useCallback(() => {
     if (flight) return;
@@ -470,7 +483,13 @@ export function ZoneSelector({ runId, onClose, instant = false }: { runId: strin
   }, [flight, onClose, travel, select]);
 
   return (
-    <div ref={stageRef} className={`zones${instant ? ' zones--instant' : ''}${on ? ' zones--on' : ''}`} role="dialog" aria-modal="true" aria-label="Select zone">
+    <div ref={stageRef} className={`zones${instant ? ' zones--instant' : ''}${on ? ' zones--on' : ''}${globeUnavailable ? ' zones--flat' : ''}`} role="dialog" aria-modal="true" aria-label="Select zone">
+      {globeUnavailable && (
+        <div className="zones__flat-title">
+          <h2>Select zone</h2>
+          <p>Mars · 2D map</p>
+        </div>
+      )}
       <svg className="zones__horizon" viewBox="0 0 1600 220" preserveAspectRatio="none" aria-hidden>
         <defs>
           <linearGradient id="zones-h-far" x1="0" y1="0" x2="0" y2="1">
