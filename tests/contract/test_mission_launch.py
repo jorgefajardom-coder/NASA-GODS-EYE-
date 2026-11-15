@@ -27,6 +27,7 @@ def context(mission='real', planner='real', **changes):
         'run_id': 'mission-launch-contract', 'use_sim_time': 'true',
         'mission': mission, 'planner': planner, 'terrain': 'mock', 'agents': 'static',
         'host': '127.0.0.1', 'port': '8769',
+        'cors_origins': "['http://localhost:5173', 'http://127.0.0.1:5173']",
         'agents_file': str(ROOT / 'src/mge_bringup/config/agents.yaml'),
         'profiles_file': str(ROOT / 'config/planner_profiles.illustrative.json'),
         'exploration_policy_file': '',

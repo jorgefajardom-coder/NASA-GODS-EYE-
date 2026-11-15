@@ -233,3 +233,41 @@ def test_event_stream_sends_backlog_then_state(client, bridge):
         assert first['type'] == 'event' and first['event']['seq'] == 1
         second = socket.receive_json()
         assert second['type'] == 'state' and second['mode'] == 'LIVE'
+
+
+def test_event_stream_pushes_a_new_map_version(client, bridge):
+    activate(bridge)
+    with client.websocket_connect('/api/events') as socket:
+        socket.receive_json()                           # backlog event
+        socket.receive_json()                           # state
+        meta = {'run_id': RUN, 'dataset_id': 'jezero_mvp', 'map_version': 4}
+        bridge.on_update('terrain_meta', meta)
+        pushed = socket.receive_json()
+        assert pushed['type'] == 'terrain_meta'
+        assert pushed['terrain_meta']['map_version'] == 4
+
+
+def test_event_stream_sends_each_event_once(client, bridge):
+    """An event already sent in the backlog is not sent again from the queue."""
+    activate(bridge)
+    with client.websocket_connect('/api/events') as socket:
+        assert socket.receive_json()['event']['seq'] == 1
+        socket.receive_json()                           # state
+        bridge.on_update('event', {'run_id': RUN, 'event_id': f'{RUN}-e1', 'seq': 1})
+        bridge.on_update('event', {'run_id': RUN, 'event_id': f'{RUN}-e2', 'seq': 2})
+        assert socket.receive_json()['event']['seq'] == 2
+
+
+def test_a_full_client_queue_drops_only_that_client():
+    import asyncio
+
+    from mge_gateway.app import OVERFLOW, offer
+
+    slow, fast = asyncio.Queue(maxsize=2), asyncio.Queue(maxsize=10)
+    clients = {slow, fast}
+    for n in range(3):
+        for queue in list(clients):
+            offer(clients, queue, {'type': 'event', 'event': {'seq': n + 1}})
+    assert clients == {fast}                            # the slow client is dropped
+    assert slow.get_nowait() is OVERFLOW and slow.empty()   # and told to reconnect
+    assert fast.qsize() == 3                            # the others keep everything

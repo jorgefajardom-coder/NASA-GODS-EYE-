@@ -74,9 +74,10 @@ class RosBridge(Node):
             self._notify('event', data)
 
     def _on_meta(self, msg):
+        # A new map version reaches WebSocket clients too, not only later reads.
         data = self._convert('terrain_meta', msg)
-        if data is not None:
-            self.store.apply_meta(data)
+        if data is not None and self.store.apply_meta(data):
+            self._notify('terrain_meta', data)
 
     def set_goal(self, fields, timeout_s=5.0):
         """Blocking call from a web worker thread. Returns the response as a
