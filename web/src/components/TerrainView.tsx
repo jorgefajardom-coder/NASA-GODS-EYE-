@@ -46,7 +46,10 @@ float gNoise(vec2 p) {
   vec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);
   return mix(mix(gHash(i), gHash(i + vec2(1.0, 0.0)), u.x), mix(gHash(i + vec2(0.0, 1.0)), gHash(i + vec2(1.0, 1.0)), u.x), u.y);
 }
-float gFbm(vec2 p) { float a = 0.5, s = 0.0; for (int k = 0; k < 5; k++) { s += a * gNoise(p); p = p * 2.03 + 17.1; a *= 0.5; } return s; }
+// Each octave is rotated (about 37 deg) so the value-noise lattice never lines up across octaves.
+const mat2 gRot = mat2(0.8, -0.6, 0.6, 0.8);
+float gFbm(vec2 p) { float a = 0.5, s = 0.0; for (int k = 0; k < 5; k++) { s += a * gNoise(p); p = gRot * p * 2.03 + 17.1; a *= 0.5; } return s; }
+mat2 gTurn(float r) { return mat2(cos(r), -sin(r), sin(r), cos(r)); }
 // One stone per cell of a jittered grid, each with its own size, elongation, rotation,
 // irregular outline and tone. Returns (coverage 0..1, tone -1..1).
 vec2 gStones(vec2 p, float sizeMin, float sizeMax, float presence) {
@@ -68,13 +71,14 @@ vec2 gStones(vec2 p, float sizeMin, float sizeMax, float presence) {
   return vec2(cover, tone);
 }
 // Stones at three independent scales, clustered by a low-frequency density field and sampled
-// through a warped domain so neither spacing nor shape repeats. Returns (coverage, tone).
+// through a warped domain, each scale on its own rotated grid, so neither spacing, rows nor shape
+// repeat (aligned grids read as rows of craters at grazing angles). Returns (coverage, tone).
 vec2 gPebbles(vec2 g) {
-  vec2 w = g + vec2(gFbm(g * 0.15), gFbm(g * 0.15 + 4.7)) * 2.5;
+  vec2 w = g + vec2(gFbm(g * 0.15), gFbm(g * 0.15 + 4.7)) * 3.2 + vec2(gFbm(g * 0.6 + 9.1), gFbm(g * 0.6 + 2.3)) * 0.8;
   float density = smoothstep(0.3, 0.85, gFbm(g * 0.045 + 5.0));
-  vec2 a = gStones(w * 0.9 + 17.0, 0.05, 0.42, 0.15 + 0.35 * density) * vec2(gKeep(0.12, 0.35), 1.0);
-  vec2 b = gStones(w * 2.3 + 41.0, 0.06, 0.35, 0.2 + 0.5 * density) * vec2(gKeep(0.05, 0.14), 1.0);
-  vec2 c = gStones(w * 5.7 + 73.0, 0.08, 0.3, 0.25 + 0.55 * density) * vec2(gKeep(0.02, 0.06), 1.0);
+  vec2 a = gStones(gTurn(0.71) * w * 0.9 + 17.0, 0.05, 0.42, 0.15 + 0.35 * density) * vec2(gKeep(0.12, 0.35), 1.0);
+  vec2 b = gStones(gTurn(2.13) * w * 2.3 + 41.0, 0.06, 0.35, 0.2 + 0.5 * density) * vec2(gKeep(0.05, 0.14), 1.0);
+  vec2 c = gStones(gTurn(4.02) * w * 5.7 + 73.0, 0.08, 0.3, 0.25 + 0.55 * density) * vec2(gKeep(0.02, 0.06), 1.0);
   vec2 best = a;
   if (b.x * 0.75 > best.x) best = vec2(b.x * 0.75, b.y);
   if (c.x * 0.5 > best.x) best = vec2(c.x * 0.5, c.y);
@@ -270,7 +274,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
           }`,
         );
     };
-    m.customProgramCacheKey = () => 'terrain-contours-v8';
+    m.customProgramCacheKey = () => 'terrain-contours-v9';
     return m;
   }, [uniforms]);
 
