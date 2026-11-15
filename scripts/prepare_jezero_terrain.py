@@ -18,6 +18,7 @@ import math
 from pathlib import Path
 import platform
 import struct
+import sys
 import urllib.request
 import zlib
 
@@ -67,6 +68,20 @@ SOURCES = {
 
 MARS_RADIUS_M = 3396190.0
 DEFAULT_PRIOR_SIGMA_M = 2.5
+DEFAULT_LATITUDE_DEG = 18.45
+DEFAULT_LONGITUDE_DEG = 77.45
+DEFAULT_SIDE_M = 128.0
+DEFAULT_RESOLUTION_M = 4.0
+# Slope screening limits come from the proposed science profiles (single source of truth,
+# status pending_model_agreement); they are not approved operational limits.
+PROPOSED_PROFILES_PATH = ROOT / "config/planner_profiles.proposed.json"
+SCALE_TO_SIDE_M = {1: 128.0, 2: 256.0, 3: 512.0}
+DEFAULT_JEZERO_BOUNDS = {
+    "lat_min_deg": 18.3068,
+    "lat_max_deg": 18.6693,
+    "lon_min_deg": 77.2229,
+    "lon_max_deg": 77.5840,
+}
 
 
 class HTTPRangeReader(io.RawIOBase):
@@ -339,12 +354,343 @@ def write_grayscale_png(path: Path, array: np.ndarray, scale_factor: int = 4) ->
     path.write_bytes(png_bytes)
 
 
+def validate_request_params(
+    latitude: float,
+    longitude: float,
+    *,
+    side_m: float = DEFAULT_SIDE_M,
+    resolution_m: float = DEFAULT_RESOLUTION_M,
+) -> None:
+    if not all(math.isfinite(v) for v in (latitude, longitude, side_m, resolution_m)):
+        raise ValueError("all coordinates and dimensions must be finite")
+    if not -90.0 < latitude < 90.0 or not 0.0 <= longitude < 360.0:
+        raise ValueError("Mars latitude (-90, 90) or east longitude [0, 360) is out of range")
+    if resolution_m <= 0.0 or side_m <= 0.0:
+        raise ValueError("side_m and resolution_m must be positive")
+    cells = side_m / resolution_m
+    if not math.isclose(cells, round(cells)) or not 4 <= cells <= 512:
+        raise ValueError("side_m / resolution_m must be an integer between 4 and 512")
+
+
+def query_available_coverage(keys: tuple[str, ...] = ("CTX", "HiRISE")) -> dict[str, Any]:
+    """Read upstream GeoTIFF headers via HTTP 206 ranges to report valid Mars lat/lon bounds."""
+    import rasterio
+    from rasterio.crs import CRS
+    from rasterio.warp import transform_bounds
+
+    lonlat_crs = CRS.from_proj4(f"+proj=longlat +R={int(MARS_RADIUS_M)} +no_defs")
+    per_source: dict[str, dict[str, float]] = {}
+
+    for key in keys:
+        source_info = SOURCES[key]
+        resolved_url, upstream_headers = resolve_upstream(source_info)
+        virtual_name = f"header_{key}.tif"
+
+        def opener(path, mode="rb", url=resolved_url, headers=upstream_headers, expected=virtual_name):
+            if str(path) != expected:
+                raise FileNotFoundError(path)
+            return HTTPRangeReader(url, headers)
+
+        with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR"):
+            with rasterio.open(virtual_name, opener=opener) as src:
+                if src.crs is None:
+                    raise ValueError(f"upstream {key} raster has no declared planetary CRS")
+                west, south, east, north = transform_bounds(src.crs, lonlat_crs, *src.bounds, densify_pts=21)
+                per_source[key] = {
+                    "lat_min_deg": float(south),
+                    "lat_max_deg": float(north),
+                    "lon_min_deg": float(west % 360.0),
+                    "lon_max_deg": float(east % 360.0),
+                }
+
+    intersection = {
+        "lat_min_deg": max(v["lat_min_deg"] for v in per_source.values()),
+        "lat_max_deg": min(v["lat_max_deg"] for v in per_source.values()),
+        "lon_min_deg": max(v["lon_min_deg"] for v in per_source.values()),
+        "lon_max_deg": min(v["lon_max_deg"] for v in per_source.values()),
+    }
+    return {"sources": per_source, "intersection": intersection}
+
+
+def is_window_valid(
+    latitude: float,
+    longitude: float,
+    *,
+    side_m: float = DEFAULT_SIDE_M,
+    resolution_m: float = DEFAULT_RESOLUTION_M,
+    min_valid_fraction: float = 1.0,
+) -> bool:
+    """Return True if both CTX and HiRISE have >= min_valid_fraction valid data in the window."""
+    for key in ("CTX", "HiRISE"):
+        try:
+            _, valid_mask, _ = crop_source(
+                key, latitude=latitude, longitude=longitude, side_m=side_m, resolution_m=resolution_m
+            )
+        except ValueError:
+            return False
+        if float(valid_mask.mean()) < min_valid_fraction:
+            return False
+    return True
+
+
+def snap_to_valid_coordinates(
+    latitude: float,
+    longitude: float,
+    *,
+    bounds: dict[str, float] | None,
+    side_m: float = DEFAULT_SIDE_M,
+    resolution_m: float = DEFAULT_RESOLUTION_M,
+) -> tuple[float, float]:
+    """Adjust out-of-coverage or NoData-edge coordinates toward the valid mosaic interior."""
+    if bounds is not None:
+        lat = min(max(latitude, bounds["lat_min_deg"]), bounds["lat_max_deg"])
+        lon = min(max(longitude, bounds["lon_min_deg"]), bounds["lon_max_deg"])
+        center_lat = 0.5 * (bounds["lat_min_deg"] + bounds["lat_max_deg"])
+        center_lon = 0.5 * (bounds["lon_min_deg"] + bounds["lon_max_deg"])
+    else:
+        lat, lon = latitude, longitude
+        center_lat, center_lon = DEFAULT_LATITUDE_DEG, DEFAULT_LONGITUDE_DEG
+
+    if is_window_valid(lat, lon, side_m=side_m, resolution_m=resolution_m, min_valid_fraction=1.0):
+        return lat, lon
+
+    if not is_window_valid(center_lat, center_lon, side_m=side_m, resolution_m=resolution_m, min_valid_fraction=1.0):
+        center_lat, center_lon = DEFAULT_LATITUDE_DEG, DEFAULT_LONGITUDE_DEG
+
+    # Binary search along the segment from requested (lat, lon) to valid interior (center_lat, center_lon)
+    lo, hi = 0.0, 1.0
+    best_lat, best_lon = center_lat, center_lon
+    for _ in range(8):
+        mid = 0.5 * (lo + hi)
+        cand_lat = lat + mid * (center_lat - lat)
+        cand_lon = lon + mid * (center_lon - lon)
+        if is_window_valid(cand_lat, cand_lon, side_m=side_m, resolution_m=resolution_m, min_valid_fraction=1.0):
+            best_lat, best_lon = cand_lat, cand_lon
+            hi = mid
+        else:
+            lo = mid
+    return round(best_lat, 6), round(best_lon, 6)
+
+
+def prompt_custom_region(
+    *,
+    default_lat: float = DEFAULT_LATITUDE_DEG,
+    default_lon: float = DEFAULT_LONGITUDE_DEG,
+    default_side_m: float = DEFAULT_SIDE_M,
+    resolution_m: float = DEFAULT_RESOLUTION_M,
+    bounds: dict[str, float] = DEFAULT_JEZERO_BOUNDS,
+) -> tuple[float, float, float]:
+    """Prompt step-by-step for scale, latitude, and longitude using cached Jezero bounds."""
+    size_options = {str(tier): side for tier, side in SCALE_TO_SIDE_M.items()}
+    size_options.update({str(int(side)): side for side in SCALE_TO_SIDE_M.values()})
+    print(f"Escalas ({resolution_m:.1f} m/celda): 1 = 128m (32x32) | 2 = 256m (64x64) | 3 = 512m (128x128)")
+    while True:
+        raw_size = input(f"Elige escala [1, 2, 3] (o 'escala,lat,lon') [Enter = 1 / {int(default_side_m)}m]: ").strip()
+        if "," in raw_size:
+            parts = [p.strip() for p in raw_size.split(",")]
+            if len(parts) == 3 and parts[0] in size_options:
+                try:
+                    chosen_side_m = size_options[parts[0]]
+                    lat = float(parts[1])
+                    lon = float(parts[2])
+                    validate_request_params(lat, lon, side_m=chosen_side_m, resolution_m=resolution_m)
+                    adj_lat, adj_lon = snap_to_valid_coordinates(
+                        lat, lon, bounds=bounds, side_m=chosen_side_m, resolution_m=resolution_m
+                    )
+                    if (adj_lat, adj_lon) != (lat, lon):
+                        print(f"Ajuste automatico: ({lat}, {lon}) -> ({adj_lat}, {adj_lon}) (borde NoData).")
+                    return adj_lat, adj_lon, chosen_side_m
+                except ValueError as exc:
+                    print(f"Entrada invalida ({exc}). Intenta de nuevo.")
+                    continue
+        if not raw_size:
+            chosen_side_m = default_side_m
+            break
+        if raw_size in size_options:
+            chosen_side_m = size_options[raw_size]
+            break
+        print("Opcion invalida. Escribe 1, 2, 3 o presiona Enter.")
+
+    while True:
+        raw_lat = input(
+            f"Latitud deg N [rango {bounds['lat_min_deg']:.4f} a {bounds['lat_max_deg']:.4f}] [Enter = {default_lat}]: "
+        ).strip()
+        raw_lon = input(
+            f"Longitud deg E [rango {bounds['lon_min_deg']:.4f} a {bounds['lon_max_deg']:.4f}] [Enter = {default_lon}]: "
+        ).strip()
+        try:
+            lat = default_lat if not raw_lat else float(raw_lat)
+            lon = default_lon if not raw_lon else float(raw_lon)
+            validate_request_params(lat, lon, side_m=chosen_side_m, resolution_m=resolution_m)
+            adj_lat, adj_lon = snap_to_valid_coordinates(
+                lat, lon, bounds=bounds, side_m=chosen_side_m, resolution_m=resolution_m
+            )
+            if (adj_lat, adj_lon) != (lat, lon):
+                print(
+                    f"Ajuste automatico: ({lat}, {lon}) cae fuera o en borde NoData; "
+                    f"se movio a zona detectable ({adj_lat}, {adj_lon})."
+                )
+            return adj_lat, adj_lon, chosen_side_m
+        except ValueError as exc:
+            print(f"Entrada invalida ({exc}). Intenta de nuevo.")
+
+
+def request_region_params(
+    *,
+    interactive: bool,
+    latitude: float | None,
+    longitude: float | None,
+    side_m: float = DEFAULT_SIDE_M,
+    resolution_m: float = DEFAULT_RESOLUTION_M,
+) -> tuple[float, float, float]:
+    """Decoupled region parameter provider (latitude, longitude, side_m)."""
+    if not interactive:
+        lat = DEFAULT_LATITUDE_DEG if latitude is None else float(latitude)
+        lon = DEFAULT_LONGITUDE_DEG if longitude is None else float(longitude)
+        validate_request_params(lat, lon, side_m=side_m, resolution_m=resolution_m)
+        return lat, lon, side_m
+    return prompt_custom_region(
+        default_lat=DEFAULT_LATITUDE_DEG if latitude is None else float(latitude),
+        default_lon=DEFAULT_LONGITUDE_DEG if longitude is None else float(longitude),
+        default_side_m=side_m,
+        resolution_m=resolution_m,
+    )
+
+
+def request_coordinates(
+    *,
+    interactive: bool,
+    latitude: float | None,
+    longitude: float | None,
+    side_m: float = DEFAULT_SIDE_M,
+    resolution_m: float = DEFAULT_RESOLUTION_M,
+) -> tuple[float, float]:
+    """Backward-compatible wrapper returning (latitude, longitude)."""
+    lat, lon, _ = request_region_params(
+        interactive=interactive,
+        latitude=latitude,
+        longitude=longitude,
+        side_m=side_m,
+        resolution_m=resolution_m,
+    )
+    return lat, lon
+
+
+def load_slope_limits(profiles_path: Path = PROPOSED_PROFILES_PATH) -> tuple[dict[str, float], str]:
+    """Per-kind max_slope_deg from the proposed profiles, and the file's approval status."""
+    data = json.loads(profiles_path.read_text(encoding="utf-8"))
+    limits: dict[str, float] = {}
+    for profile in data["profiles"].values():
+        kind, limit = profile["agent_kind"], float(profile["max_slope_deg"])
+        if not math.isfinite(limit) or limit <= 0.0:
+            raise ValueError(f"{profiles_path}: max_slope_deg for {kind!r} must be positive and finite")
+        if limits.setdefault(kind, limit) != limit:
+            raise ValueError(f"{profiles_path}: conflicting max_slope_deg for {kind!r}")
+    return limits, str(data.get("status", "unknown"))
+
+
+def estimate_traversability_summary(
+    elevation: np.ndarray,
+    valid_mask: np.ndarray,
+    resolution_m: float,
+    slope_limits_deg: dict[str, float] | None = None,
+    limits_status: str = "unknown",
+) -> dict[str, Any]:
+    """Orbital slope screen: share of all cells that are valid and under each kind's slope limit.
+
+    The slope is the central-difference gradient of the prior grid, so it smooths short steps;
+    it is a screening estimate, not a certified traversability or hazard map.
+    """
+    if slope_limits_deg is None:
+        slope_limits_deg, limits_status = load_slope_limits()
+    valid_elev = elevation[valid_mask]
+    gy, gx = np.gradient(elevation, resolution_m, resolution_m)
+    slope_deg = np.degrees(np.arctan(np.hypot(gx, gy)))
+    admissible: dict[str, float] = {}
+    total = float(elevation.size)
+    for kind, limit in slope_limits_deg.items():
+        ok = valid_mask & np.isfinite(slope_deg) & (slope_deg <= limit)
+        admissible[kind] = round(float(ok.sum()) / total, 4)
+    return {
+        "valid_fraction": round(float(valid_mask.mean()), 4),
+        "elevation_min_m": float(valid_elev.min()) if valid_elev.size else None,
+        "elevation_max_m": float(valid_elev.max()) if valid_elev.size else None,
+        "admissible_fraction_by_kind": admissible,
+        "slope_limits_deg": dict(slope_limits_deg),
+        "slope_limits_status": limits_status,
+        "note": "Orbital-grid slope screen over all cells; estimate only, not certified passage.",
+    }
+
+
+def sync_terrain_yml(
+    config_path: Path,
+    *,
+    region_id: str,
+    latitude: float,
+    longitude: float,
+    side_m: float,
+    resolution_m: float,
+    rows: int,
+    cols: int,
+    vertical_datum: str,
+    control_points: list[dict[str, Any]],
+) -> None:
+    """Update config/terrain.yml to match the newly generated data/sample package."""
+    half = side_m / 2.0
+    lines = [
+        "# Validated public Jezero terrain configuration and shared ENU control points.",
+        "# Evaluator reference (HiRISE) is deliberately isolated in data/reference/ and absent here.",
+        'schema_version: "1.0.0"',
+        "status: ready",
+        f"region_id: {region_id}",
+        "frame_id: map",
+        "manifest_path: data/sample/manifest.json",
+        "provenance_details_path: data/sample/provenance_details.json",
+        "preview_path: data/sample/preview_ctx_prior.png",
+        "prior_path: data/sample/terrain.npz#prior",
+        "belief_path: data/sample/terrain.npz#belief",
+        "sigma_path: data/sample/terrain.npz#sigma",
+        "nodata_mask_path: data/sample/terrain.npz#nodata_mask",
+        "observed_mask_path: data/sample/terrain.npz#observed_mask",
+        "regional_context_path: data/sample/mola_regional_context.npz#regional_elevation_m",
+        "",
+        "grid:",
+        f"  rows: {rows}",
+        f"  cols: {cols}",
+        f"  resolution_m: {float(resolution_m)}",
+        f"  origin_x_m: {-half}",
+        f"  origin_y_m: {-half}",
+        "  row_orientation: south_to_north",
+        f"  origin_lat_planetocentric_deg: {float(latitude)}",
+        f"  origin_lon_east_deg: {float(longitude)}",
+        f"  mars_sphere_radius_m: {float(MARS_RADIUS_M)}",
+        "  vertical_units: m",
+        f'  vertical_datum: "{vertical_datum}"',
+        f"  default_prior_sigma_m: {float(DEFAULT_PRIOR_SIGMA_M)}",
+        "",
+        "control_points:",
+    ]
+    for cp in control_points:
+        lines.extend([
+            f"  - id: {cp['id']}",
+            f"    row: {cp['row']}",
+            f"    col: {cp['col']}",
+            f"    x_east_m: {cp['x_east_m']}",
+            f"    y_north_m: {cp['y_north_m']}",
+            f"    elevation_m: {cp['elevation_m']}",
+            f"    lat_planetocentric_deg: {cp['lat_planetocentric_deg']}",
+            f"    lon_east_deg: {cp['lon_east_deg']}",
+        ])
+    config_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def build_package(
     *,
-    latitude: float = 18.45,
-    longitude: float = 77.45,
-    side_m: float = 128.0,
-    resolution_m: float = 4.0,
+    latitude: float = DEFAULT_LATITUDE_DEG,
+    longitude: float = DEFAULT_LONGITUDE_DEG,
+    side_m: float = DEFAULT_SIDE_M,
+    resolution_m: float = DEFAULT_RESOLUTION_M,
+    region_id: str = "jezero_mvp",
     sample_dir: Path = ROOT / "data/sample",
     reference_dir: Path = ROOT / "data/reference",
 ) -> dict:
@@ -444,7 +790,7 @@ def build_package(
     manifest = {
         "schema_version": 1,
         "status": "ready",
-        "region_id": "jezero_mvp",
+        "region_id": region_id,
         "frame_id": "map",
         "local_origin": {
             "lat_planetocentric_deg": float(latitude),
@@ -495,7 +841,7 @@ def build_package(
     ctx_vs_mola_diff = prior[ctx_valid & mola_valid] - mola_elev[ctx_valid & mola_valid]
     provenance_details = {
         "schema_version": 1,
-        "region_id": "jezero_mvp",
+        "region_id": region_id,
         "frame_id": "map",
         "mars_sphere_radius_m": int(MARS_RADIUS_M),
         "origin_x_m": float(origin_x_m),
@@ -556,7 +902,7 @@ def build_package(
         "schema_version": 1,
         "role": "evaluation_reference",
         "knowledge_state": "held_out_evaluator_reference",
-        "region_id": "jezero_mvp",
+        "region_id": region_id,
         "frame_id": "map",
         "rows": int(rows),
         "cols": int(cols),
@@ -571,47 +917,152 @@ def build_package(
     }
     (reference_dir / "manifest.json").write_text(json.dumps(ref_manifest, indent=2) + "\n", encoding="utf-8")
 
+    traversability_summary = estimate_traversability_summary(prior, ctx_valid, resolution_m)
+
     return {
         "manifest": manifest,
         "provenance_details": provenance_details,
+        "traversability_summary": traversability_summary,
     }
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--latitude", type=float, default=18.45)
-    parser.add_argument("--longitude", type=float, default=77.45)
-    parser.add_argument("--side-m", type=float, default=128.0)
-    parser.add_argument("--resolution-m", type=float, default=4.0)
-    args = parser.parse_args()
+def _build_sync_and_print(
+    *,
+    latitude: float,
+    longitude: float,
+    side_m: float,
+    resolution_m: float,
+    region_id: str,
+    sample_dir: Path,
+    reference_dir: Path,
+    sync_yml: bool,
+) -> None:
     result = build_package(
-        latitude=args.latitude,
-        longitude=args.longitude,
-        side_m=args.side_m,
-        resolution_m=args.resolution_m,
+        latitude=latitude,
+        longitude=longitude,
+        side_m=side_m,
+        resolution_m=resolution_m,
+        region_id=region_id,
+        sample_dir=sample_dir,
+        reference_dir=reference_dir,
     )
+    if sync_yml:
+        sync_terrain_yml(
+            ROOT / "config/terrain.yml",
+            region_id=region_id,
+            latitude=latitude,
+            longitude=longitude,
+            side_m=side_m,
+            resolution_m=resolution_m,
+            rows=result["manifest"]["rows"],
+            cols=result["manifest"]["cols"],
+            vertical_datum=result["manifest"]["vertical_datum"],
+            control_points=result["provenance_details"]["control_points"],
+        )
     print(
         json.dumps(
             {
                 "status": result["manifest"]["status"],
                 "region_id": result["manifest"]["region_id"],
+                "local_origin": result["manifest"]["local_origin"],
                 "rows": result["manifest"]["rows"],
                 "cols": result["manifest"]["cols"],
-                "sources": [
-                    {
-                        "mission": s["mission"],
-                        "instrument": s["instrument"],
-                        "role": s["role"],
-                        "sha256": s["sha256"],
-                    }
-                    for s in result["manifest"]["sources"]
-                ],
-                "control_points": result["provenance_details"]["control_points"],
-                "regional_mola_comparison": result["provenance_details"]["regional_mola_comparison"],
+                "traversability_summary": result["traversability_summary"],
             },
             indent=2,
-        )
+        ),
+        flush=True,
     )
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--latitude", type=float, default=None, help=f"Mars planetocentric latitude deg N (default {DEFAULT_LATITUDE_DEG})")
+    parser.add_argument("--longitude", type=float, default=None, help=f"Mars east longitude deg E (default {DEFAULT_LONGITUDE_DEG})")
+    parser.add_argument("--side-m", type=float, default=DEFAULT_SIDE_M)
+    parser.add_argument("--scale", type=int, choices=sorted(SCALE_TO_SIDE_M), default=None, help="Size tier (1=128m, 2=256m, 3=512m)")
+    parser.add_argument("--resolution-m", type=float, default=DEFAULT_RESOLUTION_M)
+    parser.add_argument("--region-id", type=str, default="jezero_mvp")
+    parser.add_argument("--sample-dir", type=Path, default=ROOT / "data/sample")
+    parser.add_argument("--reference-dir", type=Path, default=ROOT / "data/reference")
+    parser.add_argument("-i", "--interactive", action="store_true", help="Prompt immediately instead of running default first")
+    parser.add_argument("--no-interactive", action="store_true", help="Run once and exit without waiting for cc/d commands")
+    parser.add_argument("--bounds-only", action="store_true", help="Only query and print available NASA/USGS lat/lon bounds")
+    parser.add_argument("--sync-terrain-yml", action="store_true", help="Also update config/terrain.yml with the generated coordinates and control points")
+    args = parser.parse_args()
+
+    if args.bounds_only:
+        print(json.dumps(query_available_coverage(("CTX", "HiRISE")), indent=2))
+        return
+
+    sample_dir = args.sample_dir.resolve()
+    reference_dir = args.reference_dir.resolve()
+    if sample_dir == reference_dir or sample_dir in reference_dir.parents or reference_dir in sample_dir.parents:
+        parser.error("public sample_dir and evaluator reference_dir must be separate")
+    if args.sync_terrain_yml and sample_dir != (ROOT / "data/sample").resolve():
+        # config/terrain.yml points at data/sample; syncing it to another package would desync them.
+        parser.error("--sync-terrain-yml requires the default --sample-dir (data/sample)")
+
+    base_side_m = SCALE_TO_SIDE_M[args.scale] if args.scale is not None else args.side_m
+    latitude, longitude, side_m = request_region_params(
+        interactive=args.interactive,
+        latitude=args.latitude,
+        longitude=args.longitude,
+        side_m=base_side_m,
+        resolution_m=args.resolution_m,
+    )
+    _build_sync_and_print(
+        latitude=latitude,
+        longitude=longitude,
+        side_m=side_m,
+        resolution_m=args.resolution_m,
+        region_id=args.region_id,
+        sample_dir=sample_dir,
+        reference_dir=reference_dir,
+        sync_yml=args.sync_terrain_yml,
+    )
+
+    should_loop = (
+        not args.no_interactive
+        and not args.interactive
+        and sys.stdin.isatty()
+        and args.latitude is None
+        and args.longitude is None
+        and args.scale is None
+    )
+    if not should_loop:
+        return
+
+    try:
+        while True:
+            cmd = input("\nComandos: [cc] cambiar escala/coordenadas | [d] volver a default | [Ctrl+C] salir: ").strip().lower()
+            if cmd == "cc":
+                new_lat, new_lon, new_side_m = prompt_custom_region(resolution_m=args.resolution_m)
+                _build_sync_and_print(
+                    latitude=new_lat,
+                    longitude=new_lon,
+                    side_m=new_side_m,
+                    resolution_m=args.resolution_m,
+                    region_id=args.region_id,
+                    sample_dir=sample_dir,
+                    reference_dir=reference_dir,
+                    sync_yml=args.sync_terrain_yml,
+                )
+            elif cmd == "d":
+                _build_sync_and_print(
+                    latitude=DEFAULT_LATITUDE_DEG,
+                    longitude=DEFAULT_LONGITUDE_DEG,
+                    side_m=DEFAULT_SIDE_M,
+                    resolution_m=args.resolution_m,
+                    region_id=args.region_id,
+                    sample_dir=sample_dir,
+                    reference_dir=reference_dir,
+                    sync_yml=args.sync_terrain_yml,
+                )
+            elif cmd:
+                print("Comando no reconocido. Usa 'cc', 'd' o Ctrl+C para salir.")
+    except (KeyboardInterrupt, EOFError):
+        print("\nCerrado.")
 
 
 if __name__ == "__main__":
