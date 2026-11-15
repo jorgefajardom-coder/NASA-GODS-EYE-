@@ -126,6 +126,7 @@ export interface ReplayBundle {
 /** Context terrain around the crop: local ENU heights (row 0 = south, null = NoData). */
 export interface ContextTerrainData {
   note: string;
-  frame: { origin_x_m: number; origin_y_m: number; resolution_m: number; rows: number; cols: number; local_z_offset_m: number };
+  source?: { sha256?: string };
+  frame: { origin_x_m: number; origin_y_m: number; resolution_m: number; rows: number; cols: number; local_z_offset_m: number; centre_lat_deg?: number; centre_lon_deg?: number; row0?: string };
   heights: (number | null)[];
 }

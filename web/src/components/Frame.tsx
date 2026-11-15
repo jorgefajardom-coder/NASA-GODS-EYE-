@@ -5,6 +5,7 @@ import type { MissionAlert } from '../lib/management';
 import { fmtSimTime } from '../lib/format';
 import { RUNS } from '../data/replayAdapter';
 import { displayState } from '../lib/provenance';
+import { terrainResolutionLabel } from '../lib/terrainPresentation';
 
 export type UiMode = 'exploration' | 'geology' | 'atmos' | 'replay';
 
@@ -12,7 +13,7 @@ function terrainLabel(m: ReplayManifest): string {
   const t = m.terrain_meta;
   const where = t.origin_lat_deg == null || t.origin_lon_deg == null ? '' : ` · ${t.origin_lat_deg.toFixed(2)}°N ${t.origin_lon_deg.toFixed(2)}°E`;
   const name = /ctx-dtm/.test(t.dataset_id) ? 'CTX DTM' : t.dataset_id;
-  return `${name} ${t.resolution_m} m${where}`;
+  return `${name} · ${terrainResolutionLabel(t)}${where}`;
 }
 
 /** Opens another saved run (full reload keeps every run's state separate). */
@@ -24,12 +25,14 @@ function openRun(id: string) {
 
 /** Mission identity and run selector, top left. */
 export function TitleBlock({ manifest, runId }: { manifest: ReplayManifest; runId: string }) {
+  const entry = RUNS.find((run) => run.id === runId);
   return (
     <header className="title">
       <h1 className="title__main">Mission Management</h1>
       <div className="title__sub">
         {manifest.title} · {terrainLabel(manifest)}
       </div>
+      {entry?.note && <p className="muted small">{entry.note} Recorded run: {manifest.run_id}.</p>}
       <label className="title__run">
         <span>Run</span>
         <select value={runId} onChange={(e) => openRun(e.target.value)} aria-label="Saved run">

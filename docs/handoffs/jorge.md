@@ -1,5 +1,20 @@
 # Jorge - preserve and adapt the existing 3D viewer
 
+## Audit reconciliation rc.2 — current candidate over main6bcf208
+
+Read the [current gap/evidence matrix](../audit_reconciliation.md) first.
+PR19/21/27 are in main; `feat/ux@58227de` adds log-only continuation beyond the
+audited merge. Preserve the existing viewer. Review the featured recorder run
+`recorded-recovery-001`, exact public rasters, absolute-height camera, source/grid
+labels and strict optional-layer binding. Keep the 2 km generated demo separate.
+Orbital slope preview creates no observation or map change; do not narrate it
+as a sensor. The recorded case is human MOCK stop/replan/return, robots idle,
+READY rather than scientific COMPLETE. Next deliverable: production-viewer
+backend-off seek/IDs/resources/camera check and video of that exact run, with
+source/hash references. Historical absent-raster/isolation statements below do
+not describe the already integrated strict loader. Three-role acceptance remains
+open with Jesus/David; do not fill it with scripted completion events.
+
 ## Current continuation — 14 November 2026, main 5ab1387
 
 The owner assumes Fajardo's latest publication is usable; its verification is

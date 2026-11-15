@@ -29,6 +29,7 @@ def context(mission='real', planner='real', **changes):
         'host': '127.0.0.1', 'port': '8769',
         'agents_file': str(ROOT / 'src/mge_bringup/config/agents.yaml'),
         'profiles_file': str(ROOT / 'config/planner_profiles.illustrative.json'),
+        'exploration_policy_file': '',
         'mission_profiles_path': str(ROOT / 'config/scenario_demo.yaml'),
         'mission_path': str(ROOT / 'config/scenario_demo.yaml'),
         'base_enu_m': '[2.5, 2.5, 0.0]', 'allow_illustrative': 'true',

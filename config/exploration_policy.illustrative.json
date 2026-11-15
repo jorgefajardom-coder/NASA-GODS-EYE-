@@ -1,0 +1,12 @@
+{
+  "schema_version": "mge-exploration-policy-1.0.0",
+  "policy_id": "estimated-prior-illustrative-01",
+  "status": "illustrative",
+  "mode": "estimated_or_observed",
+  "meaning": "D-EST-01 experimental candidate planning over finite public prior. Sigma is retained, not reduced. A mask value of 0 permits a proposal under these limits; it is not observed, verified, safe or authorized motion. Limits require owner review. The planner's independent profile may still reject the candidate.",
+  "limits": {
+    "human": { "max_sigma_m": 3.0, "max_slope_deg": 10.0 },
+    "rover": { "max_sigma_m": 3.0, "max_slope_deg": 20.0 },
+    "drone": { "max_sigma_m": 3.0, "max_slope_deg": 90.0 }
+  }
+}

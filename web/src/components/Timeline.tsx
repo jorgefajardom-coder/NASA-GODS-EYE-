@@ -19,6 +19,16 @@ interface Props {
 
 const KEY_EVENTS = new Set(['MAP_UPDATED', 'ROUTE_INVALIDATED', 'ROUTE_PUBLISHED', 'TASK_DISCOVERED']);
 
+/** Native range inputs may serialize their maximum with only 15 significant
+ * digits. Recognize that maximum's decimal aliases at the UI boundary only;
+ * never apply a time epsilon to replay history or event/frame selection.
+ */
+export function sliderSeekTime(value: string, duration: number): number {
+  const parsed = Number(value);
+  if ([15, 16, 17].some((digits) => parsed === Number(duration.toPrecision(digits)))) return duration;
+  return Math.max(0, Math.min(duration, parsed));
+}
+
 /** Replay controls. Keyboard: Space play/pause, ←/→ ±5 s, Home restart. */
 export function Timeline({ t, duration, playing, speed, events, onPlayPause, onRestart, onSeek, onSpeed }: Props) {
   return (
@@ -51,7 +61,7 @@ export function Timeline({ t, duration, playing, speed, events, onPlayPause, onR
           max={duration}
           step={duration < 120 ? 'any' : 1}
           value={Math.min(t, duration)}
-          onChange={(e) => onSeek(Number(e.target.value))}
+          onChange={(e) => onSeek(sliderSeekTime(e.target.value, duration))}
           aria-label="Simulated time"
           aria-valuetext={fmtSimTime(t)}
         />

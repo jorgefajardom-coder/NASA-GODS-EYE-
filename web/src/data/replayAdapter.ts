@@ -5,11 +5,15 @@ import { parseAtmosphere } from '../lib/atmos';
 import type { ContextTerrainData, RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
 import { normalizeEvents } from '../lib/replay';
 import { resolveSourceMode } from '../lib/provenance';
+import { contextMatchesRun, geologyMatchesRun } from '../lib/terrainPresentation';
 import { fromGatewayPackage, isGatewayManifest, parseJsonLines, validateGatewayManifest, type GatewaySnapshot, type PublicRasters } from './gatewayReplay';
 
 /** Runs offered in the viewer. `dir` is relative to the site under replay/. */
-export const RUNS: ReadonlyArray<{ id: string; label: string }> = [
-  { id: 'demo', label: 'Demo on CTX terrain (simulated)' },
+export const RECORDED_RECOVERY_ENTRY = 'recorded-recovery-001';
+export const DEFAULT_RUN_ENTRY = RECORDED_RECOVERY_ENTRY;
+export const RUNS: ReadonlyArray<{ id: string; label: string; note?: string }> = [
+  { id: RECORDED_RECOVERY_ENTRY, label: 'Recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Not a scientific COMPLETE mission.' },
+  { id: 'demo', label: 'Illustrative demo · generated story' },
   { id: 'mock-vertical-001', label: 'Gateway replay mock-vertical-001 (MOCK)' },
 ];
 
@@ -114,7 +118,8 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
   if (manifest.geology) {
     // Optional layer: the run still opens if it is missing.
     try {
-      bundle.geology = await getJson<GeologyData>(assetUrl(`${dir}/${manifest.geology.file}`));
+      const geology = await getJson<GeologyData>(assetUrl(`${dir}/${manifest.geology.file}`));
+      if (geologyMatchesRun(geology, manifest)) bundle.geology = geology;
     } catch {
       /* the Ground layers tab then says no geology is available */
     }
@@ -131,9 +136,7 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
     // Optional surroundings: the run still opens without them.
     try {
       const ctx = await getJson<ContextTerrainData>(assetUrl(`${dir}/${manifest.context.file}`));
-      const f = ctx.frame;
-      const sameZ = f.local_z_offset_m === (manifest.local_z_offset_m ?? f.local_z_offset_m);
-      if (sameZ && ctx.heights.length === f.rows * f.cols) bundle.context = ctx;
+      if (contextMatchesRun(ctx, manifest)) bundle.context = ctx;
     } catch {
       /* the crop is drawn alone */
     }

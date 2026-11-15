@@ -8,15 +8,17 @@ terrain, with a saved-run replay that needs no ROS, Gazebo or network.
 ## Status
 
 **REPLAY mode only**. The live link is shown as offline: the gateway
-on `feat/integration` is not connected to the viewer yet. Two saved runs can be opened
+is not connected to the viewer. The featured entry is `recorded-recovery-001`;
+the two older examples remain separately selectable
 (see the Run selector below).
 
 | Part | What it is |
 |---|---|
-| Terrain | **Real**: a provisional 2 km crop of the NASA/USGS Mars 2020 TRN CTX DTM (20 m, Jezero), resampled to a local ENU grid |
-| Mission, agents, routes, events | **Simulated** (`scripts/make-demo-fixture.mjs`); routes come from a slope-constrained search inside the generator, not from the planner. The rover (1 m/s) stops and pivots at 6°/s at corners and the U-turn; the drone (4 m/s, 40 m) spins up, climbs and descends vertically. The speeds are simulated, the rover's far faster than real hardware |
-| Adverse case | **Synthetic**: a scarp added to the hidden evaluator reference; it is not in the CTX data |
-| POIs C and D | Fictitious |
+| Featured recorded recovery | Unchanged recorder output on Daniel's **128 m public Jezero crop**, 32×32 at 4 m; CTX native spacing 20 m. Real data/mapping/planner, MOCK mission/kinematic executor. Human stop/replan/resume/return; rover and drone idle. Ends `READY`, not scientific `COMPLETE` |
+| Demo terrain | **Real**: a separate provisional 2 km crop of the NASA/USGS Mars 2020 TRN CTX DTM (20 m, Jezero), resampled to a local ENU grid |
+| Demo mission, agents, routes, events | **Generated illustrative story** (`scripts/make-demo-fixture.mjs`); its routes come from a substitute slope-constrained search, not the integrated planner. Rover/drone speeds and motion are simulated |
+| Demo adverse case | **Synthetic**: a scarp added to the hidden evaluator reference; it is not in the CTX data |
+| Demo POIs C and D | Fictitious |
 | Gateway replay `mock-vertical-001` | **Recorded MOCK run** from Jesús's `replay_recorder`: flat synthetic grid, straight-line MOCK planner, no Mars data |
 | Uncertainty, budgets, consumption | Illustrative assumptions, not certified limits |
 | Atmos tab, HUD atmosphere and dose | NASA weather summaries and published radiation averages (other sites/periods); not the conditions of the simulated run. The HUD pressure map is a barometric **estimate** from one MEDA value, not a measured field |
@@ -27,13 +29,16 @@ on `feat/integration` is not connected to the viewer yet. Two saved runs can be 
 | Intro screen | **AI-generated** video (Kling), skippable, with a burned-in `AI-generated` watermark; its audio track is declared and the clip plays muted |
 | Team logo and link preview | **AI-generated** image (ChatGPT, edited by the team) with a visible `AI-generated` watermark (`public/assets/brand/`) |
 | Tab icon | Illustration of Mars made by the team (`public/favicon.ico`, PNG sizes up to 512 px); not AI-generated |
-| Slope layer | Derived from the orbital CTX DTM (Horn 3x3, about 60 m window); a lower bound for local slope, not a hazard map |
-| Surroundings (option, off by default) | Same CTX DTM over 20 km (100 m box average, `scripts/extract-ctx-context.mjs`) and CTX orthomosaic at 40 m; context only |
-| Drone camera scan | The orbital slope above, redrawn around the drone in display bands; **not an observation**, no data changes, bands pending science approval |
+| Slope layer | Derived from the orbital prior with Horn 3×3 at the run's grid spacing; source and grid spacing are displayed separately. Not a local hazard measurement |
+| Demo surroundings (option, off by default) | Same CTX DTM over 20 km (100 m box average, `scripts/extract-ctx-context.mjs`) and CTX orthomosaic at 40 m; context only, checked for matching origin/datum/source before loading |
+| Orbital slope preview | The orbital slope above, redrawn around the drone position in display bands; **not an observation or command**, no data changes |
 | First-person route guide | The recorded route in force; the time left is the route's `travel_time_s` scaled by the share of distance left, an **estimate** |
 | Terrain formation, height morph, interface entrance, camera sway | **Cosmetic display** animations; no height or pose in the data changes |
 
-The terrain crop is provisional: the data owner's processed package replaces it.
+The 2 km demo and Daniel's validated public 128 m package are distinct scenes,
+with different origins and height conventions. Their metrics and optional layers
+must not be combined. The recorded entry preserves absolute datum/poses; camera
+and OrbitControls fit those actual bounds without shifting the data.
 
 ## Requirements
 
@@ -97,7 +102,12 @@ The status block shows `REPLAY` with the run's `source_mode` (`MOCK`, `SIMULATIO
 
 Agents and the base are drawn at true size by default (astronaut 1.9 m, rover 3.6 m with its arm, drone 1.2 m rotor span); the view option *True-size agents* can be turned off to enlarge agents with camera distance on the 2 km map. The base is `public/assets/models/base.glb`, the team's Blender base (`scripts/blender/source/base-marciana-v2.blend`) prepared by `scripts/blender/prepare_base.py` (own ground and rocks removed, dust film, sandbag berms, radiators, comms mast, power cables). It is placed whole at the median ground height under its footprint; a simple procedural cluster is drawn while it loads or if it fails.
 
-The **Slope** layer is computed in the viewer from the orbital CTX DTM with Horn's 3×3 method (the method of `gdaldem slope`) on the 20 m grid, never from the updated map. Each value averages about 60 m of ground, so it is a lower bound for local slope, not a hazard map. On the demo crop the median is 4.8°, the 90th percentile 13.9° and the maximum 34.2°; border cells without a full 3×3 window are grey.
+The **Slope** layer uses Horn's 3×3 derivative on the orbital prior, never the
+updated belief. The 20 m demo grid gives a 60 m computational window; the 4 m
+recorded grid gives a 12 m computational window, while its CTX source remains
+20 m native. Resampling adds no source detail, and sub-grid hazards remain
+unresolved. On the separate demo crop the median is 4.8°, the 90th percentile
+13.9° and the maximum 34.2°; cells lacking a complete valid window are grey.
 
 The mission area is drawn as a solid block: plain rock-tone walls and a base that claim nothing about the subsurface (the Ground layers tab replaces them with the schematic strata). The view option *Surroundings (20 km)* shows the same CTX DTM around the area, box-averaged to 100 m (`scripts/extract-ctx-context.mjs`, from the same file, SHA-256 checked), draped with the CTX orthomosaic at 40 m (`scripts/extract-ctx-ortho.mjs public/replay/demo/context_ortho.png 500 20000 10`). It is context only and is never read by the planner or the mission.
 
@@ -110,13 +120,19 @@ The rover and drone are the official NASA/JPL models with all branding removed, 
 
 Up close (under about 200 m of camera distance) the ground gets procedural grain: grit, pebble speckle and metre-scale undulation (no ripples: their crests read as lines and alias into moiré) computed in the shader from the ground position. It is **cosmetic, not measured** (the data stops at 5–20 m), fades out at mission scale, is not drawn on the uncertainty layer or the geologic map, and can be turned off in the view options.
 
-The terrain is drawn smoothed between the 20 m cells, with contour lines every 10 m (bold every 50 m) at true elevation. Contours can be turned off in the view options.
+The terrain is drawn smoothed between the current run's cells, with contour
+lines every 10 m (bold every 50 m) at true elevation. Smoothing does not improve
+source resolution. Contours can be turned off in the view options.
 
 Poses between received samples follow a monotone cubic (PCHIP) through the samples: no overshoot, continuous speed, no extrapolation past the last sample or across gaps. Agents are then drawn at an eased copy of that pose (about 0.1 s, display only). A jump in replay time (Restart, seek) places every agent at its new pose at once.
 
 **Cameras** (bar under the agent list): Map, Astronaut, Rover, Drone and Base. The agent and base cameras are locked on their target (no lag), so the target stays steady on screen; following an agent selects it and sets the replay to 1× (turning it off restores the previous speed). In the Map camera **Grab map** is on by default: left drag slides the map, right drag or Shift + drag rotates, the wheel zooms; the ⟲ ⟳ buttons and `Q` / `E` turn the view 45°. The camera can zoom to about 0.3 m and is kept above the drawn terrain, with its near plane adapted to the zoom. **Camera smoothing** in the view options now sets only the orbit damping. In the follow view the route overlay is hidden.
 
-**Opening and transitions.** After the intro (or at once with `?nointro=1`) the terrain layer appears flat and its relief rises to the true shape in 5 s, zone by zone: valleys first, then slopes, ridges last, with the ground that is rising lit warm (`src/components/TerrainGrowth.tsx`); the block and the surroundings rise with it, and agents, the base and labels appear once it has finished. Switching between layers, or a new map version during the replay, morphs the heights over 1.8 s from what is on screen instead of jumping (`HEIGHT_MORPH_S` in `TerrainView.tsx`); the growth never queues a second rise. The interface then enters: the left column slides in from the left, the right column from the right, the timeline rises, and the ring of the agent dial spins into place while its six options settle one by one; a dashed rim turns slowly around it. All of it is display only and is skipped with reduced motion.
+**Opening and transitions.** The featured recorder entry omits the video intro.
+The illustrative demo retains it (`?nointro=1` skips it). Terrain relief rises
+visually over 5 s, zone by zone; map-version/layer changes morph heights over
+1.8 s. These animations and the panel entrances are display only; reduced motion
+skips them. Recorded heights, poses and mission time are not altered.
 
 **First person** (`V`, or the *3rd/1st person* button in the camera bar, while following an agent): the camera sits at the agent's eye (astronaut helmet at 1.62 m, rover mast at 2 m, drone camera under the body, pitched down) and looks along its heading; drag looks around, the wheel zooms (18°–110°), double-click recentres, and the frame is supersampled (1.5× the device pixels, capped at 3×). The agent's own model is hidden. The HUD (`src/components/FirstPersonHud.tsx`) shows:
 
@@ -127,15 +143,20 @@ Poses between received samples follow a monotone cubic (PCHIP) through the sampl
 - a heading-up minimap;
 - an optional camera sway (`B`): the astronaut's head bobs once per step, the rover's mast shakes finely, the drone drifts; a few centimetres at most, off by default with reduced motion, kept per browser.
 
-**Drone camera scan** (`R`, or *Scan* in the camera bar): a front sweeps 160 m out from under the drone with beams from the drone camera, and leaves a marker on each 20 m cell coloured by the orbital slope band (< 8° gentle, 8–15° moderate, ≥ 15° steep, grey for NoData) with counts in the HUD (`src/lib/scan.ts`). It reads the slope already computed from the CTX prior; it is not an observation, does not change the map version, and the bands are display thresholds awaiting science approval.
+**Orbital slope preview** (`R`): a visual front sweeps 160 m around the drone
+position and marks the current run's prior-derived slope cells (< 8°, 8–15°,
+≥ 15°, NoData), with counts in the HUD. It makes no new observation and changes
+neither map, uncertainty nor route. This limit is visible before activation;
+the bands are display thresholds, not certified transitability limits.
 
 **Text access for language models.** `public/llms.txt` and `public/about.html` describe what the viewer shows, the controls, which data are real and which are simulated, the limits and the AI declaration; `index.html` carries page metadata, JSON-LD and a static summary that the app replaces on start. In the running page `window.mge.state()` returns the displayed replay state as JSON (`mge.viewer-state/1`: source, time, mission state, map version, agents with pose and resources, active route, recent events and view), always labelled REPLAY (`src/lib/stateSnapshot.ts`). `robots.txt` and `sitemap.xml` are included; on a project site crawlers only honour a `robots.txt` at the domain root.
 
-The **replay** opens and restarts 4 s before the first agent moves (the demo's agents are idle for 10 s), at 10×, the highest speed offered (1×, 5×, 10×).
+The **replay** opens paused and restarts 4 s before the first recorded motion.
+Short recordings start at 1×; the long demo starts at 10× (choices: 1×, 5×, 10×).
 
 The walk clip is a lunar bounding gait. The viewer plants the lower foot at every keyframe, keeps the pelvis turn and weight shift the legs were animated with (the spine is counter-rotated so the torso stays upright) and re-times the cycle so the stance foot moves backward at constant speed. Played at the ground speed on screen divided by the clip's own walking speed, the planted foot slips about 5 mm per step at 1 m/s (it skated about 35 cm before), checked by a test on the real model; above about 2.5 m/s on screen the rhythm is capped and the feet slide. The astronaut casts a projected shadow along the scene's display sun (not a computed solar position) that walks with the skeleton, is not cut by terrain bumps or the route line, and never covers the model; footprints are boot soles, mirrored per foot.
 
-Keys: `F` follow camera, `V` first person, `R` drone scan, `B` camera sway (first person), `G` grab map, `Q` / `E` rotate the view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
+Keys: `F` follow camera, `V` first person, `R` orbital slope preview, `B` camera sway (first person), `G` grab map, `Q` / `E` rotate the view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 `?evaluator=1` shows the hidden reference layer, **in the dev server only** (R05). `npm run fixture`
 writes the reference to the repository's Git-ignored `data/reference/<run_id>/`; the dev server
 serves it to the evaluator view and the build never copies it, so `dist/` and GitHub Pages do not
@@ -146,20 +167,25 @@ The **Run** selector under the title (or `?run=<id>`) opens another saved run:
 
 | Run | Source |
 |---|---|
+| `recorded-recovery-001` (default) | Four unchanged canonical files from the recovered recorder run; internal `run_id` is retained independently of this entry folder. Real Jezero data/planner with MOCK authority/kinematic execution; recovery of the human, rover/drone idle; final `READY` |
 | `demo` | Simulated mission on the real CTX crop (`public/replay/demo/`) |
 | `mock-vertical-001` | Package recorded by the gateway's `replay_recorder` from the MOCK vertical (Jesús, `../data/sample/replay/`, ICD §7). Flat synthetic grid, straight-line MOCK planner, 5.4 s of wall-clock time |
 
-Gateway packages are read unchanged from `../data/sample/replay/<run_id>/`: Vite serves them
-in development and copies them into `dist/replay/` on build. `src/data/gatewayReplay.ts`
-converts `manifest.json` + `timeline.jsonl` into the viewer's bundle and, when the manifest names
+The featured package lives under `public/replay/recorded-recovery-001/`.
+Historical gateway samples are read unchanged from `../data/sample/replay/<run_id>/`:
+Vite serves them in development and copies them into `dist/replay/` on build.
+`src/data/gatewayReplay.ts` validates `manifest.json`, `timeline.jsonl` and the
+required final `snapshot.json` before converting to the existing viewer bundle. When the manifest names
 it, reads the public raster attachment `files.public_rasters` (`mge-public-rasters-1.0.0`,
 `../docs/REPLAY_CONTRACT.md`, JOR-03): the prior and, per map version, belief, sigma and observed
 cells. The attachment is checked against the package (run, dataset, geometry, grid, cell values,
 observed indices, every map version the states use) and refused with `PUBLIC_RASTERS_INVALID` on
 any mismatch; no version falls back to another and an evaluator or reference key is refused.
 Without an attachment only a MOCK package over a declared flat grid is drawn, as an explicitly
-labelled illustration; any other package fails with `PUBLIC_RASTERS_REQUIRED`. The bundled sample
-predates the attachment, so it shows the flat MOCK grid; a MOCK grid shows no latitude or longitude.
+labelled illustration; any other package fails with `PUBLIC_RASTERS_REQUIRED`.
+The historical sample `mock-vertical-001` predates the attachment, so it retains that explicit flat
+illustration. The featured recovery carries its recorded Jezero rasters.
+A MOCK grid shows no latitude or longitude.
 
 ## Architecture
 
@@ -225,11 +251,12 @@ The code, scripts, tests and the simulated fixture were written with AI assistan
 
 Terrain detail is limited by the 20 m source: close-ups look smooth. The 1 m HiRISE DTM covers this area and could provide real detail, but it is the hidden evaluator reference and must not reveal unknown terrain in the normal view.
 
-Not consumed yet from the other workstreams: the live gateway (`feat/integration`), routes
-from the planner now on `main`, mission profiles and the processed terrain package. The viewer
-reads the public raster attachment, but no bundled package carries one yet, so a recorded run
-still shows the declared flat MOCK grid; AC-08 (private-browser replay with every backend off)
-is not recorded yet. Percentages are relative to the first received sample, not to a certified budget.
+The recorded entry consumes real planner output and the public terrain package
+through the recorder, with strict snapshot/raster validation. A live gateway,
+scientific model agreement and a completed three-role mission remain separate
+acceptances. This cut does not claim AC-08 (private-browser replay with every
+backend off) passed before its browser evidence is recorded. Percentages are
+relative to the first received sample, not to a certified budget.
 The vehicle, drone and astronaut motion was checked in the dev server on one machine, mostly from
 still frames; the rover over steep relief and the drone climbing over a wall were not watched live.
 
