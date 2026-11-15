@@ -8,7 +8,6 @@
  * world with the rover's published yaw at that stop (degrees clockwise from north), so the direction
  * is approximate: the replay's own rover heading is not the real one.
  */
-import type { CameraMount } from './roverCameras';
 
 export interface PhotoPointing {
   instrument: string;
@@ -69,25 +68,28 @@ export function shortestTurnDeg(from: number, to: number): number {
 }
 
 /**
- * Request to turn the camera: the cameras read it each frame and ease towards it. A new `token`
- * is a new request; dragging the view cancels the turn in progress.
+ * Request to turn the third-person camera towards a photo's direction (FollowCamera reads it each
+ * frame and eases towards it). A new token is a new request. The rover's own camera does not use
+ * it: the mast head is driven by the rover rig (lib/roverRig).
  */
-export const aimRequest: { token: number; azimuthDeg: number | null; pitchDeg: number | null; fovDeg: number | null; mount: CameraMount | null } = {
+export const aimRequest: { token: number; azimuthDeg: number | null; pitchDeg: number | null } = {
   token: 0,
   azimuthDeg: 0,
   pitchDeg: 0,
-  fovDeg: null,
-  mount: null,
 };
 
-/**
- * Asks the rover's camera to turn (azimuth, pitch), to change lens (vertical field of view) and to
- * move to a mount; a null field is left as it is.
- */
-export function requestAim(d: { azimuthDeg?: number | null; pitchDeg?: number | null; fovDeg?: number | null; mount?: CameraMount | null }): void {
+/** Asks the third-person camera to swing towards (azimuth, pitch); a null field is left as it is. */
+export function requestAim(d: { azimuthDeg?: number | null; pitchDeg?: number | null }): void {
   aimRequest.azimuthDeg = d.azimuthDeg ?? null;
   aimRequest.pitchDeg = d.pitchDeg ?? null;
-  aimRequest.fovDeg = d.fovDeg ?? null;
-  aimRequest.mount = d.mount ?? null;
   aimRequest.token += 1;
+}
+
+/**
+ * Pointing of a photo relative to the drawn rover (deg; az clockwise from its front, el negative down),
+ * from its world direction and the drawn rover's compass heading, so the mast looks where NASA's camera
+ * looked even though the replay's rover heading is not the real one.
+ */
+export function relativeToRover(dir: PhotoDirection, roverHeadingDeg: number): { azDeg: number; elDeg: number } {
+  return { azDeg: shortestTurnDeg(roverHeadingDeg, dir.azimuthDeg), elDeg: dir.pitchDeg };
 }

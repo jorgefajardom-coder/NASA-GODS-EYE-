@@ -20,8 +20,11 @@ import { FlatMap } from './components/FlatMap';
 import { DroneCamFrame } from './components/DroneCam';
 import { MarsNowFrame } from './components/MarsNow';
 import { rawImages, useRawImages } from './lib/rawImagesStore';
-import { photoDirection, requestAim } from './lib/photoAim';
-import { DEFAULT_ROVER_CAMERA, mountOf, roverCameraOf } from './lib/roverCameras';
+import { photoDirection, relativeToRover, requestAim } from './lib/photoAim';
+import { CAMERA_ORDER, mastcamFocalFromId, roverCameraOf } from './lib/roverCameras';
+import { homeRig, requestShot, roverRig, selectCamera, shotReady } from './lib/roverRig';
+import { yawFromQuaternion } from './lib/coords';
+import { headingFromNorth } from './lib/management';
 import type { RawImage } from './lib/perseveranceRaw';
 import type { RoverStop } from './types/replay';
 import { stopUnderAgent, tourStepTime } from './lib/roverStops';
@@ -243,6 +246,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const stopAgent = pov ? povAgent : tourOn ? view.state?.agents.find((a) => a.agent_id === m.photo_tour?.agent_id) ?? null : null;
   const povStop = stopAgent ? stopUnderAgent(roverStops, stopAgent.pose.position.x, stopAgent.pose.position.y, stopAgent.mode) : null;
   const povStopId = povStop?.rmc ?? null;
+  const stopAgentRef = useRef(stopAgent);
+  stopAgentRef.current = stopAgent;
   const [closedStop, setClosedStop] = useState<string | null>(null);
   // The rover's photo tour of every real stop: drives the rover through them (the replay has that phase
   // after the story) and opens each stop's images on arrival. The button is the person's request for them.
@@ -291,6 +296,20 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     const mission = bundle.roverStops?.mission?.name ?? 'Perseverance';
     let n = 0;
     let timer = 0;
+    let poll = 0;
+    // Waits (polling) until `done()` holds, then runs `then`; gives up after `maxMs` so the tour never stalls.
+    const waitFor = (done: () => boolean, then: () => void, maxMs = 15000) => {
+      const t0 = performance.now();
+      window.clearInterval(poll);
+      poll = window.setInterval(() => {
+        if (done() || performance.now() - t0 > maxMs) {
+          window.clearInterval(poll);
+          then();
+        }
+      }, 80);
+    };
+    // The drawn rover's compass heading, to turn each photo's world direction into a mast pointing.
+    const roverHeading = stopAgentRef.current ? headingFromNorth(yawFromQuaternion(stopAgentRef.current.pose.orientation)) : null;
     // The photos are seen from the rover's camera; the view returns behind the rover when they are done.
     const switched = !firstPersonNow.current && images.length > 0;
     if (switched) setFirstPerson(true);
@@ -300,23 +319,44 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     const shoot = () => {
       if (n >= images.length) {
         doneStop.current = povStopId;
-        requestAim({ pitchDeg: -10, fovDeg: DEFAULT_ROVER_CAMERA.vFovDeg, mount: 'mast' }); // back to the Navcam on the mast, looking ahead
-        back();
-        setPlaying(true);
+        // Back to the Navcam looking ahead; the rover drives on only once the arm is stowed.
+        homeRig(roverRig);
+        requestAim({ pitchDeg: -10 });
+        waitFor(() => roverRig.arm === 0, () => {
+          back();
+          setPlaying(true);
+        });
         return;
       }
-      rawImages.select(n);
-      // The real camera that took the photo: its lens and where it sits on the rover.
-      const cam = roverCameraOf(images[n].instrument, mission);
-      const dir = photoDirection(images[n], stop?.yaw_deg, mission);
-      requestAim({ azimuthDeg: dir?.azimuthDeg, pitchDeg: dir?.pitchDeg, fovDeg: cam?.vFovDeg ?? null, mount: mountOf(cam, images[n].instrument, images[n].vector) });
-      n += 1;
-      timer = window.setTimeout(shoot, SHOT_MS);
+      // The real camera (and eye of its stereo pair) that took the photo: the rig switches to it, the mast
+      // slews to where it looked, Mastcam-Z zooms to the frame's focal length, WATSON needs the arm out.
+      // The photo is "taken" (lit in the window) only once the rig has arrived.
+      const img = images[n];
+      const which = roverCameraOf(img.instrument, mission);
+      const id = which?.camera.id ?? 'navcam';
+      const dir = photoDirection(img, stop?.yaw_deg, mission);
+      const rel = dir && roverHeading != null ? relativeToRover(dir, roverHeading) : null;
+      const onMast = id === 'navcam' || id === 'mastcamz';
+      const token = requestShot(roverRig, {
+        camera: id,
+        side: which?.side,
+        azDeg: onMast ? rel?.azDeg : null,
+        elDeg: onMast ? rel?.elDeg : null,
+        focalMm: id === 'mastcamz' ? mastcamFocalFromId(img.id) ?? 26 : null,
+        watsonVector: id === 'watson' ? img.vector : null,
+      });
+      requestAim({ azimuthDeg: dir?.azimuthDeg, pitchDeg: dir?.pitchDeg }); // the third-person view swings the same way
+      waitFor(() => shotReady(roverRig, token), () => {
+        rawImages.select(n);
+        n += 1;
+        timer = window.setTimeout(shoot, SHOT_MS);
+      });
     };
     setPlaying(false);
     timer = window.setTimeout(shoot, 650); // a beat for the rover's camera to settle on the stop
     return () => {
       window.clearTimeout(timer);
+      window.clearInterval(poll);
       if (doneStop.current !== povStopId) back();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -397,6 +437,11 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'KeyI') setArtificialLight((v) => !v);
       else if (e.code === 'KeyQ') rotateView(-ROTATE_STEP_RAD);
       else if (e.code === 'KeyE') rotateView(ROTATE_STEP_RAD);
+      else if (!pov && /^Digit[1-5]$/.test(e.code) && view.state?.agents.some((a) => a.agent_id === camView && a.agent_kind === 'ROVER')) {
+        // Following the rover from behind: a camera number looks through that camera (in first person the camera handles it).
+        selectCamera(roverRig, CAMERA_ORDER[Number(e.code.slice(5)) - 1]);
+        setFirstPerson(true);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);

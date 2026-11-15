@@ -602,7 +602,7 @@ function SelectionRing({ groundHeight, verticalExaggeration }: { groundHeight: (
   });
   useEffect(() => () => geometry.dispose(), [geometry]);
   return (
-    <mesh ref={mesh} geometry={geometry} renderOrder={2} frustumCulled={false}>
+    <mesh ref={mesh} name="selection-ring" geometry={geometry} renderOrder={2} frustumCulled={false}>
       <meshBasicMaterial color="#65CBE8" transparent opacity={0.9} depthWrite={false} side={THREE.DoubleSide} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />
     </mesh>
   );

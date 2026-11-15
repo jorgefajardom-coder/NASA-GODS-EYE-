@@ -3154,3 +3154,17 @@ input[type='checkbox'] {
   outline-offset: -2px;
   filter: brightness(1.25);
 }
+
+/* Rover camera keys and arm close-up (first-person dock). */
+.rovercam { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; align-items: center; }
+.rovercam__keys { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+.rovercam__key { font: 600 12px/1 'Barlow Condensed', sans-serif; letter-spacing: 0.06em; color: #cfe9ff; background: rgba(6, 18, 32, 0.72); border: 1px solid rgba(120, 190, 255, 0.35); border-radius: 4px; padding: 5px 8px; cursor: pointer; }
+.rovercam__key kbd { font: inherit; opacity: 0.6; margin-right: 2px; }
+.rovercam__key[aria-pressed='true'] { border-color: #9fe3ff; background: rgba(40, 110, 160, 0.55); color: #fff; }
+.rovercam__key:disabled { opacity: 0.4; cursor: not-allowed; }
+.rovercam__key--num { min-width: 28px; font-size: 14px; text-align: center; }
+.rovercam__key--arm { border-color: rgba(232, 168, 90, 0.6); color: #ffd9a8; }
+.rovercam__read { margin: 0; font-size: 11px; color: rgba(207, 233, 255, 0.85); text-align: center; max-width: 720px; }
+.rovercam__arm { color: #ffd9a8; }
+.camera-bar__rovercams { display: inline-flex; gap: 3px; }
+.camera-bar__num { min-width: 26px; text-align: center; font-variant-numeric: tabular-nums; }

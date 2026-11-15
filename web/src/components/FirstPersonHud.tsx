@@ -1,4 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react';
+import { RoverCameraBar } from './RoverCameraBar';
+import { isStationary } from '../lib/roverStops';
 import type { AgentState, RouteDecision } from '../types/icd';
 import type { PointOfInterest, RoverStop } from '../types/replay';
 import { AGENT_NAME } from '../lib/management';
@@ -58,6 +60,7 @@ interface Props {
  * value comes from the replay or from lib/scan; nothing here is a live measurement.
  */
 export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, droneCam, droneCamOn, stops, marsNow, marsNowOn, onMarsNow, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, artificialLight, onArtificialLight, sway, onSway }: Props) {
+  const isRover = agent.agent_kind === 'ROVER';
   const tape = useRef<HTMLDivElement>(null);
   const readout = useRef<HTMLSpanElement>(null);
   const pitch = useRef<HTMLSpanElement>(null);
@@ -161,6 +164,7 @@ export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, 
       <div className="pov__dock">
         <div className="pov__dock-cam">{droneCam}</div>
         <div className="pov__keys" role="toolbar" aria-label="First-person controls">
+          {isRover && <RoverCameraBar stationary={isStationary(agent.mode)} />}
           <div className="pov__keys-row">
             <TerrainScanButton />
             <button type="button" className="pov__key" aria-pressed={droneCamOn} onClick={onDroneCam} disabled={!canDroneCam} title={canDroneCam ? 'Drone camera window (C)' : 'No drone camera here'}>
@@ -175,18 +179,29 @@ export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, 
             <button type="button" className="pov__key" aria-pressed={!artificialLight} onClick={onArtificialLight} title={artificialLight ? 'Show the terrain with the real light of the hour at the site (I)' : 'Artificial light: the terrain lit as by day whatever the hour (I)'}>
               <kbd>I</kbd> {artificialLight ? 'Real light' : 'Artificial light'}
             </button>
-            <button type="button" className="pov__key" aria-pressed={sway} onClick={() => onSway(!sway)} title="Camera sway while walking or driving (display only)">
-              <kbd>B</kbd> Sway {sway ? 'on' : 'off'}
-            </button>
+            {!isRover && (
+              <button type="button" className="pov__key" aria-pressed={sway} onClick={() => onSway(!sway)} title="Camera sway while walking (display only)">
+                <kbd>B</kbd> Sway {sway ? 'on' : 'off'}
+              </button>
+            )}
             <button type="button" className="pov__key" onClick={onExit} title="Back to the third-person view (V)">
               <kbd>V</kbd> Third person
             </button>
           </div>
-          <div className="pov__hints">
-            <span>Drag · look</span>
-            <span>Wheel · zoom</span>
-            <span>Double-click · recentre</span>
-          </div>
+          {isRover ? (
+            <div className="pov__hints">
+              <span>Drag · aim the mast</span>
+              <span>Wheel · Mastcam-Z zoom</span>
+              <span>1–5 · camera</span>
+              <span>Double-click · mast home</span>
+            </div>
+          ) : (
+            <div className="pov__hints">
+              <span>Drag · look</span>
+              <span>Wheel · zoom</span>
+              <span>Double-click · recentre</span>
+            </div>
+          )}
         </div>
         {/* Right column: the Mars now window; empty otherwise so the keys stay centred. */}
         <div className="pov__dock-scan">{marsNow}</div>

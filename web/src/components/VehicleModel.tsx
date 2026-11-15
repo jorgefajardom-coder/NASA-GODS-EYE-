@@ -6,6 +6,7 @@ import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js
 import { assetUrl } from '../data/replayAdapter';
 import { Downwash } from './Downwash';
 import { SHADOW_RENDER_ORDER, createProjectedShadow } from '../lib/projectedShadow';
+import { ARM_DEPLOYED_DEG, ARM_STOWED_DEG, roverRig, stepRig } from '../lib/roverRig';
 
 /**
  * Rover and drone models: official NASA/JPL-Caltech 3D models with all agency branding removed
@@ -32,6 +33,29 @@ interface Props {
   drive?: boolean;
   /** Drawn ground height (Three.js y) at a world (x, z), for the per-wheel suspension. */
   groundAt?: (x: number, z: number) => number | null;
+}
+
+/**
+ * Rover rig in the model (GLTF node names lose their dots): the mast head pans about the vertical and
+ * tilts about its lateral axis; the arm has five joints (shoulder azimuth, shoulder, elbow, wrist,
+ * turret). The model's front is +z, up +y, left +x. The stowed and deployed joint angles are in lib/roverRig.
+ */
+const ARM_JOINTS = ['arm003', 'arm002', 'arm', 'arm004'] as const;
+const ARM_AXES = [new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1)];
+/** Priority between the drawn poses (-2) and the cameras (-1): the cameras read this frame's mast and arm. */
+export const RIG_PRIORITY = -1.5;
+
+interface RigNodes {
+  head: THREE.Object3D;
+  headRest: THREE.Quaternion;
+  arm: Array<{ node: THREE.Object3D; rest: THREE.Quaternion }>;
+}
+
+function rigNodesOf(model: THREE.Object3D): RigNodes | null {
+  const head = model.getObjectByName('head');
+  const arm = ARM_JOINTS.map((n) => model.getObjectByName(n));
+  if (!head || arm.some((a) => !a)) return null;
+  return { head, headRest: head.quaternion.clone(), arm: arm.map((node) => ({ node: node!, rest: node!.quaternion.clone() })) };
 }
 
 /** Wheel meshes of the rover model (all six wheels are one mesh, split at load). */
@@ -540,6 +564,29 @@ export function VehicleModel({ url, lengthM, yawOffset = 0, playing = true, spin
       }
     }
   });
+
+  // Rover rig: steps the shared mast/zoom/arm state and poses the head and the arm on this model.
+  const rigNodes = useMemo(() => (drive ? rigNodesOf(model) : null), [model, drive]);
+  const rigTmp = useMemo(() => ({ a: new THREE.Quaternion(), b: new THREE.Quaternion(), x: new THREE.Vector3(1, 0, 0), y: new THREE.Vector3(0, 1, 0) }), []);
+  useFrame((_, dtRaw) => {
+    if (!rigNodes) return;
+    // Wall time, capped only for a long pause (hidden tab): the mast and arm keep their real pace at a low frame rate.
+    const dt = Math.min(Math.max(dtRaw, 0), 0.5);
+    const m = motion.current;
+    const stationary = !m || (Math.abs(m.v) < 0.05 && Math.abs(m.w) < 0.02);
+    stepRig(roverRig, dt, stationary);
+    // Head: pan (az clockwise from the front = about -y), then tilt (el up = about -x).
+    rigTmp.a.setFromAxisAngle(rigTmp.y, -THREE.MathUtils.degToRad(roverRig.az));
+    rigTmp.b.setFromAxisAngle(rigTmp.x, -THREE.MathUtils.degToRad(roverRig.el));
+    rigNodes.head.quaternion.copy(rigNodes.headRest).multiply(rigTmp.a).multiply(rigTmp.b);
+    // Arm: every joint moves together from the model's rest pose to the close-up pose, eased.
+    const s = roverRig.arm;
+    const e = s * s * (3 - 2 * s);
+    rigNodes.arm.forEach((j, k) => {
+      rigTmp.a.setFromAxisAngle(ARM_AXES[k], THREE.MathUtils.degToRad(ARM_STOWED_DEG[k] + (ARM_DEPLOYED_DEG[k] - ARM_STOWED_DEG[k]) * e));
+      j.node.quaternion.copy(j.rest).multiply(rigTmp.a);
+    });
+  }, RIG_PRIORITY);
 
   return (
     <group ref={holder} rotation={[0, yawOffset, 0]}>
