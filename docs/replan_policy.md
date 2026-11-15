@@ -1,5 +1,12 @@
 # F03.4: ROS-independent event policy
 
+F03.3 addition: remaining availability cannot increase across the same mission
+instance, including route replacement. See MODEL.md's remaining-availability
+guard contract and tests/planning/test_f033_resource_guard.py. The guard is not
+an execution ledger; new missions require new instances supplied by mission.
+Unexpected increases invalidate without search, and only externally authorized
+compatible route adoption can clear the latch; it cannot replenish resources.
+
 Implementation: [replan.py](../src/mge_planning/mge_planning/replan.py).
 This is a synchronous, serially called policy for one run/agent/mission. It
 produces recommendations and candidate plans, never publishes/authorizes a route

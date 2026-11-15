@@ -688,3 +688,15 @@ CTX DTM prior around the drone in display bands; it is not an observation, it
 does not change the map version, and its bands are display thresholds pending
 science approval. No data, measurement, image, video or audio was generated.
 The affected paths are listed in ai_usage.json.
+
+## F03.3 main-only resource audit
+
+OpenAI Codex assisted reading only published main c58e7f6, comparing existing search/science cost APIs, constructing explicit synthetic characterization tests and documenting the audit. Paths: docs/planner_f033_resource_audit.md and evidence/planner-f033-audit-20261114. Production code, coefficients, MissionManager and ROS contracts were not modified. Existing public main profile values were consumed unchanged; no scientific measurements or media generated. Test passes confirm existing discrepancies and do not approve model equivalence or physical execution.
+
+## F03.3 remaining-availability guard
+
+OpenAI Codex assisted the planner-only availability admission guard and human/rover regressions based on published main0339bbd, plus MODEL/handoff/audit updates and actual test evidence. Paths: src/mge_planning/mge_planning/replan.py; tests/planning/test_f033_resource_guard.py; src/mge_planning/MODEL.md; docs/planner_handoff.md; docs/replan_policy.md; docs/planner_f033_resource_audit.md; evidence/planner-f033-guard-20261114. No search/science formula, ROS field or MissionManager change, scientific observations or media generated. The previous numerical audit and disclosures were backed up and preserved. New mission/authorization, restart and replenishment decisions remain integration responsibilities.
+
+## F03.3 delivery review
+
+OpenAI Codex assisted the mainb5dc681 delivery comparison, local commit/PR drafts, fresh software validation evidence and a separate local-only future cost-backend proposal. Evidence is under evidence/planner-f033-delivery-20261114. The proposal is not implemented or included in the guard payload. ROS startup failures and previous hash-matched ROS results are explicitly distinguished. No publication, model change or scientific observation is produced by this preparation.

@@ -1132,6 +1132,42 @@
         ".github/workflows/pages.yml"
       ],
       "use": "Viewer display only: opening terrain formation where the whole layer rises from flat to its true relief zone by zone (low ground first, rising ground lit); terrain heights that morph instead of jumping when the layer or map version changes; first-person camera from the followed agent with a cartographic HUD (compass tape, site bearings, resources as received); drone-camera scan that draws the existing orbital CTX slope in display bands around the drone (no observation is made, the map version is unchanged, bands await science approval); GitHub Actions workflow that tests, builds and publishes the public viewer to the gh-pages branch. No data, measurements, images, video or audio generated."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "main_only_resource_audit_and_characterization_tests",
+      "generation": "AI-assisted audit documentation and synthetic test construction; actual local execution outputs",
+      "paths": [
+        "docs/planner_f033_resource_audit.md",
+        "evidence/planner-f033-audit-20261114"
+      ],
+      "use": "Compare published main c58e7f6 resource APIs and unchanged profile coefficients; characterize numeric disagreement, reserve boundaries and trusted-input budget reset risk. No production model, ROS or MissionManager edit; no physical measurements or scientific approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "remaining_availability_admission_guard",
+      "generation": "AI-assisted planner code, synthetic regression tests and documentation; actual software-test outputs",
+      "paths": [
+        "src/mge_planning/mge_planning/replan.py",
+        "tests/planning/test_f033_resource_guard.py",
+        "src/mge_planning/MODEL.md",
+        "docs/planner_handoff.md",
+        "docs/replan_policy.md",
+        "docs/planner_f033_resource_audit.md",
+        "evidence/planner-f033-guard-20261114"
+      ],
+      "use": "Reject unexplained within-mission increases without search or budget debit, preserve latched invalidation/reserves and external authorization semantics. Base is published main0339bbd only. No changes to cost/science formulas, MissionManager, ROS contracts or scientific observations."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "remaining_resource_guard_delivery_review",
+      "generation": "AI-assisted delivery documentation and separate conceptual proposal; actual local test outputs",
+      "paths": [
+        "evidence/planner-f033-delivery-20261114",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Reconcile the guard payload with published mainb5dc681 without importing PR code, preserve local audits and main disclosures, draft the local commit/PR and a separate unimplemented backend proposal. Record current Windows/web checks and blocked ROS attempts separately from historical hash-matched Jazzy evidence."
     }
   ],
   "generated_media": [
