@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0.0",
+  "status": "PROPOSED_NOT_OPERATIONAL",
+  "classification": "ENGINEERING_DESIGN_WORKLOADS_NOT_MEASURED_PATCH_ROUTES",
+  "source_revision": "c3ec4c1f1515dbc981ba82eed2ab1f54e9586264",
+  "mission_input": false,
+  "scientific_approval": false,
+  "execution_authorized": false,
+  "sources": {
+    "profiles": {"path": "config/science_profiles.proposed.json", "scope": "Unchanged proposed powers, parameters and sensitivity endpoints; not calibrated Mars hardware"},
+    "scenario": {"path": "config/mission_jezero.experimental.yaml", "scope": "Preserve approved 120 s visual check-in and 20 percent reserve policy as the controlled baseline; new allocations are unapproved"},
+    "samples": {"url": "https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf", "scope": "Approximately 10 min documented sample in a terrestrial D-RATS analog; the 420/180 light/heavy split is our engineering assumption"},
+    "power": {"url": "https://www.jpl.nasa.gov/news/press_kits/mars_2020/landing/mission/spacecraft/power/", "scope": "110 W beginning-of-mission MMRTG reference only, no generation credit or battery capacity assumption"},
+    "sol": {"url": "https://www.giss.nasa.gov/tools/mars24/help/notes.html", "scope": "Mean Mars solar day: 24 hours 39 minutes 35.244 seconds; calendar reference only, not a daylight or thermal model"},
+    "flight12": {"url": "https://science.nasa.gov/mission/mars-2020-perseverance/ingenuity-mars-helicopter/", "scope": "169.5 s historical Flight 12 comparison supplied for context; not a certified flight-time bound"}
+  },
+  "reserve_fraction": 0.2,
+  "reserve_fraction_sensitivity": [0.1, 0.2, 0.3],
+  "reserve_basis": {"unit": "fraction of total allocation", "source_id": "scenario", "approval_status": "pending_for_new_campaigns", "derivation": "Nominal requirement divided by 1-r; unused reserve is not consumed work"},
+  "rounding": {"human_time_s": 300, "human_energy_wh": 25, "human_oxygen_l": 5, "rover_time_s": 1800, "rover_energy_wh": 100, "drone_time_s": 30, "drone_energy_wh": 1},
+  "rounding_basis": {"origin": "engineering_design_workload_not_measured", "approval_status": "pending", "justification": "Readable requested allocations rounded upward; never comparison-tolerance budget credit"},
+  "human": {"primary_checkin_s": 120, "sample_workflow_s": 600, "sample_light_phase_s": 420, "sample_heavy_phase_s": 180},
+  "human_basis": {"duration_unit": "s", "source_ids": ["scenario", "samples"], "approval_status": "pending", "interpretation": "Check-in retains approved meaning; complete workflow includes documentation once; no optional inspection capability or work evidence is created"},
+  "rover": {"visual_station_s": 600, "coordination_wait_s": 1800},
+  "rover_basis": {"duration_unit": "s", "origin": "engineering_design_workload_not_measured", "approval_status": "pending", "interpretation": "Visual/geometric inspection block, not measured spectroscopy, drilling or chemical analysis; coordinate wait is a proposed schedule allowance"},
+  "drone": {"altitude_m": 10, "observation_s": 30, "takeoff_hover_surrogate_s": 5, "landing_hover_surrogate_s": 5, "ground_wait_s": 10},
+  "drone_basis": {"units": "m altitude; s phase durations", "origin": "engineering_design_workload_not_measured", "approval_status": "pending", "interpretation": "Vertical segments and hover surrogates are disjoint costing assumptions, not aerodynamic takeoff/landing or obstacle clearance validation"},
+  "joint_adverse": {"distance_factor": 1.25, "positive_ascent_factor": 1.5, "service_duration_factor": 1.5, "coordination_wait_duration_factor": 1.0, "profile_endpoints": "Minimum speeds and efficiencies; maximum masses, grade slowdown, slip, rolling resistance, auxiliary/activity powers and oxygen multiplier where registered"},
+  "joint_adverse_basis": {"origin": "engineering_design_workload_not_measured", "approval_status": "pending", "interpretation": "Combined stress case, not a probability, confidence interval or proof of global worst case; failed resource margins are retained"},
+  "calendar_reference": {"sol_s": 88775.244, "MMRTG_beginning_of_mission_reference_w": 110},
+  "calendar_basis": {"units": "s; W electrical", "source_ids": ["power", "sol"], "approval_status": "reference_only", "interpretation": "One/two-sol standby thought experiment; full sleep, thermal, communications, recharge and state-of-charge model unavailable"},
+  "cases": [
+    {"id": "CAM-BUNSEN", "candidate_id": "JZ-ROI-04", "human_total_horizontal_m": 200, "human_positive_ascent_m": 5, "human_sample_workflows": 1, "human_coordination_wait_s": 600, "rover_total_horizontal_m": 500, "rover_positive_ascent_m": 10, "rover_visual_stations": 2, "drone_sorties": 1, "drone_outward_horizontal_m": 50},
+    {"id": "CAM-BRIGHT", "candidate_id": "JZ-ROI-01", "human_total_horizontal_m": 400, "human_positive_ascent_m": 10, "human_sample_workflows": 2, "human_coordination_wait_s": 900, "rover_total_horizontal_m": 800, "rover_positive_ascent_m": 15, "rover_visual_stations": 3, "drone_sorties": 2, "drone_outward_horizontal_m": 110},
+    {"id": "CAM-HAWKSBILL", "candidate_id": "JZ-ROI-02", "human_total_horizontal_m": 600, "human_positive_ascent_m": 20, "human_sample_workflows": 3, "human_coordination_wait_s": 1200, "rover_total_horizontal_m": 1200, "rover_positive_ascent_m": 25, "rover_visual_stations": 4, "drone_sorties": 2, "drone_outward_horizontal_m": 75}
+  ],
+  "case_field_basis": {"origin": "engineering_design_workload_not_measured", "units": {"*_m": "m", "*_s": "s", "*_workflows": "count", "*_stations": "count", "*_sorties": "count"}, "approval_status": "pending", "interpretation": "Distances include the full modeled return, positive ascent occurs once with directed descent on return. Named sectors motivate workload diversity but these are not measured routes, actual target coordinates or assigned tasks."}
+}

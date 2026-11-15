@@ -1,0 +1,34 @@
+npm notice run mge-web@0.1.0 test
+npm notice run vitest run
+
+ RUN  v3.2.4 C:/Users/User/.codex/worktrees/david-mission/Hacktón NASA/web
+
+ ✓ tests/referenceIsolation.test.ts (2 tests) 34ms
+ ✓ tests/terrainSmooth.test.ts (7 tests) 10ms
+ ✓ tests/contextTerrain.test.ts (3 tests) 9ms
+ ✓ tests/geology.test.ts (4 tests) 32ms
+ ✓ tests/slope.test.ts (5 tests) 13ms
+ ✓ tests/imagery.test.ts (3 tests) 26ms
+ ✓ tests/modelBranding.test.ts (4 tests) 42ms
+ ✓ tests/baseModel.test.ts (4 tests) 34ms
+ ✓ tests/terrainGrowth.test.ts (2 tests) 20ms
+ ✓ tests/replay.test.ts (23 tests) 15ms
+ ✓ tests/management.test.ts (12 tests) 10ms
+ ✓ tests/resources.test.ts (4 tests) 6ms
+ ✓ tests/gatewayIntegrity.test.ts (37 tests | 1 skipped) 136ms
+ ✓ tests/gatewayReplay.test.ts (9 tests) 227ms
+ ✓ tests/astronaut.test.ts (10 tests) 438ms
+ ✓ tests/coords.test.ts (7 tests) 6ms
+ ✓ tests/atmos.test.ts (6 tests) 6ms
+ ✓ tests/strata.test.ts (2 tests) 4ms
+ ✓ tests/atmosMap.test.ts (2 tests) 3ms
+ ✓ tests/marsClock.test.ts (4 tests) 6ms
+ ✓ tests/smoothing.test.ts (5 tests) 4ms
+ ✓ tests/provenance.test.ts (3 tests) 4ms
+ ✓ tests/tacticalMap.test.ts (3 tests) 4ms
+ ✓ tests/agentLayer.test.ts (1 test) 1ms
+
+ Test Files  24 passed (24)
+      Tests  161 passed | 1 skipped (162)
+   Start at  21:04:26
+   Duration  2.84s (transform 1.18s, setup 0ms, collect 5.40s, tests 1.09s, environment 5ms, prepare 7.44s)

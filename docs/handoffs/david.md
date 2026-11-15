@@ -163,3 +163,62 @@ preserves approved experimental values, zero findings and six pending inputs.
 This Git merge does not close scientific or execution gates. Fresh combined
 checks and exact tested source hashes are retained with the
 [reconciliation evidence](../../evidence/mission-reconciliation-20261114/README.md).
+
+## Local science-patch research during the reconciliation audit
+
+At the owner's request, the [17-sector survey](../science_patch_survey.md),
+[prioritized map requests](../science_patch_map_requests.md) and
+[local source/scale records](../../evidence/science-patch-survey-20261114/)
+propose Bright Angel/Neretva, Hawksbill/Hogwallow and Bunsen Peak first, with
+Mawrth as the first alternative outside Jezero. The 128 m control is retained;
+512/1,024 m context and nested 128/256 m windows are proposals, not new missions.
+NASA historical positions provide query anchors with explicit association/CRS
+limitations; they are not current A/B poses or verified crop boundaries.
+
+The owner confirms Daniel can generate crops but has not delivered these new
+packages. Ask him to prepare the specified data, report coverage/registration
+and preserve public/evaluator roles. No silent coordinate adjustment or invented
+observations. Diego/Jesus/Jorge own subsequent performance, capture and display
+checks; this research changes none of their implementations. CONT-DAV-03 stays
+prepared for review, not completed acceptance. See proposed PATCH-P01..05 in
+the scientific register. All new work stays local with no commits, push or merge
+until the owner changes that instruction; model/cost/execution gates remain open.
+
+## Local rover-campaign / human-EVA resource proposal
+
+Source `c3ec4c1f1515dbc981ba82eed2ab1f54e9586264`, ICD candidate
+`1.0.0-rc.1`, science model `mge-science-1.0.0`; no fetch or publication during
+the owner's parallel audit. The [proposal](../agent_campaign_proposal.md) and
+[source/analysis/validation packet](../../evidence/agent-campaign-proposal-20261114/README.md)
+separate Bunsen/Bright Angel/Hawksbill rover episodes, human EVA and drone
+sorties. Source/input/config hashes and analytical run identity are retained.
+
+The proposed nominal allocations are EVA 35/60/85 min, 225/400/550 metabolic Wh
+and 45/80/115 dry O2 L; rover 6.5/10/14.5 h and 800/1,200/1,800 gross electrical
+Wh. They include separate 20% reserves and costed directed return. Workloads
+are analytical design assumptions, not trajectories from unavailable crops.
+All nine nominal envelopes fit by construction; all nine joint adverse cases
+fail. Full drone-campaign energy remains NOT_ESTIMATED; sortie counters never
+reset accumulated use. No physical energy availability or new operational
+authorization is asserted. CAM-P01..07 await David's review.
+
+Next: Daniel supplies registered public crops/uncertainty for real itineraries;
+Diego reconciles exact scientific movement/activity/return costs without changing
+tolerances; Jesús reviews agent release/progress/wait/thermal/SOC/evidence
+bindings against main before any schedule integration. This packet changes
+none of their implementations or contracts and creates no new MOCK. Strict
+success criteria and the original scenario/profile/approval records remain
+unchanged. Software checks and analytical reproduction are not LIVE evidence.
+
+Local organizer notification/explicit endorsement remains a delivery gate:
+remind Jesús at scope freeze/readiness/pre-submission with at least four hours
+of review margin (or longer if requested); David is backup. This proposal is
+not submission readiness and performs no external contact.
+
+Fresh local checks for this proposal: Python 979 passed / 19 environment skips
+(ROS modules and Windows symlink privileges), one existing Starlette warning;
+frontend 161 passed / one optional-package skip; repository check and build
+passed with Python 3.12.14 / Node 24.18.0 / npm 12.0.1. Reproduction, input
+hashes, overwrite refusal, phase sums, causal waiting, cumulative flights and
+original approval/readiness preservation pass. Ubuntu/Jazzy/colcon/ROS exchange
+was not run for this analytical cut; earlier results are not relabelled fresh.

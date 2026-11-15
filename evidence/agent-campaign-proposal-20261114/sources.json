@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "classification": "PRIMARY_SOURCE_REVIEW_NOT_OPERATIONAL_APPROVAL",
+  "reviewed_on_local": "2026-11-14",
+  "timezone": "America/Bogota",
+  "sources": {
+    "R-POWER": {
+      "title": "Perseverance Landing Press Kit: Power",
+      "url": "https://www.jpl.nasa.gov/news/press_kits/mars_2020/landing/mission/spacecraft/power/",
+      "locator": "MMRTG and rechargeable battery paragraphs",
+      "fact": "About 110 W at mission start; two batteries about 43 Ah each; generation and storage are distinct.",
+      "limit": "No usable battery Wh is inferred without voltage, SOC, age, temperature and reserve specifications; reference power is not credited to this proposal."
+    },
+    "R-MOBILITY": {
+      "title": "Perseverance Rover Components",
+      "url": "https://science.nasa.gov/mission/mars-2020-perseverance/rover-components/",
+      "locator": "Wheels and legs",
+      "fact": "About 152 m/h maximum on flat hard ground.",
+      "limit": "Not a guaranteed mean rate over a science campaign or the selected patches. The proposed model speed is unchanged."
+    },
+    "R-DRIVE": {
+      "title": "NASA's Perseverance Breaks Own Rover Driving Record",
+      "url": "https://www.jpl.nasa.gov/images/pia26645-nasas-perseverance-breaks-own-rover-driving-record/",
+      "locator": "PIA26645 description, sol 1540",
+      "fact": "411.7 m during approximately 4 hours 24 minutes in one documented drive.",
+      "limit": "A historical performance example, not a daily nominal distance or a speed calibration for this model."
+    },
+    "SOL": {
+      "title": "NASA GISS Mars24 Technical Notes",
+      "url": "https://www.giss.nasa.gov/tools/mars24/help/notes.html",
+      "locator": "Mean solar day and time conventions",
+      "fact": "Mean sol is 24 h 39 min 35.244 s, or 88775.244 s.",
+      "limit": "A calendar unit does not imply continuous driving, an operating window or available energy."
+    },
+    "H-EVA": {
+      "title": "Apollo 17: Mission Details",
+      "url": "https://www.nasa.gov/missions/apollo/apollo-17-mission-details/",
+      "locator": "Surface EVA descriptions",
+      "fact": "Historical lunar EVAs included durations about 7 h 12 min and 7 h 37 min.",
+      "limit": "Context only, not a Mars EVA duration, suit approval or evidence that this experiment should use seven hours."
+    },
+    "H-WORK": {
+      "title": "D-RATS geological field protocols, LPSC 2011 abstract 1334",
+      "url": "https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf",
+      "locator": "Field protocol and time/task management, pp.1-2",
+      "fact": "Approximately ten minutes per documented sample in the reported terrestrial analogue experience.",
+      "limit": "Not measured Mars task timing. The 420 s light/180 s heavy split is our pending allocation; complete documentation is inside the 600 s, not added twice."
+    },
+    "H-METABOLIC": {
+      "title": "NASA/TM-2010-216138",
+      "url": "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=21",
+      "locator": "Table 4",
+      "fact": "Existing lunar-analogue power anchors for walking, light work and heavy stationary work.",
+      "limit": "Existing proposed transfer to Mars is retained without coefficient approval; metabolic Wh is not battery energy."
+    },
+    "H-OXYGEN": {
+      "title": "NASA BVAD revision 2",
+      "url": "https://ntrs.nasa.gov/api/citations/20210024855/downloads/BVAD_2.15.22-final.pdf?attachment=true#page=149",
+      "locator": "Table 4-70",
+      "fact": "Existing model derives oxygen proportionality from 295 W and 0.086 kg/h reference values.",
+      "limit": "Equivalent dry-gas metabolic demand only; not tank volume, suit capacity, leakage, cooling or CO2-removal validation."
+    },
+    "D-NOMINAL": {
+      "title": "Ingenuity Landing Press Kit: Spacecraft",
+      "url": "https://www.jpl.nasa.gov/news/press_kits/ingenuity/landing/mission/spacecraft/",
+      "locator": "Flight and power design description",
+      "fact": "Original test concept included up-to-90-second flights, about 350 W flight power and solar-recharged batteries.",
+      "limit": "Nominal test envelope, not a universal endurance limit or a guarantee of recharge between our sorties."
+    },
+    "D-FLIGHT": {
+      "title": "NASA Ingenuity Helicopter Flight Log",
+      "url": "https://science.nasa.gov/wp-content/uploads/2024/06/ingenuity-helicopter-flight-log.pdf",
+      "locator": "Flight 12 row",
+      "fact": "Flight 12 lasted 169.5 s and covered approximately 450 m.",
+      "limit": "Historical observation, not a certified bound. Compare airborne time, not ground-inclusive elapsed time."
+    },
+    "D-BATTERY": {
+      "title": "Battery System Design, Testing and Operation for Perseverance and Ingenuity",
+      "url": "https://www.nasa.gov/wp-content/uploads/2024/01/battery-system-design-testing-and-operation-for-the-mars-perseverance-rover-and-ingenuity-helicopter.pdf",
+      "locator": "PDF p.18, Ingenuity battery characteristics",
+      "fact": "Beginning-of-life energy estimates include 44.4 Wh at 25 C and 38.8 Wh at 0 C.",
+      "limit": "Temperature-specific reference energy, not guaranteed usable flight energy; thermal and other loads share it."
+    },
+    "D-CHARGE": {
+      "title": "When Should Ingenuity Fly?",
+      "url": "https://science.nasa.gov/blog/when-should-ingenuity-fly/",
+      "locator": "Heating, state of charge and time-of-day discussion",
+      "fact": "Nighttime depletion and morning warming/charging constrain the flight window.",
+      "limit": "No constant recharge time or guaranteed solar supply is derived."
+    },
+    "D-WINTER": {
+      "title": "Ingenuity Adapts for Mars Winter Operations",
+      "url": "https://science.nasa.gov/blog/ingenuity-adapts-for-mars-winter-operations/",
+      "locator": "Power and winter survival discussion",
+      "fact": "Season, dust and cold can make overnight demand exceed the energy budget.",
+      "limit": "The current 5 W ground wait is not a calibrated overnight survival mode."
+    },
+    "D-THERMAL": {
+      "title": "Ingenuity's Final Flight: Lessons Learned",
+      "url": "https://www.nasa.gov/podcasts/small-steps-giant-leaps/small-steps-giant-leaps-episode-130-ingenuitys-final-flight-lessons-learned/",
+      "locator": "Project manager discussion of nighttime energy",
+      "fact": "Operational account identifies overnight heating as a dominant energy use.",
+      "limit": "Not a transferable constant fraction for this model."
+    },
+    "R-SOLAR": {
+      "title": "NASA Mars Rover Team's Tilted Winter Strategy Works",
+      "url": "https://www.jpl.nasa.gov/news/nasa-mars-rover-teams-tilted-winter-strategy-works/",
+      "locator": "Opportunity winter energy and dust discussion",
+      "fact": "Solar supply depends on orientation, season and dust; wind effects are variable.",
+      "limit": "A solar architecture would need its own model. Wind cleaning is never a guaranteed recharge event."
+    }
+  },
+  "source_use_policy": "Observed hardware/mission facts constrain interpretation. Distances, station counts, waiting allowances, reserve fraction and allocation rounding in the companion proposal are engineering assumptions, not NASA operational prescriptions."
+}
