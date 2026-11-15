@@ -2,12 +2,20 @@ import { useEffect, useMemo, useRef } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { Point } from '../types/icd';
-import { tacticalBase } from '../lib/tacticalMap';
+import { tacticalBase, tacticalContext, type TacticalBase } from '../lib/tacticalMap';
 import { yawFromQuaternion } from '../lib/coords';
 import { headingFromNorth } from '../lib/management';
 import { drawSiteIcon, siteKind } from '../lib/siteKinds';
 
 const DEFAULT_SIZE = 168;
+
+function toCanvas(b: TacticalBase): HTMLCanvasElement {
+  const c = document.createElement('canvas');
+  c.width = b.width;
+  c.height = b.height;
+  c.getContext('2d')!.putImageData(new ImageData(b.pixels, b.width, b.height), 0, 0);
+  return c;
+}
 /** Ground radius shown around the agent (m). */
 const RADIUS_M = 450;
 const KIND_COLOR = { HUMAN: '#E8F4FF', DRONE: '#65CBE8', ROVER: '#D8AD66' } as const;
@@ -68,13 +76,12 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
   const base = useMemo(() => tacticalBase(bundle.rasters, mapVersion), [bundle.rasters, mapVersion]);
-  const baseCanvas = useMemo(() => {
-    const c = document.createElement('canvas');
-    c.width = base.width;
-    c.height = base.height;
-    c.getContext('2d')!.putImageData(new ImageData(base.pixels, base.width, base.height), 0, 0);
-    return c;
-  }, [base]);
+  const baseCanvas = useMemo(() => toCanvas(base), [base]);
+  // Surroundings of the crop (same DTM, coarser), so the map does not look cut near the crop's edge.
+  const ctxCanvas = useMemo(() => {
+    const cb = bundle.context ? tacticalContext(bundle.rasters, bundle.context) : null;
+    return cb ? toCanvas(cb) : null;
+  }, [bundle.context, bundle.rasters]);
   const agent = view.state?.agents.find((a) => a.agent_id === agentId) ?? view.state?.agents[0] ?? null;
 
   useEffect(() => {
@@ -103,12 +110,34 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     g.translate(c, c);
     g.rotate(-hdg);
     g.translate(-c, -c);
-    // Terrain: the full map image placed in metres around the agent.
+    // Surroundings first (dimmer), or a hatch outside the map when the world has none.
     const W = meta.cols * meta.resolution_m;
     const H = meta.rows * meta.resolution_m;
     const [mx, my] = toPx({ x: meta.origin_x_m, y: meta.origin_y_m + H, z: 0 });
+    const cf = bundle.context?.frame;
+    if (ctxCanvas && cf) {
+      const [cx0, cy0] = toPx({ x: cf.origin_x_m, y: cf.origin_y_m + cf.rows * cf.resolution_m, z: 0 });
+      g.imageSmoothingEnabled = true;
+      g.drawImage(ctxCanvas, cx0, cy0, cf.cols * cf.resolution_m * k, cf.rows * cf.resolution_m * k);
+    } else {
+      g.strokeStyle = 'rgba(120,170,230,0.16)';
+      g.lineWidth = 1;
+      for (let d = -SIZE * 2; d < SIZE * 2; d += 7) {
+        g.beginPath();
+        g.moveTo(d, -SIZE);
+        g.lineTo(d + SIZE * 3, SIZE * 2);
+        g.stroke();
+      }
+    }
+    // Terrain: the full map image placed in metres around the agent.
     g.imageSmoothingEnabled = false;
     g.drawImage(baseCanvas, mx, my, W * k, H * k);
+    // Edge of the mission map, so its limit reads as a limit and not as a missing piece.
+    g.strokeStyle = 'rgba(190,225,255,0.55)';
+    g.lineWidth = 1;
+    g.setLineDash([3, 3]);
+    g.strokeRect(mx, my, W * k, H * k);
+    g.setLineDash([]);
     // Range rings every 150 m.
     g.strokeStyle = 'rgba(150,200,255,0.18)';
     for (let r = 150; r < RADIUS_M; r += 150) {
@@ -198,7 +227,7 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     g.textBaseline = 'middle';
     g.fillText('N', nx, ny + 0.5);
     g.textBaseline = 'alphabetic';
-  }, [baseCanvas, view, agent, bundle.manifest.pois, bundle.roverStops, bundle.timeline.frames, meta, SIZE]);
+  }, [baseCanvas, ctxCanvas, bundle.context, view, agent, bundle.manifest.pois, bundle.roverStops, bundle.timeline.frames, meta, SIZE]);
 
   return (
     <div className="minimap" role="img" aria-label="Minimap, heading up (turns with the selected agent), centred on it; N marks north">

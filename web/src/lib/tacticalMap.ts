@@ -1,4 +1,4 @@
-import type { RasterSet } from '../types/replay';
+import type { ContextTerrainData, RasterSet } from '../types/replay';
 import { versionKey } from './layers';
 
 /**
@@ -117,4 +117,36 @@ export function tacticalBase(rasters: RasterSet, mapVersion: number): TacticalBa
     }
   }
   return { pixels, width: cols, height: rows, observed: seen.size, total };
+}
+
+/**
+ * Surroundings of the crop for the minimap, in the same blue bands as the crop (band edges from the
+ * crop's prior; the context shares its height datum) and slightly dimmer, so the map does not end in
+ * an empty area when an agent is near the crop's edge. Context only: never observed, never a mission
+ * input. Row 0 = north (canvas order). Returns null when the context grid is not row-0-south.
+ */
+export function tacticalContext(rasters: RasterSet, context: ContextTerrainData): TacticalBase | null {
+  const { rows, cols } = context.frame;
+  if ((context.frame.row0 ?? 'south') !== 'south' || context.heights.length !== rows * cols) return null;
+  const edges = quantileEdges(rasters.prior.filter((h): h is number => h != null));
+  const grid = context.heights;
+  const shade = hillshade(grid, rows, cols, shadeScale(grid, rows, cols));
+  const pixels = new Uint8ClampedArray(rows * cols * 4);
+  let total = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const i = r * cols + c;
+      const o = ((rows - 1 - r) * cols + c) * 4;
+      const h = grid[i];
+      if (h == null) continue;
+      total++;
+      const base = BAND_RGB[bandByEdges(h, edges)];
+      const k = (0.5 + 0.75 * shade[i]) * 0.72;
+      pixels[o] = base[0] * k;
+      pixels[o + 1] = base[1] * k;
+      pixels[o + 2] = base[2] * k;
+      pixels[o + 3] = 255;
+    }
+  }
+  return { pixels, width: cols, height: rows, observed: 0, total };
 }
