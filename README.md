@@ -384,7 +384,9 @@ AI use in [docs/AI_USAGE.md](docs/AI_USAGE.md), and the viewer details in
 
 Known gaps: the viewer does not consume a live gateway; the recorded recovery
 package has public rasters but no draped imagery, so it shows a plain-coloured
-128 m block, and `mock-vertical-001` remains a flat MOCK grid; AC-08 (private-browser replay with every backend off) is not recorded; J-06
+128 m block, and `mock-vertical-001` remains a flat MOCK grid; AC-08 has an automated private-browser replay record with every backend off
+([evidence](evidence/web-private-replay-20261115/README.md)) but is not accepted: no person-operated or
+public-site check exists and the recorded package is MOCK; J-06
 render acceptance and a screen-reader audit are not done.
 
 ## Checks without ROS

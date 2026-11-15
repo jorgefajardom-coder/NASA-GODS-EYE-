@@ -839,3 +839,12 @@ OpenAI Codex assisted tests/planning/scientific_oracle.py, test_scientific_oracl
 ## F03.3 main synchronization and review preparation
 
 OpenAI Codex assisted reconciliation of mandatory disclosures and preparation of the review PR. Current software validation outputs are retained in evidence/planner-f033-pr-sync-20261115. Both branches disclosures are preserved; no scientific measurements, production backend activation or operational approval are inferred. Native ROS is blocked before execution by WSL resources.
+
+## Private-browser replay check
+
+Claude Code (Anthropic) assisted the browser check script
+`evidence/web-private-replay-20261115/reproduce_private_replay.mjs`, its
+evidence record and the matching README wording. The script reads the built
+viewer and the existing recorded package; it generated no mission data,
+observation, measurement, image, video or audio. Its outputs are software
+check results, not an AC-08 acceptance.

@@ -1426,6 +1426,18 @@
         "evidence/planner-f033-pr-sync-20261115"
       ],
       "use": "Merge published main preserving planner history and mandatory disclosures; record local Python/web checks and blocked native ROS accurately. No science model, mission authority or production search activation."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "browser_check_script_and_evidence_record",
+      "generation": "AI-assisted generation, requested by the repository owner",
+      "paths": [
+        "evidence/web-private-replay-20261115/reproduce_private_replay.mjs",
+        "evidence/web-private-replay-20261115/README.md",
+        "evidence/web-private-replay-20261115/run/result.json",
+        "evidence/web-private-replay-20261115/run/windows.json"
+      ],
+      "use": "Automated private-browser replay check of the built viewer with every backend off (AC-08 evidence input). Reads the build and the existing recorded package; the JSON files are the script's software check output. No mission data, observation, measurement or media was generated; AC-08 acceptance is not claimed."
     }
   ],
   "generated_media": [
