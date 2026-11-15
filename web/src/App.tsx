@@ -250,7 +250,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
     if (!photoTour) return;
     setTourOn(true);
     followAgent(photoTour.agent_id);
-    setFirstPerson(false); // third person: the rover is seen driving; V switches to its eyes
+    setFirstPerson(true); // the tour is seen from the rover's own camera; V steps back behind the rover
     setClosedStop(null);
     setMarsNow(true);
     setSpeed(10);
