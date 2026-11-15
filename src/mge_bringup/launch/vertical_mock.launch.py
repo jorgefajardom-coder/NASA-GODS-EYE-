@@ -11,6 +11,7 @@ Agents remain MOCK, so this vertical always declares source_mode=MOCK.
 import os
 from pathlib import Path
 from time import monotonic
+from typing import List
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -113,6 +114,8 @@ def generate_launch_description():
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('host', default_value='127.0.0.1'),
         DeclareLaunchArgument('port', default_value='8000'),
+        # Browser origins the gateway answers (CORS), as a YAML list.
+        DeclareLaunchArgument('cors_origins', default_value="['http://localhost:5173', 'http://127.0.0.1:5173']"),
         DeclareLaunchArgument('planner', default_value='mock', choices=['mock', 'real']),
         DeclareLaunchArgument('profiles_file', default_value=''),
         DeclareLaunchArgument('exploration_policy_file', default_value=''),
@@ -180,6 +183,7 @@ def generate_launch_description():
                  **web,
                  'host': LaunchConfiguration('host'),
                  'port': ParameterValue(LaunchConfiguration('port'), value_type=int),
+                 'cors_origins': ParameterValue(LaunchConfiguration('cors_origins'), value_type=List[str]),
              }]),
         Node(package='mge_gateway', executable='replay_recorder', output='screen',
              condition=IfCondition(LaunchConfiguration('record')),

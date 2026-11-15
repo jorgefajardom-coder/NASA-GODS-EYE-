@@ -1,0 +1,874 @@
+{
+  "status": "PASS",
+  "mode": "replay-fed MOCK test; no ROS graph",
+  "source_run_id": "height-recovery-20261115-01",
+  "restart_identity": "Synthetic identity clone of same public recorded payloads, not another mission execution",
+  "producer_head": "ef8f3ac2b49505d1ddebe3fdc05d6b7f2e8605bf",
+  "source_sha256": {
+    "src/mge_gateway/mge_gateway/app.py": "3f2ceb9a674b496e79d057c822a0dabd43815bd70ee010ef8d8795277f150f61",
+    "src/mge_gateway/mge_gateway/store.py": "8895c9e0d263e86e947385473188d91997b359f685ead14bfe6553412b8a4432",
+    "src/mge_gateway/mge_gateway/ros_bridge.py": "8176e63474eaaac5cfa44c8315d4cf6d7e8f4e09bd54f85911a9e0649034c785",
+    "web/src/lib/gatewayLive.ts": "c8dfee78335621ba982597828306051f3802c1680bd711f68e8b5a8f4f60abd6",
+    "web/src/lib/provenance.ts": "31a5dfbcae84b592f13350d958485c86878efe9072aabfb6d6ff98c990e8550b"
+  },
+  "public_package_sha256": {
+    "manifest.json": "9d482349f04486cdd282718ee60604a47a55345f90718dbe8def7c9db28f1333",
+    "public_rasters.json": "dd55524231b3bb8b4f277ac2d2d9f7f513f1ba50bb148ed018188ac89f4c91c7",
+    "snapshot.json": "27bdf34f96d4f2075ac0aef501bdf13de2c556d1e43facf0082c3d719a0a806d",
+    "timeline.jsonl": "d3ff67332252e1a38513c33be177d4e535b395d71fd1ad3f035a7b75f6b46cb5"
+  },
+  "results": [
+    {
+      "name": "503 startup, real producer compatibility, live arrival 1→3→2",
+      "status": "PASS"
+    },
+    {
+      "name": "contiguous resume cursor and snapshot recovery of missing event",
+      "status": "PASS"
+    },
+    {
+      "name": "application restart A→B rediscovers manifest without mixing runs",
+      "status": "PASS"
+    },
+    {
+      "name": "same-run-ID restart clears seq9/meta2 ledger and rejects retired WS callback",
+      "status": "PASS"
+    },
+    {
+      "name": "XYZ/path/header exact preservation; MOCK labels; readonly requests; source frozen",
+      "status": "PASS"
+    }
+  ],
+  "requests": [
+    {
+      "url": "http://127.0.0.1:55348/api/health",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/health",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/manifest",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01/snapshot",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/health",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/manifest",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01/snapshot",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01/snapshot",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01/snapshot",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/health",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/manifest",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01-test-restart-B/snapshot",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01-test-restart-B/snapshot",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01-test-restart-B/snapshot",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/health",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/manifest",
+      "method": "GET"
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01-test-restart-B/snapshot",
+      "method": "GET"
+    }
+  ],
+  "socket_urls": [
+    "ws://127.0.0.1:55348/api/events?after_seq=0",
+    "ws://127.0.0.1:55348/api/events?after_seq=1",
+    "ws://127.0.0.1:55348/api/events?after_seq=1",
+    "ws://127.0.0.1:55348/api/events?after_seq=0"
+  ],
+  "state_history": [
+    {
+      "status": "connecting",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "not_ready",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "off",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": null
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": null
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        3
+      ],
+      "transport": "polling"
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3
+      ],
+      "transport": "polling"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3
+      ],
+      "transport": "polling"
+    },
+    {
+      "status": "not_ready",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1
+      ],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1
+      ],
+      "transport": null
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1
+      ],
+      "transport": null
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "transport": "websocket"
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "transport": "polling"
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "transport": "polling"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "transport": "polling"
+    },
+    {
+      "status": "not_ready",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connecting",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [],
+      "transport": "websocket"
+    },
+    {
+      "status": "connected",
+      "runId": "height-recovery-20261115-01-test-restart-B",
+      "label": "MOCK",
+      "seq": [],
+      "transport": "websocket"
+    },
+    {
+      "status": "off",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    },
+    {
+      "status": "off",
+      "runId": null,
+      "label": "NOT_READY",
+      "seq": [],
+      "transport": null
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "original_head": "ef8f3ac2b49505d1ddebe3fdc05d6b7f2e8605bf",
+  "ci_original_head": {
+    "run_id": 43753188458,
+    "conclusion": "success",
+    "url": "https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/actions/runs/43753188458"
+  },
+  "original_existing_tests": {
+    "passed": 110,
+    "skipped_ros": 2
+  },
+  "original_independent_regressions": {
+    "failed_late_event": 1,
+    "passed_xyz_map_source": 1
+  },
+  "new_targeted_cases_on_original_head": {
+    "failed_expected": 4
+  },
+  "fixed_focal_tests": {
+    "passed": 114,
+    "skipped_ros": 2
+  },
+  "fixed_independent_regressions": {
+    "passed": 2
+  },
+  "actual_consumer_fixed": {
+    "status": "PASS",
+    "groups": 5,
+    "dynamic_terrain_meta": true,
+    "directory": "C:\\Users\\User\\.codex\\worktrees\\closure-height-reconciliation\\Hackt\u00f3n NASA\\.local\\pr44-review\\consumer-fixed\\cut-fixed-qdb01fi3",
+    "validation_sha256": "a22457d32fca9c31bec5dde77e2dd028d383f91667a23f55e9d8df5dcdd9e262"
+  },
+  "fixed_app_sha256": "3f2ceb9a674b496e79d057c822a0dabd43815bd70ee010ef8d8795277f150f61",
+  "fixed_test_sha256": "310266599ccfc4588988af830cde24aa8d8c2545b7e97dd5a02f82558a9019cc",
+  "scope": "No ROS graph, no goals, no LIVE/scientific acceptance, no commits/push by reviewing agent."
+}

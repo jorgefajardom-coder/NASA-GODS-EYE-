@@ -1013,3 +1013,7 @@ The same PR39 refresh restricts final-story terrain geometry to explicitly illus
 ## PR42 delivery integration continuation — 15 November 2026
 
 OpenAI Codex assisted the metadata/hash continuation and read-only native Wiki verification registered as `pr42_delivery_integration_reconciliation`. The owner explicitly approved PR39/42 merge and native synchronization; native82534db was already published with recorded authorization and is preserved. All39 media match the reviewed edition and18new endpoints return HTTP200. Preparation-time editorial flags remain historical; this continuation does not confer scientific-model, mission or final-delivery acceptance. No new media or observations were generated.
+
+## PR44 late-event stream reconciliation — 15 November 2026
+
+OpenAI Codex assisted a minimal gateway event-stream correction, four real WebSocket regressions, actual-client validation and review handoff registered as `pr44_late_event_stream_reconciliation`. The original high-water filter lost a unique event2 after event3; a fixed resume floor plus emitted-sequence set preserves late events and deduplicates backlog/queue overlap. Tests use synthetic envelopes or the existing public MOCK replay, not new NASA observations or a new mission. Original contributor history, declarations and schema1.0.0 are retained. Final owner merge approval and organizer endorsement remain separate gates.

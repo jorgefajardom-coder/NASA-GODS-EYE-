@@ -321,7 +321,13 @@ shown. The route's agent kind is read from `MissionState.agents`.
   to start with `NOT_READY: LIVE_BACKEND_UNAVAILABLE`. The field is an optional
   addition to JSON `1.0.0`; a client that does not find it must show `UNKNOWN`.
 - WebSocket messages carry `type`: `"event"` with an `event` object
-  (`MissionEvent`) or `"state"` with a `state` object (`MissionState`).
+  (`MissionEvent`), `"state"` with a `state` object (`MissionState`), or
+  `"terrain_meta"` with a `terrain_meta` object (`TerrainMeta`) when a newer
+  map version of the run arrives (the same type a timeline record uses, section 7;
+  an optional addition to JSON `1.0.0`, so a client may ignore it). Each event is
+  sent once per connection, even when it is both in the backlog and live. A
+  client that falls more than 1000 messages behind is closed with code 1013 and
+  resumes with `after_seq`.
 - **No active run.** Until a mission state of the configured run has been
   received, the gateway invents no run, map, clock or mode. It answers with
   the inactive envelope below: `GET /api/health` with HTTP 200 plus

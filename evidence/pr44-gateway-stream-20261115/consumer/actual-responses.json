@@ -1,0 +1,2894 @@
+{
+  "source": {
+    "base": "http://127.0.0.1:55348",
+    "mode": "replay-fed MOCK test; no ROS graph",
+    "source_run_id": "height-recovery-20261115-01",
+    "restart_run_id": "height-recovery-20261115-01-test-restart-B",
+    "restart_identity": "Synthetic identity clone of same public recorded payloads, not another mission execution",
+    "head": "ef8f3ac2b49505d1ddebe3fdc05d6b7f2e8605bf",
+    "source_tree_dirty": true,
+    "ai_usage": {
+      "ai_assisted": true,
+      "tool": "OpenAI Codex",
+      "scope": "Local producer/consumer validation harness; source mission records are unchanged public MOCK replay"
+    },
+    "source_roots": {
+      "src/mge_gateway/mge_gateway/app.py": "C:\\Users\\User\\.codex\\worktrees\\pr37-science-corrections\\Hacktón NASA",
+      "src/mge_gateway/mge_gateway/store.py": "C:\\Users\\User\\.codex\\worktrees\\pr37-science-corrections\\Hacktón NASA",
+      "src/mge_gateway/mge_gateway/ros_bridge.py": "C:\\Users\\User\\.codex\\worktrees\\pr37-science-corrections\\Hacktón NASA",
+      "web/src/lib/gatewayLive.ts": "C:\\Users\\User\\.codex\\worktrees\\closure-height-reconciliation\\Hacktón NASA",
+      "web/src/lib/provenance.ts": "C:\\Users\\User\\.codex\\worktrees\\closure-height-reconciliation\\Hacktón NASA"
+    },
+    "source_sha256": {
+      "src/mge_gateway/mge_gateway/app.py": "3f2ceb9a674b496e79d057c822a0dabd43815bd70ee010ef8d8795277f150f61",
+      "src/mge_gateway/mge_gateway/store.py": "8895c9e0d263e86e947385473188d91997b359f685ead14bfe6553412b8a4432",
+      "src/mge_gateway/mge_gateway/ros_bridge.py": "8176e63474eaaac5cfa44c8315d4cf6d7e8f4e09bd54f85911a9e0649034c785",
+      "web/src/lib/gatewayLive.ts": "c8dfee78335621ba982597828306051f3802c1680bd711f68e8b5a8f4f60abd6",
+      "web/src/lib/provenance.ts": "31a5dfbcae84b592f13350d958485c86878efe9072aabfb6d6ff98c990e8550b"
+    },
+    "public_package_sha256": {
+      "manifest.json": "9d482349f04486cdd282718ee60604a47a55345f90718dbe8def7c9db28f1333",
+      "public_rasters.json": "dd55524231b3bb8b4f277ac2d2d9f7f513f1ba50bb148ed018188ac89f4c91c7",
+      "snapshot.json": "27bdf34f96d4f2075ac0aef501bdf13de2c556d1e43facf0082c3d719a0a806d",
+      "timeline.jsonl": "d3ff67332252e1a38513c33be177d4e535b395d71fd1ad3f035a7b75f6b46cb5"
+    },
+    "expected_state": {
+      "header": {
+        "stamp": {
+          "sec": 1794765097,
+          "nanosec": 666376221
+        },
+        "frame_id": "map"
+      },
+      "run_id": "height-recovery-20261115-01",
+      "last_event_seq": 4,
+      "mission_state": "READY",
+      "reason_code": "",
+      "base": {
+        "x": -14,
+        "y": -14,
+        "z": 0
+      },
+      "primary_goal": {
+        "x": 14,
+        "y": 14,
+        "z": 0
+      },
+      "primary_agent_id": "human_1",
+      "active_task_id": "primary",
+      "active_task_kind": "primary",
+      "active_task_state": "",
+      "map_version": 1,
+      "route_id": "route-ce12f05f289ce8034fd0fb71",
+      "active_route": {
+        "header": {
+          "stamp": {
+            "sec": 1794765096,
+            "nanosec": 68884329
+          },
+          "frame_id": "map"
+        },
+        "run_id": "height-recovery-20261115-01",
+        "request_id": "estimated-initial#v1.1",
+        "route_id": "route-ce12f05f289ce8034fd0fb71",
+        "agent_id": "human_1",
+        "mode": "FAST",
+        "map_version_used": 1,
+        "status": "FEASIBLE",
+        "reason_code": "FEASIBLE_UNDER_MODEL",
+        "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+        "outbound_path": [
+          {
+            "x": -14,
+            "y": -14,
+            "z": -2571.199462890625
+          },
+          {
+            "x": -10,
+            "y": -10,
+            "z": -2571.370361328125
+          },
+          {
+            "x": -6,
+            "y": -6,
+            "z": -2571.56005859375
+          },
+          {
+            "x": -2,
+            "y": -2,
+            "z": -2571.76904296875
+          },
+          {
+            "x": 2,
+            "y": 2,
+            "z": -2571.99755859375
+          },
+          {
+            "x": 6,
+            "y": 6,
+            "z": -2572.22802734375
+          },
+          {
+            "x": 10,
+            "y": 10,
+            "z": -2572.41015625
+          },
+          {
+            "x": 14,
+            "y": 14,
+            "z": -2572.591552734375
+          }
+        ],
+        "return_path": [
+          {
+            "x": 14,
+            "y": 14,
+            "z": -2572.591552734375
+          },
+          {
+            "x": 10,
+            "y": 10,
+            "z": -2572.41015625
+          },
+          {
+            "x": 6,
+            "y": 6,
+            "z": -2572.22802734375
+          },
+          {
+            "x": 2,
+            "y": 2,
+            "z": -2571.99755859375
+          },
+          {
+            "x": -2,
+            "y": -2,
+            "z": -2571.76904296875
+          },
+          {
+            "x": -6,
+            "y": -6,
+            "z": -2571.56005859375
+          },
+          {
+            "x": -10,
+            "y": -10,
+            "z": -2571.370361328125
+          },
+          {
+            "x": -14,
+            "y": -14,
+            "z": -2571.199462890625
+          }
+        ],
+        "travel_time_s": 91.14605712890625,
+        "energy_est_wh": 16.684886932373047,
+        "oxygen_est_l": 0.9114605784416199,
+        "min_clearance_m": 49.650001525878906,
+        "reserve_time_s": 14308.853515625,
+        "reserve_wh": 983.3151245117188,
+        "reserve_oxygen_l": 999.0885620117188
+      },
+      "agents": [
+        {
+          "header": {
+            "stamp": {
+              "sec": 1794765097,
+              "nanosec": 633303263
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "agent_id": "drone_1",
+          "agent_kind": "DRONE",
+          "pose": {
+            "position": {
+              "x": -10,
+              "y": -14,
+              "z": -2571.231201171875
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            }
+          },
+          "velocity": {
+            "linear": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angular": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "mode": "IDLE",
+          "time_remaining_s": 600,
+          "energy_remaining_wh": 100,
+          "oxygen_remaining_l": null,
+          "confidence": 1
+        },
+        {
+          "header": {
+            "stamp": {
+              "sec": 1794765097,
+              "nanosec": 633303263
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "agent_id": "human_1",
+          "agent_kind": "HUMAN",
+          "pose": {
+            "position": {
+              "x": -14,
+              "y": -14,
+              "z": -2571.199462890625
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            }
+          },
+          "velocity": {
+            "linear": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angular": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "mode": "IDLE",
+          "time_remaining_s": 14400,
+          "energy_remaining_wh": 1000,
+          "oxygen_remaining_l": 1000,
+          "confidence": 1
+        },
+        {
+          "header": {
+            "stamp": {
+              "sec": 1794765097,
+              "nanosec": 633303263
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "agent_id": "rover_1",
+          "agent_kind": "ROVER",
+          "pose": {
+            "position": {
+              "x": -14,
+              "y": -10,
+              "z": -2571.32958984375
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            }
+          },
+          "velocity": {
+            "linear": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angular": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "mode": "IDLE",
+          "time_remaining_s": 14400,
+          "energy_remaining_wh": 2000,
+          "oxygen_remaining_l": null,
+          "confidence": 1
+        }
+      ]
+    },
+    "expected_initial_state": {
+      "header": {
+        "stamp": {
+          "sec": 1794765096,
+          "nanosec": 952641517
+        },
+        "frame_id": "map"
+      },
+      "run_id": "height-recovery-20261115-01",
+      "last_event_seq": 0,
+      "mission_state": "IDLE",
+      "reason_code": "",
+      "base": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "primary_goal": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "primary_agent_id": "",
+      "active_task_id": "",
+      "active_task_kind": "",
+      "active_task_state": "",
+      "map_version": 1,
+      "route_id": "",
+      "active_route": {
+        "header": {
+          "stamp": {
+            "sec": 0,
+            "nanosec": 0
+          },
+          "frame_id": ""
+        },
+        "run_id": "",
+        "request_id": "",
+        "route_id": "",
+        "agent_id": "",
+        "mode": "",
+        "map_version_used": 0,
+        "status": "",
+        "reason_code": "",
+        "detail": "",
+        "outbound_path": [],
+        "return_path": [],
+        "travel_time_s": 0,
+        "energy_est_wh": 0,
+        "oxygen_est_l": 0,
+        "min_clearance_m": 0,
+        "reserve_time_s": 0,
+        "reserve_wh": 0,
+        "reserve_oxygen_l": 0
+      },
+      "agents": [
+        {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 933341731
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "agent_id": "drone_1",
+          "agent_kind": "DRONE",
+          "pose": {
+            "position": {
+              "x": -10,
+              "y": -14,
+              "z": -2571.231201171875
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            }
+          },
+          "velocity": {
+            "linear": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angular": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "mode": "IDLE",
+          "time_remaining_s": 600,
+          "energy_remaining_wh": 100,
+          "oxygen_remaining_l": null,
+          "confidence": 1
+        },
+        {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 933341731
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "agent_id": "human_1",
+          "agent_kind": "HUMAN",
+          "pose": {
+            "position": {
+              "x": -14,
+              "y": -14,
+              "z": -2571.199462890625
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            }
+          },
+          "velocity": {
+            "linear": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angular": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "mode": "IDLE",
+          "time_remaining_s": 14400,
+          "energy_remaining_wh": 1000,
+          "oxygen_remaining_l": 1000,
+          "confidence": 1
+        },
+        {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 933341731
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "agent_id": "rover_1",
+          "agent_kind": "ROVER",
+          "pose": {
+            "position": {
+              "x": -14,
+              "y": -10,
+              "z": -2571.32958984375
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            }
+          },
+          "velocity": {
+            "linear": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angular": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "mode": "IDLE",
+          "time_remaining_s": 14400,
+          "energy_remaining_wh": 2000,
+          "oxygen_remaining_l": null,
+          "confidence": 1
+        }
+      ]
+    },
+    "expected_meta": {
+      "header": {
+        "stamp": {
+          "sec": 1794765096,
+          "nanosec": 68884329
+        },
+        "frame_id": "map"
+      },
+      "run_id": "height-recovery-20261115-01",
+      "dataset_id": "jezero_mvp",
+      "map_version": 1,
+      "origin_x_m": -64,
+      "origin_y_m": -64,
+      "resolution_m": 4,
+      "rows": 32,
+      "cols": 32,
+      "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+      "origin_lat_deg": 18.45,
+      "origin_lon_deg": 77.45,
+      "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+      "nodata_value": null,
+      "sources": [
+        "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+        "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+        "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+      ],
+      "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+    }
+  },
+  "responses": [
+    {
+      "url": "http://127.0.0.1:55348/api/health",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": null,
+        "mode": null,
+        "map_version": null,
+        "timestamp_sim_s": null,
+        "status": "NOT_READY",
+        "reason_code": "NO_ACTIVE_RUN",
+        "ros_connected": false,
+        "terrain_meta_received": false
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/health",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "status": "READY",
+        "ros_connected": true,
+        "terrain_meta_received": true
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/manifest",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "source_mode": "MOCK",
+        "terrain_meta": {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 68884329
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "dataset_id": "jezero_mvp",
+          "map_version": 1,
+          "origin_x_m": -64,
+          "origin_y_m": -64,
+          "resolution_m": 4,
+          "rows": 32,
+          "cols": 32,
+          "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+          "origin_lat_deg": 18.45,
+          "origin_lon_deg": 77.45,
+          "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+          "nodata_value": null,
+          "sources": [
+            "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+            "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+            "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+          ],
+          "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+        },
+        "agents": [
+          {
+            "agent_id": "drone_1",
+            "agent_kind": "DRONE"
+          },
+          {
+            "agent_id": "human_1",
+            "agent_kind": "HUMAN"
+          },
+          {
+            "agent_id": "rover_1",
+            "agent_kind": "ROVER"
+          }
+        ],
+        "endpoints": {
+          "snapshot": "/api/run/height-recovery-20261115-01/snapshot",
+          "events": "/api/run/height-recovery-20261115-01/events",
+          "goal": "/api/mission/goal",
+          "websocket": "/api/events"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01/snapshot",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "mission_state": {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 952641517
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "last_event_seq": 0,
+          "mission_state": "IDLE",
+          "reason_code": "",
+          "base": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "primary_goal": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "primary_agent_id": "",
+          "active_task_id": "",
+          "active_task_kind": "",
+          "active_task_state": "",
+          "map_version": 1,
+          "route_id": "",
+          "active_route": {
+            "header": {
+              "stamp": {
+                "sec": 0,
+                "nanosec": 0
+              },
+              "frame_id": ""
+            },
+            "run_id": "",
+            "request_id": "",
+            "route_id": "",
+            "agent_id": "",
+            "mode": "",
+            "map_version_used": 0,
+            "status": "",
+            "reason_code": "",
+            "detail": "",
+            "outbound_path": [],
+            "return_path": [],
+            "travel_time_s": 0,
+            "energy_est_wh": 0,
+            "oxygen_est_l": 0,
+            "min_clearance_m": 0,
+            "reserve_time_s": 0,
+            "reserve_wh": 0,
+            "reserve_oxygen_l": 0
+          },
+          "agents": [
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765096,
+                  "nanosec": 933341731
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01",
+              "agent_id": "drone_1",
+              "agent_kind": "DRONE",
+              "pose": {
+                "position": {
+                  "x": -10,
+                  "y": -14,
+                  "z": -2571.231201171875
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 600,
+              "energy_remaining_wh": 100,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765096,
+                  "nanosec": 933341731
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01",
+              "agent_id": "human_1",
+              "agent_kind": "HUMAN",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -14,
+                  "z": -2571.199462890625
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 1000,
+              "oxygen_remaining_l": 1000,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765096,
+                  "nanosec": 933341731
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01",
+              "agent_id": "rover_1",
+              "agent_kind": "ROVER",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -10,
+                  "z": -2571.32958984375
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 2000,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            }
+          ]
+        },
+        "terrain_meta": {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 68884329
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "dataset_id": "jezero_mvp",
+          "map_version": 1,
+          "origin_x_m": -64,
+          "origin_y_m": -64,
+          "resolution_m": 4,
+          "rows": 32,
+          "cols": 32,
+          "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+          "origin_lat_deg": 18.45,
+          "origin_lon_deg": 77.45,
+          "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+          "nodata_value": null,
+          "sources": [
+            "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+            "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+            "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+          ],
+          "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+        },
+        "events": []
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/health",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "status": "READY",
+        "ros_connected": true,
+        "terrain_meta_received": true
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/manifest",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "source_mode": "MOCK",
+        "terrain_meta": {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 68884329
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "dataset_id": "jezero_mvp",
+          "map_version": 1,
+          "origin_x_m": -64,
+          "origin_y_m": -64,
+          "resolution_m": 4,
+          "rows": 32,
+          "cols": 32,
+          "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+          "origin_lat_deg": 18.45,
+          "origin_lon_deg": 77.45,
+          "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+          "nodata_value": null,
+          "sources": [
+            "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+            "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+            "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+          ],
+          "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+        },
+        "agents": [
+          {
+            "agent_id": "drone_1",
+            "agent_kind": "DRONE"
+          },
+          {
+            "agent_id": "human_1",
+            "agent_kind": "HUMAN"
+          },
+          {
+            "agent_id": "rover_1",
+            "agent_kind": "ROVER"
+          }
+        ],
+        "endpoints": {
+          "snapshot": "/api/run/height-recovery-20261115-01/snapshot",
+          "events": "/api/run/height-recovery-20261115-01/events",
+          "goal": "/api/mission/goal",
+          "websocket": "/api/events"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01/snapshot",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "mission_state": {
+          "header": {
+            "stamp": {
+              "sec": 1794765097,
+              "nanosec": 666376221
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "last_event_seq": 4,
+          "mission_state": "READY",
+          "reason_code": "",
+          "base": {
+            "x": -14,
+            "y": -14,
+            "z": 0
+          },
+          "primary_goal": {
+            "x": 14,
+            "y": 14,
+            "z": 0
+          },
+          "primary_agent_id": "human_1",
+          "active_task_id": "primary",
+          "active_task_kind": "primary",
+          "active_task_state": "",
+          "map_version": 1,
+          "route_id": "route-ce12f05f289ce8034fd0fb71",
+          "active_route": {
+            "header": {
+              "stamp": {
+                "sec": 1794765096,
+                "nanosec": 68884329
+              },
+              "frame_id": "map"
+            },
+            "run_id": "height-recovery-20261115-01",
+            "request_id": "estimated-initial#v1.1",
+            "route_id": "route-ce12f05f289ce8034fd0fb71",
+            "agent_id": "human_1",
+            "mode": "FAST",
+            "map_version_used": 1,
+            "status": "FEASIBLE",
+            "reason_code": "FEASIBLE_UNDER_MODEL",
+            "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+            "outbound_path": [
+              {
+                "x": -14,
+                "y": -14,
+                "z": -2571.199462890625
+              },
+              {
+                "x": -10,
+                "y": -10,
+                "z": -2571.370361328125
+              },
+              {
+                "x": -6,
+                "y": -6,
+                "z": -2571.56005859375
+              },
+              {
+                "x": -2,
+                "y": -2,
+                "z": -2571.76904296875
+              },
+              {
+                "x": 2,
+                "y": 2,
+                "z": -2571.99755859375
+              },
+              {
+                "x": 6,
+                "y": 6,
+                "z": -2572.22802734375
+              },
+              {
+                "x": 10,
+                "y": 10,
+                "z": -2572.41015625
+              },
+              {
+                "x": 14,
+                "y": 14,
+                "z": -2572.591552734375
+              }
+            ],
+            "return_path": [
+              {
+                "x": 14,
+                "y": 14,
+                "z": -2572.591552734375
+              },
+              {
+                "x": 10,
+                "y": 10,
+                "z": -2572.41015625
+              },
+              {
+                "x": 6,
+                "y": 6,
+                "z": -2572.22802734375
+              },
+              {
+                "x": 2,
+                "y": 2,
+                "z": -2571.99755859375
+              },
+              {
+                "x": -2,
+                "y": -2,
+                "z": -2571.76904296875
+              },
+              {
+                "x": -6,
+                "y": -6,
+                "z": -2571.56005859375
+              },
+              {
+                "x": -10,
+                "y": -10,
+                "z": -2571.370361328125
+              },
+              {
+                "x": -14,
+                "y": -14,
+                "z": -2571.199462890625
+              }
+            ],
+            "travel_time_s": 91.14605712890625,
+            "energy_est_wh": 16.684886932373047,
+            "oxygen_est_l": 0.9114605784416199,
+            "min_clearance_m": 49.650001525878906,
+            "reserve_time_s": 14308.853515625,
+            "reserve_wh": 983.3151245117188,
+            "reserve_oxygen_l": 999.0885620117188
+          },
+          "agents": [
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765097,
+                  "nanosec": 633303263
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01",
+              "agent_id": "drone_1",
+              "agent_kind": "DRONE",
+              "pose": {
+                "position": {
+                  "x": -10,
+                  "y": -14,
+                  "z": -2571.231201171875
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 600,
+              "energy_remaining_wh": 100,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765097,
+                  "nanosec": 633303263
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01",
+              "agent_id": "human_1",
+              "agent_kind": "HUMAN",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -14,
+                  "z": -2571.199462890625
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 1000,
+              "oxygen_remaining_l": 1000,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765097,
+                  "nanosec": 633303263
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01",
+              "agent_id": "rover_1",
+              "agent_kind": "ROVER",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -10,
+                  "z": -2571.32958984375
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 2000,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            }
+          ]
+        },
+        "terrain_meta": {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 68884329
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "dataset_id": "jezero_mvp",
+          "map_version": 1,
+          "origin_x_m": -64,
+          "origin_y_m": -64,
+          "resolution_m": 4,
+          "rows": 32,
+          "cols": 32,
+          "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+          "origin_lat_deg": 18.45,
+          "origin_lon_deg": 77.45,
+          "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+          "nodata_value": null,
+          "sources": [
+            "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+            "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+            "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+          ],
+          "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+        },
+        "events": [
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765097,
+                "nanosec": 657917608
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e1",
+            "seq": 1,
+            "run_id": "height-recovery-20261115-01",
+            "causality_id": "estimated-initial",
+            "event_type": "GOAL_ACCEPTED",
+            "task_id": "",
+            "agent_id": "human_1",
+            "map_version": 1,
+            "route_id": "",
+            "previous_state": "",
+            "new_state": "",
+            "reason_code": "ACCEPTED",
+            "detail": "Goal accepted, planning."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765097,
+                "nanosec": 666195591
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e3",
+            "seq": 3,
+            "run_id": "height-recovery-20261115-01",
+            "causality_id": "estimated-initial#v1.1",
+            "event_type": "ROUTE_PUBLISHED",
+            "task_id": "",
+            "agent_id": "human_1",
+            "map_version": 1,
+            "route_id": "route-ce12f05f289ce8034fd0fb71",
+            "previous_state": "",
+            "new_state": "",
+            "reason_code": "FEASIBLE_UNDER_MODEL",
+            "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety."
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01/snapshot",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01",
+        "mode": "LIVE",
+        "map_version": 2,
+        "timestamp_sim_s": 1794765209.952682,
+        "mission_state": {
+          "header": {
+            "stamp": {
+              "sec": 1794765097,
+              "nanosec": 666376221
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "last_event_seq": 4,
+          "mission_state": "READY",
+          "reason_code": "",
+          "base": {
+            "x": -14,
+            "y": -14,
+            "z": 0
+          },
+          "primary_goal": {
+            "x": 14,
+            "y": 14,
+            "z": 0
+          },
+          "primary_agent_id": "human_1",
+          "active_task_id": "primary",
+          "active_task_kind": "primary",
+          "active_task_state": "",
+          "map_version": 1,
+          "route_id": "route-ce12f05f289ce8034fd0fb71",
+          "active_route": {
+            "header": {
+              "stamp": {
+                "sec": 1794765096,
+                "nanosec": 68884329
+              },
+              "frame_id": "map"
+            },
+            "run_id": "height-recovery-20261115-01",
+            "request_id": "estimated-initial#v1.1",
+            "route_id": "route-ce12f05f289ce8034fd0fb71",
+            "agent_id": "human_1",
+            "mode": "FAST",
+            "map_version_used": 1,
+            "status": "FEASIBLE",
+            "reason_code": "FEASIBLE_UNDER_MODEL",
+            "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+            "outbound_path": [
+              {
+                "x": -14,
+                "y": -14,
+                "z": -2571.199462890625
+              },
+              {
+                "x": -10,
+                "y": -10,
+                "z": -2571.370361328125
+              },
+              {
+                "x": -6,
+                "y": -6,
+                "z": -2571.56005859375
+              },
+              {
+                "x": -2,
+                "y": -2,
+                "z": -2571.76904296875
+              },
+              {
+                "x": 2,
+                "y": 2,
+                "z": -2571.99755859375
+              },
+              {
+                "x": 6,
+                "y": 6,
+                "z": -2572.22802734375
+              },
+              {
+                "x": 10,
+                "y": 10,
+                "z": -2572.41015625
+              },
+              {
+                "x": 14,
+                "y": 14,
+                "z": -2572.591552734375
+              }
+            ],
+            "return_path": [
+              {
+                "x": 14,
+                "y": 14,
+                "z": -2572.591552734375
+              },
+              {
+                "x": 10,
+                "y": 10,
+                "z": -2572.41015625
+              },
+              {
+                "x": 6,
+                "y": 6,
+                "z": -2572.22802734375
+              },
+              {
+                "x": 2,
+                "y": 2,
+                "z": -2571.99755859375
+              },
+              {
+                "x": -2,
+                "y": -2,
+                "z": -2571.76904296875
+              },
+              {
+                "x": -6,
+                "y": -6,
+                "z": -2571.56005859375
+              },
+              {
+                "x": -10,
+                "y": -10,
+                "z": -2571.370361328125
+              },
+              {
+                "x": -14,
+                "y": -14,
+                "z": -2571.199462890625
+              }
+            ],
+            "travel_time_s": 91.14605712890625,
+            "energy_est_wh": 16.684886932373047,
+            "oxygen_est_l": 0.9114605784416199,
+            "min_clearance_m": 49.650001525878906,
+            "reserve_time_s": 14308.853515625,
+            "reserve_wh": 983.3151245117188,
+            "reserve_oxygen_l": 999.0885620117188
+          },
+          "agents": [
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765097,
+                  "nanosec": 633303263
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01",
+              "agent_id": "drone_1",
+              "agent_kind": "DRONE",
+              "pose": {
+                "position": {
+                  "x": -10,
+                  "y": -14,
+                  "z": -2571.231201171875
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 600,
+              "energy_remaining_wh": 100,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765097,
+                  "nanosec": 633303263
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01",
+              "agent_id": "human_1",
+              "agent_kind": "HUMAN",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -14,
+                  "z": -2571.199462890625
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 1000,
+              "oxygen_remaining_l": 1000,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765097,
+                  "nanosec": 633303263
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01",
+              "agent_id": "rover_1",
+              "agent_kind": "ROVER",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -10,
+                  "z": -2571.32958984375
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 2000,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            }
+          ]
+        },
+        "terrain_meta": {
+          "header": {
+            "stamp": {
+              "sec": 1794765100,
+              "nanosec": 89905971
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01",
+          "dataset_id": "jezero_mvp",
+          "map_version": 2,
+          "origin_x_m": -64,
+          "origin_y_m": -64,
+          "resolution_m": 4,
+          "rows": 32,
+          "cols": 32,
+          "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+          "origin_lat_deg": 18.45,
+          "origin_lon_deg": 77.45,
+          "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+          "nodata_value": null,
+          "sources": [
+            "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+            "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+            "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+          ],
+          "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+        },
+        "events": [
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765097,
+                "nanosec": 657917608
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e1",
+            "seq": 1,
+            "run_id": "height-recovery-20261115-01",
+            "causality_id": "estimated-initial",
+            "event_type": "GOAL_ACCEPTED",
+            "task_id": "",
+            "agent_id": "human_1",
+            "map_version": 1,
+            "route_id": "",
+            "previous_state": "",
+            "new_state": "",
+            "reason_code": "ACCEPTED",
+            "detail": "Goal accepted, planning."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765097,
+                "nanosec": 658049215
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e2",
+            "seq": 2,
+            "run_id": "height-recovery-20261115-01",
+            "causality_id": "estimated-initial",
+            "event_type": "MISSION_STATE_CHANGED",
+            "task_id": "",
+            "agent_id": "",
+            "map_version": 1,
+            "route_id": "",
+            "previous_state": "IDLE",
+            "new_state": "PLANNING",
+            "reason_code": "",
+            "detail": "Mission state IDLE -> PLANNING."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765097,
+                "nanosec": 666195591
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e3",
+            "seq": 3,
+            "run_id": "height-recovery-20261115-01",
+            "causality_id": "estimated-initial#v1.1",
+            "event_type": "ROUTE_PUBLISHED",
+            "task_id": "",
+            "agent_id": "human_1",
+            "map_version": 1,
+            "route_id": "route-ce12f05f289ce8034fd0fb71",
+            "previous_state": "",
+            "new_state": "",
+            "reason_code": "FEASIBLE_UNDER_MODEL",
+            "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety."
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01/snapshot",
+      "status": 503,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01",
+        "mode": null,
+        "map_version": null,
+        "timestamp_sim_s": null,
+        "status": "NOT_READY",
+        "reason_code": "NO_ACTIVE_RUN"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/health",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01-test-restart-B",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "status": "READY",
+        "ros_connected": true,
+        "terrain_meta_received": true
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/manifest",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01-test-restart-B",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "source_mode": "MOCK",
+        "terrain_meta": {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 68884329
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01-test-restart-B",
+          "dataset_id": "jezero_mvp",
+          "map_version": 1,
+          "origin_x_m": -64,
+          "origin_y_m": -64,
+          "resolution_m": 4,
+          "rows": 32,
+          "cols": 32,
+          "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+          "origin_lat_deg": 18.45,
+          "origin_lon_deg": 77.45,
+          "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+          "nodata_value": null,
+          "sources": [
+            "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+            "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+            "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+          ],
+          "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+        },
+        "agents": [
+          {
+            "agent_id": "drone_1",
+            "agent_kind": "DRONE"
+          },
+          {
+            "agent_id": "human_1",
+            "agent_kind": "HUMAN"
+          },
+          {
+            "agent_id": "rover_1",
+            "agent_kind": "ROVER"
+          }
+        ],
+        "endpoints": {
+          "snapshot": "/api/run/height-recovery-20261115-01-test-restart-B/snapshot",
+          "events": "/api/run/height-recovery-20261115-01-test-restart-B/events",
+          "goal": "/api/mission/goal",
+          "websocket": "/api/events"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01-test-restart-B/snapshot",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01-test-restart-B",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "mission_state": {
+          "header": {
+            "stamp": {
+              "sec": 1794765097,
+              "nanosec": 666376221
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01-test-restart-B",
+          "last_event_seq": 4,
+          "mission_state": "READY",
+          "reason_code": "",
+          "base": {
+            "x": -14,
+            "y": -14,
+            "z": 0
+          },
+          "primary_goal": {
+            "x": 14,
+            "y": 14,
+            "z": 0
+          },
+          "primary_agent_id": "human_1",
+          "active_task_id": "primary",
+          "active_task_kind": "primary",
+          "active_task_state": "",
+          "map_version": 1,
+          "route_id": "route-ce12f05f289ce8034fd0fb71",
+          "active_route": {
+            "header": {
+              "stamp": {
+                "sec": 1794765096,
+                "nanosec": 68884329
+              },
+              "frame_id": "map"
+            },
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "request_id": "estimated-initial#v1.1",
+            "route_id": "route-ce12f05f289ce8034fd0fb71",
+            "agent_id": "human_1",
+            "mode": "FAST",
+            "map_version_used": 1,
+            "status": "FEASIBLE",
+            "reason_code": "FEASIBLE_UNDER_MODEL",
+            "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+            "outbound_path": [
+              {
+                "x": -14,
+                "y": -14,
+                "z": -2571.199462890625
+              },
+              {
+                "x": -10,
+                "y": -10,
+                "z": -2571.370361328125
+              },
+              {
+                "x": -6,
+                "y": -6,
+                "z": -2571.56005859375
+              },
+              {
+                "x": -2,
+                "y": -2,
+                "z": -2571.76904296875
+              },
+              {
+                "x": 2,
+                "y": 2,
+                "z": -2571.99755859375
+              },
+              {
+                "x": 6,
+                "y": 6,
+                "z": -2572.22802734375
+              },
+              {
+                "x": 10,
+                "y": 10,
+                "z": -2572.41015625
+              },
+              {
+                "x": 14,
+                "y": 14,
+                "z": -2572.591552734375
+              }
+            ],
+            "return_path": [
+              {
+                "x": 14,
+                "y": 14,
+                "z": -2572.591552734375
+              },
+              {
+                "x": 10,
+                "y": 10,
+                "z": -2572.41015625
+              },
+              {
+                "x": 6,
+                "y": 6,
+                "z": -2572.22802734375
+              },
+              {
+                "x": 2,
+                "y": 2,
+                "z": -2571.99755859375
+              },
+              {
+                "x": -2,
+                "y": -2,
+                "z": -2571.76904296875
+              },
+              {
+                "x": -6,
+                "y": -6,
+                "z": -2571.56005859375
+              },
+              {
+                "x": -10,
+                "y": -10,
+                "z": -2571.370361328125
+              },
+              {
+                "x": -14,
+                "y": -14,
+                "z": -2571.199462890625
+              }
+            ],
+            "travel_time_s": 91.14605712890625,
+            "energy_est_wh": 16.684886932373047,
+            "oxygen_est_l": 0.9114605784416199,
+            "min_clearance_m": 49.650001525878906,
+            "reserve_time_s": 14308.853515625,
+            "reserve_wh": 983.3151245117188,
+            "reserve_oxygen_l": 999.0885620117188
+          },
+          "agents": [
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765097,
+                  "nanosec": 633303263
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01-test-restart-B",
+              "agent_id": "drone_1",
+              "agent_kind": "DRONE",
+              "pose": {
+                "position": {
+                  "x": -10,
+                  "y": -14,
+                  "z": -2571.231201171875
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 600,
+              "energy_remaining_wh": 100,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765097,
+                  "nanosec": 633303263
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01-test-restart-B",
+              "agent_id": "human_1",
+              "agent_kind": "HUMAN",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -14,
+                  "z": -2571.199462890625
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 1000,
+              "oxygen_remaining_l": 1000,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765097,
+                  "nanosec": 633303263
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01-test-restart-B",
+              "agent_id": "rover_1",
+              "agent_kind": "ROVER",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -10,
+                  "z": -2571.32958984375
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 2000,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            }
+          ]
+        },
+        "terrain_meta": {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 68884329
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01-test-restart-B",
+          "dataset_id": "jezero_mvp",
+          "map_version": 1,
+          "origin_x_m": -64,
+          "origin_y_m": -64,
+          "resolution_m": 4,
+          "rows": 32,
+          "cols": 32,
+          "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+          "origin_lat_deg": 18.45,
+          "origin_lon_deg": 77.45,
+          "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+          "nodata_value": null,
+          "sources": [
+            "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+            "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+            "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+          ],
+          "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+        },
+        "events": [
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765097,
+                "nanosec": 657917608
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e1",
+            "seq": 1,
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "causality_id": "estimated-initial",
+            "event_type": "GOAL_ACCEPTED",
+            "task_id": "",
+            "agent_id": "human_1",
+            "map_version": 1,
+            "route_id": "",
+            "previous_state": "",
+            "new_state": "",
+            "reason_code": "ACCEPTED",
+            "detail": "Goal accepted, planning."
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01-test-restart-B/snapshot",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01-test-restart-B",
+        "mode": "LIVE",
+        "map_version": 2,
+        "timestamp_sim_s": 1794765209.952682,
+        "mission_state": {
+          "header": {
+            "stamp": {
+              "sec": 1794765100,
+              "nanosec": 161430148
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01-test-restart-B",
+          "last_event_seq": 9,
+          "mission_state": "READY",
+          "reason_code": "",
+          "base": {
+            "x": -14,
+            "y": -14,
+            "z": 0
+          },
+          "primary_goal": {
+            "x": 14,
+            "y": 14,
+            "z": 0
+          },
+          "primary_agent_id": "human_1",
+          "active_task_id": "primary",
+          "active_task_kind": "primary",
+          "active_task_state": "",
+          "map_version": 2,
+          "route_id": "route-9f73844a6c4a55b987093774",
+          "active_route": {
+            "header": {
+              "stamp": {
+                "sec": 1794765100,
+                "nanosec": 89905971
+              },
+              "frame_id": "map"
+            },
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "request_id": "estimated-initial#v2.1",
+            "route_id": "route-9f73844a6c4a55b987093774",
+            "agent_id": "human_1",
+            "mode": "FAST",
+            "map_version_used": 2,
+            "status": "FEASIBLE",
+            "reason_code": "FEASIBLE_UNDER_MODEL",
+            "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+            "outbound_path": [
+              {
+                "x": -12.525254753988559,
+                "y": -12.525254753988559,
+                "z": -2571.2624708051885
+              },
+              {
+                "x": -14,
+                "y": -14,
+                "z": -2571.199462890625
+              },
+              {
+                "x": -14,
+                "y": -10,
+                "z": -2571.32958984375
+              },
+              {
+                "x": -14,
+                "y": -6,
+                "z": -2571.45947265625
+              },
+              {
+                "x": -10,
+                "y": -2,
+                "z": -2571.648681640625
+              },
+              {
+                "x": -10,
+                "y": 2,
+                "z": -2571.787841796875
+              },
+              {
+                "x": -6,
+                "y": 6,
+                "z": -2571.993408203125
+              },
+              {
+                "x": -2,
+                "y": 10,
+                "z": -2572.17333984375
+              },
+              {
+                "x": 2,
+                "y": 10,
+                "z": -2572.255859375
+              },
+              {
+                "x": 6,
+                "y": 10,
+                "z": -2572.338623046875
+              },
+              {
+                "x": 10,
+                "y": 10,
+                "z": -2572.41015625
+              },
+              {
+                "x": 14,
+                "y": 14,
+                "z": -2572.591552734375
+              }
+            ],
+            "return_path": [
+              {
+                "x": 14,
+                "y": 14,
+                "z": -2572.591552734375
+              },
+              {
+                "x": 10,
+                "y": 10,
+                "z": -2572.41015625
+              },
+              {
+                "x": 6,
+                "y": 10,
+                "z": -2572.338623046875
+              },
+              {
+                "x": 2,
+                "y": 10,
+                "z": -2572.255859375
+              },
+              {
+                "x": -2,
+                "y": 10,
+                "z": -2572.17333984375
+              },
+              {
+                "x": -6,
+                "y": 6,
+                "z": -2571.993408203125
+              },
+              {
+                "x": -10,
+                "y": 2,
+                "z": -2571.787841796875
+              },
+              {
+                "x": -10,
+                "y": -2,
+                "z": -2571.648681640625
+              },
+              {
+                "x": -14,
+                "y": -6,
+                "z": -2571.45947265625
+              },
+              {
+                "x": -14,
+                "y": -10,
+                "z": -2571.32958984375
+              },
+              {
+                "x": -14,
+                "y": -14,
+                "z": -2571.199462890625
+              }
+            ],
+            "travel_time_s": 109.2181625366211,
+            "energy_est_wh": 19.9504337310791,
+            "oxygen_est_l": 1.0921815633773804,
+            "min_clearance_m": 0.321572870016098,
+            "reserve_time_s": 14288.3828125,
+            "reserve_wh": 979.6102294921875,
+            "reserve_oxygen_l": 998.8838500976562
+          },
+          "agents": [
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765100,
+                  "nanosec": 133115153
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01-test-restart-B",
+              "agent_id": "drone_1",
+              "agent_kind": "DRONE",
+              "pose": {
+                "position": {
+                  "x": -10,
+                  "y": -14,
+                  "z": -2571.231201171875
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 600,
+              "energy_remaining_wh": 100,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765100,
+                  "nanosec": 133115153
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01-test-restart-B",
+              "agent_id": "human_1",
+              "agent_kind": "HUMAN",
+              "pose": {
+                "position": {
+                  "x": -12.525254753988559,
+                  "y": -12.525254753988559,
+                  "z": -2571.2624708051885
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "HALTED",
+              "time_remaining_s": 14397.6005859375,
+              "energy_remaining_wh": 999.5606689453125,
+              "oxygen_remaining_l": 999.9760131835938,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765100,
+                  "nanosec": 133115153
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01-test-restart-B",
+              "agent_id": "rover_1",
+              "agent_kind": "ROVER",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -10,
+                  "z": -2571.32958984375
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 2000,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            }
+          ]
+        },
+        "terrain_meta": {
+          "header": {
+            "stamp": {
+              "sec": 1794765100,
+              "nanosec": 89905971
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01-test-restart-B",
+          "dataset_id": "jezero_mvp",
+          "map_version": 2,
+          "origin_x_m": -64,
+          "origin_y_m": -64,
+          "resolution_m": 4,
+          "rows": 32,
+          "cols": 32,
+          "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+          "origin_lat_deg": 18.45,
+          "origin_lon_deg": 77.45,
+          "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+          "nodata_value": null,
+          "sources": [
+            "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+            "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+            "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+          ],
+          "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+        },
+        "events": [
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765097,
+                "nanosec": 657917608
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e1",
+            "seq": 1,
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "causality_id": "estimated-initial",
+            "event_type": "GOAL_ACCEPTED",
+            "task_id": "",
+            "agent_id": "human_1",
+            "map_version": 1,
+            "route_id": "",
+            "previous_state": "",
+            "new_state": "",
+            "reason_code": "ACCEPTED",
+            "detail": "Goal accepted, planning."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765097,
+                "nanosec": 658049215
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e2",
+            "seq": 2,
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "causality_id": "estimated-initial",
+            "event_type": "MISSION_STATE_CHANGED",
+            "task_id": "",
+            "agent_id": "",
+            "map_version": 1,
+            "route_id": "",
+            "previous_state": "IDLE",
+            "new_state": "PLANNING",
+            "reason_code": "",
+            "detail": "Mission state IDLE -> PLANNING."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765097,
+                "nanosec": 666195591
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e3",
+            "seq": 3,
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "causality_id": "estimated-initial#v1.1",
+            "event_type": "ROUTE_PUBLISHED",
+            "task_id": "",
+            "agent_id": "human_1",
+            "map_version": 1,
+            "route_id": "route-ce12f05f289ce8034fd0fb71",
+            "previous_state": "",
+            "new_state": "",
+            "reason_code": "FEASIBLE_UNDER_MODEL",
+            "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765097,
+                "nanosec": 666291585
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e4",
+            "seq": 4,
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "causality_id": "estimated-initial#v1.1",
+            "event_type": "MISSION_STATE_CHANGED",
+            "task_id": "",
+            "agent_id": "",
+            "map_version": 1,
+            "route_id": "",
+            "previous_state": "PLANNING",
+            "new_state": "READY",
+            "reason_code": "",
+            "detail": "Mission state PLANNING -> READY."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765100,
+                "nanosec": 91514915
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e5",
+            "seq": 5,
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "causality_id": "map-v2",
+            "event_type": "MAP_UPDATED",
+            "task_id": "",
+            "agent_id": "",
+            "map_version": 2,
+            "route_id": "",
+            "previous_state": "",
+            "new_state": "",
+            "reason_code": "",
+            "detail": "Map updated to version 2."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765100,
+                "nanosec": 91714270
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e6",
+            "seq": 6,
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "causality_id": "map-v2",
+            "event_type": "ROUTE_INVALIDATED",
+            "task_id": "",
+            "agent_id": "",
+            "map_version": 2,
+            "route_id": "route-ce12f05f289ce8034fd0fb71",
+            "previous_state": "",
+            "new_state": "",
+            "reason_code": "MAP_UPDATED",
+            "detail": "Route was computed on an older map version."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765100,
+                "nanosec": 91957626
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e7",
+            "seq": 7,
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "causality_id": "map-v2",
+            "event_type": "MISSION_STATE_CHANGED",
+            "task_id": "",
+            "agent_id": "",
+            "map_version": 2,
+            "route_id": "",
+            "previous_state": "READY",
+            "new_state": "REPLAN",
+            "reason_code": "MAP_UPDATED",
+            "detail": "Mission state READY -> REPLAN."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765100,
+                "nanosec": 161230567
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e8",
+            "seq": 8,
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "causality_id": "estimated-initial#v2.1",
+            "event_type": "ROUTE_PUBLISHED",
+            "task_id": "",
+            "agent_id": "human_1",
+            "map_version": 2,
+            "route_id": "route-9f73844a6c4a55b987093774",
+            "previous_state": "",
+            "new_state": "",
+            "reason_code": "FEASIBLE_UNDER_MODEL",
+            "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety."
+          },
+          {
+            "header": {
+              "stamp": {
+                "sec": 1794765100,
+                "nanosec": 161339338
+              },
+              "frame_id": ""
+            },
+            "event_id": "height-recovery-20261115-01-e9",
+            "seq": 9,
+            "run_id": "height-recovery-20261115-01-test-restart-B",
+            "causality_id": "estimated-initial#v2.1",
+            "event_type": "MISSION_STATE_CHANGED",
+            "task_id": "",
+            "agent_id": "",
+            "map_version": 2,
+            "route_id": "",
+            "previous_state": "REPLAN",
+            "new_state": "READY",
+            "reason_code": "",
+            "detail": "Mission state REPLAN -> READY."
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01-test-restart-B/snapshot",
+      "status": 503,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01-test-restart-B",
+        "mode": null,
+        "map_version": null,
+        "timestamp_sim_s": null,
+        "status": "NOT_READY",
+        "reason_code": "NO_ACTIVE_RUN"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/health",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01-test-restart-B",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "status": "READY",
+        "ros_connected": true,
+        "terrain_meta_received": true
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/manifest",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01-test-restart-B",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "source_mode": "MOCK",
+        "terrain_meta": {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 68884329
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01-test-restart-B",
+          "dataset_id": "jezero_mvp",
+          "map_version": 1,
+          "origin_x_m": -64,
+          "origin_y_m": -64,
+          "resolution_m": 4,
+          "rows": 32,
+          "cols": 32,
+          "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+          "origin_lat_deg": 18.45,
+          "origin_lon_deg": 77.45,
+          "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+          "nodata_value": null,
+          "sources": [
+            "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+            "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+            "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+          ],
+          "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+        },
+        "agents": [
+          {
+            "agent_id": "drone_1",
+            "agent_kind": "DRONE"
+          },
+          {
+            "agent_id": "human_1",
+            "agent_kind": "HUMAN"
+          },
+          {
+            "agent_id": "rover_1",
+            "agent_kind": "ROVER"
+          }
+        ],
+        "endpoints": {
+          "snapshot": "/api/run/height-recovery-20261115-01-test-restart-B/snapshot",
+          "events": "/api/run/height-recovery-20261115-01-test-restart-B/events",
+          "goal": "/api/mission/goal",
+          "websocket": "/api/events"
+        }
+      }
+    },
+    {
+      "url": "http://127.0.0.1:55348/api/run/height-recovery-20261115-01-test-restart-B/snapshot",
+      "status": 200,
+      "body": {
+        "schema_version": "1.0.0",
+        "run_id": "height-recovery-20261115-01-test-restart-B",
+        "mode": "LIVE",
+        "map_version": 1,
+        "timestamp_sim_s": 1794765209.952682,
+        "mission_state": {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 952641517
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01-test-restart-B",
+          "last_event_seq": 0,
+          "mission_state": "IDLE",
+          "reason_code": "",
+          "base": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "primary_goal": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "primary_agent_id": "",
+          "active_task_id": "",
+          "active_task_kind": "",
+          "active_task_state": "",
+          "map_version": 1,
+          "route_id": "",
+          "active_route": {
+            "header": {
+              "stamp": {
+                "sec": 0,
+                "nanosec": 0
+              },
+              "frame_id": ""
+            },
+            "run_id": "",
+            "request_id": "",
+            "route_id": "",
+            "agent_id": "",
+            "mode": "",
+            "map_version_used": 0,
+            "status": "",
+            "reason_code": "",
+            "detail": "",
+            "outbound_path": [],
+            "return_path": [],
+            "travel_time_s": 0,
+            "energy_est_wh": 0,
+            "oxygen_est_l": 0,
+            "min_clearance_m": 0,
+            "reserve_time_s": 0,
+            "reserve_wh": 0,
+            "reserve_oxygen_l": 0
+          },
+          "agents": [
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765096,
+                  "nanosec": 933341731
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01-test-restart-B",
+              "agent_id": "drone_1",
+              "agent_kind": "DRONE",
+              "pose": {
+                "position": {
+                  "x": -10,
+                  "y": -14,
+                  "z": -2571.231201171875
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 600,
+              "energy_remaining_wh": 100,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765096,
+                  "nanosec": 933341731
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01-test-restart-B",
+              "agent_id": "human_1",
+              "agent_kind": "HUMAN",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -14,
+                  "z": -2571.199462890625
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 1000,
+              "oxygen_remaining_l": 1000,
+              "confidence": 1
+            },
+            {
+              "header": {
+                "stamp": {
+                  "sec": 1794765096,
+                  "nanosec": 933341731
+                },
+                "frame_id": "map"
+              },
+              "run_id": "height-recovery-20261115-01-test-restart-B",
+              "agent_id": "rover_1",
+              "agent_kind": "ROVER",
+              "pose": {
+                "position": {
+                  "x": -14,
+                  "y": -10,
+                  "z": -2571.32958984375
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                }
+              },
+              "velocity": {
+                "linear": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "angular": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              },
+              "mode": "IDLE",
+              "time_remaining_s": 14400,
+              "energy_remaining_wh": 2000,
+              "oxygen_remaining_l": null,
+              "confidence": 1
+            }
+          ]
+        },
+        "terrain_meta": {
+          "header": {
+            "stamp": {
+              "sec": 1794765096,
+              "nanosec": 68884329
+            },
+            "frame_id": "map"
+          },
+          "run_id": "height-recovery-20261115-01-test-restart-B",
+          "dataset_id": "jezero_mvp",
+          "map_version": 1,
+          "origin_x_m": -64,
+          "origin_y_m": -64,
+          "resolution_m": 4,
+          "rows": 32,
+          "cols": 32,
+          "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+          "origin_lat_deg": 18.45,
+          "origin_lon_deg": 77.45,
+          "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+          "nodata_value": null,
+          "sources": [
+            "MRO/CTX (prior): JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0 [20.0m, sha256=ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91]",
+            "Mars Global Surveyor/MOLA (regional_context): Mars_MGS_MOLA_DEM_mosaic_global_463m (urn:nasa:pds:mgs_mola_topography_derived::1.0) [463.0m, sha256=b2341a639891359a9f7184171b923b8a83852ef0f3edd28bfd5862b8158db9f6]",
+            "planning-policy estimated-prior-illustrative-01 [mge-exploration-policy-1.0.0, estimated_or_observed, illustrative candidate-only, sha256=a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd]"
+          ],
+          "checksum_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+        },
+        "events": []
+      }
+    }
+  ]
+}

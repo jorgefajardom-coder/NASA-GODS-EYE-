@@ -1906,6 +1906,22 @@
         "docs/ai_usage.json"
       ],
       "scope": "Owner approved PR39/42 and native synchronization. Existing native commit82534db is preserved;39 media hashes and18HTTP endpoints verified without repeating publication. No generated media, scientific approval, LIVE mission or organizer endorsement is asserted."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "pr44_late_event_stream_reconciliation",
+      "generation": "AI-assisted minimal event-stream deduplication fix, failing-then-passing WebSocket regressions, real HTTP/WebSocket consumer validation harness and integration handoff; preserve reviewed PR43 ancestry and active editorial metadata seals",
+      "paths": [
+        "src/mge_gateway/mge_gateway/app.py",
+        "tests/contracts/test_gateway.py",
+        "docs/pr44_gateway_stream_review.md",
+        "evidence/pr44-gateway-stream-20261115",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        ".gitattributes",
+        "docs/wiki/audit/editorial-20261115/manifest.json"
+      ],
+      "scope": "A fixed after_seq resume floor and per-connection sent-sequence set preserve unique late events without duplicating backlog/queue overlap. Software checks only; public replay-fed MOCK inputs, no new mission execution, scientific observations or LIVE acceptance."
     }
   ],
   "generated_media": [

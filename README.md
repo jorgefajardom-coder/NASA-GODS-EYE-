@@ -593,6 +593,7 @@ Launch arguments of `vertical_mock.launch.py`:
 | `agents_file` | per terrain | Agent positions and budgets (illustrative) |
 | `record`, `record_dir` | `false`, `evidence` | Write a replay package to `<record_dir>/<run_id>` |
 | `host`, `port`, `use_sim_time` | `127.0.0.1`, `8000`, `false` | Gateway binding and clock |
+| `cors_origins` | `['http://localhost:5173', 'http://127.0.0.1:5173']` | Browser origins the gateway answers (YAML list), for example the viewer's dev server or a published site |
 
 Mission-provider arguments (`mission_profiles_path`, `mission_path`,
 `base_enu_m`, `allow_illustrative`, `model_agreement_confirmed`,
@@ -655,7 +656,11 @@ is in [docs/ICD.md](docs/ICD.md), section 6.
 | POST | `/api/mission/goal` | Mission goal request; Bearer token when `MGE_CONTROL_TOKEN` is set |
 | WS | `/api/events` | Event and state stream |
 
-Without an active run the endpoints answer `503` with `NO_ACTIVE_RUN`.
+Without an active run the manifest, snapshot, events and goal endpoints answer `503`
+with `NO_ACTIVE_RUN`; `/api/health` answers `200` with `status: NOT_READY` and
+`ros_connected: false`, so a monitor can tell the process is up (ICD section 6.1).
+WebSocket messages are `event`, `state` and, when the map version changes,
+`terrain_meta`.
 
 ## Planner
 

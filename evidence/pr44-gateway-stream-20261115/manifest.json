@@ -1,0 +1,162 @@
+{
+  "kind": "bounded public PR44 original-red/corrected-green gateway stream evidence",
+  "original_pr44_head": "ef8f3ac2b49505d1ddebe3fdc05d6b7f2e8605bf",
+  "original_pr44_ci": {
+    "run_id": 43753188458,
+    "conclusion": "success",
+    "url": "https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/actions/runs/43753188458"
+  },
+  "corrected_source_sha256": {
+    "src/mge_gateway/mge_gateway/app.py": "3f2ceb9a674b496e79d057c822a0dabd43815bd70ee010ef8d8795277f150f61",
+    "src/mge_gateway/mge_gateway/store.py": "8895c9e0d263e86e947385473188d91997b359f685ead14bfe6553412b8a4432",
+    "src/mge_gateway/mge_gateway/ros_bridge.py": "8176e63474eaaac5cfa44c8315d4cf6d7e8f4e09bd54f85911a9e0649034c785",
+    "web/src/lib/gatewayLive.ts": "c8dfee78335621ba982597828306051f3802c1680bd711f68e8b5a8f4f60abd6",
+    "web/src/lib/provenance.ts": "31a5dfbcae84b592f13350d958485c86878efe9072aabfb6d6ff98c990e8550b"
+  },
+  "corrected_backend_head": "ef8f3ac2b49505d1ddebe3fdc05d6b7f2e8605bf",
+  "corrected_backend_tree_dirty": true,
+  "public_replay_entry": "recorded-recovery-002",
+  "public_package_sha256": {
+    "manifest.json": "9d482349f04486cdd282718ee60604a47a55345f90718dbe8def7c9db28f1333",
+    "public_rasters.json": "dd55524231b3bb8b4f277ac2d2d9f7f513f1ba50bb148ed018188ac89f4c91c7",
+    "snapshot.json": "27bdf34f96d4f2075ac0aef501bdf13de2c556d1e43facf0082c3d719a0a806d",
+    "timeline.jsonl": "d3ff67332252e1a38513c33be177d4e535b395d71fd1ad3f035a7b75f6b46cb5"
+  },
+  "scope": {
+    "replay_fed": true,
+    "source_mode": "MOCK",
+    "ros_graph_executed": false,
+    "goals_sent": 0,
+    "validated_live": false,
+    "new_mission_execution": false,
+    "three_role_acceptance": false,
+    "consumer_groups_passed": 5,
+    "dynamic_terrain_meta_over_open_websocket": true,
+    "client_get_requests": 17,
+    "websocket_connections": 4
+  },
+  "sealed_consumer_validation_sha256": "a22457d32fca9c31bec5dde77e2dd028d383f91667a23f55e9d8df5dcdd9e262",
+  "sealed_consumer_original_artifact_hashes": {
+    "producer.py": {
+      "bytes": 9703,
+      "sha256": "a787c03966e36113cd7e128bd219832de7abf4b6d043d9a70e030ce575eba8b2"
+    },
+    "consumer.mjs": {
+      "bytes": 11358,
+      "sha256": "927ec481f90342f3499eac8436a500619a68c04c72466601b35f29e6f98b1517"
+    },
+    "README.md": {
+      "bytes": 2746,
+      "sha256": "a7ad3ce67d682e0a0e722137896dc3b55165023d3809fd3ab4b9dd7ed8ebff3e"
+    },
+    "ready.json": {
+      "bytes": 14166,
+      "sha256": "6e20b28a8ba6fce3e4592d5e781a3a3fee59a7550911352c2d19700067db2ae0"
+    },
+    "consumer-report.json": {
+      "bytes": 18239,
+      "sha256": "8a8ac02e8c54e448c2ffcd049e54360bd31bd4cbbfdd9b4d0b043c62d0e33b92"
+    },
+    "producer-report.json": {
+      "bytes": 61956,
+      "sha256": "78b0672841c32d84f0e5d2c06afa073662e5616629e2188a621dc74fd1c8f0fb"
+    },
+    "actual-responses.json": {
+      "bytes": 90622,
+      "sha256": "5b4cae58e6af9c249a3ccf6500e21e882531e85f7089137d13360d4dd8b61ca0"
+    }
+  },
+  "sealed_consumer_original_to_public_layout": {
+    "validation.json": "consumer/validation.json",
+    "producer.py": "consumer/scripts/producer.py",
+    "consumer.mjs": "consumer/scripts/consumer.mjs",
+    "README.md": "consumer/original-README.md",
+    "ready.json": "consumer/ready.json",
+    "consumer-report.json": "consumer/consumer-report.json",
+    "producer-report.json": "consumer/producer-report.json",
+    "actual-responses.json": "consumer/actual-responses.json"
+  },
+  "files": {
+    "consumer/actual-responses.json": {
+      "bytes": 90622,
+      "sha256": "5b4cae58e6af9c249a3ccf6500e21e882531e85f7089137d13360d4dd8b61ca0"
+    },
+    "consumer/consumer-report.json": {
+      "bytes": 18239,
+      "sha256": "8a8ac02e8c54e448c2ffcd049e54360bd31bd4cbbfdd9b4d0b043c62d0e33b92"
+    },
+    "consumer/original-README.md": {
+      "bytes": 2746,
+      "sha256": "a7ad3ce67d682e0a0e722137896dc3b55165023d3809fd3ab4b9dd7ed8ebff3e"
+    },
+    "consumer/producer-report.json": {
+      "bytes": 61956,
+      "sha256": "78b0672841c32d84f0e5d2c06afa073662e5616629e2188a621dc74fd1c8f0fb"
+    },
+    "consumer/ready.json": {
+      "bytes": 14166,
+      "sha256": "6e20b28a8ba6fce3e4592d5e781a3a3fee59a7550911352c2d19700067db2ae0"
+    },
+    "consumer/scripts/consumer.mjs": {
+      "bytes": 11358,
+      "sha256": "927ec481f90342f3499eac8436a500619a68c04c72466601b35f29e6f98b1517"
+    },
+    "consumer/scripts/producer.py": {
+      "bytes": 9703,
+      "sha256": "a787c03966e36113cd7e128bd219832de7abf4b6d043d9a70e030ce575eba8b2"
+    },
+    "consumer/validation.json": {
+      "bytes": 2941,
+      "sha256": "a22457d32fca9c31bec5dde77e2dd028d383f91667a23f55e9d8df5dcdd9e262"
+    },
+    "README.md": {
+      "bytes": 9236,
+      "sha256": "79eb25194dbf9aa70fad32defa933713d821209269573edac02f7c87fd74177f"
+    },
+    "review/independent-regressions-fixed.junit.xml": {
+      "bytes": 517,
+      "sha256": "6ad0b61776f8f0df777ecc2a3a1ea9dd225c57ae29ecce1acc152ac77cc42c3f"
+    },
+    "review/independent-regressions-original.junit.xml": {
+      "bytes": 1266,
+      "sha256": "dd810e408559e6f5df402000fc36b6a2fefe4ee01eabff978a416c337a877ee0"
+    },
+    "review/late-event-fixed-reproduction.json": {
+      "bytes": 356,
+      "sha256": "0362ccb06a2e54eec72519cafcaeb78a4c77506312586ce3b4a336837a897a07"
+    },
+    "review/late-event-original-reproduction.json": {
+      "bytes": 359,
+      "sha256": "c20fb4eb8422e7d474959358f4918d611c0eef5a16b827dfb6c1ac43d66b67a0"
+    },
+    "review/new-regressions-on-original-head.junit.xml": {
+      "bytes": 1819,
+      "sha256": "7f1cb05af34864924910d114eadf0462720b55a174e96f1051e04bddb991ad64"
+    },
+    "review/pytest.ini": {
+      "bytes": 10,
+      "sha256": "578fc1cd12d8d642df8eff41d71d5119626e9f88f21fafadba6b1092ac840a93"
+    },
+    "review/review-summary.json": {
+      "bytes": 1271,
+      "sha256": "d5f4ac4036cc37379d2c8fcc82e9c86076178a62edd477ddd897399a3c2792cd"
+    },
+    "review/source-exact-tests.junit.xml": {
+      "bytes": 15743,
+      "sha256": "378782095791b6360afcc3c8b7c3ccbe1692f2e7050de4f9fb4260bdfb474ea9"
+    },
+    "review/source-lock.json": {
+      "bytes": 4833,
+      "sha256": "6d0e026e9d7353809d6cdfbdce1731ea43609a6460ceeaff90def532e696a0f4"
+    },
+    "review/test_review_regressions.py": {
+      "bytes": 4839,
+      "sha256": "276cf51585079f9532328ebc6c8b100233b13ee85edbca40dca9f7590837cf5e"
+    }
+  },
+  "ai_usage": {
+    "ai_assisted": true,
+    "tool": "OpenAI Codex",
+    "scope": "Local validation/test harness and descriptions; bounded public red/green evidence export and manifest. Source mission payloads remain unchanged public MOCK data."
+  }
+}
