@@ -1,0 +1,35 @@
+{
+  "status": "ANALYTICAL_CHECKS_PASSED_OWNER_REVIEW_PENDING",
+  "run_id": "local-cost-eva-bunsen-20261115-02",
+  "steps_checked": 68,
+  "directed_distance_m": 283.0374279595662,
+  "intervals_checked": 73,
+  "cost_contexts_matched": 38,
+  "totals": {
+    "time_s": 1226.8854635448874,
+    "energy_wh": 136.7195330511621,
+    "oxygen_l": 27.918500401660435
+  },
+  "remaining": {
+    "time_s": 873.1145364551121,
+    "energy_wh": 88.28046694883773,
+    "oxygen_l": 17.081499598339555
+  },
+  "margins_over_reserves": {
+    "time_s": 453.1145364551121,
+    "energy_wh": 43.28046694883773,
+    "oxygen_l": 8.081499598339555
+  },
+  "primary_stationary_time_s": 120.0,
+  "public_map_versions_checked": [
+    1,
+    2
+  ],
+  "journal_duplicate_debits": 0,
+  "journal_recovery_unchanged": true,
+  "full_ROS_or_physical_mission_verified": false,
+  "private_world_is_synthetic": true,
+  "simulation_owner_review": "PENDING",
+  "return_policy_scope": "Successful bounded trace; generic pre-inspection/latency return-priority acceptance remains required for production",
+  "video_sha256": "12eefa8d821015c73a3d2fe81b396de29a2018fb328c00fc8c91a43cf2b4c2c0"
+}
