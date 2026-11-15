@@ -3214,13 +3214,26 @@ input[type='checkbox'] {
   width: var(--w);
   height: var(--h);
   overflow: hidden;
-  background: #05080b;
   animation: zones-fly 0.75s cubic-bezier(0.6, 0, 0.3, 1) forwards;
 }
-.zones__flight img, .zone-arrival img { width: 100%; height: 100%; object-fit: contain; filter: sepia(0.75) hue-rotate(-14deg) saturate(1.7) brightness(0.95); }
+/* Cover, never contain: the photo fills the screen edge to edge (no black bands); the arrival starts from the same crop. */
+.zones__flight img { display: block; width: 100%; height: 100%; object-fit: cover; filter: sepia(0.75) hue-rotate(-14deg) saturate(1.7) brightness(0.95); }
 @keyframes zones-fly { to { left: 0; top: 0; width: 100vw; height: 100vh; } }
-.zone-arrival { position: fixed; inset: 0; z-index: 60; background: #05080b; pointer-events: none; animation: zone-arrive 1.6s ease-in forwards; }
-@keyframes zone-arrive { 0%, 35% { opacity: 1; } 100% { opacity: 0; } }
+.zone-arrival { position: fixed; inset: 0; z-index: 60; overflow: hidden; pointer-events: none; background: #05080b; }
+.zone-arrival--ready { background: transparent; }
+.zone-arrival img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  transform-origin: 0 0;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  filter: sepia(0.75) hue-rotate(-14deg) saturate(1.7) brightness(0.95);
+  /* A thin scan outline appears as the photo locks onto the terrain footprint. */
+  outline: 2px solid rgba(120, 190, 255, calc(var(--edge, 0) * 0.85));
+  box-shadow: 0 0 calc(var(--edge, 0) * 40px) rgba(88, 166, 255, calc(var(--edge, 0) * 0.45));
+}
 @media (max-width: 700px) {
   .zones__arrow { font-size: 40px; }
   .zones__card { width: 240px; }

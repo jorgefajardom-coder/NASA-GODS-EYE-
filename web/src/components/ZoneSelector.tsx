@@ -4,6 +4,7 @@ import { assetUrl } from '../data/replayAdapter';
 import { WORLDS, initialZoneIndex, stepZone, zoneUrl, type WorldInfo } from '../data/worlds';
 import HORIZON from '../data/zoneHorizon.json';
 import { aimAt, angleDelta, globeDir, leftArc, radialCard } from '../lib/zoneGlobe';
+import { arrivalView, coverQuad, easeInOut, lerpQuad, quadMatrix3d, type Quad } from '../lib/arrivalQuad';
 
 /** Session key that carries the card image across the page load, for the arrival fade. */
 export const ARRIVAL_KEY = 'mge-zone-arrival';
@@ -32,22 +33,85 @@ function readArrival(runId: string): string | null {
   }
 }
 
+/** Arrival timing (ms): least and most time full screen before laying down, the lay-down itself, the fade. */
+const ARRIVE_HOLD_MIN = 350;
+const ARRIVE_HOLD_MAX = 6000;
+const ARRIVE_FIT = 1400;
+const ARRIVE_FADE = 800;
+
 /**
- * After travelling from the selector, the zone's card image (the same north-up orthomosaic that is draped
- * on the terrain) covers the screen and fades into the 3D scene. Nothing is shown on a normal load.
+ * After travelling from the selector, the zone's card image (the same north-up orthomosaic that is draped on the
+ * terrain) covers the screen, edge to edge. Once the scene is drawn it lays itself down on the terrain: its corners
+ * move onto the projected corners of the imagery footprint (a perspective warp, recomputed every frame so it follows
+ * the camera), then it fades into the draped terrain. Without a footprint in view it simply fades. Nothing is shown
+ * on a normal load. Display only.
  */
 export function ZoneArrival({ runId }: { runId: string }) {
   const [image] = useState(() => readArrival(runId));
   const [gone, setGone] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   useEffect(() => {
     if (!image) return;
-    const id = window.setTimeout(() => setGone(true), 1600);
-    return () => window.clearTimeout(id);
+    arrivalView.want = true;
+    arrivalView.quad = null;
+    const reduced = prefersReducedMotion();
+    const t0 = performance.now();
+    let fitAt = -1;
+    let fadeAt = -1;
+    let last: Quad | null = null;
+    let raf = 0;
+    const frame = (t: number) => {
+      const img = imgRef.current;
+      const wrap = wrapRef.current;
+      const w = img?.naturalWidth ?? 0;
+      const h = img?.naturalHeight ?? 0;
+      if (img && wrap && w > 0 && h > 0) {
+        const cover = coverQuad(w, h, window.innerWidth, window.innerHeight);
+        const quad = arrivalView.quad;
+        if (quad) last = quad;
+        const held = t - t0;
+        if (fitAt < 0 && fadeAt < 0) {
+          if (quad && !reduced && held > ARRIVE_HOLD_MIN) fitAt = t;
+          else if (held > (reduced ? ARRIVE_HOLD_MIN : ARRIVE_HOLD_MAX)) fadeAt = t;
+        }
+        let q = cover;
+        let edge = 0;
+        if (fitAt >= 0 && last) {
+          const k = Math.min(1, (t - fitAt) / ARRIVE_FIT);
+          q = lerpQuad(cover, last, easeInOut(k));
+          edge = k;
+          if (k >= 1 && fadeAt < 0) fadeAt = t;
+        }
+        let op = 1;
+        if (fadeAt >= 0) {
+          const f = Math.min(1, (t - fadeAt) / ARRIVE_FADE);
+          op = 1 - f * f;
+          if (f >= 1) {
+            setGone(true);
+            return;
+          }
+        }
+        img.style.width = `${w}px`;
+        img.style.height = `${h}px`;
+        img.style.transform = quadMatrix3d(w, h, q);
+        img.style.opacity = op.toFixed(3);
+        img.style.setProperty('--edge', (edge * op).toFixed(3));
+        wrap.classList.add('zone-arrival--ready');
+      }
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(raf);
+      arrivalView.want = false;
+      arrivalView.quad = null;
+    };
   }, [image]);
   if (!image || gone) return null;
   return (
-    <div className="zone-arrival" aria-hidden>
-      <img src={image} alt="" />
+    <div ref={wrapRef} className="zone-arrival" aria-hidden>
+      <img ref={imgRef} src={image} alt="" />
     </div>
   );
 }
@@ -93,8 +157,8 @@ async function globeCanvas(): Promise<HTMLCanvasElement> {
  * Zone selector: a Mars globe (Viking MDIM 2.1 colour mosaic, NASA/USGS via JPL Mars Trek) with one point per zone
  * at the centre of its scene. The selected zone turns to face the camera and the globe closes in on it; its card,
  * fitted radially against the planet, shows the zone's own orbital image (the one draped on its terrain) and a
- * synopsis. Travel zooms that image to the screen and opens the scene; the same image then fades into the terrain
- * (ZoneArrival). It opens right after the intro on load (instantly, so the scene never shows behind it);
+ * synopsis. Travel zooms that image to fill the screen and opens the scene; the same image then lays itself down on the
+ * terrain it is draped on and fades into it (ZoneArrival). It opens right after the intro on load (instantly, so the scene never shows behind it);
  * travelling to the zone already loaded simply enters it. Keys: left/right, Enter to travel, Esc to go back.
  */
 export function ZoneSelector({ runId, onClose, instant = false }: { runId: string; onClose: () => void; instant?: boolean }) {
