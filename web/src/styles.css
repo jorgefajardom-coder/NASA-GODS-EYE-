@@ -2798,6 +2798,11 @@ input[type='checkbox'] {
 }
 .dronemap__info {
   top: 20px;
+  right: 6px;
+  font-size: 8.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .dronemap__legend {
   right: 6px;
@@ -2812,8 +2817,34 @@ input[type='checkbox'] {
   height: 6px;
   background: rgba(150, 160, 170, 0.5);
 }
-.dronemap__key--obs {
-  background: #65cbe8;
+.dronemap__key--hz {
+  background: #e0583f;
+}
+.dronemap__key--ca {
+  background: #e3c25a;
+}
+.dronemap__key--ch {
+  background: none;
+  outline: 1px solid #ff8a70;
+}
+.dronemap__hz {
+  color: #ff8a70;
+  font-weight: 600;
+}
+.dronemap__status {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 33px;
+  font: 500 8.5px var(--f-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(232, 214, 200, 0.85);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .dronemap__sweep {

@@ -1,32 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
-import { droneSurvey } from '../lib/droneSurvey';
+import { droneHazardReport, droneReportEvents, type HazardLevel } from '../lib/droneHazards';
 import { yawFromQuaternion } from '../lib/coords';
+import { fmtDuration } from '../lib/format';
 
 /**
- * MAP tab of the drone window: the terrain map the drone has built so far, north up and centred on
- * the drone. Cells the replay marks as observed by the drone are drawn as a dense point cloud
- * coloured by height; the rest is the orbital prior estimate, drawn as faint dots. Canvas 2D (no
- * second 3D render). In the demo the observations are simulated, so the window says so.
+ * MAP tab of the drone window: the drone's hazard report. It draws only what the drone has
+ * observed (the interface map stays in the agent dial): steep cells in red, moderate in amber,
+ * cells that contradict the orbital estimate outlined in red, clear cells as faint cyan dots, with
+ * the drone, its flight trail and the nearest hazard. A status line says what the report caused in
+ * the replay (map update, route invalidated). The demo's observations are simulated; not LiDAR.
  */
 const RADIUS_M = 300;
 const RING_M = 100;
-
-/** Deterministic jitter (0..1) per cell and sample, so the cloud does not flicker between redraws. */
-const jitter = (i: number, k: number) => {
-  const s = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453;
-  return s - Math.floor(s);
-};
-
-/** Low -> high: deep teal, Signal Blue, near white. */
-function ramp(t: number): string {
-  const a = [27, 95, 122];
-  const b = [101, 203, 232];
-  const c = [232, 244, 255];
-  const [p, q, u] = t < 0.5 ? [a, b, t * 2] : [b, c, (t - 0.5) * 2];
-  return `rgb(${Math.round(p[0] + (q[0] - p[0]) * u)},${Math.round(p[1] + (q[1] - p[1]) * u)},${Math.round(p[2] + (q[2] - p[2]) * u)})`;
-}
+const LEVEL_COLOR: Record<HazardLevel, string> = { hazard: '#e0583f', caution: '#e3c25a', changed: '#e0583f', clear: 'rgba(101, 203, 232, 0.55)' };
 
 export function DroneMap({ bundle, view, droneId }: { bundle: ReplayBundle; view: ReplayView; droneId: string }) {
   const wrap = useRef<HTMLDivElement>(null);
@@ -37,11 +25,10 @@ export function DroneMap({ bundle, view, droneId }: { bundle: ReplayBundle; view
   const drone = view.state?.agents.find((a) => a.agent_id === droneId) ?? null;
   const cx = drone?.pose.position.x ?? 0;
   const cy = drone?.pose.position.y ?? 0;
-  // Recompute the survey when the drone moves a few metres or the map version changes.
   const qx = Math.round(cx / 5);
   const qy = Math.round(cy / 5);
-  const survey = useMemo(() => droneSurvey(bundle.rasters, meta, mapVersion, qx * 5, qy * 5, RADIUS_M * 1.1), [bundle.rasters, meta, mapVersion, qx, qy]);
-  // Flight trail up to the replay time (every few frames).
+  const report = useMemo(() => droneHazardReport(bundle.rasters, meta, mapVersion, qx * 5, qy * 5), [bundle.rasters, meta, mapVersion, qx, qy]);
+  const caused = useMemo(() => droneReportEvents(bundle.timeline.events, droneId, view.t), [bundle.timeline.events, droneId, view.t]);
   const trail = useMemo(() => {
     const pts: Array<{ x: number; y: number }> = [];
     const frames = bundle.timeline.frames;
@@ -74,37 +61,40 @@ export function DroneMap({ bundle, view, droneId }: { bundle: ReplayBundle; view
     g.fillStyle = '#03080c';
     g.fillRect(0, 0, size.w, size.h);
     const ox = size.w / 2;
-    const oy = size.h / 2 + 4;
-    const k = (Math.min(size.w, size.h) / 2 - 6) / RADIUS_M;
+    const oy = size.h / 2 + 6;
+    const k = (Math.min(size.w, size.h) / 2 - 8) / RADIUS_M;
     const px = (x: number) => ox + (x - cx) * k;
     const py = (y: number) => oy - (y - cy) * k;
-    const cellPx = meta.resolution_m * k;
-    // Prior estimate: one faint dot per cell. Observed: a jittered cloud per cell, coloured by height.
-    survey.points.forEach((p, idx) => {
-      const x = px(p.x);
-      const y = py(p.y);
-      if (x < -cellPx || y < -cellPx || x > size.w + cellPx || y > size.h + cellPx) return;
-      if (!p.observed) {
-        g.fillStyle = `rgba(150, 160, 170, ${0.22 + 0.25 * p.t})`;
-        g.fillRect(x - 0.8, y - 0.8, 1.6, 1.6);
-        return;
-      }
-      g.fillStyle = ramp(p.t);
-      for (let s = 0; s < 6; s++) {
-        const jx = (jitter(idx, s) - 0.5) * cellPx;
-        const jy = (jitter(idx, s + 7) - 0.5) * cellPx;
-        g.fillRect(x + jx - 0.7, y + jy - 0.7, 1.4, 1.4);
-      }
-    });
-    // Range rings and north.
-    g.strokeStyle = 'rgba(101, 203, 232, 0.16)';
+    const cell = Math.max(2, meta.resolution_m * k);
+    g.strokeStyle = 'rgba(101, 203, 232, 0.14)';
     g.lineWidth = 1;
     for (let r = RING_M; r <= RADIUS_M; r += RING_M) {
       g.beginPath();
       g.arc(ox, oy, r * k, 0, Math.PI * 2);
       g.stroke();
     }
-    // Flight trail.
+    // Observed cells only: hazards filled, contradictions outlined, clear ground as faint dots.
+    for (const c of report.cells) {
+      const x = px(c.x);
+      const y = py(c.y);
+      if (x < -cell || y < -cell || x > size.w + cell || y > size.h + cell) continue;
+      if (c.level === 'clear') {
+        g.fillStyle = LEVEL_COLOR.clear;
+        g.fillRect(x - 0.8, y - 0.8, 1.6, 1.6);
+        continue;
+      }
+      if (c.level !== 'changed') {
+        g.fillStyle = LEVEL_COLOR[c.level];
+        g.globalAlpha = 0.85;
+        g.fillRect(x - cell / 2, y - cell / 2, cell, cell);
+        g.globalAlpha = 1;
+      }
+      if (c.changed) {
+        g.strokeStyle = '#ff8a70';
+        g.lineWidth = 1;
+        g.strokeRect(x - cell / 2 + 0.5, y - cell / 2 + 0.5, cell - 1, cell - 1);
+      }
+    }
     if (trail.length > 1) {
       g.strokeStyle = 'rgba(101, 203, 232, 0.55)';
       g.setLineDash([3, 3]);
@@ -113,7 +103,16 @@ export function DroneMap({ bundle, view, droneId }: { bundle: ReplayBundle; view
       g.stroke();
       g.setLineDash([]);
     }
-    // Drone marker, pointing along its recorded heading (ENU yaw from east).
+    // Line to the nearest hazard.
+    if (report.nearest && report.nearest.distanceM <= RADIUS_M * 1.5) {
+      const a = (report.nearest.bearingDeg * Math.PI) / 180;
+      const d = Math.min(report.nearest.distanceM, RADIUS_M) * k;
+      g.strokeStyle = 'rgba(224, 88, 63, 0.8)';
+      g.beginPath();
+      g.moveTo(ox, oy);
+      g.lineTo(ox + Math.sin(a) * d, oy - Math.cos(a) * d);
+      g.stroke();
+    }
     if (drone) {
       const yaw = yawFromQuaternion(drone.pose.orientation);
       g.save();
@@ -133,18 +132,28 @@ export function DroneMap({ bundle, view, droneId }: { bundle: ReplayBundle; view
     g.font = '600 9px "IBM Plex Mono", monospace';
     g.textAlign = 'center';
     g.fillText('N', ox, oy - RADIUS_M * k + 9);
-  }, [size, survey, trail, drone, cx, cy, meta.resolution_m]);
+  }, [size, report, trail, drone, cx, cy, meta.resolution_m]);
 
-  const pct = survey.totalCount ? (survey.observedCount / survey.totalCount) * 100 : 0;
+  const n = report.nearest;
+  const status = caused.mapUpdate
+    ? `Reported ${fmtDuration(caused.mapUpdate.timestamp_sim_s)} · map v${caused.mapUpdate.map_version}${caused.invalidated ? ` · route ${caused.invalidated.route_id} invalidated` : ''}`
+    : 'No hazard report yet · orbital estimate only';
   return (
     <div className="dronemap" ref={wrap}>
-      <canvas ref={canvas} style={{ width: size.w, height: size.h }} aria-label={`Drone survey map, map version ${mapVersion}: ${survey.observedCount} cells observed`} />
-      <span className="dronemap__sweep" aria-hidden />
+      <canvas ref={canvas} style={{ width: size.w, height: size.h }} aria-label={`Drone hazard report: ${report.counts.hazard} steep, ${report.counts.caution} moderate, ${report.cells.filter((c) => c.changed).length} contradicting the orbital estimate`} />
       <span className="dronemap__info">
-        Map v{mapVersion} · {survey.observedCount} cells observed ({pct.toFixed(1)}%)
+        {report.observedCount ? (
+          <>
+            <b className="dronemap__hz">{report.counts.hazard} steep</b> · {report.counts.caution} moderate · {report.cells.filter((c) => c.changed).length} changed
+            {n ? ` · nearest ${n.distanceM.toFixed(0)} m ${String(Math.round(n.bearingDeg)).padStart(3, '0')}°` : ''}
+          </>
+        ) : (
+          'Hazard report · no drone observations yet'
+        )}
       </span>
+      <span className="dronemap__status">{status}</span>
       <span className="dronemap__legend">
-        <i className="dronemap__key dronemap__key--obs" /> observed <i className="dronemap__key" /> orbital estimate · {RING_M} m rings
+        <i className="dronemap__key dronemap__key--hz" /> ≥15° <i className="dronemap__key dronemap__key--ca" /> 8–15° <i className="dronemap__key dronemap__key--ch" /> changed
       </span>
     </div>
   );
