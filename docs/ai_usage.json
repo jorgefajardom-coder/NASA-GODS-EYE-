@@ -1385,6 +1385,22 @@
         "docs/planner_scientific_context.md"
       ],
       "use": "Explicit request/profile/model binding and fixed pending service/wait schedule for local experiments. No coefficient, ROS contract, mission authority or approval change."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "local_opt_in_scientific_search_and_replanning",
+      "generation": "AI-assisted planner implementation, synthetic regressions and documentation; actual software results",
+      "paths": [
+        "src/mge_planning/mge_planning/core.py",
+        "src/mge_planning/mge_planning/replan.py",
+        "tests/planning/test_scientific_search.py",
+        "tests/planning/test_scientific_replan.py",
+        "src/mge_planning/MODEL.md",
+        "docs/planner_handoff.md",
+        "docs/planner_f033c2_local.md",
+        "evidence/planner-f033c2-local"
+      ],
+      "use": "Opt-in pure Python scientific edge/connector/goal costs before resource pruning/dominance; independent oracle comparisons and retained monotonic resource admission. No model equations copied, no coefficient or ROS/MissionManager/approval change. Native legacy-node contracts tested separately from Python science tests; no operational safety inference."
     }
   ],
   "generated_media": [

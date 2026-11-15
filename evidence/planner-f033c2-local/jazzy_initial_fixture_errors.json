@@ -1,0 +1,68 @@
+{
+  "status": "superseded_after_fixture_fix",
+  "passed": 1074,
+  "skipped": 1,
+  "errors": 14,
+  "failures": 0,
+  "raw_junit_sha256": "8371e6dd32e07c29c6282ecf48dfae4eb5666c3c4a31ab4698c034b9759d878a",
+  "raw_local_path": "tmp/f033c2-jazzy.xml",
+  "cause": "pytest xunit auto-detected module helper named setup; renamed to scientific_case without weakening any assertion",
+  "items": [
+    {
+      "name": "test_scientific_replan_preserves_A_increase_guard_and_authorized_recovery[human-time_s]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_scientific_replan_preserves_A_increase_guard_and_authorized_recovery[human-energy_wh]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_scientific_replan_preserves_A_increase_guard_and_authorized_recovery[human-oxygen_l]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_scientific_replan_preserves_A_increase_guard_and_authorized_recovery[rover-time_s]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_scientific_replan_preserves_A_increase_guard_and_authorized_recovery[rover-energy_wh]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_current_continuous_pose_map_and_remaining_budget_survive_scientific_contingency[human]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_current_continuous_pose_map_and_remaining_budget_survive_scientific_contingency[rover]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_partial_scientific_service_then_explicit_wait_then_return[human]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_partial_scientific_service_then_explicit_wait_then_return[rover]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_missing_model_mismatch_and_rollback_contexts_never_fall_back",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_goal_work_cannot_be_completed_outbound_or_rolled_back_in_service",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_scientific_D07_after_actual_twenty_metre_prefix[human]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_scientific_D07_after_actual_twenty_metre_prefix[rover]",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    },
+    {
+      "name": "test_science_activity_wait_progress_cannot_increase_after_service",
+      "message": "failed on setup with \"TypeError: unsupported operand type(s) for +: 'module' and 'str'\""
+    }
+  ]
+}

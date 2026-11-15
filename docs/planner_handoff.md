@@ -1,5 +1,14 @@
 # Diego's planner handoff
 
+Local F03.3-C2 continuation over PR33 source ffea8c2: ScientificContext is an
+explicit Python-only opt-in, default legacy behavior preserved. Scientific costs
+now participate in the actual search, connector and fixed goal-work transition,
+with h=0 and unchanged FAST/SAFE/resource/geometry bounds. Policy takes an explicit
+current pending context and preserves F03.3-A's latched monotonic resource guard.
+See planner_f033c2_local.md and evidence/planner-f033c2-local. No push or PR update,
+ROS activation, coefficient change, mission approval or submission readiness is
+implied. Jesus/David retain dependency/context/science review and organizer gates.
+
 F03.3 availability-guard review cut: based ONLY on published main0339bbd.
 Local audit documents/disclosures were hash-backed up under ignored
 tmp/f033-guard-backup, main was incorporated by fast-forward (no new commit),

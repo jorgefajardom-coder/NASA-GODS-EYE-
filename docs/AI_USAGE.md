@@ -801,3 +801,7 @@ OpenAI Codex assisted reconciliation of mandatory disclosures and preparation of
 ## F03.3-C2 immutable Python scientific context
 
 OpenAI Codex assisted ScientificContext in resource_costs.py, tests/planning/test_scientific_context.py and docs/planner_scientific_context.md. Published science functions and profile coefficients are reused unchanged. The explicit immutable context is experimental, has no ROS transport or authorization and does not approve profiles. Test terrains are synthetic inputs.
+
+## F03.3-C2 local opt-in scientific search and replanning
+
+OpenAI Codex assisted core.py and replan.py experimental context integration, tests/planning/test_scientific_search.py and test_scientific_replan.py, MODEL/handoff/local technical documentation and evidence/planner-f033c2-local. Costs reuse the published science API; graph/raster fixtures are synthetic. Evidence records actual local software results and computational timings, including the corrected pytest helper-name error. No ROS activation, production node wiring, coefficients, mission authority or scientific approvals were changed. No GitHub publication is part of this cut.

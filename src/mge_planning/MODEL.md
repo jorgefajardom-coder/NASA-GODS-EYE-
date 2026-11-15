@@ -1,5 +1,13 @@
 # P0 planning model and proof boundaries
 
+F03.3-C2 LOCAL experiment: pure Python plan_route accepts an explicit immutable
+scientific_context; omitted context retains the legacy model below. Nodes/ROS do
+not enable it. It uses the published mission segment/activity API before label
+pruning/dominance, with h=0, explicit pending goal service/waits and directed return.
+See [local integration and validation](../../docs/planner_f033c2_local.md) and
+[context admission](../../docs/planner_scientific_context.md). No profile/model
+approval or operational authorization follows from this experiment.
+
 Inputs are one copied, read-only **public belief** snapshot, explicit profile,
 request and resource budget. There is no evaluator-reference argument. Local ENU
 uses metres, southwest origin, rows north, columns east. Goals and return targets

@@ -7,7 +7,7 @@ conservative footprint clearance, breaking ties by FAST. Neither publishes an
 active route: that authority belongs to MissionManager.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum
 import hashlib
 import heapq
@@ -283,6 +283,8 @@ class RouteResult:
     expanded_labels: int = 0
     elapsed_s: float = 0.0
     start_connector: StartConnector | None = None
+    # Python-only experimental provenance. Never transported/enabled by ROS.
+    cost_context: Any = None
 
 
 class _LimitReached(Exception):
@@ -508,6 +510,49 @@ class _Geometry:
                     yield other, edge
 
 
+class _ScientificGeometry:
+    """Cost view over UNCHANGED admitted geometry; one bounded directed cache.
+
+    Base geometry retains grade/step/footprint/corner/sigma admission. Its legacy
+    resource estimates are discarded, not used to prune scientific labels.
+    Optimistic unknown-terrain geometry is never given this cost view.
+    """
+    def __init__(self, geometry, context):
+        from .resource_costs import ScientificCosts
+        self.geometry, self.cost_context = geometry, context
+        self.grid, self.profile = geometry.grid, geometry.profile
+        self.allowed, self.known, self.clearance = geometry.allowed, geometry.known, geometry.clearance
+        self.backend = ScientificCosts(context.profile)
+        self.cost_cache = {}
+
+    def motion(self, a, b):
+        key = tuple(a), tuple(b)
+        if key not in self.cost_cache:
+            if len(self.cost_cache) >= 8192:
+                self.cost_cache.clear()
+            c = self.backend.movement(a, b)
+            self.cost_cache[key] = (c.time_s, c.energy_wh, c.oxygen_l or 0.)
+        return self.cost_cache[key]
+
+    def edge(self, a, b):
+        edge = self.geometry.edge(a, b)
+        if edge is None:
+            return None
+        return (edge[0], *self.motion(self.grid.point(a), self.grid.point(b)))
+
+    def neighbours(self, cell, threshold=0.):
+        for other, edge in self.geometry.neighbours(cell, threshold):
+            yield other, (edge[0], *self.motion(self.grid.point(cell), self.grid.point(other)))
+
+    def connect_start(self, position, cell):
+        connector = self.geometry.connect_start(position, cell)
+        if connector is None:
+            return None
+        t, e, o = self.motion(connector.start, connector.end)
+        return replace(connector, travel_time_s=t, energy_est_wh=e,
+                       oxygen_est_l=o if self.profile.agent_kind == 'human' else None)
+
+
 @dataclass
 class _Label:
     cell: tuple
@@ -542,12 +587,19 @@ def _search(geometry, request, start, goal, back, threshold, work, connector=Non
     heap = []
 
     def heuristic(cell, phase):
+        if getattr(geometry, 'cost_context', None) is not None:
+            # Deliberately h=0 for the experimental backend. No transferred
+            # legacy grade/speed assumptions; still the same multi-label A*.
+            return 0.
         distance = lambda a, b: math.hypot(a[0]-b[0], a[1]-b[1])*g.resolution_m
         if phase:
             return distance(cell, back)/p.speed_m_s if request.require_return else 0.
         return (distance(cell, goal) + (distance(goal, back) if request.require_return else 0.))/p.speed_m_s + request.service_time_s
 
     def add(label):
+        if (getattr(geometry, 'cost_context', None) is not None
+                and not all(math.isfinite(x) for x in (label.time, label.energy, label.oxygen))):
+            raise ValueError("nonfinite cumulative resource estimate")
         if label.time > cap[0] or label.energy > cap[1] or label.oxygen > cap[2]:
             return
         state = label.cell, label.phase
@@ -583,9 +635,12 @@ def _search(geometry, request, start, goal, back, threshold, work, connector=Non
         if label.phase and (not request.require_return or label.cell == back):
             return _Found(labels, identifier, connector)
         if label.phase == 0 and label.cell == goal:
-            dt = request.service_time_s
-            add(_Label(label.cell, 1, label.time+dt, label.energy+p.service_power_w*dt/3600.,
-                       label.oxygen+dt*(p.oxygen_l_per_s or 0.), identifier, label.clearance))
+            context = getattr(geometry, 'cost_context', None)
+            dt, de, do = (context.goal_costs if context is not None else
+                          (request.service_time_s, p.service_power_w*request.service_time_s/3600.,
+                           request.service_time_s*(p.oxygen_l_per_s or 0.)))
+            add(_Label(label.cell, 1, label.time+dt, label.energy+de,
+                       label.oxygen+do, identifier, label.clearance))
             continue
         for other, edge in geometry.neighbours(label.cell, threshold):
             margin, duration, energy, oxygen = edge
@@ -614,7 +669,7 @@ def _connected(geometry, start, goal, back, request, work):
     return True
 
 
-def _result(request, grid, work, status, reason, detail, found=None):
+def _result(request, grid, work, status, reason, detail, found=None, cost_context=None):
     mode = request.mode.value if isinstance(request.mode, RouteMode) else request.mode
     common = dict(status=status, reason_code=reason, detail=detail, run_id=request.run_id,
                   request_id=request.request_id, agent_id=request.agent_id, mode=mode,
@@ -633,9 +688,12 @@ def _result(request, grid, work, status, reason, detail, found=None):
     if found.connector is not None:
         outbound = (found.connector.start,) + outbound
     inbound = tuple(grid.point(x.cell) for x in trail if x.phase == 1) if request.require_return else ()
-    digest = hashlib.sha256(repr((request.run_id, request.request_id, request.agent_id,
+    identity = (request.run_id, request.request_id, request.agent_id,
                                  grid.map_version, mode, outbound, inbound, final.time,
-                                 final.energy, final.oxygen)).encode()).hexdigest()[:24]
+                                 final.energy, final.oxygen)
+    if cost_context is not None:
+        identity += (cost_context.fingerprint,)
+    digest = hashlib.sha256(repr(identity).encode()).hexdigest()[:24]
     human = request.agent_kind == "human"
     return RouteResult(**common, route_id=f"route-{digest}", outbound_path=outbound,
                        return_path=inbound, travel_time_s=final.time, energy_est_wh=final.energy,
@@ -643,12 +701,13 @@ def _result(request, grid, work, status, reason, detail, found=None):
                        reserve_time_s=request.budget.time_s-final.time,
                        reserve_wh=request.budget.energy_wh-final.energy,
                        reserve_oxygen_l=request.budget.oxygen_l-final.oxygen if human else None,
-                       start_connector=found.connector)
+                       start_connector=found.connector, cost_context=cost_context)
 
 
 def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
                profile: MotionProfile | None = None, limits: SearchLimits | None = None,
-               allow_continuous_start: bool = False, geometry_cache: GeometryCache | None = None) -> RouteResult:
+               allow_continuous_start: bool = False, geometry_cache: GeometryCache | None = None,
+               scientific_context: Any = None) -> RouteResult:
     """Return a candidate under the supplied model, never an execution command.
 
     A missing profile, unresolved corridor or exhausted work bound yields UNKNOWN.
@@ -657,7 +716,8 @@ def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
     a bound reached during that proof yields UNKNOWN rather than a false optimum.
     """
     work = _Work(limits or SearchLimits())
-    result = lambda status, reason, detail, found=None: _result(request, terrain, work, status, reason, detail, found)
+    context = None
+    result = lambda status, reason, detail, found=None: _result(request, terrain, work, status, reason, detail, found, context)
     if request.run_id != terrain.run_id:
         return result(RouteStatus.UNKNOWN, "RUN_MISMATCH", "Request and public map belong to different runs.")
     if request.map_version != terrain.map_version:
@@ -666,6 +726,16 @@ def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
         return result(RouteStatus.UNKNOWN, "PROFILE_NOT_READY", "An explicit reviewed or illustrative motion profile is required.")
     if profile.agent_kind != request.agent_kind:
         return result(RouteStatus.ERROR, "PROFILE_KIND_MISMATCH", "Request and motion profile agent kinds differ.")
+    if scientific_context is not None:
+        try:
+            # Lazy import keeps the legacy/node path independent of mission.
+            from .resource_costs import ScientificContext
+            if not isinstance(scientific_context, ScientificContext):
+                raise ValueError("an explicit typed scientific context is required")
+            scientific_context.validate(request, profile)
+            context = scientific_context
+        except (ValueError, TypeError) as exc:
+            return result(RouteStatus.ERROR, "INVALID_SCIENTIFIC_CONTEXT", str(exc))
     try:
         mode = RouteMode(request.mode)
     except ValueError:
@@ -698,6 +768,8 @@ def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
     try:
         cache = geometry_cache if geometry_cache is not None else GeometryCache()
         known = cache.get(terrain, profile)
+        if context is not None:
+            known = _ScientificGeometry(known, context)
         work.check()
         connector = known.connect_start(request.start, start) if continuous_start else None
         if continuous_start and connector is None:
@@ -731,3 +803,7 @@ def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
                       "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.", best)
     except _LimitReached:
         return result(RouteStatus.UNKNOWN, "SEARCH_LIMIT", "Search effort limit reached; feasibility or requested optimality is unresolved.")
+    except (ValueError, OverflowError) as exc:
+        if context is None:
+            raise
+        return result(RouteStatus.ERROR, "SCIENTIFIC_COST_ERROR", str(exc))
