@@ -33,6 +33,11 @@ function readArrival(runId: string): string | null {
   }
 }
 
+/** Removes the full-screen photo that index.html paints on a zone arrival before the app starts. */
+function removeVeil() {
+  document.getElementById('zone-arrival-veil')?.remove();
+}
+
 /** Arrival timing (ms): least and most time full screen before laying down, the lay-down itself, the fade. */
 const ARRIVE_HOLD_MIN = 350;
 const ARRIVE_HOLD_MAX = 6000;
@@ -98,6 +103,7 @@ export function ZoneArrival({ runId }: { runId: string }) {
         img.style.opacity = op.toFixed(3);
         img.style.setProperty('--edge', (edge * op).toFixed(3));
         wrap.classList.add('zone-arrival--ready');
+        removeVeil(); // the photo painted by index.html before the app started: this copy now takes over
       }
       raf = requestAnimationFrame(frame);
     };
@@ -106,7 +112,11 @@ export function ZoneArrival({ runId }: { runId: string }) {
       cancelAnimationFrame(raf);
       arrivalView.want = false;
       arrivalView.quad = null;
+      removeVeil();
     };
+  }, [image]);
+  useEffect(() => {
+    if (!image) removeVeil();
   }, [image]);
   if (!image || gone) return null;
   return (

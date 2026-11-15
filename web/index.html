@@ -74,6 +74,33 @@
     </script>
   </head>
   <body>
+    <script>
+      // Zone travel: paint the zone's photo before anything else (no static page, no loading screen in between).
+      // ZoneArrival (src/components/ZoneSelector.tsx) removes this veil once its own copy of the photo is drawn.
+      (function () {
+        try {
+          var a = JSON.parse(sessionStorage.getItem('mge-zone-arrival') || 'null');
+          var run = new URLSearchParams(location.search).get('run');
+          if (!a || a.runId !== run || typeof a.image !== 'string' || !/^[\w./-]+$/.test(a.image)) return;
+          var veil = document.createElement('div');
+          veil.id = 'zone-arrival-veil';
+          veil.setAttribute('aria-hidden', 'true');
+          veil.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#05080b;overflow:hidden;pointer-events:none';
+          var img = document.createElement('img');
+          img.src = a.image;
+          img.alt = '';
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.75) hue-rotate(-14deg) saturate(1.7) brightness(.95)';
+          veil.appendChild(img);
+          document.body.appendChild(veil);
+          // Never left on screen if the app cannot start (it normally goes within a second).
+          setTimeout(function () {
+            veil.remove();
+          }, 15000);
+        } catch (e) {
+          /* no session storage: no veil */
+        }
+      })();
+    </script>
     <div id="root">
       <!-- Shown until the app starts (and to readers that do not run JavaScript); React replaces it. -->
       <main class="static-summary">
