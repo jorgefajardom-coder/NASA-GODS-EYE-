@@ -1976,6 +1976,34 @@ input[type='checkbox'] {
   line-height: 1.3;
   color: var(--gray);
 }
+.pov__exit-tour {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 13px var(--f-ui);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(9, 13, 17, 0.72);
+  border: 1px solid var(--blue);
+  padding: 8px 14px;
+  cursor: pointer;
+  z-index: 2;
+}
+.pov__exit-tour:hover {
+  background: rgba(30, 60, 90, 0.85);
+}
+.pov__exit-tour:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.pov__exit-tour kbd {
+  font: 500 11px var(--f-mono);
+  opacity: 0.75;
+}
 .pov__key {
   font: 500 13px var(--f-ui);
   letter-spacing: 0.1em;

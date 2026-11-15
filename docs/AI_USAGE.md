@@ -898,6 +898,9 @@ output, NASA observation or mission result was generated, and the panel labels a
 MOCK.
 The fixed *Offline* link headline in the top-right status (`web/src/components/Frame.tsx`) was
 removed, since the panel already shows the connection; that status now describes only the replay.
+An *Exit photo tour* button (also Esc) in the rover HUD (`web/src/components/FirstPersonHud.tsx`,
+`web/src/App.tsx`, `web/tests/photoTourExit.test.ts`) leaves the photo tour from anywhere; it
+changes no data.
 
 ## PR37 scientific presentation corrections — 15 November 2026
 
