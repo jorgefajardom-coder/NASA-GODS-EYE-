@@ -63,8 +63,10 @@ export function Intro({ onDone }: { onDone: () => void }) {
 
   return (
     <div className={`intro${leaving ? ' intro--leaving' : ''}`} style={{ transitionDuration: `${FADE_MS}ms` }} onClick={finish} role="dialog" aria-label="Intro">
-      <video ref={video} className="intro__video" src={INTRO_URL} muted playsInline preload="auto" onEnded={finish} onError={finish} aria-label="Mars Gods Eye intro (AI-generated video)" />
-      <span className="intro__ai">AI-generated · Kling</span>
+      <div className="intro__stage">
+        <video ref={video} className="intro__video" src={INTRO_URL} muted playsInline preload="auto" onEnded={finish} onError={finish} aria-label="Mars Gods Eye intro (AI-generated video)" />
+        {/* The required "AI-GENERATED · KLING" mark is burned into every frame (bottom-right), so it is the only one. */}
+      </div>
       <button
         type="button"
         className="intro__skip"
