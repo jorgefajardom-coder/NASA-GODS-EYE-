@@ -815,3 +815,27 @@ OpenAI Codex assisted publication of the local scientific patch/campaign proposa
 reconciliation of both AI registers with main9198b3d and fresh software checks.
 All prior disclosures/media metadata are retained; approvals remain unchanged.
 Evidence: evidence/mission-proposal-publication-20261115.
+
+## F03.3 main-only resource audit
+
+OpenAI Codex assisted reading only published main c58e7f6, comparing existing search/science cost APIs, constructing explicit synthetic characterization tests and documenting the audit. Paths: docs/planner_f033_resource_audit.md and evidence/planner-f033-audit-20261114. Production code, coefficients, MissionManager and ROS contracts were not modified. Existing public main profile values were consumed unchanged; no scientific measurements or media generated. Test passes confirm existing discrepancies and do not approve model equivalence or physical execution.
+
+## F03.3 remaining-availability guard
+
+OpenAI Codex assisted the planner-only availability admission guard and human/rover regressions based on published main0339bbd, plus MODEL/handoff/audit updates and actual test evidence. Paths: src/mge_planning/mge_planning/replan.py; tests/planning/test_f033_resource_guard.py; src/mge_planning/MODEL.md; docs/planner_handoff.md; docs/replan_policy.md; docs/planner_f033_resource_audit.md; evidence/planner-f033-guard-20261114. No search/science formula, ROS field or MissionManager change, scientific observations or media generated. The previous numerical audit and disclosures were backed up and preserved. New mission/authorization, restart and replenishment decisions remain integration responsibilities.
+
+## F03.3 delivery review
+
+OpenAI Codex assisted the mainb5dc681 delivery comparison, local commit/PR drafts, fresh software validation evidence and a separate local-only future cost-backend proposal. Evidence is under evidence/planner-f033-delivery-20261114. The proposal is not implemented or included in the guard payload. ROS startup failures and previous hash-matched ROS results are explicitly distinguished. No publication, model change or scientific observation is produced by this preparation.
+
+## F03.3-B experimental cost adapter
+
+OpenAI Codex assisted planner resource_costs.py, test_resource_costs.py, the F03.3-B technical report and evidence/planner-f033b-20261114. The adapter reuses published mission functions; tests compare stored David vectors. Outputs are software estimates, not observations or model approval. Search, MissionManager and ROS remain unchanged.
+
+## F03.3-C independent oracle
+
+OpenAI Codex assisted tests/planning/scientific_oracle.py, test_scientific_oracle.py, docs/planner_f033c_oracle.md and evidence/planner-f033c-oracle-20261115. Tiny synthetic graphs and clearances are test inputs, not physical data. Costs delegate to published mission functions. Production search, ROS and authorization remain unchanged; PR28 coordination metadata was read without copying its implementation.
+
+## F03.3 main synchronization and review preparation
+
+OpenAI Codex assisted reconciliation of mandatory disclosures and preparation of the review PR. Current software validation outputs are retained in evidence/planner-f033-pr-sync-20261115. Both branches disclosures are preserved; no scientific measurements, production backend activation or operational approval are inferred. Native ROS is blocked before execution by WSL resources.
