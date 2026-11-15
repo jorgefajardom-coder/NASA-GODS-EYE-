@@ -12,7 +12,7 @@
   "illustrative": true,
   "title": "Elysium demo: corridor survey and replanning near the InSight lander",
   "summary": "The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.",
-  "disclaimer": "Terrain: NASA/USGS InSight HiRISE/CTX/HRSC DEM mosaic crop centred on the InSight lander (real, provisional, 8 m display grid from a 20 m source). InSight is a lander: no rover stops exist here. Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
+  "disclaimer": "Terrain: NASA/USGS InSight HiRISE/CTX/HRSC DEM mosaic crop centred on the InSight lander (real, provisional, 8 m display grid from a 20 m source). InSight is a lander: no rover stops exist here. Mission, budgets and the corridor scarp are simulated or synthetic; POIs C and D are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
   "ai_disclosure": {
     "ai_assisted": true,
     "scope": "Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.",

@@ -12,7 +12,7 @@
   "illustrative": true,
   "title": "Gale demo: Mount Sharp corridor survey and replanning",
   "summary": "The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.",
-  "disclaimer": "Terrain: NASA/USGS MSL Gale crater DEM mosaic crop over Curiosity's traverse and the foot of Mount Sharp (real, provisional, 8 m display grid from its 8 m overview). Rover stop markers: real Curiosity stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
+  "disclaimer": "Terrain: NASA/USGS MSL Gale crater DEM mosaic crop over Curiosity's traverse and the foot of Mount Sharp (real, provisional, 8 m display grid from its 8 m overview). Rover stop markers: real Curiosity stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs C and D are real Curiosity science sites (NASA), visited here in a simulated story. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
   "ai_disclosure": {
     "ai_assisted": true,
     "scope": "Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.",
@@ -136,32 +136,32 @@
     },
     {
       "id": "C",
-      "label": "POI C",
+      "label": "C · Buckskin",
       "kind": "poi",
       "position": {
-        "x": -952,
-        "y": 3308,
-        "z": -279.3
+        "x": -960,
+        "y": 3396,
+        "z": -285
       },
       "revealed_at_s": 264,
       "source": {
-        "basis": "fictitious",
-        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+        "basis": "nasa",
+        "text": "Real Curiosity science site: Buckskin, drill hole, sol 1060. Placed at the rover's published position at the time (stop 48_2542), on the nearest drivable cell within 12 m. Source: NASA/JPL PIA21254, Curiosity's Rock or Soil Sampling Sites on Mars, Through November 2016 (drill holes)."
       }
     },
     {
       "id": "D",
-      "label": "POI D",
+      "label": "D · Big Sky",
       "kind": "poi",
       "position": {
-        "x": -1176,
-        "y": 3348,
-        "z": -283.1
+        "x": -1056,
+        "y": 3092,
+        "z": -272.6
       },
       "revealed_at_s": 266,
       "source": {
-        "basis": "fictitious",
-        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+        "basis": "nasa",
+        "text": "Real Curiosity science site: Big Sky, drill hole, sol 1119. Placed at the rover's published position at the time (stop 50_592), on the nearest drivable cell within 12 m. Source: NASA/JPL PIA21254, Curiosity's Rock or Soil Sampling Sites on Mars, Through November 2016 (drill holes)."
       }
     }
   ],

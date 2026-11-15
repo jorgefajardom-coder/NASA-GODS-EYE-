@@ -47,14 +47,16 @@ describe('zones', () => {
     expect(zoneUrl('http://localhost:5173/?run=demo&lite=1', 'gale-demo')).toBe('http://localhost:5173/?run=gale-demo&lite=1');
   });
 
-  it('says where every site comes from: NASA stops or landing sites, choices of the generator, fictitious POIs', () => {
+  it('says where every site comes from: NASA stops, science sites or landing sites, choices of the generator, fictitious POIs', () => {
     for (const w of WORLDS.filter((x) => x.status === 'scene')) {
       const dir = join(__dirname, '..', 'public', 'replay', w.runId!);
       const m = JSON.parse(readFileSync(join(dir, 'manifest.json'), 'utf8')) as { pois: { id: string; source?: { basis: string; text: string } }[] };
       for (const p of m.pois) expect(p.source?.text).toBeTruthy();
-      for (const id of ['C', 'D']) expect(m.pois.find((p) => p.id === id)?.source?.basis).toBe('fictitious');
+      // C and D are real NASA science sites where the mission has them (rover worlds), fictitious otherwise.
+      for (const id of ['C', 'D']) expect(m.pois.find((p) => p.id === id)?.source?.basis).toBe(['elysium', 'melas'].includes(w.id) ? 'fictitious' : 'nasa');
       const hasStops = existsSync(join(dir, 'rover_stops.json'));
       for (const id of ['A', 'B']) expect(m.pois.find((p) => p.id === id)?.source?.basis).toBe(hasStops ? 'nasa' : 'chosen');
     }
   });
+
 });

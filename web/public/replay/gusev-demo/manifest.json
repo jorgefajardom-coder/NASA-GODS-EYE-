@@ -12,7 +12,7 @@
   "illustrative": true,
   "title": "Gusev demo: Columbia Hills corridor survey and replanning",
   "summary": "The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.",
-  "disclaimer": "Terrain: NASA/USGS Columbia Hills HiRISE/CTX/HRSC DEM mosaic crop over Spirit's traverse from the landing site to the Columbia Hills (real, preliminary, 8 m display grid averaged from its 1 m mosaic). Rover stop markers: real Spirit stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
+  "disclaimer": "Terrain: NASA/USGS Columbia Hills HiRISE/CTX/HRSC DEM mosaic crop over Spirit's traverse from the landing site to the Columbia Hills (real, preliminary, 8 m display grid averaged from its 1 m mosaic). Rover stop markers: real Spirit stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs C and D are real Spirit science sites (NASA), visited here in a simulated story. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
   "ai_disclosure": {
     "ai_assisted": true,
     "scope": "Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.",
@@ -136,32 +136,32 @@
     },
     {
       "id": "C",
-      "label": "POI C",
+      "label": "C · Snowboard",
       "kind": "poi",
       "position": {
-        "x": -1072,
-        "y": 836,
-        "z": -10.2
+        "x": -1264,
+        "y": 1076,
+        "z": -3.4
       },
       "revealed_at_s": 310,
       "source": {
-        "basis": "fictitious",
-        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+        "basis": "nasa",
+        "text": "Real Spirit science site: Snowboard, contact science on the rock target Shredder, Bonneville Crater Rim, sol 89. Placed at the rover's published position at the time (stop 24_0), on the nearest drivable cell within 12 m. Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
       }
     },
     {
       "id": "D",
-      "label": "POI D",
+      "label": "D · Mohave",
       "kind": "poi",
       "position": {
-        "x": -976,
-        "y": 452,
-        "z": -0.6
+        "x": 472,
+        "y": -12,
+        "z": -0.1
       },
       "revealed_at_s": 312,
       "source": {
-        "basis": "fictitious",
-        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+        "basis": "nasa",
+        "text": "Real Spirit science site: Mohave, contact science on the rock target Joshua, Plains, sol 150. Placed at the rover's published position at the time (stop 61_4), on the nearest drivable cell within 12 m. Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
       }
     }
   ],

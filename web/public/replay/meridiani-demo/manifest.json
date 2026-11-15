@@ -12,7 +12,7 @@
   "illustrative": true,
   "title": "Meridiani demo: Endeavour rim corridor survey and replanning",
   "summary": "The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.",
-  "disclaimer": "Terrain: NASA HiRISE DEM crop of Endeavour crater's west rim along Opportunity's traverse (real, provisional, 8 m display grid averaged from its 1 m DEM). Rover stop markers: real Opportunity stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
+  "disclaimer": "Terrain: NASA HiRISE DEM crop of Endeavour crater's west rim along Opportunity's traverse (real, provisional, 8 m display grid averaged from its 1 m DEM). Rover stop markers: real Opportunity stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs C and D are real Opportunity science sites (NASA), visited here in a simulated story. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
   "ai_disclosure": {
     "ai_assisted": true,
     "scope": "Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.",
@@ -20,7 +20,7 @@
     "observational_data": "Only the terrain heights come from NASA/USGS data; everything else here is simulated."
   },
   "world": "meridiani",
-  "duration_s": 17290,
+  "duration_s": 19634,
   "local_z_offset_m": -1476,
   "imagery": {
     "file": "ctx_ortho.png",
@@ -43,8 +43,8 @@
   },
   "photo_tour": {
     "agent_id": "rover_1",
-    "start_s": 3068,
-    "end_s": 17280,
+    "start_s": 5412,
+    "end_s": 19624,
     "stops": 134,
     "speed_mps": 2,
     "dwell_s": 40
@@ -136,32 +136,32 @@
     },
     {
       "id": "C",
-      "label": "POI C",
+      "label": "C · Gibraltar",
       "kind": "poi",
       "position": {
-        "x": -616,
-        "y": 3548,
-        "z": 11.3
+        "x": 280,
+        "y": 2420,
+        "z": 7.4
       },
       "revealed_at_s": 286,
       "source": {
-        "basis": "fictitious",
-        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+        "basis": "nasa",
+        "text": "Real Opportunity science site: Gibraltar, contact science on the rock target Gibraltar, Plains, sol 2669. Placed at the rover's published position at the time (stop 156_573), on the nearest drivable cell within 12 m. Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
       }
     },
     {
       "id": "D",
-      "label": "POI D",
+      "label": "D · Botany Bay",
       "kind": "poi",
       "position": {
-        "x": -640,
-        "y": 3356,
-        "z": 10.5
+        "x": 344,
+        "y": 1508,
+        "z": -10.8
       },
       "revealed_at_s": 288,
       "source": {
-        "basis": "fictitious",
-        "text": "Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under 8 degrees) inside the area the simulated drone survey saw."
+        "basis": "nasa",
+        "text": "Real Opportunity science site: Botany Bay, contact science on the rock target Gnarlaroo, Endeavour Crater, Cape York, Botany Bay, sol 3332. Placed at the rover's published position at the time (stop 172_1348), on the nearest drivable cell within 12 m. Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
       }
     }
   ],

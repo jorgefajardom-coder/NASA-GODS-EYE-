@@ -1,0 +1,118 @@
+{
+ "note": "Real Curiosity science sites inside the crop: where the rover sampled, drilled or did contact science, placed at the rover's own published position at the time (not the exact target, which lies a few metres away).",
+ "mission": "Curiosity",
+ "source": {
+  "list": "NASA/JPL PIA21254, Curiosity's Rock or Soil Sampling Sites on Mars, Through November 2016 (drill holes)",
+  "list_url": "https://photojournal.jpl.nasa.gov/catalog/PIA21254",
+  "position": "Last MMGIS MSL waypoint at or before the drill sol",
+  "position_url": "https://mars.nasa.gov/mmgis-maps/MSL/Layers/json/MSL_waypoints.json",
+  "position_sha256": "5a32324f4b8ba22ebdfac50a503e195f47ccdc876ad4c15b19e29dc7cef15a09",
+  "retrieved": "2026-11-15"
+ },
+ "sites": [
+  {
+   "id": "confidence-hills",
+   "name": "Confidence Hills",
+   "kind": "drill",
+   "detail": "drill hole",
+   "sol": 759,
+   "rover_stop": "42_1020",
+   "rover_stop_sol": 753,
+   "lat_deg": -4.662699,
+   "lon_deg": 137.377464,
+   "x_m": -533.81,
+   "y_m": 3710.64
+  },
+  {
+   "id": "mojave",
+   "name": "Mojave",
+   "kind": "drill",
+   "detail": "drill hole",
+   "sol": 882,
+   "rover_stop": "45_0",
+   "rover_stop_sol": 864,
+   "lat_deg": -4.662864,
+   "lon_deg": 137.37745,
+   "x_m": -534.62,
+   "y_m": 3700.89
+  },
+  {
+   "id": "telegraph-peak",
+   "name": "Telegraph Peak",
+   "kind": "drill",
+   "detail": "drill hole",
+   "sol": 908,
+   "rover_stop": "45_450",
+   "rover_stop_sol": 903,
+   "lat_deg": -4.663527,
+   "lon_deg": 137.377452,
+   "x_m": -534.48,
+   "y_m": 3661.56
+  },
+  {
+   "id": "buckskin",
+   "name": "Buckskin",
+   "kind": "drill",
+   "detail": "drill hole",
+   "sol": 1060,
+   "rover_stop": "48_2542",
+   "rover_stop_sol": 1056,
+   "lat_deg": -4.668025,
+   "lon_deg": 137.370299,
+   "x_m": -957.07,
+   "y_m": 3394.96
+  },
+  {
+   "id": "big-sky",
+   "name": "Big Sky",
+   "kind": "drill",
+   "detail": "drill hole",
+   "sol": 1119,
+   "rover_stop": "50_592",
+   "rover_stop_sol": 1112,
+   "lat_deg": -4.673136,
+   "lon_deg": 137.368583,
+   "x_m": -1058.42,
+   "y_m": 3092.02
+  },
+  {
+   "id": "greenhorn",
+   "name": "Greenhorn",
+   "kind": "drill",
+   "detail": "drill hole",
+   "sol": 1137,
+   "rover_stop": "50_676",
+   "rover_stop_sol": 1127,
+   "lat_deg": -4.673146,
+   "lon_deg": 137.368647,
+   "x_m": -1054.64,
+   "y_m": 3091.42
+  },
+  {
+   "id": "lubango",
+   "name": "Lubango",
+   "kind": "drill",
+   "detail": "drill hole",
+   "sol": 1320,
+   "rover_stop": "54_746",
+   "rover_stop_sol": 1317,
+   "lat_deg": -4.678261,
+   "lon_deg": 137.359234,
+   "x_m": -1610.68,
+   "y_m": 2788.24
+  },
+  {
+   "id": "okoruso",
+   "name": "Okoruso",
+   "kind": "drill",
+   "detail": "drill hole",
+   "sol": 1332,
+   "rover_stop": "54_938",
+   "rover_stop_sol": 1329,
+   "lat_deg": -4.67824,
+   "lon_deg": 137.359173,
+   "x_m": -1614.28,
+   "y_m": 2789.45
+  }
+ ]
+}
