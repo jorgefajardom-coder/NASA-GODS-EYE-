@@ -44,7 +44,7 @@
     },
     "geology_json": {
       "path": "geology.json",
-      "sha256": "862a1fb3739c23ff648d4057f2ea136565b72de7ba3351f758256eb6573de7d7",
+      "sha256": "77c997f716182548aea22b3d66c45f9f23b8e116daafdf96fc51397b10e97539",
       "doi": "https://doi.org/10.3133/sim3464",
       "scale": "1:75,000"
     }

@@ -577,9 +577,12 @@ def load_auxiliary_terrain_layers(
 
     geology_json_path = sample_dir / str((files_meta.get("geology_json") or {}).get("path", "geology.json"))
     expected_geo_sha = (files_meta.get("geology_json") or {}).get("sha256")
-    if not geology_json_path.is_file() or (expected_geo_sha and _sha256_file(geology_json_path) != expected_geo_sha):
+    if not geology_json_path.is_file():
         raise ValueError("SHA-256 mismatch or missing geology.json for auxiliary layers")
-    geology_doc = json.loads(geology_json_path.read_text(encoding="utf-8"))
+    geo_bytes = geology_json_path.read_bytes()
+    if expected_geo_sha and hashlib.sha256(geo_bytes.replace(b"\r\n", b"\n")).hexdigest() != expected_geo_sha:
+        raise ValueError("SHA-256 mismatch or missing geology.json for auxiliary layers")
+    geology_doc = json.loads(geo_bytes.decode("utf-8"))
 
     ctx_png_name = str((files_meta.get("ctx_ortho_png") or {}).get("path", "ctx_ortho.png"))
     ctx_png_path = sample_dir / ctx_png_name

@@ -858,7 +858,7 @@ def build_auxiliary_package(
     # Write north-up grayscale PNG stretched to 0..255 for visual texture draping
     stretched_dn = np.where(ctx_valid, np.clip(np.round(ctx_norm * 255.0), 0, 255), 0).astype(np.uint8)
     write_north_up_grayscale_png(ctx_png_path, stretched_dn, scale_factor=1)
-    geology_json_path.write_text(json.dumps(geology_doc, indent=2) + "\n", encoding="utf-8")
+    geology_json_path.write_text(json.dumps(geology_doc, indent=2) + "\n", encoding="utf-8", newline="\n")
 
     zone_counts = {
         defn["id"]: int(np.sum(surface_zone_code == int(defn["code"])))
@@ -960,7 +960,7 @@ def build_auxiliary_package(
             "usgs_sim3464": geology_doc["source"],
         },
     }
-    aux_manifest_path.write_text(json.dumps(aux_manifest, indent=2) + "\n", encoding="utf-8")
+    aux_manifest_path.write_text(json.dumps(aux_manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     return aux_manifest
 
 
