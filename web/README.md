@@ -156,7 +156,7 @@ The HUD powers on when first person opens: the screen starts black while a short
 
 **Drone camera** (`C`, first person only, while not looking through the drone itself): a window in the dock shows the scene a second time from the drone, looking ahead along its heading and 35° down, so the ground it is flying over is always visible (`src/components/DroneCam.tsx`). It is the replayed pose (`REPLAY · simulated pose`), not a live video feed; off by default in the lite render tier.
 
-The drone window has two tabs. **Cam** is the view above. **Hazards** (`DroneMap.tsx`, `src/lib/droneHazards.ts`) is the drone's hazard report, north up and centred on it within 300 m, with 100 m rings and the flight trail. It draws only the cells the map version in force marks as observed: steep cells (hazard) in red, moderate (caution) in amber, cells whose updated height contradicts the orbital prior by more than twice its sigma outlined in red, clear cells as faint cyan dots; it also gives the nearest hazard (distance and bearing) and a status line of what the report caused in the replay. Slope bands are the viewer's display bands (`src/lib/scan.ts`, pending science approval). These observations are **simulated** in the replay; the drone carries no modelled LiDAR, and the window says so. This tab replaces the earlier survey-map tab in the working tree (uncommitted at the time of this sync).
+The drone window has two tabs. **Cam** is the view above. **Hazards** (`DroneMap.tsx`, `src/lib/droneHazards.ts`) is the drone's hazard report, north up and centred on it within 300 m, with 100 m rings and the flight trail. It draws only the cells the map version in force marks as observed: steep cells (hazard) in red, moderate (caution) in amber, cells whose updated height contradicts the orbital prior by more than twice its sigma outlined in red, clear cells as faint cyan dots; it also gives the nearest hazard (distance and bearing) and a status line of what the report caused in the replay. Slope bands are the viewer's display bands (`src/lib/scan.ts`, pending science approval). These observations are **simulated** in the replay; the drone carries no modelled LiDAR, and the window says so. This tab replaced the earlier survey-map tab.
 
 **Helmet lights** (`L`, or *Lights* in the camera bar and the dock): EVA suits carry LED lamps on the helmet; the astronaut gets one cool-white spot light at helmet height aimed at the ground a few metres ahead (`src/components/HelmetLight.tsx`). Brightness and beam are display choices, not suit specifications.
 
@@ -247,7 +247,7 @@ Replay fixture layout (`public/replay/<run_id>/`, demo run `demo-sim-002`, `mode
 
 ## Acceptance tests
 
-Automated suite run on 2026-11-14 23:49 (`npm test`, working tree of `feat/ux` with uncommitted drone hazard changes): 40 files passed (40); 240 tests passed, 1 skipped (241). Build not run in this sync.
+Automated suite run on 2026-11-15 00:11 (`npm test`, branch `feat/ux` at `2cd69c4`): 42 files passed (42); 252 tests passed, 1 skipped (253). Build not run in this sync.
 
 | Test | Status |
 |---|---|
@@ -287,4 +287,4 @@ Astronaut posture (vertical torso, level shoulders) and planted-foot slip are co
 the real model and were checked by eye in the follow view, but only in the dev server on one machine. No browser automation tests. Of the candidate NASA layers in
 `../docs/data_sources.md`, the Mars Trek CTX orthomosaic and USGS SIM 3464 geology are
 shown; Perseverance raw images load on request in the Atmos tab. The tactical map tab was removed (a minimap
-remains in the agent HUD); scanner not started.
+remains in the agent HUD). The terrain scan is a display effect only (`src/scanner/`).
