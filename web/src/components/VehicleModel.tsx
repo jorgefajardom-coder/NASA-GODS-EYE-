@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { assetUrl } from '../data/replayAdapter';
 import { Downwash } from './Downwash';
+import { SHADOW_RENDER_ORDER, createProjectedShadow } from '../lib/projectedShadow';
 
 /**
  * Rover and drone models: official NASA/JPL-Caltech 3D models with all agency branding removed
@@ -384,6 +385,40 @@ export function VehicleModel({ url, lengthM, yawOffset = 0, playing = true, spin
   }, [model, rotors]);
   // Wheels: the combined wheel mesh is split into one pivot per wheel (emptied on this clone only).
   const wheels = useMemo(() => wheelsOf(model), [model]);
+  // Projected shadow (rover and drone, like the astronaut's): every mesh gets a twin, child of the same
+  // node so it follows the wheels, the suspension and the rotors, drawn flattened onto the ground along
+  // the display sun. Display only.
+  const shadow = useMemo(() => createProjectedShadow(0.4), []);
+  useEffect(() => {
+    const meshes: THREE.Mesh[] = [];
+    model.traverse((o) => {
+      const m = o as THREE.Mesh;
+      const pos = m.isMesh ? (m.geometry?.getAttribute('position') as THREE.BufferAttribute | undefined) : undefined;
+      if (m.isMesh && !m.userData.isShadow && pos && pos.count > 0 && !(m.material as THREE.Material | undefined)?.transparent) meshes.push(m);
+    });
+    const twins = meshes.map((m) => {
+      const twin = new THREE.Mesh(m.geometry, shadow.material);
+      twin.userData.isShadow = true;
+      twin.renderOrder = SHADOW_RENDER_ORDER;
+      twin.frustumCulled = false;
+      m.add(twin);
+      return twin;
+    });
+    return () => {
+      for (const t of twins) t.removeFromParent();
+    };
+  }, [model, shadow, wheels]);
+  useEffect(() => () => shadow.material.dispose(), [shadow]);
+  // The shadow lands on the drawn ground under the vehicle (a drone in flight casts it far below itself).
+  const shadowAt = useMemo(() => new THREE.Vector3(), []);
+  useFrame(() => {
+    const h = holder.current;
+    if (!h) return;
+    h.getWorldPosition(shadowAt);
+    const ground = state.current.groundAt?.(shadowAt.x, shadowAt.z);
+    shadow.uniforms.uGround.value = (ground ?? shadowAt.y) + 0.02;
+  });
+
 
   const state = useRef({ playing, spinning, drive, groundAt });
   state.current = { playing, spinning, drive, groundAt };

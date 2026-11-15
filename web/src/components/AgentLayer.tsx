@@ -110,14 +110,14 @@ export function AgentLayer({ agents, t, verticalExaggeration, showLabels, hideLa
                     ) : (
                       // Landed, the drone sits on its four legs: tilted to the ground under them (level in flight).
                       <TerrainTilt groundHeight={groundHeight} verticalExaggeration={verticalExaggeration} lengthM={DRONE_LEGS_M} widthM={DRONE_LEGS_M} landedOnly>
-                        <VehicleModel url={DRONE_URL} lengthM={DRONE_ROTOR_M} playing={playing} spinning={a.mode !== 'IDLE'} />
+                        <VehicleModel url={DRONE_URL} lengthM={DRONE_ROTOR_M} playing={playing} spinning={a.mode !== 'IDLE'} groundAt={groundAtWorld} />
                       </TerrainTilt>
                     )}
                   </Suspense>
                 </ModelBoundary>
               )}
               {showLabels && a.agent_id !== hideLabelFor && (
-                <Html position={[0, LABEL_HEIGHT_M[a.agent_kind], 0]} center zIndexRange={LABEL_Z} className={`agent-label agent-label--${a.agent_kind.toLowerCase()}`}>
+                <Html position={[0, LABEL_HEIGHT_M[a.agent_kind], 0]} center zIndexRange={LABEL_Z} className={`agent-label agent-label--${a.agent_kind.toLowerCase()}${a.agent_id === selectedId ? ' agent-label--selected' : ''}`}>
                   <strong>{KIND_LABEL[a.agent_kind]}</strong> <span>{a.mode.toLowerCase()}</span>
                 </Html>
               )}
