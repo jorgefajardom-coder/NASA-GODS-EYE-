@@ -1,0 +1,209 @@
+{
+  "schema_version": "mge-web-0.1-draft",
+  "icd": "ICD-ROS2-V1 (draft)",
+  "run_id": "meridiani-demo-sim-001",
+  "mode": "REPLAY",
+  "source_mode": "SIMULATION",
+  "provenance": [
+    "nasa",
+    "simulated",
+    "fictitious"
+  ],
+  "illustrative": true,
+  "title": "Meridiani demo: Endeavour rim corridor survey and replanning",
+  "summary": "The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.",
+  "disclaimer": "Terrain: NASA HiRISE DEM crop of Endeavour crater's west rim along Opportunity's traverse (real, provisional, 8 m display grid averaged from its 1 m DEM). Rover stop markers: real Opportunity stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs C and D are real Opportunity science sites (NASA), visited here in a simulated story. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.",
+  "ai_disclosure": {
+    "ai_assisted": true,
+    "scope": "Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.",
+    "tool": "Claude (Anthropic) through Claude Code",
+    "observational_data": "Only the terrain heights come from NASA/USGS data; everything else here is simulated."
+  },
+  "world": "meridiani",
+  "duration_s": 19634,
+  "local_z_offset_m": -1476,
+  "imagery": {
+    "file": "ctx_ortho.png",
+    "title": "MRO CTX South Meridiani mosaic (block adjusted)",
+    "source": "JPL Mars Trek WMTS layer S_Meridiani_Sinus_Planium_CTX_BlockAdj_dd, https://trek.nasa.gov/mars/",
+    "credit": "NASA/JPL-Caltech/MSSS",
+    "native_resolution_m": 6,
+    "resolution_m": 10,
+    "extent": {
+      "origin_x_m": -1700,
+      "origin_y_m": -3800,
+      "width_m": 3400,
+      "height_m": 7600
+    },
+    "row0": "north",
+    "processing": "Bilinear resampling onto the crop ENU grid; display contrast stretched linearly between the 1st and 99th percentile. Panchromatic; the viewer tints it for display only."
+  },
+  "rover_stops": {
+    "file": "rover_stops.json"
+  },
+  "photo_tour": {
+    "agent_id": "rover_1",
+    "start_s": 5412,
+    "end_s": 19624,
+    "stops": 134,
+    "speed_mps": 2,
+    "dwell_s": 40
+  },
+  "terrain_meta": {
+    "run_id": "meridiani-demo-sim-001",
+    "dataset_id": "endeavour-hirise-dem-8m",
+    "frame_id": "map",
+    "map_version": 1,
+    "origin_x_m": -1700,
+    "origin_y_m": -3800,
+    "resolution_m": 8,
+    "rows": 950,
+    "cols": 425,
+    "crs": "Local tangent ENU grid; source Equirectangular, Mars 2000 sphere IAU (R = 3396190 m)",
+    "origin_lat_deg": -2.2679,
+    "origin_lon_deg": -5.369,
+    "vertical_datum": "datum of the Endeavour crater HiRISE DEM; local z = elevation - (-1476 m)",
+    "nodata_value": -32768,
+    "sources": [
+      "MRO HiRISE DEM of Endeavour crater west rim, 1 m, NASA JPL Mars Trek (USGS Astrogeology / HiRISE and CTX teams). File DEM_1m_Endeavour_Crater_isis3_2017-04-14.tif, 703735672 bytes, SHA-256 9732dfc953fcf5d70743f7435ba96b6222c9e43d7639430d044047c5fda85649.",
+      "Product page https://trek.nasa.gov/mars/. Native resolution 1 m. Not verified here: NASA planetary data served by JPL Mars Trek, see the Trek product page for usage terms.",
+      "Crop: 950 x 425 cells of 8 m centred at -2.2679 N, -5.369 E, box average of 8 x 8 source pixels, then bilinear resampling onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); 8 m cells. PROVISIONAL, made by the frontend until the data owner delivers the processed package.",
+      "SYNTHETIC: a scarp was added to the hidden evaluator reference to create an adverse case. It does not exist in the NASA terrain data.",
+      "ILLUSTRATIVE: uncertainty (sigma), budgets, speeds and consumption rates are assumptions of a simulated mission."
+    ],
+    "checksum_sha256": "96c316908de900153a36b88e19a3a9b085eaf2ddf3ae0627d9a5d4daf90a73ff"
+  },
+  "vertical_exaggeration_default": 1,
+  "control_points": [
+    {
+      "id": "cp-1",
+      "position": {
+        "x": -1216,
+        "y": -3460,
+        "z": 2.8
+      },
+      "description": "Cell centre row 42, col 60 of the CTX crop."
+    },
+    {
+      "id": "cp-2",
+      "position": {
+        "x": -496,
+        "y": -2596,
+        "z": 3.7
+      },
+      "description": "Cell centre row 150, col 150 of the CTX crop."
+    },
+    {
+      "id": "cp-3",
+      "position": {
+        "x": 176,
+        "y": -1780,
+        "z": 8.3
+      },
+      "description": "Cell centre row 252, col 234 of the CTX crop."
+    }
+  ],
+  "pois": [
+    {
+      "id": "A",
+      "label": "Base A",
+      "kind": "base",
+      "position": {
+        "x": -1136,
+        "y": 3788,
+        "z": 13.6
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Opportunity stop 149_771, sol 2630 (Opportunity (MER-B) interpolated traverse, PDS Geosciences Node); the base sits on the nearest walkable cell, within 12 m."
+      },
+      "for_agent": "HUMAN"
+    },
+    {
+      "id": "B",
+      "label": "Goal B",
+      "kind": "primary_goal",
+      "position": {
+        "x": -176,
+        "y": 2900,
+        "z": 10.9
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Opportunity stop 153_1182, sol 2660 (Opportunity (MER-B) interpolated traverse, PDS Geosciences Node); the goal sits on the nearest walkable cell, within 12 m."
+      },
+      "for_agent": "HUMAN"
+    },
+    {
+      "id": "C",
+      "label": "C · Gibraltar",
+      "kind": "poi",
+      "position": {
+        "x": 280,
+        "y": 2420,
+        "z": 7.4
+      },
+      "revealed_at_s": 286,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Opportunity science site: Gibraltar, contact science on the rock target Gibraltar, Plains, sol 2669. Placed at the rover's published position at the time (stop 156_573), on the nearest drivable cell within 12 m. Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
+      },
+      "for_agent": "ROVER"
+    },
+    {
+      "id": "D",
+      "label": "D · Botany Bay",
+      "kind": "poi",
+      "position": {
+        "x": 344,
+        "y": 1508,
+        "z": -10.8
+      },
+      "revealed_at_s": 288,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Opportunity science site: Botany Bay, contact science on the rock target Gnarlaroo, Endeavour Crater, Cape York, Botany Bay, sol 3332. Placed at the rover's published position at the time (stop 172_1348), on the nearest drivable cell within 12 m. Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
+      },
+      "for_agent": "ROVER"
+    },
+    {
+      "id": "SCI",
+      "label": "Science stop · NW Bench",
+      "kind": "science",
+      "position": {
+        "x": 640,
+        "y": 2484,
+        "z": -1.6
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "nasa",
+        "text": "Real Opportunity science site nearest to goal B that the astronaut can walk to: NW Bench, contact science on the rock target Homestake, Endeavour Crater, Cape York, sol 2764, at the rover's published position (stop 162_27). 0.99 km on foot from goal B (project slope limit 20 degrees). Source: PDS Geosciences Node, MER Contact Science Target List (urn:nasa:pds:mer_cs_target_list), first contact-science sol per feature."
+      },
+      "for_agent": "HUMAN"
+    },
+    {
+      "id": "HAB",
+      "label": "Habitat area (flattest 1 km)",
+      "kind": "habitat",
+      "position": {
+        "x": -1196,
+        "y": 104,
+        "z": -2
+      },
+      "revealed_at_s": 0,
+      "source": {
+        "basis": "chosen",
+        "text": "Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: 0.3 degrees; within 5 km of the landing site, here base A: 3.68 km). Mean 8 m slope 0.4 degrees, 0 % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed here (see the water, ice and radiation section of docs/science_poi_dossier.md)."
+      },
+      "for_agent": "HUMAN"
+    }
+  ],
+  "files": {
+    "rasters": "rasters.json",
+    "timeline": "timeline.json",
+    "routes": "routes.json"
+  }
+}
