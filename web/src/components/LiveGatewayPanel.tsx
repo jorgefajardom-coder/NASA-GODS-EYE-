@@ -31,7 +31,7 @@ export function LiveGatewayPanel({ base }: { base: string }) {
         <span className="live-gw__dot" aria-hidden />
         <strong>ROS</strong>
         <span className="chip-mode" title="Who produces the data (gateway source_mode, ICD §6.1). LIVE is reserved for a validated real source.">
-          {s.status === 'connected' ? s.label : 'NOT_READY'}
+          {s.status === 'connected' ? s.label : s.status === 'error' ? 'ERROR' : 'NOT_READY'}
         </span>
         <span className="live-gw__summary mono">{summary}</span>
         {!open && last && (
@@ -52,7 +52,8 @@ export function LiveGatewayPanel({ base }: { base: string }) {
           {s.runId && (
             <p className="live-gw__line mono">
               run {s.runId} · {s.datasetId ?? 'no dataset'}
-              {m ? ` · map v${m.map_version}` : ''}
+              {m ? ` · mission map v${m.map_version}` : ''}
+              {s.terrainVersion != null ? ` · terrain v${s.terrainVersion}` : ' · terrain unavailable'}
             </p>
           )}
           {m && (

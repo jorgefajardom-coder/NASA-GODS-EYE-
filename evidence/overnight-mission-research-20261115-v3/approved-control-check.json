@@ -1,0 +1,479 @@
+{
+  "source_sha": "7ad605039a524d5b5cbe2c983f2da9113f8b1ce9",
+  "configuration_sha256": "b4f424dbd0c96fd7190502a0c5dc88d556de285d171568de12cce1e73b9324d1",
+  "scope": "Original human primary A/B, 120 s inspect, 60 s wait charged once, original caps/reserves; no optional work or execution evidence",
+  "initial_allocation": {
+    "time_s": 1200.0,
+    "energy_wh": 100.0,
+    "oxygen_l": 25.0,
+    "reserve_time_s": 240.0,
+    "reserve_wh": 20.0,
+    "reserve_oxygen_l": 5.0
+  },
+  "wait_debit": {
+    "time_s": 60.0,
+    "energy_wh": 5.968,
+    "oxygen_l": 1.2186818275246676
+  },
+  "remaining_after_wait": {
+    "time_s": 1140.0,
+    "energy_wh": 94.032,
+    "oxygen_l": 23.78131817247533
+  },
+  "rows": [
+    {
+      "sigma_m": 1.0,
+      "mode": "FAST",
+      "classification": "ORIGINAL_STRICT_SIGMA",
+      "result": {
+        "status": "UNKNOWN",
+        "reason_code": "UNVERIFIED_CORRIDOR",
+        "detail": "A possible corridor depends on unknown or unverified terrain.",
+        "run_id": "approved-control-comparison",
+        "request_id": "control-1.0-FAST",
+        "agent_id": "human_1",
+        "mode": "FAST",
+        "map_version_used": 1,
+        "route_id": "",
+        "outbound_path": [],
+        "return_path": [],
+        "travel_time_s": null,
+        "energy_est_wh": null,
+        "oxygen_est_l": null,
+        "min_clearance_m": null,
+        "reserve_time_s": null,
+        "reserve_wh": null,
+        "reserve_oxygen_l": null,
+        "expanded_labels": 610,
+        "elapsed_s": 0.06199999999807915,
+        "start_connector": null
+      },
+      "audit": null,
+      "candidate_authorized": false,
+      "mission_success": null
+    },
+    {
+      "sigma_m": 1.0,
+      "mode": "SAFE",
+      "classification": "ORIGINAL_STRICT_SIGMA",
+      "result": {
+        "status": "UNKNOWN",
+        "reason_code": "UNVERIFIED_CORRIDOR",
+        "detail": "A possible corridor depends on unknown or unverified terrain.",
+        "run_id": "approved-control-comparison",
+        "request_id": "control-1.0-SAFE",
+        "agent_id": "human_1",
+        "mode": "SAFE",
+        "map_version_used": 1,
+        "route_id": "",
+        "outbound_path": [],
+        "return_path": [],
+        "travel_time_s": null,
+        "energy_est_wh": null,
+        "oxygen_est_l": null,
+        "min_clearance_m": null,
+        "reserve_time_s": null,
+        "reserve_wh": null,
+        "reserve_oxygen_l": null,
+        "expanded_labels": 610,
+        "elapsed_s": 0.06300000000192085,
+        "start_connector": null
+      },
+      "audit": null,
+      "candidate_authorized": false,
+      "mission_success": null
+    },
+    {
+      "sigma_m": 3.0,
+      "mode": "FAST",
+      "classification": "EXPERIMENTAL_SIGMA3_CLONE",
+      "result": {
+        "status": "FEASIBLE",
+        "reason_code": "FEASIBLE_UNDER_MODEL",
+        "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+        "run_id": "approved-control-comparison",
+        "request_id": "control-3.0-FAST",
+        "agent_id": "human_1",
+        "mode": "FAST",
+        "map_version_used": 1,
+        "route_id": "route-47800eaf27d75e433c25744e",
+        "outbound_path": [
+          [
+            -14.0,
+            -14.0,
+            -2571.199462890625
+          ],
+          [
+            -14.0,
+            -10.0,
+            -2571.32958984375
+          ],
+          [
+            -10.0,
+            -6.0,
+            -2571.509521484375
+          ],
+          [
+            -6.0,
+            -2.0,
+            -2571.708984375
+          ],
+          [
+            -6.0,
+            2.0,
+            -2571.857666015625
+          ],
+          [
+            -6.0,
+            6.0,
+            -2571.993408203125
+          ],
+          [
+            -2.0,
+            10.0,
+            -2572.17333984375
+          ],
+          [
+            2.0,
+            10.0,
+            -2572.255859375
+          ],
+          [
+            6.0,
+            10.0,
+            -2572.338623046875
+          ],
+          [
+            10.0,
+            14.0,
+            -2572.524169921875
+          ],
+          [
+            14.0,
+            18.0,
+            -2572.7080078125
+          ],
+          [
+            18.0,
+            22.0,
+            -2572.8974609375
+          ],
+          [
+            22.0,
+            26.0,
+            -2573.0849609375
+          ],
+          [
+            26.0,
+            26.0,
+            -2573.1591796875
+          ],
+          [
+            30.0,
+            30.0,
+            -2573.264892578125
+          ]
+        ],
+        "return_path": [
+          [
+            30.0,
+            30.0,
+            -2573.264892578125
+          ],
+          [
+            26.0,
+            26.0,
+            -2573.1591796875
+          ],
+          [
+            22.0,
+            26.0,
+            -2573.0849609375
+          ],
+          [
+            18.0,
+            22.0,
+            -2572.8974609375
+          ],
+          [
+            14.0,
+            18.0,
+            -2572.7080078125
+          ],
+          [
+            10.0,
+            14.0,
+            -2572.524169921875
+          ],
+          [
+            6.0,
+            10.0,
+            -2572.338623046875
+          ],
+          [
+            2.0,
+            10.0,
+            -2572.255859375
+          ],
+          [
+            -2.0,
+            10.0,
+            -2572.17333984375
+          ],
+          [
+            -6.0,
+            6.0,
+            -2571.993408203125
+          ],
+          [
+            -6.0,
+            2.0,
+            -2571.857666015625
+          ],
+          [
+            -6.0,
+            -2.0,
+            -2571.708984375
+          ],
+          [
+            -10.0,
+            -6.0,
+            -2571.509521484375
+          ],
+          [
+            -14.0,
+            -10.0,
+            -2571.32958984375
+          ],
+          [
+            -14.0,
+            -14.0,
+            -2571.199462890625
+          ]
+        ],
+        "travel_time_s": 296.21470779896714,
+        "energy_est_wh": 36.952314203434014,
+        "oxygen_est_l": 12.454282039649236,
+        "min_clearance_m": 33.25,
+        "reserve_time_s": 843.7852922010329,
+        "reserve_wh": 57.07968579656598,
+        "reserve_oxygen_l": 11.327036132826095,
+        "expanded_labels": 475,
+        "elapsed_s": 0.030999999999039574,
+        "start_connector": null
+      },
+      "audit": {
+        "pending_movement_service_return": {
+          "time_s": 296.13270939862963,
+          "energy_wh": 34.081078808861484,
+          "oxygen_l": 6.959448962264668
+        },
+        "margins": {
+          "time_s": 603.8672906013703,
+          "energy_wh": 39.95092119113851,
+          "oxygen_l": 11.821869210210663
+        },
+        "model_agreement": false
+      },
+      "candidate_authorized": false,
+      "mission_success": null
+    },
+    {
+      "sigma_m": 3.0,
+      "mode": "SAFE",
+      "classification": "EXPERIMENTAL_SIGMA3_CLONE",
+      "result": {
+        "status": "FEASIBLE",
+        "reason_code": "FEASIBLE_UNDER_MODEL",
+        "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+        "run_id": "approved-control-comparison",
+        "request_id": "control-3.0-SAFE",
+        "agent_id": "human_1",
+        "mode": "SAFE",
+        "map_version_used": 1,
+        "route_id": "route-2903d5d7b96ceb819f3edd29",
+        "outbound_path": [
+          [
+            -14.0,
+            -14.0,
+            -2571.199462890625
+          ],
+          [
+            -14.0,
+            -10.0,
+            -2571.32958984375
+          ],
+          [
+            -10.0,
+            -6.0,
+            -2571.509521484375
+          ],
+          [
+            -6.0,
+            -2.0,
+            -2571.708984375
+          ],
+          [
+            -6.0,
+            2.0,
+            -2571.857666015625
+          ],
+          [
+            -6.0,
+            6.0,
+            -2571.993408203125
+          ],
+          [
+            -2.0,
+            10.0,
+            -2572.17333984375
+          ],
+          [
+            2.0,
+            10.0,
+            -2572.255859375
+          ],
+          [
+            6.0,
+            10.0,
+            -2572.338623046875
+          ],
+          [
+            10.0,
+            14.0,
+            -2572.524169921875
+          ],
+          [
+            14.0,
+            18.0,
+            -2572.7080078125
+          ],
+          [
+            18.0,
+            22.0,
+            -2572.8974609375
+          ],
+          [
+            22.0,
+            26.0,
+            -2573.0849609375
+          ],
+          [
+            26.0,
+            26.0,
+            -2573.1591796875
+          ],
+          [
+            30.0,
+            30.0,
+            -2573.264892578125
+          ]
+        ],
+        "return_path": [
+          [
+            30.0,
+            30.0,
+            -2573.264892578125
+          ],
+          [
+            26.0,
+            26.0,
+            -2573.1591796875
+          ],
+          [
+            22.0,
+            26.0,
+            -2573.0849609375
+          ],
+          [
+            18.0,
+            22.0,
+            -2572.8974609375
+          ],
+          [
+            14.0,
+            18.0,
+            -2572.7080078125
+          ],
+          [
+            10.0,
+            14.0,
+            -2572.524169921875
+          ],
+          [
+            6.0,
+            10.0,
+            -2572.338623046875
+          ],
+          [
+            2.0,
+            10.0,
+            -2572.255859375
+          ],
+          [
+            -2.0,
+            10.0,
+            -2572.17333984375
+          ],
+          [
+            -6.0,
+            6.0,
+            -2571.993408203125
+          ],
+          [
+            -6.0,
+            2.0,
+            -2571.857666015625
+          ],
+          [
+            -6.0,
+            -2.0,
+            -2571.708984375
+          ],
+          [
+            -10.0,
+            -6.0,
+            -2571.509521484375
+          ],
+          [
+            -14.0,
+            -10.0,
+            -2571.32958984375
+          ],
+          [
+            -14.0,
+            -14.0,
+            -2571.199462890625
+          ]
+        ],
+        "travel_time_s": 296.21470779896714,
+        "energy_est_wh": 36.952314203434014,
+        "oxygen_est_l": 12.454282039649236,
+        "min_clearance_m": 33.25,
+        "reserve_time_s": 843.7852922010329,
+        "reserve_wh": 57.07968579656598,
+        "reserve_oxygen_l": 11.327036132826095,
+        "expanded_labels": 475,
+        "elapsed_s": 0.01599999999962165,
+        "start_connector": null
+      },
+      "audit": {
+        "pending_movement_service_return": {
+          "time_s": 296.13270939862963,
+          "energy_wh": 34.081078808861484,
+          "oxygen_l": 6.959448962264668
+        },
+        "margins": {
+          "time_s": 603.8672906013703,
+          "energy_wh": 39.95092119113851,
+          "oxygen_l": 11.821869210210663
+        },
+        "model_agreement": false
+      },
+      "candidate_authorized": false,
+      "mission_success": null
+    }
+  ],
+  "scientific_approval": false,
+  "operational_acceptance": false
+}

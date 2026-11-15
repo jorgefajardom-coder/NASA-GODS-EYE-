@@ -1,5 +1,6 @@
 import { useGLTF } from '@react-three/drei';
-import { Suspense, useMemo, type ReactElement } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { Suspense, useCallback, useMemo, useRef, type ReactElement } from 'react';
 import * as THREE from 'three';
 import { assetUrl } from '../data/replayAdapter';
 import type { Point } from '../types/icd';
@@ -173,6 +174,13 @@ const PARTS: Part[] = [
 ];
 
 function ProceduralBase({ site, verticalExaggeration, groundHeight }: Props) {
+  const root = useRef<THREE.Group>(null);
+  useFrame(() => {
+    for (const part of root.current?.children ?? []) {
+      const h = groundHeight(part.position.x, -part.position.z);
+      if (h != null) part.position.y = h * verticalExaggeration;
+    }
+  }, -2);
   const placed = useMemo(
     () =>
       PARTS.map((p, i) => {
@@ -185,7 +193,7 @@ function ProceduralBase({ site, verticalExaggeration, groundHeight }: Props) {
     [site, verticalExaggeration, groundHeight],
   );
   return (
-    <group name="base-habitat">
+    <group ref={root} name="base-habitat">
       {placed.map((p) => (
         <group key={p.key} position={p.pos} rotation={[0, p.yaw, 0]}>
           {p.node}
@@ -219,7 +227,7 @@ function GltfBase({ site, verticalExaggeration, groundHeight }: Props) {
     return { model: root, footprint: box };
   }, [gltf.scene]);
 
-  const position = useMemo((): [number, number, number] => {
+  const placement = useCallback((): [number, number, number] => {
     const cx = site.x + CLUSTER_OFFSET.x;
     const cy = site.y + CLUSTER_OFFSET.y;
     // Sample the footprint (model x = east, -z = north) and take the median height.
@@ -236,6 +244,8 @@ function GltfBase({ site, verticalExaggeration, groundHeight }: Props) {
     const h = hs.length ? hs[hs.length >> 1] : site.z;
     return [cx, h * verticalExaggeration - BASE_SINK_M, -cy];
   }, [site, verticalExaggeration, groundHeight, footprint]);
+  const position = placement();
+  useFrame(() => model.position.set(...placement()), -2);
 
   return <primitive object={model} position={position} name="base-habitat" />;
 }

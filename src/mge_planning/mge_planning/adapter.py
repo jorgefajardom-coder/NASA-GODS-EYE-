@@ -5,10 +5,12 @@ ICD batch protocol: metadata first, globally unique snapshot stamp, then all
 layers at that stamp. No layer is inferred from arrival order or prior terrain.
 """
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 import hashlib
 import json
 from math import isfinite, isnan
+from numbers import Real
 from pathlib import Path
 from threading import RLock
 
@@ -39,6 +41,10 @@ class GridMeta:
     nodata_value: float
     crs: str
     vertical_datum: str
+    origin_lat_deg: float
+    origin_lon_deg: float
+    checksum_sha256: str
+    sources: tuple[str, ...]
     stamp: tuple[int, int]
 
 
@@ -88,10 +94,27 @@ class SnapshotStore:
             raise ValueError("nonfinite grid geometry")
         if message.resolution_m <= 0 or not message.crs or not message.vertical_datum:
             raise ValueError("grid resolution, planetary CRS and datum required")
-        meta = GridMeta(message.run_id, message.dataset_id, message.map_version,
-                        message.rows, message.cols, message.resolution_m,
-                        message.origin_x_m, message.origin_y_m,
-                        message.nodata_value, message.crs, message.vertical_datum, stamp)
+        if not all(
+            isinstance(value, Real) and not isinstance(value, (bool, np.bool_)) and isfinite(value)
+            for value in (message.origin_lat_deg, message.origin_lon_deg)
+        ):
+            raise ValueError("geographic origin must contain finite numeric coordinates")
+        if not isinstance(message.checksum_sha256, str):
+            raise ValueError("prior checksum must be a string")
+        if not isinstance(message.sources, Sequence) or isinstance(message.sources, (str, bytes)):
+            raise ValueError("terrain sources must be a sequence of strings")
+        sources = tuple(message.sources)
+        if any(not isinstance(source, str) for source in sources):
+            raise ValueError("terrain sources must be a sequence of strings")
+        meta = GridMeta(
+            run_id=message.run_id, dataset_id=message.dataset_id,
+            map_version=message.map_version, rows=message.rows, cols=message.cols,
+            resolution_m=message.resolution_m, origin_x_m=message.origin_x_m,
+            origin_y_m=message.origin_y_m, nodata_value=message.nodata_value,
+            crs=message.crs, vertical_datum=message.vertical_datum,
+            origin_lat_deg=message.origin_lat_deg, origin_lon_deg=message.origin_lon_deg,
+            checksum_sha256=message.checksum_sha256, sources=sources, stamp=stamp,
+        )
         owner = (meta.run_id, meta.map_version)
         with self.lock:
             if meta.run_id in self.retired_runs:
@@ -105,7 +128,11 @@ class SnapshotStore:
                 if meta.map_version == self.meta.map_version:
                     # A version identifies one immutable batch, including geometry.
                     old = self.meta
-                    fields = ("dataset_id", "rows", "cols", "resolution_m", "origin_x_m", "origin_y_m", "crs", "vertical_datum", "stamp")
+                    fields = (
+                        "dataset_id", "rows", "cols", "resolution_m", "origin_x_m", "origin_y_m",
+                        "crs", "vertical_datum", "origin_lat_deg", "origin_lon_deg",
+                        "checksum_sha256", "sources", "stamp",
+                    )
                     if any(getattr(old, f) != getattr(meta, f) for f in fields):
                         raise ValueError("metadata changed without a new version")
                     if old.nodata_value != meta.nodata_value and not (isnan(old.nodata_value) and isnan(meta.nodata_value)):

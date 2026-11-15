@@ -1,0 +1,30 @@
+{
+  "recorded_at_utc": "2026-11-15T10:35:03+00:00",
+  "classification": "TRANSPARENT_REVIEW_OF_RETAINED_EXECUTION_NOT_PARAMETER_RETUNING",
+  "deviations": [
+    {
+      "id": "SCALE_ORDER_LEXICAL",
+      "basis": "Frozen runner.py scale_cases sorts public JSON filenames lexically, rather than by physical size.",
+      "effect": "The primary scale series measured 2048 m before some 256/512 m maps. All smaller maps were ultimately measured. This did not change endpoints, profiles, search limits or retained outcomes, but did not follow the requested ascending priority for that extension.",
+      "disposition": "Keep raw measurements and expose exact map order in final-analysis.json. Treat main-series process peak as cumulative and times as descriptive in this order. Do not rerun or overwrite to conceal the deviation. The predeclared supplementary fresh-process memory series runs sizes in ascending order after all primary smaller-size measurements.",
+      "scientific_or_operational_approval": false
+    }
+  ],
+  "declared_design_interpretations": [
+    {
+      "id": "COMMON_COEFFICIENT_DRAWS",
+      "meaning": "Ground-agent LHS coefficients are common across sizes for the same region/family/index. Endpoint, world and sensor streams include size; this pairing was recorded before the definitive sweep in implementation_assumptions.json. It is not a fully independent coefficient draw for every size."
+    },
+    {
+      "id": "FIXED_AB_TIMING_CONTROL",
+      "meaning": "The extent-only timing fixture keeps physical A/B fixed, approximately 45.25 m apart, outside the random-mission separation rule on large maps. It cannot establish kilometre-route performance. Actual broad/directed mission draws use the declared one-eighth to one-half interval without feasibility filtering."
+    }
+  ],
+  "development_exclusions": [
+    "../overnight-mission-research-20261115/v1-exclusion.json",
+    "../overnight-mission-research-20261115-v2/v2-exclusion.json"
+  ],
+  "execution_code_modified_after_definitive_freeze": false,
+  "candidate_authorized": false,
+  "mission_success": null
+}

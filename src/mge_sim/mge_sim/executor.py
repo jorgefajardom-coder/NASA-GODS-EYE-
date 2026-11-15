@@ -41,7 +41,7 @@ class KinematicExecutor(Node):
         for a in load_agents(agents_file):
             self.agents[a['id']] = {
                 'kind': a['kind'],
-                'position': (float(a['x_m']), float(a['y_m']), float(a.get('z_m', 0.0))),
+                'position': (float(a['x_m']), float(a['y_m']), float(a['z_m'])),
                 'time_s': float(a['time_budget_s']),
                 'energy_wh': float(a['energy_budget_wh']),
                 'oxygen_l': float(a.get('oxygen_budget_l', math.nan)),
@@ -102,6 +102,8 @@ class KinematicExecutor(Node):
                                 route.travel_time_s, route.energy_est_wh, route.oxygen_est_l)
             follower = PathFollower(points, rates, agent['position'])
         except ExecutionRefused as e:
+            # Rejection is a stop, never a vertical correction or a resource debit.
+            agent['mode'] = HALTED
             self.get_logger().error(f'route {route_id} not executed: {e}')
             return
         self.follow = (agent_id, route_id, follower)

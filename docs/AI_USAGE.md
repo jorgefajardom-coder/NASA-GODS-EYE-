@@ -1,5 +1,13 @@
 # Required AI-use declaration
 
+## English scientific Wiki and pedagogical media
+
+OpenAI Codex assisted the complete English scientific Wiki in `docs/wiki`: nine chapters, the landing page and supporting glossary, parameter, bibliography and reproduction pages. Private doctoral and master's theses supplied style references only; they were read locally and were not uploaded or copied into the Wiki. Scientific statements cite original articles, NASA/JPL technical reports and public product metadata with locators; project outcomes retain their configuration and run identifiers.
+
+The cover was generated with image_gen as an unbranded conceptual illustration. Documentation-only code constructs the scientific diagrams, model examples and three GIFs from declared inputs. Every image and every decoded GIF frame has a visible `AI-generated` mark; captions and metadata distinguish conceptual media, model calculations and the recorded SIMULATED case. Assets, input hashes, library versions and audit results are stored within the Wiki. No NASA insignia or mission-brand graphic is included in the generated artwork.
+
+The work changes explanatory documentation and its tools only. Existing model coefficients, runtime configuration, contracts and technical implementations remain unchanged. The complete first draft is prepared for owner scientific audit; publication and approval retain their separate records. Previous sealed AI declarations are preserved under `docs/wiki/audit/previous-document-versions`.
+
 ## Root README summary for judges
 
 Claude Code (Anthropic) assisted the integration owner in writing the
@@ -813,6 +821,21 @@ the team, not with AI; only its black background was removed and it was resized.
 An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
 images uses NASA logos, flags or mission marks or is presented as NASA data.
 
+## Optional auxiliary NASA/USGS terrain layers and HTTP range optimization
+
+Google Antigravity assisted the data and mapping owner with bounded HTTP 206
+keep-alive/block-cache optimizations in `scripts/prepare_jezero_terrain.py` and
+with a standalone auxiliary layer pipeline (`scripts/prepare_jezero_aux_layers.py`,
+`src/mge_data/mge_data/core.py`, `src/mge_data/mge_data/node.py`, and
+`tests/contracts/test_data_manifest.py`). The pipeline keeps `data/sample/terrain.npz`
+and `data/sample/manifest.json` unchanged by default while producing separate,
+cell-aligned auxiliary files (`jezero_aux_layers.npz`, `ctx_ortho.png`,
+`geology.json`, `aux_layers_manifest.json`) derived via GDAL/rasterio and ArcGIS
+REST from the official USGS Mars 2020 TRN MRO/CTX 6 m/px controlled orthomosaic
+and USGS SIM 3464 geologic map. `data/sample/ctx_ortho.png` is a deterministic
+north-up grayscale crop of the observational MRO/CTX orthomosaic, not an
+AI-generated image.
+
 ## Proposal publication after reconciliation
 
 OpenAI Codex assisted publication of the local scientific patch/campaign proposal,
@@ -908,3 +931,27 @@ MOCK state), so it no longer covers the map.
 ## PR37 scientific presentation corrections — 15 November 2026
 
 OpenAI Codex assisted the HUD/context code, source-year corrections, project-page draft and regression tests listed in `ai_usage.json` under `pr37_scientific_presentation_corrections`. RAD dose equivalent is not converted into NASA effective dose or a career-limit percentage. An unavailable CO2 rate remains unavailable. No new measured data, numerical radiation inputs, scientific profile or approval was generated. Owner scientific review remains pending.
+
+## PR38 auxiliary-context reconciliation — 15 November 2026
+
+OpenAI Codex assisted strict DEM/metadata/hash/path and public-array validation, bounded HTTP Range handling, synthetic regression fixtures, a ROS consumer test, and the auxiliary visual-context contract. The complete file scope is registered in `ai_usage.json` under `pr38_auxiliary_context_reconciliation`. Acquired imagery/geology/NPZ bytes were preserved; interpreted DN/slope categories are estimated visual proxies without navigation authorization. No new scientific parameter, measured observation or approval was generated.
+
+## Height contract reconciliation — 15 November 2026
+
+OpenAI Codex assisted the initial-condition resolver, executor XYZ guards, immutable planner metadata binding, shared rendered-triangle sampler and regression tests listed in `ai_usage.json` under `height_contract_reconciliation`. New scene heights are explicitly SIMULATED initial conditions derived from the declared public prior, not measured observations. Historical packages are retained unchanged. New recordings and browser captures preserve MOCK/REPLAY and required marks; no scientific approval, physical validation or complete three-agent mission is asserted.
+
+## Height-corrected software recovery recording — 15 November 2026
+
+OpenAI Codex assisted recording workflow, new URL-entry integration, tests and audit receipts for `height-recovery-20261115-01` / `recorded-recovery-002`. The exact MOCK recording includes AI-assisted code and a deterministic SIMULATED observation, not new observational NASA data. Its scene initialization parks the drone; the human alone executes stop/replan/return. File scope and evidence are registered as `height_recovery_recording_and_presentation`; source/pose identities and historical package bytes are preserved. Capture/edited media retains visible labels and metadata.
+
+## Final delivery candidate reconciliation — 15 November 2026
+
+OpenAI Codex assisted local integration of PR37/PR38 and the height/replay cut, structured conflict resolution preserving both mandatory disclosure histories, a trailing-blank-line correction and delivery handoff documentation. Registered as `final_delivery_candidate_reconciliation`. Actual checks, deferred work and human gates are distinguished in `final_delivery_candidate.md`; no automatic main merge, physical validation or external submission was performed.
+
+## Same-run browser video — 15 November 2026
+
+OpenAI Codex assisted Chrome capture/edit scripts, English overlays/subtitles, metadata and technical review for `web/public/media/height-recovery-002.mp4`. The actual viewer replays the exact MOCK software run; the edit does not generate NASA observations or mission telemetry. Visible `AI-generated edit | SIMULATED | NOT LIVE` and existing portrait marks remain readable. Capture metadata locks viewerf7938f5, execution742eed5 and all four recorder files. No image-generation model or NASA branding was used to create the capture/edit. Third-party source terms remain; raw frames/browser profiles/caches are excluded. Final owner merge, organizer endorsement and submission approval remain pending.
+
+## PR39 read-only gateway contract reconciliation — 15 November 2026
+
+OpenAI Codex assisted client envelope/payload validation, session recovery, contiguous event cursors, separate mission/terrain versions, regression tests and public status documentation. The exact file scope is registered as `pr39_gateway_contract_reconciliation`. The bounded HTTP/WebSocket consumer evidence uses the actual unchanged gateway with public recorded-recovery-002 inputs, explicitly replay-fed MOCK. It sends no goals and performs no ROS mission execution or scientific acceptance. No recorded package, measured NASA observation, generated media or shared contract was changed. Existing contributor declarations and mandatory watermarks are preserved.

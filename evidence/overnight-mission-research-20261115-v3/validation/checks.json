@@ -1,0 +1,145 @@
+{
+  "recorded_at_utc": "2026-11-15T11:47:06.642189+00:00",
+  "versions": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "rasterio": "1.5.2",
+      "pytest": "8.4.2",
+      "pyyaml": "6.0.3"
+    },
+    "node": "v24.18.0",
+    "npm": "12.0.1"
+  },
+  "source_sha": "7ad605039a524d5b5cbe2c983f2da9113f8b1ce9",
+  "checks": [
+    {
+      "name": "approved-control",
+      "command": [
+        "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\evidence\\overnight-mission-research-20261115-v3\\check_approved_control.py"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA",
+      "started_at_utc": "2026-11-15T11:46:19.277495+00:00",
+      "finished_at_utc": "2026-11-15T11:46:20.340941+00:00",
+      "exit_code": 0,
+      "log": "approved-control.log",
+      "sha256": "bbd4947b61f30d2ca3c72fc47fe06b3d9df59278a4d9436c96fe605a6ed356f9"
+    },
+    {
+      "name": "public-geometry-diagnostic",
+      "command": [
+        "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+        "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\evidence\\overnight-mission-research-20261115-v3\\diagnose_endpoint_geometry.py"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA",
+      "started_at_utc": "2026-11-15T11:46:20.345965+00:00",
+      "finished_at_utc": "2026-11-15T11:46:20.924482+00:00",
+      "exit_code": 0,
+      "log": "public-geometry-diagnostic.log",
+      "sha256": "69ccd0375efa12c2ea6ef78ec05cad42fbc0b145c092df55f984bdcd9bdc50a4"
+    },
+    {
+      "name": "python",
+      "command": [
+        "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "--basetemp=C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\tmp\\pytest-overnight-final-v3",
+        "--junitxml=C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\evidence\\overnight-mission-research-20261115-v3\\validation\\python.junit.xml"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA",
+      "started_at_utc": "2026-11-15T11:46:20.926771+00:00",
+      "finished_at_utc": "2026-11-15T11:46:45.160003+00:00",
+      "exit_code": 0,
+      "log": "python.log",
+      "sha256": "22eae25c1b7b8534d228e4fa9517f56586e2da8b8884c527aa01c690311a02d4"
+    },
+    {
+      "name": "published-cost-contract",
+      "command": [
+        "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "-c",
+        "research-pytest.ini",
+        "tests/planning/test_resource_costs.py",
+        "tests/planning/test_scientific_oracle.py",
+        "tests/planning/test_f033_resource_guard.py",
+        "--basetemp=C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\tmp\\pytest-published-final-v3",
+        "--junitxml=C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\evidence\\overnight-mission-research-20261115-v3\\validation\\published.junit.xml"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\.local\\mission-research-20261115\\source",
+      "started_at_utc": "2026-11-15T11:46:45.161742+00:00",
+      "finished_at_utc": "2026-11-15T11:46:46.871850+00:00",
+      "exit_code": 0,
+      "log": "published-cost-contract.log",
+      "sha256": "c2244854bf9135133be06f337cbbe254f59506c3da17eb224463ba11a951d649"
+    },
+    {
+      "name": "repository",
+      "command": [
+        "C:\\Users\\User\\Documents\\ChatGPT\\Hackt\u00f3n NASA\\.venv\\Scripts\\python.exe",
+        "scripts/check_repository.py"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA",
+      "started_at_utc": "2026-11-15T11:46:46.882468+00:00",
+      "finished_at_utc": "2026-11-15T11:46:47.283236+00:00",
+      "exit_code": 0,
+      "log": "repository.log",
+      "sha256": "b9bcb2ddade0cb2e0bc348ce5136bc030862ca986c6c9522f1db03043e1aba2d"
+    },
+    {
+      "name": "web-test",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "test",
+        "--",
+        "--maxWorkers=1",
+        "--minWorkers=1",
+        "--no-file-parallelism"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\web",
+      "started_at_utc": "2026-11-15T11:46:47.299409+00:00",
+      "finished_at_utc": "2026-11-15T11:46:57.095278+00:00",
+      "exit_code": 0,
+      "log": "web-test.log",
+      "sha256": "70ea1c166db2e3f3d3eb1a326ad6555986e3b1555c9c03c2b99f95cf009219c0"
+    },
+    {
+      "name": "web-build",
+      "command": [
+        "C:\\Program Files\\nodejs\\npm.cmd",
+        "run",
+        "build"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA\\web",
+      "started_at_utc": "2026-11-15T11:46:57.102958+00:00",
+      "finished_at_utc": "2026-11-15T11:47:06.131281+00:00",
+      "exit_code": 0,
+      "log": "web-build.log",
+      "sha256": "9e9755e8344f2b7f492ff2c854f1a218139c16c836b84a3b89a2fa325c1ff962"
+    },
+    {
+      "name": "diff-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hackt\u00f3n NASA",
+      "started_at_utc": "2026-11-15T11:47:06.142310+00:00",
+      "finished_at_utc": "2026-11-15T11:47:06.192014+00:00",
+      "exit_code": 0,
+      "log": "diff-whitespace.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "ros_ubuntu_jazzy_colcon": "NOT_RUN: explicitly excluded from this Windows headless research cut; no previous result relabelled fresh",
+  "rendering": false,
+  "mission_acceptance": false
+}

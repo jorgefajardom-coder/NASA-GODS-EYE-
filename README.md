@@ -28,16 +28,18 @@ map.
    with the resources they have left.
 4. Record every decision and replay it in a web browser, with no server.
 
-**See it.** [Open the web viewer](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/).
-It opens on a Mars globe to choose one of six zones; the default scene is the
-illustrative Jezero demo (a simulated story on real terrain). The recording of the
-real planner, *Recorded recovery · MOCK*, opens with
-[`?run=recorded-recovery-001`](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/?run=recorded-recovery-001):
-on public Jezero terrain the astronaut follows an estimated route, a simulated
-observation contradicts the map, the astronaut stops, receives a new route and
-returns. Video and project page: links will be added here before submission.
-How each part of the challenge is answered, and what is still future work:
-[project page draft](docs/project_page.md).
+**See it.** [Watch the same-run software recovery (21 s)](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/media/height-recovery-002.mp4)
+([English subtitles](web/public/media/height-recovery-002.en.srt)).
+[Explore the six illustrative zones](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/),
+or [open the corrected recorded recovery](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/?run=recorded-recovery-002).
+The latter is a separately identified ROS software recording: one kinematic MOCK
+astronaut stops, replans and returns after a SIMULATED terrain contradiction;
+rover and parked drone remain idle. It ends READY, not scientific COMPLETE.
+The 3D scene consumes saved files. An optional read-only gateway panel can show a running stack; it sends no goals and does not drive the scene.
+[Source locks, validation and limitations](evidence/height-reconciliation-20261115/README.md)
+accompany this exact package. The historical recording remains unchanged.
+[Scientific foundations and analytical pilot results](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki).
+How each challenge requirement is addressed: [project page draft](docs/project_page.md).
 
 **NASA data in the project.**
 

@@ -1,0 +1,14 @@
+1
+00:00:00,000 --> 00:00:07,000
+Recorded recovery - SIMULATED - NOT LIVE
+Run height-recovery-20261115-01
+
+2
+00:00:07,000 --> 00:00:18,000
+Human stop, replan and return.
+Rover and drone stay idle.
+
+3
+00:00:18,000 --> 00:00:20,916
+Final READY is not scientific COMPLETE.
+Same recorder package; no live backend.

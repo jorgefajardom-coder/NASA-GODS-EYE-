@@ -1,0 +1,599 @@
+{
+  "source": {
+    "title": "Geologic Map of Jezero Crater and the Nili Planum Region, Mars",
+    "authors": "Vivian Z. Sun and Kathryn M. Stack",
+    "publisher": "U.S. Geological Survey",
+    "series": "Scientific Investigations Map 3464",
+    "year": 2020,
+    "scale": "1:75,000",
+    "doi": "https://doi.org/10.3133/sim3464",
+    "data_release": "https://doi.org/10.5066/P9CZYIO7",
+    "service": "https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/Jezero_FeatureServiceFromPro/FeatureServer/8",
+    "licence": "USGS publication, public domain",
+    "basemap_note": "Mapped on CTX 6 m/px uncontrolled mosaic and HiRISE 25 cm/px orthoimages; positional accuracy relative to the Mars 2020 TRN controlled CTX DEM is ~100-200 m."
+  },
+  "frame": {
+    "crs": "Crop local ENU (same as terrain_meta)",
+    "origin_x_m": -64.0,
+    "origin_y_m": -64.0,
+    "width_m": 128.0,
+    "height_m": 128.0,
+    "origin_lat_deg": 18.45,
+    "origin_lon_deg": 77.45,
+    "sphere_radius_m": 3396190.0,
+    "bbox_enu_m": [
+      -64.0,
+      -64.0,
+      64.0,
+      64.0
+    ],
+    "context_margin_m": 300.0,
+    "context_bbox_enu_m": [
+      -364.0,
+      -364.0,
+      364.0,
+      364.0
+    ]
+  },
+  "units": [
+    {
+      "id": "2",
+      "code": 2,
+      "symbol": "Njf",
+      "name": "Jezero floor unit",
+      "group": "Interior",
+      "color_hex": "#b07c56",
+      "rviz_occupancy": 35,
+      "description": "Rugged, moderately-to-heavily cratered, light- to dark-toned, planar unit with margins defined by low-relief, sharp, lobate scarps, forms the central portion of the Jezero crater floor and overlies and embays units Nue and Nle, respectively. Most impact craters on this surface are <200 m. Can have dark, smooth surface texture, especially near contact with unit NHjf2. Type area: lat 18.43\u00b0N, long 77.65\u00b0E.",
+      "characteristics": "Associated with mafic composition (Goudge and others, 2015). Previously mapped as the 'volcanic floor unit' by Goudge and others (2015).",
+      "interpretation": "Volcanic ash or eolian airfall deposit that drapes underlying topography. Correlates with unit Nnp2 based on common stratigraphic position and shared textural and morphologic characteristics. Emplaced during the Late Noachian before deposition of unit NHjf1. May have been modified by subsequent lacustrine activity during deposition of units NHjf1 and NHjf2. Dark, smooth surface texture near unit NHjf2 is due to a dark mantle deposit or erosional lag derived from erosion of unit NHjf2. Previously interpreted by Schon and others (2012) and Goudge and others (2015) as an extrusive volcanic flow."
+    },
+    {
+      "id": "3",
+      "code": 3,
+      "symbol": "Nle",
+      "name": "Lower etched unit",
+      "group": "Interior",
+      "color_hex": "#d4a359",
+      "rviz_occupancy": 50,
+      "description": "Rugged, lightly cratered, light- to intermediate-toned unit concentrically exposed on the floor of Jezero adjacent to unit Njf. Topographically lower than adjacent unit Nue. Contains NE-SW trending ridges that extend several hundred meters in length. When present, impact craters are typically >200 m in diameter. Type area: lat 18.28\u00b0N, long 77.49\u00b0E",
+      "characteristics": "Unit is exposed in erosional windows through the overlying unit Njf (for example, 18.44\u00b0N, 77.44\u00b0E and 18.33\u00b0N, 77.73\u00b0E). Associated with olivine and variable carbonate (Goudge and others, 2015). Previously mapped as the 'light-toned floor unit' and 'dusty light-toned floor unit' by Goudge and others (2015).",
+      "interpretation": "Volcanic ash deposit, similar to the origin of unit Nue. Could also be other clastic deposit of volcanic or eolian origin. Either deposited into an existing lake within Jezero or subsequently altered by later lacustrine processes during emplacement of units NHjf1 and NHjf2. Underlies unit Nue based on its consistently lower elevation. Ridges are yardangs (Day and Dorn, 2019)."
+    }
+  ],
+  "polygons": [
+    {
+      "unit": "3",
+      "symbol": "Nle",
+      "code": 3,
+      "rings": [
+        [
+          [
+            64.0,
+            64.0
+          ],
+          [
+            64.0,
+            -64.0
+          ],
+          [
+            -64.0,
+            -64.0
+          ],
+          [
+            -64.0,
+            64.0
+          ]
+        ]
+      ]
+    }
+  ],
+  "context_polygons": [
+    {
+      "unit": "2",
+      "symbol": "Njf",
+      "code": 2,
+      "rings": [
+        [
+          [
+            364.0,
+            364.0
+          ],
+          [
+            364.0,
+            -364.0
+          ],
+          [
+            -27.7,
+            -364.0
+          ],
+          [
+            -23.69,
+            -352.84
+          ],
+          [
+            -18.26,
+            -338.07
+          ],
+          [
+            -15.45,
+            -330.73
+          ],
+          [
+            -13.98,
+            -327.08
+          ],
+          [
+            -10.87,
+            -319.75
+          ],
+          [
+            -5.97,
+            -308.83
+          ],
+          [
+            40.77,
+            -207.42
+          ],
+          [
+            44.21,
+            -200.24
+          ],
+          [
+            47.81,
+            -193.13
+          ],
+          [
+            49.7,
+            -189.64
+          ],
+          [
+            51.59,
+            -186.33
+          ],
+          [
+            55.56,
+            -179.83
+          ],
+          [
+            59.67,
+            -173.41
+          ],
+          [
+            65.95,
+            -163.83
+          ],
+          [
+            74.4,
+            -151.12
+          ],
+          [
+            80.82,
+            -141.65
+          ],
+          [
+            85.21,
+            -135.43
+          ],
+          [
+            87.47,
+            -132.37
+          ],
+          [
+            89.79,
+            -129.38
+          ],
+          [
+            92.21,
+            -126.46
+          ],
+          [
+            94.81,
+            -123.55
+          ],
+          [
+            97.51,
+            -120.72
+          ],
+          [
+            100.28,
+            -117.95
+          ],
+          [
+            103.1,
+            -115.22
+          ],
+          [
+            108.83,
+            -109.85
+          ],
+          [
+            117.53,
+            -101.88
+          ],
+          [
+            132.13,
+            -88.68
+          ],
+          [
+            138.0,
+            -83.45
+          ],
+          [
+            143.95,
+            -78.31
+          ],
+          [
+            150.03,
+            -73.35
+          ],
+          [
+            153.06,
+            -71.05
+          ],
+          [
+            156.13,
+            -68.8
+          ],
+          [
+            162.37,
+            -64.41
+          ],
+          [
+            171.83,
+            -57.99
+          ],
+          [
+            190.89,
+            -45.29
+          ],
+          [
+            203.65,
+            -36.92
+          ],
+          [
+            210.1,
+            -32.84
+          ],
+          [
+            213.35,
+            -30.85
+          ],
+          [
+            220.09,
+            -26.91
+          ],
+          [
+            230.33,
+            -21.21
+          ],
+          [
+            257.82,
+            -6.33
+          ],
+          [
+            264.72,
+            -2.69
+          ],
+          [
+            271.67,
+            0.86
+          ],
+          [
+            275.17,
+            2.55
+          ],
+          [
+            278.71,
+            4.18
+          ],
+          [
+            282.28,
+            5.7
+          ],
+          [
+            285.86,
+            7.08
+          ],
+          [
+            289.47,
+            8.35
+          ],
+          [
+            296.78,
+            10.71
+          ],
+          [
+            304.16,
+            12.91
+          ],
+          [
+            333.81,
+            21.33
+          ],
+          [
+            344.88,
+            24.62
+          ],
+          [
+            352.19,
+            27.0
+          ],
+          [
+            355.81,
+            28.29
+          ],
+          [
+            359.52,
+            29.71
+          ],
+          [
+            363.21,
+            31.22
+          ],
+          [
+            364.0,
+            31.56
+          ],
+          [
+            364.0,
+            364.0
+          ]
+        ]
+      ]
+    },
+    {
+      "unit": "3",
+      "symbol": "Nle",
+      "code": 3,
+      "rings": [
+        [
+          [
+            364.0,
+            364.0
+          ],
+          [
+            364.0,
+            31.56
+          ],
+          [
+            363.21,
+            31.22
+          ],
+          [
+            359.52,
+            29.71
+          ],
+          [
+            355.81,
+            28.29
+          ],
+          [
+            352.19,
+            27.0
+          ],
+          [
+            344.88,
+            24.62
+          ],
+          [
+            333.81,
+            21.33
+          ],
+          [
+            304.16,
+            12.91
+          ],
+          [
+            296.78,
+            10.71
+          ],
+          [
+            289.47,
+            8.35
+          ],
+          [
+            285.86,
+            7.08
+          ],
+          [
+            282.28,
+            5.7
+          ],
+          [
+            278.71,
+            4.18
+          ],
+          [
+            275.17,
+            2.55
+          ],
+          [
+            271.67,
+            0.86
+          ],
+          [
+            264.72,
+            -2.69
+          ],
+          [
+            257.82,
+            -6.33
+          ],
+          [
+            230.33,
+            -21.21
+          ],
+          [
+            220.09,
+            -26.91
+          ],
+          [
+            213.35,
+            -30.85
+          ],
+          [
+            210.1,
+            -32.84
+          ],
+          [
+            203.65,
+            -36.92
+          ],
+          [
+            190.89,
+            -45.29
+          ],
+          [
+            171.83,
+            -57.99
+          ],
+          [
+            162.37,
+            -64.41
+          ],
+          [
+            156.13,
+            -68.8
+          ],
+          [
+            153.06,
+            -71.05
+          ],
+          [
+            150.03,
+            -73.35
+          ],
+          [
+            143.95,
+            -78.31
+          ],
+          [
+            138.0,
+            -83.45
+          ],
+          [
+            132.13,
+            -88.68
+          ],
+          [
+            117.53,
+            -101.88
+          ],
+          [
+            108.83,
+            -109.85
+          ],
+          [
+            103.1,
+            -115.22
+          ],
+          [
+            100.28,
+            -117.95
+          ],
+          [
+            97.51,
+            -120.72
+          ],
+          [
+            94.81,
+            -123.55
+          ],
+          [
+            92.21,
+            -126.46
+          ],
+          [
+            89.79,
+            -129.38
+          ],
+          [
+            87.47,
+            -132.37
+          ],
+          [
+            85.21,
+            -135.43
+          ],
+          [
+            80.82,
+            -141.65
+          ],
+          [
+            74.4,
+            -151.12
+          ],
+          [
+            65.95,
+            -163.83
+          ],
+          [
+            59.67,
+            -173.41
+          ],
+          [
+            55.56,
+            -179.83
+          ],
+          [
+            51.59,
+            -186.33
+          ],
+          [
+            49.7,
+            -189.64
+          ],
+          [
+            47.81,
+            -193.13
+          ],
+          [
+            44.21,
+            -200.24
+          ],
+          [
+            40.77,
+            -207.42
+          ],
+          [
+            -5.97,
+            -308.83
+          ],
+          [
+            -10.87,
+            -319.75
+          ],
+          [
+            -13.98,
+            -327.08
+          ],
+          [
+            -15.45,
+            -330.73
+          ],
+          [
+            -18.26,
+            -338.07
+          ],
+          [
+            -23.69,
+            -352.84
+          ],
+          [
+            -27.7,
+            -364.0
+          ],
+          [
+            -364.0,
+            -364.0
+          ],
+          [
+            -364.0,
+            364.0
+          ]
+        ]
+      ]
+    }
+  ]
+}

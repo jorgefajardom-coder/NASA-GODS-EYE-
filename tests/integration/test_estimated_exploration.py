@@ -23,6 +23,7 @@ from tests.integration.test_vertical_execution import (
     Stack, ROOT, RUN_ID, HOME, REQUEST, LATCHED, centre, get, mission, submit,
     polyline, position, speed, stamp_seconds, movement_costs, rasters_cover,
 )
+from tests.integration.ground_fixture import simulated_ground_point
 
 POLICY_FILE = ROOT / "config/exploration_policy.illustrative.json"
 
@@ -74,6 +75,13 @@ def test_initial_estimate_then_one_contradiction_stop_replan_return_and_offline_
     assert mission()["route_id"] == ""
     before = stack.human[-1]
     assert position(before)[:2] == HOME and speed(before) == 0.
+    initial_agents = mission()['agents']
+    assert {a['agent_id'] for a in initial_agents} == {'human_1', 'rover_1', 'drone_1'}
+    for agent in initial_agents:
+        point = agent['pose']['position']
+        assert tuple(point[k] for k in ('x', 'y', 'z')) == simulated_ground_point(
+            stack.surface, (point['x'], point['y']))
+        assert agent['mode'] == 'IDLE'
 
     initial = submit("estimated-initial", centre(19, 19))
     assert initial["mission_state"] == "READY", initial["active_route"]
@@ -167,6 +175,14 @@ def test_initial_estimate_then_one_contradiction_stop_replan_return_and_offline_
     assert converted["status"] == "READY"
     assert all(value is None for value in converted["rasters"]["reference"])
     assert snapshot["mission_state"]["mission_state"] == "READY"  # Never scientific COMPLETE.
+    for record in records:
+        if record['type'] == 'state':
+            for agent in record['state']['agents']:
+                if agent['agent_kind'] == 'DRONE':
+                    point = agent['pose']['position']
+                    assert tuple(point[k] for k in ('x', 'y', 'z')) == simulated_ground_point(
+                        stack.surface, (point['x'], point['y']))
+                    assert agent['mode'] == 'IDLE'
     # A compact audit points only to this run's actual recorded data.
     (Path(stack.package).parent / "estimated-run-result.json").write_text(json.dumps({
         "run_id": RUN_ID, "package": stack.package, "policy": policy.source_record,

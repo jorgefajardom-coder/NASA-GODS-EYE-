@@ -13,6 +13,7 @@ const { state } = vi.hoisted(() => ({
     sourceMode: 'MOCK',
     label: 'MOCK',
     datasetId: 'jezero_mvp',
+    terrainVersion: 3,
     mission: {
       last_event_seq: 2,
       mission_state: 'READY',
@@ -68,8 +69,19 @@ describe('live gateway panel', () => {
     act(() => toggle.click());
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
     expect(container.querySelector('.live-gw__agents')?.textContent).toContain('human_1');
+    expect(container.textContent).toContain('mission map v2');
+    expect(container.textContent).toContain('terrain v3');
     expect(container.querySelectorAll('.live-gw__events li')).toHaveLength(2);
     act(() => toggle.click());
     expect(container.querySelector('.live-gw__agents')).toBeNull();
+  });
+
+  it('shows ERROR without a green connection status or an invented mission', () => {
+    const previous = { status: state.status, mission: state.mission };
+    Object.assign(state, { status: 'error', mission: null });
+    act(() => root.render(createElement(LiveGatewayPanel, { base: 'http://127.0.0.1:8010' })));
+    expect(container.querySelector('.chip-mode')?.textContent).toBe('ERROR');
+    expect(container.querySelector('.live-gw--connected')).toBeNull();
+    Object.assign(state, previous);
   });
 });

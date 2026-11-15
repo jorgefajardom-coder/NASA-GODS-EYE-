@@ -10,11 +10,14 @@ import { fromGatewayPackage, isGatewayManifest, parseJsonLines, validateGatewayM
 
 /** Runs offered in the viewer. `dir` is relative to the site under replay/. */
 export const RECORDED_RECOVERY_ENTRY = 'recorded-recovery-001';
+export const HEIGHT_RECOVERY_ENTRY = 'recorded-recovery-002';
+export const isRecordedRecoveryEntry = (id: string): boolean => id === RECORDED_RECOVERY_ENTRY || id === HEIGHT_RECOVERY_ENTRY;
 /** Default (owner's choice): the simulated demo on the CTX crop. MOCK entries are not offered. */
 export const DEFAULT_RUN_ENTRY = 'demo';
 export const RUNS: ReadonlyArray<{ id: string; label: string; note?: string }> = [
   { id: 'demo', label: 'Illustrative demo · generated story' },
-  { id: RECORDED_RECOVERY_ENTRY, label: 'Recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Not a scientific COMPLETE mission.' },
+  { id: RECORDED_RECOVERY_ENTRY, label: 'Historical recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Historical idle-drone Z uses the legacy zero default. Not a scientific COMPLETE mission.' },
+  { id: HEIGHT_RECOVERY_ENTRY, label: 'Recorded recovery · parked drone · MOCK', note: 'Recorder output with explicit scene heights: human stop, replan and return. Rover and parked drone remain idle. Not a scientific COMPLETE mission.' },
   { id: 'mock-vertical-001', label: 'Gateway replay mock-vertical-001 (MOCK)' },
   { id: 'gale-demo', label: 'Gale crater · Curiosity · generated story' },
   { id: 'gusev-demo', label: 'Gusev crater · Spirit · generated story' },

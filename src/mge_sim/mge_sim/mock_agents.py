@@ -9,24 +9,10 @@ import math
 
 import rclpy
 from rclpy.node import Node
-import yaml
 
 from mge_interfaces.msg import AgentState
 from mge_sim.common import agent_state_topic, RELIABLE
-
-KINDS = {AgentState.KIND_HUMAN, AgentState.KIND_DRONE, AgentState.KIND_ROVER}
-
-
-def load_agents(path):
-    with open(path, encoding='utf-8') as f:
-        agents = yaml.safe_load(f)['agents']
-    ids = [a['id'] for a in agents]
-    if len(ids) != len(set(ids)):
-        raise ValueError(f'duplicate agent ids in {path}: {ids}')
-    for a in agents:
-        if a['kind'] not in KINDS:
-            raise ValueError(f"agent {a['id']}: unknown kind {a['kind']}")
-    return agents
+from mge_sim.initial_conditions import load_agents
 
 
 class MockAgents(Node):
@@ -58,7 +44,7 @@ class MockAgents(Node):
             msg.agent_kind = a['kind']
             msg.pose.position.x = float(a['x_m'])
             msg.pose.position.y = float(a['y_m'])
-            msg.pose.position.z = float(a.get('z_m', 0.0))
+            msg.pose.position.z = float(a['z_m'])
             msg.pose.orientation.w = 1.0
             msg.mode = AgentState.MODE_IDLE
             msg.time_remaining_s = float(a['time_budget_s'])

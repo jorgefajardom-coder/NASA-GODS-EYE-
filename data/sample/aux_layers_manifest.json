@@ -1,0 +1,242 @@
+{
+  "schema_version": "1.0.0",
+  "status": "ready",
+  "optional_layer_bundle": true,
+  "region_id": "jezero_mvp",
+  "frame_id": "map",
+  "row_orientation": "south_to_north",
+  "generated_at_utc": "2026-11-15T15:54:14Z",
+  "aligned_terrain_npz_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+  "grid": {
+    "lat_planetocentric_deg": 18.45,
+    "lon_east_deg": 77.45,
+    "rows": 32,
+    "cols": 32,
+    "resolution_m": 4.0,
+    "origin_x_m": -64.0,
+    "origin_y_m": -64.0
+  },
+  "files": {
+    "aux_npz": {
+      "path": "jezero_aux_layers.npz",
+      "sha256": "c0030fac48aa1519d4497df83f8fa99876b7c6e1b4ce517ee6cd7c699bde3c2a",
+      "arrays": [
+        "ctx_ortho_dn",
+        "ctx_ortho_norm",
+        "ctx_ortho_valid_mask",
+        "slope_deg",
+        "geology_unit_code",
+        "geology_rviz_occupancy",
+        "surface_zone_code",
+        "surface_zone_rviz_occupancy",
+        "x_m",
+        "y_m"
+      ]
+    },
+    "ctx_ortho_png": {
+      "path": "ctx_ortho.png",
+      "sha256": "c866782c384ac55c796a63570aaab6c57951062fd20ad2e22975b997473a44c8",
+      "width": 32,
+      "height": 32,
+      "row0": "north",
+      "product_id": "JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0",
+      "native_resolution_m": 6.0
+    },
+    "geology_json": {
+      "path": "geology.json",
+      "sha256": "77c997f716182548aea22b3d66c45f9f23b8e116daafdf96fc51397b10e97539",
+      "doi": "https://doi.org/10.3133/sim3464",
+      "scale": "1:75,000"
+    }
+  },
+  "rviz_integration": {
+    "enabled_by_default": true,
+    "can_be_disabled_or_removed_safely": true,
+    "topics": {
+      "ctx_ortho_image": {
+        "topic": "/mge/terrain/aux/ctx_ortho",
+        "msg_type": "sensor_msgs/msg/Image",
+        "encoding": "mono8",
+        "array_key": "ctx_ortho_dn"
+      },
+      "surface_zones_grid": {
+        "topic": "/mge/terrain/aux/surface_zones",
+        "msg_type": "nav_msgs/msg/OccupancyGrid",
+        "array_key": "surface_zone_rviz_occupancy",
+        "description": "Estimated DN/slope proxies for display only (-1 NoData, categorical 15/35/55/75/95; not planner occupancy)"
+      },
+      "geology_zones_grid": {
+        "topic": "/mge/terrain/aux/geology_zones",
+        "msg_type": "nav_msgs/msg/OccupancyGrid",
+        "array_key": "geology_rviz_occupancy",
+        "description": "USGS SIM 3464 mapped geologic units (-1 unmapped, 0..100 per unit)"
+      }
+    }
+  },
+  "surface_zones": {
+    "thresholds": {
+      "ctx_dn_p33": 127.0,
+      "ctx_dn_p67": 135.0,
+      "human_max_slope_deg": 10.0,
+      "rover_max_slope_deg": 20.0,
+      "drone_max_slope_deg": 90.0
+    },
+    "definitions": [
+      {
+        "code": 0,
+        "id": "nodata",
+        "label": "NoData / Unmapped",
+        "rviz_occupancy": -1,
+        "color_hex": "#404040",
+        "navigation_authorization": false,
+        "description": "Missing orbital elevation, slope or CTX DN; no passage inference."
+      },
+      {
+        "code": 1,
+        "id": "dark_floor_facies",
+        "label": "Lower-DN / low-slope proxy",
+        "rviz_occupancy": 15,
+        "color_hex": "#5c5346",
+        "navigation_authorization": false,
+        "description": "Estimated slope below the human screening threshold and DN <= P33; not a mapped facies."
+      },
+      {
+        "code": 2,
+        "id": "intermediate_plains_facies",
+        "label": "Intermediate-DN / low-slope proxy",
+        "rviz_occupancy": 35,
+        "color_hex": "#9c7a54",
+        "navigation_authorization": false,
+        "description": "Estimated low slope and P33 < DN <= P67; not evidence of a geological plains unit."
+      },
+      {
+        "code": 3,
+        "id": "bright_etched_or_bedform_facies",
+        "label": "Higher-DN / low-slope proxy",
+        "rviz_occupancy": 55,
+        "color_hex": "#d9b36c",
+        "navigation_authorization": false,
+        "description": "Estimated low slope and DN > P67; brightness alone does not identify ridges or bedforms."
+      },
+      {
+        "code": 4,
+        "id": "moderate_slope_rover_zone",
+        "label": "Intermediate slope proxy",
+        "rviz_occupancy": 75,
+        "color_hex": "#d97b29",
+        "navigation_authorization": false,
+        "description": "Estimated slope between the illustrative human and rover screening thresholds; not passage approval."
+      },
+      {
+        "code": 5,
+        "id": "steep_scarp_hazard_zone",
+        "label": "Higher slope proxy",
+        "rviz_occupancy": 95,
+        "color_hex": "#c93b2b",
+        "navigation_authorization": false,
+        "description": "Estimated slope above the rover screening threshold; neither a confirmed obstacle nor drone flight validation."
+      }
+    ],
+    "cell_counts": {
+      "nodata": 0,
+      "dark_floor_facies": 344,
+      "intermediate_plains_facies": 380,
+      "bright_etched_or_bedform_facies": 300,
+      "moderate_slope_rover_zone": 0,
+      "steep_scarp_hazard_zone": 0
+    },
+    "meaning": "Unvalidated orbital DN/slope visual proxies, not geological facies, certified passage or flight altitude. Thresholds are illustrative; sigma and observed coverage are unchanged."
+  },
+  "geology_zones": {
+    "units": [
+      {
+        "id": "2",
+        "code": 2,
+        "symbol": "Njf",
+        "name": "Jezero floor unit",
+        "group": "Interior",
+        "color_hex": "#b07c56",
+        "rviz_occupancy": 35,
+        "description": "Rugged, moderately-to-heavily cratered, light- to dark-toned, planar unit with margins defined by low-relief, sharp, lobate scarps, forms the central portion of the Jezero crater floor and overlies and embays units Nue and Nle, respectively. Most impact craters on this surface are <200 m. Can have dark, smooth surface texture, especially near contact with unit NHjf2. Type area: lat 18.43\u00b0N, long 77.65\u00b0E.",
+        "characteristics": "Associated with mafic composition (Goudge and others, 2015). Previously mapped as the 'volcanic floor unit' by Goudge and others (2015).",
+        "interpretation": "Volcanic ash or eolian airfall deposit that drapes underlying topography. Correlates with unit Nnp2 based on common stratigraphic position and shared textural and morphologic characteristics. Emplaced during the Late Noachian before deposition of unit NHjf1. May have been modified by subsequent lacustrine activity during deposition of units NHjf1 and NHjf2. Dark, smooth surface texture near unit NHjf2 is due to a dark mantle deposit or erosional lag derived from erosion of unit NHjf2. Previously interpreted by Schon and others (2012) and Goudge and others (2015) as an extrusive volcanic flow."
+      },
+      {
+        "id": "3",
+        "code": 3,
+        "symbol": "Nle",
+        "name": "Lower etched unit",
+        "group": "Interior",
+        "color_hex": "#d4a359",
+        "rviz_occupancy": 50,
+        "description": "Rugged, lightly cratered, light- to intermediate-toned unit concentrically exposed on the floor of Jezero adjacent to unit Njf. Topographically lower than adjacent unit Nue. Contains NE-SW trending ridges that extend several hundred meters in length. When present, impact craters are typically >200 m in diameter. Type area: lat 18.28\u00b0N, long 77.49\u00b0E",
+        "characteristics": "Unit is exposed in erosional windows through the overlying unit Njf (for example, 18.44\u00b0N, 77.44\u00b0E and 18.33\u00b0N, 77.73\u00b0E). Associated with olivine and variable carbonate (Goudge and others, 2015). Previously mapped as the 'light-toned floor unit' and 'dusty light-toned floor unit' by Goudge and others (2015).",
+        "interpretation": "Volcanic ash deposit, similar to the origin of unit Nue. Could also be other clastic deposit of volcanic or eolian origin. Either deposited into an existing lake within Jezero or subsequently altered by later lacustrine processes during emplacement of units NHjf1 and NHjf2. Underlies unit Nue based on its consistently lower elevation. Ridges are yardangs (Day and Dorn, 2019)."
+      }
+    ],
+    "cell_counts": {
+      "Njf": 0,
+      "Nle": 1024
+    },
+    "crop_polygon_count": 1,
+    "context_polygon_count": 2
+  },
+  "provenance": {
+    "ctx_orthomosaic": {
+      "mission": "Mars Reconnaissance Orbiter",
+      "instrument": "CTX",
+      "role": "auxiliary_orbital_imagery",
+      "product_id": "JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0",
+      "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/CTX/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0.tif",
+      "license_or_terms_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+      "native_resolution_m": 6.0,
+      "citation": "USGS Astrogeology Science Center (2020), Mars 2020 Terrain Relative Navigation CTX 6 m/px Controlled Orthomosaic (JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0).",
+      "source_window_col_row_width_height": [
+        2845,
+        2664,
+        31,
+        30
+      ],
+      "source_window_values_sha256": "5c6634e88e047d15e319a5ac3c34770410937c450f3a5d3b42381d2049d4be37",
+      "source_shape": [
+        5040,
+        5322
+      ],
+      "source_crs_wkt": "PROJCS[\"Equirectangular Mars 2000 Sphere IAU\",GEOGCS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",SPHEROID[\"Mars_2000_Sphere_IAU\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",0],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+      "source_nodata": "0.0",
+      "target_crs_wkt": "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"unknown\",SPHEROID[\"unknown\",3396190,0]],PRIMEM[\"Reference meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",18.45],PARAMETER[\"latitude_of_origin\",18.45],PARAMETER[\"central_meridian\",77.45],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+      "resampling": "bilinear, GDAL NoData-aware; no synthetic replacement",
+      "native_valid_fraction": 1.0,
+      "native_min_dn": 118.0,
+      "native_max_dn": 154.0,
+      "native_mean_dn": 133.00430297851562,
+      "upstream_etag": "\"cac84bedfe03710ff76aa4895b19715b-5\"",
+      "upstream_last_modified": "Thu, 10 Nov 2022 20:44:10 GMT",
+      "upstream_content_length": 36269402,
+      "read_method": "fresh HTTP 206 ranges via bounded keep-alive reader"
+    },
+    "usgs_sim3464": {
+      "title": "Geologic Map of Jezero Crater and the Nili Planum Region, Mars",
+      "authors": "Vivian Z. Sun and Kathryn M. Stack",
+      "publisher": "U.S. Geological Survey",
+      "series": "Scientific Investigations Map 3464",
+      "year": 2020,
+      "scale": "1:75,000",
+      "doi": "https://doi.org/10.3133/sim3464",
+      "data_release": "https://doi.org/10.5066/P9CZYIO7",
+      "service": "https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/Jezero_FeatureServiceFromPro/FeatureServer/8",
+      "licence": "USGS publication, public domain",
+      "basemap_note": "Mapped on CTX 6 m/px uncontrolled mosaic and HiRISE 25 cm/px orthoimages; positional accuracy relative to the Mars 2020 TRN controlled CTX DEM is ~100-200 m."
+    }
+  },
+  "crs": "Equirectangular Mars 2000 Sphere IAU (R=3396190 m) local ENU",
+  "vertical_datum": "MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion",
+  "classification": "ESTIMATED_VISUAL_CONTEXT",
+  "navigation_authorization": false,
+  "scientific_review": "PENDING",
+  "ai_disclosure": {
+    "ai_assisted": true,
+    "tool": "OpenAI Codex",
+    "scope": "Processing code and visual interpretation; public NASA/USGS source values are not AI observations."
+  }
+}
