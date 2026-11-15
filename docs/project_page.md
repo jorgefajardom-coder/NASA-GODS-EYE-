@@ -65,6 +65,9 @@ Sources, product IDs and hashes: [data sources](data_sources.md),
 - **Other zones.** Geology and weather layers exist only at Jezero.
 - **Boxwork.** The challenge's own example, the boxwork Curiosity studied on
   Mount Sharp in 2025, is not yet a target in the Gale scene.
+- **Astronaut resources.** The planner and the mission audit still use different cost
+  models; unifying them (already decided, D-COST-02) and the follow-up steps are in the
+  [astronaut resources proposal](astronaut_resources_proposal.md).
 - **Mission.** In the featured recording only the astronaut moves, the
   contradicting observation is simulated and costs are model estimates.
 - **AI use** is declared in [AI_USAGE.md](AI_USAGE.md); AI-generated media carry
