@@ -1,0 +1,22 @@
+{
+  "manifest": "evidence/mission-3d-video-20261115-local/FINAL_MANIFEST.json",
+  "sha256": "e470f2c38ed2265627971d5499420d985dd0daaadefe14015ac4bfdadceb2e3c",
+  "documents": [
+    {
+      "original_path": "docs/AI_USAGE.md",
+      "preserved_path": "docs/wiki/audit/previous-document-versions/docs/AI_USAGE.md.sealed",
+      "sha256": "e74a31bbca57454f8d5f131b5efb5c56e6dfd2d8e82d145b19d6fef79d9bbc71"
+    },
+    {
+      "original_path": "docs/ai_usage.json",
+      "preserved_path": "docs/wiki/audit/previous-document-versions/docs/ai_usage.json.sealed",
+      "sha256": "3f64caf6eef69a28f7674198f22760715895721c47a9e222825e1bb4c029f933"
+    },
+    {
+      "original_path": "docs/handoffs/david.md",
+      "preserved_path": "docs/wiki/audit/previous-document-versions/docs/handoffs/david.md.sealed",
+      "sha256": "4c6a2381f871e8131285e6ece57b4bc5667e3efa0decbe9fd7669c208acc8c46"
+    }
+  ],
+  "archive_format": "Exact prior bytes with .sealed suffix; historical relative Markdown links retain their original context"
+}

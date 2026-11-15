@@ -268,3 +268,11 @@ Original analysis/report hashes and pinned c3ec4c1 reproduction remain historica
 Publication CI for 6e497a1: Python, web and ROS passed (run43670914573). ROS built/inspected all interfaces and passed the MOCK vertical integration suite. This remains software evidence, not scientific mission acceptance. See evidence/mission-proposal-publication-20261115/ci.json.
 
 Final publication refresh incorporates main99f3e2e (delivery PR30); both sides of AI disclosures retained. Runtime/configuration still matches the earlier CI-passed main9198b3d. Numeric campaign drafts remain proposed research, excluded from the operational delivery freeze.
+
+## Scientific Wiki publication cut
+
+The owner authorized publication of the complete English Wiki after its local first draft. This documentation-only overlay includes nine chapters, Home and four supporting reader pages,21 unchanged marked assets including three GIFs, and the bounded public/analytical records linked by the articles. The original draft seal remains historical under docs/wiki/audit/local-draft-manifest.json.
+
+Published-main baseline:9013bebf2400d605f5a3d68e79dadbd5d1c57d03. Both AI registers retain all main declarations and add only this Wiki entry. No application source, runtime configuration, message, planner implementation, private world, evaluator reference, raw capture frames or browser profile is included. Scientific owner audit remains pending. The publication manifest and standard-library checker identify the precise exported scope; the historical3394-artifact local archive is not claimed to be uploaded.
+
+JES-07/AC-10 organizer notification and explicit endorsement remain separate delivery gates. Jesus coordinates and David backs up; this publication does not mark the submission complete and sends no external message.

@@ -1,5 +1,13 @@
 # Required AI-use declaration
 
+## English scientific Wiki and pedagogical media
+
+OpenAI Codex assisted the complete English scientific Wiki in `docs/wiki`: nine chapters, the landing page and supporting glossary, parameter, bibliography and reproduction pages. Private doctoral and master's theses supplied style references only; they were read locally and were not uploaded or copied into the Wiki. Scientific statements cite original articles, NASA/JPL technical reports and public product metadata with locators; project outcomes retain their configuration and run identifiers.
+
+The cover was generated with image_gen as an unbranded conceptual illustration. Documentation-only code constructs the scientific diagrams, model examples and three GIFs from declared inputs. Every image and every decoded GIF frame has a visible `AI-generated` mark; captions and metadata distinguish conceptual media, model calculations and the recorded SIMULATED case. Assets, input hashes, library versions and audit results are stored within the Wiki. No NASA insignia or mission-brand graphic is included in the generated artwork.
+
+The work changes explanatory documentation and its tools only. Existing model coefficients, runtime configuration, contracts and technical implementations remain unchanged. The complete first draft is prepared for owner scientific audit; publication and approval retain their separate records. Previous sealed AI declarations are preserved under `docs/wiki/audit/previous-document-versions`.
+
 ## Root README summary for judges
 
 Claude Code (Anthropic) assisted the integration owner in writing the

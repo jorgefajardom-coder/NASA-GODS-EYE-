@@ -1,0 +1,2595 @@
+{
+  "verified_at_utc": "2026-11-15T11:47:28.696177+00:00",
+  "identity": "ff0f7d791868d09c2e293f24d35e1f68052b33eb4b44245b6dbbb12e9831f913",
+  "journals": [
+    {
+      "path": "directed-large.jsonl",
+      "records": 265,
+      "sha256": "aa54c0468ac0b798ea903fffd2ac75d9f9ead3ce3921ae01063c9e95c041dae0"
+    },
+    {
+      "path": "directed.jsonl",
+      "records": 480,
+      "sha256": "2505bf1143655ce7d7a380905b164eb82be86f977afc4f24de65249b248e1b5b"
+    },
+    {
+      "path": "ensemble.jsonl",
+      "records": 408,
+      "sha256": "650f0cae514197076f4f10b7c8aadfb1b31562cf1531549020c23e1d9d87c572"
+    },
+    {
+      "path": "isolated-memory.jsonl",
+      "records": 30,
+      "sha256": "477330f5b0e50c3fdaffc9cff05200b97c3fb3cdcea7c204abd4ddf3c36b0b8f"
+    },
+    {
+      "path": "margin-thresholds.jsonl",
+      "records": 9,
+      "sha256": "4ed635fecd80a93178ddf2dac899bb8a6c3a2c78f9ca72d2664fb4ca5900471b"
+    },
+    {
+      "path": "scale.jsonl",
+      "records": 256,
+      "sha256": "0f000b288a116eda1a40406098a7116e0695a9cc3ad299300d1f4a57b9e3586c"
+    },
+    {
+      "path": "smoke-preflight.jsonl",
+      "records": 3,
+      "sha256": "aaed72a72543fee5abc03132ab5d265abe4bf325d2303e1705ea0c6ec7939df7"
+    }
+  ],
+  "completed_blocks_including_development": 512,
+  "episodes_including_development": 6144,
+  "storage_bytes": 137345943,
+  "scientific_approval": false,
+  "full_world_disclosed": false,
+  "operational_acceptance": false,
+  "public_maps_rehashed": 16,
+  "worlds_and_profile_seeds_reproduced": [
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-0",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-0",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-0",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-0",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-0",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-0",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-0",
+      "world_sha256": "b39b79da222c78fd430038405364747798477b736b5055c2d2d8cc2ef5249359"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-0",
+      "world_sha256": "67d28a62e6639604d768f6de81a1cb96b7f0bcfd2b91e75ff1403a3fce497374"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-0",
+      "world_sha256": "666b83f391391dcf5bf9fc7109523d4f366a5f8ad6c63f5b139ebdff78f42180"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-0",
+      "world_sha256": "755f3c41ea3f7af32950fa3ced5286290b4372d3ebc860dfdffd4dc0f52501d6"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-0",
+      "world_sha256": "2deae0f80ae3b36f29058e59da7708be84108efeb05cf4d561bbc0456e86c50d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-0",
+      "world_sha256": "221977e0630a9a6aebbd14ad04386cd9bf4548458162c22b6975cf0b63f94c12"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-0",
+      "world_sha256": "b8a785c6d07966931be23407f6eaf7ac0798a4dffbb6e36967ecf042a337face"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-0",
+      "world_sha256": "7739573a2d3707772f5b86b1e112bfa4aafd055df86f4827462b4b59c524fb47"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-0",
+      "world_sha256": "28e96ee267f0d4ef7c19e9e73f36636fdee0dacd49c70600329eabf5d51d356f"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-0",
+      "world_sha256": "47413cb2d64fee416744d03ae134f39e454d6c2b997d73558a7d7975ca83da0e"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-0",
+      "world_sha256": "423429c8c30edfaa754a0a8d24b87ac24a9587b0af16e680d1d92b7f9d7207d3"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-0",
+      "world_sha256": "011d126b01002c690bffd321f23371ec8c872de26771b519fe6215b864285d95"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-0",
+      "world_sha256": "c843940e6a3080d2bb6191bc344c476048c71af07029fef54dae33e66900181e"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-0",
+      "world_sha256": "a374e15d8d7120876034c62a28c00b40e5c0ab25c3f60825d684ac309bddc95f"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-0",
+      "world_sha256": "d725e0b21c47b73f9024992d98befae7ef303cf8c58cd6a943aad843d77ac1ea"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-0",
+      "world_sha256": "54065fd109eb6232e346b436890a64cf33b8d5758d49c5b092b4ccb398de9384"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-0",
+      "world_sha256": "328dd10e14c16b5c61f76e916ac7886882962ba035e9b80816f44b32160f2b5c"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-0",
+      "world_sha256": "93f8aa8ef20d564c7456867688717c5a0b0b34068d9129eb75a7224de2f5d0da"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-0",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-0",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-0",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-0",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-0",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-0",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-12",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-12",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-12",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-12",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-12",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-12",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-12",
+      "world_sha256": "e2f813f2b8b4cf08fc02cf9a5bb3982c116faac87c007e7dc8b3ea3b97308e0f"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-12",
+      "world_sha256": "c426cc99d4821be370511cde55ca060de1f7e287088c7a84751cd36b2d750b31"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-12",
+      "world_sha256": "76e762fcdeada8d7eb86f21f7de78059a6420ddf32468691a5a9b2f0d4d9b568"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-12",
+      "world_sha256": "96316ce33a6c1078952f6ce2957126942c526c86a134719e388a0a4f2f0148a7"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-12",
+      "world_sha256": "93628302b4c3d0b2f5de1cb903a42aabb13009a94fa782b8f1c725e8cfc89fc1"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-12",
+      "world_sha256": "064dc7e7817c23109a30a463e3544d83becb70bbabc76a39ef138b6547273f9e"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-12",
+      "world_sha256": "d14b0a6b1470dd2c52a9963800ab3df676a51b2dbb1f90c9b422501aa851c917"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-12",
+      "world_sha256": "7d20381880eb10122216ce70e33b2e8cde047cadb79573862044178bc6ff724d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-12",
+      "world_sha256": "f987edcf35691b45d509b92c0898f8b1e82dee620c996267016a80742c6c6491"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-12",
+      "world_sha256": "35a25a66699a7220aecad25d64b3a8d6256d98fea209e485dd6fea0a9585d7f5"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-12",
+      "world_sha256": "1005163ca7c81b9599144a2d30a8dae16b2a2c120357d50157bb95be12f1c8ae"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-12",
+      "world_sha256": "8104654ffa6a2229d517ecde09feb77c142932378805287f2e450d3f5a086d7f"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-12",
+      "world_sha256": "f1d25baac5438d7b1bd0d73bce827df4ebd96ced75a6ef8d6f269305a1b0daf5"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-12",
+      "world_sha256": "acebf693430fc93700367be9cc94d9066cbf9c4bf3425927febf8366e23f7afd"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-12",
+      "world_sha256": "549fc09be8038d7c11f3c34dd26fd287bfcd44ff96ee1fe1ddefe0226b5e91f6"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-12",
+      "world_sha256": "8d3617fda005acbd81081715b6582f7cf79b0d5b8009133725ce09fd83dcfb41"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-12",
+      "world_sha256": "12caa36d2cf745257c1390c8065821719446840dad8716051205c29be602b912"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-12",
+      "world_sha256": "9835bcc57889a7b69827465c58a13589428e17758a1fab9e342087bde6e33c24"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-12",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-12",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-12",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-12",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-12",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-12",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-1",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-1",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-1",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-1",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-1",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-1",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-1",
+      "world_sha256": "e7b033df394c48df7448c52651bdb325b8af7f60c30d146046bec5b7f15250d4"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-1",
+      "world_sha256": "e8afeb43779169c61ad48cc69f70513aead4fdb972272c68caf4acfdbd9eaa99"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-1",
+      "world_sha256": "b401b7bda352a701717247a64474fbe8c15f7920076fb64c9dc8093e00ae5242"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-1",
+      "world_sha256": "9d3e2d184d50e503dda24cd6e8b36f8357db5fca33864fa7494cd6fc965bd39d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-1",
+      "world_sha256": "8cf84ffde59e2083860fb422f0fc4652920239da8ed29b86589fd5c4f23f76bd"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-1",
+      "world_sha256": "661172f9ccfbcfc3a2bb62a1b311df09eba26c9191b32d2bdba7bd6f442398fd"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-1",
+      "world_sha256": "e36a4a003b251560480bab5a8c8be287aae99cb18b2d9749226c4c1424aff589"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-1",
+      "world_sha256": "8e0b7f3bd86d424cb0e2d37163d4b79ffcc43f9b3ada0f240d10c3715c4f8613"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-1",
+      "world_sha256": "7eeaf4dbcf8e62deacb7a9aebf04a2115caf455a321b2057daaff2babe2b4baf"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-1",
+      "world_sha256": "a3bc304d72bfe2643083cc439ac3745b7d39b545e4cc6703c4d36076293cef36"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-1",
+      "world_sha256": "b285f74839d23b8b43d6076b109fa7b03e1131db915bed59deffb581502b6e3d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-1",
+      "world_sha256": "bf44c278c78a9be2e2f227e1a95d1626fb3bb1f1e4004db2d85792466a9f3039"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-1",
+      "world_sha256": "2a51a35e2ab55c86b3212a98782937245354448f49722d2222e399a3422a8ded"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-1",
+      "world_sha256": "b3439501a8ab82cf3bc8c168764b8892954c5653436cb1f6be2e3cf1106c08e0"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-1",
+      "world_sha256": "0b8b1891fdf50270c0b0adf4b1b76462ad1676fa64f31dd0d842b5cc5e13d48a"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-1",
+      "world_sha256": "562f5386284426b82aeb3a71f6e889e662daecd83aad0624f878bf8d38102558"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-1",
+      "world_sha256": "25f69a363097add993395511cf4d475b9bae41501b2cb5bab7d95e9d9fae1651"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-1",
+      "world_sha256": "da6d41d220a3e65b1786cbfcd29c42c041fb585b4279c8cf7e1ddd77f0cb7ec7"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-1",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-1",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-1",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-1",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-1",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-1",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-13",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-13",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-13",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-13",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-13",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-13",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-13",
+      "world_sha256": "f2794c752b30e6fb7047ecf1c3ba6e3c51c1ac95221ade62acd096835b4eb4ad"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-13",
+      "world_sha256": "fd5c134ce9a501da8dcfed8ebfba06be3273d048b93f697e459f40641bc225ba"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-13",
+      "world_sha256": "0d5fd9ef6a36f1120fb094318e47e67c3df4b5ae6fb33fab8005ca724942f0fd"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-13",
+      "world_sha256": "bc0fc96d89b9d684572efefe58d1a1930cf3a1fce21c1594d26e8da04a7ad869"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-13",
+      "world_sha256": "1164ccd892eb50e6951ec4b820b3453ea2db3b8369766ca23d8860f1c2d5eed4"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-13",
+      "world_sha256": "2f527ca4257cd1b79d56ab99f11f4a6ae2f8bdefc180d32863fe1edb00628789"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-13",
+      "world_sha256": "0943eea0de74f2ccf6c8ff5f5b9efdc048ca625a320fcb468a6d9a983b6d8306"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-13",
+      "world_sha256": "d031da954cc307a31a8a4b3b9647754249c570e31ec0ccb99a27d2abb97510e5"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-13",
+      "world_sha256": "afc98474d5844c0491d2b738384f2e5691354a4f308442de2145a6216f9ba6c1"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-13",
+      "world_sha256": "1b2293a4914689056c19493238427b65105c7b8e28783be19e40fbc603f8f49f"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-13",
+      "world_sha256": "dd62b6c0aad0af00855eef15cbad359dc0e8a28ddf441c9c5da549620567798f"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-13",
+      "world_sha256": "9dea57162648fb872c5f8f5eab81e6c37ed574e0b3a3b249afae242d18c1ec24"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-13",
+      "world_sha256": "8d65124d6a36aa2417b2ef0aac4af7aa97cb40ebcd5cf3e3ff7c710679c0930f"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-13",
+      "world_sha256": "b1fb2a688d9db1f5cacd4f42edee73941fe2a7d689f3f33dace21b3337c325aa"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-13",
+      "world_sha256": "b1f26cafbcbda3bde4b10efadba24377e5a24772c48abbbb482ee3cfbb707211"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-13",
+      "world_sha256": "4b041e4a014b1e7494e0e36aa5704bbc3d5660c85d02fe6529c8cce21ccde2e8"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-13",
+      "world_sha256": "d63df850135a6e79f46b242e43776fee681f36d8ce19e36cd748d8d6d80980b1"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-13",
+      "world_sha256": "5413589766328a962abe29497fe30c7b326bf104b4703bdd46664e9d8b163012"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-13",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-13",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-13",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-13",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-13",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-13",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-2",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-2",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-2",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-2",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-2",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-2",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-2",
+      "world_sha256": "ac667b4657ccd1f05accf9c24871805de5b2a7fba7542b305f81d240fb43f5e0"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-2",
+      "world_sha256": "1b0312039682b3f9caeb13ed51cc700c7a6ab926b6ecc89308b97e36ff46b781"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-2",
+      "world_sha256": "b821a02d55508111e3d7e23fb5987185fabb83ced9f053d216fdd0a3fb74c664"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-2",
+      "world_sha256": "d2e95fa97925a78d7347d4467ea8825394e763b7574fc59fdec4040415260893"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-2",
+      "world_sha256": "66ef17f10cf41758e20d0600eddfc44eaca6245a904ebf786c1aef8ab7a24ab2"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-2",
+      "world_sha256": "e333b8851d860eb09ba7f51c82bf90351bbeac00c77280d0a742e51e33f46e4c"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-2",
+      "world_sha256": "13c4457bca6a73a4d53ef9855329d426cfe4be7978e82e41f2c3a95a73125dfd"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-2",
+      "world_sha256": "1fc95544fde289f5c942bb1e0ae19dfc4ea81c5389a875518b24628ddf76ce65"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-2",
+      "world_sha256": "678fa77a77ce8d9454340075d0e6da63b1dad9471d0ef9ae53da4367099e9cb1"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-2",
+      "world_sha256": "6799d242e16e3f5aa26f091df6df057b2bd026fcca43302a6133f9af32fe024a"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-2",
+      "world_sha256": "5310d0eb69f4d1002c03e810e3831fb31828b283f85e38a337925ffaba43022e"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-2",
+      "world_sha256": "95576f32504ba28ef31e4f33d5f9c0d729cb6c141618d4422444015a6618cae4"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-2",
+      "world_sha256": "1a49e957e05bc3f4beb01487624f0af218f6bd759cd644685f570ccc1ee07c8a"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-2",
+      "world_sha256": "2ed6571fcb70b61d32221b0d3f3d2319972a2014be36aaeac361f1d1dd52a9f0"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-2",
+      "world_sha256": "1fed961e2783a034fdbaf2a2e4923ce4f790fd9f21d9cc9684ae5476e9fdd021"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-2",
+      "world_sha256": "9624c0408a0b86eb9f8964c779cb1a216cb0271a5494a1d53bb74a85403d70ae"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-2",
+      "world_sha256": "bc600ad06adba8205f17e922c6b1ad34ce552455572766b22071e0d86efde7f5"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-2",
+      "world_sha256": "786d350d8ee7a22fccb98a44d585ce787b25edc3c14d7c31aab25aefd28b9366"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-2",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-2",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-2",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-2",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-2",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-2",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-14",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-14",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-14",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-14",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-14",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-14",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-14",
+      "world_sha256": "0461da76f42e847968856cfa1e6e4626ba6bc9899789a96cd44f561f7f15e197"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-14",
+      "world_sha256": "065d203f9542681d70edb7db1da2c8556b0b6d51c0349e1748e7224b0e4830f4"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-14",
+      "world_sha256": "dbeb661569b525191deab112102e3d8cd6e67fdbfecc6ff01189299ba9022154"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-14",
+      "world_sha256": "10ddf34a5569662ba11a2c7e1103ddcefc50e9ddc4b68102b4043a0f8fd794cb"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-14",
+      "world_sha256": "890df0c785486ec5c4c79fceb85215f2575f4889ef82c55a5c42d9245ac4258b"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-14",
+      "world_sha256": "ce4d7dc00dc1b749592a4978e5d6ace3a04d10bce0e5d1a46dd8b0f7114a2a32"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-14",
+      "world_sha256": "f96fa40fb26a4d867d5c78f898011f184c91da4c36cb3fbefab9d2a993585c27"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-14",
+      "world_sha256": "209cc9237d008a7a99280820f94f4a28dd2de118ae82fac8bae8051547b73940"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-14",
+      "world_sha256": "2d574f708ef2261a92316ce8e1b284adb8a2012a32f8d25f3a3f56fc101cf2f6"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-14",
+      "world_sha256": "e6cab29478ee0c831f32bf85502ef4b1162dc418d1798f3aefb61711efea20f3"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-14",
+      "world_sha256": "ddcb1487efaf239f1818ddefd1e88c1c49f4d7ed20ab0014b6b4f6c458939a92"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-14",
+      "world_sha256": "0d5d7f2c2f56be096eb58c1ef2d60faf3fbee471294d6f5b2dde236276b89214"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-14",
+      "world_sha256": "2c0185fc9186c4b097cef536fb9083cc6f1a3ee65ff6524d8d5bcbc67761e4dc"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-14",
+      "world_sha256": "b8e6ed7cf4bc32009fc3c5b202e5d60bdf523632f9f8041af9fd3fc9ad787088"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-14",
+      "world_sha256": "d4ad9c7a597eacd4061593767d89b68075db8022f3562924a2819f8dfd86bbfa"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-14",
+      "world_sha256": "10c7d14a606c26c4dbd82d0ad1aac20c66933e54a3945a1b39e9116e377ae68c"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-14",
+      "world_sha256": "8d99225d088e1a5423ca72da80ffd8483a9bb60b45c708ac885a31f50b46bbee"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-14",
+      "world_sha256": "962904c28c35b1a50d22f15ec69eb0e1ae7f5f7133bb074769ba43c3853c43a9"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-14",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-14",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-14",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-14",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-14",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-14",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-3",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-3",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-3",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-3",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-3",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-3",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-3",
+      "world_sha256": "b45695f97652835b3111f7d625b455e42a0572488e183895688f96bfc65ab40c"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-3",
+      "world_sha256": "60c721243e48e54d4050db077075d5a082906fef16c5e378ad26f9adc48ad1c1"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-3",
+      "world_sha256": "dedb11e15150eb18de5238e0f2f89bfab92f8c5eb58fff755bc80288543a9bf7"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-3",
+      "world_sha256": "29e988d1280b771dd94e238e4ebecb960e2a5052408e9abd84eb7c58c2a0defb"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-3",
+      "world_sha256": "521cd04727026cd0f494fd22f30cd86a305e16457ec2606c894c39eeb3640bb2"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-3",
+      "world_sha256": "993c8590d4050097be7f855a854c668504278531e868479789a90dee8077cf86"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-3",
+      "world_sha256": "8afda0aff06faab6c9fb0dea7952db698db6593b34a9b15feb65317a46774c0d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-3",
+      "world_sha256": "b8ed6010feba0a308b5bbb4efa31fcc394f9576f675d98fdc53ea6d6faaaa83b"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-3",
+      "world_sha256": "29043d9c442075282d29ffb3192fcd073a47e71d75e887f1ac5426c283214f8d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-3",
+      "world_sha256": "e3d04be09aa17973e558a65ee8d1f329c39770756c1d030e0bc51e689683a127"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-3",
+      "world_sha256": "90267b97109a2fce76511d15d241030f123683763266fcc2ed5b59ac2e123c2e"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-3",
+      "world_sha256": "8a75a2ac61ad9d3694da1b920fa7454347cc2a9feaf26852fd91f1b3fcac7ac7"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-3",
+      "world_sha256": "56e17354b544a5108948d43852316192012a0800101d7f700dc7d2e5936c463d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-3",
+      "world_sha256": "0b41092a40a93589af55208659e9afcb2c8e097fc6f921478ee5c04b1e7ff57c"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-3",
+      "world_sha256": "ca9446f612fd1f161b5b533a52cb898743de22feabef153fc9f7433eb4827175"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-3",
+      "world_sha256": "29656506fd2274c4a3d3b28f6c0e6283f4115040916bf06feecc22477d442055"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-3",
+      "world_sha256": "ca848d4108d527e77ae7decf29bcb58de40614ddfa42ae54e7f57c86162e44b1"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-3",
+      "world_sha256": "2a24bf19465fd5174f6cf3fc678fea9975e3b3674ad431b2fe6d347f1539505f"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-3",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-3",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-3",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-3",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-3",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-3",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-15",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-15",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-15",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-15",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-15",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-15",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-15",
+      "world_sha256": "27a0d44fd397978284125aa6badbcfffc6c9e980a65d5b24c345fc16104fc5c9"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-15",
+      "world_sha256": "ab180e9b6b0297a6d360d68a83b1c0514afc3f8185db7ffae0dd929fc6eb3730"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-15",
+      "world_sha256": "86b6487e2797db888c79e604c593385154212318b7e15dde0fae8541da77898e"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-15",
+      "world_sha256": "b5a7b3dbee16418099d78b4316f9a32bfcd1a7c2f9b0197325b56969af87452b"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-15",
+      "world_sha256": "f52599278656b024e27fb47fda567202d0419644fb917c6f61e851dcc8a1d4e0"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-15",
+      "world_sha256": "d1f540785dc8973f0d0ee88746aacc0e7cd47d5a09b04667869b1300441ba90f"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-15",
+      "world_sha256": "3f02d0d81587728fdfbd46ad0eb99750ab1fcd053c5729f8548e51989c7ebca2"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-15",
+      "world_sha256": "de9304eefcfc6f9d3448214b142d9b1fb2899e1bd766ba863942f81ed5b9c09a"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-15",
+      "world_sha256": "72cabd96ca7078b16cdd6af026cd2b544268cbea63c4d2bb8cd4651fb0d1625b"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-15",
+      "world_sha256": "ed843d663732a6b9164c5b4cb262ec5258bce2478f7fea1fda3119e8a4e9d3e1"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-15",
+      "world_sha256": "401ea5032f6bdc306a293114afa5018082a720567915b176fef9c64a1a3b2258"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-15",
+      "world_sha256": "faf50bcfa2f1d22b3706c7dce7d5aee486ff81116e2c6935b8a84fd7069e9636"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-15",
+      "world_sha256": "1d2e2d26b97dbf464f61276a18b04af56de1fb56c0d4ee1e93de1e85a106b3fb"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-15",
+      "world_sha256": "9f84cc074fb4517f6ac887d95cbf35b155aa10b2dd8cd6084efa64cc994700a1"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-15",
+      "world_sha256": "70de46f0edc8569e5cee6eb66177cffd45f86bb610ab2b9ae4ca6e7b9744706a"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-15",
+      "world_sha256": "cf88a4e857c4cf5321a769c7d93db1763e4c49f3a833b5e15e8a7cdc0b70131a"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-15",
+      "world_sha256": "c2ab75a56f220b7223dbeec3b7dafe57b125f24a5c2b5bd813fe9ece1d705ad4"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-15",
+      "world_sha256": "4e3de3403a8348623bbb8a4bd6dc3b92627fd0411d12f005d086019910908ba0"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-15",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-15",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-15",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-15",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-15",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-15",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-4",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-4",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-4",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-4",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-4",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-4",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-4",
+      "world_sha256": "39a84d83f6651f5756c74cac1f0426917db6e710bf5dd35e16eb307e0e57bc83"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-4",
+      "world_sha256": "c3c0a62dd0c20828084cc0ddea599fab00665958ad4261646e3d90825e937578"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-4",
+      "world_sha256": "e522e04617fa9e9af1e2abd58fe2c87d5387a91a5e8bd1614f76acb756d00243"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-4",
+      "world_sha256": "326d9a793498f908c3d7e19e43df1da40dbc76452da619d15415ed739ff764f8"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-4",
+      "world_sha256": "4c973c2013414dea5f7592c29edc2880ec5de7d69f880eb1624a8bec380e2601"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-4",
+      "world_sha256": "d7529d6924bcc4c6afcd6eaab9bfa9dcf8c4e799782ad745a4f6ff37937a172d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-4",
+      "world_sha256": "7b8f179b2a3d5d6ddaeb172a439c574418808304f8163014061a82ef8dc49871"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-4",
+      "world_sha256": "9851c3bf89a7f68180c04696bd48d397722876a64bc63fcd0f58d98f321608b2"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-4",
+      "world_sha256": "b0d5bbbe021c03132f2e3ecf871eebb49932f8ef446ccb31a234a93dfec938af"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-4",
+      "world_sha256": "1fdb6130cbeb610df5f297e6b1238ba36528955e14257d28eb16d648d3e29536"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-4",
+      "world_sha256": "ef7a8aa1549d3af57075766937ea27d5319f3b9cfe029859473d06401c200043"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-4",
+      "world_sha256": "073f592d8a593a78ffda29868f7ec2b6901362f7337468bb3dbe0159c368e194"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-4",
+      "world_sha256": "5ebb1590ba181185922a7052aa43e950aaf57ec3bf6c3858a6365e5add760028"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-4",
+      "world_sha256": "4ddf058ccac433eadde2630c0cb5fddda3c334c7fc6b9dbb44568e0f03e8c702"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-4",
+      "world_sha256": "818707f7a963d60a0edd55bb1a61f9b38ca43e86972ccc1b8b8c7eca979ed86d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-4",
+      "world_sha256": "a28959d04e1799320ea7bd0c30aa205303d061ae02b4a668cadfee84e542b82c"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-4",
+      "world_sha256": "8f7ada435f0f1143179e26755fd1eb8b786249b90767e8ece80d7d508353183f"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-4",
+      "world_sha256": "e35b23c3944db42eb0d3c75da481ebfa29ab4f9196d7186dff60df0b292e362c"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-4",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-4",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-4",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-4",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-4",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-4",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-5",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-5",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-5",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-5",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-5",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-5",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-5",
+      "world_sha256": "f4a735fcbb928cd5575c39e79c1022ffba59b066e51335195ca4b1dbbc38a215"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-5",
+      "world_sha256": "0cf91eec93b735f423429a1ff3d2c693c7c86e3f012cfb053a350a22fd0bd6cf"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-5",
+      "world_sha256": "2fd37160fd004209476828d551c62e07589fb9cfe5294c1484ae0c6df6a36a82"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-5",
+      "world_sha256": "fddf578810d347628aa988600e5b43f6c6bf6c9afc79efb155490d7b52380c23"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-5",
+      "world_sha256": "f8a1d3c6325f081c0b3e2f1ae7b12b9ff7fdcabf5200defc8eb7bb5e04b275c9"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-5",
+      "world_sha256": "b37f757c0a8b4cac144de4bc304b9803907f40466c4fb4b0fc7a947dab510b4c"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-5",
+      "world_sha256": "06762910657d200857ec2bc2b53880b24bee8a06b1649ed3157b186aa9771ea7"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-5",
+      "world_sha256": "b660a78f7788b60aaee49dd994515a8ab264d43fe676d9dec1707ca22686a322"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-5",
+      "world_sha256": "fb5a1c59567b82ed2c871290e8fe0236082d4d0021bf5f66caab7e45c3b265cf"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-5",
+      "world_sha256": "a46f062d0326ccd7a8912a86a018805c32d10f06c451b05b0bbf72de9dcb825e"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-5",
+      "world_sha256": "a8a2c62d4b29dccb44dd131bb35866348f6f094d0524208282be3fcd2939c8d3"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-5",
+      "world_sha256": "6be6ab2dfdd3938ce9bf29e5ed61607b2ab96ff26fed9f23a73ad7b382f3d5ea"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-5",
+      "world_sha256": "aa361b2734fccb1ab57b77a42776b35c0237c83511050e21b50670a42b69ac81"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-5",
+      "world_sha256": "b6d55933e5b6d3d1949d80b06f13444aaece43a1f721c9d75effb95a765c71ba"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-5",
+      "world_sha256": "2c535ed284525487ff25629ea76bf73958a9f37754765654aa68341bf4502800"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-5",
+      "world_sha256": "e4e854601c06ef6293e55736029f39faf14877c798731322a3acc7aaacfa08aa"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-5",
+      "world_sha256": "74dc67f0e4a769064b3bd081da7dd2f4ac4071808a186b4301e7d797a17195d4"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-5",
+      "world_sha256": "ba390360962470af0160f99909f34bd9acc59d926c045231ddb92afbf661a3b0"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-5",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-5",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-5",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-5",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-5",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-5",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-6",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-6",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-6",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-6",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-6",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-6",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-6",
+      "world_sha256": "5095f2b556e5fed486379337fca0f10db3c065e83ab81d074e5d3d046e4cbcb8"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-6",
+      "world_sha256": "0987d630d8c458f9c982c872d7b11d103f6f709e5403b9469bf97fb4a5d52507"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-6",
+      "world_sha256": "243d3c8f1f56641a3a4e6aa39562dfd86dca859db44bcbb9db602d8acf8986df"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-6",
+      "world_sha256": "b6d5fffb38b9a4b1247c3c3c838e92ba465ee9d1907a523a53a97566b42d1464"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-6",
+      "world_sha256": "1ce8e79f4ebf3d2b044b71c341d9e0e0d00b1e9278cefba63f5a3fa0d42c8cf5"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-6",
+      "world_sha256": "60a398c76726bc5836c75741f224d2bb903ccd23e9de2226172f410f4c045cab"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-6",
+      "world_sha256": "b0c9a0d521607ce15f540351be14f2555d0d10137ccc3373c39edce0321aece4"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-6",
+      "world_sha256": "c982fc5d671492fa4864b356071c785794c4c3d9336ec173703aaf905f047f21"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-6",
+      "world_sha256": "975a7f0a8a861a8f1aab7ea0f74d9b7a3cc0a6d6408dfaef7bd76d8c0acc6a75"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-6",
+      "world_sha256": "2975a1ac3a2c2512c0b6cd8a15eb52b7b2c9a41cc828a5dce3c7bba4a28831a9"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-6",
+      "world_sha256": "be414c85da55fb2c37c36441a0d680358709a60fd105fdb35ea4b4beb8e09443"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-6",
+      "world_sha256": "71b514257421eb5472575b3d05e3d46d18a9e75a3f2227f0eeb35fb220b13793"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-6",
+      "world_sha256": "d4d299306ed51d404be92a33baa90891b937266151ddcdffb175b18c97378895"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-6",
+      "world_sha256": "4c3f9e730e0fd318f16eb1255c6418fd2da221a8eb533ae03e125d10c6980c3e"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-6",
+      "world_sha256": "aeaffd27cfcef66d58a621f830eccc34d551ead6908ac64fc91214bc60056f34"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-6",
+      "world_sha256": "5f76fcb0d72f477ef33341078ee7ffbdc4f2138d5f46c43582980583c33c21bb"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-6",
+      "world_sha256": "966c8dd5391148010d8f4f6a9ff5c5e2611859f737b8e94aca4e07401f40ffd0"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-6",
+      "world_sha256": "7e84d2d46f4693e99cb65e3ef509bdfb39471083420d19098bad8fcb3d999f4e"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-6",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-6",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-6",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-6",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-6",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-6",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-7",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-7",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-7",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-7",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-7",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-7",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-7",
+      "world_sha256": "6719f4e9e6d76c71ff47f51f5e3382de888f652c14e0e4cea76127711bfc2bfb"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-7",
+      "world_sha256": "bb5cff1d29b6b4505731ef20c1d4d1d52c0cff481c037a3ff75e5b1bcea2d347"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-7",
+      "world_sha256": "735a607aa988019623b0e84dadf4bb4145744207452412548ae4b2b9af88c7c7"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-7",
+      "world_sha256": "322c3b193af5c52fb5fe289b6554578497a8e7ed8cfbff458f5bd6f2160559f5"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-7",
+      "world_sha256": "9c6698e0a6f96bb982e88267b291216278f578b8cb84d040aedf7bed5b9378b2"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-7",
+      "world_sha256": "baf86f713cac035210163ef650974dcfe0e8b108d7f1d3b863fee10ebf0670a6"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-7",
+      "world_sha256": "3962c82a02c2bf5cf8fac04b1d567d597bb2752d42cae8b8f494b2dc62cf250d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-7",
+      "world_sha256": "576f2284ec0dc9c165bb00d81d5a744335d1b30f6482000bafa2752f54c329fd"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-7",
+      "world_sha256": "ecfe35871c88eac3c343697a5960b742a1675fd6773b9e86634cd59f53ad1de5"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-7",
+      "world_sha256": "04f80e6629384f9844d5a00bd4a35639258e5822e490c6d4bccfd637c846feaa"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-7",
+      "world_sha256": "a738884689c6b71a454cd00f4a1e9bcd5388877115ddc71fc6c18e6a799520c2"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-7",
+      "world_sha256": "6dcc4d18d1e07738b9cca5e1cb9aa2e2f598f251154ae230506997eccd35b0ca"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-7",
+      "world_sha256": "e8588050cb666ea25e12cbade17ac903ef7eae3b99c34e7b61215cc0cc08c941"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-7",
+      "world_sha256": "973aa42d574c33db615960c3a2fa131bcaeb9d8c9337afe23d3ec8c52b04e7ff"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-7",
+      "world_sha256": "003c04e1d98f5ef322fd8edafb67120e0d270b58d71e95a776dd20ab51da2e90"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-7",
+      "world_sha256": "8486ec8081f3c82eba811de25f0dde4b4c024796e9e0f020791f9262769db694"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-7",
+      "world_sha256": "6f6dbdaadecff754fe5d60eac9811d3cd740657f712dc8acad8d5f99e6f31b8d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-7",
+      "world_sha256": "492214bec8a931551b41168dabf274cbfd50bf06d075fd7929ae7a9857f90177"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-7",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-7",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-7",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-7",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-7",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-7",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-8",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-8",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-8",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-8",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-8",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-8",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-8",
+      "world_sha256": "dfb13c05671a820d9983552f50b9e9238e982b937285f652ff9282a582fef65b"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-8",
+      "world_sha256": "2e51775a3c670387d94dd87354f8298b046484fda66e2ce6ee7428e9bfe34333"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-8",
+      "world_sha256": "cb54a66d60b2a4726099f9f0c4241ca9e33254b3cce7d92b0be2a14713097219"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-8",
+      "world_sha256": "34d0c4ead829ac35b133182a71be4ac85ae0355baad375489a468fdcaef274b3"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-8",
+      "world_sha256": "bd6c0a255866d1524ecf0224ba93601a652959db76b7d24719ee17f80bd979b1"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-8",
+      "world_sha256": "69e6feec574936ff8882fcabf2ca7e0d1c334dc71bd0ccfe735d9e7b0028b9b7"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-8",
+      "world_sha256": "c06ea003f076cd957f521e995b0e260616a932356e1ce53f3aeac480f3d20f74"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-8",
+      "world_sha256": "bff3f83ab23cdddd43ba2534fb0e5f9ab69e3a81eb37b40f7bda5367c489801d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-8",
+      "world_sha256": "cea1907c316feb751f5ebdf9cee096cc21877f1e200678dbbbbacb8e894f7310"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-8",
+      "world_sha256": "9ce3ed43124d3edfe3f9fe7048c02c3c418aacc4fa37f9bd0ad3d20e03fe8472"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-8",
+      "world_sha256": "6e5272824c7c5125e496675aa5c75e0acd1eed7a6712f4508fe78a7dbbb987f4"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-8",
+      "world_sha256": "b0f0756d05da4a8b71f246cfb91446838c814996f60ff28d88b912d0a88e8d03"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-relief-8",
+      "world_sha256": "47a6732e55f992475966e52b34401ebdf91777e31775a41f471d579c8614b701"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-relief-8",
+      "world_sha256": "71c3b835ea4f20f3747a4ccae60c44fd43154179efc08cc6e012cc7044e72139"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-relief-8",
+      "world_sha256": "e6df5e51e728078220bd5c1e4eb4949e8d9891e6c1e8c11bbf32a0b2d3e71101"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-relief-8",
+      "world_sha256": "a00dd15ad01dae3fded772c2d5af35561e1fa685f1542930a7fd399e75b040e9"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-relief-8",
+      "world_sha256": "71d287bb3250d2d9947ad7082c2774b67f8714e481748d6be78770faad566a86"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-relief-8",
+      "world_sha256": "d80f0ba2e3b4ccd8eda75fc95cbb861855f428f13ee2c802120d399f25bc1ca4"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-resource-8",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-resource-8",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-resource-8",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-resource-8",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-resource-8",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-resource-8",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-unchanged-9",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-unchanged-9",
+      "world_sha256": "a043133bef115db3e477c933bad1ae549eba293f45091793d725a7e07459c158"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-unchanged-9",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-unchanged-9",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-unchanged-9",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-unchanged-9",
+      "world_sha256": "537de1c0bf201ce5a6dd28590a5e268a0de0db27bf7c3026d81d5fa606a7f170"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-detour-9",
+      "world_sha256": "3a645862a94df070da2c33479568207190a0969ec3c1fccb2c8e1657c1fc0a60"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-detour-9",
+      "world_sha256": "566c6179ca3dd94a1b630e44a66ef0064c2d4539964d46e7549329c0ad02bae4"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-detour-9",
+      "world_sha256": "2f870ab605ff3086884878a558d2bc52c5d4f2626f0360e375b4ec9e9060e5cd"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-detour-9",
+      "world_sha256": "91dbd2913b6495947fb666ace814500a9fb67deec0b5beaf749b7d57b7d1e7d8"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-detour-9",
+      "world_sha256": "7c57e8d3223a0b550c3a72662a895d5a5b1b8a1f3008e581f6857d0250703623"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-detour-9",
+      "world_sha256": "5befad32c22c87abd9aaa67e781a78efa6d1b8e2bfe70205345950c3fc7eca83"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-512-blocked-9",
+      "world_sha256": "2d7fc11259df44c8d517049db15c3f5911f257ca9fd2570c5993b667a671b0b0"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bright-1024-blocked-9",
+      "world_sha256": "04af46a2c0c42f301939278490d70adee3a91b925510b243c4884f5e86a57002"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-512-blocked-9",
+      "world_sha256": "c907bf16f750d65501cfd6e45d4cfa1bc728fa1934b8823a2037f00cf1ed73b8"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "hawksbill-1024-blocked-9",
+      "world_sha256": "20f6f4aba79982c5e3ec627db88d3c9c5173f23fcdb5000fe962a80b72352fe6"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-512-blocked-9",
+      "world_sha256": "4502056d9c0dd737bf9c4fadc538d49d41acc638cf49a5dfe1d134929de75e2d"
+    },
+    {
+      "journal": "ensemble.jsonl",
+      "case_id": "bunsen-1024-blocked-9",
+      "world_sha256": "77726a6ca7ba90dd0e19f003bed5c42688163147a0594e81f84b0d3f41442230"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-128-unchanged-0",
+      "world_sha256": "d7ed7ac59d4a1297cffb6ccb5acd3b910539b6aaf0a9ec50d6eee69fca3c1798"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-unchanged-0",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-detour-0",
+      "world_sha256": "ea88eada8be18ec9ba86cf527eab4fe26007a312a3a2d132e6baf1d4b8bff33a"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-relief-0",
+      "world_sha256": "ed3cdeb8a52a31b507e3b229d1757a58e168266ba24b6ad241de0aaf25b66ccf"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-unchanged-12",
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-128-detour-12",
+      "world_sha256": "eec1b4c06830052ca2da91dd124718390c76e0ee22c6dafde3f3213c3531a20b"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-detour-12",
+      "world_sha256": "a72b84fdde8fe7b45073a1b96364271bbe96145a7f93afba238cd9713cb6f0b5"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-blocked-12",
+      "world_sha256": "e29eeef54fa1ca98b7ff38f04f040fd8ed501f55937e22094774e3f20f52a37a"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "hawksbill-256-blocked-12",
+      "world_sha256": "6bb51ad9cb49b4025315c560fc20e082ffec3ed34edd54d42dc3ef408c348b78"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-relief-12",
+      "world_sha256": "73b86819f399a535dae94b6db5b2b2254fed0bc2420cf2abd791d77032020da2"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-resource-12",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-resource-12",
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-unchanged-1",
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-detour-1",
+      "world_sha256": "a4b8a6e7c29306d6e65f4bb547e206215320903deaad2b8b406768573c79968d"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-detour-1",
+      "world_sha256": "ee314dff1081f9056f68b5375e0a4230ee93e3c54f00b12fb1133756cd2e9046"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-blocked-1",
+      "world_sha256": "9c66b113f3ae8a229399dec1e2187f730fcfc51090a696cd9f791eb6c7b69bed"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-resource-1",
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-resource-1",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-unchanged-13",
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-unchanged-13",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-detour-13",
+      "world_sha256": "daeef2bb215c90f44d157805cec4292e97f206a574744af441e461ba7e81d66f"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-detour-13",
+      "world_sha256": "fb7c1f2984cb3b2e6fe17590487833c55a8ec20587a59f01d2855c11ce6d6faa"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-blocked-13",
+      "world_sha256": "cd6665a18c50c78a3ae5a2cc6e4dcfa9b4f5ed322560dae4e0dee7d6fd0eb0c8"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "hawksbill-256-relief-13",
+      "world_sha256": "cc08f1db75e0689200d97bb2001289eb9e700d2146b1167f7552a7789b7f1f8a"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-relief-13",
+      "world_sha256": "312f0c12db46d7cb9f9ba59195759d55e3467e890314181010aa17e47ca27bce"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-relief-13",
+      "world_sha256": "60f3a56a9532cf8d7ea9e8f6a6defd8652600e272efc1c6ce6a3fda14f867c16"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-128-detour-2",
+      "world_sha256": "ac558f2c5d22dcf14605c36c75e58b29ca8abeb44d6d23c48f7e4633052f0ad4"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-blocked-2",
+      "world_sha256": "25efe7751881b97e2769096494aac54603bdbb6c224b2aa1279ff8e7847a4aaf"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "hawksbill-256-blocked-2",
+      "world_sha256": "e2ab9788627459fcf4408445d833e0904d6bb3c75dbca01cf6ff39e7d2ada671"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-blocked-2",
+      "world_sha256": "b6f8742249d45ff1625f0ddf54c8f4c9ec922b22e31b551aff625bbf15a7f999"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-detour-14",
+      "world_sha256": "561a8d3e135ecbf43ea5db45669506befbab4c0a19752332bc95ca5f35edde03"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-detour-14",
+      "world_sha256": "30a591fe32e7a5d135bd1203104a298a756c0413ea2a2dc014b0a5efc3580ad5"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-blocked-14",
+      "world_sha256": "31f8f20eba783a1853744690084719374fbd6b467603057fb82e88ae9aa4367f"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-relief-14",
+      "world_sha256": "0105c01f3f31c632f4cf5a29d95d27cc02b5a412b9c4336d2c39d9419f8cae74"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-resource-14",
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-detour-15",
+      "world_sha256": "ae7aa83c24224740ad03b597df95cef3ec0b584d9db02068ab0342046d53610b"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-detour-15",
+      "world_sha256": "2345fbea5f15eb2f16cba8f2a5242af5cb282df27b1387e67966bc251e10f544"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-resource-15",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-unchanged-4",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-unchanged-4",
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-blocked-4",
+      "world_sha256": "c03de2dae846b789c0fbc21004dc075794d5a9d016355ba0ff3230f7cf8026b2"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "hawksbill-256-resource-4",
+      "world_sha256": "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-unchanged-5",
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-unchanged-5",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-relief-5",
+      "world_sha256": "144a0507c940b0d86e9c8d111e57ca708a21acd9cf2763b8958602bdc40c6d97"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-resource-5",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-resource-5",
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-unchanged-6",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-detour-6",
+      "world_sha256": "945f4bbffb852165ea0ddb69681dfce75ac7b0883a2152a5aedec881ddb3d706"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-128-blocked-6",
+      "world_sha256": "68abf7d727066cfc723f451a8dec5cf8f4e3a74c05a0adad88fe27388bb2d8a4"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-blocked-6",
+      "world_sha256": "c65394efa9cbc89b05ee9d189e85097e08bc1c47857b0abf5aab7e9cc1320b44"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-blocked-6",
+      "world_sha256": "189a4ae813168da0f20a2ccec7de46c82623d872efa891eca66e0affb3d05ee5"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-blocked-6",
+      "world_sha256": "1619fd186e79012d700c5d7eef9842f1963455b6b582342302c5426a88ac134b"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-128-resource-6",
+      "world_sha256": "d7ed7ac59d4a1297cffb6ccb5acd3b910539b6aaf0a9ec50d6eee69fca3c1798"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-resource-6",
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-resource-6",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-resource-6",
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-blocked-7",
+      "world_sha256": "0fc21e487bd7f0781f818720e91d4eba7ba2802efce7174e3ebcf0d1ee6101b5"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-128-unchanged-8",
+      "world_sha256": "d7ed7ac59d4a1297cffb6ccb5acd3b910539b6aaf0a9ec50d6eee69fca3c1798"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-detour-9",
+      "world_sha256": "dd8215aeb25f54528dfb08ef48455af231e4757bd6e8016e8c1e9c9fec8aeb69"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-128-blocked-9",
+      "world_sha256": "54290182122890257c9b469411e04ee7cddbd9a4f9524cd3e6ec71efd390adf7"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-blocked-9",
+      "world_sha256": "92052ed15fe6bbf22965011254c6eb9d18ceb43921bbad2e2c93e1d645ca84b0"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-resource-9",
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-resource-9",
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-256-unchanged-10",
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-unchanged-10",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-unchanged-10",
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "hawksbill-128-blocked-10",
+      "world_sha256": "ded4ce535a350f8f9398a5a33023317cac34291bc15a7bcd16589e83bb05f9e4"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "hawksbill-256-blocked-10",
+      "world_sha256": "3af83995bdb342d2c6658609b87c159aee6ad9f4e3ee340711e9308500db4ad2"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bright-128-resource-10",
+      "world_sha256": "d7ed7ac59d4a1297cffb6ccb5acd3b910539b6aaf0a9ec50d6eee69fca3c1798"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-resource-10",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-unchanged-11",
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-relief-11",
+      "world_sha256": "47a3db86822ee4e8abbfcdb60414bb6a55b85545c9da76e61f434e0268f6bd60"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-128-resource-11",
+      "world_sha256": "7fe2a95daacd3c745f629ae11524e05e7152cca469c92d69628b8d60d9a3a6dd"
+    },
+    {
+      "journal": "directed.jsonl",
+      "case_id": "bunsen-256-resource-11",
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bright-512-detour-0",
+      "world_sha256": "9bd6f31d7ea574ba3517d009b608362bffd05197535d74a2d730b001f46df5db"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-512-relief-0",
+      "world_sha256": "b641d6917b05d5a6ea5c9752c70442af4c54da830378f5cdddf4e6c9fb6037b0"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bunsen-512-unchanged-12",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bright-1024-blocked-12",
+      "world_sha256": "6e48df1d571cd2d46b275abb2e36c6c44ac42c4d10eae3ea6624c8720a55ac47"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-512-blocked-12",
+      "world_sha256": "5b851a89839855de2bead855504561917cebefcfa75926b1cc8064fb90ab3412"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-512-resource-12",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-1024-resource-12",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bunsen-512-resource-1",
+      "world_sha256": "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-512-relief-13",
+      "world_sha256": "bbecefd94de40d0b5f739c5c7458556d8b1479f4269cc5877da1c6ebac86fc6d"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-512-detour-14",
+      "world_sha256": "bc5eb758182bebd6189a3250a6738791a8aa2e07dbeedd7ce09e2f14363128af"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bright-512-relief-14",
+      "world_sha256": "095a8bc8cd4d406017e626e1cf93ae65b50f661ee6c30cd9ee06d0ad62ab5400"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bright-512-resource-14",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-1024-resource-14",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-512-blocked-3",
+      "world_sha256": "fee89f97722c6a812e8d8bdf50bfb473f74eaa2ad94bfce0994d8e7d4fae1447"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bright-512-relief-3",
+      "world_sha256": "b0d451d3bff773bfccf249d8257ac4da44b67b4137f15d5598134dac65633cec"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bright-512-detour-15",
+      "world_sha256": "77dab0aa5e199f15c1ce7f970ee54c70200cf97f69a61d61cc6577d95119f7cb"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bright-1024-detour-15",
+      "world_sha256": "d459532e1fafdaef67d12fec5b9b31997b6212ca05f0dcfe41ce903ad3fb2b1c"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-512-detour-15",
+      "world_sha256": "c7e94c26118ddfa9dd2ad16719f654d105290b605023e99cdcafe3eddce00c63"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-1024-blocked-15",
+      "world_sha256": "8434b4aedc46309e759afcc9277d5e53ae55bba0e50772574b2527ecf438c623"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-1024-resource-15",
+      "world_sha256": "3bee4406e8287f1a7a027b84027e7082683e8a1661ed7f0cd951153656d10815"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bright-512-unchanged-4",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-512-unchanged-4",
+      "world_sha256": "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-512-detour-4",
+      "world_sha256": "2f6957b202e5f6cdd33650d66b90b7dd33eea343bf95c5f6d4dc224a1cb9eccb"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bunsen-512-detour-4",
+      "world_sha256": "1568180cf6fd060840883333b6af8678135f38bbf193d41d5c70c29f2b2d412b"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "hawksbill-512-relief-4",
+      "world_sha256": "2c571b61067637b411002e9ba80d1fdf3058915cc701fe11dfadb41fe5e76fb4"
+    },
+    {
+      "journal": "directed-large.jsonl",
+      "case_id": "bright-512-resource-4",
+      "world_sha256": "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114"
+    }
+  ]
+}
