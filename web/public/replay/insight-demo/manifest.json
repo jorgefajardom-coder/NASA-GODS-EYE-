@@ -169,7 +169,7 @@
       "revealed_at_s": 0,
       "source": {
         "basis": "chosen",
-        "text": "Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: 0.2 degrees; within 5 km of the landing site, here base A: 2.43 km). Mean 8 m slope 0.7 degrees, 0 % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed (no such product imported)."
+        "text": "Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: 0.2 degrees; within 5 km of the landing site, here base A: 2.43 km). Mean 8 m slope 0.7 degrees, 0 % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed here (see the water, ice and radiation section of docs/science_poi_dossier.md)."
       },
       "for_agent": "HUMAN"
     },

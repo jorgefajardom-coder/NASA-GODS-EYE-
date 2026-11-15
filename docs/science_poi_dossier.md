@@ -114,6 +114,45 @@ astronaut science stop is the real science site nearest to goal B within 1.2 km 
 the habitat window is the gentlest 1 km² area passing the slope criterion within 5 km of base A. Both are
 demonstration rules for David's review.
 
+## 6. Water, ice and radiation for the astronaut
+
+Per world (`web/scripts/extract-zone-environment.mjs` → `web/scripts/data/zone_environment.json`). **Documented
+only**: not yet in the scene packages or the viewer, to be implemented later in another part of the interface
+(owner's decision, 15 November 2026).
+
+| World | Water (Odyssey GRS) | Ice (SWIM) | Pressure (Pa) | Absorbed (mGy/day) | Dose equivalent (mSv/day) | Basis |
+| --- | --- | --- | --- | --- | --- | --- |
+| Jezero | 3.5 ± 0.4 wt% | not imported | 706 | 0.225 ± 0.040 | 0.69 ± 0.14 | RAD relation |
+| Gale | 5.4 ± 0.4 wt% | not imported | 817 | 0.210 ± 0.040 | 0.64 ± 0.12 | measured (RAD) |
+| Gusev | 7.3 ± 0.4 wt% | not imported | 668 | 0.230 ± 0.040 | 0.70 ± 0.14 | RAD relation, **outside 700–950 Pa** |
+| Meridiani | 5.3 ± 0.4 wt% | not imported | 641 | 0.234 ± 0.041 | 0.71 ± 0.14 | RAD relation, **outside 700–950 Pa** |
+| Elysium | 5.2 ± 0.4 wt% | not imported | 700 | 0.226 ± 0.040 | 0.69 ± 0.14 | InSight measured pressure; RAD relation |
+| Valles Marineris | 3.4 ± 0.3 wt% | not imported | 741 | 0.220 ± 0.040 | 0.67 ± 0.14 | RAD relation |
+
+- **Water**: Mars Odyssey Gamma Ray Spectrometer H2O concentration, smoothed 5° × 5° map
+  (PDS ODY-M-GRS-5-ELEMENTS-V1.0, `H2O_SR_5X5.TAB`, SHA-256 `5cec0d637755ddb7a451f58d7b24b6fb34f081e3391b40cdfca5410200da0236`; Boynton et
+  al. 2007, JGR 112, E12S99). Water-equivalent hydrogen in the top few tens of centimetres; the product does
+  not say whether it is ice or bound in minerals, and a 5° cell (about 300 km) is far larger than a scene.
+- **Ice**: SWIM 2.0 (−60 to 60° N) covers these latitudes, but swim.psi.edu answered HTTP 523 (Cloudflare:
+  origin unreachable) to the scripts and to a browser on 2026-11-15, and no copy was found elsewhere or in the
+  owner's Drive. No ice value is imported or estimated. **To do** when the server is back.
+- **Radiation** (galactic cosmic rays; read in full: Guo et al. 2018, arXiv:1712.06987, sections 2.3 and 3.3):
+  - Measured at Gale by MSL RAD: 0.21 ± 0.04 mGy/day absorbed, 0.64 ± 0.12 mSv/day dose equivalent, mean
+    quality factor ⟨Q⟩ = 3.05 ± 0.3 (Hassler et al. 2014, Science 343, doi:10.1126/science.1244797).
+  - Guo et al. 2018 (JGR Planets, doi:10.1002/2016JE005206), section 3.3: the measured anticorrelation of the
+    RAD dose rate with surface pressure is −κ = c0 + c1·Φ with c0 = 0.28 ± 0.03 µGy/day/Pa and
+    c1 = −2.9 ± 0.6 × 10⁻⁴ µGy/day/Pa/MV, measured between about 700 and 950 Pa (18.9–25.7 g/cm²); at
+    Φ = 500 MV, the period of Hassler et al., −κ = 0.135 µGy/day/Pa. The paper states that extrapolating the
+    linear relation outside the measured pressures is still an open question, and that the relative change
+    of dose equivalent with depth is larger than that of the dose rate (so a constant ⟨Q⟩ understates it).
+  - Applied: absorbed = 0.21 mGy/day + |κ| × (817 Pa − P); dose equivalent = absorbed × ⟨Q⟩; errors
+    propagated. Pressures: Gale, the annual mean of the REMS daily summaries (817 Pa); Elysium, InSight's
+    measured annual mean of about 700 Pa (Lange et al. 2022, JGR Planets 127, e2022JE007190, section 2.2);
+    the others, hydrostatic from Gale with the scene elevation difference and the 11.1 km scale height (NASA
+    Mars Fact Sheet). Check: that formula gives 711 Pa for InSight, 1.6 % above the measured 700 Pa.
+  - Gusev and Meridiani fall below 700 Pa: their values are flagged as outside the measured range. Suit,
+    vehicle and habitat shielding and solar particle events are not modelled.
+
 ## 4. Open items
 
 - David: audit sections 1–3 and approve or change the matrix and the **[team]** rules.
@@ -122,4 +161,6 @@ demonstration rules for David's review.
   engineering limits); Anderson et al. 2012, *Collecting Samples in Gale Crater, Mars*, Space Sci. Rev. 170.
 - PIA21254 stops at sol 1495; later Curiosity drill holes are not listed here.
 - Opportunity positions inherit the landing-site tie of the traverse (tens of metres).
+- Ice (section 6): import SWIM 2.0 when swim.psi.edu answers. Radiation outside 700–950 Pa (Gusev,
+  Meridiani) rests on an extrapolation the source calls unverified.
 - Astronaut sites (section 5): the habitat window does not check the rubric's ~50 km² area or rocks; resources are not assessed.

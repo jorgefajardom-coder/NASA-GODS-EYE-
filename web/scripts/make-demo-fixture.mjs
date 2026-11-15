@@ -962,7 +962,7 @@ if (scienceFile) {
   if (best) {
     astronautSites.push({
       id: 'HAB', label: 'Habitat area (flattest 1 km)', kind: 'habitat', p: best.centre,
-      source: { basis: 'chosen', text: `Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: ${best.kmSlope.toFixed(1)} degrees; within 5 km of the landing site, here base A: ${km(best.dA)}). Mean 8 m slope ${best.mean.toFixed(1)} degrees, ${(best.steep * 100).toFixed(0)} % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed (no such product imported).` },
+      source: { basis: 'chosen', text: `Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: ${best.kmSlope.toFixed(1)} degrees; within 5 km of the landing site, here base A: ${km(best.dA)}). Mean 8 m slope ${best.mean.toFixed(1)} degrees, ${(best.steep * 100).toFixed(0)} % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed here (see the water, ice and radiation section of docs/science_poi_dossier.md).` },
     });
   }
 }

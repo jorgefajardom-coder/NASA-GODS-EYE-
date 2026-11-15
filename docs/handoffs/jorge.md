@@ -152,7 +152,10 @@ LIVE mission. No push, merge or release is implied by this handoff alone.
 - POIs C and D are now real NASA science sites on Jezero, Gale, Gusev and Meridiani (rover's published
   position when it did that work); Elysium and Valles Marineris keep labelled fictitious POIs.
 - Astronaut sites added (dossier section 5): Three Forks sample depot (PDS), a real science stop near goal
-  B, and a habitat area meeting the NASA Exploration Zone slope criterion; resources not assessed.
+  B, and a habitat area meeting the NASA Exploration Zone slope criterion.
+- Water/ice/radiation per world, documented only, not in the viewer yet (dossier section 6): Odyssey GRS water; dose measured by RAD at Gale and
+  derived elsewhere from RAD's dose-pressure fit (Guo et al. 2018), flagged below 700 Pa; ice not imported
+  because the SWIM server was unreachable.
 - Pending: David's audit/approval of the matrix and team rules; Daniel's import check; full-text
   confirmation of the sections marked "to confirm". Not a frozen contract or approved experiment.
 - Reminder (AGENTS.md section 15): local organizer notification and endorsement are still missing before
