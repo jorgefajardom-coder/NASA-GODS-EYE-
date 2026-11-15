@@ -4,7 +4,17 @@
 # The planner rejects any pose that is not a cell centre.
 # PLACEHOLDER VALUES: positions and budgets are not mission assumptions yet.
 # David owns the real numbers; they are assumptions of a simulated mission,
-# never certified EVA limits.
+# never certified EVA limits. Initial XYZ is created once for this new SIMULATED
+# scene from the public prior, never from evaluator data or received telemetry.
+# The drone starts PARKED on that scene; z is absolute in the declared datum.
+initial_conditions:
+  source_kind: SIMULATED
+  phase: NEW_SCENE
+  height_source: PUBLIC_PRIOR
+  dataset_id: jezero_mvp
+  prior_sha256: ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91
+  vertical_datum: 'MOLA topography / DeltaGeoid (Mars 2000 Sphere, R=3396190 m); no Earth datum conversion'
+  drone_state: PARKED
 agents:
   - id: human_1
     kind: HUMAN

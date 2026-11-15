@@ -872,3 +872,7 @@ the jsdom navigation regressions, and the validation record under
 software evidence; no image, video, NASA observation or mission result was
 generated. Existing asset declarations and watermarks remain intact. This cut
 does not close AC-08, steps 4/5, scientific approvals or organizer endorsement.
+
+## Height contract reconciliation — 15 November 2026
+
+OpenAI Codex assisted the initial-condition resolver, executor XYZ guards, immutable planner metadata binding, shared rendered-triangle sampler and regression tests listed in `ai_usage.json` under `height_contract_reconciliation`. New scene heights are explicitly SIMULATED initial conditions derived from the declared public prior, not measured observations. Historical packages are retained unchanged. New recordings and browser captures preserve MOCK/REPLAY and required marks; no scientific approval, physical validation or complete three-agent mission is asserted.

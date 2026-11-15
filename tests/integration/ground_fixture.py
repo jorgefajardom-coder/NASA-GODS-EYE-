@@ -32,10 +32,13 @@ def simulated_ground_point(surface, xy):
 
 
 def initialize_ground_agents(template, surface):
-    """Fill ONLY absent z_m of declared HUMAN/ROVER fixture initial conditions."""
+    """Fill absent initial Z for this NEW scene, including its PARKED drone.
+
+    Explicit XYZ remains unchanged; this helper never handles live telemetry.
+    """
     result = deepcopy(template)
     for agent in result['agents']:
-        if agent['kind'] in ('HUMAN', 'ROVER') and 'z_m' not in agent:
+        if agent['kind'] in ('HUMAN', 'ROVER', 'DRONE') and 'z_m' not in agent:
             agent['z_m'] = simulated_ground_point(surface, (agent['x_m'], agent['y_m']))[2]
     return result
 

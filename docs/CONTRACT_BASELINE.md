@@ -137,3 +137,9 @@ Subsequent published integrations supersede those implementation-status claims.
 The complete original source-lock object is retained under rc.1 in
 `contract_baseline.json`; source history preserves the earlier prose. The shared
 semantics and models were never frozen or scientifically approved by that audit.
+
+## Height reconciliation working cut — 15 November 2026
+
+Base main `9013beb`; this cut requires the reviewed PR path and is not a contract freeze. ROS package/messages and canonical JSON/raster versions remain unchanged. Scene initialization is explicit SIMULATED public-prior construction; parked-drone Z is absolute datum height. Execution preserves finite current XYZ, and display samples its rendered mesh without changing telemetry. Planner snapshots also bind origin latitude/longitude, prior checksum and sources immutably. See `docs/height_reconciliation_handoff.md` for source locks, actual checks and remaining acceptance.
+
+`recorded-recovery-001` remains byte-for-byte historical evidence. Its idle drone retained an omitted-height default of zero over negative terrain; it does not evidence flight or three-role completion. A corrected recording must have a separate package/revision and retain MOCK/REPLAY and final READY limitations.

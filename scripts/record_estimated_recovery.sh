@@ -10,8 +10,12 @@ fi
 mkdir -p "$1"
 output=$(cd "$1" && pwd)
 export MGE_RECORDING_OUTPUT="$output"
+export MGE_EXECUTION_RUN_ID="${MGE_EXECUTION_RUN_ID:-it-execution}"
 python - <<'PY'
-import hashlib, json, os, pathlib, subprocess
+import hashlib, json, os, pathlib, re, subprocess
+run_id = os.environ['MGE_EXECUTION_RUN_ID']
+if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,127}', run_id):
+    raise SystemExit('Invalid MGE_EXECUTION_RUN_ID')
 root = pathlib.Path.cwd()
 revision = os.environ.get('MGE_SOURCE_COMMIT')
 dirty = os.environ.get('MGE_SOURCE_DIRTY', 'true') == 'true'
@@ -25,7 +29,7 @@ for directory in ('src', 'config', 'scripts', 'tests'):
 paths += [root/p for p in ('pyproject.toml', 'requirements-dev.lock.txt',
           'data/sample/manifest.json', 'data/sample/terrain.npz',
           'data/sample/provenance_details.json')]
-record = dict(source_commit=revision, source_has_uncommitted_changes=dirty,
+record = dict(run_id=run_id, source_commit=revision, source_has_uncommitted_changes=dirty,
     source_sha256={str(p.relative_to(root)).replace('\\', '/'): hashlib.sha256(p.read_bytes()).hexdigest()
                    for p in sorted(set(paths))},
     command='python -m pytest tests/integration/test_estimated_exploration.py -q',
@@ -47,7 +51,8 @@ python - <<'PY'
 import hashlib, json, os, pathlib, shutil
 from mge_gateway.replay_check import check_package
 output = pathlib.Path(os.environ['MGE_RECORDING_OUTPUT'])
-packages = sorted({p.resolve() for p in (output/'pytest').glob('estimated-replay*/it-execution')})
+run_id = os.environ['MGE_EXECUTION_RUN_ID']
+packages = sorted({p.resolve() for p in (output/'pytest').glob('estimated-replay*/' + run_id)})
 if len(packages) != 1:
     raise SystemExit(f'Expected one exact recorder package, found {len(packages)}')
 package = packages[0]

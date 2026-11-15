@@ -9,6 +9,7 @@ agents:
     kind: HUMAN
     x_m: 2.5
     y_m: 2.5
+    z_m: 0.0           # Explicit new flat MOCK scene, not a missing altitude.
     time_budget_s: 14400.0
     energy_budget_wh: 1000.0
     oxygen_budget_l: 1000.0
@@ -16,11 +17,13 @@ agents:
     kind: DRONE
     x_m: 7.5
     y_m: 2.5
+    z_m: 0.0           # Parked on the declared flat MOCK surface.
     time_budget_s: 600.0
     energy_budget_wh: 100.0
   - id: rover_1
     kind: ROVER
     x_m: 2.5
     y_m: 7.5
+    z_m: 0.0
     time_budget_s: 14400.0
     energy_budget_wh: 2000.0

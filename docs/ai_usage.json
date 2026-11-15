@@ -21,13 +21,25 @@
       "kind": "science_extension_tree_and_diagram",
       "generation": "AI-assisted proposed research guide, structured source and reproducible diagram code",
       "paths": [
-        "AGENTS.md", "README.md", "docs/science_extension_tree.md",
-        "docs/assets/science-tree/tree.json", "docs/assets/science-tree/render.py",
-        "docs/assets/science-tree/science-tree.png", "docs/assets/science-tree/science-tree.svg",
-        "docs/decisions/2026-11-14-delivery-freeze.md", "docs/delivery_closure_plan.md",
-        "docs/research_hypotheses.md", "docs/team.md", "docs/team_continuation_plan.md",
-        "docs/handoffs/david.md", "docs/handoffs/daniel.md", "docs/handoffs/diego.md",
-        "docs/handoffs/jesus.md", "docs/handoffs/jorge.md", "docs/AI_USAGE.md", "docs/ai_usage.json"
+        "AGENTS.md",
+        "README.md",
+        "docs/science_extension_tree.md",
+        "docs/assets/science-tree/tree.json",
+        "docs/assets/science-tree/render.py",
+        "docs/assets/science-tree/science-tree.png",
+        "docs/assets/science-tree/science-tree.svg",
+        "docs/decisions/2026-11-14-delivery-freeze.md",
+        "docs/delivery_closure_plan.md",
+        "docs/research_hypotheses.md",
+        "docs/team.md",
+        "docs/team_continuation_plan.md",
+        "docs/handoffs/david.md",
+        "docs/handoffs/daniel.md",
+        "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md",
+        "docs/handoffs/jorge.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
       ],
       "use": "Document four common gates and eighteen proposed extensions with named leads/reviewers, AND dependencies and verifiable acceptance/stop rules. Generate marked PNG/SVG planning diagrams from the same source and preserve the owner's freeze plus bounded local assessment of unlisted ideas for 15-Nov-2026. Code-rendered with Python/Pillow, no image-generation model or NASA branding; no new terrain, observations, experimental results or approvals."
     },
@@ -1543,12 +1555,54 @@
         "evidence/pr36-viewer-regressions-20261115"
       ],
       "use": "Keep zone selection available in 2D and after failed WebGL context allocation; validate navigation and the existing recorded MOCK replay. Software check outputs are not generated NASA observations or mission results; no media generated, scientific approval or milestone closure."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "height_contract_reconciliation",
+      "generation": "AI-assisted runtime code, display geometry, regression tests and verification documentation",
+      "paths": [
+        "docs/AI_USAGE.md",
+        "docs/CONTRACT_BASELINE.md",
+        "docs/ICD.md",
+        "docs/ai_usage.json",
+        "docs/decisions/2026-11-14-delivery-freeze.md",
+        "docs/delivery_closure_plan.md",
+        "docs/height_reconciliation_handoff.md",
+        "scripts/record_estimated_recovery.sh",
+        "src/mge_bringup/config/agents.yaml",
+        "src/mge_bringup/config/agents_jezero.yaml",
+        "src/mge_planning/mge_planning/adapter.py",
+        "src/mge_sim/mge_sim/executor.py",
+        "src/mge_sim/mge_sim/initial_conditions.py",
+        "src/mge_sim/mge_sim/kinematics.py",
+        "src/mge_sim/mge_sim/mock_agents.py",
+        "src/mge_sim/package.xml",
+        "tests/contract/test_executor_height.py",
+        "tests/integration/ground_fixture.py",
+        "tests/integration/test_estimated_exploration.py",
+        "tests/integration/test_vertical_execution.py",
+        "tests/planning/test_adapter.py",
+        "tests/planning/test_simulated_ground_initialization.py",
+        "tests/unit/test_initial_conditions.py",
+        "tests/unit/test_kinematics.py",
+        "web/src/components/AgentLayer.tsx",
+        "web/src/components/BaseModel.tsx",
+        "web/src/components/MissionScene.tsx",
+        "web/src/components/PovRoute.tsx",
+        "web/src/components/TerrainView.tsx",
+        "web/src/lib/terrainSurface.ts",
+        "web/tests/terrainSurface.test.ts"
+      ],
+      "use": "Initialize a new explicitly SIMULATED public-prior scene with a parked drone; preserve finite XYZ in execution; bind planner snapshot georeference/provenance; co-register the animated rendered mesh and display consumers. Preserve old recordings and scientific, physical and three-role acceptance gates. New recorder output is MOCK software evidence, not observational NASA data or validated LIVE execution."
     }
   ],
   "generated_media": [
     {
       "kind": "code_rendered_planning_diagram",
-      "paths": ["docs/assets/science-tree/science-tree.png", "docs/assets/science-tree/science-tree.svg"],
+      "paths": [
+        "docs/assets/science-tree/science-tree.png",
+        "docs/assets/science-tree/science-tree.svg"
+      ],
       "tool": "OpenAI Codex-assisted Python/Pillow and SVG renderer",
       "watermark": "Visible AI-generated planning-diagram label in both outputs; embedded source SHA-256 and AI-use metadata",
       "source": "docs/assets/science-tree/tree.json",
