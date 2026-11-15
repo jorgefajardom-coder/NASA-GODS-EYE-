@@ -62,11 +62,17 @@ export function ZoneArrival({ runId }: { runId: string }) {
     arrivalView.quad = null;
     const reduced = prefersReducedMotion();
     const t0 = performance.now();
-    let fitAt = -1;
-    let fadeAt = -1;
+    // Landing and fade advance per frame, at most one 30 fps step at a time: the scene builds its terrain right as
+    // the landing starts, and with a wall-clock timer those stalled frames skipped the landing to its end.
+    const STEP_MAX = 1000 / 30;
+    let fit = -1;
+    let fade = -1;
+    let prevT = t0;
     let last: Quad | null = null;
     let raf = 0;
     const frame = (t: number) => {
+      const step = Math.min(STEP_MAX, Math.max(0, t - prevT));
+      prevT = t;
       const img = imgRef.current;
       const wrap = wrapRef.current;
       const w = img?.naturalWidth ?? 0;
@@ -76,21 +82,22 @@ export function ZoneArrival({ runId }: { runId: string }) {
         const quad = arrivalView.quad;
         if (quad) last = quad;
         const held = t - t0;
-        if (fitAt < 0 && fadeAt < 0) {
-          if (quad && !reduced && held > ARRIVE_HOLD_MIN) fitAt = t;
-          else if (held > (reduced ? ARRIVE_HOLD_MIN : ARRIVE_HOLD_MAX)) fadeAt = t;
-        }
+        if (fit < 0 && fade < 0) {
+          if (quad && !reduced && held > ARRIVE_HOLD_MIN) fit = 0;
+          else if (held > (reduced ? ARRIVE_HOLD_MIN : ARRIVE_HOLD_MAX)) fade = 0;
+        } else if (fit >= 0 && fit < ARRIVE_FIT) fit += step;
+        else if (fade >= 0) fade += step;
         let q = cover;
         let edge = 0;
-        if (fitAt >= 0 && last) {
-          const k = Math.min(1, (t - fitAt) / ARRIVE_FIT);
+        if (fit >= 0 && last) {
+          const k = Math.min(1, fit / ARRIVE_FIT);
           q = lerpQuad(cover, last, easeInOut(k));
           edge = k;
-          if (k >= 1 && fadeAt < 0) fadeAt = t;
+          if (k >= 1 && fade < 0) fade = 0;
         }
         let op = 1;
-        if (fadeAt >= 0) {
-          const f = Math.min(1, (t - fadeAt) / ARRIVE_FADE);
+        if (fade >= 0) {
+          const f = Math.min(1, fade / ARRIVE_FADE);
           op = 1 - f * f;
           if (f >= 1) {
             setGone(true);
