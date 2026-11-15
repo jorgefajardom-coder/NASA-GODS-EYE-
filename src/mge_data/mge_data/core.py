@@ -488,3 +488,230 @@ def load_public_terrain(manifest_path: Path | str) -> TerrainTile:
         regional_context_m=regional_context_m,
         control_points=control_points,
     )
+
+
+@dataclass(frozen=True)
+class AuxiliaryTerrainLayers:
+    """Optional NASA/USGS auxiliary layers aligned cell-for-cell with TerrainTile."""
+
+    manifest: dict[str, Any]
+    geology: dict[str, Any]
+    ctx_ortho_dn: np.ndarray
+    ctx_ortho_norm: np.ndarray
+    ctx_ortho_valid_mask: np.ndarray
+    slope_deg: np.ndarray
+    geology_unit_code: np.ndarray
+    geology_rviz_occupancy: np.ndarray
+    surface_zone_code: np.ndarray
+    surface_zone_rviz_occupancy: np.ndarray
+    x_m: np.ndarray
+    y_m: np.ndarray
+    ctx_ortho_png_path: Path | None = None
+
+    def zone_at_row_col(self, row: int, col: int) -> dict[str, Any]:
+        """Return estimated visual proxies and coarse SIM 3464 geology attributes at (row, col)."""
+        rows, cols = self.ctx_ortho_dn.shape
+        if not (0 <= row < rows and 0 <= col < cols):
+            raise IndexError(f"(row={row}, col={col}) out of bounds for ({rows}, {cols})")
+
+        z_code = int(self.surface_zone_code[row, col])
+        z_defs = {int(d["code"]): d for d in self.manifest.get("surface_zones", {}).get("definitions", [])}
+        z_info = z_defs.get(z_code, {"id": "unknown", "label": "Unknown", "navigation_authorization": False})
+
+        g_code = int(self.geology_unit_code[row, col])
+        g_units = {int(u["code"]): u for u in self.geology.get("units", []) if "code" in u}
+        g_info = g_units.get(g_code, {"symbol": "unmapped", "name": "Unmapped", "group": "Unmapped"})
+
+        return {
+            "row": int(row),
+            "col": int(col),
+            "x_east_m": float(self.x_m[col]),
+            "y_north_m": float(self.y_m[row]),
+            "ctx_ortho_dn": int(self.ctx_ortho_dn[row, col]),
+            "ctx_ortho_norm": float(self.ctx_ortho_norm[row, col]),
+            "slope_deg": float(self.slope_deg[row, col]),
+            "surface_zone_code": z_code,
+            "surface_zone_id": str(z_info.get("id", "unknown")),
+            "surface_zone_label": str(z_info.get("label", "Unknown")),
+            "surface_zone_rviz_occupancy": int(self.surface_zone_rviz_occupancy[row, col]),
+            "navigation_authorization": False,
+            "geology_unit_code": g_code,
+            "geology_symbol": str(g_info.get("symbol", "unmapped")),
+            "geology_name": str(g_info.get("name", "Unmapped")),
+            "geology_rviz_occupancy": int(self.geology_rviz_occupancy[row, col]),
+        }
+
+
+AUXILIARY_ARRAY_DTYPES = {
+    "ctx_ortho_dn": np.dtype("uint8"),
+    "ctx_ortho_norm": np.dtype("float32"),
+    "ctx_ortho_valid_mask": np.dtype("bool"),
+    "slope_deg": np.dtype("float32"),
+    "geology_unit_code": np.dtype("int16"),
+    "geology_rviz_occupancy": np.dtype("int8"),
+    "surface_zone_code": np.dtype("int8"),
+    "surface_zone_rviz_occupancy": np.dtype("int8"),
+    "x_m": np.dtype("float32"),
+    "y_m": np.dtype("float32"),
+}
+
+
+def validate_auxiliary_alignment(manifest: dict[str, Any], tile: TerrainTile) -> None:
+    """Bind optional visual context to the exact public prior and its full georeference."""
+    if (manifest.get("schema_version") != "1.0.0" or manifest.get("status") != "ready"
+            or manifest.get("classification") != "ESTIMATED_VISUAL_CONTEXT"
+            or manifest.get("navigation_authorization") is not False):
+        raise ValueError("Auxiliary layers require the versioned, visual-only ready manifest")
+    meta = tile.metadata
+    expected = {
+        "region_id": meta.dataset_id, "frame_id": meta.frame_id,
+        "row_orientation": meta.row_orientation, "vertical_datum": meta.vertical_datum,
+        "crs": meta.crs, "aligned_terrain_npz_sha256": meta.checksum_sha256,
+    }
+    for name, value in expected.items():
+        if not value or manifest.get(name) != value:
+            raise ValueError(f"Auxiliary {name} does not match the public TerrainTile")
+    grid = manifest.get("grid")
+    if not isinstance(grid, dict):
+        raise ValueError("Auxiliary grid is required")
+    for name, value in (("rows", meta.rows), ("cols", meta.cols)):
+        if type(grid.get(name)) is not int or grid[name] != value:
+            raise ValueError(f"Auxiliary grid {name} does not match the public TerrainTile")
+    for name, value in (
+        ("resolution_m", meta.resolution_m), ("origin_x_m", meta.origin_x_m),
+        ("origin_y_m", meta.origin_y_m), ("lat_planetocentric_deg", meta.origin_lat_deg),
+        ("lon_east_deg", meta.origin_lon_deg),
+    ):
+        actual = grid.get(name)
+        if (isinstance(actual, bool) or not isinstance(actual, (int, float))
+                or not isfinite(actual) or not math.isclose(actual, value, rel_tol=0, abs_tol=1e-9)):
+            raise ValueError(f"Auxiliary grid {name} does not match the public TerrainTile")
+
+
+def _auxiliary_public_path(directory: Path, name: Any) -> Path:
+    if not isinstance(name, str) or not name or Path(name).is_absolute() or ".." in Path(name).parts:
+        raise PermissionError("Auxiliary paths must stay inside the public bundle")
+    target = (directory / name).resolve()
+    if (not target.is_relative_to(directory) or "reference" in [part.lower() for part in target.parts]
+            or "hirise" in target.name.lower()):
+        raise PermissionError("Auxiliary paths cannot access evaluator or external files")
+    return target
+
+
+def _checked_auxiliary_file(directory: Path, entry: Any, *, json_lf: bool = False) -> Path:
+    if not isinstance(entry, dict):
+        raise ValueError("Auxiliary file record is required")
+    path = _auxiliary_public_path(directory, entry.get("path"))
+    expected = entry.get("sha256")
+    if (not isinstance(expected, str) or len(expected) != 64
+            or any(char not in "0123456789abcdef" for char in expected)):
+        raise ValueError("Every auxiliary file requires a SHA-256 digest")
+    if not path.is_file():
+        raise FileNotFoundError(f"Missing auxiliary file: {path.name}")
+    payload = path.read_bytes()
+    if json_lf:
+        payload = payload.replace(b"\r\n", b"\n")
+    if hashlib.sha256(payload).hexdigest() != expected:
+        raise ValueError(f"SHA-256 mismatch for auxiliary file {path.name}")
+    return path
+
+
+def load_auxiliary_terrain_layers(
+    manifest_path: Path | None = None,
+    *,
+    tile: TerrainTile | None = None,
+    strict: bool = False,
+) -> AuxiliaryTerrainLayers | None:
+    """Load a complete public visual-context bundle; absent is optional, invalid is rejected."""
+    target = (Path(manifest_path) if manifest_path is not None else default_manifest_path()).resolve()
+    if "reference" in [part.lower() for part in target.parts]:
+        raise PermissionError("Refusing to load evaluator reference data in public auxiliary loader")
+    directory = target.parent if target.name.endswith(".json") else target
+    manifest_file = _auxiliary_public_path(directory, "aux_layers_manifest.json")
+    if not manifest_file.is_file() and not (directory / "jezero_aux_layers.npz").exists():
+        if strict:
+            raise FileNotFoundError(f"Auxiliary terrain layers not found in {directory}")
+        return None
+    if not manifest_file.is_file():
+        raise FileNotFoundError("Incomplete auxiliary bundle: missing aux_layers_manifest.json")
+    for child in directory.iterdir():
+        if child.is_file() and "hirise" in child.name.lower():
+            raise PermissionError("Forbidden evaluator reference file in public auxiliary directory")
+    manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+    if tile is None:
+        primary = target if target.name.endswith(".json") and target.name != manifest_file.name else directory / "manifest.json"
+        tile = load_public_terrain(primary)
+    validate_auxiliary_alignment(manifest, tile)
+    files = manifest.get("files") or {}
+    npz_path = _checked_auxiliary_file(directory, files.get("aux_npz"))
+    geology_path = _checked_auxiliary_file(directory, files.get("geology_json"), json_lf=True)
+    png_path = _checked_auxiliary_file(directory, files.get("ctx_ortho_png"))
+    png_record = files["ctx_ortho_png"]
+    png_header = png_path.read_bytes()[:24]
+    if (png_record.get("width") != tile.metadata.cols or png_record.get("height") != tile.metadata.rows
+            or png_record.get("row0") != "north" or len(png_header) != 24
+            or png_header[:8] != b"\x89PNG\r\n\x1a\n" or png_header[12:16] != b"IHDR"
+            or int.from_bytes(png_header[16:20], "big") != tile.metadata.cols
+            or int.from_bytes(png_header[20:24], "big") != tile.metadata.rows):
+        raise ValueError("Auxiliary PNG geometry/orientation does not match the public grid")
+    declared_arrays = files["aux_npz"].get("arrays")
+    if (not isinstance(declared_arrays, list) or len(declared_arrays) != len(AUXILIARY_ARRAY_DTYPES)
+            or any(not isinstance(name, str) for name in declared_arrays)
+            or set(declared_arrays) != set(AUXILIARY_ARRAY_DTYPES)):
+        raise ValueError("Auxiliary manifest must declare exactly the public arrays")
+    geology = json.loads(geology_path.read_text(encoding="utf-8"))
+    with np.load(npz_path, allow_pickle=False) as archive:
+        if set(archive.files) != set(AUXILIARY_ARRAY_DTYPES):
+            raise PermissionError("Auxiliary archive must contain only the declared public arrays")
+        arrays = {}
+        for name, dtype in AUXILIARY_ARRAY_DTYPES.items():
+            original = archive[name]
+            if original.dtype != dtype:
+                raise ValueError(f"Auxiliary {name} has invalid dtype {original.dtype}; no implicit cast is allowed")
+            array = original.copy()
+            shape = ((tile.metadata.cols,) if name == "x_m" else (tile.metadata.rows,)
+                     if name == "y_m" else (tile.metadata.rows, tile.metadata.cols))
+            if array.shape != shape:
+                raise ValueError(f"Auxiliary {name} shape does not match the public grid")
+            arrays[name] = array
+    for name, count, origin in (("x_m", tile.metadata.cols, tile.metadata.origin_x_m),
+                                ("y_m", tile.metadata.rows, tile.metadata.origin_y_m)):
+        expected = origin + (np.arange(count) + .5) * tile.metadata.resolution_m
+        if not np.isfinite(arrays[name]).all() or not np.allclose(arrays[name], expected, rtol=0, atol=1e-5):
+            raise ValueError(f"Auxiliary {name} does not contain the public cell centres")
+    valid = arrays["ctx_ortho_valid_mask"]
+    norm = arrays["ctx_ortho_norm"]
+    if (np.any((arrays["ctx_ortho_dn"] > 0) != valid)
+            or np.any(valid & (~np.isfinite(norm) | (norm < 0) | (norm > 1)))):
+        raise ValueError("Invalid CTX visual values or NoData mask")
+    palette = {0: -1, 1: 15, 2: 35, 3: 55, 4: 75, 5: 95}
+    definitions = manifest.get("surface_zones", {}).get("definitions", [])
+    if ({item.get("code"): item.get("rviz_occupancy") for item in definitions} != palette
+            or any(item.get("traversable_agents") for item in definitions)):
+        raise ValueError("Surface proxy legend must be visual-only with the declared categorical palette")
+    codes = arrays["surface_zone_code"]
+    if not np.isin(codes, list(palette)).all():
+        raise ValueError("Invalid surface proxy code")
+    for code, color in palette.items():
+        if np.any(arrays["surface_zone_rviz_occupancy"][codes == code] != color):
+            raise ValueError("Surface proxy colors do not match their categorical legend")
+    invalid = tile.nodata_mask | ~valid
+    slope = arrays["slope_deg"]
+    if (np.any(codes[invalid] != 0)
+            or np.any((codes != 0) & (~np.isfinite(slope) | (slope < 0) | (slope > 90)))):
+        raise ValueError("NoData or invalid slope cannot become a surface proxy")
+    geology_palette = {0: -1}
+    for item in geology.get("units", []):
+        code, color = item.get("code"), item.get("rviz_occupancy")
+        if type(code) is not int or type(color) is not int or not -1 <= color <= 100:
+            raise ValueError("Invalid geology categorical legend")
+        geology_palette[code] = color
+    if not np.isin(arrays["geology_unit_code"], list(geology_palette)).all():
+        raise ValueError("Unknown geology unit code")
+    for code, color in geology_palette.items():
+        if np.any(arrays["geology_rviz_occupancy"][arrays["geology_unit_code"] == code] != color):
+            raise ValueError("Geology colors do not match their categorical legend")
+    for array in arrays.values():
+        array.setflags(write=False)
+    return AuxiliaryTerrainLayers(manifest=manifest, geology=geology,
+                                  ctx_ortho_png_path=png_path, **arrays)

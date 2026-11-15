@@ -1,0 +1,12 @@
+{
+  "tool": "image_gen",
+  "source_file_name": "exec-3e781164-2f76-47cb-948c-b4bd7d88c61d.png",
+  "source_sha256": "93860d7d0103ff337488560548073becd80891ef99a0691a3117ad0acf49bef2",
+  "repository_copy": "docs/wiki/assets/cooperative-exploration.png",
+  "classification": "AI-generated conceptual illustration",
+  "visible_watermark": "AI-generated / Conceptual illustration",
+  "prompt_summary": "Generic unbranded astronaut, rover and aerial scout in an illustrative Martian valley; complementary observations and route concepts; no logos, flags, NASA insignia, agency identifiers or mission branding; landscape3:2 with permanent dark footer",
+  "observational_data": false,
+  "private_thesis_uploaded": false,
+  "source_policy": "Concept art only; measurements in scientific figures come from declared public data or model calculations."
+}

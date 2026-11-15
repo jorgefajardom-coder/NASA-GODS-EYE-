@@ -182,10 +182,12 @@ def create_app(bridge):
         async def pump():
             # The client is registered before the backlog is read, so an event
             # can be both in the backlog and in the queue: it is sent once.
-            sent = after_seq
+            # after_seq is a fixed resume floor, not a live high-water mark:
+            # a lower sequence may legitimately arrive after a higher one.
+            sent = set()
             for event in store.events(after_seq):
                 await ws.send_json(envelope(type='event', event=event))
-                sent = max(sent, event['seq'])
+                sent.add(event['seq'])
             await ws.send_json(envelope(type='state', state=store.state()))
             while True:
                 message = await queue.get()
@@ -193,9 +195,10 @@ def create_app(bridge):
                     await ws.close(code=1013, reason='Client too slow; reconnect with after_seq')
                     return
                 if message.get('type') == 'event':
-                    if message['event']['seq'] <= sent:
+                    seq = message['event']['seq']
+                    if seq <= after_seq or seq in sent:
                         continue
-                    sent = message['event']['seq']
+                    sent.add(seq)
                 await ws.send_json(message)
 
         # Sending alone never notices a client that left while the run is

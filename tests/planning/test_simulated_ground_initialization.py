@@ -124,7 +124,7 @@ def test_initialization_fills_only_absent_ground_z_and_never_projects_existing_p
                             for kind in ('HUMAN', 'ROVER', 'DRONE')]}
     initialized = initialize_ground_agents(template, grid)
     assert all('z_m' not in agent for agent in template['agents'])
-    assert [a.get('z_m') for a in initialized['agents']] == [-12.5, -12.5, None]
+    assert [a.get('z_m') for a in initialized['agents']] == [-12.5, -12.5, -12.5]
     with pytest.raises(ValueError):
         simulated_ground_point(grid, (2.5, 2.5, 0.))
 

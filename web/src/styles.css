@@ -1911,12 +1911,9 @@ input[type='checkbox'] {
   pointer-events: auto;
   transition: opacity 0.2s;
 }
-.pov__site i {
-  width: 7px;
-  height: 7px;
-  border: 1px solid currentColor;
-  transform: rotate(45deg);
-  margin-bottom: 3px;
+.pov__site .site-icon {
+  margin-bottom: 2px;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.9));
 }
 .pov__site b {
   font-weight: 500;
@@ -1925,21 +1922,15 @@ input[type='checkbox'] {
   font-style: normal;
   color: var(--gray);
 }
-.pov__site--base {
-  color: var(--blue);
-}
-.pov__site--primary_goal {
-  color: var(--amber);
-}
 .pov__site[data-off='left'],
 .pov__site[data-off='right'] {
   opacity: 0.55;
 }
-.pov__site[data-off='left'] i {
-  border-width: 0 0 1px 1px;
+.pov__site[data-off='left'] .site-icon {
+  transform: translateX(-3px);
 }
-.pov__site[data-off='right'] i {
-  border-width: 1px 1px 0 0;
+.pov__site[data-off='right'] .site-icon {
+  transform: translateX(3px);
 }
 .pov__heading {
   position: absolute;
@@ -2572,16 +2563,16 @@ input[type='checkbox'] {
 .pov__heading span { animation-delay: 2.1s; }
 .pov::before { animation-delay: 1.95s; }
 
-/* Smaller agent dial in first person. */
+/* Agent dial in first person: the same size as in third person (smaller only on small screens). */
 .pov__dial {
   top: 56px;
   right: 16px;
-  scale: 0.62;
+  scale: 1;
   transform-origin: top right;
 }
 @media (max-width: 900px), (max-height: 700px) {
   .pov__dial {
-    scale: 0.5;
+    scale: 0.72;
   }
 }
 
@@ -2598,11 +2589,11 @@ input[type='checkbox'] {
 }
 .pov__dock-cam {
   justify-self: start;
-  width: min(320px, 100%);
+  width: min(290px, 100%);
 }
 .pov__dock-scan {
   justify-self: end;
-  width: min(280px, 100%);
+  width: min(290px, 100%);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -2638,6 +2629,11 @@ input[type='checkbox'] {
   left: auto;
   bottom: auto;
   width: 100%;
+  /* Same box as the Mars now window beside the keys (see .marsnow). */
+  width: min(var(--dock-window-w), 100%);
+  box-sizing: border-box;
+  height: var(--dock-window-h);
+  aspect-ratio: auto;
   animation: none;
 }
 
@@ -2798,6 +2794,11 @@ input[type='checkbox'] {
 }
 .dronemap__info {
   top: 20px;
+  right: 6px;
+  font-size: 8.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .dronemap__legend {
   right: 6px;
@@ -2812,8 +2813,34 @@ input[type='checkbox'] {
   height: 6px;
   background: rgba(150, 160, 170, 0.5);
 }
-.dronemap__key--obs {
-  background: #65cbe8;
+.dronemap__key--hz {
+  background: #e0583f;
+}
+.dronemap__key--ca {
+  background: #e3c25a;
+}
+.dronemap__key--ch {
+  background: none;
+  outline: 1px solid #ff8a70;
+}
+.dronemap__hz {
+  color: #ff8a70;
+  font-weight: 600;
+}
+.dronemap__status {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 33px;
+  font: 500 8.5px var(--f-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(232, 214, 200, 0.85);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .dronemap__sweep {
@@ -2821,3 +2848,415 @@ input[type='checkbox'] {
     display: none;
   }
 }
+
+/* ---------------------------------------------------------------- sites of interest (icons and list) */
+.site-label .site-icon {
+  vertical-align: -2px;
+}
+.sites {
+  margin: 6px 0 0;
+  padding: 4px 8px 6px;
+  background: rgba(9, 13, 17, 0.72);
+  border: 1px solid var(--line-soft);
+}
+.sites__title {
+  margin: 0 0 3px;
+  font: 500 11px var(--f-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.sites__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.sites__row {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+.sites__row em {
+  font: 400 11px var(--f-mono);
+  font-style: normal;
+  color: var(--gray);
+}
+.sites__row--hidden {
+  opacity: 0.45;
+}
+
+/* ---------------------------------------------------------------- Perseverance raw images (Atmos tab) */
+.rawimg__load,
+.rawimg__link {
+  font: inherit;
+  cursor: pointer;
+  color: var(--blue);
+  background: none;
+  border: 1px solid var(--blue);
+  padding: 3px 10px;
+}
+.rawimg__link {
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+}
+.rawimg__load:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+.rawimg__err {
+  color: var(--amber);
+}
+.rawimg__grid {
+  list-style: none;
+  margin: 6px 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.rawimg__grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: #05080b;
+  border: 1px solid var(--line-soft);
+}
+.rawimg__grid span {
+  display: block;
+  color: var(--gray);
+}
+
+/* ---------------------------------------------------------------- Mars now (real Perseverance image) */
+/* Dock windows (drone camera on the left, Mars now on the right) share one size. */
+.pov__dock {
+  --dock-window-h: 250px;
+  --dock-window-w: 290px;
+}
+.marsnow {
+  width: min(var(--dock-window-w, 290px), 100%);
+  box-sizing: border-box;
+  height: var(--dock-window-h);
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  background: rgba(9, 13, 17, 0.88);
+  border: 1px solid rgba(240, 160, 80, 0.7);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+  font: 500 10px var(--f-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #cfe9ff;
+}
+.marsnow__bar,
+.marsnow__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 3px 6px;
+}
+.marsnow__bar {
+  border-bottom: 1px solid var(--line-soft);
+  color: #f0a050;
+}
+.marsnow button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 1px solid rgba(101, 203, 232, 0.5);
+  padding: 1px 6px;
+  cursor: pointer;
+}
+.marsnow button[aria-pressed='true'] {
+  background: rgba(101, 203, 232, 0.25);
+}
+.marsnow__shot {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  background: #05080b;
+  text-align: center;
+}
+.marsnow__shot p {
+  margin: 0;
+  padding: 0 10px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 11px;
+}
+.marsnow__shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.marsnow__foot > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.marsnow__btns {
+  display: flex;
+  gap: 4px;
+}
+.marsnow__note {
+  display: block;
+  padding: 2px 6px 3px;
+  color: var(--gray);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Real Perseverance stop markers */
+.site-label--photo {
+  border-left-color: #f0a050;
+}
+
+/* Floating tags of the real rover stops (game-style): icon, sol and distance, with a small tail. */
+.stop-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 2px 9px 2px 7px;
+  font: 600 12px var(--f-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff3e0;
+  background: rgba(9, 13, 17, 0.82);
+  border: 1px solid rgba(240, 160, 80, 0.85);
+  border-radius: 999px;
+  box-shadow: 0 0 10px rgba(240, 160, 80, 0.35);
+  pointer-events: none;
+  user-select: none;
+}
+.stop-tag b {
+  font-weight: 600;
+}
+.stop-tag em {
+  font: 400 11px var(--f-mono);
+  font-style: normal;
+  color: var(--gray);
+}
+.stop-tag--on {
+  background: rgba(240, 160, 80, 0.9);
+  color: #1b1208;
+}
+.stop-tag--on em {
+  color: #3a2a14;
+}
+.stop-tag--on .site-icon {
+  stroke: #1b1208;
+}
+
+/* Photo tour controls inside the stop-images window */
+.marsnow__tour {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 3px 6px;
+  border-top: 1px solid var(--line-soft);
+}
+
+
+/* Photo tour: every image of the stop in a grid, and the window floating beside the rover in third person */
+.marsnow__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  width: 100%;
+  height: 100%;
+  align-content: start;
+  overflow: hidden;
+}
+.marsnow__grid img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  background: #05080b;
+}
+.marsnow-float {
+  --dock-window-h: 250px;
+  --dock-window-w: 290px;
+  width: var(--dock-window-w);
+  position: absolute;
+  z-index: 4;
+  right: calc(var(--col-right) + 3 * var(--gutter));
+  bottom: calc(var(--bottom) + 96px);
+}
+@media (max-width: 900px) {
+  .marsnow-float {
+    right: var(--gutter);
+  }
+}
+
+/* Photo tour: the photo being taken */
+.marsnow__grid img.is-shot {
+  outline: 2px solid #f0a050;
+  outline-offset: -2px;
+  filter: brightness(1.25);
+}
+
+/* Rover camera keys and arm close-up (first-person dock). */
+.rovercam { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; align-items: center; }
+.rovercam__keys { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+.rovercam__key { font: 600 12px/1 'Barlow Condensed', sans-serif; letter-spacing: 0.06em; color: #cfe9ff; background: rgba(6, 18, 32, 0.72); border: 1px solid rgba(120, 190, 255, 0.35); border-radius: 4px; padding: 5px 8px; cursor: pointer; }
+.rovercam__key kbd { font: inherit; opacity: 0.6; margin-right: 2px; }
+.rovercam__key[aria-pressed='true'] { border-color: #9fe3ff; background: rgba(40, 110, 160, 0.55); color: #fff; }
+.rovercam__key:disabled { opacity: 0.4; cursor: not-allowed; }
+.rovercam__key--num { min-width: 28px; font-size: 14px; text-align: center; }
+.rovercam__key--arm { border-color: rgba(232, 168, 90, 0.6); color: #ffd9a8; }
+.rovercam__read { margin: 0; font-size: 11px; color: rgba(207, 233, 255, 0.85); text-align: center; max-width: 720px; }
+.rovercam__arm { color: #ffd9a8; }
+
+/* ---------------------------------------------------------------- zone selector */
+.zones-open {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--gutter) + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  font: 600 13px/1 var(--f-ui);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--titanium);
+  background: rgba(9, 13, 17, 0.7);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+.zones-open kbd { font: 500 10px var(--f-mono); opacity: 0.6; margin-right: 4px; }
+.zones-open:hover, .zones-open:focus-visible { border-color: #e8a85a; color: #fff; }
+.zones {
+  --zones-accent: #58a6ff;
+  --zones-accent-2: #9fd0ff;
+  --zones-ink: #e8f1fb;
+  --zones-muted: #8fa6bf;
+  --zones-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  color: var(--zones-ink);
+  font-family: var(--f-title);
+  background: radial-gradient(70% 60% at 38% 48%, #0c1d36 0%, #071225 55%, #040913 100%);
+  animation: zones-in 0.25s ease-out;
+}
+@keyframes zones-in { from { opacity: 0; } to { opacity: 1; } }
+.zones--instant { animation: none; }
+.zones__globe { position: absolute; inset: 0; display: block; opacity: 0; transform: scale(0.92); transition: opacity 1.2s var(--zones-ease), transform 1.6s var(--zones-ease); }
+.zones--on .zones__globe { opacity: 1; transform: none; }
+.zones__horizon { position: absolute; left: 0; bottom: 0; width: 100%; height: 22vh; display: block; pointer-events: none; opacity: 0; transform: translateY(40px); transition: opacity 1.4s var(--zones-ease) 0.2s, transform 1.4s var(--zones-ease) 0.2s; }
+.zones--on .zones__horizon { opacity: 0.9; transform: none; }
+.zones__title { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 1s var(--zones-ease) 0.5s; }
+.zones--on .zones__title { opacity: var(--zones-title-op, 1); }
+.zones__title-main { fill: var(--zones-ink); font: 600 var(--zones-title-size, 32px) var(--f-title); letter-spacing: 0.42em; }
+.zones__title-sub { fill: var(--zones-accent-2); font: 500 14px var(--f-title); letter-spacing: 0.7em; }
+.zones__marks { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.zones__card-arc { opacity: 0; transition: opacity 0.5s var(--zones-ease) 0.3s; }
+.zones--on .zones__card-arc { opacity: 1; }
+.zones__card { position: absolute; z-index: 3; left: 0; top: 0; width: 320px; transform: translate(40px, -50%); opacity: 0; transition: transform 0.7s var(--zones-ease), opacity 0.5s var(--zones-ease); will-change: transform, opacity; }
+.zones--on .zones__card { transform: translate(0, -50%); opacity: 1; }
+.zones--on .zones__card--swap { transform: translate(28px, -50%); opacity: 0; transition-duration: 0.18s; }
+.zones__frame { position: relative; background: rgba(6, 18, 36, 0.86); border: 1px solid rgba(88, 166, 255, 0.45); border-left: 0; padding: 16px 18px 18px var(--zones-card-pad, 18px); }
+.zones__frame::after { content: ''; position: absolute; right: -2px; bottom: -2px; width: 18px; height: 18px; border: 2px solid var(--zones-accent); border-left: 0; border-top: 0; }
+.zones__idx { font: 500 13px var(--f-title); letter-spacing: 0.3em; color: var(--zones-muted); }
+.zones__name { margin: 4px 0 0; font: 600 clamp(20px, 2.1vw, 28px)/1.1 var(--f-title); letter-spacing: 0.14em; text-transform: uppercase; color: var(--zones-ink); }
+.zones__mission { margin-top: 2px; font: 500 16px var(--f-title); color: var(--zones-accent-2); }
+.zones__sketch { position: relative; margin-top: 12px; width: 100%; aspect-ratio: 1; max-height: 34vh; overflow: hidden; border: 1px solid rgba(88, 166, 255, 0.35); background: #000; }
+.zones__sketch img { display: block; width: 100%; height: 100%; object-fit: cover; filter: sepia(0.7) hue-rotate(-12deg) saturate(1.6) brightness(0.95); transform: scale(1.2); transition: transform 1.2s var(--zones-ease); }
+.zones--on .zones__card:not(.zones__card--swap) .zones__sketch img { transform: none; }
+.zones__scan { position: absolute; left: 0; right: 0; height: 30%; background: linear-gradient(180deg, transparent, rgba(88, 166, 255, 0.22), transparent); animation: zones-scan 3.2s linear infinite; }
+@keyframes zones-scan { from { top: -30%; } to { top: 100%; } }
+.zones__north, .zones__scale { position: absolute; font: 500 13px var(--f-title); color: #fff; text-shadow: 0 0 3px #000; }
+.zones__north { top: 8px; left: 10px; }
+.zones__scale { bottom: 8px; right: 10px; }
+.zones__synopsis { margin: 12px 0 0; font: 400 15px/1.45 var(--f-ui); color: #c9d8e8; }
+.zones__env span { white-space: nowrap; }
+.zones__env { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; margin-top: 8px; font: 500 13px var(--f-title); letter-spacing: 0.04em; color: #9fd0ff; }
+.zones__meta { display: flex; justify-content: space-between; gap: 8px; margin-top: 10px; font: 500 14px var(--f-title); letter-spacing: 0.06em; color: var(--zones-muted); }
+.zones__tip { position: fixed; z-index: 4; pointer-events: none; width: 110px; padding: 6px; font: 500 13px var(--f-title); border: 1px solid rgba(88, 166, 255, 0.6); background: rgba(6, 18, 36, 0.88); }
+.zones__tip img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; margin-top: 4px; filter: sepia(0.7) hue-rotate(-12deg) saturate(1.6); }
+.zones__arrow { position: absolute; top: 50%; z-index: 3; transform: translateY(-50%); background: none; border: 0; color: var(--zones-ink); font: 300 64px/1 var(--f-ui); cursor: pointer; padding: 0 18px; opacity: 0; transition: opacity 0.8s var(--zones-ease) 0.9s, color 0.2s; }
+.zones--on .zones__arrow { opacity: 0.85; }
+.zones__arrow:hover, .zones__arrow:focus-visible { color: var(--zones-accent-2); }
+.zones__arrow--prev { left: 0.5vw; font-size: 52px; }
+.zones__arrow--next { right: 1.5vw; }
+.zones__dots { position: absolute; bottom: 7vh; left: 0; right: 0; z-index: 3; display: flex; justify-content: center; gap: 14px; opacity: 0; transform: translateY(16px); transition: opacity 0.8s var(--zones-ease) 1s, transform 0.8s var(--zones-ease) 1s; }
+.zones--on .zones__dots { opacity: 1; transform: none; }
+.zones__dot { width: 12px; height: 12px; padding: 0; border: 0; border-radius: 50%; background: #2a3d57; cursor: pointer; transition: background 0.3s, transform 0.3s, box-shadow 0.3s; }
+.zones__dot[aria-selected='true'] { background: var(--zones-accent-2); box-shadow: 0 0 10px var(--zones-accent); transform: scale(1.25); }
+.zones__back, .zones__travel { position: absolute; z-index: 3; opacity: 0; transition: opacity 0.8s var(--zones-ease) 1.1s, transform 0.8s var(--zones-ease) 1.1s, background 0.2s; }
+.zones__back { bottom: 6vh; left: 3.5vw; transform: translateX(-20px); background: none; border: 0; color: var(--zones-ink); font: 500 17px var(--f-title); cursor: pointer; }
+.zones__back kbd { margin-right: 10px; padding: 3px 8px; border-radius: 4px; background: var(--zones-accent); color: #04203f; font: 600 14px var(--f-ui); }
+.zones__travel { bottom: 5vh; right: 3vw; transform: translateX(20px); overflow: hidden; padding: 14px 44px; font: 600 22px var(--f-title); letter-spacing: 0.2em; text-transform: uppercase; color: var(--zones-ink); background: rgba(6, 18, 36, 0.7); border: 1.5px solid var(--zones-accent); clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); cursor: pointer; }
+.zones--on .zones__back, .zones--on .zones__travel { opacity: 1; transform: none; }
+.zones__travel:hover, .zones__travel:focus-visible { background: rgba(30, 70, 120, 0.6); }
+.zones__travel::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(159, 208, 255, 0.25) 50%, transparent 70%); transform: translateX(-100%); animation: zones-shine 3.5s var(--zones-ease) 2s infinite; }
+@keyframes zones-shine { 0%, 60% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+.zones__flight {
+  position: fixed;
+  z-index: 60;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  height: var(--h);
+  overflow: hidden;
+  animation: zones-fly 0.42s cubic-bezier(0.6, 0, 0.3, 1) forwards;
+}
+/* Cover, never contain: the photo fills the screen edge to edge (no black bands); the arrival starts from the same crop. */
+.zones__flight img { display: block; width: 100%; height: 100%; object-fit: cover; filter: sepia(0.75) hue-rotate(-14deg) saturate(1.7) brightness(0.95); }
+@keyframes zones-fly { to { left: 0; top: 0; width: 100vw; height: 100vh; } }
+.zone-arrival { position: fixed; inset: 0; z-index: 60; overflow: hidden; pointer-events: none; background: #05080b; }
+.zone-arrival--ready { background: transparent; }
+.zone-arrival img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  transform-origin: 0 0;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  filter: sepia(0.75) hue-rotate(-14deg) saturate(1.7) brightness(0.95);
+  /* A thin scan outline appears as the photo locks onto the terrain footprint. */
+  outline: 2px solid rgba(120, 190, 255, calc(var(--edge, 0) * 0.85));
+  box-shadow: 0 0 calc(var(--edge, 0) * 40px) rgba(88, 166, 255, calc(var(--edge, 0) * 0.45));
+}
+@media (max-width: 700px) {
+  .zones__arrow { font-size: 40px; }
+  .zones__card { width: 240px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zones, .zone-arrival, .zones__scan, .zones__travel::after { animation: none; }
+  .zones *, .zones__globe { transition: none !important; }
+}
+
+.zones__flat-title { position: absolute; top: 4vh; left: 0; right: 0; text-align: center; color: var(--zones-ink); }
+.zones__flat-title h2 { margin: 0; font: 600 30px var(--f-title); letter-spacing: 0.2em; text-transform: uppercase; }
+.zones__flat-title p { margin: 6px 0 0; color: var(--zones-accent-2); }
+.atmos__zone { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.zones--flat .zones__title, .zones--flat .zones__marks { display: none; }
+.zones--flat .zones__card { left: 50%; top: 48%; width: min(360px, calc(100vw - 100px)); max-height: calc(100dvh - 240px); overflow: auto; transform: translate(-50%, -50%); opacity: 1; }
+.zones--flat .zones__card--swap { opacity: 0.4; }
+
+.camera-bar__rovercams { display: inline-flex; gap: 3px; }
+.camera-bar__num { min-width: 26px; text-align: center; font-variant-numeric: tabular-nums; }
+.sites__src { margin-left: 6px; font: 600 9px/1 var(--f-mono); letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 4px; border-radius: 3px; border: 1px solid currentColor; vertical-align: middle; }
+.sites__src--nasa { color: #8fd18b; }
+.sites__src--chosen { color: #e8c36a; }
+.sites__src--fictitious { color: #e88a7a; }
+.sites__group-title { margin: 6px 0 2px; font: 600 10px/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); }

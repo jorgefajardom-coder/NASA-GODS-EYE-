@@ -77,6 +77,9 @@ export function ltstH(t: MarsTime, lonEastDeg: number): number {
   return wrap(lmstH(t, lonEastDeg) + t.eotDeg / 15, 24);
 }
 
+/** Mars Science Laboratory landing (Curiosity, Gale crater, Bradbury Landing): 6 August 2012, about 05:17 UTC; that local sol is sol 0. */
+export const MSL_LANDING_MS = Date.UTC(2012, 7, 6, 5, 17);
+
 /** Mars 2020 landing (Perseverance, Jezero): 18 February 2021, 20:55 UTC; that local sol is sol 0. */
 export const MARS2020_LANDING_MS = Date.UTC(2021, 1, 18, 20, 55);
 export const JEZERO_LON_E_DEG = 77.45;
@@ -90,6 +93,17 @@ function localSol(ms: number, lonEastDeg: number): number {
 export function mars2020Sol(ms: number, lonEastDeg = JEZERO_LON_E_DEG): number {
   return localSol(ms, lonEastDeg) - localSol(MARS2020_LANDING_MS, lonEastDeg);
 }
+
+/** Mission sol at an Earth instant for any rover: whole local sols since its landing sol (sol 0). */
+export function missionSol(ms: number, lonEastDeg: number, landingMs: number): number {
+  return localSol(ms, lonEastDeg) - localSol(landingMs, lonEastDeg);
+}
+
+/** Site clocks of the worlds: the name shown, the mission and its landing instant. */
+export const SITE_CLOCKS: Record<string, { place: string; mission: string; landingMs: number }> = {
+  jezero: { place: 'Jezero', mission: 'Perseverance', landingMs: MARS2020_LANDING_MS },
+  gale: { place: 'Gale', mission: 'Curiosity', landingMs: MSL_LANDING_MS },
+};
 
 /** "HH:MM:SS" for hours 0..24. */
 export function fmtHms(hours: number): string {

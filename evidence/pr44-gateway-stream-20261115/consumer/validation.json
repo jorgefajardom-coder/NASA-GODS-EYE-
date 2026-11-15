@@ -1,0 +1,79 @@
+{
+  "status": "PASS",
+  "kind": "PR44 corrected actual gateway HTTP/WebSocket to current TypeScript client; replay-fed MOCK, no ROS",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.14",
+  "node": "v24.18.0",
+  "original_pr44_head": "ef8f3ac2b49505d1ddebe3fdc05d6b7f2e8605bf",
+  "backend_tested_head": "ef8f3ac2b49505d1ddebe3fdc05d6b7f2e8605bf",
+  "backend_tree_dirty": true,
+  "source_sha256": {
+    "src/mge_gateway/mge_gateway/app.py": "3f2ceb9a674b496e79d057c822a0dabd43815bd70ee010ef8d8795277f150f61",
+    "src/mge_gateway/mge_gateway/store.py": "8895c9e0d263e86e947385473188d91997b359f685ead14bfe6553412b8a4432",
+    "src/mge_gateway/mge_gateway/ros_bridge.py": "8176e63474eaaac5cfa44c8315d4cf6d7e8f4e09bd54f85911a9e0649034c785",
+    "web/src/lib/gatewayLive.ts": "c8dfee78335621ba982597828306051f3802c1680bd711f68e8b5a8f4f60abd6",
+    "web/src/lib/provenance.ts": "31a5dfbcae84b592f13350d958485c86878efe9072aabfb6d6ff98c990e8550b"
+  },
+  "source_unchanged": true,
+  "dynamic_terrain_meta_over_open_websocket": true,
+  "client_get_requests": 17,
+  "websocket_connections": 4,
+  "producer_goal_calls": 0,
+  "test_groups": [
+    {
+      "name": "503 startup, real producer compatibility, live arrival 1\u21923\u21922",
+      "status": "PASS"
+    },
+    {
+      "name": "contiguous resume cursor and snapshot recovery of missing event",
+      "status": "PASS"
+    },
+    {
+      "name": "application restart A\u2192B rediscovers manifest without mixing runs",
+      "status": "PASS"
+    },
+    {
+      "name": "same-run-ID restart clears seq9/meta2 ledger and rejects retired WS callback",
+      "status": "PASS"
+    },
+    {
+      "name": "XYZ/path/header exact preservation; MOCK labels; readonly requests; source frozen",
+      "status": "PASS"
+    }
+  ],
+  "artifacts": {
+    "producer.py": {
+      "bytes": 9703,
+      "sha256": "a787c03966e36113cd7e128bd219832de7abf4b6d043d9a70e030ce575eba8b2"
+    },
+    "consumer.mjs": {
+      "bytes": 11358,
+      "sha256": "927ec481f90342f3499eac8436a500619a68c04c72466601b35f29e6f98b1517"
+    },
+    "README.md": {
+      "bytes": 2746,
+      "sha256": "a7ad3ce67d682e0a0e722137896dc3b55165023d3809fd3ab4b9dd7ed8ebff3e"
+    },
+    "ready.json": {
+      "bytes": 14166,
+      "sha256": "6e20b28a8ba6fce3e4592d5e781a3a3fee59a7550911352c2d19700067db2ae0"
+    },
+    "consumer-report.json": {
+      "bytes": 18239,
+      "sha256": "8a8ac02e8c54e448c2ffcd049e54360bd31bd4cbbfdd9b4d0b043c62d0e33b92"
+    },
+    "producer-report.json": {
+      "bytes": 61956,
+      "sha256": "78b0672841c32d84f0e5d2c06afa073662e5616629e2188a621dc74fd1c8f0fb"
+    },
+    "actual-responses.json": {
+      "bytes": 90622,
+      "sha256": "5b4cae58e6af9c249a3ccf6500e21e882531e85f7089137d13360d4dd8b61ca0"
+    }
+  },
+  "ai_usage": {
+    "ai_assisted": true,
+    "tool": "OpenAI Codex",
+    "scope": "Local producer/consumer validation harness; source mission records are unchanged public MOCK replay"
+  }
+}

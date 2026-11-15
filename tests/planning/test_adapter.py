@@ -17,7 +17,9 @@ def metadata(run="r", version=1, stamp=1):
     return NS(header=header(stamp), run_id=run, dataset_id="illustrative",
               rows=3, cols=3, resolution_m=1.0, origin_x_m=0.0,
               origin_y_m=0.0, map_version=version, nodata_value=-9999.0,
-              crs="LOCAL_ENU_SYNTHETIC", vertical_datum="illustrative")
+              crs="LOCAL_ENU_SYNTHETIC", vertical_datum="illustrative",
+              origin_lat_deg=18.45, origin_lon_deg=77.45, checksum_sha256="0" * 64,
+              sources=["MOCK synthetic terrain", "illustrative source registry"])
 
 
 def image(stamp=1, big=False, padded=False):
@@ -112,6 +114,7 @@ def test_same_stamp_changed_layer_invalidates_inflight_snapshot_token():
 def test_exact_duplicate_packets_do_not_invalidate_a_batch():
     store = complete()
     token = store.key
+    assert store.ingest_meta(metadata())
     store.ingest_image("belief", image())
     store.ingest_mask("rover", mask())
     assert store.key == token
@@ -188,3 +191,107 @@ def test_batch_key_changes_on_a_new_version_or_a_rejected_layer():
     with pytest.raises(ValueError, match="changed without"):
         store.ingest_mask("rover", changed)
     assert store.batch_key != token
+
+
+@pytest.mark.parametrize("field,value", [
+    ("origin_lat_deg", -18.45),
+    ("origin_lon_deg", 177.45),
+    ("checksum_sha256", "1" * 64),
+    ("sources", ["MOCK another terrain source"]),
+    ("sources", ["illustrative source registry", "MOCK synthetic terrain"]),
+])
+def test_same_version_cannot_change_georeference_or_provenance(field, value):
+    store = complete()
+    token, batch = store.key, store.batch_key
+    original = store.meta
+    changed = metadata()
+    setattr(changed, field, value)
+    with pytest.raises(ValueError, match="metadata changed without a new version"):
+        store.ingest_meta(changed)
+    assert store.meta is original
+    assert store.key == token and store.batch_key == batch
+    assert store.snapshot("rover")[0] is not None
+
+
+def test_metadata_copies_source_sequence_and_preserves_exact_georeference():
+    store = SnapshotStore()
+    message = metadata()
+    assert store.ingest_meta(message)
+    assert store.meta.origin_lat_deg == message.origin_lat_deg
+    assert store.meta.origin_lon_deg == message.origin_lon_deg
+    assert store.meta.checksum_sha256 == message.checksum_sha256
+    assert store.meta.sources == tuple(message.sources)
+    original_sources = store.meta.sources
+    message.sources.append("later caller mutation")
+    assert store.meta.sources == original_sources
+    with pytest.raises(ValueError, match="metadata changed without a new version"):
+        store.ingest_meta(message)
+
+
+def test_duplicate_metadata_preserves_ready_layers_and_search_identity():
+    store = complete()
+    original_meta, token = store.meta, store.key
+    original_layers = dict(store.layers)
+    duplicate = metadata()
+    duplicate.sources = tuple(duplicate.sources)
+    assert store.ingest_meta(duplicate)
+    assert store.meta is original_meta and store.key == token
+    assert all(store.layers[name] is array for name, array in original_layers.items())
+    assert store.snapshot("rover")[0] is not None
+    assert store.ingest_meta(metadata(version=2, stamp=2))
+    assert store.meta.sources == original_meta.sources
+    assert store.snapshot("rover")[1] == "SNAPSHOT_INCOMPLETE"
+
+
+@pytest.mark.parametrize("checksum", ["", "sha", "0" * 64])
+def test_metadata_retains_legacy_checksum_strings_without_new_wire_restrictions(checksum):
+    store = SnapshotStore()
+    message = metadata()
+    message.checksum_sha256 = checksum
+    message.sources = []
+    message.origin_lat_deg = message.origin_lon_deg = 0.0
+    assert store.ingest_meta(message)
+    assert store.meta.checksum_sha256 == checksum and store.meta.sources == ()
+    assert store.ingest_meta(message)
+
+
+@pytest.mark.parametrize("field,value", [
+    ("origin_lat_deg", float("nan")),
+    ("origin_lon_deg", float("inf")),
+    ("origin_lat_deg", "18.45"),
+    ("origin_lon_deg", True),
+    ("origin_lat_deg", np.array(18.45)),
+    ("checksum_sha256", None),
+    ("checksum_sha256", 123),
+    ("sources", None),
+    ("sources", "CTX"),
+    ("sources", {"CTX": "not a wire sequence"}),
+    ("sources", ["CTX", 1]),
+])
+def test_invalid_georeference_or_provenance_does_not_replace_a_snapshot(field, value):
+    store = complete()
+    token = store.key
+    changed = metadata(version=2, stamp=2)
+    setattr(changed, field, value)
+    with pytest.raises(ValueError):
+        store.ingest_meta(changed)
+    assert store.key == token
+    assert store.snapshot("rover")[0] is not None
+
+
+def test_ready_native_batch_is_consumed_by_the_real_planner():
+    from mge_planning.core import MotionProfile, PlanRequest, ResourceBudget, RouteStatus, plan_route
+
+    store = complete()
+    assert store.ingest_meta(metadata())
+    grid, reason = store.snapshot("rover")
+    assert not reason
+    start, goal = grid.point((1, 0)), grid.point((1, 2))
+    request = PlanRequest("r", "adapter-consumer", "rover_1", "rover", 1,
+                          start, goal, ResourceBudget("rover", 100., 100., 0.),
+                          return_to=start)
+    profile = MotionProfile("rover", 1., 90., 20., 0., 0., 1.)
+    result = plan_route(terrain=grid, request=request, profile=profile)
+    assert result.status == RouteStatus.FEASIBLE
+    assert result.outbound_path[0] == start and result.outbound_path[-1] == goal
+    assert result.return_path[-1] == start

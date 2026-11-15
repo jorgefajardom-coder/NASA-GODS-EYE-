@@ -4,12 +4,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { TerrainLayer } from '../lib/layers';
-import { finiteRange, heightGrid } from '../lib/layers';
-import { smoothHeightAt } from '../lib/terrainSmooth';
+import { finiteRange, shapeGrid } from '../lib/layers';
+import { createTerrainSurface, terrainSurfaceHeight } from '../lib/terrainSurface';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
 import * as THREE from 'three';
-import { FollowCamera, type Framing } from './FollowCamera';
+import { FollowCamera, TOUR_FRAMING, type Framing } from './FollowCamera';
 import { ViewRotator } from './ViewRotator';
 import { TerrainGrowth } from './TerrainGrowth';
 import { FirstPersonCamera } from './FirstPersonCamera';
@@ -18,6 +18,7 @@ import { SkyDome } from './SkyDome';
 import { HelmetLight } from './HelmetLight';
 import { TerrainScanner } from './TerrainScanner';
 import { slopeDegrees } from '../lib/slope';
+import { arrivalView, type Quad } from '../lib/arrivalQuad';
 import { JEZERO_LON_E_DEG } from '../lib/marsClock';
 import { PovRoute } from './PovRoute';
 import { SUN_FROM } from '../lib/sun';
@@ -28,6 +29,7 @@ import { DETAIL_FAR_M, DETAIL_FAR_POV_M, TerrainView } from './TerrainView';
 import { RouteOverlay } from './RouteOverlay';
 import { AgentLayer } from './AgentLayer';
 import { SiteMarkers } from './SiteMarkers';
+import { RoverStopMarkers } from './RoverStopMarkers';
 import { BaseModel, CLUSTER_OFFSET } from './BaseModel';
 import { ContextTerrain } from './ContextTerrain';
 
@@ -68,6 +70,8 @@ interface Props {
   cutaway: GeologyData | null;
   /** First-person view from the followed agent (ignored when no agent is followed). */
   firstPerson: boolean;
+  /** Photo tour: the first-person interface over a third-person camera that sits further back. */
+  tourHud?: boolean;
   /** Walking/driving sway of the first-person camera (display only). */
   povSway: boolean;
   /** Low-power rendering (software rasteriser or slow GPU): pixel ratio 1, no antialiasing, surface detail or surroundings. */
@@ -83,15 +87,17 @@ interface Props {
 /** Horizon haze colour: dusty Martian daytime sky, darkened so the panels stay readable. */
 const SKY = '#6e5242';
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, povSway, lite = false, droneCam = false, helmetLight = false, artificialLight = false }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, tourHud = false, povSway, lite = false, droneCam = false, helmetLight = false, artificialLight = false }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const sunLight = useRef<THREE.DirectionalLight>(null);
   const hemiLight = useRef<THREE.HemisphereLight>(null);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
-  const grid = heightGrid(bundle.rasters, layer, mapVersion);
-  // Same interpolation as the mesh, so agents stand on the surface that is drawn.
-  const groundHeight = useCallback((x: number, y: number) => smoothHeightAt(meta, grid, x, y), [meta, grid]);
+  // Ground shape is fixed for the run (no jump when an agent observes it); the map version only drives tints.
+  const grid = shapeGrid(bundle.rasters, layer, mapVersion);
+  // Renderer and consumers share the live Float32 vertices, including animation.
+  const surface = useMemo(() => createTerrainSurface(meta, grid), [meta, grid]);
+  const groundHeight = useCallback((x: number, y: number) => terrainSurfaceHeight(surface, x, y), [surface]);
   // Orbital slope of the run (prior, Horn 3x3), for the terrain scan classes.
   const priorSlope = useMemo(() => slopeDegrees(bundle.rasters.prior, meta.rows, meta.cols, meta.resolution_m), [bundle.rasters.prior, meta]);
   const followed = view.state?.agents.some((a) => a.agent_id === followAgentId) ? followAgentId : null;
@@ -113,9 +119,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
     // The habitat cluster is drawn offset from the base point; aim at the habitat.
     const x = base.position.x + CLUSTER_OFFSET.x;
     const y = base.position.y + CLUSTER_OFFSET.y;
-    const h = smoothHeightAt(meta, grid, x, y);
+    const h = groundHeight(x, y);
     return enuToThree({ x, y, z: h ?? base.position.z }, exaggeration);
-  }, [base, meta, grid, exaggeration]);
+  }, [base, groundHeight, exaggeration]);
   const cameraTarget = followed ? `agent-${followed}` : baseCamera && baseAnchor ? BASE_ANCHOR : null;
   const extent = Math.max(meta.rows, meta.cols) * meta.resolution_m;
   // Fit to the public prior once per dataset/exaggeration, not to future frames.
@@ -140,12 +146,14 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
     >
       {/* Dusty daytime haze toward the horizon (display only, not an atmospheric model). */}
       <color attach="background" args={[SKY]} />
-      <fog attach="fog" args={[SKY, extent * 2.5, reach]} />
+      {/* Haze starts before it ends: with a large crop extent * 2.5 can pass the reach, which fogs the whole ground. */}
+      <fog attach="fog" args={[SKY, Math.min(extent * 2.5, reach * 0.6), reach]} />
       {/* Sun and stars at the real present time at the site (same instant as the Jezero clock). */}
       <SkyDome latDeg={meta.origin_lat_deg ?? 18.44} lonEastDeg={meta.origin_lon_deg ?? JEZERO_LON_E_DEG} sunLight={sunLight} hemiLight={hemiLight} lightDistance={extent * 1.37} artificialLight={artificialLight} />
       <hemisphereLight ref={hemiLight} args={['#ffe2c8', '#2a1a12', 0.4]} />
       <directionalLight ref={sunLight} position={SUN_FROM.clone().multiplyScalar(extent * 1.37).toArray()} intensity={2.6} color="#fff1e0" />
       <TerrainView
+        surface={surface}
         meta={meta}
         rasters={bundle.rasters}
         layer={layer}
@@ -188,6 +196,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
           verticalExaggeration={exaggeration}
         />
       )}
+      {grown && bundle.roverStops && (
+        <RoverStopMarkers stops={bundle.roverStops.stops} agent={(view.state?.agents ?? []).find((a) => a.agent_id === selectedAgentId) ?? null} verticalExaggeration={exaggeration} />
+      )}
       {grown && (
       <AgentLayer
         agents={view.state?.agents ?? []}
@@ -203,8 +214,8 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         hideLabelFor={pov ? followed : null}
       />
       )}
-      {baseAnchor && <group name={BASE_ANCHOR} position={baseAnchor} />}
-      <FollowCamera target={cameraTarget} framing={followed ? undefined : BASE_FRAMING} />
+      {baseAnchor && <SurfaceAnchor name={BASE_ANCHOR} position={baseAnchor} groundHeight={groundHeight} exaggeration={exaggeration} />}
+      <FollowCamera target={cameraTarget} framing={followed ? (tourHud ? TOUR_FRAMING : undefined) : BASE_FRAMING} mirrorHud={tourHud} />
       {/* Mounted after the follow camera: same frame priority, so it places the eye after the follow update. */}
       <FirstPersonCamera target={pov ? `agent-${followed}` : null} kind={pov ? followedKind : null} sway={povSway} lite={lite} />
       {(() => {
@@ -231,7 +242,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       <DroneCamRenderer droneName={grown && droneCam && drone ? `agent-${drone.agent_id}` : null} />
       {/* First person: the followed agent's own route draped on the ground, with its next waypoint. */}
       {grown && pov && povAgent && view.activeRoute?.agent_id === followed && view.activeRoute.outbound_path.length > 1 && (
-        <PovRoute route={view.activeRoute} position={povAgent.pose.position} groundHeight={groundHeight} verticalExaggeration={exaggeration} />
+        <PovRoute route={view.activeRoute} position={povAgent.pose.position} groundHeight={groundHeight} groundRevision={() => surface.revision} verticalExaggeration={exaggeration} />
       )}
       <OrbitControls
         makeDefault
@@ -250,15 +261,56 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       />
       <ViewRotator />
       {!grown && <TerrainGrowth start={reveal} target={ground} pivotY={growPivot} onDone={() => setGrown(true)} />}
+      {bundle.manifest.imagery && <ArrivalAnchor extent={bundle.manifest.imagery.extent} groundY={framing.target[1]} />}
       {/* Mounted after the controls and the follow camera so it corrects their result in the same frame. */}
       <CameraGroundClamp meta={meta} groundHeight={groundHeight} verticalExaggeration={exaggeration} />
     </Canvas>
   );
 }
 
+/**
+ * While the zone-arrival transition runs, projects the corners of the draped orbital image (its footprint at the
+ * mean ground height) to client pixels, so the full-screen image can lay itself down on the terrain. Display only.
+ */
+function ArrivalAnchor({ extent, groundY }: { extent: { origin_x_m: number; origin_y_m: number; width_m: number; height_m: number }; groundY: number }) {
+  useFrame(({ camera, gl }) => {
+    if (!arrivalView.want) return;
+    camera.updateMatrixWorld();
+    const r = gl.domElement.getBoundingClientRect();
+    const { origin_x_m: x0, origin_y_m: y0, width_m: w, height_m: h } = extent;
+    // Image row 0 is north: top-left = NW, then NE, SE, SW. ENU -> three.js: (x, z, -y).
+    const corners: [number, number][] = [[x0, y0 + h], [x0 + w, y0 + h], [x0 + w, y0], [x0, y0]];
+    const v = new THREE.Vector3();
+    const out: [number, number][] = [];
+    for (const [e, n] of corners) {
+      v.set(e, groundY, -n).applyMatrix4(camera.matrixWorldInverse);
+      if (v.z >= 0) {
+        arrivalView.quad = null; // a corner behind the camera: no sensible quad
+        return;
+      }
+      v.applyMatrix4(camera.projectionMatrix);
+      out.push([r.left + ((v.x + 1) / 2) * r.width, r.top + ((1 - v.y) / 2) * r.height]);
+    }
+    arrivalView.quad = out as Quad;
+  }); // priority 0, mounted after the cameras: runs once they have moved this frame
+  return null;
+}
+
 /** Scene name of the base camera anchor, and how that camera frames the habitat. */
 const BASE_ANCHOR = 'camera-anchor-base';
 const BASE_FRAMING: Framing = { distanceM: 32, heightM: 14, lookAtM: 3 };
+
+function SurfaceAnchor({ name, position, groundHeight, exaggeration }: {
+  name: string; position: [number, number, number];
+  groundHeight: (x: number, y: number) => number | null; exaggeration: number;
+}) {
+  const group = useRef<THREE.Group>(null);
+  useFrame(() => {
+    const h = groundHeight(position[0], -position[2]);
+    if (group.current && h != null) group.current.position.y = h * exaggeration;
+  }, -2);
+  return <group ref={group} name={name} position={position} />;
+}
 
 /** Least height of the camera above the drawn ground (m), and the radius sampled around it (m). */
 const CAMERA_CLEARANCE_M = 0.15;

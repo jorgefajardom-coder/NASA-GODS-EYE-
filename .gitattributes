@@ -6,3 +6,9 @@
 *.yml text eol=lf
 *.yaml text eol=lf
 *.npz binary
+
+# Published Wiki tools are byte-sealed by their original export manifest.
+docs/wiki/tools/*.py -text
+
+# Preserve original CRLF bytes in byte-hashed PR44 consumer receipts.
+evidence/pr44-gateway-stream-20261115/** -text

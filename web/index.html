@@ -34,25 +34,25 @@
     />
     <meta property="og:url" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/" />
     <!-- Link preview: the team logo (AI-generated with ChatGPT and edited, watermarked) beside the title. -->
-    <meta property="og:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.png" />
-    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="The planet Mars on black (Viking global color mosaic, NASA/JPL/USGS, PIA00407)" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.png" />
+    <meta name="twitter:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.jpg" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "Mars Gods Eye — Mission Viewer",
         "url": "https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/",
-        "image": "https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.png",
+        "image": "https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.jpg",
         "applicationCategory": "EducationalApplication",
         "operatingSystem": "Any (modern web browser with WebGL)",
         "isAccessibleForFree": true,
         "inLanguage": "en",
-        "description": "Saved-run 3D viewer for NASA Space Apps 2026. Default recorded-recovery-001 preserves an integrated recorder package on Daniel's public 128 m Jezero scene: real data/mapping/planner, MOCK mission and kinematic execution, simulated observations, human stop/replan/resume/return, rover and drone idle. The closing READY state is not scientific COMPLETE. A separate generated 2 km CTX demo provides an illustrative three-agent story and regional science context. Source/grid spacing and dataset/datum are kept distinct. REPLAY only, not a live mission; not certified for real operations. Browser/backend-off acceptance remains to be recorded.",
+        "description": "Saved-run 3D viewer for NASA Space Apps 2026. It opens on a Mars globe of six zones; the default scene is the illustrative Jezero demo. The recorded-recovery-001 entry preserves an integrated recorder package on Daniel's public 128 m Jezero scene: real data/mapping/planner, MOCK mission and kinematic execution, simulated observations, human stop/replan/resume/return, rover and drone idle. The closing READY state is not scientific COMPLETE. A separate generated 2 km CTX demo provides an illustrative three-agent story and regional science context. Source/grid spacing and dataset/datum are kept distinct. REPLAY only, not a live mission; not certified for real operations. Browser/backend-off acceptance remains to be recorded.",
         "creator": { "@type": "Organization", "name": "Houston, We Have a Bug! (NASA Space Apps 2026 team)" },
         "codeRepository": "https://github.com/jorgefajardom-coder/NASA-GODS-EYE-",
         "about": [
@@ -74,6 +74,43 @@
     </script>
   </head>
   <body>
+    <script>
+      // Zone travel: paint the zone's photo before anything else (no static page, no loading screen in between).
+      // ZoneArrival (src/components/ZoneSelector.tsx) removes this veil once its own copy of the photo is drawn.
+      (function () {
+        try {
+          var a = JSON.parse(sessionStorage.getItem('mge-zone-arrival') || 'null');
+          var run = new URLSearchParams(location.search).get('run');
+          if (!a || a.runId !== run || typeof a.image !== 'string' || !/^[\w./-]+$/.test(a.image)) return;
+          var veil = document.createElement('div');
+          veil.id = 'zone-arrival-veil';
+          veil.setAttribute('aria-hidden', 'true');
+          veil.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#05080b;overflow:hidden;pointer-events:none';
+          var img = document.createElement('img');
+          // Nothing is painted until the photo is ready: the browser keeps the previous page's last frame (the same
+          // full-screen photo) instead of flashing the dark background for a frame.
+          var root = document.documentElement;
+          root.style.visibility = 'hidden';
+          var show = function () {
+            root.style.visibility = '';
+          };
+          img.onload = show;
+          img.onerror = show;
+          setTimeout(show, 1500);
+          img.src = a.image;
+          img.alt = '';
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.75) hue-rotate(-14deg) saturate(1.7) brightness(.95)';
+          veil.appendChild(img);
+          document.body.appendChild(veil);
+          // Never left on screen if the app cannot start (it normally goes within a second).
+          setTimeout(function () {
+            veil.remove();
+          }, 15000);
+        } catch (e) {
+          /* no session storage: no veil */
+        }
+      })();
+    </script>
     <div id="root">
       <!-- Shown until the app starts (and to readers that do not run JavaScript); React replaces it. -->
       <main class="static-summary">

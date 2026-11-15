@@ -1,0 +1,163 @@
+{
+  "checked_at_utc": "2026-11-15T17:43:11.988052+00:00",
+  "status": "PASS",
+  "english_reader_pages": 14,
+  "chapters": 9,
+  "pages": [
+    {
+      "file": "01-Research-Question.md",
+      "words": 1223,
+      "embedded_graphics": 1,
+      "sha256": "46e507ebf9eed29812c952cb88b92289b44c42e02bf75f891da61f6311cbf49d"
+    },
+    {
+      "file": "02-Jezero-Science.md",
+      "words": 1359,
+      "embedded_graphics": 1,
+      "sha256": "f5170ef4995424733ea6e3d97dbcae06c8da952678a82ddf3c1b54bd62b71d5c"
+    },
+    {
+      "file": "03-Terrain-and-Scale.md",
+      "words": 1286,
+      "embedded_graphics": 3,
+      "sha256": "e47cd722875c87cd6ba8ff8bba6bd16120deb70b6a05e0fbec8189e1f0e34fbf"
+    },
+    {
+      "file": "04-Agents-and-Activities.md",
+      "words": 1542,
+      "embedded_graphics": 2,
+      "sha256": "2e0e2829c246665776c6c2566c416b37f196c3a956676ea79e2743c7250cb5a2"
+    },
+    {
+      "file": "05-Resource-Models.md",
+      "words": 1565,
+      "embedded_graphics": 2,
+      "sha256": "e445d865716377ecbdfe894add0c0f41c8b438201baabe93acdefc8876948722"
+    },
+    {
+      "file": "06-Mission-Decisions.md",
+      "words": 1634,
+      "embedded_graphics": 2,
+      "sha256": "e8c5dc78e32206ee869abefb6099a2a7c19e769ef6f443c728f28849194158d8"
+    },
+    {
+      "file": "07-Experimental-Method.md",
+      "words": 1455,
+      "embedded_graphics": 2,
+      "sha256": "335d945eaa575bf591416f74a0b085d7a5fe1be5db50a171ebc09bb9b039e192"
+    },
+    {
+      "file": "08-Case-Studies.md",
+      "words": 1342,
+      "embedded_graphics": 3,
+      "sha256": "689768f8751bc3b1946e3e1ae0443ad38da2e1608944196af7e7f1a44f12f6af"
+    },
+    {
+      "file": "09-Discussion.md",
+      "words": 1314,
+      "embedded_graphics": 1,
+      "sha256": "6687d9b7669c9b1d350f24af18d4825ebc45c1bdcdeb8c103150fd5c885b5469"
+    },
+    {
+      "file": "_Footer.md",
+      "words": 25,
+      "embedded_graphics": 0,
+      "sha256": "1081d1a7c4b86a035139481219e49abd262659190089a4d46b0ef88013b96661"
+    },
+    {
+      "file": "_Sidebar.md",
+      "words": 62,
+      "embedded_graphics": 0,
+      "sha256": "90cff6e19e35dc2251f7630886d3a61816097556488373cb655f61a9150deb81"
+    },
+    {
+      "file": "Bibliography.md",
+      "words": 1255,
+      "embedded_graphics": 0,
+      "sha256": "bc32161457d0bffae613799b1f25240813373201cda6d8014b3f95a4486a7ee7"
+    },
+    {
+      "file": "Glossary.md",
+      "words": 704,
+      "embedded_graphics": 0,
+      "sha256": "ad9dd2baf3b44184d8ffdd84a3de1a6c1810aa2d4ddd3bc3bcf6d5ae503f18bc"
+    },
+    {
+      "file": "Home.md",
+      "words": 850,
+      "embedded_graphics": 1,
+      "sha256": "25a6033925c504be039b7e0e11b8080c6bb7aba946f87bc96bde79d25fd48431"
+    },
+    {
+      "file": "Parameters-and-Decisions.md",
+      "words": 1096,
+      "embedded_graphics": 0,
+      "sha256": "d2858c257da712ae916da99e9fffa938616411dd13cd75a47d0c5496b5d52fd0"
+    },
+    {
+      "file": "README.md",
+      "words": 167,
+      "embedded_graphics": 0,
+      "sha256": "8dcec9e2f2ba736e537f1061aea094eb87545cd5c4337945daa18354fc4c734d"
+    },
+    {
+      "file": "Reproducibility.md",
+      "words": 923,
+      "embedded_graphics": 0,
+      "sha256": "3835490d171165c7fd3bd288681a94ba591bb7cd140ef14dafa908df321518f8"
+    }
+  ],
+  "local_links_checked": 243,
+  "external_reference_urls": [
+    "https://dartslab.jpl.nasa.gov/References/pdf/2011-howard_ieeeaero_2011.pdf",
+    "https://dartslab.jpl.nasa.gov/References/pdf/2011-howard_ieeeaero_2011.pdf#page=4",
+    "https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.qmc.LatinHypercube.html",
+    "https://doi.org/10.1007/s11214-020-00762-y",
+    "https://doi.org/10.1029/2023JE008155",
+    "https://doi.org/10.1029/2023JE008187",
+    "https://doi.org/10.1038/s41586-025-09413-0",
+    "https://doi.org/10.1109/TSSC.1968.300136",
+    "https://doi.org/10.17189/1z1b-kv84",
+    "https://doi.org/10.2307/1268522",
+    "https://doi.org/10.3133/sim3464",
+    "https://doi.org/10.5066/P906QQT8",
+    "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf",
+    "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20",
+    "https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=21",
+    "https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf",
+    "https://ntrs.nasa.gov/api/citations/20205003610/downloads/ARGOS%20ICES%202020%20-Final%20for%20Export%20Control.pdf",
+    "https://ntrs.nasa.gov/api/citations/20205003610/downloads/ARGOS%20ICES%202020%20-Final%20for%20Export%20Control.pdf#page=6",
+    "https://ntrs.nasa.gov/api/citations/20210024855/downloads/BVAD_2.15.22-final.pdf",
+    "https://ntrs.nasa.gov/api/citations/20210024855/downloads/BVAD_2.15.22-final.pdf#page=149",
+    "https://ntrs.nasa.gov/citations/20110001417",
+    "https://ntrs.nasa.gov/citations/20120011761",
+    "https://ntrs.nasa.gov/citations/20205003610",
+    "https://ntrs.nasa.gov/citations/20210024855",
+    "https://numpy.org/doc/stable/reference/random/parallel.html",
+    "https://pds.nasa.gov/ds-view/pds/viewBundle.jsp?identifier=urn%3Anasa%3Apds%3Amgs_mola_topography_derived&version=1.0",
+    "https://physics.nist.gov/cuu/pdf/all.pdf",
+    "https://science.nasa.gov/blog/comet-geyser-perseverances-21st-rock-core/",
+    "https://science.nasa.gov/blog/what-were-learning-about-ingenuitys-flight-control-and-aerodynamic-performance/",
+    "https://science.nasa.gov/mission/mars-2020-perseverance/rover-components/",
+    "https://ssd.jpl.nasa.gov/planets/phys_par.html",
+    "https://stac.astrogeology.usgs.gov/docs/data/mars/ctxdtms/",
+    "https://webbook.nist.gov/cgi/cbook.cgi?Name=O2",
+    "https://www.jpl.nasa.gov/news/press_kits/mars_2020/landing/mission/spacecraft/power/"
+  ],
+  "external_check_scope": "Primary sources checked in authoring and cross-review; local audit does not infer content validity from HTTP availability",
+  "generated_assets": 21,
+  "GIFs": 3,
+  "decoded_GIF_frames_watermark_checked": 57,
+  "PNG_footer_glyphs_and_metadata": "PASS; conceptual cover verified against saved image-generation source and visual review",
+  "model_examples_recomputed": true,
+  "figure_input_hashes": "PASS",
+  "technical_tree_unchanged_from_task_start": true,
+  "previous_sealed_documents_preserved": true,
+  "previous_artifacts_verified": 3394,
+  "bold_markup": 0,
+  "unfinished_markers": 0,
+  "git_diff_check": "PASS",
+  "visual_review": "Full-size figures and representative first/middle/final animation frames inspected; causal layouts corrected",
+  "owner_scientific_audit": "pending; this is the complete first draft",
+  "published": false
+}

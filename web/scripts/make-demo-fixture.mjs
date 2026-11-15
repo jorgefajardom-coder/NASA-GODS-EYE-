@@ -12,7 +12,9 @@
  *    route planner. The viewer never searches for paths;
  *  - the adverse case: a scarp ADDED to the hidden evaluator reference. It does not
  *    exist in the CTX data. A drone survey reveals it and invalidates route r1;
- *  - POIs C and D are fictitious sites.
+ *  - POIs C and D: real science sites of the world's mission where it has them (a NASA sample, drill
+ *    hole or contact-science target, at the rover's published position; scripts/extract-science-sites.mjs),
+ *    otherwise fictitious sites, labelled as such.
  *
  * Frames are written every 2 s of simulated time; the viewer interpolates visually
  * between samples and never extrapolates.
@@ -25,15 +27,111 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const OUT = join(HERE, '..', 'public', 'replay', 'demo');
-const RUN_ID = 'demo-sim-002';
+// World to build: `WORLD=jezero` (default, the Perseverance demo), `gale` (Curiosity at Gale crater), `gusev`
+// (Spirit), `meridiani` (Opportunity at Endeavour crater), `insight` (InSight lander, no traverse) or `melas`
+// (Valles Marineris, no landed mission). A world without stops has no photo tour.
+const WORLD = process.env.WORLD ?? 'jezero';
+const WORLDS = {
+  jezero: {
+    dir: 'demo', runId: 'demo-sim-002', crop: 'ctx_crop.json', stops: 'rover_waypoints.json', sites: 'science_sites.json', depot: 'three_forks_depot.json', mission: 'Perseverance',
+    datasetId: 'mars2020-trn-ctx-dtm-20m', datum: 'MOLA areoid',
+    title: 'Demo run: corridor survey and replanning',
+    terrain: (res) => `NASA/USGS CTX DTM crop of the Perseverance landing area and the terrain north of it (real, provisional, ${res} m display grid from a 20 m source)`,
+    imagery: {
+      title: 'MRO CTX Jezero orthomosaic, controlled (Mars 2020 TRN)',
+      source: 'JPL Mars Trek WMTS layer JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0, https://trek.nasa.gov/mars/',
+      credit: 'NASA/JPL-Caltech/MSSS/USGS', native: 6, res: 5,
+    },
+    layers: { geology: true, atmosphere: true, context: true },
+    hiddenNote: 'CTX prior plus a SYNTHETIC scarp',
+    exaggeration: 2,
+  },
+  gale: {
+    dir: 'gale-demo', runId: 'gale-demo-sim-001', crop: 'gale/ctx_crop.json', stops: 'gale/rover_waypoints.json', sites: 'gale/science_sites.json', mission: 'Curiosity',
+    datasetId: 'msl-gale-dem-mosaic-8m', datum: 'Mars datum of the MSL Gale DEM mosaic',
+    title: 'Gale demo: Mount Sharp corridor survey and replanning',
+    terrain: (res) => `NASA/USGS MSL Gale crater DEM mosaic crop over Curiosity's traverse and the foot of Mount Sharp (real, provisional, ${res} m display grid from its 8 m overview)`,
+    imagery: {
+      title: 'MRO CTX Gale crater mosaic (block adjusted)',
+      source: 'JPL Mars Trek WMTS layer Gale_CTX_BlockAdj_dd, https://trek.nasa.gov/mars/',
+      credit: 'NASA/JPL-Caltech/MSSS', native: 6, res: 10,
+    },
+    layers: { geology: false, atmosphere: false, context: false },
+    hiddenNote: 'DEM prior plus a SYNTHETIC scarp',
+    exaggeration: 1,
+  },
+  gusev: {
+    dir: 'gusev-demo', runId: 'gusev-demo-sim-001', crop: 'gusev/dem_crop.json', stops: 'gusev/rover_waypoints.json', sites: 'gusev/science_sites.json', mission: 'Spirit',
+    datasetId: 'clh-dem-mosaic-8m', datum: 'datum of the Columbia Hills DEM mosaic',
+    title: 'Gusev demo: Columbia Hills corridor survey and replanning',
+    terrain: (res) => `NASA/USGS Columbia Hills HiRISE/CTX/HRSC DEM mosaic crop over Spirit's traverse from the landing site to the Columbia Hills (real, preliminary, ${res} m display grid averaged from its 1 m mosaic)`,
+    imagery: {
+      title: 'Columbia Hills visible mosaic (HiRISE/CTX/HRSC)',
+      source: 'JPL Mars Trek WMTS layer CLH_Visible_Mosaic_HiRISE_CTX_HRSC_GCS_MARS_07-10-2018, https://trek.nasa.gov/mars/',
+      credit: 'NASA/JPL-Caltech/USGS/University of Arizona/ESA/DLR/FU Berlin', native: 1, res: 10,
+    },
+    layers: { geology: false, atmosphere: false, context: false },
+    hiddenNote: 'DEM prior plus a SYNTHETIC scarp',
+    exaggeration: 2,
+  },
+  meridiani: {
+    dir: 'meridiani-demo', runId: 'meridiani-demo-sim-001', crop: 'meridiani/dem_crop.json', stops: 'meridiani/rover_waypoints.json', sites: 'meridiani/science_sites.json', mission: 'Opportunity',
+    datasetId: 'endeavour-hirise-dem-8m', datum: 'datum of the Endeavour crater HiRISE DEM',
+    title: 'Meridiani demo: Endeavour rim corridor survey and replanning',
+    terrain: (res) => `NASA HiRISE DEM crop of Endeavour crater's west rim along Opportunity's traverse (real, provisional, ${res} m display grid averaged from its 1 m DEM)`,
+    imagery: {
+      title: 'MRO CTX South Meridiani mosaic (block adjusted)',
+      source: 'JPL Mars Trek WMTS layer S_Meridiani_Sinus_Planium_CTX_BlockAdj_dd, https://trek.nasa.gov/mars/',
+      credit: 'NASA/JPL-Caltech/MSSS', native: 6, res: 10,
+    },
+    layers: { geology: false, atmosphere: false, context: false },
+    hiddenNote: 'DEM prior plus a SYNTHETIC scarp',
+    exaggeration: 1,
+  },
+  insight: {
+    dir: 'insight-demo', runId: 'insight-demo-sim-001', crop: 'insight/dem_crop.json', stops: null, mission: 'InSight',
+    // The crop is centred on NASA's published lander coordinates, so the lander is the local origin.
+    landmark: { label: 'InSight lander', x: 0, y: 0, source: 'NASA published InSight landing coordinates, 4.502 N 135.623 E (the centre of this crop).' },
+    datasetId: 'insight-dem-mosaic-8m', datum: 'datum of the InSight DEM mosaic',
+    title: 'Elysium demo: corridor survey and replanning near the InSight lander',
+    terrain: (res) => `NASA/USGS InSight HiRISE/CTX/HRSC DEM mosaic crop centred on the InSight lander (real, provisional, ${res} m display grid from a 20 m source)`,
+    imagery: {
+      title: 'MRO CTX InSight landing site mosaic',
+      source: 'JPL Mars Trek WMTS layer InSightCTXMosaic_112917, https://trek.nasa.gov/mars/',
+      credit: 'NASA/JPL-Caltech/MSSS', native: 6, res: 10,
+    },
+    layers: { geology: false, atmosphere: false, context: false },
+    hiddenNote: 'DEM prior plus a SYNTHETIC scarp',
+    exaggeration: 4,
+  },
+  melas: {
+    dir: 'melas-demo', runId: 'melas-demo-sim-001', crop: 'melas/dem_crop.json', stops: null, mission: null,
+    datasetId: 'ctx-dem-11s291e-8m', datum: 'datum of the CTX stereo DEM',
+    title: 'Melas demo: canyon floor corridor survey and replanning',
+    terrain: (res) => `NASA/USGS CTX stereo DEM crop of a Melas Chasma floor and wall in Valles Marineris, never visited by a rover (real, provisional, ${res} m display grid from a 24 m source)`,
+    imagery: {
+      title: 'MRO CTX orthoimage B19_017187_1685 (paired with the DEM)',
+      source: 'JPL Mars Trek WMTS layer CTX_Ortho_11S291E_6mp_B19_017187_1685, https://trek.nasa.gov/mars/',
+      credit: 'NASA/JPL-Caltech/MSSS/USGS', native: 6, res: 10,
+    },
+    layers: { geology: false, atmosphere: false, context: false },
+    hiddenNote: 'DEM prior plus a SYNTHETIC scarp',
+    exaggeration: 1,
+  },
+};
+const WD = WORLDS[WORLD];
+if (!WD) throw new Error(`unknown WORLD ${WORLD}`);
+const OUT = join(HERE, '..', 'public', 'replay', WD.dir);
+const RUN_ID = WD.runId;
 const SCHEMA = 'mge-web-0.1-draft';
 const DT = 2;
 
 // ------------------------------------------------------------------ terrain
-const crop = JSON.parse(readFileSync(join(HERE, 'data', 'ctx_crop.json'), 'utf8'));
+const crop = JSON.parse(readFileSync(join(HERE, 'data', WD.crop), 'utf8'));
 const { rows: ROWS, cols: COLS, resolution_m: RES, origin_x_m: OX, origin_y_m: OY, local_z_offset_m: ZOFF } = crop.crop;
 const N = ROWS * COLS;
+// Cells per 20 m: index-based tuning below was written for 20 m cells; it scales with the cell size.
+const K = Math.max(1, Math.round(20 / RES));
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const r1d = (v) => Math.round(v * 10) / 10;
 const r2d = (v) => Math.round(v * 100) / 100;
@@ -58,7 +156,10 @@ function heightAt(grid, x, y) {
   return s * (1 - tr) + n * tr;
 }
 
+const slopeCache = new WeakMap();
 function slopes(grid) {
+  const hit = slopeCache.get(grid);
+  if (hit) return hit;
   const s = new Float32Array(N);
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
@@ -69,6 +170,7 @@ function slopes(grid) {
       s[r * COLS + c] = (Math.atan(Math.hypot(dx, dy)) * 180) / Math.PI;
     }
   }
+  slopeCache.set(grid, s);
   return s;
 }
 
@@ -198,7 +300,7 @@ function search(grid, sigma, limitDeg, from, to) {
 function nearestFree(grid, limitDeg, x, y) {
   const sl = slopes(grid);
   const o = cellOf(x, y);
-  for (let rad = 0; rad < 12; rad++) {
+  for (let rad = 0; rad < 12 * K; rad++) {
     for (let dr = -rad; dr <= rad; dr++) {
       for (let dc = -rad; dc <= rad; dc++) {
         const r = o.r + dr;
@@ -235,17 +337,79 @@ function candidates(r0, r1, c0, c1, lim) {
   for (let r = r0; r < r1; r++) for (let c = c0; c < c1; c++) if (free(r, c, lim)) out.push({ r, c, s: slPrior[r * COLS + c] });
   return out.sort((a, b) => a.s - b.s).slice(0, 6).map((k) => center(k.r, k.c));
 }
+// Real Perseverance stops inside the crop (scripts/extract-rover-waypoints.mjs). Base A and goal B sit
+// on two of them, so the astronaut stands on real stops, each with real mission images, at both ends.
+const stopsFile = WD.stops ? JSON.parse(readFileSync(join(HERE, 'data', WD.stops), 'utf8')) : { stops: [] };
+const HAS_STOPS = stopsFile.stops.length > 0;
+const stopsAt = (lim) => stopsFile.stops.map((st) => ({ st, p: nearestFreeAt(st.x_m, st.y_m, lim) })).filter((k) => k.p);
+function nearestFreeAt(x, y, lim) {
+  try {
+    const q = nearestFree(prior, lim * 2, x, y);
+    return dist(q, { x, y }) <= 12 ? q : null;
+  } catch {
+    return null;
+  }
+}
+// Keep the story away from the crop edges, where the drawn terrain ends: base A and goal B at least
+// SITE_EDGE_M inside, the agents' pads at least HOME_EDGE_M inside.
+const SITE_EDGE_M = 150;
+const HOME_EDGE_M = 60;
+const edgeDist = (p) => Math.min(p.x - OX, OX + COLS * RES - p.x, p.y - OY, OY + ROWS * RES - p.y);
+/** The point moved straight inward until it is at least m metres from every crop edge. */
+const inset = (p, m) => ({ x: clamp(p.x, OX + m, OX + COLS * RES - m), y: clamp(p.y, OY + m, OY + ROWS * RES - m) });
 let A = null;
 let B = null;
 let r1Out = null;
-outer: for (const a of candidates(8, 40, 62, 94, 5)) {
-  for (const b of candidates(58, 92, 6, 38, 6)) {
-    const p = search(prior, sigma1, HUMAN.slope, a, b);
+let stopA = null;
+let stopB = null;
+const baseStops = stopsAt(5).filter((k) => slPrior[cellOf(k.p.x, k.p.y).r * COLS + cellOf(k.p.x, k.p.y).c] < 5 && edgeDist(k.p) >= SITE_EDGE_M);
+const goalStops = stopsAt(6).filter((k) => slPrior[cellOf(k.p.x, k.p.y).r * COLS + cellOf(k.p.x, k.p.y).c] < 6 && edgeDist(k.p) >= SITE_EDGE_M);
+outer: for (const a of baseStops) {
+  for (const b of goalStops) {
+    const straight = dist(a.p, b.p);
+    if (straight < 900 || straight > 1900) continue;
+    const p = search(prior, sigma1, HUMAN.slope, a.p, b.p);
     if (p && len(p) > 1300 && len(p) < 2300) {
-      A = a;
-      B = b;
+      A = a.p;
+      B = b.p;
+      stopA = a.st;
+      stopB = b.st;
       r1Out = p;
       break outer;
+    }
+  }
+}
+if (!r1Out) {
+  outer2: for (const a of candidates(8 * K, 40 * K, 62 * K, 94 * K, 5)) {
+    for (const b of candidates(58 * K, 92 * K, 6 * K, 38 * K, 6)) {
+      const p = search(prior, sigma1, HUMAN.slope, a, b);
+      if (p && len(p) > 1300 && len(p) < 2300) {
+        A = a;
+        B = b;
+        r1Out = p;
+        break outer2;
+      }
+    }
+  }
+}
+if (!r1Out) {
+  // Steep worlds (a canyon wall across the map): the flattest cells of the whole crop, on a coarse
+  // lattice, paired south to north at 0.9-1.9 km apart.
+  const lattice = [];
+  const step = 6 * K;
+  for (let r = step; r < ROWS - step; r += step) for (let c = step; c < COLS - step; c += step) if (free(r, c, 6)) lattice.push({ r, c, s: slPrior[r * COLS + c] });
+  const flat = lattice.sort((a, b) => a.s - b.s).slice(0, 60).map((k) => center(k.r, k.c));
+  outer3: for (const a of flat) {
+    for (const b of flat) {
+      const straight = dist(a, b);
+      if (b.y <= a.y || straight < 900 || straight > 1900) continue;
+      const p = search(prior, sigma1, HUMAN.slope, a, b);
+      if (p && len(p) > 1300 && len(p) < 2300) {
+        A = a;
+        B = b;
+        r1Out = p;
+        break outer3;
+      }
     }
   }
 }
@@ -307,8 +471,12 @@ if (!crossesForbidden(r1Out)) throw new Error('route r1 does not cross the scarp
 
 // ------------------------------------------------------------------ timeline
 const T_START = 10;
-const DRONE_HOME = nearestFree(prior, 12, A.x - 70, A.y + 40);
-const ROVER_HOME = nearestFree(prior, ROVER.slope, A.x + 40, A.y + 70);
+const droneHomeAt = inset({ x: A.x - 70, y: A.y + 40 }, HOME_EDGE_M);
+const roverHomeAt = inset({ x: A.x + 40, y: A.y + 70 }, HOME_EDGE_M);
+const DRONE_HOME = nearestFree(prior, 12, droneHomeAt.x, droneHomeAt.y);
+const ROVER_HOME = nearestFree(prior, ROVER.slope, roverHomeAt.x, roverHomeAt.y);
+if (edgeDist(A) < SITE_EDGE_M || edgeDist(B) < SITE_EDGE_M) throw new Error('base A or goal B too close to the crop edge');
+if (edgeDist(DRONE_HOME) < HOME_EDGE_M - RES || edgeDist(ROVER_HOME) < HOME_EDGE_M - RES) throw new Error('drone or rover pad too close to the crop edge');
 const droneOut = [DRONE_HOME, S0];
 const strip = [S0, S1];
 const droneBack = [S1, DRONE_HOME];
@@ -338,18 +506,26 @@ r2Ret[r2Ret.length - 1] = { ...A };
 const T_AT_B = even(T_R2 + len(r2Out) / HUMAN.speed);
 const T_B_DONE = T_AT_B + SERVICE_B_S;
 const T_HOME = even(T_B_DONE + len(r2Ret) / HUMAN.speed);
-const T_END = T_HOME + 10;
+let T_END = T_HOME + 10; // extended below by the rover's photo tour
 
 // ------------------------------------------------------------------ POIs revealed by the survey (fictitious sites)
 const roverSl = slBelief2;
-const observedFree = observed.filter((i) => roverSl[i] < 8);
+// Steeper worlds (Mount Sharp) need a looser slope for the fictitious POIs: widen from 8 degrees until some fit.
+let poiSlope = 8;
+let observedFree = observed.filter((i) => roverSl[i] < poiSlope);
 const sideOf = (i) => {
   const p = center(Math.floor(i / COLS), i % COLS);
   return (p.x - W.x) * tang.x + (p.y - W.y) * tang.y; // <0 = base side, >0 = goal side
 };
 function bestPoi(side) {
   let best = null;
-  const pool = observedFree.filter((i) => (side < 0 ? sideOf(i) < -40 : sideOf(i) > 40)).filter((i) => i % 3 === 0);
+  const pool = observedFree
+    .filter((i) => (side < 0 ? sideOf(i) < -40 : sideOf(i) > 40))
+    .filter((i) => {
+      const r = Math.floor(i / COLS);
+      const c = i % COLS;
+      return r % K === 0 && c % K === 0 && (r / K + c / K) % 3 === 0; // a third of the 20 m lattice
+    });
   for (const i of pool) {
     const p = center(Math.floor(i / COLS), i % COLS);
     const path = search(belief2, sigma2, ROVER.slope, ROVER_HOME, p);
@@ -357,10 +533,50 @@ function bestPoi(side) {
     const l = len(path);
     if (!best || (side < 0 ? l < best.l : l > best.l)) best = { p, l, path };
   }
+  // Goal side with no drivable path for the rover (steep ground behind the scarp): the far-side site is
+  // still real on the map; the rover's trip to it is rejected by budget using an estimated length (1.4 x
+  // the straight line, an illustrative detour factor) and it never drives there.
+  const sidePool = observedFree.filter((i) => (side < 0 ? sideOf(i) < -40 : sideOf(i) > 40));
+  if (!best && side > 0 && sidePool.length) {
+    const far = sidePool.map((i) => center(Math.floor(i / COLS), i % COLS)).sort((a, b) => dist(b, ROVER_HOME) - dist(a, ROVER_HOME))[0];
+    best = { p: far, l: dist(far, ROVER_HOME) * 1.4, path: null };
+  }
   return best;
 }
-const C = bestPoi(-1);
-const D = bestPoi(1);
+// Real science sites of the mission (where it sampled, drilled or did contact science): C is the nearest one
+// the rover can drive to on map v2 (at least 150 m away), D a farther one (at least 1.3 x C's drive). The rover's
+// illustrative budget below is set from the two, so C fits and D does not. Rock targets are preferred over soil.
+const scienceFile = WD.sites ? JSON.parse(readFileSync(join(HERE, 'data', WD.sites), 'utf8')) : null;
+function realPois() {
+  if (!scienceFile) return null;
+  // Rock targets first (cores, drill holes, contact science on rock), as the missions prioritise bedrock;
+  // soil, scuffs, regolith and atmosphere only if no rock pair fits.
+  const rocky = (s) => (s.kind === 'sample' && !/regolith/.test(s.detail)) || s.kind === 'drill' || /on the rock target/.test(s.detail);
+  const pool = scienceFile.sites
+    .map((s) => ({ s, q: nearestFreeAt(s.x_m, s.y_m, ROVER.slope) }))
+    .filter((k) => k.q)
+    .sort((a, b) => rocky(b.s) - rocky(a.s) || dist(a.q, ROVER_HOME) - dist(b.q, ROVER_HOME));
+  const measured = [];
+  for (const k of pool.slice(0, 40)) {
+    const path = search(belief2, sigma2, ROVER.slope, ROVER_HOME, k.q);
+    measured.push({ site: k.s, p: k.q, path, l: path ? len(path) : dist(k.q, ROVER_HOME) * 1.4 });
+  }
+  const pick = (list) => {
+    const c = list.filter((m) => m.path && m.l >= 150).sort((a, b) => a.l - b.l)[0];
+    const d = c && list.filter((m) => m !== c && m.l >= 1.3 * c.l && m.l <= 4000).sort((a, b) => a.l - b.l)[0];
+    return c && d ? { C: c, D: d } : null;
+  };
+  return pick(measured.filter((m) => rocky(m.site))) ?? pick(measured);
+}
+const real = realPois();
+let C = real?.C ?? bestPoi(-1);
+let D = real?.D ?? bestPoi(1);
+while (!real && (!C || !D) && poiSlope < ROVER.slope) {
+  poiSlope += 2;
+  observedFree = observed.filter((i) => roverSl[i] < poiSlope);
+  C = bestPoi(-1);
+  D = bestPoi(1);
+}
 if (!C || !D) throw new Error('could not place POIs inside the observed area');
 const roverRoundTrip = (l) => (2 * l * ROVER.wh_moving) / ROVER.speed;
 // Illustrative rover budget chosen so that C fits within a 20 % reserve and D does not.
@@ -380,7 +596,7 @@ const ROVER_HEADING0 = 0.7;
  */
 const wrapPi = (a) => Math.atan2(Math.sin(a), Math.cos(a));
 const TURN_MIN_RAD = (5 * Math.PI) / 180;
-function drivePlan(pts, t0, heading, mode) {
+function drivePlan(pts, t0, heading, mode, speed = ROVER.speed, extra = {}) {
   const segs = [];
   let t = t0;
   let h = heading;
@@ -391,11 +607,11 @@ function drivePlan(pts, t0, heading, mode) {
     const dh = wrapPi(want - h);
     if (Math.abs(dh) > TURN_MIN_RAD) {
       const dur = Math.abs(dh) / ((ROVER.turn_deg_s * Math.PI) / 180);
-      segs.push({ t0: t, t1: t + dur, mode, turn: { at: pts[k - 1], from: h, by: dh } });
+      segs.push({ t0: t, t1: t + dur, mode, turn: { at: pts[k - 1], from: h, by: dh }, ...extra });
       t += dur;
     }
-    segs.push({ t0: t, t1: t + leg / ROVER.speed, mode, pts: [pts[k - 1], pts[k]] });
-    t += leg / ROVER.speed;
+    segs.push({ t0: t, t1: t + leg / speed, mode, pts: [pts[k - 1], pts[k]], speed, ...extra });
+    t += leg / speed;
     h = want;
   }
   return { segs, end: t, heading: h };
@@ -405,6 +621,51 @@ const T_ROVER_AT_C = even(roverOutPlan.end);
 const T_ROVER_DONE = T_ROVER_AT_C + SERVICE_C_S;
 const roverBackPlan = drivePlan(roverBack, T_ROVER_DONE, roverOutPlan.heading, 'RETURNING');
 const T_ROVER_HOME = even(roverBackPlan.end);
+
+// ------------------------------------------------------------------ photo tour
+// After the story ends, the rover drives through EVERY real stop of the crop in the order
+// NASA's rover visited them (by sol), pausing at each so its mission images can be shown. Illustrative:
+// the speed is faster than real hardware and resource use is NOT modelled during the tour (the rover's
+// time and energy are held at their values when the tour starts).
+const TOUR = { speed: 2.0, dwell_s: 40 };
+const T_TOUR = even(Math.max(T_HOME, T_ROVER_HOME) + (HAS_STOPS ? 20 : 0));
+const tourStops = stopsFile.stops;
+const snapStop = (p) => nearestFreeAt(p.x, p.y, ROVER.slope);
+// Stops at the crop edge: the rover stops TOUR_STOP_EDGE_M inside (still within the viewer's 25 m arrival radius,
+// so the stop's images show) and drives between stops outside a TOUR_BAND_M band along the edge.
+const TOUR_STOP_EDGE_M = 20;
+const TOUR_BAND_M = 30;
+const TOUR_LEG_EDGE_M = 40;
+const tourGrid = belief2.map((h, i) => (edgeDist(center(Math.floor(i / COLS), i % COLS)) < TOUR_BAND_M ? null : h));
+function tourLeg(a, b) {
+  const sa = snapStop(inset(a, TOUR_LEG_EDGE_M));
+  const sb = snapStop(inset(b, TOUR_LEG_EDGE_M));
+  const path = sa && sb ? search(tourGrid, sigma2, ROVER.slope, sa, sb) : null;
+  return dropCollinear(path ? [a, ...path.slice(1, -1), b] : [a, b]);
+}
+const tourSegs = [];
+const tourArrival = [];
+let tourT = T_TOUR;
+let tourHeading = roverBackPlan.heading;
+let tourHere = { x: ROVER_HOME.x, y: ROVER_HOME.y };
+let tourStraightLegs = 0;
+let tourInset = 0;
+for (const st of tourStops) {
+  const to = inset({ x: st.x_m, y: st.y_m }, TOUR_STOP_EDGE_M);
+  if (dist(to, { x: st.x_m, y: st.y_m }) > 0.01) tourInset += 1;
+  const pts = tourLeg(tourHere, to);
+  if (pts.length === 2 && dist(tourHere, to) > 60) tourStraightLegs += 1;
+  const plan = drivePlan(pts, tourT, tourHeading, 'MOVING', TOUR.speed, { tour: true });
+  tourSegs.push(...plan.segs);
+  tourT = plan.end;
+  tourHeading = plan.heading;
+  tourArrival.push(even(tourT));
+  tourSegs.push({ t0: tourT, t1: tourT + TOUR.dwell_s, mode: 'WORKING', tour: true });
+  tourT += TOUR.dwell_s;
+  tourHere = to;
+}
+const T_TOUR_END = even(tourT);
+T_END = T_TOUR_END + 10;
 
 // ------------------------------------------------------------------ routes
 function routeBudget(out, back, startT) {
@@ -457,7 +718,7 @@ function evalSegs(segs, t, speed, startPose) {
     if (t < s.t0) break;
     mode = s.mode;
     if (s.pts) {
-      const d = Math.min((Math.min(t, s.t1) - s.t0) * speed, len(s.pts));
+      const d = Math.min((Math.min(t, s.t1) - s.t0) * (s.speed ?? speed), len(s.pts));
       pose = pointAlong(s.pts, d);
     } else if (s.turn) {
       // Turn on the spot: position held, heading swept at a constant rate.
@@ -469,7 +730,7 @@ function evalSegs(segs, t, speed, startPose) {
 }
 function timeIn(segs, t, modes) {
   let sum = 0;
-  for (const s of segs) if (modes.has(s.mode)) sum += Math.max(0, Math.min(t, s.t1) - s.t0);
+  for (const s of segs) if (!s.tour && modes.has(s.mode)) sum += Math.max(0, Math.min(t, s.t1) - s.t0);
   return sum;
 }
 const MOVING = new Set(['MOVING', 'RETURNING']);
@@ -509,7 +770,9 @@ const roverSegs = [
   { t0: T_ROVER_AT_C, t1: T_ROVER_DONE, mode: 'WORKING' },
   ...roverBackPlan.segs,
   { t0: roverBackPlan.end, t1: T_ROVER_HOME, mode: 'RETURNING' },
-  { t0: T_ROVER_HOME, t1: Infinity, mode: 'IDLE' },
+  { t0: T_ROVER_HOME, t1: T_TOUR, mode: 'IDLE' },
+  ...tourSegs,
+  { t0: T_TOUR_END, t1: Infinity, mode: 'IDLE' },
 ];
 const heading0 = (to) => Math.atan2(to.y - A.y, to.x - A.x);
 
@@ -539,8 +802,9 @@ function roverAt(t) {
   const working = timeIn(roverSegs, t, new Set(['WORKING']));
   return {
     id: ROVER.id, kind: 'ROVER', mode, pose, z: heightAt(reference, pose.x, pose.y),
-    time: ROVER.time_budget_s - t,
-    energy: ROVER.energy_budget_wh - (moving + working) * ROVER.wh_moving - (t - moving - working) * ROVER.wh_idle,
+    // Resource use is not modelled during the photo tour: time and energy stay at their values at its start.
+    time: ROVER.time_budget_s - Math.min(t, T_TOUR),
+    energy: ROVER.energy_budget_wh - (moving + working) * ROVER.wh_moving - (Math.min(t, T_TOUR) - moving - working) * ROVER.wh_idle,
     oxygen: null,
   };
 }
@@ -574,20 +838,25 @@ const surveyId = ev(T_START, 'TASK_DISCOVERED', { causality_id: r1Pub, task_id: 
 ev(T_START + DT, 'TASK_STATE_CHANGED', { causality_id: surveyId, task_id: 'survey:corridor', agent_id: DRONE.id, previous_state: 'DISCOVERED', new_state: 'EXECUTING', reason_code: 'ASSIGNED_TO_DRONE', detail: 'Drone flies over the corridor.' });
 ev(T_OBS, 'TASK_STATE_CHANGED', { causality_id: 'obs-001', task_id: 'survey:corridor', agent_id: DRONE.id, previous_state: 'EXECUTING', new_state: 'DONE', reason_code: 'OBSERVATION_RECEIVED', detail: `Observation obs-001 covers ${observed.length} cells across the corridor.` });
 const mapUpd = ev(T_MAP, 'MAP_UPDATED', { causality_id: 'obs-001', agent_id: DRONE.id, map_version: 2, reason_code: 'OBSERVATION_APPLIED', detail: `Map v2: drone saw a scarp across the corridor with local slope up to ${Math.round(maxSlopeObserved)}° (illustrative human limit ${HUMAN.slope}°).` });
-const cFound = ev(T_MAP, 'TASK_DISCOVERED', { causality_id: 'obs-001', task_id: 'inspect:C', new_state: 'DISCOVERED', reason_code: 'SITE_OBSERVED', detail: 'Drone image shows a layered outcrop at POI C (fictitious site).' });
-const dFound = ev(T_MAP + DT, 'TASK_DISCOVERED', { causality_id: 'obs-001', task_id: 'inspect:D', new_state: 'DISCOVERED', reason_code: 'SITE_OBSERVED', detail: 'Drone image shows a dark-toned deposit at POI D (fictitious site).' });
+const cFound = ev(T_MAP, 'TASK_DISCOVERED', { causality_id: 'obs-001', task_id: 'inspect:C', new_state: 'DISCOVERED', reason_code: 'SITE_OBSERVED', detail: real ? `Inspection candidate C: real ${WD.mission} science site ${C.site.name} (${C.site.detail}, sol ${C.site.sol}).` : 'Drone image shows a layered outcrop at POI C (fictitious site).' });
+const dFound = ev(T_MAP + DT, 'TASK_DISCOVERED', { causality_id: 'obs-001', task_id: 'inspect:D', new_state: 'DISCOVERED', reason_code: 'SITE_OBSERVED', detail: real ? `Inspection candidate D: real ${WD.mission} science site ${D.site.name} (${D.site.detail}, sol ${D.site.sol}).` : 'Drone image shows a dark-toned deposit at POI D (fictitious site).' });
 const inval = ev(T_INVALID, 'ROUTE_INVALIDATED', { causality_id: mapUpd, route_id: 'r1', agent_id: HUMAN.id, previous_state: 'FEASIBLE', new_state: 'NO_PATH', reason_code: 'HAZARD_ON_ROUTE', detail: `Route r1 crosses the scarp seen in map v2 (slope above ${HUMAN.slope}°). Astronaut halted at the current position.` });
 ev(T_INVALID, 'MISSION_STATE_CHANGED', { causality_id: inval, previous_state: 'ACTIVE', new_state: 'REPLAN', reason_code: 'HAZARD_ON_ROUTE', detail: 'Replanning from the astronaut position.' });
 const r2Pub = ev(T_R2, 'ROUTE_PUBLISHED', { causality_id: inval, route_id: 'r2', agent_id: HUMAN.id, new_state: 'FEASIBLE', reason_code: 'REPLANNED_FROM_CURRENT_POSE', detail: `Route r2 goes around the scarp. Round trip ${routes[1].travel_time_s - routes[0].travel_time_s >= 0 ? '+' : ''}${routes[1].travel_time_s - routes[0].travel_time_s} s versus r1, still within budget.` });
 ev(T_R2, 'MISSION_STATE_CHANGED', { causality_id: r2Pub, previous_state: 'REPLAN', new_state: 'ACTIVE', reason_code: 'ROUTE_READY', detail: 'Astronaut resumes on route r2.' });
 ev(T_ROVER_GO, 'TASK_STATE_CHANGED', { causality_id: cFound, task_id: 'inspect:C', agent_id: ROVER.id, previous_state: 'DISCOVERED', new_state: 'ASSIGNED', reason_code: 'FEASIBLE_WITHIN_BUDGET', detail: `Rover round trip to C needs about ${wh(roverRoundTrip(C.l))}, within the usable ${wh(usable)} (20 % reserve kept).` });
 ev(T_ROVER_GO + DT, 'TASK_STATE_CHANGED', { causality_id: dFound, task_id: 'inspect:D', previous_state: 'DISCOVERED', new_state: 'REJECTED', reason_code: 'INSUFFICIENT_BUDGET', detail: `Rover round trip to D needs about ${wh(roverRoundTrip(D.l))} around the scarp, above the usable ${wh(usable)} (20 % reserve kept). Not assigned.` });
-ev(T_ROVER_AT_C, 'TASK_STATE_CHANGED', { causality_id: cFound, task_id: 'inspect:C', agent_id: ROVER.id, previous_state: 'ASSIGNED', new_state: 'EXECUTING', reason_code: 'ARRIVED', detail: 'Rover inspecting POI C.' });
-ev(T_ROVER_DONE, 'TASK_STATE_CHANGED', { causality_id: cFound, task_id: 'inspect:C', agent_id: ROVER.id, previous_state: 'EXECUTING', new_state: 'DONE', reason_code: 'INSPECTION_COMPLETE', detail: 'Inspection of C complete. Sampling not requested in this run.' });
+ev(T_ROVER_AT_C, 'TASK_STATE_CHANGED', { causality_id: cFound, task_id: 'inspect:C', agent_id: ROVER.id, previous_state: 'ASSIGNED', new_state: 'EXECUTING', reason_code: 'ARRIVED', detail: real ? `Rover inspecting ${C.site.name}.` : 'Rover inspecting POI C.' });
+ev(T_ROVER_DONE, 'TASK_STATE_CHANGED', { causality_id: cFound, task_id: 'inspect:C', agent_id: ROVER.id, previous_state: 'EXECUTING', new_state: 'DONE', reason_code: 'INSPECTION_COMPLETE', detail: real ? `Inspection of ${C.site.name} complete (simulated). Sampling not requested in this run.` : 'Inspection of C complete. Sampling not requested in this run.' });
 ev(T_AT_B, 'TASK_STATE_CHANGED', { causality_id: goalOk, task_id: 'main:reach', agent_id: HUMAN.id, previous_state: 'ASSIGNED', new_state: 'EXECUTING', reason_code: 'ARRIVED', detail: 'Astronaut reached goal B and starts the science task.' });
 ev(T_B_DONE, 'TASK_STATE_CHANGED', { causality_id: goalOk, task_id: 'main:reach', agent_id: HUMAN.id, previous_state: 'EXECUTING', new_state: 'DONE', reason_code: 'PRIMARY_GOAL_COMPLETE', detail: 'Primary goal B completed.' });
 ev(T_B_DONE, 'MISSION_STATE_CHANGED', { causality_id: goalOk, previous_state: 'ACTIVE', new_state: 'RETURNING', reason_code: 'PRIMARY_GOAL_COMPLETE', detail: 'Returning to base A on the return leg of r2.' });
 ev(T_HOME, 'MISSION_STATE_CHANGED', { causality_id: r2Pub, previous_state: 'RETURNING', new_state: 'COMPLETE', reason_code: 'RETURNED_TO_BASE', detail: 'Astronaut back at base A. Goal completed, return verified under the model, no budget violation.' });
+if (HAS_STOPS) {
+const tourReq = ev(T_TOUR, 'TASK_DISCOVERED', { causality_id: 'tour-req', task_id: 'tour:stops', agent_id: ROVER.id, new_state: 'DISCOVERED', reason_code: 'PHOTO_TOUR', detail: `Photo tour: the rover will visit all ${tourStops.length} real ${WD.mission} stops of this map (sol ${tourStops[0].sol} to ${tourStops.at(-1).sol}), in the order NASA's rover visited them. Illustrative speed; resource use is not modelled during the tour.${tourInset ? ` ${tourInset} stop${tourInset === 1 ? '' : 's'} at the crop edge ${tourInset === 1 ? 'is' : 'are'} visited from ${TOUR_STOP_EDGE_M} m inside it.` : ''}` });
+ev(T_TOUR + DT, 'TASK_STATE_CHANGED', { causality_id: tourReq, task_id: 'tour:stops', agent_id: ROVER.id, previous_state: 'DISCOVERED', new_state: 'EXECUTING', reason_code: 'PHOTO_TOUR_STARTED', detail: 'Rover leaves base for the first real stop.' });
+ev(T_TOUR_END, 'TASK_STATE_CHANGED', { causality_id: tourReq, task_id: 'tour:stops', agent_id: ROVER.id, previous_state: 'EXECUTING', new_state: 'DONE', reason_code: 'PHOTO_TOUR_COMPLETE', detail: `Rover visited all ${tourStops.length} real stops.` });
+}
 
 // ------------------------------------------------------------------ frames
 function missionAt(t) {
@@ -604,7 +873,12 @@ function missionAt(t) {
 const baseP = { x: A.x, y: A.y, z: r2d(heightAt(prior, A.x, A.y)) };
 const goalP = { x: B.x, y: B.y, z: r2d(heightAt(prior, B.x, B.y)) };
 const frames = [];
-for (let t = 0; t <= T_END; t += DT) {
+// Every 2 s during the story, every 4 s during the photo tour (only the rover moves then; the viewer
+// interpolates between samples).
+const frameTimes = [];
+for (let t = 0; t < T_END; t += t >= T_HOME + 10 ? 2 * DT : DT) frameTimes.push(t);
+frameTimes.push(T_END);
+for (const t of frameTimes) {
   const m = missionAt(t);
   const lastSeq = events.filter((e) => e.timestamp_sim_s <= t).reduce((s, e) => Math.max(s, e.seq), 0);
   frames.push({
@@ -621,7 +895,101 @@ for (let t = 0; t <= T_END; t += DT) {
 // ------------------------------------------------------------------ write
 const priorJson = JSON.stringify(prior);
 const cp = crop.crop;
-const cpCells = [[14, 20], [50, 50], [84, 78]];
+// Where each site comes from (shown in the viewer's site list).
+function siteSource(stop, role) {
+  if (stop) return { basis: 'nasa', text: `Real ${WD.mission} stop ${stop.rmc}, sol ${stop.sol} (${stopsFile.source.title}); the ${role} sits on the nearest walkable cell, within 12 m.` };
+  return { basis: 'chosen', text: `Chosen by the demo generator, not a NASA site: one of the flattest cells of the NASA DEM, paired so that a 1.3-2.3 km walkable route exists between base and goal.` };
+}
+// ------------------------------------------------------------------ sites of interest for the astronaut
+// Each comes from evidence or from a published NASA criterion applied to the NASA DEM (see
+// docs/science_poi_dossier.md): Perseverance's real sample depot, the nearest real science site to goal B,
+// and a habitat/landing-pad area meeting the slope criterion of NASA's human Exploration Zone rubric.
+const astronautSites = [];
+const walkFrom = (from, to) => {
+  try {
+    const q = nearestFree(belief2, HUMAN.slope, to.x, to.y);
+    const path = search(belief2, sigma2, HUMAN.slope, from, q);
+    return path ? { q, l: len(path) } : null;
+  } catch {
+    return null;
+  }
+};
+const km = (m) => `${(m / 1000).toFixed(2)} km`;
+if (WD.depot) {
+  const depot = JSON.parse(readFileSync(join(HERE, 'data', WD.depot), 'utf8'));
+  const w = walkFrom(A, { x: depot.centre.x_m, y: depot.centre.y_m });
+  astronautSites.push({
+    id: 'DEPOT', label: 'Three Forks sample depot', kind: 'depot', p: { x: depot.centre.x_m, y: depot.centre.y_m },
+    source: { basis: 'nasa', text: `Real Perseverance sample depot: ${depot.tubes.length} sealed tubes set down on sols ${depot.tubes[0].dropoff_sol}-${depot.tubes.at(-1).dropoff_sol} (${depot.tubes.map((x) => x.name).join(', ')}) for a later retrieval; marker at the mean of the rover positions during the drops. ${w ? `${km(w.l)} on foot from base A on a slope-limited route (project model).` : 'No walkable route from base A under the project slope limit.'} Source: ${depot.source.title}.` },
+  });
+}
+if (scienceFile) {
+  const used = new Set([C.site?.id, D.site?.id]);
+  const near = scienceFile.sites.filter((s) => !used.has(s.id)).map((s) => ({ s, d: dist({ x: s.x_m, y: s.y_m }, B) })).filter((k) => k.d <= 1200).sort((a, b) => a.d - b.d);
+  for (const k of near) {
+    const w = walkFrom(B, { x: k.s.x_m, y: k.s.y_m });
+    if (!w) continue;
+    astronautSites.push({
+      id: 'SCI', label: `Science stop · ${k.s.name}`, kind: 'science', p: w.q,
+      source: { basis: 'nasa', text: `Real ${WD.mission} science site nearest to goal B that the astronaut can walk to: ${k.s.name}, ${k.s.detail}, sol ${k.s.sol}, at the rover's published position (stop ${k.s.rover_stop}). ${km(w.l)} on foot from goal B (project slope limit ${HUMAN.slope} degrees). Source: ${scienceFile.source.list}.` },
+    });
+    break;
+  }
+}
+{
+  // Civil-engineering criterion of NASA's 2015 human Exploration Zone rubric: slope under 10 degrees at the
+  // 1-10 km scale, within 5 km of the landing site (base A here). Among 1 km x 1 km windows that pass, the one
+  // with the gentlest mean 8 m slope is kept. The rubric's ~50 km2 area and sparse-rock criterion cannot be
+  // checked in this crop and with these data.
+  const n = Math.round(1000 / RES);
+  const step = Math.max(1, Math.round(n / 5));
+  const b = Math.max(2, Math.round(n / 25));
+  const blockMean = (r0, c0) => {
+    let s = 0;
+    let k = 0;
+    for (let r = r0; r < r0 + b; r++) for (let c = c0; c < c0 + b; c++) { const v = prior[r * COLS + c]; if (v != null) { s += v; k++; } }
+    return k ? s / k : null;
+  };
+  let best = null;
+  for (let r0 = 0; r0 + n <= ROWS; r0 += step) {
+    for (let c0 = 0; c0 + n <= COLS; c0 += step) {
+      const centre = center(r0 + n / 2, c0 + n / 2);
+      const dA = dist(centre, A);
+      if (dA > 5000) continue;
+      let sum = 0;
+      let cnt = 0;
+      let steep = 0;
+      let hole = false;
+      for (let r = r0; r < r0 + n && !hole; r += 2) {
+        for (let c = c0; c < c0 + n; c += 2) {
+          const i = r * COLS + c;
+          if (prior[i] == null) { hole = true; break; }
+          sum += slPrior[i];
+          cnt++;
+          if (slPrior[i] > 10) steep++;
+        }
+      }
+      if (hole) continue;
+      const sw = blockMean(r0, c0), se = blockMean(r0, c0 + n - b), nw = blockMean(r0 + n - b, c0), ne = blockMean(r0 + n - b, c0 + n - b);
+      const span = (n - b) * RES;
+      const kmSlope = (Math.atan(Math.hypot((se + ne - sw - nw) / 2 / span, (nw + ne - sw - se) / 2 / span)) * 180) / Math.PI;
+      if (kmSlope >= 10) continue;
+      const mean = sum / cnt;
+      if (!best || mean < best.mean) best = { centre, mean, steep: steep / cnt, kmSlope, dA };
+    }
+  }
+  if (best) {
+    astronautSites.push({
+      id: 'HAB', label: 'Habitat area (flattest 1 km)', kind: 'habitat', p: best.centre,
+      source: { basis: 'chosen', text: `Chosen by the demo generator with a published NASA criterion, not a NASA site: the 1 km x 1 km area with the gentlest ground of the NASA DEM that meets the civil-engineering slope criterion of NASA's 2015 human Exploration Zone rubric (slope under 10 degrees at the 1 km scale: ${best.kmSlope.toFixed(1)} degrees; within 5 km of the landing site, here base A: ${km(best.dA)}). Mean 8 m slope ${best.mean.toFixed(1)} degrees, ${(best.steep * 100).toFixed(0)} % of cells above 10 degrees. The rubric's ~50 km2 area and sparse rocks are not checked (crop too small, no rock-abundance data); water ice and hydrated minerals are not assessed here (see the water, ice and radiation section of docs/science_poi_dossier.md).` },
+    });
+  }
+}
+console.log(`astronaut sites: ${astronautSites.map((s) => s.label).join('; ') || 'none'}`);
+const realLabel = (id, k) => `${id} · ${k.site.name}`;
+const realSource = (k) => ({ basis: 'nasa', text: `Real ${WD.mission} science site: ${k.site.name}, ${k.site.detail}, sol ${k.site.sol}. Placed at the rover's published position at the time (stop ${k.site.rover_stop}), on the nearest drivable cell within 12 m. Source: ${scienceFile.source.list}.` });
+const fictitiousSource = { basis: 'fictitious', text: `Fictitious site of the simulated story, not a NASA target: placed by the demo generator on gentle ground (slope under ${poiSlope} degrees) inside the area the simulated drone survey saw.` };
+const cpCells = [[14, 20], [50, 50], [84, 78]].map(([r, c]) => [r * K, c * K]);
 const manifest = {
   schema_version: SCHEMA,
   icd: 'ICD-ROS2-V1 (draft)',
@@ -631,69 +999,91 @@ const manifest = {
   source_mode: 'SIMULATION',
   provenance: ['nasa', 'simulated', 'fictitious'],
   illustrative: true,
-  title: 'Demo run: corridor survey and replanning',
+  title: WD.title,
   summary: 'The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.',
-  disclaimer: 'Terrain: NASA/USGS CTX DTM crop (real, provisional). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.',
+  disclaimer: 'Terrain: ' + WD.terrain(RES) + (HAS_STOPS ? '. Rover stop markers: real ' + WD.mission + ' stops (NASA).' : WD.mission ? `. ${WD.mission} is a lander: no rover stops exist here.` : '. No rover or lander has visited this place: no stops exist here.') + ' Mission, budgets and the corridor scarp are simulated or synthetic; ' + (real ? `POIs C and D are real ${WD.mission} science sites (NASA), visited here in a simulated story.` : 'POIs C and D are fictitious.') + ' Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.',
   ai_disclosure: {
     ai_assisted: true,
     scope: 'Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.',
     tool: 'Claude (Anthropic) through Claude Code',
     observational_data: 'Only the terrain heights come from NASA/USGS data; everything else here is simulated.',
   },
+  world: WORLD,
   duration_s: T_END,
   local_z_offset_m: ZOFF,
   // Orbital image draped on the terrain (scripts/extract-ctx-ortho.mjs). Same CTX soc_008
   // production as the DTM, so it is part of the orbital prior, not of the hidden reference.
   imagery: {
     file: 'ctx_ortho.png',
-    title: 'MRO CTX Jezero orthomosaic, controlled (Mars 2020 TRN)',
-    source: 'JPL Mars Trek WMTS layer JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0, https://trek.nasa.gov/mars/',
-    credit: 'NASA/JPL-Caltech/MSSS/USGS',
-    native_resolution_m: 6,
-    resolution_m: 5,
+    title: WD.imagery.title,
+    source: WD.imagery.source,
+    credit: WD.imagery.credit,
+    native_resolution_m: WD.imagery.native,
+    resolution_m: WD.imagery.res,
     extent: { origin_x_m: OX, origin_y_m: OY, width_m: COLS * RES, height_m: ROWS * RES },
     row0: 'north',
     processing: 'Bilinear resampling onto the crop ENU grid; display contrast stretched linearly between the 1st and 99th percentile. Panchromatic; the viewer tints it for display only.',
   },
   // Geologic units of the crop (scripts/extract-geology.mjs, USGS SIM 3464). Approximate boundaries.
-  geology: { file: 'geology.json' },
+  ...(WD.layers.geology ? { geology: { file: 'geology.json' } } : {}),
+  // Real Perseverance stops inside the crop (scripts/extract-rover-waypoints.mjs); position and identifiers only.
+  ...(HAS_STOPS ? { rover_stops: { file: 'rover_stops.json' } } : {}),
+  // The rover's photo tour of every real stop (after the story ends). Illustrative speed; resources not modelled.
+  ...(HAS_STOPS ? { photo_tour: { agent_id: ROVER.id, start_s: T_TOUR, end_s: T_TOUR_END, stops: tourStops.length, speed_mps: TOUR.speed, dwell_s: TOUR.dwell_s } } : {}),
   // Weather and radiation context (scripts/extract-atmosphere.mjs: MEDA, REMS, RAD). Display only.
-  atmosphere: { file: 'atmosphere.json' },
+  ...(WD.layers.atmosphere ? { atmosphere: { file: 'atmosphere.json' } } : {}),
   // Surroundings from the same CTX DTM (20 km, 100 m box average) and orthomosaic (40 m). Context only.
-  context: { file: 'context.json', image: 'context_ortho.png' },
+  ...(WD.layers.context ? { context: { file: 'context.json', image: 'context_ortho.png' } } : {}),
   terrain_meta: {
-    run_id: RUN_ID, dataset_id: 'mars2020-trn-ctx-dtm-20m', frame_id: 'map', map_version: 1,
+    run_id: RUN_ID, dataset_id: WD.datasetId, frame_id: 'map', map_version: 1,
     origin_x_m: OX, origin_y_m: OY, resolution_m: RES, rows: ROWS, cols: COLS,
     crs: 'Local tangent ENU grid; source Equirectangular, Mars 2000 sphere IAU (R = 3396190 m)',
     origin_lat_deg: cp.centre_lat_deg, origin_lon_deg: cp.centre_lon_deg,
-    vertical_datum: `MOLA areoid; local z = elevation - (${ZOFF} m)`,
+    vertical_datum: `${WD.datum}; local z = elevation - (${ZOFF} m)`,
     nodata_value: -32768,
     sources: [
-      `${crop.source.title}, ${crop.source.provider}. File ${crop.source.file}, ${crop.source.size_bytes} bytes, SHA-256 ${crop.source.sha256}.`,
-      `Product page ${crop.source.product_page} (DOI family ${crop.source.doi_family}). Native resolution ${crop.source.native_resolution_m} m. ${crop.source.licence}.`,
+      `${crop.source.title}, ${crop.source.provider}. File ${crop.source.file}${crop.source.size_bytes != null ? `, ${crop.source.size_bytes} bytes, SHA-256 ${crop.source.sha256}` : crop.source.md5_of_full_file ? `, MD5 of the full file as published ${crop.source.md5_of_full_file}` : ''}.`,
+      `Product page ${crop.source.product_page}${crop.source.doi_family ? ` (DOI family ${crop.source.doi_family})` : ''}. Native resolution ${crop.source.native_resolution_m} m. ${crop.source.licence}.`,
       `Crop: ${ROWS} x ${COLS} cells of ${RES} m centred at ${cp.centre_lat_deg} N, ${cp.centre_lon_deg} E, ${cp.method}. PROVISIONAL, made by the frontend until the data owner delivers the processed package.`,
-      'SYNTHETIC: a scarp was added to the hidden evaluator reference to create an adverse case. It does not exist in the CTX data.',
+      'SYNTHETIC: a scarp was added to the hidden evaluator reference to create an adverse case. It does not exist in the NASA terrain data.',
       'ILLUSTRATIVE: uncertainty (sigma), budgets, speeds and consumption rates are assumptions of a simulated mission.',
     ],
     checksum_sha256: createHash('sha256').update(priorJson).digest('hex'),
   },
-  vertical_exaggeration_default: 2,
+  vertical_exaggeration_default: WD.exaggeration,
   control_points: cpCells.map(([r, c], k) => {
     const p = center(r, c);
     return { id: `cp-${k + 1}`, position: { x: p.x, y: p.y, z: prior[r * COLS + c] }, description: `Cell centre row ${r}, col ${c} of the CTX crop.` };
   }),
+  // Every site says where it comes from: a NASA position, a choice of the generator on NASA terrain,
+  // or a fictitious site of the simulated story.
   pois: [
-    { id: 'A', label: 'Base A', kind: 'base', position: baseP, revealed_at_s: 0 },
-    { id: 'B', label: 'Goal B', kind: 'primary_goal', position: goalP, revealed_at_s: 0 },
+    { id: 'A', label: 'Base A', kind: 'base', position: baseP, revealed_at_s: 0, source: siteSource(stopA, 'base'), for_agent: 'HUMAN' },
+    { id: 'B', label: 'Goal B', kind: 'primary_goal', position: goalP, revealed_at_s: 0, source: siteSource(stopB, 'goal'), for_agent: 'HUMAN' },
     // POI heights from the updated map, not from the hidden reference (R05).
-    { id: 'C', label: 'POI C', kind: 'poi', position: { x: r2d(C.p.x), y: r2d(C.p.y), z: r2d(heightAt(belief2, C.p.x, C.p.y)) }, revealed_at_s: T_MAP },
-    { id: 'D', label: 'POI D', kind: 'poi', position: { x: r2d(D.p.x), y: r2d(D.p.y), z: r2d(heightAt(belief2, D.p.x, D.p.y)) }, revealed_at_s: T_MAP + DT },
+    { id: 'C', label: real ? realLabel('C', C) : 'POI C', kind: 'poi', position: { x: r2d(C.p.x), y: r2d(C.p.y), z: r2d(heightAt(belief2, C.p.x, C.p.y)) }, revealed_at_s: T_MAP, source: real ? realSource(C) : fictitiousSource, for_agent: 'ROVER' },
+    { id: 'D', label: real ? realLabel('D', D) : 'POI D', kind: 'poi', position: { x: r2d(D.p.x), y: r2d(D.p.y), z: r2d(heightAt(belief2, D.p.x, D.p.y)) }, revealed_at_s: T_MAP + DT, source: real ? realSource(D) : fictitiousSource, for_agent: 'ROVER' },
+    ...astronautSites.map((s) => ({ id: s.id, label: s.label, kind: s.kind, position: { x: r2d(s.p.x), y: r2d(s.p.y), z: r2d(heightAt(prior, s.p.x, s.p.y)) }, revealed_at_s: 0, source: s.source, for_agent: 'HUMAN' })),
+    ...(WD.landmark ? [{ id: 'L', label: WD.landmark.label, kind: 'landing', position: { x: WD.landmark.x, y: WD.landmark.y, z: r2d(heightAt(prior, WD.landmark.x, WD.landmark.y)) }, revealed_at_s: 0, source: { basis: 'nasa', text: WD.landmark.source } }] : []),
   ],
   files: { rasters: 'rasters.json', timeline: 'timeline.json', routes: 'routes.json' },
 };
 
+// Real rover stops with their height on the orbital prior; base A and goal B sit on two of them.
+const roverStops = {
+  run_id: RUN_ID,
+  note: stopsFile.note,
+  mission: stopsFile.mission ?? { id: 'mars2020', name: 'Perseverance', raw_category: 'mars2020', image_match: 'stop' },
+  source: stopsFile.source,
+  base_stop: stopA?.rmc ?? null,
+  goal_stop: stopB?.rmc ?? null,
+  tour: { agent_id: ROVER.id, start_s: T_TOUR, end_s: T_TOUR_END, speed_mps: TOUR.speed, dwell_s: TOUR.dwell_s },
+  stops: stopsFile.stops.map((st, k) => ({ ...st, z_m: r2d(heightAt(prior, st.x_m, st.y_m)), tour_arrival_s: tourArrival[k] })),
+};
+
 mkdirSync(OUT, { recursive: true });
 writeFileSync(join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 2));
+if (HAS_STOPS) writeFileSync(join(OUT, 'rover_stops.json'), JSON.stringify(roverStops));
 writeFileSync(join(OUT, 'routes.json'), JSON.stringify({ run_id: RUN_ID, routes }, null, 2));
 writeFileSync(join(OUT, 'timeline.json'), JSON.stringify({ schema_version: SCHEMA, run_id: RUN_ID, frames, events }));
 writeFileSync(
@@ -713,10 +1103,12 @@ const REF_DIR = join(HERE, '..', '..', 'data', 'reference', RUN_ID);
 mkdirSync(REF_DIR, { recursive: true });
 writeFileSync(
   join(REF_DIR, 'reference.json'),
-  JSON.stringify({ run_id: RUN_ID, rows: ROWS, cols: COLS, note: 'Evaluator-only reference: CTX prior plus a SYNTHETIC scarp. Do not distribute.', reference }),
+  JSON.stringify({ run_id: RUN_ID, rows: ROWS, cols: COLS, note: `Evaluator-only reference: ${WD.hiddenNote}. Do not distribute.`, reference }),
 );
 console.log(`terrain: ${ROWS}x${COLS} @ ${RES} m, local z offset ${ZOFF} m, relief ${cp.max_m - cp.min_m} m`);
 console.log(`A->B route r1 ${Math.round(L1)} m, r2 out ${Math.round(len(r2Out))} m, r2 back ${Math.round(len(r2Ret))} m, clearance ${routes[1].min_clearance_m} m`);
 console.log(`scarp: ${forbidden2.length} forbidden cells, max observed slope ${maxSlopeObserved.toFixed(1)} deg, ${observed.length} observed cells`);
+console.log(real ? `POIs: real sites C ${C.site.name}, D ${D.site.name}` : 'POIs: fictitious');
 console.log(`rover budget ${ROVER.energy_budget_wh} Wh; C ${Math.round(C.l)} m (${wh(roverRoundTrip(C.l))}), D ${Math.round(D.l)} m (${wh(roverRoundTrip(D.l))}), usable ${wh(usable)}`);
+console.log(`photo tour: ${tourStops.length} stops (${tourInset} visited ${TOUR_STOP_EDGE_M} m inside the crop edge), ${T_TOUR}s to ${T_TOUR_END}s, ${tourStraightLegs} long legs without a search path`);
 console.log(`times: obs ${T_OBS}s, invalid ${T_INVALID}s, replanned ${T_R2}s, at B ${T_AT_B}s, home ${T_HOME}s, end ${T_END}s, ${frames.length} frames, ${events.length} events`);

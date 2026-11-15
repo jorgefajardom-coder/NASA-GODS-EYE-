@@ -11,9 +11,8 @@ or a resource model, and it never plans: it only follows the given points.
 A stop leaves the agent exactly where it is, on the polyline; it never moves
 on to the next waypoint, which may lie in the area that caused the stop.
 
-A path must start at the agent's horizontal position. Its height is taken from
-the path, whose z is the public belief surface the planner adopted for that
-start; the agent configuration carries no measured elevation.
+A path must start at the agent's finite current XYZ. Scene initialization is
+separate; this follower never replaces received telemetry with a path height.
 """
 from dataclasses import dataclass
 import math
@@ -56,12 +55,22 @@ class PathFollower:
     """Position along one authorized polyline, advanced by elapsed time."""
 
     def __init__(self, points, rates, start, tolerance_m=1e-6):
-        points = [tuple(float(c) for c in p) for p in points]
+        def xyz(point):
+            try:
+                value = tuple(point)
+            except TypeError as exc:
+                raise ExecutionRefused('path and agent positions require finite XYZ') from exc
+            if (len(value) != 3 or any(isinstance(c, bool) or not isinstance(c, (int, float))
+                                       or not math.isfinite(c) for c in value)):
+                raise ExecutionRefused('path and agent positions require finite XYZ')
+            return tuple(float(c) for c in value)
+        points = [xyz(p) for p in points]
+        start = xyz(start)
         if len(points) < 2:
             raise ExecutionRefused('a path needs at least two points')
-        if math.dist(points[0][:2], tuple(start)[:2]) > tolerance_m:
+        if math.dist(points[0], start) > tolerance_m:
             # Never teleport: the path must begin where the agent is.
-            raise ExecutionRefused('path does not start at the agent position')
+            raise ExecutionRefused('path does not start at the agent XYZ position')
         self.points, self.rates = points, rates
         self.segment, self.along_m = 0, 0.0
         self.position = points[0]

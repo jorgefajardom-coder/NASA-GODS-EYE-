@@ -1,0 +1,17 @@
+{
+  "original_pr_head": "ef8f3ac2b49505d1ddebe3fdc05d6b7f2e8605bf",
+  "tested_variant": "original",
+  "tested_app_sha256": "3dbb5bb159cde9ebe04ec0ce71f73db5feb72a34550502cddc0dc3b339c98e0a",
+  "websocket_observed": [
+    1,
+    3,
+    4
+  ],
+  "snapshot_retained": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "late_event_2_accepted_by_store": true
+}

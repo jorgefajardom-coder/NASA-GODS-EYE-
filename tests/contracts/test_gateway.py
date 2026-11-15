@@ -258,6 +258,66 @@ def test_event_stream_sends_each_event_once(client, bridge):
         assert socket.receive_json()['event']['seq'] == 2
 
 
+def test_event_stream_retains_late_events_after_newer_live_events(client, bridge):
+    activate(bridge)
+    with client.websocket_connect('/api/events') as socket:
+        assert socket.receive_json()['event']['seq'] == 1
+        socket.receive_json()  # state
+        for seq in (3, 2, 4):
+            event = {'run_id': RUN, 'event_id': f'{RUN}-e{seq}', 'seq': seq}
+            assert bridge.store.apply_event(event)
+            bridge.on_update('event', event)
+        assert socket.receive_json()['event']['seq'] == 3
+        # Event 4 is a canary: losing 2 fails here instead of blocking forever.
+        assert socket.receive_json()['event']['seq'] == 2
+        assert socket.receive_json()['event']['seq'] == 4
+
+
+@pytest.mark.parametrize('after_seq', [0, 1])
+def test_event_stream_deduplicates_backlog_queue_overlap_without_losing_gaps(
+        client, bridge, monkeypatch, after_seq):
+    activate(bridge)
+    assert bridge.store.apply_event({'run_id': RUN, 'event_id': f'{RUN}-e3', 'seq': 3})
+    original_events = bridge.store.events
+
+    def overlapping_events(cursor=0):
+        backlog = original_events(cursor)
+        late = {'run_id': RUN, 'event_id': f'{RUN}-e2', 'seq': 2}
+        assert bridge.store.apply_event(late)
+        bridge.on_update('event', late)
+        for event in backlog:
+            bridge.on_update('event', event)  # arrived in backlog and queue
+        canary = {'run_id': RUN, 'event_id': f'{RUN}-e4', 'seq': 4}
+        assert bridge.store.apply_event(canary)
+        bridge.on_update('event', canary)
+        return backlog
+
+    monkeypatch.setattr(bridge.store, 'events', overlapping_events)
+    with client.websocket_connect(f'/api/events?after_seq={after_seq}') as socket:
+        for seq in ([1, 3] if after_seq == 0 else [3]):
+            assert socket.receive_json()['event']['seq'] == seq
+        assert socket.receive_json()['type'] == 'state'
+        assert socket.receive_json()['event']['seq'] == 2
+        assert socket.receive_json()['event']['seq'] == 4
+
+
+def test_event_stream_keeps_resume_floor_fixed_for_late_new_events(client, bridge):
+    activate(bridge)
+    assert bridge.store.apply_event({'run_id': RUN, 'event_id': f'{RUN}-e3', 'seq': 3})
+    with client.websocket_connect('/api/events?after_seq=2') as socket:
+        assert socket.receive_json()['event']['seq'] == 3
+        socket.receive_json()  # state
+        for seq in (1, 2, 5, 4, 6):
+            event = {'run_id': RUN, 'event_id': f'{RUN}-e{seq}', 'seq': seq}
+            bridge.store.apply_event(event)
+            bridge.on_update('event', event)
+        # 1 and 2 remain below the requested floor; 4 is new despite arriving
+        # after 5. Event 6 makes a lost 4 observable without an unbounded wait.
+        assert socket.receive_json()['event']['seq'] == 5
+        assert socket.receive_json()['event']['seq'] == 4
+        assert socket.receive_json()['event']['seq'] == 6
+
+
 def test_a_full_client_queue_drops_only_that_client():
     import asyncio
 

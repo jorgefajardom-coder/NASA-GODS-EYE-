@@ -1,0 +1,174 @@
+{
+ "note": "Viking MDIM 2.1 colour mosaic, level-2 tiles as served by JPL Mars Trek; stitched by the viewer into a 2048 x 1024 equirectangular texture (row 0 north, column 0 at 180 W).",
+ "layer": "Mars_Viking_MDIM21_ClrMosaic_global_232m",
+ "level": 2,
+ "rows": 4,
+ "cols": 8,
+ "tile_px": 256,
+ "credit": "NASA/USGS (Viking MDIM 2.1), JPL Mars Trek",
+ "source": "https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/WMTSCapabilities.xml",
+ "tiles_sha256": "79bec030f5f21f8464f0e98b45b77266660d64a53863ddbfac682db153924596",
+ "retrieved": "2026-11-15",
+ "tiles": [
+  {
+   "row": 0,
+   "col": 0,
+   "sha256": "f29a4ce0bb97aae9b376e0eae5eca3a5bb412fa75f6da34950e1881bddd428a1"
+  },
+  {
+   "row": 0,
+   "col": 1,
+   "sha256": "8f48dabd62ee8e097c38defeae6733dd19727e6ae123cb82504d12084f7a535a"
+  },
+  {
+   "row": 0,
+   "col": 2,
+   "sha256": "122620edd7ff08c3c5ff20f3d10fde0ceb8f44491ba4602c90fb503e25a40bd0"
+  },
+  {
+   "row": 0,
+   "col": 3,
+   "sha256": "4db543a877822b738148182eade4676fd225a229e34cd976428489971a9b9d41"
+  },
+  {
+   "row": 0,
+   "col": 4,
+   "sha256": "c71b903c3ecc80a41700cebd5072bd88b49a1257c6874954809bd1ec1975489c"
+  },
+  {
+   "row": 0,
+   "col": 5,
+   "sha256": "fa7f162b2066c49c206444a44babc5eced9a011c072e0d75e71ce22a62583f91"
+  },
+  {
+   "row": 0,
+   "col": 6,
+   "sha256": "86134991dadc332b17defa1b5e5cbd6618eb9a29e1c037152d8e6e968371746c"
+  },
+  {
+   "row": 0,
+   "col": 7,
+   "sha256": "0ffbd97d45be8b877ee32d9a0993bb08ecb803715452acaf914ffbe8ba7d6dce"
+  },
+  {
+   "row": 1,
+   "col": 0,
+   "sha256": "362d6e622b43dbffa355dd4b121a6f0ca67ee6f4e7bf37f0325aa98141270ce2"
+  },
+  {
+   "row": 1,
+   "col": 1,
+   "sha256": "ca271b2e502c95bd1d71a07bd67c54a92d63db333758f13fd2294650564d2220"
+  },
+  {
+   "row": 1,
+   "col": 2,
+   "sha256": "493c68cb53814a8e7990897b53e683c568986981716ebbac76e01e788d19204e"
+  },
+  {
+   "row": 1,
+   "col": 3,
+   "sha256": "2fb988d0d8ba46dacb4b2678e9ccd1238c9c76c8945a3db4791ef8a6f1abd75c"
+  },
+  {
+   "row": 1,
+   "col": 4,
+   "sha256": "ea45594a3db0f00bb163454315ac9482ccff154d6e0378ad3b43a489e3328756"
+  },
+  {
+   "row": 1,
+   "col": 5,
+   "sha256": "e010f970ecdb2cf4225443c6589cf3b4a7662692aae33cedb88a91ef2376a3cc"
+  },
+  {
+   "row": 1,
+   "col": 6,
+   "sha256": "04811144e0a35c7a1754246b3c9cfe20889d905f7e994f3a486cb73e1cceb6e1"
+  },
+  {
+   "row": 1,
+   "col": 7,
+   "sha256": "609c4a4068520d033a597aa5ad9bb303e3de626ddc1686a0d0c18df34585a36b"
+  },
+  {
+   "row": 2,
+   "col": 0,
+   "sha256": "f4b2443889ea92945295a18f107c5b7ea26663b328e1e1a00a5ee5f97ec39b3f"
+  },
+  {
+   "row": 2,
+   "col": 1,
+   "sha256": "698ab8080995e95a3228221af42d612e429d5b7132766e4b033828d36a0c5ef1"
+  },
+  {
+   "row": 2,
+   "col": 2,
+   "sha256": "9ea91977e6921e5390903b44fd2408aa99fb6a00f3f11eaf05eefb9b06eba62a"
+  },
+  {
+   "row": 2,
+   "col": 3,
+   "sha256": "d1705d00f2253d7b66285f59c8eaf471b43f12b19feb105d791bf483e93cbcc5"
+  },
+  {
+   "row": 2,
+   "col": 4,
+   "sha256": "541936ba45be938e358aeb4c14f505a562889d70eb3e2143546b15f5af54bdde"
+  },
+  {
+   "row": 2,
+   "col": 5,
+   "sha256": "c322261f23c62105c361480e2ee2e309edeaf5e16cefde63af489041ab7a16d4"
+  },
+  {
+   "row": 2,
+   "col": 6,
+   "sha256": "5fdaca16f5edc5c1e6d53e03da84a102d17cb1d3a63bbdbe3e33b1582f1bb768"
+  },
+  {
+   "row": 2,
+   "col": 7,
+   "sha256": "1aca958072a14aa7be644f42cef4ca84aa249639495e0a29c186d042e236e64f"
+  },
+  {
+   "row": 3,
+   "col": 0,
+   "sha256": "8b5bebdbcc501b93e4169c1dccfce27bdf3239209534a287f56a7fcc11cc3863"
+  },
+  {
+   "row": 3,
+   "col": 1,
+   "sha256": "22f174f1786c30a97f3b5eb5688e82f7caab72eff6663e5ec0b49dce8bbb7f2e"
+  },
+  {
+   "row": 3,
+   "col": 2,
+   "sha256": "2ed6b333c1599a402d8e3a6dc1d211d39073a6473908914afe1f4b9851d4d0c3"
+  },
+  {
+   "row": 3,
+   "col": 3,
+   "sha256": "03d29b5a36bc3bf14910eb5ffda05146fcb8beaf6b9e71e13c6f5240890cbf53"
+  },
+  {
+   "row": 3,
+   "col": 4,
+   "sha256": "b4f964d28baa3146fca2ecbf9d03648ab1b47fe957749160db88dbfdbb00b0cd"
+  },
+  {
+   "row": 3,
+   "col": 5,
+   "sha256": "2f100d14076ea3332f2575a5c04390c60c5f0ef9aa4d7863d0106e41c8a067ab"
+  },
+  {
+   "row": 3,
+   "col": 6,
+   "sha256": "de04c65ffc37ca9e6d9c8bf122c5a9aeec7555b2b1c6969f41e5a5984afd2641"
+  },
+  {
+   "row": 3,
+   "col": 7,
+   "sha256": "582641d46a23061d3b2c11309e62f6d6a9981005138cd13ec440588b6dda0a6e"
+  }
+ ]
+}

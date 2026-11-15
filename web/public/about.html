@@ -12,7 +12,7 @@
     <link rel="alternate" type="text/markdown" href="./llms.txt" />
     <link rel="icon" href="./favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
-    <meta property="og:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.png" />
+    <meta property="og:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.jpg" />
     <style>
       :root {
         --bg: #f7f5f2;
@@ -70,7 +70,8 @@
 
       <h2>What it shows</h2>
       <p>
-        The default <code>recorded-recovery-001</code> entry opens an unchanged recorder package over Daniel's
+        The viewer opens on a Mars globe of six zones; the default scene is the illustrative Jezero demo. The
+        <code>recorded-recovery-001</code> entry (<code>?run=recorded-recovery-001</code>) opens an unchanged recorder package over Daniel's
         128 m Jezero scene (32×32 cells at 4 m, CTX source spacing 20 m), preserving its internal run ID, datum,
         routes, resources, events and rasters. A separate illustrative 2 km demo shows a generated story: the drone
         surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around
@@ -101,8 +102,9 @@
           <tr><td><kbd>Q</kbd> <kbd>E</kbd></td><td>Rotate the view</td></tr>
         </table>
       </div>
-      <p>URL parameters: <code>?run=recorded-recovery-001</code> (default, intro omitted),
-        <code>?run=demo</code> (illustrative story), or <code>?run=mock-vertical-001</code> (historical flat-MOCK sample).
+      <p>URL parameters: <code>?run=demo</code> (default: the illustrative Jezero story),
+        <code>?run=gale-demo</code>, <code>gusev-demo</code>, <code>insight-demo</code>, <code>meridiani-demo</code> or <code>melas-demo</code> (the other zones),
+        <code>?run=recorded-recovery-001</code> (recorded real-planner recovery, intro omitted), or <code>?run=mock-vertical-001</code> (historical flat-MOCK sample).
         <code>?nointro=1</code> skips the demo intro. The entry folder is separate from the recorded run ID.</p>
 
       <h2>Data sources</h2>

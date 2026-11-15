@@ -1,0 +1,253 @@
+{
+ "note": "Water, ice and radiation context per world from NASA data; the elevations come from each scene DEM, whose datums may differ by tens of metres.",
+ "sources": {
+  "water": {
+   "title": "Mars Odyssey GRS, H2O concentration, smoothed 5 x 5 degree map (ODY-M-GRS-5-ELEMENTS-V1.0, H2O_SR_5X5)",
+   "url": "https://pds-geosciences.wustl.edu/ody/ody-m-grs-5-elements-v1/odgm_xxxx/data/smoothed/h2o_sr_5x5.tab",
+   "sha256": "5cec0d637755ddb7a451f58d7b24b6fb34f081e3391b40cdfca5410200da0236",
+   "reference": "Boynton et al. 2007, JGR 112, E12S99, doi:10.1029/2007JE002887"
+  },
+  "ice": {
+   "title": "Subsurface Water Ice Mapping (SWIM 2.0)",
+   "url": "https://swim.psi.edu/SWIM2Products.php",
+   "status": "unreachable"
+  },
+  "radiation": {
+   "measurement": "Hassler et al. 2014, Science 343, 1244797, doi:10.1126/science.1244797 (MSL RAD, Gale; <Q> = 3.05 +/- 0.3)",
+   "dependence": "Guo et al. 2017, JGR Planets, doi:10.1002/2016JE005206, section 3.3: -kappa = 0.28 - 2.9e-4 * Phi uGy/day/Pa, measured at 700-950 Pa; Phi = 500 MV used",
+   "insight_pressure": "Lange et al. 2022, JGR Planets 127, e2022JE007190, section 2.2",
+   "scale_height": "NASA Mars Fact Sheet, scale height 11.1 km, https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+  },
+  "retrieved": "2026-11-15"
+ },
+ "worlds": {
+  "jezero": {
+   "centre_lat_deg": 18.4899,
+   "centre_lon_deg": 77.43461,
+   "water": {
+    "wt_percent": 3.531,
+    "sigma_wt_percent": 0.363,
+    "cell_centre_lat_deg": 17.5,
+    "cell_centre_lon_deg_east": 77.5,
+    "depth": "top few tens of centimetres",
+    "meaning": "water-equivalent hydrogen; ice or hydrated minerals are not distinguished"
+   },
+   "ice": {
+    "status": "not imported",
+    "reason": "SWIM 2.0 covers -60 to 60 N, but swim.psi.edu answered HTTP 523 (origin unreachable) on 2026-11-15"
+   },
+   "radiation": {
+    "reference": {
+     "site": "Gale crater surface (MSL RAD)",
+     "absorbed_mgy_per_day": 0.21,
+     "absorbed_sigma_mgy_per_day": 0.04,
+     "dose_equivalent_msv_per_day": 0.64,
+     "dose_equivalent_sigma_msv_per_day": 0.12,
+     "quality_factor": 3.05,
+     "quality_factor_sigma": 0.3
+    },
+    "median_elevation_m": -2538.4,
+    "elevation_vs_gale_m": 1623,
+    "pressure_pa": 706,
+    "pressure_source": "hydrostatic from Gale's 817 Pa with 1623 m of elevation difference and an 11.1 km scale height",
+    "kappa_ugy_day_pa": 0.135,
+    "absorbed_mgy_per_day": 0.225,
+    "absorbed_sigma_mgy_per_day": 0.04,
+    "dose_equivalent_msv_per_day": 0.69,
+    "dose_equivalent_sigma_msv_per_day": 0.14,
+    "within_rad_pressure_range": true,
+    "note": "from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2017)"
+   }
+  },
+  "gale": {
+   "centre_lat_deg": -4.7253,
+   "centre_lon_deg": 137.3865,
+   "water": {
+    "wt_percent": 5.415,
+    "sigma_wt_percent": 0.392,
+    "cell_centre_lat_deg": -2.5,
+    "cell_centre_lon_deg_east": 137.5,
+    "depth": "top few tens of centimetres",
+    "meaning": "water-equivalent hydrogen; ice or hydrated minerals are not distinguished"
+   },
+   "ice": {
+    "status": "not imported",
+    "reason": "SWIM 2.0 covers -60 to 60 N, but swim.psi.edu answered HTTP 523 (origin unreachable) on 2026-11-15"
+   },
+   "radiation": {
+    "reference": {
+     "site": "Gale crater surface (MSL RAD)",
+     "absorbed_mgy_per_day": 0.21,
+     "absorbed_sigma_mgy_per_day": 0.04,
+     "dose_equivalent_msv_per_day": 0.64,
+     "dose_equivalent_sigma_msv_per_day": 0.12,
+     "quality_factor": 3.05,
+     "quality_factor_sigma": 0.3
+    },
+    "median_elevation_m": -4161.6,
+    "elevation_vs_gale_m": 0,
+    "pressure_pa": 817,
+    "pressure_source": "REMS daily summaries at Gale, annual mean of the seasonal bins (817 Pa)",
+    "kappa_ugy_day_pa": 0.135,
+    "absorbed_mgy_per_day": 0.21,
+    "absorbed_sigma_mgy_per_day": 0.04,
+    "dose_equivalent_msv_per_day": 0.64,
+    "dose_equivalent_sigma_msv_per_day": 0.12,
+    "within_rad_pressure_range": true,
+    "note": "measured by MSL RAD here"
+   }
+  },
+  "gusev": {
+   "centre_lat_deg": -14.5819,
+   "centre_lon_deg": 175.502,
+   "water": {
+    "wt_percent": 7.337,
+    "sigma_wt_percent": 0.388,
+    "cell_centre_lat_deg": -12.5,
+    "cell_centre_lon_deg_east": 177.5,
+    "depth": "top few tens of centimetres",
+    "meaning": "water-equivalent hydrogen; ice or hydrated minerals are not distinguished"
+   },
+   "ice": {
+    "status": "not imported",
+    "reason": "SWIM 2.0 covers -60 to 60 N, but swim.psi.edu answered HTTP 523 (origin unreachable) on 2026-11-15"
+   },
+   "radiation": {
+    "reference": {
+     "site": "Gale crater surface (MSL RAD)",
+     "absorbed_mgy_per_day": 0.21,
+     "absorbed_sigma_mgy_per_day": 0.04,
+     "dose_equivalent_msv_per_day": 0.64,
+     "dose_equivalent_sigma_msv_per_day": 0.12,
+     "quality_factor": 3.05,
+     "quality_factor_sigma": 0.3
+    },
+    "median_elevation_m": -1934.7,
+    "elevation_vs_gale_m": 2227,
+    "pressure_pa": 668,
+    "pressure_source": "hydrostatic from Gale's 817 Pa with 2227 m of elevation difference and an 11.1 km scale height",
+    "kappa_ugy_day_pa": 0.135,
+    "absorbed_mgy_per_day": 0.23,
+    "absorbed_sigma_mgy_per_day": 0.04,
+    "dose_equivalent_msv_per_day": 0.7,
+    "dose_equivalent_sigma_msv_per_day": 0.14,
+    "within_rad_pressure_range": false,
+    "note": "from the RAD dose-pressure relation OUTSIDE its measured 700-950 Pa range: Guo et al. 2017 state this extrapolation is not yet verified"
+   }
+  },
+  "meridiani": {
+   "centre_lat_deg": -2.2679,
+   "centre_lon_deg": -5.369,
+   "water": {
+    "wt_percent": 5.343,
+    "sigma_wt_percent": 0.393,
+    "cell_centre_lat_deg": -2.5,
+    "cell_centre_lon_deg_east": 352.5,
+    "depth": "top few tens of centimetres",
+    "meaning": "water-equivalent hydrogen; ice or hydrated minerals are not distinguished"
+   },
+   "ice": {
+    "status": "not imported",
+    "reason": "SWIM 2.0 covers -60 to 60 N, but swim.psi.edu answered HTTP 523 (origin unreachable) on 2026-11-15"
+   },
+   "radiation": {
+    "reference": {
+     "site": "Gale crater surface (MSL RAD)",
+     "absorbed_mgy_per_day": 0.21,
+     "absorbed_sigma_mgy_per_day": 0.04,
+     "dose_equivalent_msv_per_day": 0.64,
+     "dose_equivalent_sigma_msv_per_day": 0.12,
+     "quality_factor": 3.05,
+     "quality_factor_sigma": 0.3
+    },
+    "median_elevation_m": -1476.4,
+    "elevation_vs_gale_m": 2685,
+    "pressure_pa": 641,
+    "pressure_source": "hydrostatic from Gale's 817 Pa with 2685 m of elevation difference and an 11.1 km scale height",
+    "kappa_ugy_day_pa": 0.135,
+    "absorbed_mgy_per_day": 0.234,
+    "absorbed_sigma_mgy_per_day": 0.041,
+    "dose_equivalent_msv_per_day": 0.71,
+    "dose_equivalent_sigma_msv_per_day": 0.14,
+    "within_rad_pressure_range": false,
+    "note": "from the RAD dose-pressure relation OUTSIDE its measured 700-950 Pa range: Guo et al. 2017 state this extrapolation is not yet verified"
+   }
+  },
+  "insight": {
+   "centre_lat_deg": 4.502,
+   "centre_lon_deg": 135.623,
+   "water": {
+    "wt_percent": 5.162,
+    "sigma_wt_percent": 0.41,
+    "cell_centre_lat_deg": 2.5,
+    "cell_centre_lon_deg_east": 137.5,
+    "depth": "top few tens of centimetres",
+    "meaning": "water-equivalent hydrogen; ice or hydrated minerals are not distinguished"
+   },
+   "ice": {
+    "status": "not imported",
+    "reason": "SWIM 2.0 covers -60 to 60 N, but swim.psi.edu answered HTTP 523 (origin unreachable) on 2026-11-15"
+   },
+   "radiation": {
+    "reference": {
+     "site": "Gale crater surface (MSL RAD)",
+     "absorbed_mgy_per_day": 0.21,
+     "absorbed_sigma_mgy_per_day": 0.04,
+     "dose_equivalent_msv_per_day": 0.64,
+     "dose_equivalent_sigma_msv_per_day": 0.12,
+     "quality_factor": 3.05,
+     "quality_factor_sigma": 0.3
+    },
+    "median_elevation_m": -2618.6,
+    "elevation_vs_gale_m": 1543,
+    "pressure_pa": 700,
+    "pressure_source": "InSight APSS annual mean, about 700 Pa (Lange et al. 2022, JGR Planets 127, e2022JE007190, section 2.2)",
+    "kappa_ugy_day_pa": 0.135,
+    "absorbed_mgy_per_day": 0.226,
+    "absorbed_sigma_mgy_per_day": 0.04,
+    "dose_equivalent_msv_per_day": 0.69,
+    "dose_equivalent_sigma_msv_per_day": 0.14,
+    "within_rad_pressure_range": true,
+    "note": "from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2017)"
+   }
+  },
+  "melas": {
+   "centre_lat_deg": -12.8716,
+   "centre_lon_deg": -69.0574,
+   "water": {
+    "wt_percent": 3.403,
+    "sigma_wt_percent": 0.302,
+    "cell_centre_lat_deg": -12.5,
+    "cell_centre_lon_deg_east": 292.5,
+    "depth": "top few tens of centimetres",
+    "meaning": "water-equivalent hydrogen; ice or hydrated minerals are not distinguished"
+   },
+   "ice": {
+    "status": "not imported",
+    "reason": "SWIM 2.0 covers -60 to 60 N, but swim.psi.edu answered HTTP 523 (origin unreachable) on 2026-11-15"
+   },
+   "radiation": {
+    "reference": {
+     "site": "Gale crater surface (MSL RAD)",
+     "absorbed_mgy_per_day": 0.21,
+     "absorbed_sigma_mgy_per_day": 0.04,
+     "dose_equivalent_msv_per_day": 0.64,
+     "dose_equivalent_sigma_msv_per_day": 0.12,
+     "quality_factor": 3.05,
+     "quality_factor_sigma": 0.3
+    },
+    "median_elevation_m": -3084.4,
+    "elevation_vs_gale_m": 1077,
+    "pressure_pa": 741,
+    "pressure_source": "hydrostatic from Gale's 817 Pa with 1077 m of elevation difference and an 11.1 km scale height",
+    "kappa_ugy_day_pa": 0.135,
+    "absorbed_mgy_per_day": 0.22,
+    "absorbed_sigma_mgy_per_day": 0.04,
+    "dose_equivalent_msv_per_day": 0.67,
+    "dose_equivalent_sigma_msv_per_day": 0.14,
+    "within_rad_pressure_range": true,
+    "note": "from the RAD dose-pressure relation inside its measured pressure range (Guo et al. 2017)"
+   }
+  }
+ }
+}

@@ -2,6 +2,9 @@ import type { TerrainMeta } from '../types/icd';
 import type { ReplayManifest, ContextTerrainData } from '../types/replay';
 import type { GeologyData } from './geology';
 
+/** Share of the fitted camera distance used for the opening view (below 1 = closer). */
+export const FRAMING_ZOOM = 0.86;
+
 /** Camera coordinates stay in the recorded datum; only the viewpoint is fitted. */
 export function terrainFraming(meta: TerrainMeta, heights: ReadonlyArray<number | null>, exaggeration = 1) {
   let lo = Infinity, hi = -Infinity;
@@ -18,7 +21,8 @@ export function terrainFraming(meta: TerrainMeta, heights: ReadonlyArray<number 
     (lo + hi) * exaggeration / 2,
     -(meta.origin_y_m + height / 2),
   ];
-  const position: [number, number, number] = [target[0] - .75 * scale, target[1] + 1.25 * scale, target[2] + 1.7 * scale];
+  // A little closer than the full fit (FRAMING_ZOOM): the corners of the map still fall inside the view.
+  const position: [number, number, number] = [target[0] - .75 * scale * FRAMING_ZOOM, target[1] + 1.25 * scale * FRAMING_ZOOM, target[2] + 1.7 * scale * FRAMING_ZOOM];
   return { target, position, scale, far: scale * 12 };
 }
 
@@ -64,8 +68,8 @@ export function geologyMatchesRun(data: GeologyData, manifest: ReplayManifest): 
       && close(f.origin_lon_deg, meta.origin_lon_deg) && f.vertical_datum === meta.vertical_datum;
   }
   return manifest.run_id === 'demo-sim-002' && meta.dataset_id === 'mars2020-trn-ctx-dtm-20m'
-    && close(meta.origin_lat_deg, 18.53545) && close(meta.origin_lon_deg, 77.42382)
-    && manifest.local_z_offset_m === -2495;
+    && close(meta.origin_lat_deg, 18.4899) && close(meta.origin_lon_deg, 77.43461)
+    && manifest.local_z_offset_m === -2538;
 }
 
 /** Context is a separate surface: require its datum, planetary origin, source

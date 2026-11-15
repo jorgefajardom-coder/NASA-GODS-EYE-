@@ -37,7 +37,7 @@ from tests.integration.test_vertical_mock import wait_for  # noqa: E402
 from tests.integration.ground_fixture import (  # noqa: E402
     initialize_ground_agents, observed_public_scene, simulated_ground_point)
 
-RUN_ID = 'it-execution'
+RUN_ID = os.environ.get('MGE_EXECUTION_RUN_ID', 'it-execution')
 PORT = 8769
 BASE = f'http://127.0.0.1:{PORT}'
 ROOT = Path(__file__).resolve().parents[2]
@@ -246,6 +246,13 @@ def test_agents_wait_idle_until_a_route_is_authorized(stack):
     assert position(first)[:2] == HOME
     assert position(first) == simulated_ground_point(stack.surface, HOME)
     assert stack.node.count_publishers('/mge/agents/human_1/state') == 1
+    agents = mission()['agents']
+    assert {a['agent_id'] for a in agents} == {'human_1', 'rover_1', 'drone_1'}
+    for agent in agents:
+        point = agent['pose']['position']
+        expected = simulated_ground_point(stack.surface, (point['x'], point['y']))
+        assert (point['x'], point['y'], point['z']) == expected
+        assert agent['mode'] == 'IDLE'
 
 
 def test_agent_follows_the_authorized_route_and_returns(stack):
@@ -383,3 +390,10 @@ def test_recorded_package_shows_the_motion(stack):
     assert any(a['mode'] == 'MOVING' for a in active_humans)
     assert active_humans[-1]['mode'] == 'IDLE'
     assert tuple(active_humans[-1]['pose']['position'][k] for k in ('x', 'y')) == pytest.approx(HOME)
+    for state in states:
+        for agent in state['agents']:
+            if agent['agent_kind'] == 'DRONE':
+                point = agent['pose']['position']
+                assert tuple(point[k] for k in ('x', 'y', 'z')) == simulated_ground_point(
+                    stack.surface, (point['x'], point['y']))
+                assert agent['mode'] == 'IDLE'  # Parked, not an executed survey.

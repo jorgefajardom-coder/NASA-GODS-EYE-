@@ -1,0 +1,480 @@
+# David - retain scientific mission authority and approve the model
+
+## Delivery priority after PR28 — owner-confirmed 14 November 2026
+
+Read [current conclusions and PDF tasks DV-1..4](../delivery_closure_plan.md)
+and [D-DEL-03](../decisions/2026-11-14-delivery-freeze.md) before older cuts.
+Review existing-crop science purpose, honest resource/context labels and final
+media claims; accept only the exact evidenced run scope. D-COST-02 selects the
+shared API, but its later local backend, campaign allocations and scientific
+target/coordinate drafts are not approved or imported here. Preserve the 20 min
+control while reviewing future rover/EVA/sortie horizons separately. Extensions
+are paused; submit target 15 Nov 20:00 Bogota, with organizer endorsement and
+David as contact backup. No new budget or model flag is authorized by this plan.
+
+## Audit reconciliation rc.2 — current candidate over main6bcf208
+
+Read the [current gap/evidence matrix](../audit_reconciliation.md) and
+[cost/context/interval proposal](../audit_cost_execution_gaps.md). PR25's cost,
+duration and success packet is already integrated; do not duplicate it. New
+main6bcf208 comparison again gives 1 agreement / 6 disagreements and BLOCKED
+authorization. Next deliverable with Diego/Jesus: select the cost backend and
+immutable request context, then bind evidence-backed service progress and the
+existing scientific recorder. Review experimental exploration limits separately
+from model/profile approval. Actual accepted/rejected optional work and three
+executed roles remain pending; the featured READY/MOCK replay does not close them.
+Scientific target/purpose work is excluded from this reconciliation and remains
+in the owner's other chat. Historical inventories below retain their dated scope.
+
+## Current continuation — 14 November 2026, main 5ab1387
+
+Follow [CONT-DAV-01..04](../team_continuation_plan.md#david--mission-authority-and-scientific-acceptance):
+agree executable scenario/costs and drone scope with Diego/Jesús; bind evidence
+and outcome criteria; review Fajardo's NASA-criteria dossier and Daniel's
+larger-map feasibility; freeze experiment metrics before comparisons. The plan
+includes dependencies, acceptance and organizer reminders. Historical inventories
+below retain their original cut; they do not supersede this next-work allocation.
+
+Active branch: **`feat/mission`**. Audited head: `cf292107277e1aaf130d6c0ecd33904a22638f4f` (scientific mission authority). This head is unchanged at the final refresh. Main `004b3b2` now includes
+Diego's real planner externally via PR #2; Jesus's latest integration branch
+already tests it behind MOCK mission/terrain. Existing handoff is `docs/mission_handoff.md`; also read `docs/science_models.md`, `docs/science_benchmark.md`, `docs/science_decisions.md` and the retained mission validation/model-check evidence on that branch. Continue its actual manager, models, adapters and tests rather than the main scaffold.
+
+Read [AGENTS.md](../../AGENTS.md), [ICD](../ICD.md), [contract baseline](../CONTRACT_BASELINE.md) and [integration matrix](../INTEGRATION_MATRIX.md) before editing. Canonical ROS fields/types live in `src/mge_interfaces/msg` and `srv`; preserve them and adapt representations explicitly.
+
+## Owned implementation and scientific policy
+
+Own `src/mge_mission/`, `config/agents.yaml`, `config/mission.yaml`, proposed science/planner profile registries, mission tests, science decisions and A/B/C protocol. Preserve immutable profiles, activity/grade estimates, idempotent goals, ordered events, remaining allocations, return priority and task evidence. Your primary role is scientific direction/validation, not implementing all five fronts. Do not replace Diego's advanced planner with another A*.
+
+MissionManager is the sole authority for primary goal, survey -> inspect -> sample precedence, capability assignment, optional eligibility, risk/uncertainty/ resource rejection, return priority and the single authorized active route.
+
+Consume canonical SetMissionGoal/AgentState/TerrainMeta/RouteDecision; publish MissionState/MissionEvent and active Path. Candidate FEASIBLE is necessary but insufficient: verify current run/map/pose, full return, reserves and agreed model/profile. A changed map clears old route ID and active path before new planning; Jesus must verify the execution consumer's separate stop acknowledgement. Preserve NON_CELL_CENTER from unchanged continuous input; never snap poses.
+
+## Model agreement, evidence and remaining bindings
+
+Keep `mge-science-1.0.0` as the scientific itinerary audit authority pending your explicit coefficient/profile approval. Proposed source profiles and a projected planner configuration are separate approvals. Projection status `pending_model_agreement` must block route authorization. Distance/slope rates and activity/grade/climb models are not equivalent by parameter conversion. With Diego, identify shared speed/geometry/budget fields and every persistent mathematical difference. Compare flat, uphill, downhill, service, waiting, zero-length, outbound/return and boundary-budget itineraries across all kinds. Retain the current audit tolerances (relative 1e-5, absolute 1e-3) unless a reviewed change establishes stronger justified values; agreement needs numeric checks plus exact model/configuration identity, not numbers alone. Record model ID/config SHA-256 and profile approval in run metadata because ROS wire fields do not carry that identity. No message change is justified solely for convenience.
+
+Human oxygen means equivalent ideal dry O2 litres at 273.15 K and 101.325 kPa in the proposed model; capacities/reserves must use the same definition. Nonhuman oxygen is absent internally, NaN on ROS and null in JSON. Experimental budgets are not certified EVA limits. Preserve uncertainty/missing-input gates.
+
+Discovery, work completion and traversal evidence have Python boundaries but no agreed operational ROS input. Bind them with Jesus explicitly; do not infer completion from a route or animation. The initial active-path publisher controls the primary human; optional robot assignments do not prove robot execution. Daniel owns public observations and isolated evaluator reference. Controlled planner mocks are allowed only for deterministic interface tests, never science acceptance or demonstrated mission completion.
+
+## Synchronize without losing existing work
+
+After saving/reviewing local edits, use the existing worktree for this branch:
+
+```sh
+git status --short
+git fetch origin --prune
+git switch feat/mission
+git pull --ff-only origin feat/mission
+git log -1 --format=fuller origin/main
+git diff --stat origin/main...HEAD
+git diff origin/main...HEAD -- src/mge_mission tests/mission config docs/science_decisions.md
+git merge origin/main
+```
+
+If the branch is not local, use `git switch --track -c feat/mission origin/feat/mission` instead of switch/pull. Do not switch it if another worktree already has it checked out. Merge main only while on your owned branch. Stop to reconcile any shared-contract conflict with Jesus and the producer/consumer owners; preserve both implementations and never force-push. This reconciliation becomes the main contract only after its PR is merged. Before that, review it as a proposal and do not claim it is published in main.
+
+## Tests and actual planner consumer
+
+First run `python -m pytest tests/mission`. Keep model formula/input checks, mission idempotency, route/state invalidation, task precedence, capabilities, return priority and reserve rejection tests. Run `python scripts/check_mission_models.py --run-id NEW_RUN --output-dir evidence/NEW_RUN` in a fresh evidence directory; its synthetic MODEL_CHECK is not an A/B/C run. After baseline merge run `python -m pytest tests/contract/test_baseline_guards.py tests/integration/test_provider_substitution.py`.
+
+On Jazzy use the branch's `scripts/validate_mission_ros.sh`/documented ASCII-path workspace when the Windows path prevents ROSIDL generation, then run `python3 -m pytest tests/contract/test_mission_service.py`. Existing reports verify a controlled planner, not Diego's actual numerical model.
+
+With Jesus/Diego, replace that controlled provider by the real PlanRoute server without changing the MissionManager consumer. Demonstrate accepted agreed full itinerary, MODEL_MISMATCH, NON_CELL_CENTER, stale result, return-reserve rejection, map-change invalidation and separate execution acknowledgement. Retain exact sources/configs/data hashes and rejected runs.
+
+The final integration log's callback/search-limit findings belong to Diego and
+Jesus; numerical model approval does not resolve them. Existing feat/ux now
+plays the recorded MOCK gateway package, but neither that replay nor the MOCK
+mission proves that your real manager and planner model agree.
+
+## Acceptance and next delivery
+
+First deliver reviewed profiles, documented model equivalence/conservative limits, explicit tolerances and model/configuration run identity. Then freeze success criteria and A/B/C inputs/metrics/seeds before collecting comparison runs. Maintain primary completed AND return in tolerance AND verified ground traversal under model AND no budget violation; a correct BLOCKED rejection is not mission success. Bind execution/discovery inputs with Jesus and approve scenario/grid assumptions with Daniel. Deliver an incremental mission PR; full mission acceptance needs real cross-module execution evidence.
+
+## PR and handoff evidence
+
+Include the tested source SHA, baseline/schema versions, dataset/run/map IDs, model/configuration hashes where relevant, exact commands/outcomes and links to immutable evidence. Name any MOCK provider and all skipped checks, with reasons. Run `python -m pytest`, `python scripts/check_repository.py`, and the frontend `npm ci`, `npm test`, `npm run build` where available, using `web/.nvmrc`. On Ubuntu 24.04/Jazzy, build with `colcon build --symlink-install`, source `install/setup.bash`, inspect the six messages/two services and run the ROS contract/integration tests. A Windows skip is not a passing ROS test.
+
+Review `git status`, `git diff` and `git diff --check`. Keep commits atomic and English Conventional Commits; preserve Git identity, third-party rights and mandatory AI usage text/metadata/watermarks. Update `docs/AI_USAGE.md`, `docs/ai_usage.json` and your handoff. Do not upload secrets or evaluator data.
+Jesus reviews integration; David approves scientific assumptions/success.
+Software tests, replay and synthetic fixtures do not establish a validated
+LIVE mission. No push, merge or release is implied by this handoff alone.
+
+## Continuation packet: costs, durations and success evidence
+
+Current isolated mission baseline: `09d7d6a`. Read-only comparison used main
+`2f50ae697b34fe82e575b386936d0d5e4d74db64` and planner
+`69101e983c9a9668ba852460c484b5db8f12a1a5`. This continuation does not merge
+their producer/executor changes or modify planner, data, mapping, simulation,
+gateway, viewer or wire contracts. The older audited heads above remain
+historical context, not a claim that those branches have stopped advancing.
+
+The publication recheck fetched main `9614816081acc7779e6a565f5f4ebad8b0bd5287`
+(viewer PR #19). Its delta from the reviewed main affects viewer/assets and
+related documentation, not planner/data/simulation/interfaces or D-EST-01.
+Planner remains `69101e9`; integration remains `c42ca24`. No merge is performed.
+
+- Review the [cost packet](../cost_agreement_handoff.md) and
+  [machine-readable contract](../../config/cost_agreement.experimental.json).
+  The export contains 38 base vectors and seven activity-duration cases,
+  preserving directed return, service/wait separation, current remaining
+  resources, reserves and exact model/profile/configuration hashes. No planner
+  substitute or new mock is introduced.
+- The published planner comparison is one agreement / six disagreements,
+  authorization BLOCKED. In particular the approved 120 s human light-work
+  service differs from the projected fixed heavy-work service power. Preserve
+  MODEL_NOT_AGREED/MODEL_MISMATCH; finite examples alone do not prove global
+  model identity. Diego must consume the scientific API or establish reviewed
+  equivalence and agree activity/wait identity bound to run/request context.
+- David requested the [duration source review and pilot](../activity_duration_research.md)
+  before asking Diego and Jesús to incorporate timings. The 30/60/180 s lunar
+  model primitives are not complete sample cycles. Approximately 600 s for a
+  documented D-RATS sample informs a proposed mixed workflow; its 420/180 s
+  phase split is an engineering assumption. A 300 s inspection is likewise
+  pending, not a measured NASA average. No new duration is approved.
+- The additional 600 s mixed workflow plus the unchanged primary probe exceeds
+  all three human usable budgets: 1001.12 s / 110.10 Wh / 22.48 L against
+  960 s / 80 Wh / 20 L after reserves. Extra optional travel is excluded.
+  Preserve the approved JZ-P01..07 configuration, including the 120 s check-in
+  and 180 s sampling example, until an explicit scenario revision is approved.
+- The [success contract](../mission_success_contract.md) and
+  [criteria JSON](../../config/mission_success.experimental.json) are prepared,
+  not runtime acceptance. The present manager's Boolean completion input does
+  not prove 120 s of service or unfinished-work progress; the reviewed executor
+  averages route costs into movement rather than implementing stationary
+  service/wait. Jesús owns the producer contract. Await public task/traversal
+  inputs and implement only the agreed mission consumer. Arrival, animation,
+  stop acknowledgement and a calculated route are insufficient evidence.
+- Honor main's D-EST-01 distinction between valid estimated prior, NoData and
+  verified execution. Do not fabricate observations or lower uncertainty to
+  obtain a path. Daniel/Diego own coordinated estimated-planning implementation;
+  the proposed next-segment execution hold/inspection policy needs Jesús review.
+
+Retained commands, results, source versions and configuration hashes belong
+under `evidence/mission-cost-closure-20261114/`: `conformance`, `vectors-final`,
+`pilot-final`, `readiness` and `validation`. Initial vectors/pilot are analytical
+diagnostics from an earlier worktree snapshot. Consult the validation record
+for actual completed checks; this handoff does not assert pending checks passed.
+CONT-DAV-01/02 remain prepared for joint review. Profiles, cost agreement,
+execution evidence and operational authorization are separate open gates.
+
+Validation of this isolated snapshot: Windows Python 740 passed / 16 skipped;
+Ubuntu 24.04.4/Jazzy 550 passed / one skipped after eight packages built and
+six messages/two services inspected; frontend 84 passed and build passed;
+repository check passed after the generated linked artifacts were present.
+The Windows skips cover ROS and unavailable symlink privileges. Jazzy skips
+the optional materialized planner snapshot; the separate published-source
+conformance report remains BLOCKED. Existing controlled ROS test providers
+are software harnesses, not a new mock or verified integrated execution.
+
+At scope freeze/readiness/pre-submission, remind Jesús to obtain and record the
+local organizer's explicit endorsement with review margin; David is backup.
+No organizer contact, endorsement, external team message or A/B/C execution is
+performed by this packet.
+
+## Requested merge reconciliation
+
+The owner requested conflict resolution and integration after the two pushes.
+The scenario approval commit `09d7d6a` is already in main through PR14. The
+remaining packet `ec819e5` is reconciled with published main
+`5898e7d74c3eb00a018a2061a9b2264d947f12a8`. Two content conflicts in the
+mandatory AI registers retain both sides, including all main media declarations.
+Owner implementations and shared contracts are retained from main unchanged.
+Earlier source/validation records remain historical snapshots, not replaced.
+
+The [fresh comparison](../../evidence/mission-reconciliation-20261114/conformance-main/conformance.json)
+against that main planner still reports one agreement and six disagreements,
+authorization BLOCKED. The [new readiness](../../evidence/mission-reconciliation-20261114/readiness/scenario_diagnostic.json)
+preserves approved experimental values, zero findings and six pending inputs.
+This Git merge does not close scientific or execution gates. Fresh combined
+checks and exact tested source hashes are retained with the
+[reconciliation evidence](../../evidence/mission-reconciliation-20261114/README.md).
+
+## Local science-patch research during the reconciliation audit
+
+At the owner's request, the [17-sector survey](../science_patch_survey.md),
+[prioritized map requests](../science_patch_map_requests.md) and
+[local source/scale records](../../evidence/science-patch-survey-20261114/)
+propose Bright Angel/Neretva, Hawksbill/Hogwallow and Bunsen Peak first, with
+Mawrth as the first alternative outside Jezero. The 128 m control is retained;
+512/1,024 m context and nested 128/256 m windows are proposals, not new missions.
+NASA historical positions provide query anchors with explicit association/CRS
+limitations; they are not current A/B poses or verified crop boundaries.
+
+The owner confirms Daniel can generate crops but has not delivered these new
+packages. Ask him to prepare the specified data, report coverage/registration
+and preserve public/evaluator roles. No silent coordinate adjustment or invented
+observations. Diego/Jesus/Jorge own subsequent performance, capture and display
+checks; this research changes none of their implementations. CONT-DAV-03 stays
+prepared for review, not completed acceptance. See proposed PATCH-P01..05 in
+the scientific register. All new work stays local with no commits, push or merge
+until the owner changes that instruction; model/cost/execution gates remain open.
+
+## Local rover-campaign / human-EVA resource proposal
+
+Source `c3ec4c1f1515dbc981ba82eed2ab1f54e9586264`, ICD candidate
+`1.0.0-rc.1`, science model `mge-science-1.0.0`; no fetch or publication during
+the owner's parallel audit. The [proposal](../agent_campaign_proposal.md) and
+[source/analysis/validation packet](../../evidence/agent-campaign-proposal-20261114/README.md)
+separate Bunsen/Bright Angel/Hawksbill rover episodes, human EVA and drone
+sorties. Source/input/config hashes and analytical run identity are retained.
+
+The proposed nominal allocations are EVA 35/60/85 min, 225/400/550 metabolic Wh
+and 45/80/115 dry O2 L; rover 6.5/10/14.5 h and 800/1,200/1,800 gross electrical
+Wh. They include separate 20% reserves and costed directed return. Workloads
+are analytical design assumptions, not trajectories from unavailable crops.
+All nine nominal envelopes fit by construction; all nine joint adverse cases
+fail. Full drone-campaign energy remains NOT_ESTIMATED; sortie counters never
+reset accumulated use. No physical energy availability or new operational
+authorization is asserted. CAM-P01..07 await David's review.
+
+Next: Daniel supplies registered public crops/uncertainty for real itineraries;
+Diego reconciles exact scientific movement/activity/return costs without changing
+tolerances; Jesús reviews agent release/progress/wait/thermal/SOC/evidence
+bindings against main before any schedule integration. This packet changes
+none of their implementations or contracts and creates no new MOCK. Strict
+success criteria and the original scenario/profile/approval records remain
+unchanged. Software checks and analytical reproduction are not LIVE evidence.
+
+Local organizer notification/explicit endorsement remains a delivery gate:
+remind Jesús at scope freeze/readiness/pre-submission with at least four hours
+of review margin (or longer if requested); David is backup. This proposal is
+not submission readiness and performs no external contact.
+
+Fresh local checks for this proposal: Python 979 passed / 19 environment skips
+(ROS modules and Windows symlink privileges), one existing Starlette warning;
+frontend 161 passed / one optional-package skip; repository check and build
+passed with Python 3.12.14 / Node 24.18.0 / npm 12.0.1. Reproduction, input
+hashes, overwrite refusal, phase sums, causal waiting, cumulative flights and
+original approval/readiness preservation pass. Ubuntu/Jazzy/colcon/ROS exchange
+was not run for this analytical cut; earlier results are not relabelled fresh.
+
+## Publication after reconciliation
+
+The owner authorized integration after reconciliation. Published main9198b3d
+(PR28) is incorporated unchanged. The earlier local-only status describes
+the preparation cut; this publication preserves all proposed/approval states.
+D-COST-02 accepts reuse of the scientific API as implementation direction;
+profile approval, cost-context agreement and execution evidence remain open.
+The rc.2 contract record is not a scientific approval or a semantic freeze.
+Original analysis/report hashes and pinned c3ec4c1 reproduction remain historical.
+
+Publication CI for 6e497a1: Python, web and ROS passed (run43670914573). ROS built/inspected all interfaces and passed the MOCK vertical integration suite. This remains software evidence, not scientific mission acceptance. See evidence/mission-proposal-publication-20261115/ci.json.
+
+Final publication refresh incorporates main99f3e2e (delivery PR30); both sides of AI disclosures retained. Runtime/configuration still matches the earlier CI-passed main9198b3d. Numeric campaign drafts remain proposed research, excluded from the operational delivery freeze.
+
+## Local overnight assessment (owner-authorized)
+
+At the owner request, a maximum eight-hour headless study started at 2026-11-15 04:25:01 UTC (14-Nov 23:25 Bogota), ending no later than 15-Nov 07:25 local. See docs/overnight_mission_audit.md and evidence/overnight-mission-research-20261115. Consume frozen main7ad6050 (PR33) without merging; retain owned source and official delivery scope. Larger CTX windows, sigma3 research copies, random missions and bounded SIMULATED worlds are research only. No commits/pushes, role-execution claims, model-agreement activation or new approvals. JES-07 organizer notification/explicit endorsement remains a delivery gate; Jesus leads and David is backup. This assessment sends no external message and does not announce submission readiness.
+
+Definitive adaptation/resource results use evidence/overnight-mission-research-20261115-v3.
+The excluded v1/v2 pilots and exact execution sources remain available for audit.
+Corrections cover inspection power, pre-EVA ordering, bounded posterior waiting,
+matched no-advance pose knowledge and broad-world generation before planning.
+Original start/deadline, pinned upstream SHA, input maps and pending approvals
+are preserved. The [final local report](../../evidence/overnight-mission-research-20261115-v3/README.md)
+records 408/480 broad blocks, 75 complete small directed blocks and 26 complete
+large directed blocks: 6,108 dependent analytical episodes. The catalogue keeps
+644 unavailable directed baselines and 287 unrun blocks. All four reserved
+broad indices completed. A balanced 390-block subset retains the same indices
+in all region/size/family strata. No LIVE mission or integrated A/B/C is asserted.
+
+Source baseline: published main7ad6050, contract record 1.0.0-rc.2 (not frozen),
+ICD-ROS2-V1 / interfaces and replay 1.0.0, proposed mge-science-1.0.0. The
+scientific adapter passes isolated consumers but is not wired into the pinned
+production search. A postpass audits all 4,799 feasible recorded itineraries;
+94 numerically match, and model agreement stays false. Do not relax tolerances
+or activate authorization. Before integration, inspect the next published SHA
+and cross-owner contracts again; this study incorporated no later heads.
+
+Recommendation for review: 512 m planning context with nested 128/256 m stations
+and 1,024 m context, maintaining the three complementary scientific questions.
+Regional CTX windows are pixel-valid and nested, but exact outcrop registration
+and independent orthographic controls remain pending with Daniel. Native DTM
+20 m and computational 4 m stay distinct. Ask Diego/Daniel whether max_step_m
+is endpoint rise at 4 m or a different physical residual; no threshold changed.
+The FAST balanced policy comparison finds no general B-candidate gain for the
+two costed single-footprint survey heuristics. Targeted information and delay
+cases still change recommendations, including held-out checkpoint brackets;
+these are model diagnostics, not physical thresholds or discovery probabilities.
+
+Fresh Windows checks: Python 1,069 passed / 21 environment skips / one existing
+Starlette warning; pinned published cost/oracle/guard tests 86 passed / one
+read-only-cache warning; frontend 201 passed / one skipped; build, repository,
+whitespace, world/profile reproduction, six flat oracle checks and actual
+mapping/scientific consumers pass. Ubuntu/Jazzy/colcon/ROS exchange was explicitly
+NOT_RUN. Exact commands, versions, failures, source/code/input/journal hashes
+and final timing/storage limits are in the report and FINAL_MANIFEST.json.
+
+The lexical scale-series order and the auxiliary JSON index decoder failure
+are retained with their dispositions. The decoder revision changes only tuple
+rehydration and its separately bound protocol filename; the frozen research
+kernel is unchanged. All data stays local with no commit, push or merge.
+Service/execution evidence, profile approvals, cost-context agreement and the
+organizer notification/explicit endorsement gate remain open. Jesus coordinates
+organizer contact, David backs up, preserving at least four hours of review
+margin. This report does not declare submission readiness or send messages.
+
+## Local ROS environment pilots and delegated grid-height decision
+
+Owner requested extensive local readiness pilots and delegated justified
+scientific review/change of max_step_m. Published main is pinned to
+7ad605039a524d5b5cbe2c983f2da9113f8b1ce9; feat/mission stays at
+5220bdd8314f6568a5211c5821adfe4bafb68b48. No commit, push, merge, producer
+implementation, shared contract or official scenario/profile is changed.
+Baseline record rc.2 is not frozen; ROS/replay 1.0 and proposed science 1.0 remain.
+
+The [local report](../../evidence/mission-environment-pilots-20261115-grade-v1/README.md)
+records 784 actual PlanRoute ROS calls: 392 original controls and 392 matched
+LOCAL-CTX-GRID-GRADE-01 variants. Every query responded. Original states:
+14 FEASIBLE / 162 NO_PATH / 214 UNKNOWN / 2 INSUFFICIENT_BUDGET. Variant:
+33 / 120 / 237 / 2. Bunsen 512 yielded 22 feasible variants, including all eight
+rover pairs in both modes; Bunsen 1024 yielded none and was largely search-limited.
+These fixed experimental endpoints are not verified geological targets or
+independent physical success frequencies. All strict sigma1 controls remain.
+
+Scientific basis: 20 cm inter-centre height at 4 m imposes 2.86 degrees even on a
+smooth ramp; CTX 20 m does not establish 20 cm obstacle observability. The local
+projection derives its bound from existing 10/20 degree limits and the longest
+diagonal link (0.9975/2.0589 m). It preserves directed slope, obstacles/NoData,
+footprints, uncertainty, resources and solver limits. Physical step capability
+remains unresolved. See science_decisions.md and scientific-source-register.json.
+Production semantics still require cross-owner review; no profile is approved.
+
+Ubuntu 24.04/Jazzy compiled eight packages; native cost/oracle/guard tests passed 86.
+Seven scenes per variant checked real HTTP/gateway/mission refusal, duplicate
+and conflict handling, empty active path, recorder and offline conversion.
+Fourteen actual packages passed the unchanged published frontend terrain/time
+consumers without rendering. Control 128 uses real data/mapping nodes; regional
+CTX inputs are explicit ROS boundary clients because canonical packages remain
+unavailable. Gazebo provides only the clock in an empty world, without Mars
+physics, agents or sensors. Recordings retain source_mode UNKNOWN; HTTP LIVE is
+transport only. No new MOCK or agent/work/traversal/observation producer is added.
+
+All 47 FEASIBLE itineraries have independent directed-return/activity audits.
+All fit their analytical envelopes; none matches every projected cost field.
+No candidate is authorized. Inputs are independent analytical allocations after
+one assumed wait, not execution telemetry. Human service is 120 s inspection,
+rover 600 s inspection, not the complete sampling campaign. Full execution,
+stop/replan/return and same-run mission replay/video remain NOT_READY (steps 4/5).
+
+Fresh working-tree checks: Python 1082 passed / 21 environment skips / one existing
+Starlette warning; frontend 201 passed / one optional-package skip; repository,
+whitespace and build passed. Actual recorded-package consumer 14 passed separately.
+Node 24.18.0/npm 12.0.1; native Python 3.12.3, Windows Python 3.12.14. The 86 native
+tests use the published source; no complete Ubuntu pytest or physical execution
+acceptance is claimed. Initial harness entrypoint/envelope errors, auxiliary
+import failure and Windows Vitest include failure remain with corrections.
+Queries were not retuned. Rclpy teardown warnings remain; their cause is not
+assigned to an owner. Exact commands, versions and hashes are in the packet.
+
+Next: Daniel supplies registered canonical public windows and uncertainty with
+evaluator isolation; Diego reviews grid grade versus residual obstacles and
+connects exact activity/wait costs; Jesus publishes conforming execution/evidence
+inputs. Recheck SHA/contracts before consuming deliveries. The post-hoc Bunsen 512
+candidate configuration is NOT_READY and replaces none of the rejected cases.
+The earlier overnight corpus remains closed with as-sealed documents preserved.
+Both AI registers are updated. No publication or external message is sent.
+
+Organizer notice/explicit endorsement remains pending under JES-07/AC-10;
+Jesus coordinates, David backs up, preserving four hours or the organizer's
+longer review margin. This is research, not submission readiness.
+
+## Local exact-cost composition and analytical EVA/video
+
+Owner approved a complete analytical SIMULATED experiment and larger local
+search bounds before final publication review. Latest fetched main is64985e7
+(PR35, browser replay documentation); compiled planner/runtime sources are
+unchanged from the earlier7ad6050 cost adapter baseline. No merge, commit or
+push was performed. New paths are mission-owned adapters/tests, local runner,
+renderer, verification documentation and evidence; owner implementations and
+shared interfaces remain untouched.
+
+See [definitive local packet](../../evidence/mission-cost-experiment-20261115-local-v2/README.md)
+and [verification levels](../mission_simulated_verification.md). Typed immutable
+cost contexts bind identity and remaining work/resources; scientific_plan uses
+the published planner's cache hook to price admitted ground transitions and
+fixed-goal service with the actual ScientificCosts adapter. All36 kernel
+contexts and two EVA itineraries match independent scientific totals, with
+strict reserve checks and no tolerance credit. Production wire/context,
+cross-owner adoption and scientific profile approvals remain pending.
+
+The single-human trace completed68 simulated steps /283.0374 m /1226.8855 s,
+programmed terrain inspection, one footprint-only synthetic observation,
+invalidation/detour,120 s B service and return. Remaining:873.1145 s,
+88.2805 metabolic Wh,17.0815 equivalent dry O2 L; reserves420 s/45 Wh/9 L.
+Sampling600 s was not assigned; no rover-inspection evidence or sufficient
+budget for that addition plus return. The80 s marked video is derived from
+the same analytical timeline and validated as H.2641280×720/15fps, no audio.
+All73 intervals,68 public-map admissions, observation causality, duplicate
+debits, recovery, source hashes and video identity pass the analytical audit.
+
+V1 runner/video/raw records are retained. V2 adds the initial post-planning-wait
+full-return recheck, explicit public-map admission per step and actual
+private-process source binding. The hold/obstacle are directed experimental
+conditions, not an autonomous discovery claim. No MissionManager/ROS execution,
+public work result, three-role mission, scientific success or physical
+verification is asserted. The legacy benchmark export is not populated with a
+fictional ROS final state. Canonical terrain registration remains pending.
+
+Owner-authorized Bunsen1024 controls tested human/rover with2 s/200k and
+20 s/1M bounds; all remain UNKNOWN/SEARCH_LIMIT. These are local research
+limits, not an operating change or a proof of infeasibility. Native Jazzy
+compiled eight packages with the new mission modules;26 targeted tests passed.
+Working-tree validation commands and outcomes are retained in the packet.
+Fresh final results: Python1108 passed /21 environment skips /one existing
+warning after workspace-temp retry; frontend201 passed /one skipped,
+repository/whitespace/build passed. Initial Windows global pytest temp denial
+and its180 fixture errors remain in the first log; no checks were disabled.
+Mandatory AI registers include code, analytical data and permanently marked
+silent video. Publication awaits the owner's final approval.
+
+Diego/Jesus still need reviewed production integration and context/evidence
+transport. David must review any Level S analytical-verification label; Level R
+retains all four existing success evidence requirements. JES-07/AC-10 organizer
+notification and explicit endorsement remain pending, Jesus leads and David
+backs up with the agreed review margin. No external message was sent.
+
+## Actual Web 3D replay and active-window correction
+
+At the owner's request, the analytical video was redone in the unchanged
+published Web viewer at main9013bebf2400d605f5a3d68e79dadbd5d1c57d03.
+The [local packet](../../evidence/mission-3d-video-20261115-local/README.md)
+contains an existing-target replay adapter, tests, isolated viewer source/build,
+actual WebGL/third-person Play controls, captured compositor frames and video.
+No owner Web source, shared interface or original analytical input was modified.
+The source run stays local-cost-eva-bunsen-20261115-02, explicitly SIMULATED.
+
+The final video is82.2 s/1600×900/CFR30/H.264 level4.0, silent, permanently
+AI-generated | SIMULATED | NOT LIVE. It uses3134 genuine Chrome JPEG frames
+on native Intel/D3D11, including walking animation and actual viewer controls.
+Initial waiting is presentation-abbreviated with its cost retained; a recorded
+invalidation is paused for reading. Final timestamps differ by0.0101 s, under
+one encoded frame. Software/PNG capture attempts and the encoder's first
+timing failure remain; the exact original scripts are archived. Finalization
+uses source-derived timing, no optical flow or synthetic movement.
+
+Map review: A/B horizontal separation136.5284 m; trajectory/observation envelope
+24×136 m. The1.245 % enclosing-box area is not coverage or search-frontier area.
+The initial and post-observation requests on512/256 m returned exactly equal
+outbound/return geometry and time/Wh/O2 under2 s/200k labels. All29 observation
+cells retain their world centres after remapping. Thus256 m/64² cells is
+sufficient for this case, with75 % fewer cells;512 m adds context/scale study
+only here.128 m aligned with the current grid cannot span136 m northing;160 m
+fits geometrically but is untested. No A/B recentering, source resolution gain
+or general equivalence is asserted. Native CTX20 m and computational4 m remain.
+
+Fresh checks: Python1116 passed/21 skipped/one existing warning; isolated
+published viewer311 passed/one skipped and build passed. First viewer tests
+missed same-SHA data/sample fixtures; restore/retry and original failure are
+retained. Browser consumer showed real WebGL, same run and final pose/resources,
+with no page backend/remote HTTP requests. Eight new exporter tests cover
+provenance, coordinates, interpolation, map/route timing, NoData and crop guards.
+Both AI registers and human-model CC BY/source attribution accompany the video.
+Fresh browser profiles are tooling state excluded from publication artifacts.
+
+No ROS/Gazebo or new mission execution occurred for capture, and no physical or
+scientific acceptance gate is closed. Publication approval remains pending.
+JES-07/AC-10 organizer notification and explicit endorsement remain a separate
+delivery gate; Jesus coordinates and David backs up with the agreed review
+margin. This cut is local presentation/review, not submission readiness.

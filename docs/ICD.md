@@ -31,6 +31,20 @@ field names and types; this document records the conventions around them.
   `y = origin_y_m + (row + 0.5) * resolution_m`.
   The same indexing applies to the `32FC1` rasters and to `OccupancyGrid`.
 - Web (Three.js, Y up): `(x_web, y_web, z_web) = (x_east, z_up, -y_north)`.
+- Terrain elevation and every authoritative `pose.position.z` / route Point.z
+  use metres above the declared `vertical_datum`; the recorded ROS chain has no
+  implicit local Z offset. AGL is a separate derived quantity, not a ROS pose.
+  The execution boundary must preserve finite current XYZ and reject a route
+  whose first point differs by more than the existing 1e-6 m model tolerance.
+  It must not replace telemetry with surface height. Goal/base XY target
+  semantics remain unchanged; a surface candidate is not a flight trajectory.
+- A new labelled MOCK scene may explicitly initialize missing initial Z from
+  its declared public-prior dataset/hash/datum. This is scenario construction,
+  never an observation or an update to an existing pose. The parked drone is
+  placed on that declared scene surface. Missing height without that declaration,
+  NoData or incompatible explicit XYZ must fail before publishing agent state.
+- Display sampling uses the actual rendered triangle and animated vertex buffer;
+  visual draping/exaggeration must never alter recorded XYZ or mission authority.
 - SI units, with the unit as field suffix: `_m`, `_s`, `_wh`, `_l`, `_deg`.
   ROS field names are lower case, so the guide's `energy_est_Wh` is
   `energy_est_wh`.
@@ -597,3 +611,13 @@ retains profile approval, MODEL_NOT_AGREED/MODEL_MISMATCH, current run/map/pose,
 return reserve, idempotency and logical stop checks. The mock provider remains
 available for explicitly labelled contract tests. See
 [configuration and consumer proof](mission_integration_handoff.md).
+
+
+## Optional auxiliary visual-context topics (PR38 candidate)
+
+See [auxiliary schema1.0.0](AUXILIARY_LAYERS.md) for the optional immutable CTX
+DN and categorical display layers from data_node. Their OccupancyGrid values
+are color codes, never canonical traversability or navigation authorization.
+They remain separate from the stamped belief batch and require the sidecar
+prior-hash/full-georeference binding. No canonical message/service field or
+raster/replay version changes; scientific and consumer review remain pending.

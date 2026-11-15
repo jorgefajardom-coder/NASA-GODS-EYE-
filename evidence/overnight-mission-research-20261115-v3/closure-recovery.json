@@ -1,0 +1,15 @@
+{
+  "recorded_at_utc": "2026-11-15T10:58:41.045888+00:00",
+  "failure": "JSON endpoint cells were lists and NumPy indexed rows instead of a scalar cell; no reduction record or search query was produced before failure",
+  "original_sha256": "62c807f4ed834b290f8436887349355482b261e781fa5303d8e7dd482abc31e3",
+  "revision_sha256": "27a17af7cd66d4f08c6517f01188a340131ba7da8bfa7afcf44d53a88ca5449d",
+  "continuation_code_sha256": "d86efa274dd7fca358f8ccf4df2e82a40d1583dc91b20ff3d625a550e9f6c2f0",
+  "fix": "Rehydrate endpoint index tuples at the auxiliary journal decoding boundary",
+  "method_unchanged": true,
+  "frozen_execution_code_changed": false,
+  "original_deadline_utc": "2026-11-15T12:25:01+00:00",
+  "later_schedule": "Unchanged memory controls; optional same-ensemble resume only before the original 11:25 gate and only until 11:45; then original software checks, verification and export",
+  "previous_failure_retained": "closure-pipeline/resource-reduction.log",
+  "scientific_approval": false,
+  "operational_acceptance": false
+}

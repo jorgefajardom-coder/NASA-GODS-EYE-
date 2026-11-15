@@ -1,0 +1,54 @@
+{
+  "classification": "SUPPLEMENTAL_PRIMARY_SOURCE_REVIEW_NOT_EXPERIMENT_INPUT",
+  "reviewed_on_utc": "2026-11-15",
+  "parameter_ranges_changed": false,
+  "additional_maps_imported": false,
+  "sources": [
+    {
+      "candidate_id": "JZ-ROI-05",
+      "region": "Krokodillen",
+      "url": "https://science.nasa.gov/blog/clay-minerals-from-mars-most-ancient-past/",
+      "published": "2025-06-23",
+      "locator": "Discussion of SuperCam signatures, Strong Island/Laknes and variable clay signal",
+      "finding": "The science team reported spatially variable clay signatures and planned contextual traverses before selecting a sample.",
+      "suggested_question": "Does comparing several exposures change the station selected for subsequent sampling?",
+      "limits": "No clay field, age, sampling success or localization is transferred to a simulated cell. Current numerical agents have no validated spectral consumer. No map import in this cut."
+    },
+    {
+      "candidate_id": "JZ-ROI-06",
+      "region": "Witch Hazel Hill / Broom Point",
+      "url": "https://www.nasa.gov/solar-system/planets/mars/nasas-perseverance-rover-reads-record-of-ancient-mars-impacts/",
+      "published": "2026-07-15",
+      "paper_doi": "10.1029/2026JE009779",
+      "locator": "Reading between layers and Cosmic one-two punch",
+      "finding": "The reported 75 m rock sequence and repeated rock types motivate a comparative question about impact stratigraphy, rather than treating every layered exposure as a lake deposit.",
+      "suggested_question": "Which accessible stations discriminate contrasting layer and breccia contexts?",
+      "limits": "Reported steep bedding is a stratigraphic orientation, not a measured ground slope for our agents. No new geological cell labels, co-registered crop or instrument capability are delivered."
+    },
+    {
+      "candidate_id": "ALT-ROI03",
+      "region": "Glen Torridon / Mary Anning",
+      "url": "https://www.jpl.nasa.gov/news/nasas-curiosity-finds-organic-molecules-never-seen-before-on-mars/",
+      "published": "2026-04-21",
+      "paper_doi": "10.1038/s41467-026-70656-0",
+      "locator": "Opening findings and Mary Anning 3 sample context",
+      "finding": "Analysis of a sample acquired in 2020 identified diverse organic molecules; the report leaves biological and geological origins unresolved.",
+      "suggested_question": "Can several contextual stations improve selection among clay-bearing sedimentary exposures?",
+      "limits": "This is a historical laboratory/instrument result published in 2026, not the rover's current location or an observation from our model. No SAM-like analysis is implemented. PMC full-text access returned an interstitial; rely on the primary JPL report here."
+    },
+    {
+      "candidate_id": "ALT-ROI04",
+      "region": "Mawrth Vallis",
+      "url": "https://www.usgs.gov/publications/compositional-stratigraphy-clay-bearing-layered-deposits-mawrth-vallis-mars",
+      "published": "2008",
+      "paper_doi": "10.1029/2008GL034385",
+      "locator": "USGS publication abstract",
+      "finding": "The published spectral stratigraphy distinguishes Al-rich and Fe/Mg-rich clay horizons and competing depositional or alteration interpretations.",
+      "suggested_question": "Which traversable station sequence best compares contacts and avoids committing to a single exposure?",
+      "limits": "Orbital interpretation does not establish access, soil mechanics or sampled mineralogy. This requires another canonical public terrain package, source partition and georegistration review. The USGS warehouse endpoint returned 403; the USGS publication page was accessible."
+    }
+  ],
+  "scope": "Retain these as deferred questions in the existing 17-sector catalogue. They neither displace the three predeclared regions nor change any seed, observation or cost in the definitive sweep.",
+  "scientific_approval": false,
+  "execution_authorized": false
+}

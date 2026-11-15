@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { CameraBar } from '../src/components/CameraBar';
 import { TitleBlock } from '../src/components/Frame';
 import { TerrainScanButton } from '../src/components/TerrainScanButton';
-import { DEFAULT_RUN_ENTRY, RECORDED_RECOVERY_ENTRY, RUNS } from '../src/data/replayAdapter';
+import { DEFAULT_RUN_ENTRY, RECORDED_RECOVERY_ENTRY, HEIGHT_RECOVERY_ENTRY, isRecordedRecoveryEntry, RUNS } from '../src/data/replayAdapter';
 import { fromGatewayPackage, parseJsonLines, type GatewayManifest } from '../src/data/gatewayReplay';
 import { aboutData } from '../src/lib/stateSnapshot';
 import { ORBITAL_PREVIEW_LABEL } from '../src/lib/terrainPresentation';
@@ -52,10 +52,22 @@ describe('recorded recovery entry', () => {
   });
 });
 
+describe('recorded entry routing', () => {
+  it('opens both exact recordings directly and keeps scene navigation separate', () => {
+    expect(isRecordedRecoveryEntry(RECORDED_RECOVERY_ENTRY)).toBe(true);
+    expect(isRecordedRecoveryEntry(HEIGHT_RECOVERY_ENTRY)).toBe(true);
+    expect(isRecordedRecoveryEntry(DEFAULT_RUN_ENTRY)).toBe(false);
+    expect(isRecordedRecoveryEntry('gale-demo')).toBe(false);
+    const html = renderToStaticMarkup(createElement(TitleBlock, { manifest: bundle.manifest, runId: HEIGHT_RECOVERY_ENTRY }));
+    expect(html).toContain('parked drone');
+    expect(html).toContain('Not a scientific COMPLETE mission');
+  });
+});
+
 describe('run selector', () => {
-  it('offers only the simulated demo, no MOCK entry', async () => {
+  it('offers only the simulated worlds, no MOCK entry', async () => {
     const { OFFERED_RUNS } = await import('../src/data/replayAdapter');
-    expect(OFFERED_RUNS.map((r) => r.id)).toEqual([DEFAULT_RUN_ENTRY]);
+    expect(OFFERED_RUNS.map((r) => r.id)).toEqual([DEFAULT_RUN_ENTRY, 'gale-demo', 'gusev-demo', 'insight-demo', 'meridiani-demo', 'melas-demo']);
     expect(OFFERED_RUNS.some((r) => /MOCK/.test(r.label))).toBe(false);
   });
 });
