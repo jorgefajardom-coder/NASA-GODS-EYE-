@@ -247,3 +247,48 @@ def test_recorded_attachment_is_read_from_the_package(tmp_path):
     (tmp_path / FIXTURE.name / FILE).write_text(json.dumps(attachment), encoding='utf-8')
     with pytest.raises(ReplayContractError, match='EVALUATOR_REFERENCE_FORBIDDEN'):
         read_public_rasters(tmp_path / FIXTURE.name, manifest)
+
+
+def test_impassable_layer_attaches_to_its_version_in_any_order():
+    early = PublicRasterAssembler(RUN)
+    early.on_prior(ROWS, COLS, [0.0] * CELLS)
+    early.on_impassable(header(5), ROWS, COLS, [-1, 0, 100, 100, 0, -1])
+    early.on_meta(meta(1, 5))
+    batch(early, 5)
+    assert early.attachment()['versions']['1']['impassable'] == [2, 3]
+
+    late = PublicRasterAssembler(RUN)
+    late.on_prior(ROWS, COLS, [0.0] * CELLS)
+    late.on_meta(meta(1, 5))
+    batch(late, 5)
+    assert 'impassable' not in late.attachment()['versions']['1']
+    assert late.on_impassable(header(5), ROWS, COLS, [100, 0, 0, 0, 0, 0]) is True
+    assert late.attachment()['versions']['1']['impassable'] == [0]
+    assert late.on_impassable(header(5), ROWS, COLS, [100, 0, 0, 0, 0, 0]) is False
+
+
+def test_impassable_layer_rejects_bad_frames_shapes_and_values():
+    a = PublicRasterAssembler(RUN)
+    a.on_meta(meta(1, 5))
+    with pytest.raises(RasterInputError):
+        a.on_impassable({'frame_id': 'odom', 'stamp': {'sec': 5, 'nanosec': 0}}, ROWS, COLS, [0] * CELLS)
+    with pytest.raises(RasterInputError):
+        a.on_impassable(header(5), ROWS, COLS, [0] * (CELLS - 1))
+    with pytest.raises(RasterInputError):
+        a.on_impassable(header(5), ROWS, COLS, [50] + [0] * (CELLS - 1))
+
+
+def test_oracle_accepts_valid_and_rejects_invalid_impassable_indices():
+    manifest, records, snapshot = read_package(FIXTURE)
+    attachment = fixture_attachment(manifest, records)
+    cells = attachment['rows'] * attachment['cols']
+    for layer in attachment['versions'].values():
+        layer['impassable'] = [0, cells - 1]
+    check_public_rasters(manifest, records, attachment)
+    assert to_viewer(manifest, records, snapshot, public_rasters=attachment)['status'] == 'READY'
+    for bad, code in (([cells], 'INVALID_IMPASSABLE_INDEX'), ([True], 'INVALID_IMPASSABLE_INDEX'),
+                      ('x', 'INVALID_IMPASSABLE_INDEX'), ([0, 0], 'DUPLICATE_IMPASSABLE_INDEX')):
+        broken = deepcopy(attachment)
+        broken['versions']['1']['impassable'] = bad
+        with pytest.raises(ReplayContractError, match=code):
+            check_public_rasters(manifest, records, broken)

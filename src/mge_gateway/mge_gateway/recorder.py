@@ -14,6 +14,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from rclpy.signals import SignalHandlerOptions
+from nav_msgs.msg import OccupancyGrid
 from sensor_msgs.msg import Image
 
 from mge_gateway.public_rasters import PublicRasterAssembler, RasterInputError
@@ -71,6 +72,9 @@ class ReplayRecorder(Node):
             self.create_subscription(
                 Image, f'/mge/terrain/{name}',
                 lambda m, name=name: self.on_layer(name, m), LAYER_QOS)
+        # Optional obstacle layer: the human traversability mask of each batch.
+        self.create_subscription(
+            OccupancyGrid, '/mge/terrain/traversability/human', self.on_traversability, LAYER_QOS)
         self.get_logger().info(f'recording run {run_id} to {self.writer.dir}')
 
     def record(self, kind, msg):
@@ -101,6 +105,13 @@ class ReplayRecorder(Node):
             self.update_rasters(self.rasters.on_prior, rows, cols, values)
         else:
             self.update_rasters(self.rasters.on_layer, name, header_json(msg), rows, cols, values)
+
+    def on_traversability(self, msg):
+        if msg.header.frame_id != 'map':
+            self.get_logger().error(f'not recorded, traversability in frame {msg.header.frame_id!r}')
+            return
+        rows, cols = msg.info.height, msg.info.width
+        self.update_rasters(self.rasters.on_impassable, header_json(msg), rows, cols, list(msg.data))
 
     def update_rasters(self, method, *args):
         """A rejected layer is reported and left out; nothing is filled in."""

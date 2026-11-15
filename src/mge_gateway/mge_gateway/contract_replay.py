@@ -246,6 +246,11 @@ def _rasters(attachment, manifest, versions, recorded):
         _need(isinstance(observed, list) and all(isinstance(i, int) and not isinstance(i, bool)
               and 0 <= i < count for i in observed), "INVALID_OBSERVED_INDEX")
         _need(len(set(observed)) == len(observed), "DUPLICATE_OBSERVED_INDEX")
+        if "impassable" in layer:   # optional addition to 1.0.0
+            blocked = layer["impassable"]
+            _need(isinstance(blocked, list) and all(isinstance(i, int) and not isinstance(i, bool)
+                  and 0 <= i < count for i in blocked), "INVALID_IMPASSABLE_INDEX")
+            _need(len(set(blocked)) == len(blocked), "DUPLICATE_IMPASSABLE_INDEX")
     return {"run_id": manifest["run_id"], "rows": meta["rows"], "cols": meta["cols"],
             "prior": deepcopy(attachment["prior"]), "versions": deepcopy(layers),
             # Legacy shape only: every cell is explicitly NoData. No reference
