@@ -9,7 +9,7 @@ import { smoothHeightAt } from '../lib/terrainSmooth';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
 import * as THREE from 'three';
-import { FollowCamera, type Framing } from './FollowCamera';
+import { FollowCamera, TOUR_FRAMING, type Framing } from './FollowCamera';
 import { ViewRotator } from './ViewRotator';
 import { TerrainGrowth } from './TerrainGrowth';
 import { FirstPersonCamera } from './FirstPersonCamera';
@@ -69,6 +69,8 @@ interface Props {
   cutaway: GeologyData | null;
   /** First-person view from the followed agent (ignored when no agent is followed). */
   firstPerson: boolean;
+  /** Photo tour: the first-person interface over a third-person camera that sits further back. */
+  tourHud?: boolean;
   /** Walking/driving sway of the first-person camera (display only). */
   povSway: boolean;
   /** Low-power rendering (software rasteriser or slow GPU): pixel ratio 1, no antialiasing, surface detail or surroundings. */
@@ -84,7 +86,7 @@ interface Props {
 /** Horizon haze colour: dusty Martian daytime sky, darkened so the panels stay readable. */
 const SKY = '#6e5242';
 
-export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, povSway, lite = false, droneCam = false, helmetLight = false, artificialLight = false }: Props) {
+export function MissionScene({ bundle, view, layer, exaggeration, showControlPoints, showLabels, reveal, playing, replaySpeed, followAgentId, baseCamera, freePan, selectedAgentId, contours, cameraSmoothing, imageryUrl, geology, surfaceDetail, cutaway, trueScale, contextImageUrl, showContext, firstPerson, tourHud = false, povSway, lite = false, droneCam = false, helmetLight = false, artificialLight = false }: Props) {
   const geoTexture = useGeologyTexture(geology);
   const sunLight = useRef<THREE.DirectionalLight>(null);
   const hemiLight = useRef<THREE.HemisphereLight>(null);
@@ -209,7 +211,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       />
       )}
       {baseAnchor && <group name={BASE_ANCHOR} position={baseAnchor} />}
-      <FollowCamera target={cameraTarget} framing={followed ? undefined : BASE_FRAMING} />
+      <FollowCamera target={cameraTarget} framing={followed ? (tourHud ? TOUR_FRAMING : undefined) : BASE_FRAMING} mirrorHud={tourHud} />
       {/* Mounted after the follow camera: same frame priority, so it places the eye after the follow update. */}
       <FirstPersonCamera target={pov ? `agent-${followed}` : null} kind={pov ? followedKind : null} sway={povSway} lite={lite} />
       {(() => {

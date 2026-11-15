@@ -29,6 +29,8 @@ const MAP_DPR_MAX = 1.75;
 const LOOK_DEG_PER_PX = 0.18;
 
 /** Live camera heading and pitch, read by the HUD outside React (no re-render per frame). */
+import { aimRequest, shortestTurnDeg } from '../lib/photoAim';
+
 export const povState = { headingDeg: 0, pitchDeg: 0, fovDeg: 70, active: false };
 
 /** Heading of a Three.js direction measured clockwise from north (deg, 0..360). */
@@ -96,6 +98,8 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
   const world = useRef(new THREE.Vector3());
   const fwd = useRef(new THREE.Vector3());
   const aim = useRef(new THREE.Vector3());
+  // A request to turn towards where a photo was taken (lib/photoAim): eased in, cancelled by a drag.
+  const turn = useRef<{ seen: number; yaw: number | null; pitch: number }>({ seen: aimRequest.token, yaw: null, pitch: 0 });
 
   // Enter / leave: remember the third-person offset and the lens, restore them on exit.
   useEffect(() => {
@@ -136,6 +140,7 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
     };
     const move = (e: PointerEvent) => {
       if (!drag) return;
+      turn.current.yaw = null; // the person takes over the view
       const l = look.current;
       const k = LOOK_DEG_PER_PX * (l.fov / EYE[kind].fovDeg);
       l.yaw -= (e.clientX - drag.x) * k;
@@ -201,6 +206,22 @@ export function FirstPersonCamera({ target, kind, sway, lite = false }: Props) {
     right.current.set(Math.sin(heading), 0, Math.cos(heading)); // to the agent's right
     camera.position.y += s.up;
     camera.position.addScaledVector(right.current, s.side);
+    // Turn towards the last photo direction asked for (compass azimuth -> yaw relative to the agent).
+    const tr = turn.current;
+    if (aimRequest.token !== tr.seen) {
+      tr.seen = aimRequest.token;
+      tr.yaw = aimRequest.azimuthDeg;
+      tr.pitch = aimRequest.pitchDeg;
+    }
+    if (tr.yaw != null) {
+      const headingNorthDeg = (90 - THREE.MathUtils.radToDeg(heading) + 720) % 360; // the agent's compass heading
+      const dYaw = shortestTurnDeg(headingNorthDeg + -l.yaw, tr.yaw); // look.yaw grows to the left, compass to the right
+      // Eased and limited in speed (about 55 deg/s): the turn starts and ends gently.
+      const k = 1 - Math.exp(-dt * 2.4);
+      l.yaw -= THREE.MathUtils.clamp(dYaw * k, -55 * dt, 55 * dt);
+      l.pitch += (THREE.MathUtils.clamp(tr.pitch, PITCH_MIN_DEG, PITCH_MAX_DEG) - l.pitch) * k;
+      if (Math.abs(dYaw) < 0.3 && Math.abs(tr.pitch - l.pitch) < 0.3) tr.yaw = null;
+    }
     const yaw = heading + THREE.MathUtils.degToRad(l.yaw);
     const pitch = THREE.MathUtils.degToRad(l.pitch);
     aim.current.set(Math.cos(yaw) * Math.cos(pitch), Math.sin(pitch), -Math.sin(yaw) * Math.cos(pitch));

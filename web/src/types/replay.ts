@@ -142,6 +142,8 @@ export interface RoverStop {
   x_m: number;
   y_m: number;
   z_m: number;
+  /** The rover's heading at the stop as NASA publishes it (deg clockwise from north). */
+  yaw_deg?: number;
   /** Replay time (s) at which the rover arrives at this stop during the photo tour. */
   tour_arrival_s?: number;
 }

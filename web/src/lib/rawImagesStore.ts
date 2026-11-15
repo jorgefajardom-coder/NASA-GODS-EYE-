@@ -110,6 +110,12 @@ export function createRawImagesStore(fetchFn: FetchLike, preload: (urls: string[
     );
   };
 
+  /** Selects an image by its position (the tour shows them one after another). */
+  function select(i: number): void {
+    if (state.status !== 'ready' || i < 0 || i >= state.images.length) return;
+    set({ ...state, index: i });
+  }
+
   /** Moves the selected image by `step`, wrapping around. */
   function step(by: number): void {
     if (state.status !== 'ready') return;
@@ -125,6 +131,7 @@ export function createRawImagesStore(fetchFn: FetchLike, preload: (urls: string[
     },
     load,
     loadStop,
+    select,
     step,
   };
 }

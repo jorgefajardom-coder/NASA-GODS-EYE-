@@ -49,8 +49,8 @@ export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { 
       <div className="marsnow__shot">
         {grid ? (
           <div className="marsnow__grid" aria-label={`${all.length} real images of this stop`}>
-            {all.map((i) => (
-              <img key={i.id} src={i.thumbUrl} alt={`${mission.name} ${i.instrument}, sol ${i.sol}`} referrerPolicy="no-referrer" title={`${i.instrument} · sol ${i.sol}`} />
+            {all.map((i, n) => (
+              <img key={i.id} className={n === (state.status === 'ready' ? state.index : -1) ? 'is-shot' : undefined} src={i.thumbUrl} alt={`${mission.name} ${i.instrument}, sol ${i.sol}`} referrerPolicy="no-referrer" title={`${i.instrument} · sol ${i.sol}`} />
             ))}
           </div>
         ) : img ? (
@@ -78,7 +78,7 @@ export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { 
       </div>
       {grid && matches && (
         <div className="marsnow__foot">
-          <span>{state.status === 'ready' && state.preloaded ? `${all.length} images loaded` : `Loading ${all.length} images…`}</span>
+          <span>{state.status === 'ready' && state.preloaded ? `Photo ${(state.status === 'ready' ? state.index : 0) + 1}/${all.length}` : `Loading ${all.length} images…`}</span>
         </div>
       )}
       {img && !grid && (

@@ -15,6 +15,11 @@ export interface RawImage {
   /** Drive counter within the site; with `site` it is the rover stop (RMC `<site>_<drive>`). */
   drive: number | null;
   instrument: string;
+  /** Pointing in the rover frame (x forward, y right, z down), when the feed gives it. */
+  vector: [number, number, number] | null;
+  /** Mast azimuth (deg clockwise from the rover's front) and elevation (deg), when the feed gives them. */
+  mastAzDeg: number | null;
+  mastElDeg: number | null;
   takenUtc: string;
   credit: string;
   /** 320 px browse image. */
@@ -39,6 +44,8 @@ export function rawFeedUrlForSol(sol: number, num = 300, category = 'mars2020'):
 export function imagesAtStop(images: RawImage[], site: number, drive: number): RawImage[] {
   return images.filter((i) => i.site === site && i.drive === drive);
 }
+
+import { parseNumber, parseVector } from './photoAim';
 
 const NASA_HOST = /^https:\/\/mars\.nasa\.gov\//;
 const str = (v: unknown): string | null => (typeof v === 'string' && v ? v : null);
@@ -67,6 +74,9 @@ export function parseRawImages(json: unknown): RawImage[] {
       site: typeof raw.site === 'number' ? raw.site : null,
       drive: raw.drive != null && raw.drive !== '' && Number.isFinite(Number(raw.drive)) ? Number(raw.drive) : null,
       instrument: str(cam.instrument) ?? 'UNKNOWN',
+      vector: parseVector(cam.camera_vector),
+      mastAzDeg: parseNumber((raw.extended as Record<string, unknown> | undefined)?.mastAz),
+      mastElDeg: parseNumber((raw.extended as Record<string, unknown> | undefined)?.mastEl),
       takenUtc: str(raw.date_taken_utc) ?? '',
       credit: str(raw.credit) ?? 'NASA/JPL-Caltech',
       thumbUrl: thumb,

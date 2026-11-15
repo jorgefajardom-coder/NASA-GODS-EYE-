@@ -3147,3 +3147,28 @@ input[type='checkbox'] {
     right: var(--gutter);
   }
 }
+
+/* Photo tour: the photo being taken, and the shutter flash */
+.marsnow__grid img.is-shot {
+  outline: 2px solid #f0a050;
+  outline-offset: -2px;
+  filter: brightness(1.25);
+}
+.shutter {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: #fff;
+  opacity: 0;
+  animation: shutter-flash 0.32s ease-out;
+}
+@keyframes shutter-flash {
+  0% { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shutter {
+    animation-duration: 0.01s;
+  }
+}
