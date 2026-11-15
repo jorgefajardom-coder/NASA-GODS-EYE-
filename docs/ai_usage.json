@@ -1574,9 +1574,11 @@
         "web/src/components/HudGauge.tsx",
         "web/src/lib/gatewayLive.ts",
         "web/src/components/LiveGatewayPanel.tsx",
-        "web/tests/gatewayLive.test.ts"
+        "web/tests/gatewayLive.test.ts",
+        "web/src/components/Frame.tsx",
+        "web/README.md"
       ],
-      "use": "Display the existing per-zone water (Mars Odyssey GRS) and radiation (MSL RAD and RAD's dose-pressure relation) context from web/scripts/data/zone_environment.json in the Atmos tab of every zone and on the zone cards, with a 4 h Marswalk example dose; draft the English project-page text that maps the challenge to delivered and pending items. Add the HUD's exhaled-CO2 gauge on the oxygen button (oxygen used x an assumed respiratory quotient of 0.85, pending review; suit CO2 removal capacity not modelled). Use each zone's surface dose rate in the HUD dose gauge, with NASA's 600 mSv career limit (NASA-STD-3001) as scale context. Add the opt-in read-only live gateway panel (?gateway=), tested with synthetic gateway envelopes and checked against a running MOCK ROS stack; it labels a MOCK stack MOCK and sends no goals. The numeric values and their sources are unchanged NASA-derived data, not generated; the example dose is a linear display estimate without shielding or solar events. No media generated; no scientific approval or milestone closure."
+      "use": "Display the existing per-zone water (Mars Odyssey GRS) and radiation (MSL RAD and RAD's dose-pressure relation) context from web/scripts/data/zone_environment.json in the Atmos tab of every zone and on the zone cards, with a 4 h Marswalk example dose; draft the English project-page text that maps the challenge to delivered and pending items. Add the HUD's exhaled-CO2 gauge on the oxygen button (oxygen used x an assumed respiratory quotient of 0.85, pending review; suit CO2 removal capacity not modelled). Use each zone's surface dose rate in the HUD dose gauge, with NASA's 600 mSv career limit (NASA-STD-3001) as scale context. Add the opt-in read-only live gateway panel (?gateway=), tested with synthetic gateway envelopes and checked against a running MOCK ROS stack; it labels a MOCK stack MOCK and sends no goals; the top-right link status follows it (Offline without a gateway, Connected with its provenance label) and never claims LIVE. The numeric values and their sources are unchanged NASA-derived data, not generated; the example dose is a linear display estimate without shielding or solar events. No media generated; no scientific approval or milestone closure."
     },
     {
       "tool": "OpenAI Codex",

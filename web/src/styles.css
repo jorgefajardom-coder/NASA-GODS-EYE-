@@ -589,6 +589,15 @@ input[type='checkbox'] {
   line-height: 1;
 }
 
+.status__link--connected {
+  color: #5bd38a;
+}
+
+.status__link--connecting,
+.status__link--not_ready {
+  color: var(--amber);
+}
+
 .status__line {
   display: flex;
   justify-content: flex-end;
