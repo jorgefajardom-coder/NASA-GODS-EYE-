@@ -1,6 +1,7 @@
 {
   "name": "mge-web",
   "private": true,
+  "license": "MIT",
   "version": "0.1.0",
   "description": "Mars Gods Eye mission viewer: 3D terrain, routes, agents and replay",
   "type": "module",

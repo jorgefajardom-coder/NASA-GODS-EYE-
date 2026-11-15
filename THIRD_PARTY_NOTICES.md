@@ -1,7 +1,8 @@
 # Third-party notices
 
 Third-party assets distributed with this repository. Their licences apply to
-the assets only, not to the project's own code.
+the assets only, not to the project's own code, which is under the MIT
+License in [LICENSE](LICENSE).
 
 ## Astronaut 3D model
 

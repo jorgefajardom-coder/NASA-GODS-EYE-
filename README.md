@@ -574,10 +574,12 @@ Read [AGENTS.md](AGENTS.md). Work on your assigned branch; open small PRs to
 producers, consumers and contract tests together when fields/frames/units change.
 Use English Conventional Commits and English PR descriptions.
 
-The integrated interfaces/simulation/bringup packages retain their existing MIT
-metadata. New packages use `LicenseRef-UNSPECIFIED` and `team@example.invalid`
-as explicit placeholders to replace before distribution. The team still needs
-to choose and supply the overall project license; dataset licenses are separate.
+The project's own code and documentation are released under the
+[MIT License](LICENSE); every ROS package and the web viewer declare MIT.
+The `team@example.invalid` maintainer address in new packages is still a
+placeholder to replace before distribution. The MIT License does not cover
+third-party material: NASA/USGS data and imagery, fonts, 3D models and other
+assets keep their own terms and credits.
 Third-party credits and licences are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## AI use
