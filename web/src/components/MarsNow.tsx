@@ -38,6 +38,7 @@ export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { 
   const grid = !!tour && !!stop && all.length > 1; // on the tour, every image of the stop is shown together
   const load = () => void (stop ? rawImages.loadStop(stop, mission) : rawImages.load(mission));
   const failed = state.status === 'error';
+  const noFeed = mission.image_match === 'none';
   return (
     <div className="marsnow" role="region" aria-label={stop ? `Real ${mission.name} images of this stop` : `Mars now: real ${mission.name} image`}>
       <div className="marsnow__bar">
@@ -55,6 +56,8 @@ export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { 
           </div>
         ) : img ? (
           <img src={img.mediumUrl} alt={`Perseverance ${img.instrument}, sol ${img.sol}`} referrerPolicy="no-referrer" />
+        ) : noFeed ? (
+          <p>{stop ? `The real ${mission.name} stopped here on sol ${stop.sol}. ` : ''}NASA’s raw-image feed has no {mission.name} images: they are archived in the PDS, so none is shown here.</p>
         ) : state.status === 'loading' ? (
           <p>Loading from NASA…</p>
         ) : tour && !stop ? (
@@ -109,7 +112,7 @@ export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { 
           </button>
         </div>
       )}
-      <small className="marsnow__note">{stop ? (mission.image_match === 'sol' ? 'Real photos of this sol · the rover may have moved · not terrain data' : 'Real photos of this spot · not terrain data') : 'Not the replay’s site · not terrain data'}</small>
+      <small className="marsnow__note">{noFeed ? 'Real stop position · no image feed for this mission' : stop ? (mission.image_match === 'sol' ? 'Real photos of this sol · the rover may have moved · not terrain data' : 'Real photos of this spot · not terrain data') : 'Not the replay’s site · not terrain data'}</small>
     </div>
   );
 }

@@ -25,7 +25,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-// World to build: `WORLD=jezero` (default, the Perseverance demo) or `WORLD=gale` (Curiosity at Gale crater).
+// World to build: `WORLD=jezero` (default, the Perseverance demo), `gale` (Curiosity at Gale crater), `gusev`
+// (Spirit), `meridiani` (Opportunity at Endeavour crater), `insight` (InSight lander, no traverse) or `melas`
+// (Valles Marineris, no landed mission). A world without stops has no photo tour.
 const WORLD = process.env.WORLD ?? 'jezero';
 const WORLDS = {
   jezero: {
@@ -51,6 +53,62 @@ const WORLDS = {
       title: 'MRO CTX Gale crater mosaic (block adjusted)',
       source: 'JPL Mars Trek WMTS layer Gale_CTX_BlockAdj_dd, https://trek.nasa.gov/mars/',
       credit: 'NASA/JPL-Caltech/MSSS', native: 6, res: 10,
+    },
+    layers: { geology: false, atmosphere: false, context: false },
+    hiddenNote: 'DEM prior plus a SYNTHETIC scarp',
+    exaggeration: 1,
+  },
+  gusev: {
+    dir: 'gusev-demo', runId: 'gusev-demo-sim-001', crop: 'gusev/dem_crop.json', stops: 'gusev/rover_waypoints.json', mission: 'Spirit',
+    datasetId: 'clh-dem-mosaic-8m', datum: 'datum of the Columbia Hills DEM mosaic',
+    title: 'Gusev demo: Columbia Hills corridor survey and replanning',
+    terrain: (res) => `NASA/USGS Columbia Hills HiRISE/CTX/HRSC DEM mosaic crop over Spirit's traverse from the landing site to the Columbia Hills (real, preliminary, ${res} m display grid averaged from its 1 m mosaic)`,
+    imagery: {
+      title: 'Columbia Hills visible mosaic (HiRISE/CTX/HRSC)',
+      source: 'JPL Mars Trek WMTS layer CLH_Visible_Mosaic_HiRISE_CTX_HRSC_GCS_MARS_07-10-2018, https://trek.nasa.gov/mars/',
+      credit: 'NASA/JPL-Caltech/USGS/University of Arizona/ESA/DLR/FU Berlin', native: 1, res: 10,
+    },
+    layers: { geology: false, atmosphere: false, context: false },
+    hiddenNote: 'DEM prior plus a SYNTHETIC scarp',
+    exaggeration: 2,
+  },
+  meridiani: {
+    dir: 'meridiani-demo', runId: 'meridiani-demo-sim-001', crop: 'meridiani/dem_crop.json', stops: 'meridiani/rover_waypoints.json', mission: 'Opportunity',
+    datasetId: 'endeavour-hirise-dem-8m', datum: 'datum of the Endeavour crater HiRISE DEM',
+    title: 'Meridiani demo: Endeavour rim corridor survey and replanning',
+    terrain: (res) => `NASA HiRISE DEM crop of Endeavour crater's west rim along Opportunity's traverse (real, provisional, ${res} m display grid averaged from its 1 m DEM)`,
+    imagery: {
+      title: 'MRO CTX South Meridiani mosaic (block adjusted)',
+      source: 'JPL Mars Trek WMTS layer S_Meridiani_Sinus_Planium_CTX_BlockAdj_dd, https://trek.nasa.gov/mars/',
+      credit: 'NASA/JPL-Caltech/MSSS', native: 6, res: 10,
+    },
+    layers: { geology: false, atmosphere: false, context: false },
+    hiddenNote: 'DEM prior plus a SYNTHETIC scarp',
+    exaggeration: 1,
+  },
+  insight: {
+    dir: 'insight-demo', runId: 'insight-demo-sim-001', crop: 'insight/dem_crop.json', stops: null, mission: 'InSight',
+    datasetId: 'insight-dem-mosaic-8m', datum: 'datum of the InSight DEM mosaic',
+    title: 'Elysium demo: corridor survey and replanning near the InSight lander',
+    terrain: (res) => `NASA/USGS InSight HiRISE/CTX/HRSC DEM mosaic crop centred on the InSight lander (real, provisional, ${res} m display grid from a 20 m source)`,
+    imagery: {
+      title: 'MRO CTX InSight landing site mosaic',
+      source: 'JPL Mars Trek WMTS layer InSightCTXMosaic_112917, https://trek.nasa.gov/mars/',
+      credit: 'NASA/JPL-Caltech/MSSS', native: 6, res: 10,
+    },
+    layers: { geology: false, atmosphere: false, context: false },
+    hiddenNote: 'DEM prior plus a SYNTHETIC scarp',
+    exaggeration: 4,
+  },
+  melas: {
+    dir: 'melas-demo', runId: 'melas-demo-sim-001', crop: 'melas/dem_crop.json', stops: null, mission: null,
+    datasetId: 'ctx-dem-11s291e-8m', datum: 'datum of the CTX stereo DEM',
+    title: 'Melas demo: canyon floor corridor survey and replanning',
+    terrain: (res) => `NASA/USGS CTX stereo DEM crop of a Melas Chasma floor and wall in Valles Marineris, never visited by a rover (real, provisional, ${res} m display grid from a 24 m source)`,
+    imagery: {
+      title: 'MRO CTX orthoimage B19_017187_1685 (paired with the DEM)',
+      source: 'JPL Mars Trek WMTS layer CTX_Ortho_11S291E_6mp_B19_017187_1685, https://trek.nasa.gov/mars/',
+      credit: 'NASA/JPL-Caltech/MSSS/USGS', native: 6, res: 10,
     },
     layers: { geology: false, atmosphere: false, context: false },
     hiddenNote: 'DEM prior plus a SYNTHETIC scarp',
@@ -277,7 +335,8 @@ function candidates(r0, r1, c0, c1, lim) {
 }
 // Real Perseverance stops inside the crop (scripts/extract-rover-waypoints.mjs). Base A and goal B sit
 // on two of them, so the astronaut stands on real stops, each with real mission images, at both ends.
-const stopsFile = JSON.parse(readFileSync(join(HERE, 'data', WD.stops), 'utf8'));
+const stopsFile = WD.stops ? JSON.parse(readFileSync(join(HERE, 'data', WD.stops), 'utf8')) : { stops: [] };
+const HAS_STOPS = stopsFile.stops.length > 0;
 const stopsAt = (lim) => stopsFile.stops.map((st) => ({ st, p: nearestFreeAt(st.x_m, st.y_m, lim) })).filter((k) => k.p);
 function nearestFreeAt(x, y, lim) {
   try {
@@ -318,6 +377,27 @@ if (!r1Out) {
         B = b;
         r1Out = p;
         break outer2;
+      }
+    }
+  }
+}
+if (!r1Out) {
+  // Steep worlds (a canyon wall across the map): the flattest cells of the whole crop, on a coarse
+  // lattice, paired south to north at 0.9-1.9 km apart.
+  const lattice = [];
+  const step = 6 * K;
+  for (let r = step; r < ROWS - step; r += step) for (let c = step; c < COLS - step; c += step) if (free(r, c, 6)) lattice.push({ r, c, s: slPrior[r * COLS + c] });
+  const flat = lattice.sort((a, b) => a.s - b.s).slice(0, 60).map((k) => center(k.r, k.c));
+  outer3: for (const a of flat) {
+    for (const b of flat) {
+      const straight = dist(a, b);
+      if (b.y <= a.y || straight < 900 || straight > 1900) continue;
+      const p = search(prior, sigma1, HUMAN.slope, a, b);
+      if (p && len(p) > 1300 && len(p) < 2300) {
+        A = a;
+        B = b;
+        r1Out = p;
+        break outer3;
       }
     }
   }
@@ -507,7 +587,7 @@ const T_ROVER_HOME = even(roverBackPlan.end);
 // the speed is faster than real hardware and resource use is NOT modelled during the tour (the rover's
 // time and energy are held at their values when the tour starts).
 const TOUR = { speed: 2.0, dwell_s: 40 };
-const T_TOUR = even(Math.max(T_HOME, T_ROVER_HOME) + 20);
+const T_TOUR = even(Math.max(T_HOME, T_ROVER_HOME) + (HAS_STOPS ? 20 : 0));
 const tourStops = stopsFile.stops;
 const snapStop = (p) => nearestFreeAt(p.x, p.y, ROVER.slope);
 function tourLeg(a, b) {
@@ -723,9 +803,11 @@ ev(T_AT_B, 'TASK_STATE_CHANGED', { causality_id: goalOk, task_id: 'main:reach', 
 ev(T_B_DONE, 'TASK_STATE_CHANGED', { causality_id: goalOk, task_id: 'main:reach', agent_id: HUMAN.id, previous_state: 'EXECUTING', new_state: 'DONE', reason_code: 'PRIMARY_GOAL_COMPLETE', detail: 'Primary goal B completed.' });
 ev(T_B_DONE, 'MISSION_STATE_CHANGED', { causality_id: goalOk, previous_state: 'ACTIVE', new_state: 'RETURNING', reason_code: 'PRIMARY_GOAL_COMPLETE', detail: 'Returning to base A on the return leg of r2.' });
 ev(T_HOME, 'MISSION_STATE_CHANGED', { causality_id: r2Pub, previous_state: 'RETURNING', new_state: 'COMPLETE', reason_code: 'RETURNED_TO_BASE', detail: 'Astronaut back at base A. Goal completed, return verified under the model, no budget violation.' });
+if (HAS_STOPS) {
 const tourReq = ev(T_TOUR, 'TASK_DISCOVERED', { causality_id: 'tour-req', task_id: 'tour:stops', agent_id: ROVER.id, new_state: 'DISCOVERED', reason_code: 'PHOTO_TOUR', detail: `Photo tour: the rover will visit all ${tourStops.length} real ${WD.mission} stops of this map (sol ${tourStops[0].sol} to ${tourStops.at(-1).sol}), in the order NASA's rover visited them. Illustrative speed; resource use is not modelled during the tour.` });
 ev(T_TOUR + DT, 'TASK_STATE_CHANGED', { causality_id: tourReq, task_id: 'tour:stops', agent_id: ROVER.id, previous_state: 'DISCOVERED', new_state: 'EXECUTING', reason_code: 'PHOTO_TOUR_STARTED', detail: 'Rover leaves base for the first real stop.' });
 ev(T_TOUR_END, 'TASK_STATE_CHANGED', { causality_id: tourReq, task_id: 'tour:stops', agent_id: ROVER.id, previous_state: 'EXECUTING', new_state: 'DONE', reason_code: 'PHOTO_TOUR_COMPLETE', detail: `Rover visited all ${tourStops.length} real stops.` });
+}
 
 // ------------------------------------------------------------------ frames
 function missionAt(t) {
@@ -776,7 +858,7 @@ const manifest = {
   illustrative: true,
   title: WD.title,
   summary: 'The drone surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around it, reaches goal B and returns to base.',
-  disclaimer: 'Terrain: ' + WD.terrain(RES) + '. Rover stop markers: real ' + WD.mission + ' stops (NASA). Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.',
+  disclaimer: 'Terrain: ' + WD.terrain(RES) + (HAS_STOPS ? '. Rover stop markers: real ' + WD.mission + ' stops (NASA).' : WD.mission ? `. ${WD.mission} is a lander: no rover stops exist here.` : '. No rover or lander has visited this place: no stops exist here.') + ' Mission, budgets and the corridor scarp are simulated or synthetic; POIs are fictitious. Rover (1 m/s) and drone (4 m/s, 40 m up) motion is simulated; the rover is faster than real hardware (Perseverance about 4.2 cm/s), the drone below the Ingenuity top speed (about 5 m/s, flown at 10-24 m). Not EVA-certified limits, not a planner output.',
   ai_disclosure: {
     ai_assisted: true,
     scope: 'Fixture generator script and replay fixture structure; the simulated mission, routes and events are generated data, not observations.',
@@ -802,9 +884,9 @@ const manifest = {
   // Geologic units of the crop (scripts/extract-geology.mjs, USGS SIM 3464). Approximate boundaries.
   ...(WD.layers.geology ? { geology: { file: 'geology.json' } } : {}),
   // Real Perseverance stops inside the crop (scripts/extract-rover-waypoints.mjs); position and identifiers only.
-  rover_stops: { file: 'rover_stops.json' },
+  ...(HAS_STOPS ? { rover_stops: { file: 'rover_stops.json' } } : {}),
   // The rover's photo tour of every real stop (after the story ends). Illustrative speed; resources not modelled.
-  photo_tour: { agent_id: ROVER.id, start_s: T_TOUR, end_s: T_TOUR_END, stops: tourStops.length, speed_mps: TOUR.speed, dwell_s: TOUR.dwell_s },
+  ...(HAS_STOPS ? { photo_tour: { agent_id: ROVER.id, start_s: T_TOUR, end_s: T_TOUR_END, stops: tourStops.length, speed_mps: TOUR.speed, dwell_s: TOUR.dwell_s } } : {}),
   // Weather and radiation context (scripts/extract-atmosphere.mjs: MEDA, REMS, RAD). Display only.
   ...(WD.layers.atmosphere ? { atmosphere: { file: 'atmosphere.json' } } : {}),
   // Surroundings from the same CTX DTM (20 km, 100 m box average) and orthomosaic (40 m). Context only.
@@ -854,7 +936,7 @@ const roverStops = {
 
 mkdirSync(OUT, { recursive: true });
 writeFileSync(join(OUT, 'manifest.json'), JSON.stringify(manifest, null, 2));
-writeFileSync(join(OUT, 'rover_stops.json'), JSON.stringify(roverStops));
+if (HAS_STOPS) writeFileSync(join(OUT, 'rover_stops.json'), JSON.stringify(roverStops));
 writeFileSync(join(OUT, 'routes.json'), JSON.stringify({ run_id: RUN_ID, routes }, null, 2));
 writeFileSync(join(OUT, 'timeline.json'), JSON.stringify({ schema_version: SCHEMA, run_id: RUN_ID, frames, events }));
 writeFileSync(

@@ -1,19 +1,32 @@
 /**
- * Worlds the viewer can open: each is a place with its own real NASA terrain and a real rover mission
- * whose stops are drawn on it. A world with a `runId` has a scene; the others are listed with the
- * reason they have none. The story played on every scene (drone survey, scarp, replan, rover photo
- * tour) is simulated; only the terrain, the imagery and the rover stops are NASA data.
+ * Zones the viewer can open: each is a place with its own real NASA terrain and, where one exists, a real
+ * rover or lander mission. A zone with a `runId` has a scene; the other is an external page. The story
+ * played on every scene (drone survey, scarp, replan, rover photo tour) is simulated; only the terrain,
+ * the imagery and the rover stops are NASA data.
+ *
+ * Every card image is real orbital imagery of that zone, north up: the same orthomosaic that is draped on
+ * its terrain, so the card and the 3D map line up for the transition.
  */
+export type ZoneStatus = 'scene' | 'external';
+
 export interface WorldInfo {
   id: string;
   body: 'Mars' | 'Earth';
   place: string;
   mission: string;
-  /** Replay folder under `replay/`, or null for a world without a scene. */
+  /** Replay folder under `replay/`, or null for a zone without a scene. */
   runId: string | null;
+  status: ZoneStatus;
   /** What the scene is made of, or why there is none. */
   note: string;
-  /** Source page of the world's data. */
+  /** NASA data the zone is made of, and what it does not have (e.g. no rover stops). */
+  data: string;
+  missing: string | null;
+  /** Card image (asset path under public/), north up, or null. */
+  image: string | null;
+  /** What the card image is, for its caption and alt text. */
+  imageCaption: string | null;
+  /** Source page of the zone's data. */
   url: string;
 }
 
@@ -24,7 +37,12 @@ export const WORLDS: ReadonlyArray<WorldInfo> = [
     place: 'Jezero crater',
     mission: 'Perseverance',
     runId: 'demo',
+    status: 'scene',
     note: 'MRO CTX terrain at the landing area and north of it, with the real Perseverance stops (sol 13 to 708).',
+    data: 'CTX DTM 20 m and CTX orthomosaic 6 m (Mars 2020 TRN), SIM 3464 geology, MMGIS M20 waypoints.',
+    missing: null,
+    image: 'replay/demo/ctx_ortho.png',
+    imageCaption: 'MRO CTX Jezero orthomosaic over the scene crop, the image draped on its terrain',
     url: 'https://trek.nasa.gov/mars/',
   },
   {
@@ -33,8 +51,69 @@ export const WORLDS: ReadonlyArray<WorldInfo> = [
     place: 'Gale crater',
     mission: 'Curiosity',
     runId: 'gale-demo',
+    status: 'scene',
     note: 'NASA/USGS MSL Gale DEM mosaic over the foot of Mount Sharp, with the real Curiosity stops (thinned to 80 m apart).',
+    data: 'MSL Gale DEM mosaic (8 m overview), MRO CTX Gale mosaic, MMGIS MSL waypoints.',
+    missing: null,
+    image: 'replay/gale-demo/ctx_ortho.png',
+    imageCaption: 'MRO CTX Gale mosaic over the scene crop, the image draped on its terrain',
     url: 'https://science.nasa.gov/resource/curiositys-proposed-path-up-mount-sharp/',
+  },
+  {
+    id: 'gusev',
+    body: 'Mars',
+    place: 'Gusev crater',
+    mission: 'Spirit',
+    runId: 'gusev-demo',
+    status: 'scene',
+    note: "Columbia Hills DEM over Spirit's traverse from the landing site to the Columbia Hills, with the real Spirit stops (sol 1 to 1866, thinned to 40 m apart).",
+    data: 'Columbia Hills HiRISE/CTX/HRSC DEM mosaic (1 m, averaged to 8 m) and visible mosaic, PDS Geosciences Node corrected Spirit traverse.',
+    missing: "NASA's raw-image feed has no Spirit images (archived in the PDS): the tour shows none.",
+    image: 'replay/gusev-demo/ctx_ortho.png',
+    imageCaption: 'Columbia Hills visible mosaic (HiRISE/CTX/HRSC) over the scene crop, the image draped on its terrain',
+    url: 'https://trek.nasa.gov/mars/',
+  },
+  {
+    id: 'elysium',
+    body: 'Mars',
+    place: 'Elysium Planitia',
+    mission: 'InSight',
+    runId: 'insight-demo',
+    status: 'scene',
+    note: 'InSight DEM mosaic centred on the lander (4.502 N, 135.623 E), a flat lava plain.',
+    data: 'InSight HiRISE/CTX/HRSC DEM mosaic (20 m) and InSight CTX mosaic.',
+    missing: 'InSight is a lander: no rover stops and no photo tour.',
+    image: 'replay/insight-demo/ctx_ortho.png',
+    imageCaption: 'MRO CTX InSight mosaic over the scene crop, the image draped on its terrain',
+    url: 'https://trek.nasa.gov/mars/',
+  },
+  {
+    id: 'meridiani',
+    body: 'Mars',
+    place: 'Meridiani Planum',
+    mission: 'Opportunity',
+    runId: 'meridiani-demo',
+    status: 'scene',
+    note: "HiRISE DEM of Endeavour crater's west rim, with the real Opportunity stops along it (sol 2630 to 4922, thinned to 80 m apart).",
+    data: 'Endeavour crater HiRISE DEM (1 m, averaged to 8 m), South Meridiani CTX mosaic, PDS Geosciences Node corrected Opportunity traverse.',
+    missing: "The traverse is tied to the published landing site by the frontend (tens of metres); NASA's raw-image feed has no Opportunity images.",
+    image: 'replay/meridiani-demo/ctx_ortho.png',
+    imageCaption: 'MRO CTX South Meridiani mosaic over the scene crop, the image draped on its terrain',
+    url: 'https://trek.nasa.gov/mars/',
+  },
+  {
+    id: 'melas',
+    body: 'Mars',
+    place: 'Valles Marineris',
+    mission: 'No landed mission',
+    runId: 'melas-demo',
+    status: 'scene',
+    note: 'CTX stereo DEM of a Melas Chasma floor and wall (1.5 km of relief), a place never visited by a rover.',
+    data: 'MRO CTX stereo DEM 11S291E (24 m) and its paired CTX orthoimage.',
+    missing: 'No rover or lander has been here: no stops and no photo tour.',
+    image: 'replay/melas-demo/ctx_ortho.png',
+    imageCaption: 'MRO CTX orthoimage B19_017187_1685 over the scene crop, the image draped on its terrain',
+    url: 'https://trek.nasa.gov/mars/',
   },
   {
     id: 'earth',
@@ -42,12 +121,35 @@ export const WORLDS: ReadonlyArray<WorldInfo> = [
     place: 'Earth',
     mission: 'NASA Worldview',
     runId: null,
+    status: 'external',
     note: 'No scene: Worldview offers satellite imagery of Earth, not terrain or rover stops. Opens in a new tab.',
+    data: 'NASA Earthdata satellite imagery.',
+    missing: null,
+    image: null,
+    imageCaption: null,
     url: 'https://worldview.earthdata.nasa.gov/',
   },
 ];
 
-/** The world a run belongs to, or null for a run outside the catalogue (e.g. a test package opened with ?run=). */
+/** The zone a run belongs to, or null for a run outside the catalogue (e.g. a test package opened with ?run=). */
 export function worldOfRun(runId: string): WorldInfo | null {
   return WORLDS.find((w) => w.runId === runId) ?? null;
+}
+
+/** Index of the zone shown first in the selector: the current run's, else the first scene. */
+export function initialZoneIndex(runId: string): number {
+  const i = WORLDS.findIndex((w) => w.runId === runId);
+  return i >= 0 ? i : Math.max(0, WORLDS.findIndex((w) => w.status === 'scene'));
+}
+
+/** Index after a step left (-1) or right (+1), wrapping around. */
+export function stepZone(i: number, dir: 1 | -1, n = WORLDS.length): number {
+  return (i + dir + n) % n;
+}
+
+/** URL that opens a zone's scene (keeps other parameters such as ?lite). */
+export function zoneUrl(href: string, runId: string): string {
+  const url = new URL(href);
+  url.searchParams.set('run', runId);
+  return url.toString();
 }

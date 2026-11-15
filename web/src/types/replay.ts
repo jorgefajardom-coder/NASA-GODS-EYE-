@@ -154,8 +154,9 @@ export interface RoverMission {
   name: string;
   /** Category of NASA's raw-images feed (`mars2020`, `msl`). */
   raw_category: string;
-  /** `stop`: the feed labels each image with the rover's site and drive; `sol`: only the sol is known. */
-  image_match: 'stop' | 'sol';
+  /** `stop`: the feed labels each image with the rover's site and drive; `sol`: only the sol is known;
+   *  `none`: the feed has no images of this mission (Spirit, Opportunity). */
+  image_match: 'stop' | 'sol' | 'none';
 }
 
 export interface RoverStops {

@@ -29,7 +29,7 @@ import type { RawImage } from './lib/perseveranceRaw';
 import type { RoverStop } from './types/replay';
 import { stopUnderAgent, tourStepTime } from './lib/roverStops';
 import { startLabelDeclutter } from './lib/labelDeclutter';
-import { WorldArrows } from './components/WorldArrows';
+import { ZoneArrival, ZoneSelector, arrivalPending } from './components/ZoneSelector';
 import { resourceAlert } from './lib/resourceAlert';
 import { SCAN_CONFIG } from './scanner/ScanConfig';
 import { triggerScan } from './scanner/ScanController';
@@ -120,7 +120,9 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showControlPoints, setShowControlPoints] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
   // Intro clip first (unless reduced motion or ?nointro=1); the terrain grows in once it ends.
-  const [introDone, setIntroDone] = useState(() => RUN_ID === RECORDED_RECOVERY_ENTRY || !introWanted());
+  const [zonesOpen, setZonesOpen] = useState(false);
+  // Arriving from the zone selector skips the intro: the zone's map image fades straight into its terrain.
+  const [introDone, setIntroDone] = useState(() => RUN_ID === RECORDED_RECOVERY_ENTRY || !introWanted() || arrivalPending(RUN_ID));
   // Camera: 'free' (map), 'base', or the id of the agent it follows.
   const [camView, setCamView] = useState<string>('free');
   const follow = camView !== 'free' && camView !== 'base';
@@ -437,6 +439,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'KeyI') setArtificialLight((v) => !v);
       else if (e.code === 'KeyQ') rotateView(-ROTATE_STEP_RAD);
       else if (e.code === 'KeyE') rotateView(ROTATE_STEP_RAD);
+      else if (e.code === 'KeyZ' && !pov) setZonesOpen(true);
       else if (!pov && /^Digit[1-5]$/.test(e.code) && view.state?.agents.some((a) => a.agent_id === camView && a.agent_kind === 'ROVER')) {
         // Following the rover from behind: a camera number looks through that camera (in first person the camera handles it).
         selectCamera(roverRig, CAMERA_ORDER[Number(e.code.slice(5)) - 1]);
@@ -664,7 +667,13 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         </aside>
 
         <AlertBanner alert={alert} />
-        {camView === 'free' && !pov && <WorldArrows runId={RUN_ID} />}
+        {camView === 'free' && !pov && !zonesOpen && (
+          <button type="button" className="zones-open" onClick={() => setZonesOpen(true)} title="Select zone (Z)">
+            <kbd>Z</kbd> Zones
+          </button>
+        )}
+        {zonesOpen && <ZoneSelector runId={RUN_ID} onClose={() => setZonesOpen(false)} />}
+        <ZoneArrival runId={RUN_ID} />
 
         <Timeline
           t={t}

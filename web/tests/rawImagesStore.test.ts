@@ -156,3 +156,17 @@ describe('preloading the images of a stop', () => {
     expect(st.status === 'ready' && st.preloaded).toBe(false);
   });
 });
+
+describe('a mission whose images are not in the feed (Spirit, Opportunity)', () => {
+  it('answers at once that there is no image feed, without asking NASA', async () => {
+    let calls = 0;
+    const s = createRawImagesStore(async () => {
+      calls += 1;
+      return { ok: true, status: 200, json: async () => ({ images: [] }) };
+    });
+    await s.loadStop({ sol: 100, site: 10, drive: 20, rmc: '10_20' }, { raw_category: 'none', image_match: 'none' });
+    const st = s.getState();
+    expect(calls).toBe(0);
+    expect(st.status === 'error' && st.message).toMatch(/^No image feed/);
+  });
+});

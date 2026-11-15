@@ -18,7 +18,7 @@ export type RawImagesState =
 /** How a mission's raw images are matched to a stop (see RoverMission). */
 export interface StopMission {
   raw_category: string;
-  image_match: 'stop' | 'sol';
+  image_match: 'stop' | 'sol' | 'none';
 }
 const DEFAULT_MISSION: StopMission = { raw_category: 'mars2020', image_match: 'stop' };
 
@@ -95,6 +95,12 @@ export function createRawImagesStore(fetchFn: FetchLike, preload: (urls: string[
 
   /** The images NASA lists for one rover stop (same sol, site and drive); none is an honest result. */
   const loadStop = (stop: { sol: number; site: number; drive: number; rmc: string }, mission: StopMission = DEFAULT_MISSION): Promise<void> => {
+    if (mission.image_match === 'none') {
+      // The mission's images are not in the feed: an honest, immediate answer (the tour moves on).
+      ctl?.abort();
+      set({ status: 'error', message: "No image feed: NASA's raw-image feed has no images of this mission (Spirit and Opportunity images are archived in the PDS)" });
+      return Promise.resolve();
+    }
     const key = `${mission.raw_category}:${stop.sol}`;
     const bySol = mission.image_match === 'sol'; // the feed does not label images with site and drive (Curiosity)
     return run(
