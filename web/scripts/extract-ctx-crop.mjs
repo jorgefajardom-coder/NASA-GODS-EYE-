@@ -90,6 +90,30 @@ function sample(fc, fr) {
   return a * (1 - tc) * (1 - tr) + b * tc * (1 - tr) + d * (1 - tc) * tr + e * tc * tr;
 }
 
+// Catmull-Rom (cubic convolution) over the 4 x 4 source pixels around the sample: no crease at every
+// source pixel, which a bilinear sample leaves as a regular lattice of lines in the shaded relief. It
+// stays between the neighbouring values closely and adds no detail. Near the window edge or NoData it
+// falls back to bilinear.
+function sampleCubic(fc, fr) {
+  const c = Math.floor(fc);
+  const r = Math.floor(fr);
+  if (c - 1 < c0 || r - 1 < r0 || c + 2 >= c1 || r + 2 >= r1) return sample(fc, fr);
+  const tc = fc - c;
+  const tr = fr - r;
+  const w = (t) => [(-t * t * t + 2 * t * t - t) / 2, (3 * t * t * t - 5 * t * t + 2) / 2, (-3 * t * t * t + 4 * t * t + t) / 2, (t * t * t - t * t) / 2];
+  const wc = w(tc);
+  const wr = w(tr);
+  let sum = 0;
+  for (let j = 0; j < 4; j++) {
+    for (let i = 0; i < 4; i++) {
+      const v = win[(r - 1 + j - r0) * ww + (c - 1 + i - c0)];
+      if (!(v > NODATA_LIMIT)) return sample(fc, fr);
+      sum += wr[j] * wc[i] * v;
+    }
+  }
+  return sum;
+}
+
 const heights = new Array(ROWS * COLS);
 let nodata = 0;
 for (let r = 0; r < ROWS; r++) {
@@ -102,7 +126,7 @@ for (let r = 0; r < ROWS; r++) {
     const y = R * lat;
     const fc = (x - west) / NATIVE_M - 0.5;
     const fr = (north - y) / NATIVE_M - 0.5;
-    const h = sample(fc, fr);
+    const h = process.env.CROP_FILTER === 'bilinear' ? sample(fc, fr) : sampleCubic(fc, fr);
     if (h == null) {
       heights[r * COLS + c] = null;
       nodata++;
@@ -137,7 +161,7 @@ const crop = {
     centre_pixel: { row: rowC, col: colC },
     centre_lat_deg: Number(deg(lat0).toFixed(5)),
     centre_lon_deg: Number(deg(lon0).toFixed(5)),
-    method: `bilinear resampling onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); ${RES} m cells from a ${NATIVE_M} m source, so no resolution gain${RES < NATIVE_M ? ' (display resampling)' : ''}`,
+    method: `bicubic (Catmull-Rom) resampling onto a local tangent ENU grid (east = R cos(lat) dlon, north = R dlat); ${RES} m cells from a ${NATIVE_M} m source, so no resolution gain${RES < NATIVE_M ? ' (display resampling)' : ''}`,
     origin_x_m: OX,
     origin_y_m: OY,
     resolution_m: RES,
