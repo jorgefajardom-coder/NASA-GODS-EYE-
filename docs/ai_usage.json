@@ -1118,6 +1118,19 @@
         "web/src/components/TerrainGrowth.tsx",
         "web/tests/terrainGrowth.test.ts",
         "web/tests/terrainMorph.test.ts",
+        "web/src/components/PovRoute.tsx",
+        "web/src/lib/routeProgress.ts",
+        "web/tests/routeProgress.test.ts",
+        "web/tests/povSway.test.ts",
+        "web/src/components/RadialHud.tsx",
+        "web/index.html",
+        "web/public/llms.txt",
+        "web/public/about.html",
+        "web/public/robots.txt",
+        "web/public/sitemap.xml",
+        "web/src/lib/stateSnapshot.ts",
+        "web/tests/stateSnapshot.test.ts",
+        "web/public/assets/brand/og-image.png",
         "web/src/components/FirstPersonCamera.tsx",
         "web/src/components/FirstPersonHud.tsx",
         "web/src/components/DroneScan.tsx",
@@ -1131,7 +1144,7 @@
         "web/src/styles.css",
         ".github/workflows/pages.yml"
       ],
-      "use": "Viewer display only: opening terrain formation where the whole layer rises from flat to its true relief zone by zone (low ground first, rising ground lit); terrain heights that morph instead of jumping when the layer or map version changes; first-person camera from the followed agent with a cartographic HUD (compass tape, site bearings, resources as received); drone-camera scan that draws the existing orbital CTX slope in display bands around the drone (no observation is made, the map version is unchanged, bands await science approval); GitHub Actions workflow that tests, builds and publishes the public viewer to the gh-pages branch. No data, measurements, images, video or audio generated."
+      "use": "Viewer display only: opening terrain formation where the whole layer rises from flat to its true relief zone by zone (low ground first, rising ground lit); terrain heights that morph instead of jumping when the layer or map version changes; first-person camera from the followed agent with a cartographic HUD (compass tape, site bearings, resources as received), a route guide drawn from the received route (draped line, next-waypoint beacon, distance and time left scaled from the route estimate), a heading-up minimap and an optional camera sway; interface entrance animation with the agent dial spinning in; text descriptions for language models and other readers (llms.txt, about page, page metadata and JSON-LD, a static summary, and window.mge.state() returning the displayed replay state as JSON), written from the repository documentation and the replay manifest; drone-camera scan that draws the existing orbital CTX slope in display bands around the drone (no observation is made, the map version is unchanged, bands await science approval); GitHub Actions workflow that tests, builds and publishes the public viewer to the gh-pages branch. No data, measurements, images, video or audio generated."
     }
   ],
   "generated_media": [
@@ -1153,6 +1166,24 @@
       "audio": "The audio track is treated as AI-generated; it is declared here and in the AIGC metadata of the file; the viewer plays the clip muted",
       "use": "Opening intro screen of the viewer (skippable). Project emblem only; no NASA logos, flags or mission marks. Not data.",
       "sha256": "4897e14fcfc185e9ec623d1f4401807706193e1614eb780431675b8641f73581"
+    },
+    {
+      "path": "web/public/assets/brand/mars-gods-eye-logo.webp",
+      "kind": "ai_generated_image",
+      "tool": "ChatGPT (OpenAI) image generation, then edited by the team; supplied by the owner",
+      "editing": "A band below the 1254 x 1254 logo with a visible 'AI-generated logo (ChatGPT, edited)' label burned into the pixels with Pillow (1254 x 1364 WebP)",
+      "watermark": "AI-generated (burned into the pixels; legible at the 280 px README display width)",
+      "use": "Team logo at the top of the README and on the about page. Not NASA data; no NASA logos, flags or mission marks.",
+      "sha256": "6fbeb71f00e30f11db70da83f2d73af895fd648c868befe55530a6c80e6b3314"
+    },
+    {
+      "path": "web/public/assets/brand/og-image.png",
+      "kind": "ai_generated_image_in_composite",
+      "tool": "The watermarked logo above, composed with Pillow into a 1200 x 630 link preview with the title and a one-line description",
+      "editing": "Logo scaled to 540 px high beside text on black",
+      "watermark": "The logo's 'AI-generated logo (ChatGPT, edited)' band stays visible in the preview",
+      "use": "Link preview image (og:image / twitter:image) of the public viewer.",
+      "sha256": "c81d8c4fbe91cb28056dc316d8353fb15e056c269efc7fb75e7d3f62258f4803"
     }
   ],
   "scientific_datasets_generated": false,
@@ -1170,7 +1201,7 @@
     "Measured-results flags refer to physical/scientific measurements. Software validation and synthetic model diagnostics are recorded separately; no mission or A/B/C result is asserted.",
     "Main synchronization preserves mission and integrated viewer declarations; the provenance test moved from web/src/lib to web/tests in the viewer merge.",
     "Merged main contributor confirmation supersedes the earlier pending confirmation for the same retained dev/jesus commit; original history is preserved.",
-    "No generated bitmap, video or audio asset was included at scaffold time; the only generated image since is listed in generated_media."
+    "No generated bitmap, video or audio asset was included at scaffold time; the generated images and video since are listed in generated_media."
   ],
   "retained_contributions": [
     {

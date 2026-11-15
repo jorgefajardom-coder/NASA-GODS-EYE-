@@ -253,7 +253,7 @@ time and generates no value.
 
 Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
 by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).
-One AI-generated image is included: `web/public/assets/portraits/human_1.webp`, the
+The viewer's details panel includes an AI-generated image: `web/public/assets/portraits/human_1.webp`, the
 portrait shown beside astronaut human_1 in the viewer's details panel. It was generated
 with ChatGPT (OpenAI) and supplied by the owner; it was cropped and resized with Pillow and
 carries a visible `AI-generated` band burned into the image, legible at its 80 px display
@@ -681,10 +681,25 @@ data, observation, mission result, image, video or audio was generated.
 
 Claude Code (Anthropic) assisted the viewer owner with the opening terrain
 formation (the layer rises from flat zone by zone), the height morph between
-layers and map versions, the first-person camera and its HUD, the drone
+layers and map versions, the first-person camera and its HUD (route guide,
+minimap, optional sway), the interface entrance animation, the plain-text
+descriptions of the viewer for language models (llms.txt, about page, page
+metadata, window.mge.state()), the drone
 camera scan, their tests, and the workflow that publishes the public viewer to
 GitHub Pages. The scan only redraws the slope already computed from the orbital
 CTX DTM prior around the drone in display bands; it is not an observation, it
 does not change the map version, and its bands are display thresholds pending
 science approval. No data, measurement, image, video or audio was generated.
 The affected paths are listed in ai_usage.json.
+
+## Team logo and link preview
+
+The team logo (`web/public/assets/brand/mars-gods-eye-logo.webp`) was generated
+with ChatGPT (OpenAI) and edited by the team. A band with a visible
+`AI-generated logo (ChatGPT, edited)` label is burned into the image, and it
+stays visible in the README, the about page and the link preview
+(`og-image.png`, composed with Pillow). The browser tab icon
+(`web/public/favicon.ico` and its PNG sizes) is an illustration of Mars made by
+the team, not with AI; only its black background was removed and it was resized.
+An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
+images uses NASA logos, flags or mission marks or is presented as NASA data.

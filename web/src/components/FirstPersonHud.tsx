@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import type { AgentState } from '../types/icd';
+import { useEffect, useRef, type ReactNode } from 'react';
+import type { AgentState, RouteDecision } from '../types/icd';
 import type { PointOfInterest } from '../types/replay';
 import type { ResourceLine } from '../lib/resources';
 import type { Budget } from '../lib/management';
@@ -7,6 +7,12 @@ import { AGENT_NAME } from '../lib/management';
 import { fmtDuration } from '../lib/format';
 import { angleDiffDeg, bearingDeg, SCAN_CLASS_INFO, SCAN_RADIUS_M, type ScanClass } from '../lib/scan';
 import { povState } from './FirstPersonCamera';
+import { remainingTimeS, routeProgress } from '../lib/routeProgress';
+import { ROUTE_STATUS_STYLE } from '../lib/format';
+import { fmtM } from './PovRoute';
+
+/** Diameter of the HUD minimap (px). */
+export const POV_MINIMAP_PX = 150;
 
 /** Visible width of the compass tape (deg either side of the heading). */
 const TAPE_HALF_DEG = 60;
@@ -27,6 +33,13 @@ interface Props {
   canScan: boolean;
   onScan: () => void;
   onExit: () => void;
+  /** Route in force (any agent); its guide is shown only when it belongs to this agent. */
+  route: RouteDecision | null;
+  /** Heading-up minimap centred on this agent. */
+  minimap: ReactNode;
+  /** Camera sway on/off (B). */
+  sway: boolean;
+  onSway: (on: boolean) => void;
 }
 
 const budgetOf = (b: Budget | undefined, key: ResourceLine['key']) => (b ? (key === 'oxygen' ? b.oxygen_l : key === 'energy' ? b.energy_wh : b.time_s) : null);
@@ -36,12 +49,15 @@ const budgetOf = (b: Budget | undefined, key: ResourceLine['key']) => (b ? (key 
  * and site bearings, the agent's resources, and the drone-camera scan control and readout. Every
  * value comes from the replay or from lib/scan; nothing here is a live measurement.
  */
-export function FirstPersonHud({ agent, sourceLabel, pois, lines, budget, scan, canScan, onScan, onExit }: Props) {
+export function FirstPersonHud({ agent, sourceLabel, pois, lines, budget, scan, canScan, onScan, onExit, route, minimap, sway, onSway }: Props) {
   const tape = useRef<HTMLDivElement>(null);
   const readout = useRef<HTMLSpanElement>(null);
   const pitch = useRef<HTMLSpanElement>(null);
   const marks = useRef<HTMLDivElement>(null);
   const pos = agent.pose.position;
+  const own = route && route.agent_id === agent.agent_id && route.outbound_path.length > 1 ? route : null;
+  const progress = own ? routeProgress(own.outbound_path, pos) : null;
+  const left = own && progress ? remainingTimeS(progress, own.travel_time_s) : null;
   const sites = pois.map((p) => ({ id: p.id, kind: p.kind, bearing: bearingDeg(pos.x, pos.y, p.position.x, p.position.y), dist: Math.hypot(p.position.x - pos.x, p.position.y - pos.y) }));
   const sitesRef = useRef(sites);
   sitesRef.current = sites;
@@ -116,6 +132,33 @@ export function FirstPersonHud({ agent, sourceLabel, pois, lines, budget, scan, 
         <span className="pov__state">{agent.mode}</span>
       </div>
 
+      <div className="pov__nav" aria-label="Route guide">
+        {own && progress ? (
+          <>
+            <span className="pov__kicker">
+              Route {own.route_id} · <span style={{ color: ROUTE_STATUS_STYLE[own.status].color }}>{ROUTE_STATUS_STYLE[own.status].label}</span>
+            </span>
+            <div className="pov__nav-next">
+              <b>{progress.nextIndex === own.outbound_path.length - 1 ? 'END' : `WP ${progress.nextIndex}`}</b>
+              <strong>{fmtM(progress.toNextM)}</strong>
+            </div>
+            <span className="pov__nav-row">
+              Left on route <b>{fmtM(progress.remainingM)}</b>
+            </span>
+            <span className="pov__nav-row" title="The route's own travel-time estimate, scaled by the share of distance left (not a prediction)">
+              Time left (route est.) <b>{left == null ? 'not given' : fmtDuration(left)}</b>
+            </span>
+            {progress.offRouteM > 15 && <span className="pov__nav-row pov__nav-row--warn">Off the drawn route by {fmtM(progress.offRouteM)}</span>}
+          </>
+        ) : (
+          <span className="pov__kicker">No route in force for {agent.agent_id}</span>
+        )}
+      </div>
+
+      <div className="pov__minimap" aria-label="Minimap, heading up">
+        {minimap}
+      </div>
+
       <div className="pov__reticle" aria-hidden>
         <span />
       </div>
@@ -163,6 +206,9 @@ export function FirstPersonHud({ agent, sourceLabel, pois, lines, budget, scan, 
         <span>Drag · look</span>
         <span>Wheel · zoom</span>
         <span>Double-click · recentre</span>
+        <button type="button" className="pov__exit" aria-pressed={sway} onClick={() => onSway(!sway)} title="Camera sway while walking or driving (display only)">
+          <kbd>B</kbd> Sway {sway ? 'on' : 'off'}
+        </button>
         <button type="button" className="pov__exit" onClick={onExit}>
           <kbd>V</kbd> Third person
         </button>

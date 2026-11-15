@@ -3,11 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Mars Gods Eye mission viewer: map, uncertainty, routes and replanning for a simulated Mars expedition." />
     <title>Mars Gods Eye — Mission Viewer</title>
+    <meta
+      name="description"
+      content="Mars Gods Eye (NASA Space Apps 2026, Interplanetary Survival Guide: Martian Map): a 3D viewer that replays a simulated astronaut, rover and drone expedition over real NASA/USGS CTX terrain at Jezero crater, with uncertainty, routes and replanning. REPLAY of simulated data, not a live mission."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" href="./favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="./favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="canonical" href="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/" />
+    <!-- Plain-text guides for language models and other readers that do not run the 3D view. -->
+    <link rel="alternate" type="text/markdown" title="Project summary for language models" href="./llms.txt" />
+    <link rel="help" href="./about.html" />
+    <style>
+      /* Text summary shown until the app starts (and to readers without JavaScript). */
+      body { margin: 0; background: #090d11; color: #c9d7dd; }
+      .static-summary { max-width: 760px; margin: 0 auto; padding: 48px 16px; font: 16px/1.5 system-ui, sans-serif; }
+      .static-summary h1 { font-size: 1.8rem; margin: 0 0 8px; }
+      .static-summary a { color: #65cbe8; }
+    </style>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Mars Gods Eye — Mission Viewer" />
+    <meta
+      property="og:description"
+      content="Replay of a simulated crewed expedition (astronaut, rover, drone) over real CTX terrain at Jezero crater, Mars: uncertainty, routes, replanning and resources. NASA Space Apps 2026."
+    />
+    <meta property="og:url" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/" />
+    <!-- Link preview: the team logo (AI-generated with ChatGPT and edited, watermarked) beside the title. -->
+    <meta property="og:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Mars God's Eye logo (AI-generated, ChatGPT, edited; watermarked) beside the title Mars Gods Eye Mission Viewer" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Mars Gods Eye — Mission Viewer",
+        "url": "https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/",
+        "image": "https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.png",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any (modern web browser with WebGL)",
+        "isAccessibleForFree": true,
+        "inLanguage": "en",
+        "description": "3D web viewer for NASA Space Apps 2026 (challenge: Interplanetary Survival Guide: Martian Map). It replays a saved, simulated mission of an astronaut, a rover and a drone over a 2 km crop of the NASA/USGS Mars 2020 TRN CTX DTM at Jezero crater: terrain prior and updated map, height uncertainty, slope, route proposals and invalidation, replanning, resources, geology (USGS SIM 3464) and historical environment references (MEDA, RAD). The terrain heights are real NASA/USGS data; the mission, budgets, observations and points of interest are simulated or synthetic. It is a REPLAY, not a live mission, and not certified for real operations.",
+        "creator": { "@type": "Organization", "name": "Houston, We Have a Bug! (NASA Space Apps 2026 team)" },
+        "codeRepository": "https://github.com/jorgefajardom-coder/NASA-GODS-EYE-",
+        "about": [
+          { "@type": "Place", "name": "Jezero crater, Mars" },
+          { "@type": "Thing", "name": "Mars surface mission planning" }
+        ],
+        "isBasedOn": [
+          { "@type": "Dataset", "name": "Mars 2020 TRN CTX DTM mosaic (NASA/USGS Astrogeology), provisional 2 km crop", "url": "https://trek.nasa.gov/mars/" },
+          { "@type": "Dataset", "name": "MRO CTX Jezero orthomosaic, controlled (Mars 2020 TRN), NASA/JPL-Caltech/MSSS/USGS, via JPL Mars Trek", "url": "https://trek.nasa.gov/mars/" },
+          { "@type": "Map", "name": "USGS SIM 3464, geologic map of Jezero crater and Nili Planum", "url": "https://astrogeology-usgs.hub.arcgis.com/pages/interactive-maps-mars" }
+        ],
+        "accessibilitySummary": "Text summary in this page and in llms.txt and about.html; the live viewer also exposes window.mge.state() with the current replay state as JSON.",
+        "subjectOf": [
+          { "@type": "CreativeWork", "name": "Project summary for language models", "url": "https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/llms.txt" },
+          { "@type": "CreativeWork", "name": "About this viewer", "url": "https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/about.html" },
+          { "@type": "CreativeWork", "name": "Required AI usage declaration", "url": "https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/AI_USAGE.md" }
+        ]
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Shown until the app starts (and to readers that do not run JavaScript); React replaces it. -->
+      <main class="static-summary">
+        <h1>Mars Gods Eye — Mission Viewer</h1>
+        <p>
+          NASA Space Apps 2026 · Interplanetary Survival Guide: Martian Map · team Houston, We Have a Bug!
+        </p>
+        <p>
+          A 3D viewer that replays a saved, <strong>simulated</strong> expedition of an astronaut, a rover and a drone over a
+          2 km crop of real NASA/USGS CTX terrain at Jezero crater, Mars. It shows the orbital terrain prior and the map
+          updated by observations, height uncertainty, slope, proposed and invalidated routes, replanning, resources,
+          geology and historical environment references.
+        </p>
+        <p>
+          <strong>Status:</strong> REPLAY of simulated data. Only the terrain heights and the draped image are NASA/USGS
+          data; the mission, budgets, observations and points of interest are simulated or synthetic. It is not a live
+          mission and not certified for real operations.
+        </p>
+        <ul>
+          <li><a href="./llms.txt">Plain-text summary for language models (llms.txt)</a></li>
+          <li><a href="./about.html">About this viewer: features, controls, data sources, limits</a></li>
+          <li><a href="https://github.com/jorgefajardom-coder/NASA-GODS-EYE-">Source code and documentation</a></li>
+        </ul>
+        <noscript><p>The 3D viewer needs JavaScript and WebGL. The pages linked above describe it in text.</p></noscript>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
