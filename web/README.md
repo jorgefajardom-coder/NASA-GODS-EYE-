@@ -41,7 +41,7 @@ packages are neither offered nor used by the viewer (see the Run selector below)
 | Stars | **Real catalogue**: Yale Bright Star Catalogue V ≤ 5.5 placed with the IAU 2009 Mars rotation model (`public/assets/sky/bright_stars.json`) |
 | Artificial light (default), night fill, helmet lights | **Display** lighting choices, not sunlight or suit specifications; *Real light* (`I`) shows the hour's real light |
 | Perseverance raw images (Atmos tab, and `M` in first person) | **Real NASA/JPL-Caltech images**, read from the public raw-images JSON feed **only when the person presses a load button** (needs a network; nothing is stored or bundled). They show where the rover is now, not the replay's site; not terrain data, never read by the map or planner. First person: a *Mars now* window in the dock, the same size as the drone camera window |
-| Rover photo tour (button *Photo tour*) | After the story, the **simulated** rover drives through **all 226 real stops** in the order NASA's rover visited them (sol 13 to 708), pausing 40 s at each. The button follows the rover in first person at 10× and, on each arrival, loads NASA's images for that stop (the press is the person's request for them; needs a network). `⏮ Stop` / `Stop ⏭` jump between stops. Illustrative: the rover moves at 2 m/s (real hardware is about 4.2 cm/s), the path between stops is a slope-constrained search on the map (5 long hops are straight lines) and the rover's time and energy are **not modelled** during the tour (held at their start values, so no resource alert shows) |
+| Rover photo tour (button *Photo tour*, in both worlds) | After the story, the **simulated** rover drives through **every real stop of the map** (Jezero: 226, sol 13 to 708; Gale: 166, sol 751 to 4462) in the order NASA's rover visited them, pausing 40 s at each. The button follows the rover **in third person** (the rover is seen driving; `V` switches to its eyes) at 10×. On each arrival the replay **waits until every image of the stop (up to 9) has finished loading**, and the window, floating beside the view in third person or in the dock in first person, shows them all in a grid; `⏮ Stop` / `Stop ⏭` jump between stops. The button is the person's request for the images (needs a network). Illustrative: the rover moves at 2 m/s (real hardware is about 4.2 cm/s), the path between stops is a slope-constrained search on the map (a few long hops are straight lines) and the rover's time and energy are **not modelled** during the tour, so no resource alert shows |
 | Drone camera window | The scene drawn again from the replayed drone pose; **not a camera feed**. Its Hazards tab reports steep cells and prior contradictions from the replay's **simulated** observations, not LiDAR |
 | Lite 3D and 2D map tiers | Same replay with reduced 3D settings, or drawn in Canvas 2D without WebGL |
 
@@ -251,7 +251,7 @@ Replay fixture layout (`public/replay/<run_id>/`, demo run `demo-sim-002`, `mode
 
 ## Acceptance tests
 
-Automated suite run on 2026-11-15 (`npm test`, branch `feat/ux` after the rover photo tour): 42 files passed (42); 256 tests passed, 1 skipped (257). Build not run in this sync.
+Automated suite run on 2026-11-15 (`npm test`, branch `feat/ux` after the worlds and the tour changes): 45 files passed (45); 272 tests passed, 1 skipped (273). Build not run in this sync.
 
 | Test | Status |
 |---|---|
