@@ -6,6 +6,10 @@ An exploration team is heterogeneous when its members differ in how they move, w
 
 This chapter develops that sequence before assigning durations. A duration becomes meaningful only after the activity, its output and the episode being timed have been defined.
 
+![Three qualitative bands distinguish one human excursion, a rover program spanning work periods and one drone flight.](assets/imagegen-20261115/05-agent-timescales-reviewed.webp)
+
+Figure 4.A. Three accounting episodes in a conceptual campaign. Each clock is allocated separately. The quantitative control and proposed allocations remain in Figure 4.1, with their original scenario status. [Full-size PNG](assets/imagegen-20261115/05-agent-timescales-reviewed.png).
+
 ## Three agents, three accounting episodes
 
 The project uses three complementary reference roles. The human profile contains the `reach` and `sample` capabilities; the rover contains `inspect`; and the drone contains `observe`. These are task-allocation categories in the [profile registry](../../config/science_profiles.proposed.json). The same registry includes costing activities such as human `inspect`, which can price a visual check-in without creating an optional inspection capability or proving that an inspection occurred.
@@ -32,9 +36,9 @@ An energy allocation also differs from an energy supply. Perseverance's referenc
 
 The time required to pick up material is one part of a geological sample cycle. Context images, descriptions, acquisition, identifiers, bagging and tool recovery all contribute to the scientific record. The D-RATS 2010 geologist report describes approximately ten minutes per documented sample in its terrestrial analogue operations and emphasizes the contribution of field context to sample quality. This is the main empirical analogue used to motivate a 600 s workflow. [Hurtado et al., 2011, pp. 1–2](https://ntrs.nasa.gov/api/citations/20120011761/downloads/20120011761.pdf).
 
-![An illustrative 600-second documented sample cycle, with 420 seconds costed as light work and 180 seconds as heavy work, beside the separate 120-second primary check-in.](assets/activity-cycle.png)
+![A separate 120-second check-in accompanies a 600-second documented-sample example split into assumed 420-second light and 180-second heavy phases.](assets/imagegen-20261115/06-activity-cycle-reviewed.webp)
 
-Figure 4.2. The ten-minute total is anchored to a reported analogue workflow. The 420/180 s power-class split is the project's proposed allocation, rather than a measured phase distribution. The primary check-in remains a separate activity when both are included in an itinerary.
+Figure 4.2. A documented-sample example with separate accounting for the primary check-in. The 600 s workflow uses the proposed 420 s light-work and 180 s heavy-work decomposition. The phase split is a project assumption; the duration sources are discussed below. [Full-size PNG](assets/imagegen-20261115/06-activity-cycle-reviewed.png).
 
 Several other references answer narrower questions. Chappell et al. list a 30 s manual pickup, 60 s hammering and 180 s trenching among lunar operations modeling assumptions. These are different task primitives. Bekdash et al. prescribe ten-minute sampling blocks in an ARGOS test protocol after contextual work. A prescribed block and a measured complete cycle should therefore enter the source catalogue under different evidence categories. [Chappell et al., 2010, §3.1, Table 3, printed p. 12](https://ntrs.nasa.gov/api/citations/20110001417/downloads/20110001417.pdf#page=20); [Bekdash et al., 2020, §II.C.1, pp. 6–7](https://ntrs.nasa.gov/api/citations/20205003610/downloads/ARGOS%20ICES%202020%20-Final%20for%20Export%20Control.pdf#page=6).
 

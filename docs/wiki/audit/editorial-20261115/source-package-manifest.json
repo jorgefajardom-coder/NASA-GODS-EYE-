@@ -1,0 +1,388 @@
+{
+  "package": "MGE-Wiki-ImageGen-Refresh-20",
+  "created_utc": "2026-11-15",
+  "images_count": 20,
+  "source": "Two separate 10-image ImageGen batches created for MARS GODS EYE",
+  "image_assets": [
+    {
+      "id": 1,
+      "slug": "cooperative-exploration",
+      "name": "01_cooperative-exploration.png",
+      "page": "Home",
+      "status": "VISUAL_CONCEPT",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/01_cooperative-exploration.png",
+      "webp": "assets/webp/01_cooperative-exploration.webp",
+      "sha256_original_png": "ab9ab80e720a9fb116b0e64e8df3e42786f7b8b28422949ce7e93d464132e318",
+      "sha256_webp": "88227273e2e2b11a69bcb3a7150dbdebfb8f820a4a69a7c8c845d4a5f8ee9031",
+      "source": "a_highly_detailed_cinematic_infographic_style_sc_1_batch_1.png",
+      "risk_and_revision_note": "Tres roles, escenarios A/B/C ficticios y etiquetas geológicas conceptuales; no ubicarlo como mapa real de Jezero.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 2,
+      "slug": "research-loop",
+      "name": "02_research-loop.png",
+      "page": "01-Research-Question",
+      "status": "CONCEPT",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/02_research-loop.png",
+      "webp": "assets/webp/02_research-loop.webp",
+      "sha256_original_png": "20efd38acedd17470de360dd314be8e424f9317a6b466c4d33f76421e2c36931",
+      "sha256_webp": "9a615a0092eefa14a8d7ebcc8a390d8bdb61461d59aefdba695196eb705675d3",
+      "source": "a_polished_high_contrast_infographic_16_9_landsc_2_batch_2.png",
+      "risk_and_revision_note": "Diagrama pedagógico: muestra orden conceptual, no evidencia ejecutada.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 3,
+      "slug": "jezero-evidence-chain",
+      "name": "03_jezero-evidence-chain.png",
+      "page": "02-Jezero-Science",
+      "status": "CAUTION",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/03_jezero-evidence-chain.png",
+      "webp": "assets/webp/03_jezero-evidence-chain.webp",
+      "sha256_original_png": "9f2947f01dd094abd401a0686470dc712d84118d363dc596dd0137aea26e4829",
+      "sha256_webp": "dd3509ca4add9d9f9ace3ef7f0df3ac444917168b3301af07e7acfef7d0d426b",
+      "source": "a_polished_infographic_illustration_16_9_landscap_3_batch_3.png",
+      "risk_and_revision_note": "Incluye Marte/Jezero y escalas/antiguo lago dibujados sin cartografía verificable; preservar como ilustración, evitar cifras geográficas sin cotejo.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 4,
+      "slug": "terrain-scale",
+      "name": "04_terrain-scale.png",
+      "page": "03-Terrain-and-Scale",
+      "status": "CAUTION",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/04_terrain-scale.png",
+      "webp": "assets/webp/04_terrain-scale.webp",
+      "sha256_original_png": "256cae1618450ebe702f837e181d5b3adc9135d42d94934e3ff0281242bc8882",
+      "sha256_webp": "fdd6cf10fda0ba99a94511bb961c91fbc625e5685dc9a3868b94fe5f3eb58391",
+      "source": "a_detailed_polished_infographic_illustration_lan_4_batch_4.png",
+      "risk_and_revision_note": "20 m nativos y 4 m de malla computacional son conceptos válidos; los detalles y barras de escala dibujados no son un mapa georreferenciado. 4 m no implica resolución física.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 5,
+      "slug": "agent-timescales",
+      "name": "05_agent-timescales.png",
+      "page": "04-Agents-and-Activities",
+      "status": "CAUTION",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/05_agent-timescales.png",
+      "webp": "assets/webp/05_agent-timescales.webp",
+      "sha256_original_png": "234ae0d9da8d449a1b0838d4cfd0e7a71613cc6092453c14c17f49a1eb5fa465",
+      "sha256_webp": "3076430666aa368302a9718e3a0d072fcd3da0d4f1af3490157ecd7cf83535fb",
+      "source": "a_polished_high_contrast_cinematic_infographic_i_5_batch_5.png",
+      "risk_and_revision_note": "Los plazos 2–8 h, días–semanas, 5–20 min son ilustrativos, no cotas ni autonomía aprobada para agentes MGE.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 6,
+      "slug": "activity-cycle",
+      "name": "06_activity-cycle.png",
+      "page": "04-Agents-and-Activities",
+      "status": "CAUTION",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/06_activity-cycle.png",
+      "webp": "assets/webp/06_activity-cycle.webp",
+      "sha256_original_png": "47cb4c35739945beb27e09702e1b9ee8b3ba55b0c45b533fbecc81b56ca14e91",
+      "sha256_webp": "4df53356ddb27e9c2a2d226a0ed4aefc24de436ebb8ccc0f1d1d1a0811a99911",
+      "source": "a_polished_infographic_illustration_in_a_cinematic_6_batch_6.png",
+      "risk_and_revision_note": "120 s check-in y 420+180 s muestra reflejan un ejemplo/hipótesis; no medición experimental de fases de muestreo marciano.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 7,
+      "slug": "task-precedence",
+      "name": "07_task-precedence.png",
+      "page": "06-Mission-Decisions",
+      "status": "CONCEPT",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/07_task-precedence.png",
+      "webp": "assets/webp/07_task-precedence.webp",
+      "sha256_original_png": "c46c779aff42ff26c64772d729e9079c6b4ddbad7f204073ffc80ec7ac5fac2b",
+      "sha256_webp": "7a41fd0bf3f42afa4bbdea21352c89f847c51535c3936270d4072cbe0e017a5d",
+      "source": "a_polished_high_contrast_cinematic_infographic_7_batch_7.png",
+      "risk_and_revision_note": "Validar que precedencias y autorización coincidan con el MissionManager de main y estado actual.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 8,
+      "slug": "resource-ledger",
+      "name": "08_resource-ledger.png",
+      "page": "05-Resource-Models",
+      "status": "DO_NOT_PUBLISH_AS_IS",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/08_resource-ledger.png",
+      "webp": "assets/webp/08_resource-ledger.webp",
+      "sha256_original_png": "0529a17310c39ebab4d1655998a52ea1347bc2f0db042658d532a122e57ee229",
+      "sha256_webp": "3fd00591c47230943bcc2afc34bc535730943ee402bdc42a8b8c205137759bc9",
+      "source": "a_polished_high_contrast_infographic_in_a_cinemat_8_batch_8.png",
+      "risk_and_revision_note": "Cifras inventadas 720 días, 12.000 kWh, 3.600 m³, reserva 5–8% y estado Safe/Feasible no corresponden al MVP. REGENERAR sin cifras o con cálculo auditado.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 9,
+      "slug": "experimental-design",
+      "name": "09_experimental-design.png",
+      "page": "07-Experimental-Method",
+      "status": "CONCEPT",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/09_experimental-design.png",
+      "webp": "assets/webp/09_experimental-design.webp",
+      "sha256_original_png": "887a16dd93d71e780cacd9b3eb4242821b5e22e402a341c0356109a4b0a1fdd5",
+      "sha256_webp": "e16f83baf40efca3f217c266f31b7f9c2474dc9888a2033281b3329d5e35e0ec",
+      "source": "a_highly_polished_cinematic_infographic_16_9_wid_9_batch_9.png",
+      "risk_and_revision_note": "Comparación A/B conceptual, paisaje con hielo/nieve ilustrativo no atribuible al recorte real.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 10,
+      "slug": "evidence-ladder",
+      "name": "10_evidence-ladder.png",
+      "page": "09-Discussion",
+      "status": "CONCEPT",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/10_evidence-ladder.png",
+      "webp": "assets/webp/10_evidence-ladder.webp",
+      "sha256_original_png": "efa3e4d4ed869d6c0a54a125fc570502f14a073da2043fbd14d632e133927c32",
+      "sha256_webp": "542524254412f94fac626ee335b9f3a40dbf55475f7adaec5d536567298c610d",
+      "source": "a_polished_detailed_infographic_digital_illustra_10_batch_10.png",
+      "risk_and_revision_note": "Jerarquía ilustrativa; observación física NASA no constituye observación física efectuada por MGE.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 11,
+      "slug": "system-architecture",
+      "name": "11_system-architecture.png",
+      "page": "Home, 06-Mission-Decisions",
+      "status": "CAUTION",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/11_system-architecture.png",
+      "webp": "assets/webp/11_system-architecture.webp",
+      "sha256_original_png": "0a83700da014d63b28848e912dfe3f46e84e32b11dea6e364aed877bbca14418",
+      "sha256_webp": "7b211c37ec175508f51d1571ce6d0b680d4d7eb766c286fbb31b76d10fd587cf",
+      "source": "a_highly_detailed_cinematic_infographic_in_a_wide_1_batch_1.png",
+      "risk_and_revision_note": "Arquitectura aspiracional: mundo 3D/4D en vivo, Gazebo validado, datos mineralógicos y muestreo no necesariamente implementados.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 12,
+      "slug": "ros2-integration-graph",
+      "name": "12_ros2-integration-graph.png",
+      "page": "06-Mission-Decisions, developer docs",
+      "status": "DO_NOT_PUBLISH_AS_IS",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/12_ros2-integration-graph.png",
+      "webp": "assets/webp/12_ros2-integration-graph.webp",
+      "sha256_original_png": "61d6c57a74d38a75bd86367dd967c8591ed013e3ed2b1a4ad2cdc0601e2eb4c8",
+      "sha256_webp": "dd3f20c2a05782cb1770bdc9b90da0e0960850bf4a9b79966220d905599b6712",
+      "source": "a_polished_cinematic_high_detail_infographic_in_2_batch_2.png",
+      "risk_and_revision_note": "Nombres/nodos/tópicos son ficticios (p.ej. map_data, resource_status, world_state); no sustituye ICD real de src/mge_interfaces.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 13,
+      "slug": "map-refinement-loop",
+      "name": "13_map-refinement-loop.png",
+      "page": "03-Terrain-and-Scale, 06-Mission-Decisions",
+      "status": "CAUTION",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/13_map-refinement-loop.png",
+      "webp": "assets/webp/13_map-refinement-loop.webp",
+      "sha256_original_png": "1249a5932b976dc25deabde21c336091f3635f6c138a79a8c95db580e3e7dbad",
+      "sha256_webp": "18cfc65f2643f5b9f95aa55b046a992395acbb18203dfcde297669d3a9d948e3",
+      "source": "a_cinematic_highly_detailed_widescreen_16_9_inf_3_batch_3.png",
+      "risk_and_revision_note": "Afirmar que cada ciclo da mayor detalle y seguridad es incorrecto sin evidencia: una observación puede no cambiar decisión ni resolución nativa.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 14,
+      "slug": "poi-ranking",
+      "name": "14_poi-ranking.png",
+      "page": "02-Jezero-Science, 07-Experimental-Method",
+      "status": "DO_NOT_PUBLISH_AS_IS",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/14_poi-ranking.png",
+      "webp": "assets/webp/14_poi-ranking.webp",
+      "sha256_original_png": "529b8342a4ed4076a778e63bd44212da264b341069544fa70a15490a5e9ddccd",
+      "sha256_webp": "689bd3a79280f3b8512c3d9af75822d6c8025330dec28f36b63d422f3ed79070",
+      "source": "a_cinematic_high_detail_widescreen_16_9_infograp_4_batch_4.png",
+      "risk_and_revision_note": "Pesos 30/20/15/15/10/10, puntajes, km/horas y rankings son inventados; ni NASA ni MGE aprobaron estos datos.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 15,
+      "slug": "why-site-b",
+      "name": "15_why-site-b.png",
+      "page": "02-Jezero-Science",
+      "status": "DO_NOT_PUBLISH_AS_IS",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/15_why-site-b.png",
+      "webp": "assets/webp/15_why-site-b.webp",
+      "sha256_original_png": "24edc9df697b30fb8aa67324fee70d16e67706a14f33b70e835e384eaf93bac5",
+      "sha256_webp": "e832a84d591276aef1a4cc778730a3adeda2ceaaf1ad38cb1b7ebde17b369efd",
+      "source": "a_highly_detailed_cinematic_infographic_in_a_wide_5_batch_5.png",
+      "risk_and_revision_note": "Presenta B como delta/mineral objetivo verificado y muestra POIs/costos ficticios. La B de la ventana 128m era experimental, no POI geológico demostrado.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 16,
+      "slug": "emergent-tasks",
+      "name": "16_emergent-tasks.png",
+      "page": "06-Mission-Decisions",
+      "status": "DO_NOT_PUBLISH_AS_IS",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/16_emergent-tasks.png",
+      "webp": "assets/webp/16_emergent-tasks.webp",
+      "sha256_original_png": "048b4a7639e8300e59000c3afce71f685516c5a10390ddc13da915fc448d1289",
+      "sha256_webp": "a086589b3d7450193920c1cf4baf52d6c314524a929093e5826b40fccc5a80e1",
+      "source": "a_polished_cinematic_detailed_infographic_in_the_6_batch_6.png",
+      "risk_and_revision_note": "Desvío +0,8 km/+14min/0,7 kWh/+0,2 kg O2 y márgenes safe son inventados y en unidades no concordadas.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 17,
+      "slug": "known-inferred-unknown",
+      "name": "17_known-inferred-unknown.png",
+      "page": "03-Terrain-and-Scale",
+      "status": "DO_NOT_PUBLISH_AS_IS",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/17_known-inferred-unknown.png",
+      "webp": "assets/webp/17_known-inferred-unknown.webp",
+      "sha256_original_png": "fb82a83640b3d6af605a5f5f7a497af26ce3c0c0715aa26f3c72181798d23093",
+      "sha256_webp": "5e472215a382a425d8bd401ea3b2e6385c8bb1499b535cbbe3fa72c73e593968",
+      "source": "a_polished_cinematic_high_detail_infographic_in_7_batch_7.png",
+      "risk_and_revision_note": "Porcentajes 22→68%, -78% y confianza 0…1 son datos inventados; además “known = orbital high confidence” confunde estimado con observado.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 18,
+      "slug": "mission-engine-to-web",
+      "name": "18_mission-engine-to-web.png",
+      "page": "09-Discussion, developer docs",
+      "status": "CAUTION",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/18_mission-engine-to-web.png",
+      "webp": "assets/webp/18_mission-engine-to-web.webp",
+      "sha256_original_png": "49f337557d75f375ba8260a5a25f498b0a98684edd772aea7c2277ff745160fd",
+      "sha256_webp": "1aa7bce75a199ca84bec8e3e83f63223d93fa4ead10d4836a10d4cb1a45e05ef",
+      "source": "a_polished_cinematic_high_detail_infographic_in_8_batch_8.png",
+      "risk_and_revision_note": "Muestra Gazebo de alta fidelidad, rosbag2, telemetría LIVE y resultados científicos como si estuvieran integrados; realidad del prototipo: replay offline, pruebas MOCK/analíticas.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 19,
+      "slug": "demo-walkthrough",
+      "name": "19_demo-walkthrough.png",
+      "page": "Home, 08-Case-Studies",
+      "status": "CAUTION",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/19_demo-walkthrough.png",
+      "webp": "assets/webp/19_demo-walkthrough.webp",
+      "sha256_original_png": "eed97d91fbd7ac2440c0e9718509bf47d6ed0ea28956d24b1cc2de835ef9befd",
+      "sha256_webp": "f4cb54af9755abf3e118889129618b3001751d488a6de6404c415ca9f8a3cacb",
+      "source": "a_polished_cinematic_widescreen_16_9_mars_missi_9_batch_9.png",
+      "risk_and_revision_note": "Storyboard de capacidad propuesta, incluye muestreo ejecutado y espectrometría no probados; jamás usarlo como caso registrado.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    },
+    {
+      "id": 20,
+      "slug": "rflp-traceability",
+      "name": "20_rflp-traceability.png",
+      "page": "Developer docs",
+      "status": "DO_NOT_PUBLISH_AS_IS",
+      "size_px": {
+        "width": 1672,
+        "height": 941
+      },
+      "png": "assets/png/20_rflp-traceability.png",
+      "webp": "assets/webp/20_rflp-traceability.webp",
+      "sha256_original_png": "c0c45803044829114b2cd45298bb7c79841e227706f76ab5c01822da38b23a88",
+      "sha256_webp": "2cd602afa01c8f38e2b7fa70099d97d0fd6a47da1d1a0d27805f7d87339b2cc9",
+      "source": "a_detailed_cinematic_high_contrast_infographic_i_10_batch_10.png",
+      "risk_and_revision_note": "Nuevos módulos/agentes, verificaciones con checks y umbrales ≥90%, ±10%, ≥24h son inventados; reconstruir desde docs/requirements y evidence real.",
+      "source_type": "AI-generated conceptual image",
+      "wiki_asset_replacement_approved": false
+    }
+  ]
+}

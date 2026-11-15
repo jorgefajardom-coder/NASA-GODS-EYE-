@@ -17,6 +17,38 @@
     },
     {
       "tool": "OpenAI Codex and image_gen",
+      "kind": "reviewed_imagegen_wiki_editorial_refresh",
+      "generation": "AI-assisted semantic review and reference-image edits; documentation-only audit code; encoding-only WebP derivatives",
+      "paths": [
+        "docs/wiki/assets/imagegen-20261115",
+        "docs/wiki/Editorial-Review.md",
+        "docs/wiki/audit/editorial-20261115",
+        "docs/wiki/tools/audit_editorial.py",
+        "docs/wiki/Home.md",
+        "docs/wiki/01-Research-Question.md",
+        "docs/wiki/02-Jezero-Science.md",
+        "docs/wiki/03-Terrain-and-Scale.md",
+        "docs/wiki/04-Agents-and-Activities.md",
+        "docs/wiki/04-Agents-and-Activities.md",
+        "docs/wiki/06-Mission-Decisions.md",
+        "docs/wiki/07-Experimental-Method.md",
+        "docs/wiki/09-Discussion.md",
+        "docs/wiki/Home.md",
+        "docs/wiki/README.md",
+        "docs/wiki/Reproducibility.md",
+        "docs/wiki/_Sidebar.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "docs/handoffs/david.md"
+      ],
+      "use": "Use a supplied20-image package as visual references; edit nine selected illustrations to retain correct scientific meaning, readable labels and visible AI watermarks. Exclude11 originals with fabricated values or unsupported capabilities. Preserve the original data figures, GIFs and historical seals.",
+      "metadata": "Source ZIP/manifest hashes, original image hashes, prompts, output hashes, classifications, captions and exclusions are recorded in the edition manifest.",
+      "owner_review": "pending before separate native Wiki synchronization",
+      "scientific_approval_change": false,
+      "technical_implementation_change": false
+    },
+    {
+      "tool": "OpenAI Codex and image_gen",
       "kind": "english_scientific_wiki_with_reproducible_graphics",
       "generation": "AI-assisted English explanatory prose, documentation-only drawing/audit code, conceptual illustration, model plots and marked GIFs",
       "paths": [
@@ -1861,6 +1893,19 @@
         "web/tests/photoTourTitle.test.ts"
       ],
       "use": "Keep the simulated agents off the terrain crop edge: base A and goal B at least 150 m inside, drone and rover pads at least 60 m inside, photo-tour stops visited from at least 20 m inside (within the viewer's 25 m arrival radius) and tour legs outside a 30 m edge band. Regenerated Jezero, Gale and Meridiani; Gusev, Elysium and Valles Marineris are byte-identical. Rover stop markers keep their real NASA positions. The photo-tour button names the zone's own rover and promises no photos where NASA's raw-image feed has none (Spirit, Opportunity)."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "pr42_delivery_integration_reconciliation",
+      "generation": "AI-assisted disclosure-history reconciliation, editorial continuation hashes, read-only native Wiki verification receipt and review prose",
+      "paths": [
+        ".gitattributes",
+        "docs/wiki/audit/editorial-20261115/manifest.json",
+        "evidence/pr42-native-publication-20261115",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "scope": "Owner approved PR39/42 and native synchronization. Existing native commit82534db is preserved;39 media hashes and18HTTP endpoints verified without repeating publication. No generated media, scientific approval, LIVE mission or organizer endorsement is asserted."
     }
   ],
   "generated_media": [

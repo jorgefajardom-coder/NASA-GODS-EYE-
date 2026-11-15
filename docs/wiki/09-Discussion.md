@@ -40,9 +40,9 @@ The existing single-human trace gives a particularly clear teaching example: 600
 
 ## Build evidence at the level of the conclusion
 
-![An evidence ladder separates software consistency, an audited analytical workflow, integrated simulated execution and physical observations.](assets/evidence-ladder.png)
+![Four conceptual evidence categories connect software checks, analytical cases, connected execution and physical validation to the claims each supports.](assets/imagegen-20261115/10-evidence-ladder-reviewed.webp)
 
-Figure 9.1. Different experiments support different conclusions. Progress between levels requires the corresponding measurements and bindings, rather than a visual change in the presentation.
+Figure 9.1. Evidence categories and their claim scope. Software checks examine tested properties; an analytical case supports conclusions under declared assumptions; connected execution supplies a same-run record; physical validation requires measurements of the evaluated system. The picture illustrates these categories. [Full-size PNG](assets/imagegen-20261115/10-evidence-ladder-reviewed.png).
 
 Software checks establish properties such as duplicate rejection, journal recovery, coordinate conversion or numerical agreement for tested contexts. An audited analytical workflow adds a complete trace under declared terrain, sensing and cost assumptions. The Bunsen packet belongs to that latter category and records its pending owner review.
 

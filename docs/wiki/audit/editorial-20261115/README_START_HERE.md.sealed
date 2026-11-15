@@ -1,0 +1,20 @@
+# MARS GODS EYE — Wiki ImageGen Refresh (20 original infographics)
+
+This package includes **20 independent 1672×941 AI-generated PNG images**, an optional lighter WebP copy of each, a two-part visual catalogue, a machine-readable SHA-256 manifest, and a detailed Codex instruction prompt. Both batches belong to the same cinematic Mars editorial style.
+
+## Start here
+
+1. Open `previews/catalogue_01_10.jpg` and `previews/catalogue_11_20.jpg`.
+2. Read `instructions/ASSET_USAGE_MATRIX.md` before copying any image into the scientific wiki. In particular, assets 08, 12, 14, 15, 16, 17 and 20 are **DO_NOT_PUBLISH_AS_IS** because the image-generating model put fictional numerical or architectural claims in them.
+3. Give the extracted folder to Codex and paste `instructions/PROMPT_FOR_CODEX.md`.
+4. Require a PR, owner review, documented manifest/hash updates, and visual checks before pushing to the separate GitHub Wiki repository.
+
+## Usage
+
+- `assets/png/*.png`: full-resolution original images, unmodified.
+- `assets/webp/*.webp`: high-quality lighter reading copies. Same text and drawings, visually compressed.
+- `ASSET_MANIFEST.json`: exact filenames, hashes, suggested wiki placement, scientific risks.
+- `previews/*.jpg`: two contact sheets.
+- `instructions/PROMPT_FOR_CODEX.md`: guided workflow for safe wiki improvement.
+
+**These images are illustrations, not scientific evidence.** This package does not contain actual NASA map rasters, simulation logs, or validated POI rankings. Real maps and plots should come from the repository's scientific scripts and evidence records.

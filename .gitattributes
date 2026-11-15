@@ -12,3 +12,6 @@ docs/wiki/tools/*.py -text
 
 # PR39 consumer receipts and harness hashes preserve the recorded bytes.
 evidence/pr39-gateway-contract-20261115/** -text
+
+# Preserve the editorial manifest byte format across reviewed continuation seals.
+docs/wiki/audit/editorial-20261115/manifest.json -text
