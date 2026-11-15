@@ -797,3 +797,7 @@ OpenAI Codex assisted tests/planning/scientific_oracle.py, test_scientific_oracl
 ## F03.3 main synchronization and review preparation
 
 OpenAI Codex assisted reconciliation of mandatory disclosures and preparation of the review PR. Current software validation outputs are retained in evidence/planner-f033-pr-sync-20261115. Both branches disclosures are preserved; no scientific measurements, production backend activation or operational approval are inferred. Native ROS is blocked before execution by WSL resources.
+
+## F03.3-C2 immutable Python scientific context
+
+OpenAI Codex assisted ScientificContext in resource_costs.py, tests/planning/test_scientific_context.py and docs/planner_scientific_context.md. Published science functions and profile coefficients are reused unchanged. The explicit immutable context is experimental, has no ROS transport or authorization and does not approve profiles. Test terrains are synthetic inputs.

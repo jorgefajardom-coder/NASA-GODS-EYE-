@@ -1374,6 +1374,17 @@
         "evidence/planner-f033-pr-sync-20261115"
       ],
       "use": "Merge published main preserving planner history and mandatory disclosures; record local Python/web checks and blocked native ROS accurately. No science model, mission authority or production search activation."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "immutable_python_scientific_context",
+      "generation": "AI-assisted planner context, synthetic admission tests and documentation",
+      "paths": [
+        "src/mge_planning/mge_planning/resource_costs.py",
+        "tests/planning/test_scientific_context.py",
+        "docs/planner_scientific_context.md"
+      ],
+      "use": "Explicit request/profile/model binding and fixed pending service/wait schedule for local experiments. No coefficient, ROS contract, mission authority or approval change."
     }
   ],
   "generated_media": [
