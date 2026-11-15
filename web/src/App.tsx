@@ -607,7 +607,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           {mode === 'geology' ? (
             <GeologyList data={bundle.geology} selected={geoUnit} onSelect={setGeoUnit} showMap={showGeoMap} onShowMap={setShowGeoMap} showCut={showCut} onShowCut={setShowCut} />
           ) : mode === 'atmos' ? (
-            <AtmosList data={bundle.atmosphere} t={t} duration={duration} />
+            <AtmosList data={bundle.atmosphere} t={t} duration={duration} runId={RUN_ID} />
           ) : (
             <>
               <ManagementList groups={groups} selected={sel} onSelect={setSelection} />

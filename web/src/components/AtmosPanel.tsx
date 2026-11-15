@@ -11,18 +11,66 @@ import {
 import { fmtSimTime } from '../lib/format';
 import { Info } from './Info';
 import { RawImagesPanel } from './RawImagesPanel';
+import { DONKI_URL, excursionDoseMsv, zoneEnvironment } from '../lib/zoneEnvironment';
 
 /** Jezero (about -2.57 km) sits roughly 1.9 km above the REMS site in Gale crater (about -4.5 km). */
 const JEZERO_ABOVE_GALE_M = 1900;
 
 const fmt = (v: number | null, d = 0, unit = '') => (v == null ? '–' : `${v.toFixed(d)}${unit}`);
 
+/** Length of the Marswalk used for the radiation estimate (h): a planning example, not a mission rule. */
+const MARSWALK_H = 4;
+
+/**
+ * Water and radiation at this zone, shown for every zone scene: Mars Odyssey GRS water-equivalent hydrogen and the
+ * MSL RAD surface dose (measured at Gale, elsewhere from RAD's dose-pressure relation). Context only: no shielding,
+ * no solar particle events, not a dosimeter or a safety limit.
+ */
+export function ZoneEnvironmentPanel({ runId }: { runId: string }) {
+  const env = zoneEnvironment(runId);
+  if (!env) return null;
+  const r = env.radiation;
+  const walk = excursionDoseMsv(r.doseMsvPerDay, MARSWALK_H);
+  return (
+    <section className="atmos__zone" aria-label="Water and radiation at this zone">
+      <div className="geo__head">
+        <span>
+          Water and radiation here{' '}
+          <Info text="Water: Mars Odyssey GRS water-equivalent hydrogen in the top few tens of centimetres, 5 x 5 degree cell (Boynton et al. 2007; ice and hydrated minerals not distinguished). Radiation: MSL RAD surface dose at Gale (Hassler et al. 2014); other zones use RAD's measured dose-pressure relation (Guo et al. 2018) at their pressure. Surface averages without shielding; solar particle events are not included." />
+        </span>
+        <span className="mono">GRS · RAD</span>
+      </div>
+      <div className="atmos__now">
+        <div>
+          <span className="atmos__big mono">{env.water.wtPercent.toFixed(1)}</span>
+          <span className="muted small"> ± {env.water.sigma.toFixed(1)} wt%</span>
+          <div className="muted small">water-equivalent hydrogen (orbital)</div>
+        </div>
+        <div>
+          <span className="atmos__big mono">{r.doseMsvPerDay.toFixed(2)}</span>
+          <span className="muted small"> ± {r.doseSigma.toFixed(2)} mSv/day</span>
+          <div className="muted small">surface dose equivalent{r.measuredHere ? ' (measured here)' : ' (estimate)'}</div>
+        </div>
+        <div className="atmos__when muted small">
+          About <strong>{walk.toFixed(2)} mSv</strong> over a {MARSWALK_H} h Marswalk at {r.pressurePa} Pa, without suit or vehicle shielding.
+          {!r.withinRange && ' Outside the 700–950 Pa range RAD measured: an unverified extrapolation.'} Solar storms are not included; check{' '}
+          <a href={DONKI_URL} target="_blank" rel="noreferrer">
+            NASA DONKI
+          </a>{' '}
+          space weather before going out.
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /** Left panel of the Atmos tab: the latest Jezero sols and the radiation context of this run. */
-export function AtmosList({ data, t, duration }: { data: AtmosphereData | undefined; t: number; duration: number }) {
+export function AtmosList({ data, t, duration, runId }: { data: AtmosphereData | undefined; t: number; duration: number; runId: string }) {
   if (!data) {
     return (
       <section className="panel atmos" aria-label="Atmosphere">
-        <p className="muted small">No atmosphere or radiation data is available for this run.</p>
+        <ZoneEnvironmentPanel runId={runId} />
+        <p className="muted small">No local weather feed is available for this zone.</p>
       </section>
     );
   }
@@ -33,6 +81,7 @@ export function AtmosList({ data, t, duration }: { data: AtmosphereData | undefi
   const r = data.radiation;
   return (
     <section className="panel atmos" aria-label="Atmosphere and radiation">
+      <ZoneEnvironmentPanel runId={runId} />
       <div className="geo__head">
         <span>
           Jezero weather{' '}
