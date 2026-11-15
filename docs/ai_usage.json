@@ -1168,6 +1168,18 @@
         "docs/ai_usage.json"
       ],
       "use": "Reconcile the guard payload with published mainb5dc681 without importing PR code, preserve local audits and main disclosures, draft the local commit/PR and a separate unimplemented backend proposal. Record current Windows/web checks and blocked ROS attempts separately from historical hash-matched Jazzy evidence."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "experimental_scientific_cost_adapter",
+      "generation": "AI-assisted planner code, tests and documentation; actual software validation outputs",
+      "paths": [
+        "src/mge_planning/mge_planning/resource_costs.py",
+        "tests/planning/test_resource_costs.py",
+        "docs/planner_f033b_cost_adapter.md",
+        "evidence/planner-f033b-20261114"
+      ],
+      "use": "Delegate to published mission science API, compare stored vectors, strict reserves and pending activities. No scientific approval, search wiring, ROS contract or execution accounting change."
     }
   ],
   "generated_media": [

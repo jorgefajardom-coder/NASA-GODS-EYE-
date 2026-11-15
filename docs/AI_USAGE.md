@@ -700,3 +700,7 @@ OpenAI Codex assisted the planner-only availability admission guard and human/ro
 ## F03.3 delivery review
 
 OpenAI Codex assisted the mainb5dc681 delivery comparison, local commit/PR drafts, fresh software validation evidence and a separate local-only future cost-backend proposal. Evidence is under evidence/planner-f033-delivery-20261114. The proposal is not implemented or included in the guard payload. ROS startup failures and previous hash-matched ROS results are explicitly distinguished. No publication, model change or scientific observation is produced by this preparation.
+
+## F03.3-B experimental cost adapter
+
+OpenAI Codex assisted planner resource_costs.py, test_resource_costs.py, the F03.3-B technical report and evidence/planner-f033b-20261114. The adapter reuses published mission functions; tests compare stored David vectors. Outputs are software estimates, not observations or model approval. Search, MissionManager and ROS remain unchanged.

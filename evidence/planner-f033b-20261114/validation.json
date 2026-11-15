@@ -1,0 +1,30 @@
+{
+  "results": {
+    "equivalence.junit.xml": {
+      "tests": 48,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 48
+    },
+    "python_full.junit.xml": {
+      "tests": 1093,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 20,
+      "passed": 1073
+    }
+  },
+  "repository_check": "passed",
+  "diff_check": "passed",
+  "python": "3.12.3",
+  "warnings": [
+    "Existing Starlette/httpx deprecation"
+  ],
+  "ros": "Not executed in this stage; previous WSL HCS/ERROR_NO_SYSTEM_RESOURCES unresolved. No native compatibility claim.",
+  "production_search": "unchanged, not wired",
+  "code_sha256": {
+    "src/mge_planning/mge_planning/resource_costs.py": "d5f5320f08b254b31afeb28e2584e558048cb6516ecad7747590da22e050ba6d",
+    "tests/planning/test_resource_costs.py": "b39ca3c5252d17075299c28feff22e5cfbffd41b11d76b4789a5bf9ccab746a1"
+  }
+}

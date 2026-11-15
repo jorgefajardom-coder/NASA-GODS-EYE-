@@ -1,0 +1,12 @@
+{
+  "main": "6bcf208868e37b7e15e9189fac11de96e7414eff",
+  "head": "1f90854407817ef464f9acc74b5501d21f687c1c",
+  "source_sha256": {
+    "src/mge_mission/mge_mission/models.py": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52",
+    "config/science_profiles.proposed.json": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "config/cost_agreement.experimental.json": "d1f5ff02b8381c3e3e8cb44c63f103ac333d0c6f252d55276a1b45c24e5a2148",
+    "evidence/mission-cost-closure-20261114/vectors-final/cost_vectors.json": "ef49effa9a332ab81babc30959465e225f8c0ebfc5ec62d348bb9166b7ecd782"
+  },
+  "status": "experimental_not_authorized",
+  "equivalence_passed": 48
+}
