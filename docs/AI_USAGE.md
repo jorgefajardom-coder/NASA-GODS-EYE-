@@ -872,3 +872,25 @@ the jsdom navigation regressions, and the validation record under
 software evidence; no image, video, NASA observation or mission result was
 generated. Existing asset declarations and watermarks remain intact. This cut
 does not close AC-08, steps 4/5, scientific approvals or organizer endorsement.
+
+## Zone water and radiation display and project page text
+
+Claude Code (Anthropic) assisted the display of the existing per-zone water and
+radiation context (`web/src/lib/zoneEnvironment.ts`, the Atmos panel and zone
+cards, with tests) and the English project-page draft `docs/project_page.md`.
+The values come unchanged from `web/scripts/data/zone_environment.json` (Mars
+Odyssey GRS, MSL RAD, Guo et al. 2018); the 4 h Marswalk dose is a linear
+display estimate without shielding or solar particle events. No image, video,
+audio or NASA observation was generated; scientific review of the wording and
+organizer endorsement remain open.
+
+The same assistance added the HUD's exhaled-CO₂ gauge (`web/src/lib/co2.ts`, the second
+press of the oxygen button, with tests): a display estimate from the replay's oxygen line
+and an assumed respiratory quotient of 0.85, pending scientific review; no CO₂ data or
+suit capacity is generated. It also switched the HUD dose gauge to each zone's surface
+rate from the existing zone environment data, with NASA's 600 mSv career limit as scale
+context; no dose value was generated.
+
+## PR37 scientific presentation corrections — 15 November 2026
+
+OpenAI Codex assisted the HUD/context code, source-year corrections, project-page draft and regression tests listed in `ai_usage.json` under `pr37_scientific_presentation_corrections`. RAD dose equivalent is not converted into NASA effective dose or a career-limit percentage. An unavailable CO2 rate remains unavailable. No new measured data, numerical radiation inputs, scientific profile or approval was generated. Owner scientific review remains pending.

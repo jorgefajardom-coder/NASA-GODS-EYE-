@@ -136,10 +136,10 @@ only**: not yet in the scene packages or the viewer, to be implemented later in 
 - **Ice**: SWIM 2.0 (−60 to 60° N) covers these latitudes, but swim.psi.edu answered HTTP 523 (Cloudflare:
   origin unreachable) to the scripts and to a browser on 2026-11-15, and no copy was found elsewhere or in the
   owner's Drive. No ice value is imported or estimated. **To do** when the server is back.
-- **Radiation** (galactic cosmic rays; read in full: Guo et al. 2018, arXiv:1712.06987, sections 2.3 and 3.3):
+- **Radiation** (galactic cosmic rays; read in full: Guo et al. 2017, arXiv:1712.06987, sections 2.3 and 3.3):
   - Measured at Gale by MSL RAD: 0.21 ± 0.04 mGy/day absorbed, 0.64 ± 0.12 mSv/day dose equivalent, mean
     quality factor ⟨Q⟩ = 3.05 ± 0.3 (Hassler et al. 2014, Science 343, doi:10.1126/science.1244797).
-  - Guo et al. 2018 (JGR Planets, doi:10.1002/2016JE005206), section 3.3: the measured anticorrelation of the
+  - Guo et al. 2017 (JGR Planets, doi:10.1002/2016JE005206), section 3.3: the measured anticorrelation of the
     RAD dose rate with surface pressure is −κ = c0 + c1·Φ with c0 = 0.28 ± 0.03 µGy/day/Pa and
     c1 = −2.9 ± 0.6 × 10⁻⁴ µGy/day/Pa/MV, measured between about 700 and 950 Pa (18.9–25.7 g/cm²); at
     Φ = 500 MV, the period of Hassler et al., −κ = 0.135 µGy/day/Pa. The paper states that extrapolating the
