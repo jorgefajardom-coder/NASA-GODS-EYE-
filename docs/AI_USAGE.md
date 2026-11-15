@@ -676,3 +676,15 @@ certified passage; `--sync-terrain-yml` is refused for a package outside
 `data/sample`; an undocumented duplicate scale tier was removed; and offline
 tests were added in `tests/mapping/test_prepare_jezero_terrain.py`. No terrain
 data, observation, mission result, image, video or audio was generated.
+
+## Viewer first-person view, drone scan and Pages publishing
+
+Claude Code (Anthropic) assisted the viewer owner with the opening terrain
+formation (the layer rises from flat zone by zone), the height morph between
+layers and map versions, the first-person camera and its HUD, the drone
+camera scan, their tests, and the workflow that publishes the public viewer to
+GitHub Pages. The scan only redraws the slope already computed from the orbital
+CTX DTM prior around the drone in display bands; it is not an observation, it
+does not change the map version, and its bands are display thresholds pending
+science approval. No data, measurement, image, video or audio was generated.
+The affected paths are listed in ai_usage.json.

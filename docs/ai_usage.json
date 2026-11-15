@@ -1109,6 +1109,29 @@
         "tests/mapping/test_prepare_jezero_terrain.py"
       ],
       "use": "Read slope screening limits from the proposed science profiles instead of duplicated constants and label the summary as an estimate; refuse --sync-terrain-yml outside data/sample; drop an undocumented duplicate scale tier; add offline tests for parameter validation, slope screening and terrain.yml regeneration. No terrain data, observation, mission result or media was generated."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "code_tests_and_configuration",
+      "generation": "AI-assisted generation",
+      "paths": [
+        "web/src/components/TerrainGrowth.tsx",
+        "web/tests/terrainGrowth.test.ts",
+        "web/tests/terrainMorph.test.ts",
+        "web/src/components/FirstPersonCamera.tsx",
+        "web/src/components/FirstPersonHud.tsx",
+        "web/src/components/DroneScan.tsx",
+        "web/src/lib/scan.ts",
+        "web/tests/scan.test.ts",
+        "web/src/components/MissionScene.tsx",
+        "web/src/components/TerrainView.tsx",
+        "web/src/components/AgentLayer.tsx",
+        "web/src/components/CameraBar.tsx",
+        "web/src/App.tsx",
+        "web/src/styles.css",
+        ".github/workflows/pages.yml"
+      ],
+      "use": "Viewer display only: opening terrain formation where the whole layer rises from flat to its true relief zone by zone (low ground first, rising ground lit); terrain heights that morph instead of jumping when the layer or map version changes; first-person camera from the followed agent with a cartographic HUD (compass tape, site bearings, resources as received); drone-camera scan that draws the existing orbital CTX slope in display bands around the drone (no observation is made, the map version is unchanged, bands await science approval); GitHub Actions workflow that tests, builds and publishes the public viewer to the gh-pages branch. No data, measurements, images, video or audio generated."
     }
   ],
   "generated_media": [
