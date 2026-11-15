@@ -37,6 +37,37 @@
     },
     {
       "tool": "OpenAI Codex",
+      "kind": "delivery_documentation_reconciliation",
+      "generation": "AI-assisted synthesis and owner-confirmed planning update",
+      "paths": [
+        "AGENTS.md",
+        "README.md",
+        "docs/delivery_closure_plan.md",
+        "docs/decisions/2026-11-14-delivery-freeze.md",
+        "docs/CONTRACT_BASELINE.md",
+        "docs/contract_baseline.json",
+        "docs/ICD.md",
+        "docs/INTEGRATION_MATRIX.md",
+        "docs/audit_reconciliation.md",
+        "docs/verification.md",
+        "docs/science_decisions.md",
+        "docs/competition.md",
+        "docs/team.md",
+        "docs/team_continuation_plan.md",
+        "docs/mission_checklist.md",
+        "docs/research_hypotheses.md",
+        "docs/handoffs/david.md",
+        "docs/handoffs/daniel.md",
+        "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md",
+        "docs/handoffs/jorge.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Reconcile all 20 delivery-PDF recommendations with published PR28 and the two chats; record the owner's freeze of extensions and retained 15 Nov 20:00 Bogota submission target. Summarize science/campaign review direction without importing local numerical drafts, new targets or the unpublished cost backend. Correct publication/evidence metadata while preserving historical audit inputs, semantic and scientific gates. Documentation only; no new code, datasets, measurements, observations, approvals or media generated."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "audit_contract_reconciliation_rc2",
       "generation": "AI-assisted contract reconciliation, code, tests, documentation and controlled SIMULATED software-run evidence",
       "paths": [

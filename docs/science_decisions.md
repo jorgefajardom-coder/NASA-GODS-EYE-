@@ -1,5 +1,27 @@
 # Scientific decisions (David)
 
+## Current conclusions and review boundaries — after PR28
+
+The owner requested reconsidering durations/resources by patch and separating
+rover campaign, human EVA and drone sorties. The 20-minute JZ control is an
+experimental horizon, not a general system/hardware limit. Existing JZ-P01..07
+values and approval receipts remain unchanged; proposed replacement budgets,
+coordinates and campaign calculations remain branch-local and unapproved.
+The local science survey recommends larger context with nested local windows
+and a Jezero shortlist; these are candidate requests, not delivered/selected
+operational maps. See [the public conclusions](delivery_closure_plan.md).
+
+[D-COST-02](decisions/2026-11-14-shared-scientific-cost-api.md) already selects
+the existing scientific cost API. Completing its backend/context and profile
+review remains open; do not keep presenting the implementation direction as
+an unresolved choice. PR28 did not publish that later local backend.
+
+Accepted [D-DEL-03](decisions/2026-11-14-delivery-freeze.md) now pauses expansion
+until after submission and preserves the 15 Nov 20:00 target. The proposed HUD
+is model-margin/context information only until reviewed; no new radiation,
+slope, oxygen, no-return or Go/No-Go safety threshold is approved here.
+This is a documentation update, not scientific approval of a full mission.
+
 Status: David explicitly approved nominal experimental scenario decisions
 JZ-P01 through JZ-P07 on 14 November 2026. Quantitative model coefficients,
 planner cost agreement and execution evidence remain pending. Full scientific

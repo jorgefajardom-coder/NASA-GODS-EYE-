@@ -1,8 +1,10 @@
 # ICD-ROS2-V1 — Interface Control Document
 
-Status: **contract reconciliation `1.0.0-rc.2`, candidate, not frozen.** Published input:
-`main@6bcf208868e37b7e15e9189fac11de96e7414eff`; candidate source is
-`codex/audit-contract-reconciliation`. No ROS package or JSON/replay version is
+Status: **contract reconciliation `1.0.0-rc.2`, published by PR28 at main9198b3d,
+not frozen or scientifically approved.** Original audit input:
+`main@6bcf208868e37b7e15e9189fac11de96e7414eff`; reviewed source `7f0ebaa`.
+Remaining candidate/owner-review wording concerns semantic approval, not absence
+of the merged F/E implementation. No ROS package or JSON/replay version is
 bumped by this record. [Runtime-v1 validation](../evidence/audit-reconciliation-20261115/runtime-v1/README.md)
 records the fresh F/E ROS consumer and ordinary-Chrome backend-off replay;
 owner freeze, private-browser and scientific acceptance remain separate. See
@@ -566,7 +568,7 @@ later owner science/data contributions. The rc.1 audit at `004b3b2`, integration
 `45a4590` and UX `d649e2e` is historical; its missing-raster/public-reference/
 scaffold statements are superseded by those integrations.
 
-The current candidate adds causal observation protection and explicit
+The PR28 cut publishes causal observation protection and explicit
 estimated-terrain policy, and highlights an exact recorder package. Its fresh
 ROS/browser results are captured in runtime-v1. Published callback
 scheduling/readiness corrections address earlier starvation cases; bounded

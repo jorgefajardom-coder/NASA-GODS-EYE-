@@ -1,5 +1,17 @@
 # David - retain scientific mission authority and approve the model
 
+## Delivery priority after PR28 — owner-confirmed 14 November 2026
+
+Read [current conclusions and PDF tasks DV-1..4](../delivery_closure_plan.md)
+and [D-DEL-03](../decisions/2026-11-14-delivery-freeze.md) before older cuts.
+Review existing-crop science purpose, honest resource/context labels and final
+media claims; accept only the exact evidenced run scope. D-COST-02 selects the
+shared API, but its later local backend, campaign allocations and scientific
+target/coordinate drafts are not approved or imported here. Preserve the 20 min
+control while reviewing future rover/EVA/sortie horizons separately. Extensions
+are paused; submit target 15 Nov 20:00 Bogota, with organizer endorsement and
+David as contact backup. No new budget or model flag is authorized by this plan.
+
 ## Audit reconciliation rc.2 — current candidate over main6bcf208
 
 Read the [current gap/evidence matrix](../audit_reconciliation.md) and
@@ -248,3 +260,5 @@ The rc.2 contract record is not a scientific approval or a semantic freeze.
 Original analysis/report hashes and pinned c3ec4c1 reproduction remain historical.
 
 Publication CI for 6e497a1: Python, web and ROS passed (run43670914573). ROS built/inspected all interfaces and passed the MOCK vertical integration suite. This remains software evidence, not scientific mission acceptance. See evidence/mission-proposal-publication-20261115/ci.json.
+
+Final publication refresh incorporates main99f3e2e (delivery PR30); both sides of AI disclosures retained. Runtime/configuration still matches the earlier CI-passed main9198b3d. Numeric campaign drafts remain proposed research, excluded from the operational delivery freeze.

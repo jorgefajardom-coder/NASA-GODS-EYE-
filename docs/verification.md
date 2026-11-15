@@ -1,5 +1,11 @@
 # Current contract reconciliation verification
 
+Publication note: PR28 source `7f0ebaa` was merged as main `9198b3d` with
+Python/web/ROS CI approved. The runtime-v1 results below are retained evidence
+for that basic software cut, not validation of the later local scientific-cost
+backend or a full three-role mission. See [delivery closure](delivery_closure_plan.md)
+for the PDF disposition, accepted schedule and remaining acceptance.
+
 ## Audit reconciliation rc.2
 
 Current input is main6bcf208; see [scope and gaps](audit_reconciliation.md).

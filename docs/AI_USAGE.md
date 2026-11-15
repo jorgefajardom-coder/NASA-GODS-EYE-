@@ -33,6 +33,17 @@ NASA terrain, mineral detections, physical measurements or mission results.
 No raster or evaluator array is generated, read into this research from the
 private reference directory, or promoted to planning input. No media, new mock,
 discovery/task producer, scientific approval or runtime change is supplied.
+## Delivery conclusions and owner-confirmed freeze
+
+OpenAI Codex assisted comparing the owner's five-page delivery PDF with the
+Conciliación/Rama David chats and published main9198b3d, recording the explicit
+scope/time replies, updating publication metadata and per-owner delivery tasks,
+and adding a judge-facing summary. The local science/campaign reports were read
+for conclusions only; their numeric drafts, data and the pending cost backend
+were not imported. The original PDF is private reference material, not a new
+source of official rules or scientific approval. These changes generate
+documentation/metadata only, not code, terrain, observations, scientific results,
+images, video or audio. Existing source credits and mandatory declarations remain.
 
 ## Audit contract reconciliation rc.2
 
