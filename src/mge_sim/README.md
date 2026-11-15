@@ -48,3 +48,10 @@ Acceptance: clock consistency, duplicate observation rejection with Mapping,
 three-agent startup, and an evidence run showing an observation causes replanning.
 All are pending. The existing MIT package metadata/version are preserved;
 maintainer contact is a placeholder and repository/asset licensing needs review.
+
+## Local additions (15 November 2026, uncommitted)
+
+- `scene_sensing.py` / `scene_sensor` node (opt-in `sensor:=true`): SIMULATED on-board sensing of a declared test scene; the drone reports on landing, ground agents report hazards as they walk.
+- `obstacle_field.py`: seeded obstacle scenes (ridge with one gap and rock clusters) that always keep a passage.
+- MOCK mission opt-ins: `budget_fallback` (nearer targets, then base) and `complete_on_return`; goals off the terrain grid are rejected (`OUT_OF_MAP`).
+- `gz_world.py` + `gz_mirror` node: a Gazebo Harmonic view of a run (public terrain, scene rocks with collision, Mars gravity; agents mirrored from ROS by `set_pose`). It is a viewer, not the Gazebo `simulation` backend: no agent dynamics or `/clock` come from Gazebo.
