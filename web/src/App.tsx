@@ -120,11 +120,15 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [showControlPoints, setShowControlPoints] = useState(false);
   const [showLabels, setShowLabels] = useState(true);
   // Intro clip first (unless reduced motion or ?nointro=1); the terrain grows in once it ends.
-  // The zone selector is the first thing shown on load; arriving from it (travel) opens the scene directly.
+  // On load the intro plays first, then the zone selector opens; arriving from it (travel) opens the scene directly.
   const [startWithZones] = useState(() => RUN_ID !== RECORDED_RECOVERY_ENTRY && !arrivalPending(RUN_ID));
-  const [zonesOpen, setZonesOpen] = useState(startWithZones);
   // Arriving from the zone selector skips the intro: the zone's map image fades straight into its terrain.
-  const [introDone, setIntroDone] = useState(() => RUN_ID === RECORDED_RECOVERY_ENTRY || !introWanted() || arrivalPending(RUN_ID) || startWithZones);
+  const [introDone, setIntroDone] = useState(() => RUN_ID === RECORDED_RECOVERY_ENTRY || !introWanted() || arrivalPending(RUN_ID));
+  // Without an intro (reduced motion or ?nointro=1) the selector opens at once; otherwise when the intro ends.
+  const [zonesOpen, setZonesOpen] = useState(() => startWithZones && introDone);
+  // The terrain grows in and the panels enter only once the start menu is left, never behind it.
+  const [entered, setEntered] = useState(() => !startWithZones);
+  const sceneOn = introDone && entered;
   // Camera: 'free' (map), 'base', or the id of the agent it follows.
   const [camView, setCamView] = useState<string>('free');
   const follow = camView !== 'free' && camView !== 'base';
@@ -516,7 +520,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         exaggeration={exaggeration}
         showControlPoints={showControlPoints}
         showLabels={showLabels}
-        reveal={introDone}
+        reveal={sceneOn}
         playing={playing}
         replaySpeed={speed}
         followAgentId={follow ? camView : null}
@@ -570,10 +574,30 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           onSway={setPovSway}
         />
       )}
-      {!introDone && <Intro onDone={() => setIntroDone(true)} />}
+      {/* The start menu sits under the intro (same layer, earlier in the page) and opens as the intro starts
+          fading, so the intro dissolves straight into it; it lives outside the overlay, which stays hidden
+          until the menu is left. */}
+      {zonesOpen && (
+        <ZoneSelector
+          runId={RUN_ID}
+          instant={!entered}
+          onClose={() => {
+            setZonesOpen(false);
+            setEntered(true);
+          }}
+        />
+      )}
+      {!introDone && (
+        <Intro
+          onLeaving={() => {
+            if (startWithZones) setZonesOpen(true);
+          }}
+          onDone={() => setIntroDone(true)}
+        />
+      )}
 
       {/* The interface waits behind the intro, then enters (panels slide in, the dial spins in). */}
-      <div className={`overlay ${introDone ? 'overlay--enter' : 'overlay--waiting'}`}>
+      <div className={`overlay ${sceneOn ? 'overlay--enter' : 'overlay--waiting'}`}>
         <div className="left">
           <TitleBlock manifest={m} runId={RUN_ID} />
           <ModeTabs mode={mode} onMode={setMode} />
@@ -674,7 +698,6 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
             <kbd>Z</kbd> Zones
           </button>
         )}
-        {zonesOpen && <ZoneSelector runId={RUN_ID} onClose={() => setZonesOpen(false)} />}
         <ZoneArrival runId={RUN_ID} />
 
         <Timeline

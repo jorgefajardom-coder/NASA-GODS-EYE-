@@ -76,10 +76,10 @@ function ZoneCard({ zone, place, onPick }: { zone: WorldInfo; place: 'prev' | 'c
  * Zone selector: a carousel of the Mars zones (one scene per place), each shown with real
  * orbital imagery of that place. Travel zooms the card
  * to the screen and opens its scene; the same image then fades into the terrain (ZoneArrival).
- * It is the first thing shown on load; travelling to the zone already loaded simply enters it.
+ * It opens right after the intro on load (instantly, so the scene never shows behind it); travelling to the zone already loaded simply enters it.
  * Keys: left/right, Enter to travel, Esc to go back.
  */
-export function ZoneSelector({ runId, onClose }: { runId: string; onClose: () => void }) {
+export function ZoneSelector({ runId, onClose, instant = false }: { runId: string; onClose: () => void; instant?: boolean }) {
   const [i, setI] = useState(() => initialZoneIndex(runId));
   const [flight, setFlight] = useState<{ rect: DOMRect; image: string } | null>(null);
   const currentRef = useRef<HTMLDivElement>(null);
@@ -122,7 +122,7 @@ export function ZoneSelector({ runId, onClose }: { runId: string; onClose: () =>
   }, [flight, onClose, travel]);
 
   return (
-    <div className="zones" role="dialog" aria-modal="true" aria-label="Select zone">
+    <div className={`zones${instant ? ' zones--instant' : ''}`} role="dialog" aria-modal="true" aria-label="Select zone">
       <header className="zones__head">
         <h2 className="zones__title">Select zone</h2>
         <p className="zones__body">Mars</p>

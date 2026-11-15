@@ -30,7 +30,7 @@ export function introWanted(): boolean {
  * the screen closes at once so the viewer is never blocked. The clip is AI-generated: an
  * "AI-generated" mark stays on screen the whole time it is visible.
  */
-export function Intro({ onDone }: { onDone: () => void }) {
+export function Intro({ onDone, onLeaving }: { onDone: () => void; onLeaving?: () => void }) {
   const [leaving, setLeaving] = useState(false);
   const done = useRef(false);
   const video = useRef<HTMLVideoElement>(null);
@@ -39,6 +39,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
     if (done.current) return;
     done.current = true;
     setLeaving(true);
+    onLeaving?.(); // what follows the intro can appear under it while it fades
     window.setTimeout(onDone, FADE_MS);
   };
 
