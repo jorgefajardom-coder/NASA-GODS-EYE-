@@ -5,12 +5,15 @@ raster layers: the immutable prior and, per map version, the belief, sigma and
 observed mask of the batch published under that version's stamp
 (mge_gateway.public_rasters). Only public topics are subscribed.
 """
+import signal
 import struct
 import sys
+import threading
 
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+from rclpy.signals import SignalHandlerOptions
 from sensor_msgs.msg import Image
 
 from mge_gateway.public_rasters import PublicRasterAssembler, RasterInputError
@@ -111,7 +114,14 @@ class ReplayRecorder(Node):
 
 
 def main():
-    rclpy.init()
+    # A signal only asks the loop to stop. The default handling raised
+    # KeyboardInterrupt inside a callback, so a record cut between its timeline
+    # line and the manifest/snapshot rewrite left the package inconsistent
+    # (timeline one record ahead of record_count and event_count).
+    rclpy.init(signal_handler_options=SignalHandlerOptions.NO)
+    stop = threading.Event()
+    for signum in (signal.SIGINT, signal.SIGTERM):
+        signal.signal(signum, lambda *_: stop.set())
     try:
         node = ReplayRecorder()
     except FileExistsError as e:
@@ -122,11 +132,12 @@ def main():
         print(f'replay_recorder: {e}', file=sys.stderr)
         sys.exit(1)
     try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
+        while rclpy.ok() and not stop.is_set():
+            rclpy.spin_once(node, timeout_sec=0.1)
     finally:
         node.writer.close()
+        node.destroy_node()
+        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':

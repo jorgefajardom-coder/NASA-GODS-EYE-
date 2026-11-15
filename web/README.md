@@ -25,8 +25,13 @@ on `feat/integration` is not connected to the viewer yet. Two saved runs can be 
 | Rover, drone, base models | NASA/JPL models with branding removed; the base is **AI-generated** (OpenAI Codex) and prepared in Blender |
 | Astronaut portrait | **AI-generated** (ChatGPT), shown beside human_1 in the details panel with a burned-in `AI-generated` watermark |
 | Intro screen | **AI-generated** video (Kling), skippable, with a burned-in `AI-generated` watermark; its audio track is declared and the clip plays muted |
+| Team logo and link preview | **AI-generated** image (ChatGPT, edited by the team) with a visible `AI-generated` watermark (`public/assets/brand/`) |
+| Tab icon | Illustration of Mars made by the team (`public/favicon.ico`, PNG sizes up to 512 px); not AI-generated |
 | Slope layer | Derived from the orbital CTX DTM (Horn 3x3, about 60 m window); a lower bound for local slope, not a hazard map |
 | Surroundings (option, off by default) | Same CTX DTM over 20 km (100 m box average, `scripts/extract-ctx-context.mjs`) and CTX orthomosaic at 40 m; context only |
+| Drone camera scan | The orbital slope above, redrawn around the drone in display bands; **not an observation**, no data changes, bands pending science approval |
+| First-person route guide | The recorded route in force; the time left is the route's `travel_time_s` scaled by the share of distance left, an **estimate** |
+| Terrain formation, height morph, interface entrance, camera sway | **Cosmetic display** animations; no height or pose in the data changes |
 
 The terrain crop is provisional: the data owner's processed package replaces it.
 
@@ -111,11 +116,26 @@ Poses between received samples follow a monotone cubic (PCHIP) through the sampl
 
 **Cameras** (bar under the agent list): Map, Astronaut, Rover, Drone and Base. The agent and base cameras are locked on their target (no lag), so the target stays steady on screen; following an agent selects it and sets the replay to 1× (turning it off restores the previous speed). In the Map camera **Grab map** is on by default: left drag slides the map, right drag or Shift + drag rotates, the wheel zooms; the ⟲ ⟳ buttons and `Q` / `E` turn the view 45°. The camera can zoom to about 0.3 m and is kept above the drawn terrain, with its near plane adapted to the zoom. **Camera smoothing** in the view options now sets only the orbit damping. In the follow view the route overlay is hidden.
 
+**Opening and transitions.** After the intro (or at once with `?nointro=1`) the terrain layer appears flat and its relief rises to the true shape in 5 s, zone by zone: valleys first, then slopes, ridges last, with the ground that is rising lit warm (`src/components/TerrainGrowth.tsx`); the block and the surroundings rise with it, and agents, the base and labels appear once it has finished. Switching between layers, or a new map version during the replay, morphs the heights over 1.8 s from what is on screen instead of jumping (`HEIGHT_MORPH_S` in `TerrainView.tsx`); the growth never queues a second rise. The interface then enters: the left column slides in from the left, the right column from the right, the timeline rises, and the ring of the agent dial spins into place while its six options settle one by one; a dashed rim turns slowly around it. All of it is display only and is skipped with reduced motion.
+
+**First person** (`V`, or the *3rd/1st person* button in the camera bar, while following an agent): the camera sits at the agent's eye (astronaut helmet at 1.62 m, rover mast at 2 m, drone camera under the body, pitched down) and looks along its heading; drag looks around, the wheel zooms (18°–110°), double-click recentres, and the frame is supersampled (1.5× the device pixels, capped at 3×). The agent's own model is hidden. The HUD (`src/components/FirstPersonHud.tsx`) shows:
+
+- a compass tape with the bearing and straight-line distance to the base, the goal and revealed sites;
+- the agent's id, mode and the `REPLAY · <source_mode>` label;
+- resources as received, with bars relative to the first received sample;
+- a route guide when the route in force belongs to this agent: the route draped on the drawn ground (travelled part dimmed, the part ahead bright), a beacon on the next waypoint, the waypoint's distance, the distance left on the route, the time left scaled from the route's `travel_time_s` (an estimate, not a prediction) and a notice when the agent is more than 15 m off the drawn route (`src/lib/routeProgress.ts`);
+- a heading-up minimap;
+- an optional camera sway (`B`): the astronaut's head bobs once per step, the rover's mast shakes finely, the drone drifts; a few centimetres at most, off by default with reduced motion, kept per browser.
+
+**Drone camera scan** (`R`, or *Scan* in the camera bar): a front sweeps 160 m out from under the drone with beams from the drone camera, and leaves a marker on each 20 m cell coloured by the orbital slope band (< 8° gentle, 8–15° moderate, ≥ 15° steep, grey for NoData) with counts in the HUD (`src/lib/scan.ts`). It reads the slope already computed from the CTX prior; it is not an observation, does not change the map version, and the bands are display thresholds awaiting science approval.
+
+**Text access for language models.** `public/llms.txt` and `public/about.html` describe what the viewer shows, the controls, which data are real and which are simulated, the limits and the AI declaration; `index.html` carries page metadata, JSON-LD and a static summary that the app replaces on start. In the running page `window.mge.state()` returns the displayed replay state as JSON (`mge.viewer-state/1`: source, time, mission state, map version, agents with pose and resources, active route, recent events and view), always labelled REPLAY (`src/lib/stateSnapshot.ts`). `robots.txt` and `sitemap.xml` are included; on a project site crawlers only honour a `robots.txt` at the domain root.
+
 The **replay** opens and restarts 4 s before the first agent moves (the demo's agents are idle for 10 s), at 10×, the highest speed offered (1×, 5×, 10×).
 
 The walk clip is a lunar bounding gait. The viewer plants the lower foot at every keyframe, keeps the pelvis turn and weight shift the legs were animated with (the spine is counter-rotated so the torso stays upright) and re-times the cycle so the stance foot moves backward at constant speed. Played at the ground speed on screen divided by the clip's own walking speed, the planted foot slips about 5 mm per step at 1 m/s (it skated about 35 cm before), checked by a test on the real model; above about 2.5 m/s on screen the rhythm is capped and the feet slide. The astronaut casts a projected shadow along the scene's display sun (not a computed solar position) that walks with the skeleton, is not cut by terrain bumps or the route line, and never covers the model; footprints are boot soles, mirrored per foot.
 
-Keys: `F` follow camera, `G` grab map, `Q` / `E` rotate the view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
+Keys: `F` follow camera, `V` first person, `R` drone scan, `B` camera sway (first person), `G` grab map, `Q` / `E` rotate the view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 `?evaluator=1` shows the hidden reference layer, **in the dev server only** (R05). `npm run fixture`
 writes the reference to the repository's Git-ignored `data/reference/<run_id>/`; the dev server
 serves it to the evaluator view and the build never copies it, so `dist/` and GitHub Pages do not
@@ -177,7 +197,7 @@ Replay fixture layout (`public/replay/<run_id>/`, demo run `demo-sim-002`, `mode
 
 ## Acceptance tests
 
-Automated suite on 2026-11-14: 22 files, 123 tests passed (`npm test`); `npm run build` passes.
+Automated suite on 2026-11-14: 29 files, 181 tests passed and 1 skipped (`npm test`); `npm run build` passes.
 
 | Test | Status |
 |---|---|

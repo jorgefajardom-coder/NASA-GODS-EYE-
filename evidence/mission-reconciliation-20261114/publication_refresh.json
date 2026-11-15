@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "run_id": "mission-readme-publication-refresh-20261114",
+  "kind": "DOCUMENTATION_ONLY_MERGE_REFRESH",
+  "preparation_check": "An initial static check reported two declared future evidence files missing; scope was corrected to the existing evidence directory before the successful check below",
+  "recorded_at_utc": "2026-11-14T23:42:25.290604+00:00",
+  "mission_parent": "5c66178010c727e6ed5fc66e7db6896bc5f03fff",
+  "main_parent": "b0acc1c5d2aaa0e1737f86bba16f544ec3ce92fb",
+  "incoming_main_paths": [
+    "README.md",
+    "docs/AI_USAGE.md",
+    "docs/ai_usage.json"
+  ],
+  "resolved_conflicts": [
+    "docs/AI_USAGE.md",
+    "docs/ai_usage.json"
+  ],
+  "runtime_paths_equal_validated_mission_parent": [
+    "src",
+    "config",
+    "scripts",
+    "tests",
+    "web",
+    "data"
+  ],
+  "main_ai_records_retained": 61,
+  "merged_ai_records": 64,
+  "main_generated_media_retained": 2,
+  "validation_reused": {
+    "reason": "Runtime/configuration/test/web/public-data bytes unchanged",
+    "local": "validation/validation.json",
+    "ci_source": "5c66178010c727e6ed5fc66e7db6896bc5f03fff",
+    "ci_url": "https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/actions/runs/43653810359",
+    "ci_conclusions_observed": {
+      "python": "success",
+      "web": "success",
+      "ros": "success"
+    }
+  },
+  "fresh_check": {
+    "command": "python scripts/check_repository.py",
+    "exit_code": 0
+  },
+  "source_sha256": {
+    "README.md": "41f6f784fcf6dc2ce48fded68b18a2729239c8831cf10537a8a2e65428050a7c",
+    "docs/AI_USAGE.md": "e0165213198a60681a8f47fb8be0cf223ee5363f04db81918364460c85bed63b",
+    "docs/ai_usage.json": "8989da4407882e1407bdf4a4fbbcfa2165004e5ecbc69ba7f5aee318f2466602"
+  },
+  "scientific_approval": false,
+  "mission_execution_authorized": false,
+  "old_reports_modified": false
+}

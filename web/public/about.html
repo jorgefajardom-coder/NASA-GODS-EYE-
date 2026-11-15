@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About — Mars Gods Eye Mission Viewer</title>
+    <meta
+      name="description"
+      content="What the Mars Gods Eye viewer shows, how to use it, which data are real NASA/USGS products and which are simulated, and its limits. NASA Space Apps 2026."
+    />
+    <link rel="canonical" href="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/about.html" />
+    <link rel="alternate" type="text/markdown" href="./llms.txt" />
+    <link rel="icon" href="./favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png" />
+    <meta property="og:image" content="https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/assets/brand/og-image.png" />
+    <style>
+      :root {
+        --bg: #f7f5f2;
+        --fg: #1d1b19;
+        --muted: #5c5650;
+        --line: #d8d2ca;
+        --accent: #1f6f8b;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0b0f13;
+          --fg: #dfe6ea;
+          --muted: #93a0aa;
+          --line: #26313a;
+          --accent: #65cbe8;
+        }
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font: 16px/1.55 system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+      main {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 32px 16px 64px;
+      }
+      h1 { font-size: 1.9rem; margin: 0 0 4px; }
+      h2 { font-size: 1.2rem; margin: 2rem 0 0.5rem; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+      p, li { max-width: 72ch; }
+      .lead { color: var(--muted); margin-top: 0; }
+      .status { border-left: 3px solid var(--accent); padding: 8px 12px; background: color-mix(in srgb, var(--accent) 8%, transparent); }
+      a { color: var(--accent); }
+      table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+      th, td { text-align: left; vertical-align: top; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+      th { color: var(--muted); font-weight: 600; }
+      kbd { font: 0.85em ui-monospace, Consolas, monospace; border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
+      .table-wrap { overflow-x: auto; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="./assets/brand/mars-gods-eye-logo.webp" alt="Mars God's Eye logo (AI-generated with ChatGPT and edited; watermarked)" width="180" height="196" />
+      <h1>Mars Gods Eye — Mission Viewer</h1>
+      <p class="lead">NASA Space Apps 2026 · Interplanetary Survival Guide: Martian Map · team Houston, We Have a Bug!</p>
+
+      <p class="status">
+        <strong>Status:</strong> REPLAY of a simulated mission. The terrain heights and the draped image are real NASA/USGS
+        products; the mission, agent motion, budgets, observations and points of interest are simulated or synthetic.
+        Not a live mission and not certified for real operations. <a href="./">Open the 3D viewer</a>.
+      </p>
+
+      <h2>What it shows</h2>
+      <p>
+        A saved expedition of an astronaut, a rover and a drone over a 2 km crop of Jezero crater. In the demo run the drone
+        surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around
+        it, reaches goal B and returns to base. The viewer draws what the mission recorded; it never plans routes itself.
+      </p>
+      <ul>
+        <li><strong>Terrain layers:</strong> Orbital map (prior), Updated map (prior plus observations, by map version), Slope, Uncertainty.</li>
+        <li><strong>Routes:</strong> the route in force with its status, and invalidated routes kept visible (dashed) for comparison.</li>
+        <li><strong>Agents and resources:</strong> poses, modes, oxygen, energy and time, in a details panel and an agent dial with a heading-up minimap.</li>
+        <li><strong>Ground layers tab:</strong> USGS SIM 3464 geologic units draped on the terrain and a schematic cut-away (not measured stratigraphy).</li>
+        <li><strong>Atmos tab:</strong> historical MEDA summaries at Jezero and an estimated crew dose from the MSL RAD Gale surface rate; not current weather.</li>
+        <li><strong>First person:</strong> the view from the astronaut, rover or drone, with compass, site bearings, resources, the route ahead and the next waypoint.</li>
+        <li><strong>Drone camera scan:</strong> redraws the existing orbital slope around the drone in display bands; not a new observation.</li>
+      </ul>
+
+      <h2>Controls</h2>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Key</th><th>Action</th></tr>
+          <tr><td><kbd>Space</kbd></td><td>Play or pause the replay</td></tr>
+          <tr><td><kbd>←</kbd> <kbd>→</kbd></td><td>Seek 5 s back or forward</td></tr>
+          <tr><td><kbd>Home</kbd></td><td>Restart</td></tr>
+          <tr><td><kbd>F</kbd></td><td>Follow the selected agent</td></tr>
+          <tr><td><kbd>V</kbd></td><td>Third or first person while following an agent</td></tr>
+          <tr><td><kbd>R</kbd></td><td>Drone camera scan</td></tr>
+          <tr><td><kbd>B</kbd></td><td>Camera sway in first person</td></tr>
+          <tr><td><kbd>G</kbd></td><td>Grab-to-drag map</td></tr>
+          <tr><td><kbd>Q</kbd> <kbd>E</kbd></td><td>Rotate the view</td></tr>
+        </table>
+      </div>
+      <p>URL parameters: <code>?run=demo</code> (default) or <code>?run=mock-vertical-001</code>; <code>?nointro=1</code> skips the intro video.</p>
+
+      <h2>Data sources</h2>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Data</th><th>Source</th><th>Use</th></tr>
+          <tr><td>Terrain heights</td><td>Mars 2020 TRN CTX DTM mosaic, NASA/USGS Astrogeology (provisional 2 km crop, 20 m grid)</td><td>Real</td></tr>
+          <tr><td>Surface image</td><td>MRO CTX Jezero orthomosaic, controlled (Mars 2020 TRN), NASA/JPL-Caltech/MSSS/USGS, via <a href="https://trek.nasa.gov/mars/">JPL Mars Trek</a></td><td>Real, resampled</td></tr>
+          <tr><td>Geology</td><td>USGS SIM 3464, Jezero crater and Nili Planum, 1:75,000 (<a href="https://astrogeology-usgs.hub.arcgis.com/pages/interactive-maps-mars">USGS-NASA Planetary Geologic Mapping</a>)</td><td>Real interpretation; boundaries about 100–200 m accurate</td></tr>
+          <tr><td>Environment</td><td>Perseverance MEDA daily summaries (Jezero); MSL RAD surface dose rate (Gale, Hassler et al. 2014)</td><td>Historical references, not live</td></tr>
+          <tr><td>Mission, agents, budgets, observations, POIs</td><td>Replay fixture and ROS mock runs</td><td>Simulated or synthetic</td></tr>
+        </table>
+      </div>
+      <p>Product identifiers and processing: <a href="https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/data_sources.md">docs/data_sources.md</a>.</p>
+
+      <h2>Limits</h2>
+      <ul>
+        <li>The slope averages about 60 m of ground per value: a lower bound for local slope, not a hazard map.</li>
+        <li>Height uncertainty in the demo is assumed (set by hand), not measured.</li>
+        <li>Vertical exaggeration (2x by default) is visual only.</li>
+        <li>Scan bands and resource thresholds are display choices awaiting science approval.</li>
+        <li>Integrated mission acceptance is still pending; no result here is mission evidence.</li>
+      </ul>
+
+      <h2>Machine-readable access</h2>
+      <ul>
+        <li><a href="./llms.txt">llms.txt</a>: this information in Markdown for language models.</li>
+        <li><a href="./replay/demo/manifest.json">replay/demo/manifest.json</a>, <a href="./replay/demo/timeline.json">timeline.json</a> and <a href="./replay/demo/routes.json">routes.json</a>: the demo run.</li>
+        <li>In the running viewer, <code>window.mge.state()</code> returns the current replay state as JSON.</li>
+      </ul>
+
+      <h2>AI use</h2>
+      <p>
+        AI tools were used and are declared, with the affected files, in
+        <a href="https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/AI_USAGE.md">AI_USAGE.md</a> and
+        <a href="https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/blob/main/docs/ai_usage.json">ai_usage.json</a>.
+        The intro video (Kling) and the astronaut portrait (ChatGPT) are AI-generated and carry a visible "AI-generated"
+        watermark.
+      </p>
+
+      <h2>More</h2>
+      <p><a href="https://github.com/jorgefajardom-coder/NASA-GODS-EYE-">Source code, README and documentation</a></p>
+    </main>
+  </body>
+</html>

@@ -1,14 +1,32 @@
-import { useThree } from '@react-three/fiber';
-import { useEffect, useMemo, useState } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import type { TerrainMeta } from '../types/icd';
 import type { RasterSet } from '../types/replay';
 import { elevationColor, finiteRange, heightGrid, sigmaColor, slopeColor, versionKey, type TerrainLayer } from '../lib/layers';
 import { slopeDegrees } from '../lib/slope';
 import { bilinear, upsampleGrid } from '../lib/terrainSmooth';
+import { growthClock, zoneDelay, zoneGlow, zoneShare } from './TerrainGrowth';
 
 /** Mesh vertices per source cell interval. Source cell centres are always vertices (J-01). */
 export const MESH_SUBDIVISION = 3;
+/** Distance (m) at which the cosmetic ground grain has faded out; the first-person view reaches farther. */
+export const DETAIL_FAR_M = 180;
+export const DETAIL_FAR_POV_M = 480;
+/** Time (s) for the mesh to morph to new heights (layer switch, new map version) instead of jumping. */
+export const HEIGHT_MORPH_S = 1.8;
+
+/** Smooth start and stop of the height morph. */
+export function morphEase(p: number): number {
+  const x = Math.max(0, Math.min(1, p));
+  return x * x * x * (x * (x * 6 - 15) + 10); // smootherstep: zero speed and acceleration at both ends
+}
+
+/** Heights between `from` and `to` at progress p (eased), written into `out` (every 3rd value, y). */
+export function morphHeights(from: Float32Array, to: Float32Array, p: number, out: Float32Array): void {
+  const k = morphEase(p);
+  for (let i = 1; i < out.length; i += 3) out[i] = from[i] + (to[i] - from[i]) * k;
+}
 export const CONTOUR_MINOR_M = 10;
 export const CONTOUR_MAJOR_M = 50;
 
@@ -104,6 +122,8 @@ interface Props {
   surfaceDetail?: boolean;
   /** A texture shown instead of the image (e.g. the geologic map), not tinted. Wins over `imagery`. */
   overlay?: { texture: THREE.Texture; extent: { origin_x_m: number; origin_y_m: number; width_m: number; height_m: number } } | null;
+  /** Distance (m) where the cosmetic grain fades out (default DETAIL_FAR_M). */
+  detailFarM?: number;
 }
 
 /**
@@ -113,7 +133,7 @@ interface Props {
  * same ENU point coincide. Triangles touching NoData are not drawn. Contour lines are drawn
  * in the shader from the true height of each fragment.
  */
-export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery, overlay, surfaceDetail = true }: Props) {
+export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggeration, highlightObserved, contours, zOffsetM, imagery, overlay, surfaceDetail = true, detailFarM = DETAIL_FAR_M }: Props) {
   const heights = heightGrid(rasters, layer, mapVersion);
   const version = rasters.versions[versionKey(rasters, mapVersion)];
   const imageTexture = useImageryTexture(imagery?.url ?? null);
@@ -188,14 +208,15 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     return g;
   }, [meta, rasters, heights, version, layer, highlightObserved, draped, ext, slope]);
 
-  const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 }, uTint: { value: 1 }, uDetail: { value: 1 } }), []);
+  const uniforms = useMemo(() => ({ uContour: { value: 1 }, uOffset: { value: 0 }, uTint: { value: 1 }, uDetail: { value: 1 }, uDetailFar: { value: DETAIL_FAR_M } }), []);
   useEffect(() => {
     uniforms.uContour.value = contours ? 1 : 0;
     uniforms.uOffset.value = zOffsetM;
     uniforms.uTint.value = overlay ? 0 : 1; // only the panchromatic image is tinted
     // Cosmetic grain only on the real-surface views, never on the geologic map or uncertainty colours.
     uniforms.uDetail.value = surfaceDetail && !overlay && layer !== 'sigma' && layer !== 'slope' ? 1 : 0;
-  }, [uniforms, contours, zOffsetM, overlay, surfaceDetail, layer]);
+    uniforms.uDetailFar.value = detailFarM;
+  }, [uniforms, contours, zOffsetM, overlay, surfaceDetail, layer, detailFarM]);
 
   const material = useMemo(() => {
     const m = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, metalness: 0, side: THREE.DoubleSide });
@@ -204,17 +225,18 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
       shader.uniforms.uOffset = uniforms.uOffset;
       shader.uniforms.uTint = uniforms.uTint;
       shader.uniforms.uDetail = uniforms.uDetail;
+      shader.uniforms.uDetailFar = uniforms.uDetailFar;
       shader.vertexShader = shader.vertexShader
         .replace('#include <common>', '#include <common>\nvarying float vRealH;\nvarying vec2 vGround;')
         .replace('#include <begin_vertex>', '#include <begin_vertex>\nvRealH = position.y;\nvGround = position.xz;');
       shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', `#include <common>\nvarying float vRealH;\nvarying vec2 vGround;\nuniform float uContour;\nuniform float uOffset;\nuniform float uTint;\nuniform float uDetail;\n${SURFACE_DETAIL_GLSL}`)
+        .replace('#include <common>', `#include <common>\nvarying float vRealH;\nvarying vec2 vGround;\nuniform float uContour;\nuniform float uOffset;\nuniform float uTint;\nuniform float uDetail;\nuniform float uDetailFar;\n${SURFACE_DETAIL_GLSL}`)
         // Cosmetic surface grain (not measured): fades in below ~200 m of camera distance.
         .replace(
           '#include <color_fragment>',
           `#include <color_fragment>
           gPx = length(fwidth(vGround));
-          float detailFade = uDetail * (1.0 - smoothstep(50.0, 180.0, length(vViewPosition)));
+          float detailFade = uDetail * (1.0 - smoothstep(uDetailFar * 0.28, uDetailFar, length(vViewPosition)));
           if (detailFade > 0.0) diffuseColor.rgb *= mix(1.0, groundAlbedo(vGround), detailFade);`,
         )
         .replace(
@@ -256,6 +278,96 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     material.map = draped ? texture : null;
     material.needsUpdate = true;
   }, [material, texture, draped]);
+
+  // Height morph: a new grid (layer switch, new map version) eases from the heights on screen to the
+  // new ones instead of jumping. Display only; agents and routes read the new grid at once.
+  const shown = useRef<Float32Array | null>(null);
+  // True heights and colours of the current geometry, for the opening growth.
+  const rest = useRef<{ y: Float32Array; color: Float32Array; delay: Float32Array } | null>(null);
+  const growing = useRef(false);
+  const morph = useRef<{ from: Float32Array; to: Float32Array; t: number } | null>(null);
+  useLayoutEffect(() => {
+    const pos = geometry.getAttribute('position') as THREE.BufferAttribute;
+    const arr = pos.array as Float32Array;
+    const prev = shown.current;
+    shown.current = arr;
+    {
+      const col = (geometry.getAttribute('color') as THREE.BufferAttribute).array as Float32Array;
+      const y = new Float32Array(arr.length / 3);
+      let lo = Infinity;
+      let hi = -Infinity;
+      for (let i = 0; i < y.length; i++) {
+        y[i] = arr[i * 3 + 1];
+        if (y[i] < lo) lo = y[i];
+        if (y[i] > hi) hi = y[i];
+      }
+      const span = Math.max(1e-6, hi - lo);
+      const delay = new Float32Array(y.length);
+      for (let i = 0; i < y.length; i++) delay[i] = zoneDelay((y[i] - lo) / span, arr[i * 3], arr[i * 3 + 2]);
+      rest.current = { y, color: col.slice(), delay };
+    }
+    // During the opening growth the growth itself shapes the new geometry: a morph queued now
+    // (e.g. the orbital image loading mid-growth rebuilds the mesh) would replay the rise once
+    // the growth ends, so the terrain would appear to form twice.
+    if (!prev || prev.length !== arr.length || growthClock.active || growing.current) {
+      morph.current = null;
+      return;
+    }
+    let differs = false;
+    for (let i = 1; i < arr.length; i += 3) {
+      if (Math.abs(prev[i] - arr[i]) > 1e-4) {
+        differs = true;
+        break;
+      }
+    }
+    if (!differs) return;
+    const to = arr.slice();
+    const from = prev.slice();
+    morphHeights(from, to, 0, arr);
+    pos.needsUpdate = true;
+    geometry.computeVertexNormals();
+    morph.current = { from, to, t: 0 };
+  }, [geometry]);
+  // Opening growth: each zone rises from flat on its own schedule and is lit while it rises.
+  useFrame(() => {
+    const r = rest.current;
+    if (!r) return;
+    if (!growthClock.active && !growing.current) return;
+    const pos = geometry.getAttribute('position') as THREE.BufferAttribute;
+    const colAttr = geometry.getAttribute('color') as THREE.BufferAttribute;
+    const arr = pos.array as Float32Array;
+    const col = colAttr.array as Float32Array;
+    let lo = Infinity;
+    for (let i = 0; i < r.y.length; i++) if (r.y[i] < lo) lo = r.y[i];
+    const p = growthClock.active ? growthClock.p : 1;
+    for (let i = 0; i < r.y.length; i++) {
+      const k = zoneShare(p, r.delay[i]);
+      arr[i * 3 + 1] = lo + (r.y[i] - lo) * k;
+      const glow = zoneGlow(p, r.delay[i]);
+      // Warm light on rising ground (display only), back to the true colour once risen.
+      col[i * 3] = r.color[i * 3] * (1 + 0.55 * glow);
+      col[i * 3 + 1] = r.color[i * 3 + 1] * (1 + 0.38 * glow);
+      col[i * 3 + 2] = r.color[i * 3 + 2] * (1 + 0.18 * glow);
+    }
+    pos.needsUpdate = true;
+    colAttr.needsUpdate = true;
+    geometry.computeVertexNormals();
+    geometry.computeBoundingSphere();
+    growing.current = growthClock.active;
+    if (!growing.current) morph.current = null; // the growth has set the true heights: nothing left to morph
+  });
+  useFrame((_, dt) => {
+    const m = morph.current;
+    if (!m || growthClock.active) return;
+    m.t += Math.min(dt, 0.1);
+    const p = m.t / HEIGHT_MORPH_S;
+    const pos = geometry.getAttribute('position') as THREE.BufferAttribute;
+    morphHeights(m.from, m.to, p, pos.array as Float32Array);
+    pos.needsUpdate = true;
+    geometry.computeVertexNormals();
+    geometry.computeBoundingSphere();
+    if (p >= 1) morph.current = null;
+  });
 
   useEffect(() => () => geometry.dispose(), [geometry]);
   useEffect(() => () => material.dispose(), [material]);

@@ -1,5 +1,42 @@
 # Required AI-use declaration
 
+## Mission cost agreement and activity-duration research
+
+OpenAI Codex assisted with the mission-owned cost-contract proposal, analytical
+vector exporter, primary-source activity-duration review, duration-impact pilot,
+contract-consistency tests and explicit success-evidence criteria. The work
+also updates mission scenario references, the estimated-prior limitation text,
+scientific decisions, handoff and retained diagnostic/validation records.
+Affected files and evidence are enumerated in ai_usage.json.
+
+NASA publications supply cited model assumptions and analog task observations;
+the 300 s inspection alternative and mixed 600 s workflow phase allocation are
+explicit engineering assumptions pending review. Pilot costs are generated
+model diagnostics, not astronaut measurements, completed tasks or mission
+results. Daniel's public terrain arrays and the original approved scenario
+values/receipt remain unchanged. Published main/planner are inspected without
+copying their implementations or changing shared messages. No mock, discovery,
+execution observation, image, video, audio, scientific dataset, external message
+or new scientific approval is produced. Existing profile/cost/execution gates
+remain pending; criteria documentation does not close runtime acceptance.
+
+## Mission branch reconciliation
+
+OpenAI Codex assisted reconciling mission ec819e5 with main5898e7d, retaining
+all contributor disclosures, generated-media records and both histories.
+Fresh software validation and exact-source cost diagnostics are retained under
+`evidence/mission-reconciliation-20261114/`. Existing owner implementations,
+ROS fields, scenario-value approval and operational/scientific gates remain
+unchanged. This merge is not a new mission result or scientific approval.
+
+## Mission publication refresh
+
+OpenAI Codex assisted retaining both sides' mandatory disclosures after README
+PR22 advanced main to b0acc1c during PR25 validation. Mission entries precede
+the main entries to avoid competing append conflicts. All main records and
+media metadata remain intact; runtime sources match validated 5c66178 exactly.
+No scientific value, operational approval or execution result is changed.
+
 ## Experimental continuous recovery
 
 OpenAI Codex assisted the owner-requested NON_CELL_CENTER recovery. The opted-in
@@ -216,7 +253,7 @@ time and generates no value.
 
 Not AI-generated: terrain heights (USGS Astrogeology / NASA), the astronaut model
 by LasquetiSpice (CC BY 4.0, materials converted only), and the fonts (SIL OFL 1.1).
-One AI-generated image is included: `web/public/assets/portraits/human_1.webp`, the
+The viewer's details panel includes an AI-generated image: `web/public/assets/portraits/human_1.webp`, the
 portrait shown beside astronaut human_1 in the viewer's details panel. It was generated
 with ChatGPT (OpenAI) and supplied by the owner; it was cropped and resized with Pillow and
 carries a visible `AI-generated` band burned into the image, legible at its 80 px display
@@ -606,3 +643,63 @@ Claude Code (Anthropic) assisted the integration owner with per-module ROS
 domain isolation and readiness waits in the integration test fixtures and the
 related log entry. No data, mission result, image, video or audio was
 generated. The affected paths are listed in ai_usage.json.
+
+## Root README overview
+
+Claude Code (Anthropic) assisted the integration owner in rewriting the root
+README from a review of the repository, its branches and pull requests and the
+merged web viewer: system overview, branch and PR state, viewer features,
+launch arguments, gateway API, CI jobs and open milestones. The data
+provenance table and the AI declarations already on main are kept unchanged.
+No code, data, mission result, image, video or audio was generated. The
+affected paths are listed in ai_usage.json.
+
+## Replay recorder shutdown fix
+
+Claude Code (Anthropic) assisted the integration owner in fixing a shutdown
+race in the replay recorder: a signal now only asks the node to stop between
+callbacks, the writer closes idempotently and a closed package is never
+extended, with unit tests in `tests/unit/test_replay.py`. It also keeps planner
+searches valid while other agent kinds complete the same map batch
+(`mge_planning`, tests in `tests/planning/test_adapter.py`) and gives the MOCK
+mission more time for the planner to assemble a new map version. No data,
+mission result, image, video or audio was generated. The affected paths are listed in
+ai_usage.json.
+
+## Terrain script review corrections
+
+Claude Code (Anthropic) assisted the repository owner in reviewing the
+configurable region options of `scripts/prepare_jezero_terrain.py`: slope
+screening limits now come from `config/planner_profiles.proposed.json` (still
+pending model agreement) and the summary is labelled as an estimate, not
+certified passage; `--sync-terrain-yml` is refused for a package outside
+`data/sample`; an undocumented duplicate scale tier was removed; and offline
+tests were added in `tests/mapping/test_prepare_jezero_terrain.py`. No terrain
+data, observation, mission result, image, video or audio was generated.
+
+## Viewer first-person view, drone scan and Pages publishing
+
+Claude Code (Anthropic) assisted the viewer owner with the opening terrain
+formation (the layer rises from flat zone by zone), the height morph between
+layers and map versions, the first-person camera and its HUD (route guide,
+minimap, optional sway), the interface entrance animation, the plain-text
+descriptions of the viewer for language models (llms.txt, about page, page
+metadata, window.mge.state()), the drone
+camera scan, their tests, and the workflow that publishes the public viewer to
+GitHub Pages. The scan only redraws the slope already computed from the orbital
+CTX DTM prior around the drone in display bands; it is not an observation, it
+does not change the map version, and its bands are display thresholds pending
+science approval. No data, measurement, image, video or audio was generated.
+The affected paths are listed in ai_usage.json.
+
+## Team logo and link preview
+
+The team logo (`web/public/assets/brand/mars-gods-eye-logo.webp`) was generated
+with ChatGPT (OpenAI) and edited by the team. A band with a visible
+`AI-generated logo (ChatGPT, edited)` label is burned into the image, and it
+stays visible in the README, the about page and the link preview
+(`og-image.png`, composed with Pillow). The browser tab icon
+(`web/public/favicon.ico` and its PNG sizes) is an illustration of Mars made by
+the team, not with AI; only its black background was removed and it was resized.
+An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
+images uses NASA logos, flags or mission marks or is presented as NASA data.

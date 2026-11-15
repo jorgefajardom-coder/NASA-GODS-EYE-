@@ -120,7 +120,7 @@ def diagnose(manifest_path, profiles_path, mission_path, *, run_id):
         "limitations": [
             "Public-package/configuration consistency only; no operational or scientific approval.",
             "No reference files, hidden tasks, planner or executor inputs are consumed.",
-            "NoData/unobserved cells remain unknown; no traversability is invented.",
+            "Valid unobserved prior remains estimated, distinct from NoData; observation flags and uncertainty are preserved, not promoted to verification.",
             "Grid resampling does not improve the native resolution of the orbital source.",
         ],
     }
