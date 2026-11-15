@@ -1401,6 +1401,22 @@
         "evidence/planner-f033c2-local"
       ],
       "use": "Opt-in pure Python scientific edge/connector/goal costs before resource pruning/dominance; independent oracle comparisons and retained monotonic resource admission. No model equations copied, no coefficient or ROS/MissionManager/approval change. Native legacy-node contracts tested separately from Python science tests; no operational safety inference."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "local_scientific_admission_and_performance_audit",
+      "generation": "AI-assisted minimal planner fix, synthetic regressions, benchmark harness and documentation; actual software measurements",
+      "paths": [
+        "src/mge_planning/mge_planning/replan.py",
+        "tests/planning/test_scientific_admission.py",
+        "tests/planning/test_scientific_benchmark_protocol.py",
+        "scripts/benchmark_scientific_planner.py",
+        "src/mge_planning/MODEL.md",
+        "docs/planner_handoff.md",
+        "docs/planner_f033c2_final_audit.md",
+        "evidence/planner-f033c2-audit-local"
+      ],
+      "use": "Reject malformed scientific snapshots without admitting fictitious resource reductions; preserve monotonic guard and authorization latch. Compare default-limit legacy/scientific FAST/SAFE on unchanged public Jezero primary scenario and existing synthetic D07 control. No private reference input, observation, model formula/coefficients, ROS/MissionManager, approval or production activation changes."
     }
   ],
   "generated_media": [

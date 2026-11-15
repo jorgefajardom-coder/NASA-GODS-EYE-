@@ -805,3 +805,7 @@ OpenAI Codex assisted ScientificContext in resource_costs.py, tests/planning/tes
 ## F03.3-C2 local opt-in scientific search and replanning
 
 OpenAI Codex assisted core.py and replan.py experimental context integration, tests/planning/test_scientific_search.py and test_scientific_replan.py, MODEL/handoff/local technical documentation and evidence/planner-f033c2-local. Costs reuse the published science API; graph/raster fixtures are synthetic. Evidence records actual local software results and computational timings, including the corrected pytest helper-name error. No ROS activation, production node wiring, coefficients, mission authority or scientific approvals were changed. No GitHub publication is part of this cut.
+
+## F03.3-C2 local final admission and performance audit
+
+OpenAI Codex assisted the minimal replan.py admission-order correction, tests/planning/test_scientific_admission.py and test_scientific_benchmark_protocol.py, scripts/benchmark_scientific_planner.py, planner MODEL/handoff/audit documentation and evidence/planner-f033c2-audit-local. The before-fix failures and actual local software measurements are retained. Public Jezero data and source uncertainties were loaded unchanged; the secondary synthetic D-07 control reuses existing inputs. No observation, coefficient, MissionManager, ROS contract, production activation or scientific approval was generated. No GitHub publication is part of this cut.

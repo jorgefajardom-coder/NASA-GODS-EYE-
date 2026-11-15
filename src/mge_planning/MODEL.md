@@ -158,8 +158,11 @@ mission's original allocation. Subsequent values must be nonincreasing, with
 strict comparison and no resource-credit tolerance. Unexplained increases yield
 UNKNOWN with TIME_AVAILABILITY_INCREASE, ENERGY_AVAILABILITY_INCREASE or
 OXYGEN_AVAILABILITY_INCREASE, invalidate the active route and make no request.
-Rejected updates never raise the stored bound. Reserve-depleted observations
-also retain their lower bound before STOP_REQUIRED. Original reserves, phase,
+Rejected updates never raise the stored bound. Legacy reserve-depleted observations
+retain their lower bound before STOP_REQUIRED. Scientific availability is admitted
+only after its explicit context validates; an invalid reduction cannot poison the
+bound. A scientific snapshot below reserves still issues STOP immediately but
+cannot admit an invalid planning context. Original reserves, phase,
 cursor and service checks remain; stale-route/progress rejection keeps precedence.
 
 This is an observed-value admission bound, NOT a consumed-resource ledger: no

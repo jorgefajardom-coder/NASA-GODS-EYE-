@@ -1,5 +1,12 @@
 # Diego's planner handoff
 
+Local final C2 audit: rejected scientific context/resource snapshots no longer
+lower the admitted availability bound. Correcting inputs retains invalidation;
+real admitted decreases still block replenishment. Default-limit cold-request
+benchmark (80 samples) is in planner_f033c2_final_audit.md and its evidence folder.
+Public Jezero remains UNKNOWN (sigma2.5 vs profile1); known D-07 search is feasible
+but scientific h=0 expands408 versus28 labels. No runtime activation/publication.
+
 Local F03.3-C2 continuation over PR33 source ffea8c2: ScientificContext is an
 explicit Python-only opt-in, default legacy behavior preserved. Scientific costs
 now participate in the actual search, connector and fixed goal-work transition,

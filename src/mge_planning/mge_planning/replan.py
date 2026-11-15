@@ -378,9 +378,13 @@ class ReplanPolicy:
                 (remaining.energy_wh, remaining.reserve_wh, "ENERGY_RESERVE_DEPLETED"),
                 (remaining.oxygen_l, remaining.reserve_oxygen_l, "OXYGEN_RESERVE_DEPLETED")):
             if actual is not None and actual < reserve:
-                # Depleted telemetry is still an observed availability bound.
-                # A later route adoption must not turn it into replenishment.
-                self._remaining_floor = available
+                # Keep the legacy depleted-telemetry bound. A scientific snapshot
+                # below reserves cannot form a valid planning context/budget:
+                # STOP immediately, but do not admit unvalidated availability.
+                scientific = (scientific_context is not None or active.cost_context is not None
+                              or (self._cost_mode is not None and self._cost_mode[0] == 'science'))
+                if not scientific:
+                    self._remaining_floor = available
                 return decision(ReplanAction.STOP_REQUIRED, reason, True)
         try:
             if _start_z_mismatch(terrain, state.pose, m.agent_kind, profile,
@@ -403,9 +407,6 @@ class ReplanPolicy:
             return decision(ReplanAction.UNKNOWN, "RETURN_CONTEXT_MISMATCH", True)
         if state.phase == MissionPhase.OUTBOUND and m.require_return and not future:
             return decision(ReplanAction.UNKNOWN, "RETURN_CONTEXT_MISSING", True)
-        # Commit only after context/progress/service/position admission. This is
-        # an atomic observation of supplied values: no cost or reserve is debited.
-        self._remaining_floor = available
         context = None
         science_selected = scientific_context is not None or active.cost_context is not None
         mode = 'science' if science_selected else 'legacy'
@@ -447,6 +448,11 @@ class ReplanPolicy:
                 self._science_activity_floor = {k: current.get(k, 0.) for k in before}
             except (ValueError, TypeError, OverflowError):
                 return decision(ReplanAction.UNKNOWN, "INVALID_SCIENTIFIC_CONTEXT", True)
+        # Admit availability only after ALL applicable context checks. A rejected
+        # lower value must not make a corrected snapshot look like replenishment.
+        # The earlier increase check still uses the last admitted bound; the
+        # invalidation latch is not cleared by correcting inputs.
+        self._remaining_floor = available
         self._cost_mode = (mode, context.model_key if context is not None else None)
         pending = (state.pose,) + leg[state.next_waypoint:]
         if len(pending) == 1:
