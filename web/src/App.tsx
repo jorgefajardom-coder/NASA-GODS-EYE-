@@ -21,6 +21,7 @@ import { DroneCamFrame } from './components/DroneCam';
 import { MarsNowFrame } from './components/MarsNow';
 import { stopUnderAgent, tourStepTime } from './lib/roverStops';
 import { startLabelDeclutter } from './lib/labelDeclutter';
+import { WorldArrows } from './components/WorldArrows';
 import { resourceAlert } from './lib/resourceAlert';
 import { SCAN_CONFIG } from './scanner/ScanConfig';
 import { triggerScan } from './scanner/ScanController';
@@ -433,7 +434,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           alert={povAlert}
           droneCam={showDroneCam && drone ? <DroneCamFrame droneId={drone.agent_id} onClose={() => setDroneCam(false)} bundle={bundle} view={view} /> : null}
           droneCamOn={showDroneCam}
-          marsNow={marsNow ? <MarsNowFrame stop={povStop} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: () => { setTourOn(false); setPlaying(false); } } : null} /> : null}
+          marsNow={marsNow ? <MarsNowFrame stop={povStop} mission={bundle.roverStops?.mission} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} tour={tourOn ? { index: povStop ? roverStops.indexOf(povStop) : 0, total: roverStops.length, onPrev: () => stepTour(-1), onNext: () => stepTour(1), onStop: () => { setTourOn(false); setPlaying(false); } } : null} /> : null}
           stops={roverStops}
           marsNowOn={marsNow}
           onMarsNow={() => setMarsNow((v) => !v)}
@@ -548,6 +549,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
         </aside>
 
         <AlertBanner alert={alert} />
+        {camView === 'free' && !pov && <WorldArrows runId={RUN_ID} />}
 
         <Timeline
           t={t}

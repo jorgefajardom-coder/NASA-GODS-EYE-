@@ -3068,3 +3068,49 @@ input[type='checkbox'] {
   padding: 3px 6px;
   border-top: 1px solid var(--line-soft);
 }
+
+/* ---------------------------------------------------------------- world arrows (map camera only) */
+.world-arrows {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: calc(var(--col-left) + 2 * var(--gutter));
+  right: calc(var(--col-right) + 2 * var(--gutter));
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+.world-arrows__btn {
+  pointer-events: auto;
+  display: grid;
+  justify-items: center;
+  gap: 0;
+  padding: 4px 12px 6px;
+  color: var(--titanium);
+  background: rgba(9, 13, 17, 0.6);
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+.world-arrows__btn:hover,
+.world-arrows__btn:focus-visible {
+  opacity: 1;
+  border-color: var(--blue);
+}
+.world-arrows__btn span {
+  font: 300 44px/0.9 var(--f-ui);
+}
+.world-arrows__btn small {
+  font: 500 10px var(--f-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+@media (max-width: 900px) {
+  .world-arrows {
+    display: none;
+  }
+}

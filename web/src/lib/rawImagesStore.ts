@@ -7,6 +7,13 @@ export type RawImagesState =
   | { status: 'error'; message: string }
   | { status: 'ready'; images: RawImage[]; index: number; /** RMC of the rover stop the images were taken at, or null for the latest ones. */ forStop: string | null };
 
+/** How a mission's raw images are matched to a stop (see RoverMission). */
+export interface StopMission {
+  raw_category: string;
+  image_match: 'stop' | 'sol';
+}
+const DEFAULT_MISSION: StopMission = { raw_category: 'mars2020', image_match: 'stop' };
+
 const SHOWN = 6;
 const FETCH = 40;
 const TIMEOUT_MS = 12000;
@@ -21,7 +28,7 @@ export function createRawImagesStore(fetchFn: FetchLike) {
   let state: RawImagesState = { status: 'idle' };
   let ctl: AbortController | null = null;
   /** Images already read for a sol (a tour passes many stops of the same sol): never fetched twice. */
-  const solCache = new Map<number, RawImage[]>();
+  const solCache = new Map<string, RawImage[]>();
   const listeners = new Set<() => void>();
   const set = (s: RawImagesState) => {
     state = s;
@@ -54,21 +61,24 @@ export function createRawImagesStore(fetchFn: FetchLike) {
   }
 
   /** The newest images from wherever the rover is now. */
-  const load = (): Promise<void> => run(rawFeedUrl(FETCH), (all) => pickRawImages(all, SHOWN), null, 'The feed returned no usable images');
+  const load = (mission: StopMission = DEFAULT_MISSION): Promise<void> => run(rawFeedUrl(FETCH, mission.raw_category), (all) => pickRawImages(all, SHOWN), null, 'The feed returned no usable images');
 
   /** The images NASA lists for one rover stop (same sol, site and drive); none is an honest result. */
-  const loadStop = (stop: { sol: number; site: number; drive: number; rmc: string }): Promise<void> =>
-    run(
-      rawFeedUrlForSol(stop.sol),
+  const loadStop = (stop: { sol: number; site: number; drive: number; rmc: string }, mission: StopMission = DEFAULT_MISSION): Promise<void> => {
+    const key = `${mission.raw_category}:${stop.sol}`;
+    const bySol = mission.image_match === 'sol'; // the feed does not label images with site and drive (Curiosity)
+    return run(
+      rawFeedUrlForSol(stop.sol, 300, mission.raw_category),
       (all) => {
-        const sol = solCache.get(stop.sol) ?? all;
-        solCache.set(stop.sol, sol);
-        return pickRawImages(imagesAtStop(sol, stop.site, stop.drive), SHOWN);
+        const sol = solCache.get(key) ?? all;
+        solCache.set(key, sol);
+        return pickRawImages(bySol ? sol : imagesAtStop(sol, stop.site, stop.drive), SHOWN);
       },
       stop.rmc,
-      `NASA lists no raw image for stop ${stop.rmc}`,
-      () => solCache.get(stop.sol) ?? null,
+      bySol ? `NASA lists no raw image for sol ${stop.sol}` : `NASA lists no raw image for stop ${stop.rmc}`,
+      () => solCache.get(key) ?? null,
     );
+  };
 
   /** Moves the selected image by `step`, wrapping around. */
   function step(by: number): void {

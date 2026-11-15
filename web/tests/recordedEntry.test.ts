@@ -53,9 +53,9 @@ describe('recorded recovery entry', () => {
 });
 
 describe('run selector', () => {
-  it('offers only the simulated demo, no MOCK entry', async () => {
+  it('offers only the simulated worlds, no MOCK entry', async () => {
     const { OFFERED_RUNS } = await import('../src/data/replayAdapter');
-    expect(OFFERED_RUNS.map((r) => r.id)).toEqual([DEFAULT_RUN_ENTRY]);
+    expect(OFFERED_RUNS.map((r) => r.id)).toEqual([DEFAULT_RUN_ENTRY, 'gale-demo']);
     expect(OFFERED_RUNS.some((r) => /MOCK/.test(r.label))).toBe(false);
   });
 });

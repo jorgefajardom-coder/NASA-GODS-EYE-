@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { rawImages, useRawImages } from '../lib/rawImagesStore';
 import { stopLabel } from '../lib/roverStops';
-import type { RoverStop } from '../types/replay';
+import type { RoverMission, RoverStop } from '../types/replay';
+
+const PERSEVERANCE: RoverMission = { id: 'mars2020', name: 'Perseverance', raw_category: 'mars2020', image_match: 'stop' };
 
 /**
  * Window of the first-person dock with real Perseverance images from NASA's public feed.
@@ -20,24 +22,24 @@ export interface TourControls {
   onStop: () => void;
 }
 
-export function MarsNowFrame({ stop, onClose, tour }: { stop: RoverStop | null; onClose: () => void; tour?: TourControls | null }) {
+export function MarsNowFrame({ stop, mission = PERSEVERANCE, onClose, tour }: { stop: RoverStop | null; mission?: RoverMission; onClose: () => void; tour?: TourControls | null }) {
   const state = useRawImages();
   const stopId = stop?.rmc ?? null;
   // On the tour, each stop loads its own images on arrival (once per stop; the sol is cached).
   useEffect(() => {
-    if (tour && stop) void rawImages.loadStop(stop);
+    if (tour && stop) void rawImages.loadStop(stop, mission);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [!!tour, stopId]);
   const wanted = stop?.rmc ?? null;
   // Images loaded for another place are not shown as this one's.
   const matches = state.status === 'ready' && state.forStop === wanted;
   const img = matches ? state.images[state.index] : null;
-  const load = () => void (stop ? rawImages.loadStop(stop) : rawImages.load());
-  const failed = state.status === 'error' && (state.message.includes(wanted ?? '\u0000') || !wanted);
+  const load = () => void (stop ? rawImages.loadStop(stop, mission) : rawImages.load(mission));
+  const failed = state.status === 'error';
   return (
-    <div className="marsnow" role="region" aria-label={stop ? 'Real Perseverance images of this stop' : 'Mars now: real Perseverance image'}>
+    <div className="marsnow" role="region" aria-label={stop ? `Real ${mission.name} images of this stop` : `Mars now: real ${mission.name} image`}>
       <div className="marsnow__bar">
-        <span>{stop ? `Real stop${tour ? ` ${tour.index + 1}/${tour.total}` : ''} · ${stopLabel(stop)}` : `Real · Perseverance${img ? ` · sol ${img.sol}` : ''}`}</span>
+        <span>{stop ? `Real stop${tour ? ` ${tour.index + 1}/${tour.total}` : ''} · ${stopLabel(stop)}` : `Real · ${mission.name}${img ? ` · sol ${img.sol}` : ''}`}</span>
         <button type="button" onClick={onClose} title="Close (M)" aria-label="Close the real images window">
           ×
         </button>
@@ -55,8 +57,10 @@ export function MarsNowFrame({ stop, onClose, tour }: { stop: RoverStop | null; 
               {failed
                 ? `${(state as { message: string }).message}.`
                 : stop
-                  ? 'The real rover stopped here on this sol. Load the images NASA took at this stop.'
-                  : 'A real image from where Perseverance is now.'}
+                  ? mission.image_match === 'sol'
+                    ? `The real rover stopped here on sol ${stop.sol}. Load the images NASA took that sol (the feed does not say where).`
+                    : 'The real rover stopped here on this sol. Load the images NASA took at this stop.'
+                  : `A real image from where ${mission.name} is now.`}
             </p>
             <button type="button" onClick={load}>
               {failed ? 'Try again' : stop ? 'Load this stop’s images' : 'Load from NASA'}
@@ -92,7 +96,7 @@ export function MarsNowFrame({ stop, onClose, tour }: { stop: RoverStop | null; 
           </button>
         </div>
       )}
-      <small className="marsnow__note">{stop ? 'Real photos of this spot · not terrain data' : 'Not the replay’s site · not terrain data'}</small>
+      <small className="marsnow__note">{stop ? (mission.image_match === 'sol' ? 'Real photos of this sol · the rover may have moved · not terrain data' : 'Real photos of this spot · not terrain data') : 'Not the replay’s site · not terrain data'}</small>
     </div>
   );
 }

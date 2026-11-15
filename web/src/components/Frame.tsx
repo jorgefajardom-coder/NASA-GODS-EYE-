@@ -80,7 +80,7 @@ export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, 
         <dt>Sim time</dt>
         <dd>{fmtSimTime(t)}</dd>
         {/* Real present time on Earth (the viewer's) and on Mars; the sim time above is the replay's. */}
-        <LiveClocks lonEastDeg={manifest.terrain_meta.origin_lon_deg ?? undefined} />
+        <LiveClocks lonEastDeg={manifest.terrain_meta.origin_lon_deg ?? undefined} world={manifest.world} />
         <dt>Relief</dt>
         <dd>{exaggeration === 1 ? 'true scale' : `${exaggeration}× (visual only)`}</dd>
       </dl>

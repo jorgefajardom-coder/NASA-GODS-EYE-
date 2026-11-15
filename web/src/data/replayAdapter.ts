@@ -16,6 +16,7 @@ export const RUNS: ReadonlyArray<{ id: string; label: string; note?: string }> =
   { id: 'demo', label: 'Illustrative demo · generated story' },
   { id: RECORDED_RECOVERY_ENTRY, label: 'Recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Not a scientific COMPLETE mission.' },
   { id: 'mock-vertical-001', label: 'Gateway replay mock-vertical-001 (MOCK)' },
+  { id: 'gale-demo', label: 'Gale crater · Curiosity · generated story' },
 ];
 
 /**
@@ -23,7 +24,7 @@ export const RUNS: ReadonlyArray<{ id: string; label: string; note?: string }> =
  * viewer from now on). The MOCK recorder packages stay in the catalogue for the team's contract and
  * consumer tests and remain loadable with ?run=<id>, but are not offered.
  */
-export const OFFERED_RUNS = RUNS.filter((run) => run.id === DEFAULT_RUN_ENTRY);
+export const OFFERED_RUNS = RUNS.filter((run) => run.id === DEFAULT_RUN_ENTRY || run.id === 'gale-demo');
 
 export class ReplayLoadError extends Error {}
 

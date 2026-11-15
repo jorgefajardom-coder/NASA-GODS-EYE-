@@ -94,3 +94,26 @@ describe('raw images cache per sol', () => {
     expect(st.status === 'ready' && st.images.map((i) => i.id)).toEqual(['b']);
   });
 });
+
+describe('a mission whose images only carry the sol (Curiosity)', () => {
+  it('shows the images of the sol without matching site and drive, from its own feed', async () => {
+    const urls: string[] = [];
+    const msl = (id: string) => ({ ...img(1), imageid: id, site: '', drive: '' });
+    const s = createRawImagesStore(async (url) => {
+      urls.push(url);
+      return { ok: true, status: 200, json: async () => ({ images: [msl('a'), msl('b')] }) };
+    });
+    await s.loadStop({ sol: 751, site: 125, drive: 2490, rmc: '125_2490' }, { raw_category: 'msl', image_match: 'sol' });
+    const st = s.getState();
+    expect(st.status === 'ready' && st.images.map((i) => i.id)).toEqual(['a', 'b']);
+    expect(urls[0]).toContain('category=msl');
+    expect(urls[0]).toContain('msl:mission');
+  });
+
+  it('reads an empty site or drive as unknown, not as zero', async () => {
+    const { parseRawImages } = await import('../src/lib/perseveranceRaw');
+    const [i] = parseRawImages({ images: [{ ...img(1), site: '', drive: '' }] });
+    expect(i.site).toBeNull();
+    expect(i.drive).toBeNull();
+  });
+});
