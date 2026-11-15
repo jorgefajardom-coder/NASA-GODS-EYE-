@@ -47,6 +47,11 @@ How each part of the challenge is answered, and what is still future work:
 | Perseverance MEDA, Curiosity REMS, MSL RAD | Weather and radiation context in the viewer (display; the radiation values come from Gale crater, not Jezero) |
 | MRO/HiRISE terrain model (USGS) | Held back as a reference for evaluating results; never given to the planner or the viewer |
 | Perseverance and Ingenuity 3D models (NASA/JPL-Caltech) | Rover and drone models in the viewer |
+| Zone terrain models via JPL Mars Trek: MSL Gale DEM mosaic, Columbia Hills and InSight HiRISE/CTX/HRSC mosaics, Endeavour crater HiRISE DEM, CTX stereo DEM of Melas Chasma | Terrain of the five other zone scenes (display; mission stories there are simulated) |
+| Viking MDIM 2.1 colour mosaic via JPL Mars Trek | The Mars globe of the zone selector |
+| Mars 2020 and MSL traverse waypoints (MMGIS); PDS Geosciences Node corrected Spirit and Opportunity traverses | Real rover stops drawn on the map and driven in the photo tour |
+| Perseverance and Curiosity raw images (NASA/JPL-Caltech public feed) | Real photos at each rover stop and the latest Perseverance images; loaded only on request |
+| Mars Odyssey GRS water map; MSL RAD surface dose | Water and radiation context for every zone (display; radiation measured at Gale, estimated elsewhere) |
 
 Sources, versions and file hashes are in [data sources](docs/data_sources.md)
 and [NASA traceability](docs/nasa_traceability.md).
@@ -62,8 +67,11 @@ and [NASA traceability](docs/nasa_traceability.md).
   energy and oxygen costs are model estimates pending scientific review.
 - Orbital data cannot show rocks or hazards smaller than its 20 m spacing;
   the 4 m planning grid adds no detail.
-- The wider 2 km scene with geology, weather and points of interest is a
-  scripted illustration; its points of interest are fictitious.
+- The wider 2 km scene and the other five zones are scripted illustrations on
+  real terrain: their mission stories are simulated. Their points of interest C
+  and D are real NASA science sites (or labelled fictitious where none exists).
+- Radiation is a surface average without shielding; solar storms (NASA DONKI
+  space weather) are not included.
 - AI-generated media carry a visible `AI-generated` mark; all AI use is declared
   in [docs/AI_USAGE.md](docs/AI_USAGE.md).
 
@@ -267,7 +275,27 @@ flowchart LR
   *Travel* zooms the card image to fill the screen edge to edge (cover, no black bands); on
   arrival the same image lays itself down on the terrain it is draped on, a perspective warp
   onto the projected footprint that follows the camera, then fades into the 3D map. Display
-  only; reduced motion skips the warp and simply fades.
+  only; reduced motion skips the warp and simply fades. The photo stays on screen across the
+  page change (no loading screen in between). Each card also shows the zone's water and daily
+  radiation dose. Without WebGL, or on the 2D tier, the selector runs flat: the same card,
+  arrows, dots, keys and *Travel*, without the globe.
+- Sites from real NASA science: points C and D are the rover's real science sites where the
+  mission has them (Perseverance samples Salette and Swift Run at Jezero; Curiosity drill holes
+  Buckskin and Big Sky at Gale; Spirit and Opportunity contact-science rocks at Gusev and
+  Meridiani). Astronaut sites: the Three Forks sample depot (Jezero), a science stop the
+  astronaut can walk to, and a habitat area chosen by the slope criterion of NASA's human
+  Exploration Zone rubric. Each site shows its source (NASA, chosen on NASA terrain or
+  fictitious). Reasoning in the [science POI dossier](docs/science_poi_dossier.md).
+- Real rover stops and photo tour (*Photo tour*): the simulated rover drives through every real
+  stop of the map in NASA's order; at each one the view turns to where each real photo was taken
+  and shows it. Perseverance images match the exact stop; Curiosity's feed only gives the sol;
+  Spirit and Opportunity have no images in the feed, and the viewer says so.
+- Rover cameras and arm (`1`–`5` while following the rover): Navcam, Mastcam-Z with its zoom,
+  front and rear Hazcam and WATSON, drawn from the camera nodes of the 3D model with published
+  fields of view; an arm close-up.
+- Real images (*Mars now*, `M` in first person, and the Atmos tab): Perseverance and Curiosity
+  raw images from NASA's public feed, loaded only on request. Images keep their mission and stop:
+  a rover's tour photos are never shown as another rover's latest images.
 - Terrain formation: the layer appears flat and its relief rises to the true shape in 2.5 s,
   valleys first and ridges last, with rising ground lit. Switching layers or a new map version
   morphs the heights in 1.8 s instead of jumping. Display only.
@@ -289,8 +317,11 @@ flowchart LR
   fails to start; `?render=full|lite|2d` forces one.
 - Ground layers: USGS SIM 3464 geologic map with unit list and a schematic
   cut-away block of strata.
-- Atmos: Perseverance MEDA weather at Jezero, Curiosity REMS annual cycle at
-  Gale (reference) and an unshielded radiation estimate from MSL RAD averages.
+- Atmos: water and radiation at every zone (Mars Odyssey GRS water-equivalent hydrogen; MSL
+  RAD surface dose, measured at Gale and estimated elsewhere, flagged where it extrapolates;
+  an example dose for a 4 h Marswalk, without shielding or solar storms). At Jezero also
+  Perseverance MEDA weather, the Curiosity REMS annual cycle at Gale (reference) and the latest
+  Perseverance raw images.
 - Management list of agents, tasks and routes, contextual details panel, event
   inspector and replan alerts built only from received objects.
 - Agent HUD: heading-up minimap plus six gauges (oxygen, energy, time, route,
@@ -334,8 +365,8 @@ flowchart LR
   terrain clearance and downwash dust. None of it changes a position in the data.
 
 Keys: `F` follow camera, `V` first person, `Q` terrain scan (first person; rotates the view otherwise), `C` drone camera
-(first person), `L` helmet lights, `I` artificial / real light, `B` camera sway (first person),
-`G` grab map, `Q` / `E` rotate view, `Z` zone selector (map view), `Space` play/pause, `←` `→` ±5 s, `Home` restart.
+(first person), `M` Mars now (first person), `1`–`5` rover cameras, `L` helmet lights, `I` artificial / real light, `B` camera sway (first person),
+`G` grab map, `Q` / `E` rotate view, `Z` zone selector (map view; `←` `→`, `Enter` travel, `Esc` back), `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 
 ### What is real in the viewer
 
@@ -368,9 +399,12 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Earth and Mars clocks | Device clock; NASA GISS Mars24 algorithm (Allison and McEwen 2000) | Real present time, not the run's time |
 | Uncertainty (sigma) | Set by the demo fixture (1 m, 3 m on the surveyed crossing, 0.2 m once observed); the data package uses a constant 2.5 m | **Assumed, not measured** |
 | Updated map (v2) | CTX prior plus a simulated drone observation over a scarp added to the hidden reference | **Synthetic** adverse case |
-| Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
+| Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated** story; POIs C and D are real NASA science sites (Salette and Swift Run samples) visited in that story; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
 | Shadows, footprints, dust, rotor blur, wheel and steering motion | Derived in the viewer from the drawn poses | **Cosmetic display** only |
 | Zone selector globe | Viking MDIM 2.1 colour mosaic, NASA/USGS via [JPL Mars Trek](https://trek.nasa.gov/mars/) (32 level-2 tiles); each zone card shows the orbital image draped on that scene | Real NASA imagery; horizon band from the Melas DEM is decorative, not to scale; synopses are AI-assisted text |
+| Zone scenes (Gale, Gusev, Elysium, Meridiani, Melas) | NASA terrain models and orbital mosaics via JPL Mars Trek; real rover stops from MMGIS and the PDS Geosciences Node | Real terrain, imagery and stops; mission stories **simulated** |
+| Zone water and radiation | Mars Odyssey GRS (Boynton et al. 2007); MSL RAD (Hassler et al. 2014) and RAD's dose-pressure relation (Guo et al. 2018) | Real orbital and surface-average context; **estimate** outside Gale, flagged outside RAD's measured range; no shielding or solar storms |
+| Rover photos at stops and *Mars now* | Perseverance and Curiosity raw images, NASA/JPL-Caltech public feed, loaded on request | Real images, kept with their mission and stop; not terrain data |
 | Zone arrival transition | The zone's orbital image warped from full screen onto the projected footprint of its terrain | **Cosmetic display**; no data changes |
 | Terrain formation, height morph, interface entrance, camera sway | Viewer animations on the drawn surface and camera | **Cosmetic display**; no height or pose in the data changes |
 | Terrain scan | Prior-derived slope classes and NoData around the astronaut, using the current run's grid | **Display only**: not an observation, sensor or route update; display bands are unvalidated |
