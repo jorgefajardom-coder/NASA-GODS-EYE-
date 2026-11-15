@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Tab icon: Mars, a simple shaded planet drawn for the browser tab (see docs/AI_USAGE.md). -->
+  <defs>
+    <radialGradient id="mars" cx="38%" cy="34%" r="70%">
+      <stop offset="0" stop-color="#f4a06a"/>
+      <stop offset="0.45" stop-color="#d9622b"/>
+      <stop offset="0.85" stop-color="#9c3517"/>
+      <stop offset="1" stop-color="#5e1d0c"/>
+    </radialGradient>
+    <clipPath id="disc"><circle cx="32" cy="32" r="29"/></clipPath>
+  </defs>
+  <circle cx="32" cy="32" r="29" fill="url(#mars)"/>
+  <g clip-path="url(#disc)" fill="#7a2a12" opacity="0.55">
+    <path d="M6 30c8-3 14 2 22-1s12-6 20-3 10 3 12 2v6c-6 2-12-2-20 1s-14 6-22 3-9-3-12-2z"/>
+    <ellipse cx="22" cy="44" rx="7" ry="3.5"/>
+    <ellipse cx="43" cy="17" rx="5" ry="2.5"/>
+  </g>
+  <ellipse cx="32" cy="5.5" rx="9" ry="2.6" fill="#fbe9dc" opacity="0.85" clip-path="url(#disc)"/>
+</svg>
