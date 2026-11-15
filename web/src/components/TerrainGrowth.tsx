@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
 import type * as THREE from 'three';
 
 /** Duration of the growth (s). */
-export const GROWTH_S = 5;
+export const GROWTH_S = 1.4;
 /** Relief share at the start: a nearly flat sheet, so the whole layer is visible from the first frame. */
 export const GROWTH_FLAT = 0.02;
 

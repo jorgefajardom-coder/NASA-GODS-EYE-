@@ -3,7 +3,7 @@ import type { ReplayManifest } from '../types/replay';
 import type { AgentState } from '../types/icd';
 import type { MissionAlert } from '../lib/management';
 import { fmtSimTime } from '../lib/format';
-import { RUNS } from '../data/replayAdapter';
+import { OFFERED_RUNS, RUNS } from '../data/replayAdapter';
 import { displayState } from '../lib/provenance';
 import { terrainResolutionLabel } from '../lib/terrainPresentation';
 
@@ -36,12 +36,13 @@ export function TitleBlock({ manifest, runId }: { manifest: ReplayManifest; runI
       <label className="title__run">
         <span>Run</span>
         <select value={runId} onChange={(e) => openRun(e.target.value)} aria-label="Saved run">
-          {RUNS.map((r) => (
+          {OFFERED_RUNS.map((r) => (
             <option key={r.id} value={r.id}>
               {r.label}
             </option>
           ))}
-          {!RUNS.some((r) => r.id === runId) && <option value={runId}>{runId}</option>}
+          {/* A run opened with ?run= that is not offered still shows its own name. */}
+          {!OFFERED_RUNS.some((r) => r.id === runId) && <option value={runId}>{entry?.label ?? runId}</option>}
         </select>
       </label>
     </header>
@@ -51,7 +52,6 @@ export function TitleBlock({ manifest, runId }: { manifest: ReplayManifest; runI
 interface StatusProps {
   manifest: ReplayManifest;
   missionState: string;
-  mapVersion: number;
   t: number;
   agent: AgentState | null;
   evaluator: boolean;
@@ -61,7 +61,7 @@ interface StatusProps {
 }
 
 /** Link and replay status, top right (the agent position is in the details panel). The live link is shown as offline: the viewer does not connect to the gateway yet, it only plays recorded replays. */
-export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
+export function StatusBlock({ manifest, missionState, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
   return (
     <section className="status" aria-label="Connection and mission status">
       <div className="status__link">Offline</div>
@@ -74,12 +74,10 @@ export function StatusBlock({ manifest, missionState, mapVersion, t, evaluator, 
       <dl className="status__grid mono">
         <dt>Mission</dt>
         <dd>{missionState.toLowerCase()}</dd>
-        <dt>Map</dt>
-        <dd>v{mapVersion}</dd>
         <dt>Sim time</dt>
         <dd>{fmtSimTime(t)}</dd>
         {/* Real present time on Earth (the viewer's) and on Mars; the sim time above is the replay's. */}
-        <LiveClocks lonEastDeg={manifest.terrain_meta.origin_lon_deg ?? undefined} />
+        <LiveClocks lonEastDeg={manifest.terrain_meta.origin_lon_deg ?? undefined} world={manifest.world} />
         <dt>Relief</dt>
         <dd>{exaggeration === 1 ? 'true scale' : `${exaggeration}× (visual only)`}</dd>
       </dl>

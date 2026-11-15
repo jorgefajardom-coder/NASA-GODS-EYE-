@@ -2,7 +2,7 @@ import { WEB_SCHEMA_VERSION } from '../types/icd';
 import type { RouteDecision } from '../types/icd';
 import type { GeologyData } from '../lib/geology';
 import { parseAtmosphere } from '../lib/atmos';
-import type { ContextTerrainData, RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
+import type { ContextTerrainData, RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline, RoverStops } from '../types/replay';
 import { normalizeEvents } from '../lib/replay';
 import { resolveSourceMode } from '../lib/provenance';
 import { contextMatchesRun, geologyMatchesRun } from '../lib/terrainPresentation';
@@ -10,12 +10,25 @@ import { fromGatewayPackage, isGatewayManifest, parseJsonLines, validateGatewayM
 
 /** Runs offered in the viewer. `dir` is relative to the site under replay/. */
 export const RECORDED_RECOVERY_ENTRY = 'recorded-recovery-001';
-export const DEFAULT_RUN_ENTRY = RECORDED_RECOVERY_ENTRY;
+/** Default (owner's choice): the simulated demo on the CTX crop. MOCK entries are not offered. */
+export const DEFAULT_RUN_ENTRY = 'demo';
 export const RUNS: ReadonlyArray<{ id: string; label: string; note?: string }> = [
-  { id: RECORDED_RECOVERY_ENTRY, label: 'Recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Not a scientific COMPLETE mission.' },
   { id: 'demo', label: 'Illustrative demo · generated story' },
+  { id: RECORDED_RECOVERY_ENTRY, label: 'Recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Not a scientific COMPLETE mission.' },
   { id: 'mock-vertical-001', label: 'Gateway replay mock-vertical-001 (MOCK)' },
+  { id: 'gale-demo', label: 'Gale crater · Curiosity · generated story' },
+  { id: 'gusev-demo', label: 'Gusev crater · Spirit · generated story' },
+  { id: 'insight-demo', label: 'Elysium Planitia · InSight · generated story' },
+  { id: 'meridiani-demo', label: 'Meridiani Planum · Opportunity · generated story' },
+  { id: 'melas-demo', label: 'Valles Marineris · no landed mission · generated story' },
 ];
+
+/**
+ * Runs offered in the selector: only the simulated demos, one per zone (owner's decision: no MOCK runs in the
+ * viewer from now on). The MOCK recorder packages stay in the catalogue for the team's contract and
+ * consumer tests and remain loadable with ?run=<id>, but are not offered.
+ */
+export const OFFERED_RUNS = RUNS.filter((run) => run.id === DEFAULT_RUN_ENTRY || run.id.endsWith('-demo'));
 
 export class ReplayLoadError extends Error {}
 
@@ -139,6 +152,15 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
       if (contextMatchesRun(ctx, manifest)) bundle.context = ctx;
     } catch {
       /* the crop is drawn alone */
+    }
+  }
+  if (manifest.rover_stops) {
+    // Optional markers of real rover stops: the run still opens without them.
+    try {
+      const stops = await getJson<RoverStops>(assetUrl(`${dir}/${manifest.rover_stops.file}`));
+      if (Array.isArray(stops.stops) && stops.stops.length > 0) bundle.roverStops = stops;
+    } catch {
+      /* no stop markers */
     }
   }
   return bundle;

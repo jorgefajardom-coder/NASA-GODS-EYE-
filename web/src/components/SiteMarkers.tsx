@@ -7,6 +7,8 @@ import type { ControlPoint, PointOfInterest } from '../types/replay';
 import type { TaskView } from '../lib/replay';
 import { enuToThree } from '../lib/coords';
 import { ScaleWithDistance } from './ScaleWithDistance';
+import { SiteIcon } from './SiteIcon';
+import { siteColor } from '../lib/siteKinds';
 
 interface Props {
   pois: PointOfInterest[];
@@ -16,8 +18,6 @@ interface Props {
   t: number;
   verticalExaggeration: number;
 }
-
-const KIND_COLOR = { base: '#65CBE8', primary_goal: '#E8F4FF', poi: '#C9D7DD' } as const;
 
 /** Base, goal and POIs. A POI only appears once an observation event revealed it. */
 export function SiteMarkers({ pois, controlPoints, showControlPoints, tasks, t, verticalExaggeration }: Props) {
@@ -29,7 +29,7 @@ export function SiteMarkers({ pois, controlPoints, showControlPoints, tasks, t, 
           const [x, y, z] = enuToThree(p.position, verticalExaggeration);
           const task = tasks.find((k) => k.task_id.endsWith(`:${p.id}`));
           const state = task?.state;
-          const color = state === 'REJECTED' ? '#D95045' : state === 'DONE' ? '#65CBE8' : KIND_COLOR[p.kind];
+          const color = siteColor(p.kind, state);
           return (
             <group key={p.id} position={[x, y, z]}>
               <ScaleWithDistance perMetre={1 / 110} max={10}>
@@ -48,7 +48,7 @@ export function SiteMarkers({ pois, controlPoints, showControlPoints, tasks, t, 
                 <meshBasicMaterial color={color} transparent opacity={0.8} />
               </mesh>
               <Html position={[0, 13, 0]} center zIndexRange={LABEL_Z} className={`site-label site-label--${p.kind}`}>
-                {p.label}
+                <SiteIcon kind={p.kind} size={18} color={color} /> {p.label}
                 {state ? <em> · {state.toLowerCase()}</em> : null}
               </Html>
               </ScaleWithDistance>

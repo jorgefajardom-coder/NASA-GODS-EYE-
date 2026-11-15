@@ -43,6 +43,19 @@ consumer validation; default is to preserve the current reproducible datasets.
 
 ## Ownership and evidence
 
+### Local-idea clarification — 14 November 2026
+
+The owner subsequently requested publishing the [science extension tree](../science_extension_tree.md)
+without lifting this freeze. If a member proposes an extension not covered by
+the tree, they may assess it in an isolated **local branch** and bring the
+question, value, prerequisites, smallest trial and findings/blockers for
+discussion on **15 November 2026, America/Bogota**. No meeting time is set here.
+This bounded local assessment does not authorize pushing an extension, merging,
+deploying, changing the frozen baseline or bypassing verified prerequisites.
+Preserve delivery work and other members' changes; label local synthetic/MOCK
+inputs. Publication of the guide and diagram is documentation, not activation
+of the described capabilities. Scientific and operational approvals remain open.
+
 Jesús coordinates delivery and organizer contact; David is backup and scientific
 reviewer. Jorge supplies replay/media and static-site acceptance, Daniel data
 lineage/coverage, Diego planner evidence and explanation. Follow the task-level

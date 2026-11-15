@@ -1,5 +1,11 @@
 # Jorge - preserve and adapt the existing 3D viewer
 
+Future guide: [science extension tree](../science_extension_tree.md). Jorge
+leads G3 reproduction and reviews map-scale/decision-display evidence. The
+guide/image do not reopen implementation. New unlisted ideas may be assessed
+in an isolated local branch for discussion on 15-Nov-2026 (Bogota), without
+extension push/merge/deployment or displacement of delivery work.
+
 ## Delivery priority after PR28 — owner-confirmed 14 November 2026
 
 Follow [PDF tasks JO-1..4](../delivery_closure_plan.md) and
@@ -133,3 +139,71 @@ LIVE mission. No push, merge or release is implied by this handoff alone.
 - Still open from this handoff: strict canonical package validation with Daniel's raster
   sidecar, `displayState` labels in the status block, three control points, and
   backend-off evidence.
+
+## Status update from feat/ux (15 November 2026)
+
+### PR36 owner-requested review corrections — 15 November 2026
+
+Source `40a59741e0a68276f92932d25faeeadfd8f80906` over published main
+`64985e7b4b69ac9683661db4842885d5a8293695`. The owner requested both review
+fixes, regressions and conditional merge. Existing scene, arrival, preview,
+licence and source-attribution work is retained; no other chat's implementation
+or local research is imported.
+
+The final publication cut also preserves Jorge's concurrent `afdf0e8` and
+`eff6297` arrival-transition fixes. Both histories are merged without rewriting;
+the combined web build and browser checks are repeated. Earlier file hashes
+in the correction commits remain historical validation of their own cut.
+
+The selector honours the 2D tier and catches later context-allocation failure.
+DOM cards, next/previous, enter and escape remain usable. Shared image state
+carries mission/latest-or-stop/sol identity; Atmos accepts only latest
+Perseverance results, and the mission window/tour checks its own acquisition
+context. Historical Curiosity images cannot be relabelled as current
+Perseverance imagery. Synthetic feed fixtures are software test inputs.
+
+See [the exact-file validation record](../../evidence/pr36-viewer-regressions-20261115/README.md)
+for commands, hashes, browser checks and unexecuted local checks. Python/web/ROS
+CI on the final published PR head is required before merge. These corrections
+change no canonical ROS/replay schema, scientific parameter, dataset or recorded
+mission. Steps 4/5, full three-role execution, scientific model approval and
+formal AC-08 acceptance remain open. JES-07/AC-10 still requires Jesús to record
+organizer notification and explicit endorsement of the submission revision;
+David is backup, with at least four hours' review margin or longer if requested.
+
+- Source: `feat/ux` `6bc549b` over main `7ad6050` (merge base `464afa7`), 38 commits
+  not yet in main; no PR opened for them yet.
+- Added: Perseverance landing-area demo on an 8 m display grid (3.4 km × 7.6 km) with
+  226 real rover stops; Gale crater world (`gale-demo`) with 166 real Curiosity stops
+  and world arrows; raw-image panel and per-stop images fetched on request; rover photo
+  tour through every real stop, seen from the rover's own camera with fields of view
+  limited to Navcam/Mastcam-Z/Hazcam; drone hazard report replacing the survey map;
+  site icons, label decluttering, projected vehicle shadows, minimap trails.
+- Evidence (Windows): `npm test` 47 files, 281 passed, 1 skipped; `npm run build`
+  passed; `python scripts/check_repository.py` passed. `python -m pytest` not run
+  (pytest not installed on this machine); ROS checks not run here.
+- Still simulated: mission story, routes between stops, agent resources during the
+  tour, photo directions (approximate). Not changed: still open from the 14 November
+  update (strict canonical package with Daniel's sidecar, three control points,
+  backend-off evidence) and the J-06 video of an integrated run.
+- Next: open the incremental PR for these commits for Jesus's review; consume
+  planner routes, the processed terrain package and the live gateway when ready.
+- Reminder (AGENTS.md §15): organizer notification/endorsement evidence is still
+  missing; record it before declaring the package ready.
+
+## CONT-JOR-01 cut: science POI dossier (15 November 2026, feat/ux)
+
+- Delivered `docs/science_poi_dossier.md`: published landing-site, local-target and sampling criteria
+  (Herd et al. 2025, Vasavada 2022, Golombek et al. 2017, Squyres et al. 2003, Farley et al. 2020), the real
+  science sites used and a candidate matrix. Team rules are marked separately.
+- POIs C and D are now real NASA science sites on Jezero, Gale, Gusev and Meridiani (rover's published
+  position when it did that work); Elysium and Valles Marineris keep labelled fictitious POIs.
+- Astronaut sites added (dossier section 5): Three Forks sample depot (PDS), a real science stop near goal
+  B, and a habitat area meeting the NASA Exploration Zone slope criterion.
+- Water/ice/radiation per world, documented only, not in the viewer yet (dossier section 6): Odyssey GRS water; dose measured by RAD at Gale and
+  derived elsewhere from RAD's dose-pressure fit (Guo et al. 2018), flagged below 700 Pa; ice not imported
+  because the SWIM server was unreachable.
+- Pending: David's audit/approval of the matrix and team rules; Daniel's import check; full-text
+  confirmation of the sections marked "to confirm". Not a frozen contract or approved experiment.
+- Reminder (AGENTS.md section 15): local organizer notification and endorsement are still missing before
+  final submission.

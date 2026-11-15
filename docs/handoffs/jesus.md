@@ -1,5 +1,11 @@
 # Jesus - integrate providers through the canonical interfaces
 
+Future guide: [science extension tree](../science_extension_tree.md). Jesus
+leads G2, C2/C3 and F2/F3 proposals and reviews integration evidence. Maintain
+D-DEL-03 and verified parent gates. New unlisted ideas may be assessed in an
+isolated local branch for discussion on 15-Nov-2026 (Bogota), without publishing
+an extension, deployment or displacement of delivery work.
+
 ## Delivery priority after PR28 — owner-confirmed 14 November 2026
 
 Follow [PDF tasks JE-1..5](../delivery_closure_plan.md) and accepted

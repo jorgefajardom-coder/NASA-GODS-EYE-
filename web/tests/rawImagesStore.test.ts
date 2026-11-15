@@ -1,0 +1,182 @@
+import { describe, expect, it } from 'vitest';
+import { createRawImagesStore } from '../src/lib/rawImagesStore';
+
+const img = (n: number) => ({
+  imageid: `NLF_${n}`,
+  sol: 2000 + n,
+  link: `https://mars.nasa.gov/p/${n}`,
+  camera: { instrument: 'NAVCAM_LEFT' },
+  image_files: { small: `https://mars.nasa.gov/s${n}.jpg`, medium: `https://mars.nasa.gov/m${n}.jpg` },
+});
+const ok = (images: unknown[]) => async () => ({ ok: true, status: 200, json: async () => ({ images }) });
+
+describe('raw images store', () => {
+  it('requests nothing until load() is called', () => {
+    let calls = 0;
+    const s = createRawImagesStore(async () => {
+      calls++;
+      return { ok: true, status: 200, json: async () => ({ images: [] }) };
+    });
+    expect(s.getState().status).toBe('idle');
+    expect(calls).toBe(0);
+  });
+
+  it('loads, notifies subscribers and starts on the first image', async () => {
+    const s = createRawImagesStore(ok([img(1), img(2), img(3)]));
+    let notified = 0;
+    s.subscribe(() => notified++);
+    await s.load();
+    const st = s.getState();
+    expect(st.status).toBe('ready');
+    if (st.status === 'ready') expect(st.index).toBe(0);
+    expect(notified).toBeGreaterThanOrEqual(2); // loading, then ready
+  });
+
+  it('steps through the images and wraps around', async () => {
+    const s = createRawImagesStore(ok([img(1), img(2), img(3)]));
+    await s.load();
+    s.step(-1);
+    expect((s.getState() as { index: number }).index).toBe(2);
+    s.step(1);
+    expect((s.getState() as { index: number }).index).toBe(0);
+  });
+
+  it('reports an error for a bad answer, an empty feed or a network failure', async () => {
+    const bad = createRawImagesStore(async () => ({ ok: false, status: 503, json: async () => ({}) }));
+    await bad.load();
+    expect(bad.getState()).toMatchObject({ status: 'error' });
+    const empty = createRawImagesStore(ok([]));
+    await empty.load();
+    expect(empty.getState()).toMatchObject({ status: 'error' });
+    const down = createRawImagesStore(async () => {
+      throw new Error('offline');
+    });
+    await down.load();
+    expect(down.getState()).toMatchObject({ status: 'error', message: 'offline' });
+  });
+});
+
+describe('raw images of a rover stop', () => {
+  const at = (id: string, site: number, drive: string) => ({ ...img(1), imageid: id, site, drive });
+  const stop = { sol: 13, site: 3, drive: 110, rmc: '3_110' };
+
+  it('keeps only that stop and remembers which one it was', async () => {
+    const s = createRawImagesStore(ok([at('a', 3, '0'), at('b', 3, '110'), at('c', 3, '110')]));
+    await s.loadStop(stop);
+    const st = s.getState();
+    expect(st.status).toBe('ready');
+    if (st.status === 'ready') {
+      expect(st.images.map((i) => i.id)).toEqual(['b', 'c']);
+      expect(st.forStop).toBe('3_110');
+    }
+  });
+
+  it('says so when NASA lists no image for the stop', async () => {
+    const s = createRawImagesStore(ok([at('a', 3, '0')]));
+    await s.loadStop(stop);
+    expect(s.getState()).toMatchObject({ status: 'error', message: 'NASA lists no raw image for stop 3_110' });
+  });
+});
+
+
+describe('raw images cache per sol', () => {
+  it('reads a sol once for all the stops of that sol', async () => {
+    let calls = 0;
+    const at = (id: string, drive: string) => ({ ...img(1), imageid: id, site: 3, drive });
+    const s = createRawImagesStore(async () => {
+      calls++;
+      return { ok: true, status: 200, json: async () => ({ images: [at('a', '0'), at('b', '110')] }) };
+    });
+    await s.loadStop({ sol: 13, site: 3, drive: 0, rmc: '3_0' });
+    await s.loadStop({ sol: 13, site: 3, drive: 110, rmc: '3_110' });
+    expect(calls).toBe(1);
+    const st = s.getState();
+    expect(st.status === 'ready' && st.images.map((i) => i.id)).toEqual(['b']);
+  });
+});
+
+describe('a mission whose images only carry the sol (Curiosity)', () => {
+  it('shows the images of the sol without matching site and drive, from its own feed', async () => {
+    const urls: string[] = [];
+    const msl = (id: string) => ({ ...img(1), imageid: id, site: '', drive: '' });
+    const s = createRawImagesStore(async (url) => {
+      urls.push(url);
+      return { ok: true, status: 200, json: async () => ({ images: [msl('a'), msl('b')] }) };
+    });
+    await s.loadStop({ sol: 751, site: 125, drive: 2490, rmc: '125_2490' }, { raw_category: 'msl', image_match: 'sol' });
+    const st = s.getState();
+    expect(st.status === 'ready' && st.images.map((i) => i.id)).toEqual(['a', 'b']);
+    expect(urls[0]).toContain('category=msl');
+    expect(urls[0]).toContain('msl:mission');
+  });
+
+  it('reads an empty site or drive as unknown, not as zero', async () => {
+    const { parseRawImages } = await import('../src/lib/perseveranceRaw');
+    const [i] = parseRawImages({ images: [{ ...img(1), site: '', drive: '' }] });
+    expect(i.site).toBeNull();
+    expect(i.drive).toBeNull();
+  });
+});
+
+describe('preloading the images of a stop', () => {
+  it('reports the images as preloaded only after every one has loaded', async () => {
+    let release: () => void = () => undefined;
+    const wait = new Promise<void>((res) => {
+      release = res;
+    });
+    const urls: string[][] = [];
+    const s = createRawImagesStore(ok([img(1), img(2)]), (u) => {
+      urls.push(u);
+      return wait;
+    });
+    await s.load();
+    const first = s.getState();
+    expect(first.status === 'ready' && first.preloaded).toBe(false);
+    expect(urls[0]).toContain('https://mars.nasa.gov/s1.jpg');
+    release();
+    await wait;
+    await Promise.resolve();
+    const done = s.getState();
+    expect(done.status === 'ready' && done.preloaded).toBe(true);
+  });
+
+  it('does not mark a newer set of images as preloaded when an older load finishes', async () => {
+    let releaseFirst: () => void = () => undefined;
+    const firstDone = new Promise<void>((res) => {
+      releaseFirst = res;
+    });
+    let n = 0;
+    const s = createRawImagesStore(ok([img(1)]), () => (n++ === 0 ? firstDone : new Promise<void>(() => undefined)));
+    await s.load();
+    await s.load(); // a second load replaces the images; its preload never ends here
+    releaseFirst();
+    await firstDone;
+    await Promise.resolve();
+    const st = s.getState();
+    expect(st.status === 'ready' && st.preloaded).toBe(false);
+  });
+});
+
+describe('a mission whose images are not in the feed (Spirit, Opportunity)', () => {
+  it('does not let an older pending load replace the unavailable mission result', async () => {
+    let release!: (value: { ok: boolean; status: number; json(): Promise<unknown> }) => void;
+    const s = createRawImagesStore(() => new Promise((resolve) => { release = resolve; }));
+    const older = s.load();
+    await s.loadStop({ sol: 100, site: 10, drive: 20, rmc: '10_20' }, { raw_category: 'none', image_match: 'none' });
+    release({ ok: true, status: 200, json: async () => ({ images: [img(1)] }) });
+    await older;
+    expect(s.getState()).toMatchObject({ status: 'error', query: { category: 'none', kind: 'stop', sol: 100, rmc: '10_20' } });
+  });
+
+  it('answers at once that there is no image feed, without asking NASA', async () => {
+    let calls = 0;
+    const s = createRawImagesStore(async () => {
+      calls += 1;
+      return { ok: true, status: 200, json: async () => ({ images: [] }) };
+    });
+    await s.loadStop({ sol: 100, site: 10, drive: 20, rmc: '10_20' }, { raw_category: 'none', image_match: 'none' });
+    const st = s.getState();
+    expect(calls).toBe(0);
+    expect(st.status === 'error' && st.message).toMatch(/^No image feed/);
+  });
+});

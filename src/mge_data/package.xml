@@ -4,7 +4,7 @@
   <version>0.0.0</version>
   <description>P0 scaffold; F01: import and align orbital products</description>
   <maintainer email="team@example.invalid">MARS GODS EYE team</maintainer>
-  <license>LicenseRef-UNSPECIFIED</license>
+  <license>MIT</license>
   <buildtool_depend>ament_python</buildtool_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>mge_interfaces</exec_depend>

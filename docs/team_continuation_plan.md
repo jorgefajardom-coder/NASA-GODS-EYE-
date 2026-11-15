@@ -1,5 +1,11 @@
 # Team continuation plan — 14 November 2026
 
+See the [science extension tree](science_extension_tree.md) for proposed
+post-base capabilities and verified prerequisites. It does not reopen scope.
+New unlisted ideas may be assessed in an isolated local branch for discussion
+on 15 November 2026 (America/Bogota), under the D-DEL-03 clarification; no
+extension push, merge, deployment or acceptance is authorized by that assessment.
+
 **Superseding delivery cut:** [current conclusions, PDF disposition and tasks](delivery_closure_plan.md)
 and accepted [D-DEL-03](decisions/2026-11-14-delivery-freeze.md) now govern priority.
 PR28 at main9198b3d publishes the basic estimated-map/observation/replay cut.

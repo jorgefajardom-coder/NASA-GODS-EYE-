@@ -4,7 +4,7 @@ import type { TerrainMeta } from '../types/icd';
 import { rasterizeUnits, type GeologyData } from '../lib/geology';
 import { blockDepthM, columnBelow, surfaceSymbolAt } from '../lib/strata';
 import { smoothHeightAt } from '../lib/terrainSmooth';
-import { SURFACE_DETAIL_GLSL, MESH_SUBDIVISION } from './TerrainView';
+import { SURFACE_DETAIL_GLSL, meshSubdivision } from './TerrainView';
 
 const GEO_GRID = 400;
 
@@ -31,7 +31,7 @@ export function CutawayBlock({ meta, heights, geology, verticalExaggeration }: P
   const grid = useMemo(() => (geology ? rasterizeUnits(geology, GEO_GRID) : null), [geology]);
 
   const geometry = useMemo(() => {
-    const step = meta.resolution_m / MESH_SUBDIVISION;
+    const step = meta.resolution_m / meshSubdivision(meta);
     const x0 = meta.origin_x_m + meta.resolution_m / 2;
     const y0 = meta.origin_y_m + meta.resolution_m / 2;
     const x1 = meta.origin_x_m + (meta.cols - 0.5) * meta.resolution_m;
@@ -122,7 +122,7 @@ export function CutawayBlock({ meta, heights, geology, verticalExaggeration }: P
           }`,
         );
     };
-    mat.customProgramCacheKey = () => 'cutaway-strata-v5';
+    mat.customProgramCacheKey = () => 'cutaway-strata-v6';
     return mat;
   }, []);
 

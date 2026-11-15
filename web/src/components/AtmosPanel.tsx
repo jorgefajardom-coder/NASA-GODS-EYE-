@@ -10,6 +10,7 @@ import {
 } from '../lib/atmos';
 import { fmtSimTime } from '../lib/format';
 import { Info } from './Info';
+import { RawImagesPanel } from './RawImagesPanel';
 
 /** Jezero (about -2.57 km) sits roughly 1.9 km above the REMS site in Gale crater (about -4.5 km). */
 const JEZERO_ABOVE_GALE_M = 1900;
@@ -158,6 +159,7 @@ export function AtmosDetails({ data }: { data: AtmosphereData | undefined }) {
           <Info text="Isothermal scale height of 11.1 km. Gale is at about 4.6° S and Jezero at 18.4° N, so their temperature seasons do not line up; the Gale curve is a reference for the shape of the year, not Jezero values." />
         </p>
       )}
+      <RawImagesPanel />
       <h3 className="atmos__h3">Sources</h3>
       <ul className="atmos__sources small">
         {data.sources.map((s) => (

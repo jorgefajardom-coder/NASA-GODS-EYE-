@@ -14,6 +14,6 @@ setup(
     maintainer="MARS GODS EYE team",
     maintainer_email="team@example.invalid",
     description="Mission authority, task decisions and resource-model audit",
-    license="LicenseRef-UNSPECIFIED",
+    license="MIT",
     entry_points={"console_scripts": ["mission_node = mge_mission.node:main"]},
 )

@@ -7,6 +7,68 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
+## For judges: the project in one minute
+
+**The problem.** Mars maps from orbit are built for regions, not for a walk.
+MOLA altimetry has 463 m pixels; even the CTX stereo terrain model at Jezero has
+one height every 20 m. A crew going out on foot with a rover and a drone needs
+to know which ground is only *estimated* from orbit, what a route costs in time,
+energy and oxygen, and what to do when the ground turns out to differ from the
+map.
+
+**What we built.** A prototype planner and 3D replay viewer for a small crew
+(astronaut, rover and drone) at Jezero crater:
+
+1. Load public NASA orbital terrain as an estimated map, keeping its uncertainty
+   and its source.
+2. Propose routes (FAST or SAFE) that check time, energy and oxygen for the way
+   out, the work at the stop and the way back, with a reserve.
+3. When an observation contradicts the orbital estimate, stop the affected
+   crew member, cancel the route and plan a new one from where they actually are,
+   with the resources they have left.
+4. Record every decision and replay it in a web browser, with no server.
+
+**See it.** [Open the web viewer](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/).
+The default run, *Recorded recovery · MOCK*, is a recording of the real planner
+on public Jezero terrain: the astronaut follows an estimated route, a simulated
+observation contradicts the map, the astronaut stops, receives a new route and
+returns. Video and project page: links will be added here before submission.
+
+**NASA data in the project.**
+
+| Resource | What it does here |
+| --- | --- |
+| MRO/CTX stereo terrain model, Mars 2020 TRN mosaic (USGS) | Terrain the planner routes over; elevation, slope and contours in the viewer |
+| MGS/MOLA global elevation model (NASA PDS) | Regional context: places the study area and checks the vertical alignment of the CTX tile |
+| MRO/CTX orthomosaic via [JPL Mars Trek](https://trek.nasa.gov/mars/) | Surface image draped over the terrain (display) |
+| USGS SIM 3464 geologic map of Jezero | Geologic units in the viewer (display; boundaries approximate to 100–200 m) |
+| Perseverance MEDA, Curiosity REMS, MSL RAD | Weather and radiation context in the viewer (display; the radiation values come from Gale crater, not Jezero) |
+| MRO/HiRISE terrain model (USGS) | Held back as a reference for evaluating results; never given to the planner or the viewer |
+| Perseverance and Ingenuity 3D models (NASA/JPL-Caltech) | Rover and drone models in the viewer |
+
+Sources, versions and file hashes are in [data sources](docs/data_sources.md)
+and [NASA traceability](docs/nasa_traceability.md).
+
+**Limits, stated plainly.**
+
+- This is a prototype that replays recorded runs. It is not a live mission or a
+  safety system, and it does not certify that any route is safe to walk.
+- In the featured recording only the astronaut moves; the rover and drone stay
+  idle and the mission ends in READY. A full three-member science mission is not
+  yet demonstrated.
+- The contradicting observation is simulated, not a real measurement. Time,
+  energy and oxygen costs are model estimates pending scientific review.
+- Orbital data cannot show rocks or hazards smaller than its 20 m spacing;
+  the 4 m planning grid adds no detail.
+- The wider 2 km scene with geology, weather and points of interest is a
+  scripted illustration; its points of interest are fictitious.
+- AI-generated media carry a visible `AI-generated` mark; all AI use is declared
+  in [docs/AI_USAGE.md](docs/AI_USAGE.md).
+
+Evidence for the featured recording: [source, test and browser record](evidence/audit-reconciliation-20261115/runtime-v1/README.md).
+
+## Project status for the team
+
 Mars Gods Eye plans and replays crewed surface missions (astronaut, rover and
 drone) over real Mars terrain at Jezero crater: orbital terrain priors, a
 resource-aware route planner, a mission authority, a ROS 2 simulation vertical
@@ -17,17 +79,8 @@ offline.
 viewer are implemented and on `main`; integrated mission acceptance is pending.** Nothing in
 this repository is a validated LIVE mission. MOCK providers, synthetic
 observations, replays and successful builds are labelled as such and are not
-mission evidence.
-
-**For judges:** this prototype connects orbital terrain estimates with route
-proposals and recorded decision changes when simulated observations contradict
-them. The featured `Recorded recovery · MOCK` uses public Jezero terrain and the
-real planner: a human stops, receives a revised route and returns. Its closing
-state is READY; it does not demonstrate a scientifically accepted three-role
-mission or certified safety. The broader scripted demo is a separate illustration.
-See [recorded source and browser evidence](evidence/audit-reconciliation-20261115/runtime-v1/README.md).
-Final English video/project-page links and acceptance remain tracked in the
-[delivery closure plan](docs/delivery_closure_plan.md) and
+mission evidence. Final English video/project-page links and acceptance remain
+tracked in the [delivery closure plan](docs/delivery_closure_plan.md) and
 [submission checklist](docs/competition.md).
 
 - **Web viewer (public preview):** <https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/>
@@ -38,8 +91,9 @@ Final English video/project-page links and acceptance remain tracked in the
   for language models and readers without WebGL is at
   [`llms.txt`](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/llms.txt) and
   [`about.html`](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/about.html).
-- **Team deadline:** 2026-11-15 23:59 America/Bogota (UTC-05:00). Confirm any
-  earlier local judging cutoff separately.
+- **Intended submission:** 2026-11-15 20:00 America/Bogota (UTC-05:00), per
+  [D-DEL-03](docs/decisions/2026-11-14-delivery-freeze.md); 23:59 is the team
+  backstop only. An earlier local cutoff or longer organizer review takes precedence.
 - **Delivery gate pending:** local organizer notification and explicit
   endorsement (JES-07 / AC-10 in [the mission checklist](docs/mission_checklist.md))
   are not yet recorded. Reserve at least four hours before final submission;
@@ -50,6 +104,7 @@ Final English video/project-page links and acceptance remain tracked in the
 - [Team branches and ownership](docs/team.md) and
   [continuation plan, 14 November 2026](docs/team_continuation_plan.md) (on `main`)
 - [Probable roadmap and owner checklists](docs/mission_checklist.md)
+- [Science extension tree: verifiable gates, dependencies and leads](docs/science_extension_tree.md) — freeze remains active; unlisted ideas may be assessed locally for discussion on 15 November 2026 (America/Bogota).
 - [Accepted estimated-terrain scope, D-EST-01](docs/decisions/2026-11-14-estimated-terrain-planning.md)
 - [NASA resource-to-result traceability](docs/nasa_traceability.md)
 - [Proposed shared interface contract](docs/ICD.md) (pending team confirmation),
@@ -123,7 +178,7 @@ Snapshot of the remote on 2026-11-14 (`origin/main` = `b5dc681`). See
 | Branch | Owner | State |
 | --- | --- | --- |
 | `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#26 merged |
-| `feat/ux` | Jorge | Web viewer; PRs #5, #19, #23 and #27 are merged in main (offline viewer, public raster input, intro, first person, orbital preview, route guide and text access). PR #27 publication baseline: `6bcf208` |
+| `feat/ux` | Jorge | Web viewer; PRs #5, #19, #23 and #27 are merged in main (offline viewer, public raster input, intro, first person, orbital preview (since replaced by the terrain scan), route guide and text access). PR #29 open: first-person rework, drone camera, helmet and artificial light, Mars sky, route sufficiency alerts, render tiers, demo-only run selector |
 | `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI; last merged in PR #18 |
 | `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service; merged in PRs #2 and #12 |
 | `feat/data` | Daniel | Public terrain data, mapping, provenance and control points; merged in PRs #8 and #24 (configurable terrain region) |
@@ -176,16 +231,17 @@ flowchart LR
 
 - REPLAY mode only. The status block shows `REPLAY · <source_mode>` (`MOCK`,
   `SIMULATION` or `UNKNOWN`); a package that claims `LIVE` is refused.
-- Featured/default entry: `recorded-recovery-001`, an unchanged recorder package
+- Default and only offered entry: the simulated `demo` on the 2 km CTX crop (no MOCK
+  runs in the viewer). `recorded-recovery-001` stays loadable with `?run=`: an unchanged recorder package
   on Daniel's 128 m Jezero crop (32×32 computational cells at 4 m; CTX source
   spacing 20 m). Real data/mapping/planner providers are paired with MOCK mission
   and kinematic execution. The human stops, replans, resumes and returns; rover
   and drone remain idle. Its final `READY` state is not scientific `COMPLETE`.
-- The selector and `?run=<entry>` also retain `demo`, the separate generated
-  story on a provisional 2 km CTX crop at 20 m, and `mock-vertical-001`, the
-  historical recorded flat-MOCK sample. A folder entry can differ from the
-  immutable `run_id` inside its files. Never combine metrics or layers between
-  these scenes. Browser/backend-off acceptance of this cut remains to be recorded.
+- `mock-vertical-001`, the historical recorded flat-MOCK sample, also stays loadable
+  with `?run=`; both MOCK packages remain in the repository for the team's contract and
+  consumer tests. A folder entry can differ from the immutable `run_id` inside its files.
+  Never combine metrics or layers between these scenes. Browser/backend-off acceptance
+  of this cut remains to be recorded.
 - Reads gateway replay packages (ICD §7) and their public raster attachment
   `files.public_rasters` (`mge-public-rasters-1.0.0`), checked against the package;
   mismatches fail with `PUBLIC_RASTERS_INVALID`, and non-MOCK packages without it
@@ -197,17 +253,38 @@ flowchart LR
 
 ### Interface
 
-- Intro screen for the illustrative demo: skippable AI-generated video with a burned-in `AI-generated`
-  watermark (`?nointro=1` or reduced motion skips it). The interface then enters: the panels
+- Intro screen for the illustrative demo: skippable AI-generated video with one burned-in
+  `AI-GENERATED · KLING` mark (`?nointro=1` or reduced motion skips it). The interface then enters: the panels
   slide in, the timeline rises and the agent dial spins into place.
-- Terrain formation: the layer appears flat and its relief rises to the true shape in 5 s,
+- Zone selector (`Z` in the map view; opens after the intro): a Mars globe built from the Viking
+  MDIM 2.1 colour mosaic (JPL Mars Trek) with one point per scene at the centre of its crop.
+  The selected zone turns to face the camera and the globe zooms in; a card fitted radially
+  against the planet shows the zone's orbital image, a short synopsis and its coordinates.
+  Six Mars scenes: Jezero (Perseverance), Gale (Curiosity), Gusev (Spirit), Elysium Planitia
+  (InSight), Meridiani Planum (Opportunity) and Valles Marineris (Melas Chasma).
+  *Travel* zooms the card image to fill the screen edge to edge (cover, no black bands); on
+  arrival the same image lays itself down on the terrain it is draped on, a perspective warp
+  onto the projected footprint that follows the camera, then fades into the 3D map. Display
+  only; reduced motion skips the warp and simply fades.
+- Terrain formation: the layer appears flat and its relief rises to the true shape in 2.5 s,
   valleys first and ridges last, with rising ground lit. Switching layers or a new map version
   morphs the heights in 1.8 s instead of jumping. Display only.
 - Modes: Exploration, Ground layers, Atmos and Mission replay.
 - Terrain layers: Orbital map, Updated map (per map version), Slope (Horn 3x3),
   Uncertainty (sigma) and, for the evaluator only, Reference.
 - Real CTX orthomosaic drape, contour lines every 10 m, optional 20 km surroundings,
-  close-up procedural ground grain (cosmetic) and a solid terrain block.
+  close-up procedural ground grain (cosmetic, sampled on rotated grids so no regular
+  lines appear) and a solid terrain block.
+- Sky at the real present time at the site, the same instant as the Jezero clock: the
+  Sun placed with NASA GISS Mars24, a dusty butterscotch day sky with a blue glow around
+  the Sun, and at night the 2887 naked-eye stars of the Yale Bright Star Catalogue placed
+  with the IAU 2009 rotation model of Mars. `?skytime=<ISO date>` shows another instant.
+- Lighting: **artificial light on by default** (terrain lit as by day whatever the hour);
+  the *Real light* button (`I`) shows the terrain with the real light of that hour, the
+  key light and the astronaut's shadow following the Sun, with a dim night fill.
+- Render tiers for any computer: full 3D with a GPU, a lite 3D tier for software
+  rasterisers or slow GPUs, and a 2D top-down map without WebGL or when the 3D view
+  fails to start; `?render=full|lite|2d` forces one.
 - Ground layers: USGS SIM 3464 geologic map with unit list and a schematic
   cut-away block of strata.
 - Atmos: Perseverance MEDA weather at Jezero, Curiosity REMS annual cycle at
@@ -220,15 +297,32 @@ flowchart LR
   independent of the replay time.
 - Cameras: Map, Astronaut, Rover, Drone and Base; grab-to-drag map and 45° view rotation.
 - First person (`V`) from the followed astronaut, rover or drone: drag to look, wheel to zoom
-  (18°–110°), supersampled rendering. Its HUD has a compass tape with site bearings, the agent's
-  resources, a heading-up minimap and a route guide: the route in force draped on the ground,
-  a beacon on the next waypoint, its distance, the distance left and the time left scaled from
-  the route's own estimate. Optional camera sway (`B`) while walking or driving.
-- Orbital slope preview (`R`): displays prior-derived slope cells within 160 m of
-  the drone position in display bands (< 8°, 8–15°, ≥ 15°, NoData). It is a visual
-  lookup, not a camera observation or mission command; map, sigma and routes do
-  not change. The legend separates the computational grid from native source
-  spacing; the bands are display choices, not validated safety limits.
+  (18°–110°), supersampled rendering. It opens from black and powers on like a display (shutters,
+  short boot log, then each instrument). Its HUD has a compass tape with site bearings, the
+  same agent dial as in third person (menu with resources and the heading-up map), the route
+  in force draped on the ground with the next waypoint and its distance, and one bottom dock
+  with the drone camera and every key control. The 20 km surroundings are always drawn and contours hidden, so the
+  ground reaches the horizon. Optional camera sway (`B`).
+- Drone camera (`C`, first person): a window showing the scene from the drone, looking ahead
+  and 35° down, from the replayed pose (not a video feed).
+  A *Map* tab shows the terrain the drone has surveyed so far (observed cells of the map in force
+  as a point cloud, the rest as orbital estimate, flight trail); the observations are simulated
+  in the replay, not a LiDAR measurement.
+- Astronaut helmet lights (`L`): one cool-white spot light at helmet height aimed ahead,
+  as EVA suits carry; a display choice, not a suit specification.
+- Route sufficiency alerts (first person): each resource is compared with what finishing
+  the route in force needs (return included) and what walking back now along the travelled
+  path needs, keeping the 20 % JZ-P06 reserve. Amber *Route uses the reserve* (with the
+  turn-back point), red *Turn back* and red *Return to base now*. Rationale and NASA sources
+  in [docs/route_resource_sufficiency.md](docs/route_resource_sufficiency.md); assumptions
+  pending David's review; display only, no live safety check or guaranteed return.
+- Terrain scan (`Q` in first person): a 50 m visual pulse from the astronaut that follows the
+  relief, draws temporary contours and edges, shows the run's orbital slope classes and NoData
+  as small surface-aligned symbols, and lights footprints and the route; 3 s recharge. Display
+  only, not a sensor or observation. Inspired by the Odradek scanner of *Death Stranding*;
+  no game assets used.
+- The astronaut faces the direction it walks (display), also in recorded packages whose human
+  orientation is constant.
 - Text access for language models: `llms.txt`, `about.html`, page metadata with JSON-LD, a
   static summary for readers without JavaScript, and `window.mge.state()`, which returns the
   displayed replay state as JSON (always labelled REPLAY).
@@ -237,8 +331,9 @@ flowchart LR
   planted feet and shadow, rover steering and suspension, drone rotor spin-up,
   terrain clearance and downwash dust. None of it changes a position in the data.
 
-Keys: `F` follow camera, `V` first person, `R` drone scan, `B` camera sway (first person),
-`G` grab map, `Q` / `E` rotate view, `Space` play/pause, `←` `→` ±5 s, `Home` restart.
+Keys: `F` follow camera, `V` first person, `Q` terrain scan (first person; rotates the view otherwise), `C` drone camera
+(first person), `L` helmet lights, `I` artificial / real light, `B` camera sway (first person),
+`G` grab map, `Q` / `E` rotate view, `Z` zone selector (map view), `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 
 ### What is real in the viewer
 
@@ -273,15 +368,25 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Updated map (v2) | CTX prior plus a simulated drone observation over a scarp added to the hidden reference | **Synthetic** adverse case |
 | Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
 | Shadows, footprints, dust, rotor blur, wheel and steering motion | Derived in the viewer from the drawn poses | **Cosmetic display** only |
+| Zone selector globe | Viking MDIM 2.1 colour mosaic, NASA/USGS via [JPL Mars Trek](https://trek.nasa.gov/mars/) (32 level-2 tiles); each zone card shows the orbital image draped on that scene | Real NASA imagery; horizon band from the Melas DEM is decorative, not to scale; synopses are AI-assisted text |
+| Zone arrival transition | The zone's orbital image warped from full screen onto the projected footprint of its terrain | **Cosmetic display**; no data changes |
 | Terrain formation, height morph, interface entrance, camera sway | Viewer animations on the drawn surface and camera | **Cosmetic display**; no height or pose in the data changes |
-| Orbital slope preview | Prior-derived slope around the drone position, using the current run's grid | **Display only**: not an observation or route update; display bands are unvalidated |
-| First-person route guide | Route in force as recorded; time left = route `travel_time_s` × distance share left | Drawn from the received route; time left is an **estimate**, not a prediction |
+| Terrain scan | Prior-derived slope classes and NoData around the astronaut, using the current run's grid | **Display only**: not an observation, sensor or route update; display bands are unvalidated |
+| First-person route | Route in force as recorded, draped on the ground, with the next waypoint and its distance | Drawn from the received route |
+| Route sufficiency alert | Route cost spread per metre, remaining amounts, 20 % reserve (JZ-P06) | **Estimate** for display; experimental reserve, not a NASA standard; pending science review |
+| Sun position and sky | NASA GISS Mars24 at the real present time and site latitude/longitude | Real computed position; sky colours are a display rendering |
+| Stars | Yale Bright Star Catalogue (Hoffleit & Warren 1991), V ≤ 5.5, IAU 2009 Mars rotation model | Real catalogue positions; no planets, moons, refraction or proper motion |
+| Artificial light (default), night fill, helmet lights | Viewer lighting choices | **Display only**, not sunlight or suit specifications |
+| Drone camera window | The scene drawn again from the replayed drone pose | **Display only**, not a camera feed |
+| Drone survey map (Map tab) | Cells marked observed in the map version in force, belief heights | **Simulated** observations in the replay; not a LiDAR measurement |
+| 2D map / lite 3D tiers | Same replay drawn with Canvas 2D or reduced 3D settings | Same data, reduced display |
 | Rover and drone models | NASA/JPL-Caltech Perseverance and Ingenuity 3D models | Real models, agency branding removed |
 | Astronaut model | Sketchfab, LasquetiSpice, CC BY 4.0 | Third-party asset |
 | Astronaut portrait (details panel) | Generated with ChatGPT (OpenAI), `web/public/assets/portraits/human_1.webp` | **AI-generated** image, visible `AI-generated` watermark |
 | Surface base | `base-marciana-v2`, generated with OpenAI Codex, prepared by `web/scripts/blender/prepare_base.py` | **AI-generated** 3D model |
-| Intro screen | Generated with Kling, `web/public/assets/intro/mars-gods-eye-intro.webm` | **AI-generated** video, `AI-generated` watermark burned into every frame; audio track declared, played muted |
-| Team logo (README, about page, link preview) | Generated with ChatGPT (OpenAI) and edited by the team, `web/public/assets/brand/mars-gods-eye-logo.webp` and `og-image.png` | **AI-generated** image, visible `AI-generated` watermark in every version |
+| Intro screen | Generated with Kling, `web/public/assets/intro/mars-gods-eye-intro.webm` | **AI-generated** video, one `AI-GENERATED · KLING` mark burned into every frame; audio track declared, played muted |
+| Team logo (README, about page) | Generated with ChatGPT (OpenAI) and edited by the team, `web/public/assets/brand/mars-gods-eye-logo.webp` | **AI-generated** image, visible `AI-generated` watermark in every version |
+| Link preview | NASA/JPL/USGS Viking global color mosaic ([PIA00407](https://science.nasa.gov/photojournal/global-color-views-of-mars/)), centred on black without text, `web/public/assets/brand/og-image.jpg` | Real NASA image, not AI-generated; no NASA logos or mission marks |
 | Browser tab icon | Illustration of Mars made by the team, `web/public/favicon.ico` and PNG sizes (32, 48, 180, 512 px) | Team-made image, not AI-generated; background removed and resized |
 | Evaluator reference | MRO/HiRISE DTM ([DOI 10.5066/P9REJ9JN](https://doi.org/10.5066/P9REJ9JN)) | Real; isolated, never in the public build |
 
@@ -289,9 +394,11 @@ Credits and licences are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md),
 AI use in [docs/AI_USAGE.md](docs/AI_USAGE.md), and the viewer details in
 [web/README.md](web/README.md).
 
-Known gaps: the viewer does not consume a live gateway; no bundled recorded
-package carries public rasters yet, so recorded runs show the flat MOCK grid;
-AC-08 (private-browser replay with every backend off) is not recorded; J-06
+Known gaps: the viewer does not consume a live gateway; the recorded recovery
+package has public rasters but no draped imagery, so it shows a plain-coloured
+128 m block, and `mock-vertical-001` remains a flat MOCK grid; AC-08 has an automated private-browser replay record with every backend off
+([evidence](evidence/web-private-replay-20261115/README.md)) but is not accepted: no person-operated or
+public-site check exists and the recorded package is MOCK; J-06
 render acceptance and a screen-reader audit are not done.
 
 ## Checks without ROS
@@ -535,10 +642,12 @@ Read [AGENTS.md](AGENTS.md). Work on your assigned branch; open small PRs to
 producers, consumers and contract tests together when fields/frames/units change.
 Use English Conventional Commits and English PR descriptions.
 
-The integrated interfaces/simulation/bringup packages retain their existing MIT
-metadata. New packages use `LicenseRef-UNSPECIFIED` and `team@example.invalid`
-as explicit placeholders to replace before distribution. The team still needs
-to choose and supply the overall project license; dataset licenses are separate.
+The project's own code and documentation are released under the
+[MIT License](LICENSE); every ROS package and the web viewer declare MIT.
+The `team@example.invalid` maintainer address in new packages is still a
+placeholder to replace before distribution. The MIT License does not cover
+third-party material: NASA/USGS data and imagery, fonts, 3D models and other
+assets keep their own terms and credits.
 Third-party credits and licences are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## AI use

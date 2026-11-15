@@ -14,6 +14,6 @@ setup(
     maintainer="MARS GODS EYE team",
     maintainer_email="team@example.invalid",
     description="Bounded resource-constrained planner and ROS service adapter",
-    license="LicenseRef-UNSPECIFIED",
+    license="MIT",
     entry_points={"console_scripts": ["planning_node = mge_planning.node:main"]},
 )

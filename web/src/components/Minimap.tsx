@@ -2,14 +2,69 @@ import { useEffect, useMemo, useRef } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { Point } from '../types/icd';
-import { tacticalBase } from '../lib/tacticalMap';
+import { tacticalBase, tacticalContext, type TacticalBase } from '../lib/tacticalMap';
 import { yawFromQuaternion } from '../lib/coords';
 import { headingFromNorth } from '../lib/management';
+import { drawSiteIcon, siteKind } from '../lib/siteKinds';
 
 const DEFAULT_SIZE = 168;
+
+function toCanvas(b: TacticalBase): HTMLCanvasElement {
+  const c = document.createElement('canvas');
+  c.width = b.width;
+  c.height = b.height;
+  c.getContext('2d')!.putImageData(new ImageData(b.pixels, b.width, b.height), 0, 0);
+  return c;
+}
 /** Ground radius shown around the agent (m). */
 const RADIUS_M = 450;
 const KIND_COLOR = { HUMAN: '#E8F4FF', DRONE: '#65CBE8', ROVER: '#D8AD66' } as const;
+
+/** How far back the trails reach (s of replay time) and how often they are sampled. */
+const TRAIL_S = 240;
+
+/** Fading trail behind every agent: the last TRAIL_S seconds of its recorded positions. Display only. */
+function drawTrails(g: CanvasRenderingContext2D, frames: ReplayBundle['timeline']['frames'], t: number, toPx: (p: Point) => readonly [number, number]): void {
+  // Frames are in time order: find the first one inside the window.
+  let lo = 0;
+  let hi = frames.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (frames[mid].timestamp_sim_s < t - TRAIL_S) lo = mid + 1;
+    else hi = mid;
+  }
+  const byAgent = new Map<string, { kind: keyof typeof KIND_COLOR; pts: Point[] }>();
+  for (let i = lo; i < frames.length && frames[i].timestamp_sim_s <= t; i++) {
+    for (const a of frames[i].mission_state.agents) {
+      const e = byAgent.get(a.agent_id) ?? { kind: a.agent_kind, pts: [] };
+      e.pts.push(a.pose.position);
+      byAgent.set(a.agent_id, e);
+    }
+  }
+  g.lineCap = 'round';
+  g.lineJoin = 'round';
+  for (const { kind, pts } of byAgent.values()) {
+    if (pts.length < 2) continue;
+    const n = pts.length;
+    // Older stretches are fainter: draw the trail in a few segments of rising opacity.
+    const parts = 4;
+    for (let k = 0; k < parts; k++) {
+      const a = Math.floor((k * (n - 1)) / parts);
+      const b = Math.floor(((k + 1) * (n - 1)) / parts);
+      g.strokeStyle = KIND_COLOR[kind];
+      g.globalAlpha = 0.18 + (0.7 * (k + 1)) / parts;
+      g.lineWidth = 1.6 + k * 0.5;
+      g.beginPath();
+      pts.slice(a, b + 1).forEach((p, j) => {
+        const [x, y] = toPx(p);
+        if (j) g.lineTo(x, y);
+        else g.moveTo(x, y);
+      });
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+  }
+}
 
 /**
  * Game-style circular minimap, heading up (turns with the agent), centred on the selected agent: elevation bands,
@@ -21,13 +76,12 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
   const base = useMemo(() => tacticalBase(bundle.rasters, mapVersion), [bundle.rasters, mapVersion]);
-  const baseCanvas = useMemo(() => {
-    const c = document.createElement('canvas');
-    c.width = base.width;
-    c.height = base.height;
-    c.getContext('2d')!.putImageData(new ImageData(base.pixels, base.width, base.height), 0, 0);
-    return c;
-  }, [base]);
+  const baseCanvas = useMemo(() => toCanvas(base), [base]);
+  // Surroundings of the crop (same DTM, coarser), so the map does not look cut near the crop's edge.
+  const ctxCanvas = useMemo(() => {
+    const cb = bundle.context ? tacticalContext(bundle.rasters, bundle.context) : null;
+    return cb ? toCanvas(cb) : null;
+  }, [bundle.context, bundle.rasters]);
   const agent = view.state?.agents.find((a) => a.agent_id === agentId) ?? view.state?.agents[0] ?? null;
 
   useEffect(() => {
@@ -56,12 +110,34 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     g.translate(c, c);
     g.rotate(-hdg);
     g.translate(-c, -c);
-    // Terrain: the full map image placed in metres around the agent.
+    // Surroundings first (dimmer), or a hatch outside the map when the world has none.
     const W = meta.cols * meta.resolution_m;
     const H = meta.rows * meta.resolution_m;
     const [mx, my] = toPx({ x: meta.origin_x_m, y: meta.origin_y_m + H, z: 0 });
+    const cf = bundle.context?.frame;
+    if (ctxCanvas && cf) {
+      const [cx0, cy0] = toPx({ x: cf.origin_x_m, y: cf.origin_y_m + cf.rows * cf.resolution_m, z: 0 });
+      g.imageSmoothingEnabled = true;
+      g.drawImage(ctxCanvas, cx0, cy0, cf.cols * cf.resolution_m * k, cf.rows * cf.resolution_m * k);
+    } else {
+      g.strokeStyle = 'rgba(120,170,230,0.16)';
+      g.lineWidth = 1;
+      for (let d = -SIZE * 2; d < SIZE * 2; d += 7) {
+        g.beginPath();
+        g.moveTo(d, -SIZE);
+        g.lineTo(d + SIZE * 3, SIZE * 2);
+        g.stroke();
+      }
+    }
+    // Terrain: the full map image placed in metres around the agent.
     g.imageSmoothingEnabled = false;
     g.drawImage(baseCanvas, mx, my, W * k, H * k);
+    // Edge of the mission map, so its limit reads as a limit and not as a missing piece.
+    g.strokeStyle = 'rgba(190,225,255,0.55)';
+    g.lineWidth = 1;
+    g.setLineDash([3, 3]);
+    g.strokeRect(mx, my, W * k, H * k);
+    g.setLineDash([]);
     // Range rings every 150 m.
     g.strokeStyle = 'rgba(150,200,255,0.18)';
     for (let r = 150; r < RADIUS_M; r += 150) {
@@ -89,9 +165,23 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     }
     for (const p of bundle.manifest.pois.filter((q) => q.revealed_at_s <= view.t)) {
       const [x, y] = toPx(p.position);
-      g.fillStyle = '#E8F4FF';
-      g.fillRect(x - 2.5, y - 2.5, 5, 5);
+      drawSiteIcon(g, p.kind, x, y, 16, siteKind(p.kind).color);
     }
+    // Trails: where each agent has been in the last minutes (the rover's walk/drive shows behind it).
+    drawTrails(g, bundle.timeline.frames, view.t, toPx);
+    // Real rover stops in range: small amber dots, and the camera badge on the three nearest (display only).
+    const stopsInRange = (bundle.roverStops?.stops ?? [])
+      .map((st) => ({ st, p: toPx({ x: st.x_m, y: st.y_m, z: 0 }) }))
+      .filter(({ p }) => Math.hypot(p[0] - c, p[1] - c) < c - 6);
+    const nearest = new Set(stopsInRange.slice().sort((a, b) => Math.hypot(a.p[0] - c, a.p[1] - c) - Math.hypot(b.p[0] - c, b.p[1] - c)).slice(0, 3).map((s) => s.st.rmc));
+    for (const { st, p } of stopsInRange) {
+      if (nearest.has(st.rmc)) continue;
+      g.fillStyle = 'rgba(240,160,80,0.9)';
+      g.beginPath();
+      g.arc(p[0], p[1], 2.2, 0, Math.PI * 2);
+      g.fill();
+    }
+    for (const { st, p } of stopsInRange) if (nearest.has(st.rmc)) drawSiteIcon(g, 'photo', p[0], p[1], 13, siteKind('photo').color);
     for (const a of view.state?.agents ?? []) {
       if (a.agent_id === agent?.agent_id) continue;
       const [x, y] = toPx(a.pose.position);
@@ -137,7 +227,7 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     g.textBaseline = 'middle';
     g.fillText('N', nx, ny + 0.5);
     g.textBaseline = 'alphabetic';
-  }, [baseCanvas, view, agent, bundle.manifest.pois, meta, SIZE]);
+  }, [baseCanvas, ctxCanvas, bundle.context, view, agent, bundle.manifest.pois, bundle.roverStops, bundle.timeline.frames, meta, SIZE]);
 
   return (
     <div className="minimap" role="img" aria-label="Minimap, heading up (turns with the selected agent), centred on it; N marks north">
