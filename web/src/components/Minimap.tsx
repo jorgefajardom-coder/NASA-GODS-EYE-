@@ -12,6 +12,52 @@ const DEFAULT_SIZE = 168;
 const RADIUS_M = 450;
 const KIND_COLOR = { HUMAN: '#E8F4FF', DRONE: '#65CBE8', ROVER: '#D8AD66' } as const;
 
+/** How far back the trails reach (s of replay time) and how often they are sampled. */
+const TRAIL_S = 240;
+
+/** Fading trail behind every agent: the last TRAIL_S seconds of its recorded positions. Display only. */
+function drawTrails(g: CanvasRenderingContext2D, frames: ReplayBundle['timeline']['frames'], t: number, toPx: (p: Point) => readonly [number, number]): void {
+  // Frames are in time order: find the first one inside the window.
+  let lo = 0;
+  let hi = frames.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (frames[mid].timestamp_sim_s < t - TRAIL_S) lo = mid + 1;
+    else hi = mid;
+  }
+  const byAgent = new Map<string, { kind: keyof typeof KIND_COLOR; pts: Point[] }>();
+  for (let i = lo; i < frames.length && frames[i].timestamp_sim_s <= t; i++) {
+    for (const a of frames[i].mission_state.agents) {
+      const e = byAgent.get(a.agent_id) ?? { kind: a.agent_kind, pts: [] };
+      e.pts.push(a.pose.position);
+      byAgent.set(a.agent_id, e);
+    }
+  }
+  g.lineCap = 'round';
+  g.lineJoin = 'round';
+  for (const { kind, pts } of byAgent.values()) {
+    if (pts.length < 2) continue;
+    const n = pts.length;
+    // Older stretches are fainter: draw the trail in a few segments of rising opacity.
+    const parts = 4;
+    for (let k = 0; k < parts; k++) {
+      const a = Math.floor((k * (n - 1)) / parts);
+      const b = Math.floor(((k + 1) * (n - 1)) / parts);
+      g.strokeStyle = KIND_COLOR[kind];
+      g.globalAlpha = 0.18 + (0.7 * (k + 1)) / parts;
+      g.lineWidth = 1.6 + k * 0.5;
+      g.beginPath();
+      pts.slice(a, b + 1).forEach((p, j) => {
+        const [x, y] = toPx(p);
+        if (j) g.lineTo(x, y);
+        else g.moveTo(x, y);
+      });
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+  }
+}
+
 /**
  * Game-style circular minimap, heading up (turns with the agent), centred on the selected agent: elevation bands,
  * coverage, the route in force, other agents and sites. Display only.
@@ -92,11 +138,21 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
       const [x, y] = toPx(p.position);
       drawSiteIcon(g, p.kind, x, y, 16, siteKind(p.kind).color);
     }
-    // Real rover stops in range: small camera icons (display only).
-    for (const st of bundle.roverStops?.stops ?? []) {
-      const [x, y] = toPx({ x: st.x_m, y: st.y_m, z: 0 });
-      if (Math.hypot(x - c, y - c) < c - 6) drawSiteIcon(g, 'photo', x, y, 11, siteKind('photo').color);
+    // Trails: where each agent has been in the last minutes (the rover's walk/drive shows behind it).
+    drawTrails(g, bundle.timeline.frames, view.t, toPx);
+    // Real rover stops in range: small amber dots, and the camera badge on the three nearest (display only).
+    const stopsInRange = (bundle.roverStops?.stops ?? [])
+      .map((st) => ({ st, p: toPx({ x: st.x_m, y: st.y_m, z: 0 }) }))
+      .filter(({ p }) => Math.hypot(p[0] - c, p[1] - c) < c - 6);
+    const nearest = new Set(stopsInRange.slice().sort((a, b) => Math.hypot(a.p[0] - c, a.p[1] - c) - Math.hypot(b.p[0] - c, b.p[1] - c)).slice(0, 3).map((s) => s.st.rmc));
+    for (const { st, p } of stopsInRange) {
+      if (nearest.has(st.rmc)) continue;
+      g.fillStyle = 'rgba(240,160,80,0.9)';
+      g.beginPath();
+      g.arc(p[0], p[1], 2.2, 0, Math.PI * 2);
+      g.fill();
     }
+    for (const { st, p } of stopsInRange) if (nearest.has(st.rmc)) drawSiteIcon(g, 'photo', p[0], p[1], 13, siteKind('photo').color);
     for (const a of view.state?.agents ?? []) {
       if (a.agent_id === agent?.agent_id) continue;
       const [x, y] = toPx(a.pose.position);
@@ -142,7 +198,7 @@ export function Minimap({ bundle, view, agentId, size = DEFAULT_SIZE }: { bundle
     g.textBaseline = 'middle';
     g.fillText('N', nx, ny + 0.5);
     g.textBaseline = 'alphabetic';
-  }, [baseCanvas, view, agent, bundle.manifest.pois, bundle.roverStops, meta, SIZE]);
+  }, [baseCanvas, view, agent, bundle.manifest.pois, bundle.roverStops, bundle.timeline.frames, meta, SIZE]);
 
   return (
     <div className="minimap" role="img" aria-label="Minimap, heading up (turns with the selected agent), centred on it; N marks north">
