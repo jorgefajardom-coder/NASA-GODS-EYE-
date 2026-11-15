@@ -703,3 +703,19 @@ stays visible in the README, the about page and the link preview
 the team, not with AI; only its black background was removed and it was resized.
 An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
 images uses NASA logos, flags or mission marks or is presented as NASA data.
+
+## Optional auxiliary NASA/USGS terrain layers and HTTP range optimization
+
+Google Antigravity assisted the data and mapping owner with bounded HTTP 206
+keep-alive/block-cache optimizations in `scripts/prepare_jezero_terrain.py` and
+with a standalone auxiliary layer pipeline (`scripts/prepare_jezero_aux_layers.py`,
+`src/mge_data/mge_data/core.py`, `src/mge_data/mge_data/node.py`, and
+`tests/contracts/test_data_manifest.py`). The pipeline keeps `data/sample/terrain.npz`
+and `data/sample/manifest.json` unchanged by default while producing separate,
+cell-aligned auxiliary files (`jezero_aux_layers.npz`, `ctx_ortho.png`,
+`geology.json`, `aux_layers_manifest.json`) derived via GDAL/rasterio and ArcGIS
+REST from the official USGS Mars 2020 TRN MRO/CTX 6 m/px controlled orthomosaic
+and USGS SIM 3464 geologic map. `data/sample/ctx_ortho.png` is a deterministic
+north-up grayscale crop of the observational MRO/CTX orthomosaic, not an
+AI-generated image.
+

@@ -1111,6 +1111,21 @@
       "use": "Read slope screening limits from the proposed science profiles instead of duplicated constants and label the summary as an estimate; refuse --sync-terrain-yml outside data/sample; drop an undocumented duplicate scale tier; add offline tests for parameter validation, slope screening and terrain.yml regeneration. No terrain data, observation, mission result or media was generated."
     },
     {
+      "tool": "Google Antigravity",
+      "kind": "optional_auxiliary_terrain_layers_and_http_range_optimization",
+      "generation": "AI-assisted ingestion script, optional ROS/RViz auxiliary layer loader/publisher and contract tests requested by the repository owner",
+      "paths": [
+        "scripts/prepare_jezero_terrain.py",
+        "scripts/prepare_jezero_aux_layers.py",
+        "src/mge_data/mge_data/core.py",
+        "src/mge_data/mge_data/node.py",
+        "tests/contracts/test_data_manifest.py",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Optimize bounded HTTP 206 range reads in prepare_jezero_terrain.py with keep-alive, shared block cache and coalesced prefetch; add standalone prepare_jezero_aux_layers.py and optional non-breaking loader/RViz publisher in mge_data for cell-aligned MRO/CTX 6 m/px orthomosaic reflectance, USGS SIM 3464 geologic units and orbital surface-facies/slope zones alongside height without modifying terrain.npz or manifest.json. Raster and vector outputs in data/sample/ are deterministic crops of official NASA/USGS products, not AI-generated data or imagery."
+    },
+    {
       "tool": "Claude (Anthropic) through Claude Code",
       "kind": "code_tests_and_configuration",
       "generation": "AI-assisted generation",
