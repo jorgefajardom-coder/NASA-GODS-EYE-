@@ -306,7 +306,10 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
       for (let i = 0; i < y.length; i++) delay[i] = zoneDelay((y[i] - lo) / span, arr[i * 3], arr[i * 3 + 2]);
       rest.current = { y, color: col.slice(), delay };
     }
-    if (!prev || prev.length !== arr.length) {
+    // During the opening growth the growth itself shapes the new geometry: a morph queued now
+    // (e.g. the orbital image loading mid-growth rebuilds the mesh) would replay the rise once
+    // the growth ends, so the terrain would appear to form twice.
+    if (!prev || prev.length !== arr.length || growthClock.active || growing.current) {
       morph.current = null;
       return;
     }
@@ -351,6 +354,7 @@ export function TerrainView({ meta, rasters, layer, mapVersion, verticalExaggera
     geometry.computeVertexNormals();
     geometry.computeBoundingSphere();
     growing.current = growthClock.active;
+    if (!growing.current) morph.current = null; // the growth has set the true heights: nothing left to morph
   });
   useFrame((_, dt) => {
     const m = morph.current;
