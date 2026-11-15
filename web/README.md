@@ -8,9 +8,8 @@ terrain, with a saved-run replay that needs no ROS, Gazebo or network.
 ## Status
 
 **REPLAY mode only**. The live link is shown as offline: the gateway
-is not connected to the viewer. For now the viewer opens the simulated `demo`;
-`recorded-recovery-001` (MOCK recorder package) opens when selected
-(see the Run selector below).
+is not connected to the viewer. The viewer opens the simulated `demo`, the only
+entry offered; MOCK packages are no longer offered (see the Run selector below).
 
 | Part | What it is |
 |---|---|
@@ -178,7 +177,7 @@ the reference is not available.
 
 The **Run** selector under the title (or `?run=<id>`) opens another saved run:
 
-The run selector offers the simulated `demo` (default for now) and `recorded-recovery-001`, which opens when selected (`OFFERED_RUNS` in `src/data/replayAdapter.ts`). `mock-vertical-001` stays loadable with `?run=mock-vertical-001` for tests and review.
+The run selector offers only the simulated `demo` (`OFFERED_RUNS` in `src/data/replayAdapter.ts`): MOCK runs are not used in the viewer. The MOCK packages below stay in the repository for the team's contract and consumer tests and remain loadable with `?run=<id>` for review.
 
 | Run | Source |
 |---|---|

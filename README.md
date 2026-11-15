@@ -165,8 +165,8 @@ flowchart LR
 
 - REPLAY mode only. The status block shows `REPLAY · <source_mode>` (`MOCK`,
   `SIMULATION` or `UNKNOWN`); a package that claims `LIVE` is refused.
-- Default entry for now: the simulated `demo` on the 2 km CTX crop. The run selector
-  also offers `recorded-recovery-001`, which opens when selected: an unchanged recorder package
+- Default and only offered entry: the simulated `demo` on the 2 km CTX crop (no MOCK
+  runs in the viewer). `recorded-recovery-001` stays loadable with `?run=`: an unchanged recorder package
   on Daniel's 128 m Jezero crop (32×32 computational cells at 4 m; CTX source
   spacing 20 m). Real data/mapping/planner providers are paired with MOCK mission
   and kinematic execution. The human stops, replans, resumes and returns; rover
