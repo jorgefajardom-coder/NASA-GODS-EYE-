@@ -51,3 +51,23 @@ describe('Perseverance raw images feed', () => {
     expect(pickRawImages(imgs, 3).map((i) => i.id)).toEqual(['NAV', 'MCZ', 'RMI']);
   });
 });
+
+import { imagesAtStop, rawFeedUrlForSol } from '../src/lib/perseveranceRaw';
+
+describe('images of one rover stop', () => {
+  it('asks the feed for a single sol', () => {
+    const u = rawFeedUrlForSol(13);
+    expect(u).toContain('condition_2=13:sol:gte');
+    expect(u).toContain('condition_3=13:sol:lte');
+  });
+
+  it('keeps only the images taken at the same site and drive', () => {
+    const e = (id: string, site: number, drive: string) => ({
+      imageid: id, sol: 13, site, drive, link: 'https://mars.nasa.gov/p', camera: { instrument: 'NAVCAM_LEFT' },
+      image_files: { small: 'https://mars.nasa.gov/s.jpg', medium: 'https://mars.nasa.gov/m.jpg' },
+    });
+    const imgs = parseRawImages({ images: [e('a', 3, '0'), e('b', 3, '110'), e('c', 4, '0')] });
+    expect(imagesAtStop(imgs, 3, 0).map((i) => i.id)).toEqual(['a']);
+    expect(imagesAtStop(imgs, 9, 9)).toEqual([]);
+  });
+});

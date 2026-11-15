@@ -18,6 +18,8 @@ import {
 import { MissionScene } from './components/MissionScene';
 import { FlatMap } from './components/FlatMap';
 import { DroneCamFrame } from './components/DroneCam';
+import { MarsNowFrame } from './components/MarsNow';
+import { stopUnderAgent } from './lib/roverStops';
 import { resourceAlert } from './lib/resourceAlert';
 import { SCAN_CONFIG } from './scanner/ScanConfig';
 import { triggerScan } from './scanner/ScanController';
@@ -113,6 +115,8 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const [firstPerson, setFirstPerson] = useState(false);
   /** Drone camera window: on by default with a full GPU (it renders the scene a second time). */
   const [droneCam, setDroneCam] = useState(RENDER_TIER === 'full');
+  /** "Mars now" window (M) with the latest real Perseverance image. First person only. */
+  const [marsNow, setMarsNow] = useState(false);
   /** Astronaut helmet lights (L), display only. */
   const [helmetLight, setHelmetLight] = useState(false);
   /** Artificial light (I), on by default: terrain lit as by day; off shows the real light at the site's hour. */
@@ -218,6 +222,16 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
   const canDroneCam = !!drone && RENDER_TIER !== 'map2d' && pov && camView !== drone.agent_id;
   const showDroneCam = droneCam && canDroneCam;
   const povAgent = pov ? view.state?.agents.find((a) => a.agent_id === camView) ?? null : null;
+  // The real Perseverance stop the first-person agent is standing on, if any: its images open by themselves.
+  const roverStops = bundle.roverStops?.stops ?? [];
+  const povStop = povAgent ? stopUnderAgent(roverStops, povAgent.pose.position.x, povAgent.pose.position.y, povAgent.mode) : null;
+  const povStopId = povStop?.rmc ?? null;
+  const [closedStop, setClosedStop] = useState<string | null>(null);
+  useEffect(() => {
+    if (!povStopId) setClosedStop(null); // left the stop: the next arrival opens it again
+    else if (povStopId !== closedStop) setMarsNow(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [povStopId]);
   const povAlert = povAgent ? resourceAlert(resourceLines(bundle, t, povAgent, view.activeRoute, budgets[povAgent.agent_id]), budgets[povAgent.agent_id], view.activeRoute, povAgent.agent_id, povAgent.pose.position) : null;
   // While following, picking another agent in the list moves the camera to it.
   useEffect(() => {
@@ -281,6 +295,7 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
       else if (e.code === 'KeyB' && pov) setPovSway(!povSway);
       else if (e.code === 'KeyC') setDroneCam((c) => !c);
       else if (e.code === 'KeyL') setHelmetLight((v) => !v);
+      else if (e.code === 'KeyM' && pov) setMarsNow((v) => !v);
       else if (e.code === 'KeyI') setArtificialLight((v) => !v);
       else if (e.code === 'KeyQ') rotateView(-ROTATE_STEP_RAD);
       else if (e.code === 'KeyE') rotateView(ROTATE_STEP_RAD);
@@ -388,6 +403,10 @@ function Viewer({ bundle }: { bundle: ReplayBundle }) {
           alert={povAlert}
           droneCam={showDroneCam && drone ? <DroneCamFrame droneId={drone.agent_id} onClose={() => setDroneCam(false)} bundle={bundle} view={view} /> : null}
           droneCamOn={showDroneCam}
+          marsNow={marsNow ? <MarsNowFrame stop={povStop} onClose={() => { setMarsNow(false); setClosedStop(povStopId); }} /> : null}
+          stops={roverStops}
+          marsNowOn={marsNow}
+          onMarsNow={() => setMarsNow((v) => !v)}
           canDroneCam={canDroneCam}
           onDroneCam={() => setDroneCam((v) => !v)}
           helmetLight={helmetLight}

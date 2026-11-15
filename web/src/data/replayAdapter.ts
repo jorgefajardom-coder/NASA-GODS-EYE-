@@ -2,7 +2,7 @@ import { WEB_SCHEMA_VERSION } from '../types/icd';
 import type { RouteDecision } from '../types/icd';
 import type { GeologyData } from '../lib/geology';
 import { parseAtmosphere } from '../lib/atmos';
-import type { ContextTerrainData, RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline } from '../types/replay';
+import type { ContextTerrainData, RasterSet, ReplayBundle, ReplayManifest, ReplayRoutes, ReplayTimeline, RoverStops } from '../types/replay';
 import { normalizeEvents } from '../lib/replay';
 import { resolveSourceMode } from '../lib/provenance';
 import { contextMatchesRun, geologyMatchesRun } from '../lib/terrainPresentation';
@@ -147,6 +147,15 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
       if (contextMatchesRun(ctx, manifest)) bundle.context = ctx;
     } catch {
       /* the crop is drawn alone */
+    }
+  }
+  if (manifest.rover_stops) {
+    // Optional markers of real rover stops: the run still opens without them.
+    try {
+      const stops = await getJson<RoverStops>(assetUrl(`${dir}/${manifest.rover_stops.file}`));
+      if (Array.isArray(stops.stops) && stops.stops.length > 0) bundle.roverStops = stops;
+    } catch {
+      /* no stop markers */
     }
   }
   return bundle;

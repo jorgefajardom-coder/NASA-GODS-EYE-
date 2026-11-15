@@ -68,6 +68,8 @@ export interface ReplayManifest {
   atmosphere?: { file: string };
   /** Surroundings of the crop from the same DTM, coarser (scripts/extract-ctx-context.mjs). Context only. */
   context?: { file: string; image?: string };
+  /** Real Perseverance stops inside the crop (scripts/extract-rover-waypoints.mjs): position and identifiers only. */
+  rover_stops?: { file: string };
   vertical_exaggeration_default: number;
   control_points: ControlPoint[];
   pois: PointOfInterest[];
@@ -121,6 +123,29 @@ export interface ReplayBundle {
   atmosphere?: AtmosphereData;
   /** Present when the manifest declares a context terrain and it loaded. */
   context?: ContextTerrainData;
+  /** Present when the manifest declares rover stops and they loaded. */
+  roverStops?: RoverStops;
+}
+
+/** A real Perseverance stop (NASA MMGIS waypoint) in the run's local ENU frame. `rmc` is `<site>_<drive>`. */
+export interface RoverStop {
+  rmc: string;
+  site: number;
+  drive: number;
+  sol: number;
+  lat_deg: number;
+  lon_deg: number;
+  x_m: number;
+  y_m: number;
+  z_m: number;
+}
+
+export interface RoverStops {
+  note: string;
+  source: { title: string; url: string; credit: string; retrieved?: string };
+  base_stop: string | null;
+  goal_stop: string | null;
+  stops: RoverStop[];
 }
 
 /** Context terrain around the crop: local ENU heights (row 0 = south, null = NoData). */

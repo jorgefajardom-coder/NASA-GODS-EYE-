@@ -1,6 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import type { AgentState, RouteDecision } from '../types/icd';
-import type { PointOfInterest } from '../types/replay';
+import type { PointOfInterest, RoverStop } from '../types/replay';
 import { AGENT_NAME } from '../lib/management';
 import { angleDiffDeg, bearingDeg } from '../lib/scan';
 import { povState } from './FirstPersonCamera';
@@ -9,6 +9,7 @@ import type { ResourceAlert } from '../lib/resourceAlert';
 import { TerrainScanButton } from './TerrainScanButton';
 import { SiteIcon } from './SiteIcon';
 import { siteKind } from '../lib/siteKinds';
+import { stopsNear } from '../lib/roverStops';
 
 /** Visible width of the compass tape (deg either side of the heading). */
 const TAPE_HALF_DEG = 60;
@@ -31,6 +32,12 @@ interface Props {
   /** Drone camera window (DroneCamFrame) shown in the bottom dock, or null. */
   droneCam: ReactNode;
   droneCamOn: boolean;
+  /** Real Perseverance stops of the run area; the nearest ones appear on the compass. */
+  stops: RoverStop[];
+  /** "Mars now" window with the latest real Perseverance image (M), or null; marsNowOn is its key state. */
+  marsNow: ReactNode;
+  marsNowOn: boolean;
+  onMarsNow: () => void;
   canDroneCam: boolean;
   onDroneCam: () => void;
   /** Astronaut helmet lights (L). */
@@ -50,13 +57,16 @@ interface Props {
  * and site bearings, the shared agent dial (resources live in its menu), and the drone-camera scan control and readout. Every
  * value comes from the replay or from lib/scan; nothing here is a live measurement.
  */
-export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, droneCam, droneCamOn, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, artificialLight, onArtificialLight, sway, onSway }: Props) {
+export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, droneCam, droneCamOn, stops, marsNow, marsNowOn, onMarsNow, canDroneCam, onDroneCam, helmetLight, canHelmetLight, onHelmetLight, artificialLight, onArtificialLight, sway, onSway }: Props) {
   const tape = useRef<HTMLDivElement>(null);
   const readout = useRef<HTMLSpanElement>(null);
   const pitch = useRef<HTMLSpanElement>(null);
   const marks = useRef<HTMLDivElement>(null);
   const pos = agent.pose.position;
-  const sites = pois.map((p) => ({ id: p.id, label: p.label, kind: p.kind, bearing: bearingDeg(pos.x, pos.y, p.position.x, p.position.y), dist: Math.hypot(p.position.x - pos.x, p.position.y - pos.y) }));
+  const poiSites = pois.map((p) => ({ id: p.id, label: p.label, kind: p.kind, bearing: bearingDeg(pos.x, pos.y, p.position.x, p.position.y), dist: Math.hypot(p.position.x - pos.x, p.position.y - pos.y) }));
+  // The three nearest real rover stops within 400 m, with the same camera icon as in 3D.
+  const stopSites = stopsNear(stops, pos.x, pos.y, 400).slice(0, 3).map(({ stop, distM }) => ({ id: stop.rmc, label: `Sol ${stop.sol}`, kind: 'photo', bearing: bearingDeg(pos.x, pos.y, stop.x_m, stop.y_m), dist: distM }));
+  const sites = [...poiSites, ...stopSites];
   const base = sites.find((x) => x.kind === 'base') ?? null;
   const sitesRef = useRef(sites);
   sitesRef.current = sites;
@@ -156,6 +166,9 @@ export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, 
             <button type="button" className="pov__key" aria-pressed={droneCamOn} onClick={onDroneCam} disabled={!canDroneCam} title={canDroneCam ? 'Drone camera window (C)' : 'No drone camera here'}>
               <kbd>C</kbd> Drone cam
             </button>
+            <button type="button" className="pov__key" aria-pressed={marsNowOn} onClick={onMarsNow} title="Latest real Perseverance image beside the simulated view (M)">
+              <kbd>M</kbd> Mars now
+            </button>
             <button type="button" className="pov__key" aria-pressed={helmetLight} onClick={onHelmetLight} disabled={!canHelmetLight} title={canHelmetLight ? "Astronaut's helmet lights (L)" : 'No astronaut in this run'}>
               <kbd>L</kbd> Lights {helmetLight ? 'on' : 'off'}
             </button>
@@ -175,8 +188,8 @@ export function FirstPersonHud({ agent, sourceLabel, pois, onExit, dial, alert, 
             <span>Double-click · recentre</span>
           </div>
         </div>
-        {/* Right column kept empty so the keys stay centred. */}
-        <div className="pov__dock-scan" />
+        {/* Right column: the Mars now window; empty otherwise so the keys stay centred. */}
+        <div className="pov__dock-scan">{marsNow}</div>
       </div>
 
       {/* Power-on sequence: the screen opens like a display switching on, then a short boot log. */}

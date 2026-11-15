@@ -12,6 +12,8 @@ export interface RawImage {
   id: string;
   sol: number;
   site: number | null;
+  /** Drive counter within the site; with `site` it is the rover stop (RMC `<site>_<drive>`). */
+  drive: number | null;
   instrument: string;
   takenUtc: string;
   credit: string;
@@ -25,6 +27,16 @@ export interface RawImage {
 
 export function rawFeedUrl(num: number): string {
   return `${RAW_FEED_URL}&num=${num}&page=0&order=sol+desc`;
+}
+
+/** Raw images of one sol (the feed filters by sol range), oldest first so a stop's images keep their order. */
+export function rawFeedUrlForSol(sol: number, num = 300): string {
+  return `${RAW_FEED_URL}&num=${num}&page=0&order=sol+asc&condition_1=M20:mission&condition_2=${sol}:sol:gte&condition_3=${sol}:sol:lte`;
+}
+
+/** Images taken at one rover stop: same site and drive. */
+export function imagesAtStop(images: RawImage[], site: number, drive: number): RawImage[] {
+  return images.filter((i) => i.site === site && i.drive === drive);
 }
 
 const NASA_HOST = /^https:\/\/mars\.nasa\.gov\//;
@@ -50,6 +62,7 @@ export function parseRawImages(json: unknown): RawImage[] {
       id,
       sol,
       site: typeof raw.site === 'number' ? raw.site : null,
+      drive: raw.drive != null && Number.isFinite(Number(raw.drive)) ? Number(raw.drive) : null,
       instrument: str(cam.instrument) ?? 'UNKNOWN',
       takenUtc: str(raw.date_taken_utc) ?? '',
       credit: str(raw.credit) ?? 'NASA/JPL-Caltech',

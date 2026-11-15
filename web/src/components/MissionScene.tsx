@@ -28,6 +28,7 @@ import { DETAIL_FAR_M, DETAIL_FAR_POV_M, TerrainView } from './TerrainView';
 import { RouteOverlay } from './RouteOverlay';
 import { AgentLayer } from './AgentLayer';
 import { SiteMarkers } from './SiteMarkers';
+import { RoverStopMarkers } from './RoverStopMarkers';
 import { BaseModel, CLUSTER_OFFSET } from './BaseModel';
 import { ContextTerrain } from './ContextTerrain';
 
@@ -187,6 +188,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
           t={view.t}
           verticalExaggeration={exaggeration}
         />
+      )}
+      {grown && bundle.roverStops && (
+        <RoverStopMarkers stops={bundle.roverStops.stops} agent={(view.state?.agents ?? []).find((a) => a.agent_id === selectedAgentId) ?? null} verticalExaggeration={exaggeration} />
       )}
       {grown && (
       <AgentLayer

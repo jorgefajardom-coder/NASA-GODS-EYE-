@@ -81,6 +81,10 @@ export function FlatMap({ bundle, view, selectedAgentId, reason }: { bundle: Rep
       path(view.activeRoute.return_path, 'rgba(159,227,255,0.6)', 2, [6, 4]);
     }
 
+    for (const st of bundle.roverStops?.stops ?? []) {
+      const [x, y] = toPx({ x: st.x_m, y: st.y_m, z: 0 });
+      drawSiteIcon(g, 'photo', x, y, 10, siteKind('photo').color);
+    }
     g.font = '600 12px "Barlow Condensed", sans-serif';
     g.textBaseline = 'middle';
     for (const p of bundle.manifest.pois.filter((q) => q.revealed_at_s <= view.t)) {
@@ -112,7 +116,7 @@ export function FlatMap({ bundle, view, selectedAgentId, reason }: { bundle: Rep
     const barM = 500;
     g.fillRect(ox + 12, oy + H * k - 18, barM * k, 3);
     g.fillText(`${barM} m`, ox + 12, oy + H * k - 30);
-  }, [baseCanvas, view, bundle.manifest.pois, meta, size, selectedAgentId]);
+  }, [baseCanvas, view, bundle.manifest.pois, bundle.roverStops, meta, size, selectedAgentId]);
 
   const why = reason === 'failed' ? 'the 3D view could not start' : 'WebGL is not available in this browser';
   return (
