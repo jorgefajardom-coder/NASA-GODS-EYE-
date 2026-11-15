@@ -38,7 +38,8 @@ rover and parked drone remain idle. It ends READY, not scientific COMPLETE.
 The 3D scene consumes saved files. An optional read-only gateway panel can show a running stack; it sends no goals and does not drive the scene.
 [Source locks, validation and limitations](evidence/height-reconciliation-20261115/README.md)
 accompany this exact package. The historical recording remains unchanged.
-[Scientific foundations and analytical pilot results](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki).
+[Scientific foundations](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki) and
+[paired fixed/adaptive planning results](#scientific-question-and-analytical-evidence).
 How each challenge requirement is addressed: [project page draft](docs/project_page.md).
 
 **NASA data in the project.**
@@ -81,6 +82,89 @@ and [NASA traceability](docs/nasa_traceability.md).
   in [docs/AI_USAGE.md](docs/AI_USAGE.md).
 
 Evidence for the featured recording: [source, test and browser record](evidence/audit-reconciliation-20261115/runtime-v1/README.md).
+
+## Scientific question and analytical evidence
+
+When does information acquired after departure justify changing a route or its
+scientific work, while retaining the resources needed to return? Mars Gods Eye
+studies this question through an inspectable chain: orbital terrain estimates,
+declared activity and slope costs, route/work decisions, and resource ledgers.
+The [scientific Wiki](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki)
+develops the geological motivation, models and experimental reasoning.
+
+The terrain experiments use public CTX query windows around Bright Angel–Neretva,
+Hawksbill–Hogwallow and Bunsen Peak. Each 2.5D map assigns one elevation to each
+horizontal cell. The 4 m computational grid resamples a native 20 m terrain
+product; its extra cells provide computational sampling rather than new measured
+detail. Slope enters the resource and access models, while soil, friction and
+slip are not inferred from the DEM. [Terrain provenance and scale](docs/wiki/03-Terrain-and-Scale.md)
+identify the sources, processing and limits of the candidate query areas.
+
+The [resource models](docs/wiki/05-Resource-Models.md) distinguish human metabolic
+energy from robot electrical energy, with oxygen consumption only for humans.
+Movement, stationary work and waiting are charged once; directed return and
+reserves are checked separately. Each proposed coefficient has a unit, source or
+assumption, sensitivity range and approval state in the
+[profile registry](config/science_profiles.proposed.json). This makes the
+calculation reproducible while keeping coefficient approval and production cost
+agreement explicit.
+
+### Fixed itineraries and adaptation
+
+The published study contains 660 scenario instances and six separate
+uncertainty/step controls. Within each agent/mode pair, fixed and always-replanning
+policies share the initial planning outcome. When execution starts, they share
+the candidate, resources, private simulated world and paid observation at one
+reached checkpoint. Human/rover and FAST/SAFE conditions are repeated within that
+scenario. Analytical completion requires primary work,
+directed return and explicit compliance with resources/reserves; unavailable
+initial plans and UNKNOWN remain in the denominator. Additional work is a newly
+announced inspection at B.
+
+An archived experimental scientific-cost consumer exercises the pinned published
+planner. Research copies use a 3 m uncertainty cap and a grade-consistent step
+projection; the separate controls retain a 1 m cap or the published 0.20 m step.
+The [configuration and control records](evidence/rigid-adaptive-study-20261115/README.md)
+identify these experimental choices.
+
+| Separate experiment | Scenario blocks | Paired conditions | Fixed → adaptive completion | Difference in percentage points, nominal 95% interval | Additional inspections |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| [Broad, 256/512 m](evidence/rigid-adaptive-study-20261115/main/analysis/summary.json) | 360 | 1,440 | 60.76% → 59.38% | −1.39 [−1.94, −0.83] | 317 |
+| [Corridor-conditioned, 256/512 m](evidence/rigid-adaptive-study-20261115/directed/analysis/summary.json) | 120 | 480 | 37.71% → 44.58% | +6.88 [+4.38, +9.58] | 92 |
+| [Larger windows, 1,024 m](evidence/rigid-adaptive-study-20261115/extended-1024/analysis/summary.json) | 180 | 720 | 32.36% → 29.31% | −3.06 [−4.31, −1.94] | 82 |
+
+The broad worlds are specified independently of initial planning outcomes.
+Corridor-conditioned cases deliberately make some perturbations relevant to an
+initial route and reuse some main-batch seeded inputs. The panels therefore have
+separate denominators and are not pooled. Intervals use 10,000 stratified
+paired-scenario bootstrap resamples, keeping all dependent agent/mode conditions
+together. They describe empirical resampling sensitivity within this design;
+shared-worker wall-time limits also make outcomes depend on host scheduling.
+
+### What the comparison teaches
+
+Among 858 resolved posterior routes in the broad study, 612 retained their
+horizontal path and 246 changed it. Additional inspections occurred in 259 of
+the retained-path cases: adaptation can change useful work without changing the
+route. The corridor-conditioned results show how a detour can preserve primary
+work and return when an observed obstruction affects the initial corridor.
+
+The broad comparison also exposes a computational tradeoff. All 20 fixed-only
+completions occurred in SAFE conditions whose adaptive primary queries reached
+the search limit. In a [separate serial diagnostic](evidence/rigid-adaptive-study-20261115/quiet-serial/summary.json),
+12 of those queries became FEASIBLE and eight remained UNKNOWN at the same 8 s
+limit; the original outcomes were preserved. The 1,024 m panel uses a separate
+20 s limit and larger physical A/B separations under the same sector allocations,
+so it changes mission difficulty as well as search space.
+
+These are SIMULATED analytical outcomes with idealized local observations and
+declared hypothetical terrain departures. They concern policy responses and
+additional inspection, with calibrated sensing, new spatial-target discovery and
+integrated three-agent execution left to their own evidence requirements.
+The [full study](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki/10-Adaptive-Planning-Study)
+and [reproducibility archive](evidence/rigid-adaptive-study-20261115/README.md)
+provide the frozen source SHA, seeds, assumptions, original catalogues, exact
+result tables and independent cost/coordinate audits.
 
 ## Project status for the team
 
