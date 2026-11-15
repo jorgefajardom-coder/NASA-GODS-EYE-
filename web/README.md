@@ -248,7 +248,7 @@ Replay fixture layout (`public/replay/<run_id>/`, demo run `demo-sim-002`, `mode
 
 ## Acceptance tests
 
-Automated suite run on 2026-11-15 00:11 (`npm test`, branch `feat/ux` at `2cd69c4`): 42 files passed (42); 252 tests passed, 1 skipped (253). Build not run in this sync.
+Automated suite run on 2026-11-15 (`npm test`, branch `feat/ux` after the rover photo tour): 42 files passed (42); 256 tests passed, 1 skipped (257). Build not run in this sync.
 
 | Test | Status |
 |---|---|
