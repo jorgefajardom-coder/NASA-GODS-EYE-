@@ -1,5 +1,38 @@
 # Required AI-use declaration
 
+## Local per-agent campaign and EVA proposal
+
+OpenAI Codex assisted primary-source research, per-patch analytical workloads,
+phase-by-phase duration/resource calculations, sensitivity diagnostics and a
+standalone reproducer for separate rover, human EVA and drone episodes. The
+proposal, source register, derived data and validation artifacts are listed in
+ai_usage.json. No runtime configuration, profile, owner implementation or
+approved receipt is changed; all new work remains local without publication.
+
+NASA/JPL publications provide cited hardware facts and terrestrial/lunar analog
+context. Distances, ascents, station counts, phase allocations, waits and new
+budgets are explicitly generated engineering proposals, not mapped routes,
+NASA prescriptions, physical capacities, observations or executed science.
+Adverse rejections and unestimated drone sleep/thermal/charging demand remain
+visible. No recharge, new mock, terrain, media, scientific approval or execution
+evidence is generated. Prior declarations and media metadata are preserved.
+
+## Local scientific patch survey
+
+OpenAI Codex assisted the primary-source literature search, interpretation of
+the owner's supplied report, 17-sector candidate catalogues, proposed map
+requests to Daniel, scale/resource calculations and their standalone reproducer,
+source/validation records and mission-owned scientific documentation. Affected
+paths are listed in ai_usage.json. The survey remains local during the owner's
+separate reconciliation audit, without commits, pushes or merges.
+
+Published NASA/USGS/instrument-team observations and historical waypoint values
+are cited or copied with provenance. Candidate selection, geographic query
+envelopes and model costs are generated research proposals/diagnostics, not new
+NASA terrain, mineral detections, physical measurements or mission results.
+No raster or evaluator array is generated, read into this research from the
+private reference directory, or promoted to planning input. No media, new mock,
+discovery/task producer, scientific approval or runtime change is supplied.
 ## Delivery conclusions and owner-confirmed freeze
 
 OpenAI Codex assisted comparing the owner's five-page delivery PDF with the
@@ -733,3 +766,10 @@ stays visible in the README, the about page and the link preview
 the team, not with AI; only its black background was removed and it was resized.
 An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
 images uses NASA logos, flags or mission marks or is presented as NASA data.
+
+## Proposal publication after reconciliation
+
+OpenAI Codex assisted publication of the local scientific patch/campaign proposal,
+reconciliation of both AI registers with main9198b3d and fresh software checks.
+All prior disclosures/media metadata are retained; approvals remain unchanged.
+Evidence: evidence/mission-proposal-publication-20261115.

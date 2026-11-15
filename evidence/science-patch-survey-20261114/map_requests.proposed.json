@@ -1,0 +1,453 @@
+{
+  "schema_version": "1.0.0",
+  "status": "PROPOSED_NOT_READY",
+  "recorded_at_utc": "2026-11-15T01:53:51.047316+00:00",
+  "classification": "GEOGRAPHIC_DATA_IMPORT_REQUESTS_ONLY",
+  "coordinate_role": "search centers, not mission A/B or discovered POIs",
+  "source_waypoint_snapshot": {
+    "url": "https://mars.nasa.gov/mmgis-maps/M20/Layers/json/M20_waypoints.json",
+    "local_snapshot_sha256": "bd143ee69241229926abd373e6305b8bbb326d6b5a7b4a8d6935262696f93dc4",
+    "feature_collection_name": "M20_waypoints_sol2022_all",
+    "total_features": 708,
+    "top_level_crs_as_published": null,
+    "coordinate_interpretation": "Preserve the feed's lon, lat and elev_geoid values. Full CRS, latitude convention, vertical datum and registration are not supplied here and require confirmation.",
+    "geographic_role": "Published historical rover localization, not a registered science target, current agent pose or operational A/B"
+  },
+  "selected_anchor_file": "waypoint_anchors.selected.json",
+  "sources": {
+    "NATURE2025": {
+      "url": "https://www.nature.com/articles/s41586-025-09413-0",
+      "title": "Redox-driven mineral and organic associations in Jezero Crater, Mars",
+      "locator": "Fig1b, Fig2 captions",
+      "verified_fact": "Walhalla Glades panorama is sol1178; Beaver Falls workspace mosaic is sol1217. Fig1b places Beaver Falls approximately110m upslope and Grapevine Canyon approximately50m downslope of the panorama site."
+    },
+    "STACK2024": {
+      "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2023JE008187",
+      "title": "Sedimentology and Stratigraphy of the Shenandoah Formation, Western Fan, Jezero Crater, Mars",
+      "locator": "Fig5 caption",
+      "verified_fact": "The published radar traverse at Hawksbill Gap covers sols535-538 and mapped formation contacts."
+    },
+    "NASA_SAMPLE24": {
+      "url": "https://science.nasa.gov/mission/mars-2020-perseverance/mars-rock-samples/",
+      "locator": "Comet Geyser, sample24",
+      "verified_fact": "NASA identifies Bunsen Peak, silica-cemented carbonate and sealing on sol1088, 2024-03-12. This does not publish the exact core coordinates in the catalog."
+    },
+    "USGS_SIM3464": {
+      "url": "https://doi.org/10.3133/sim3464",
+      "locator": "Geologic map and GIS products",
+      "role": "Requested contextual geology; contacts require explicit registration and source-scale limitations"
+    }
+  },
+  "query_envelope_method": {
+    "type": "Approximate square local equirectangular envelope",
+    "proposed_mars_sphere_radius_m": 3396190.0,
+    "formula": "half=side_m/2; dlat_deg=degrees(half/R); dlon_deg=degrees(half/(R*cos(latitude))); bbox=(lon-dlon,lat-dlat,lon+dlon,lat+dlat)",
+    "latitude_datum_registration_checked": false,
+    "limitation": "Uses published latitude numerically. Daniel must confirm the actual coordinate convention/CRS and reproject real source/crop bounds. No envelope is an already verified crop."
+  },
+  "requested_public_delivery": {
+    "DTM": "Co-registered CTX20m native DTM;4m is computational sampling only, not new detail",
+    "imagery": "Co-registered controlled CTX6m orthomosaic with source product ID and footprint",
+    "layers": [
+      "Explicit NoData/valid mask",
+      "Public initial observed mask without fabricated observations",
+      "Sigma with its source/assumption and sensitivity",
+      "Per-kind traversability retaining canonical unknown/forbidden distinctions"
+    ],
+    "science_context": [
+      "SIM3464 GIS units and contacts with registration residuals and source-scale limitations",
+      "CRISM qualitative mineral evidence only where actual product footprint/resolution/interpretation support it; otherwise explicitly unavailable"
+    ],
+    "registration": "At least3 noncollinear source tie-points/controls, method and residuals; distinguish transform self-consistency from independent registration",
+    "provenance": [
+      "Full source and target horizontal CRS and latitude/longitude convention",
+      "Vertical datum and any conversion",
+      "Actual source/target footprints and NoData fraction",
+      "Native and computational resolutions separately",
+      "Source product IDs, URLs, licenses/terms and processing versions",
+      "Separate SHA256 for downloaded source bytes and processed artifacts",
+      "Public/evaluator partition and configuration hashes"
+    ],
+    "missing_values": "Must remain unknown/NOT_READY rather than filled with made-up elevations, uncertainty, minerals or observations"
+  },
+  "constraints": [
+    "No new crop exists yet. These requests download no raster and authorize no execution.",
+    "Do not silently snap or move a selected search center. Reject/report missing coverage or propose a separately reviewed alternative.",
+    "HiRISE evaluator arrays stay private and outside public terrain, planner and ordinary web delivery; no evaluator reference is loaded by this proposal.",
+    "Larger context does not increase budgets, mobility or sensor coverage. Existing A/B, service, resources, reserves, profiles and approval gates remain unchanged.",
+    "Do not infer soil mechanics, friction, slip, exact mineralogy or biological origin from DEM or ordinary image appearance.",
+    "A public historical rover position is neither a current mission observation nor evidence of task completion or a new discovery."
+  ],
+  "requests": [
+    {
+      "request_id": "MAP-JZ-BA-01",
+      "candidate_id": "JZ-ROI-01",
+      "priority_order": 1,
+      "name": "Bright Angel - Beaver Falls / Neretva Vallis",
+      "status": "PROPOSED_NOT_READY",
+      "role": "GEOGRAPHIC_IMPORT_SEARCH_QUERY_NOT_OPERATIONAL_A_OR_B",
+      "primary_science_source_id": "NATURE2025",
+      "anchor_ids": [
+        "M20-S1177-RMC54_0",
+        "M20-S1210-RMC56_0"
+      ],
+      "query_center": {
+        "latitude_as_published_deg": 18.496798465,
+        "longitude_east_as_published_deg": 77.3045133,
+        "method": "Arithmetic midpoint of the two selected nearby end-of-drive anchors; an engineering search center, not Walhalla Glades, Cheyava Falls or a mission goal.",
+        "source_elevation_used": false,
+        "reported_digits_are_positional_accuracy": false,
+        "exact_science_target_coordinates": null,
+        "georegistration_verified": false
+      },
+      "anchor_uncertain": true,
+      "association_warning": "Sol1178/1217 science-image positions are absent from the waypoint feed. Sol1177/1210 endpoints do not establish the rover pose on those later sols.",
+      "anchor_pair_separation": {
+        "approximate_east_difference_m": 76.17825723466913,
+        "approximate_north_difference_m": 81.32192126706111,
+        "approximate_planar_separation_m": 111.428819224999,
+        "interpretation": "Spherical local approximation of endpoint separation only; not driven distance or a bound on intervening motion"
+      },
+      "context_import_queries": [
+        {
+          "purpose": "geological and route-option context",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 512,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            128,
+            128
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.29995916483604,
+            "south_lat": 18.492479590156325,
+            "east_lon": 77.30906743516395,
+            "north_lat": 18.501117339843677
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        },
+        {
+          "purpose": "geological and route-option context",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 1024,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            256,
+            256
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.29540502967208,
+            "south_lat": 18.488160715312645,
+            "east_lon": 77.31362157032791,
+            "north_lat": 18.505436214687357
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        }
+      ],
+      "nested_local_import_queries": [
+        {
+          "purpose": "provisional local image/terrain verification window; no task or route",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 128,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            32,
+            32
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.303374766209,
+            "south_lat": 18.495718746289082,
+            "east_lon": 77.30565183379099,
+            "north_lat": 18.49787818371092
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        },
+        {
+          "purpose": "provisional local image/terrain verification window; no task or route",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 256,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            64,
+            64
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.30223623241802,
+            "south_lat": 18.494639027578163,
+            "east_lon": 77.30679036758197,
+            "north_lat": 18.49895790242184
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        }
+      ],
+      "required_image_association_checks": [
+        "Match published Walhalla Glades and Beaver Falls image landmarks to the orbital basemap",
+        "Identify actual outcrop/contact footprints before selecting local work locations"
+      ],
+      "large_bracket_outside_512m_context": false,
+      "context_upgrade_policy": "Request1024m if the bracketing endpoints or the subsequently assessed target/registration uncertainty cannot fit the512m query. A short endpoint separation alone never validates a target coordinate.",
+      "exact_verified_crop_bounds": null,
+      "raster_coverage_verified": false,
+      "science_target_confirmed": false,
+      "candidate_route_feasible": null,
+      "mission_input": false,
+      "mission_execution_authorized": false
+    },
+    {
+      "request_id": "MAP-JZ-HG-01",
+      "candidate_id": "JZ-ROI-02",
+      "priority_order": 2,
+      "name": "Hawksbill Gap - Hogwallow Flats context",
+      "status": "PROPOSED_NOT_READY",
+      "role": "GEOGRAPHIC_IMPORT_SEARCH_QUERY_NOT_OPERATIONAL_A_OR_B",
+      "primary_science_source_id": "STACK2024",
+      "anchor_ids": [
+        "M20-S535-RMC26_1652"
+      ],
+      "query_center": {
+        "latitude_as_published_deg": 18.45835024,
+        "longitude_east_as_published_deg": 77.40732773,
+        "method": "Use the published sol535 end-of-drive coordinate as a query center; no exact Hogwallow, Rockytop or Wildcat Ridge target coordinate is inferred.",
+        "source_elevation_used": false,
+        "reported_digits_are_positional_accuracy": false,
+        "exact_science_target_coordinates": null,
+        "georegistration_verified": false
+      },
+      "anchor_uncertain": true,
+      "association_warning": "A traverse date and one historical rover anchor do not identify every outcrop location or a safe route.",
+      "anchor_pair_separation": null,
+      "context_import_queries": [
+        {
+          "purpose": "geological and route-option context",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 512,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            128,
+            128
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.40277461592969,
+            "south_lat": 18.454031365156325,
+            "east_lon": 77.41188084407032,
+            "north_lat": 18.462669114843678
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        },
+        {
+          "purpose": "geological and route-option context",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 1024,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            256,
+            256
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.39822150185937,
+            "south_lat": 18.449712490312645,
+            "east_lon": 77.41643395814064,
+            "north_lat": 18.466987989687357
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        }
+      ],
+      "nested_local_import_queries": [
+        {
+          "purpose": "provisional local image/terrain verification window; no task or route",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 128,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            32,
+            32
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.40618945148243,
+            "south_lat": 18.457270521289082,
+            "east_lon": 77.40846600851758,
+            "north_lat": 18.45942995871092
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        },
+        {
+          "purpose": "provisional local image/terrain verification window; no task or route",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 256,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            64,
+            64
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.40505117296485,
+            "south_lat": 18.456190802578163,
+            "east_lon": 77.40960428703517,
+            "north_lat": 18.46050967742184
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        }
+      ],
+      "required_image_association_checks": [
+        "Match Fig5 traverse and formation contacts using source landmarks",
+        "Check whether the requested context actually includes the intended outcrops and alternative local corridors"
+      ],
+      "large_bracket_outside_512m_context": false,
+      "context_upgrade_policy": "Request1024m if the bracketing endpoints or the subsequently assessed target/registration uncertainty cannot fit the512m query. A short endpoint separation alone never validates a target coordinate.",
+      "exact_verified_crop_bounds": null,
+      "raster_coverage_verified": false,
+      "science_target_confirmed": false,
+      "candidate_route_feasible": null,
+      "mission_input": false,
+      "mission_execution_authorized": false
+    },
+    {
+      "request_id": "MAP-JZ-BP-01",
+      "candidate_id": "JZ-ROI-04",
+      "priority_order": 3,
+      "name": "Margin Unit - Bunsen Peak context",
+      "status": "PROPOSED_NOT_READY",
+      "role": "GEOGRAPHIC_IMPORT_SEARCH_QUERY_NOT_OPERATIONAL_A_OR_B",
+      "primary_science_source_id": "NASA_SAMPLE24",
+      "anchor_ids": [
+        "M20-S1084-RMC51_0",
+        "M20-S1092-RMC51_30"
+      ],
+      "query_center": {
+        "latitude_as_published_deg": 18.491816235,
+        "longitude_east_as_published_deg": 77.32719162999999,
+        "method": "Arithmetic midpoint of final=y sol1084 and sol1092 positions bracketing the catalog's sol1088; an engineering query center only.",
+        "source_elevation_used": false,
+        "reported_digits_are_positional_accuracy": false,
+        "exact_science_target_coordinates": null,
+        "georegistration_verified": false
+      },
+      "anchor_uncertain": true,
+      "association_warning": "The exact sol1088 sample position is unknown. Nearby bracketing endpoints are not proof of intervening position or an exact core location.",
+      "anchor_pair_separation": {
+        "approximate_east_difference_m": -1.253578525889268,
+        "approximate_north_difference_m": -1.954286777522335,
+        "approximate_planar_separation_m": 2.321787227411104,
+        "interpretation": "Spherical local approximation of endpoint separation only; not driven distance or a bound on intervening motion"
+      },
+      "context_import_queries": [
+        {
+          "purpose": "geological and route-option context",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 512,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            128,
+            128
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.32263762729373,
+            "south_lat": 18.487497360156325,
+            "east_lon": 77.33174563270624,
+            "north_lat": 18.496135109843678
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        }
+      ],
+      "nested_local_import_queries": [
+        {
+          "purpose": "provisional local image/terrain verification window; no task or route",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 128,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            32,
+            32
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.32605312932343,
+            "south_lat": 18.490736516289083,
+            "east_lon": 77.32833013067655,
+            "north_lat": 18.49289595371092
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        },
+        {
+          "purpose": "provisional local image/terrain verification window; no task or route",
+          "status": "PROPOSED_NOT_READY",
+          "side_m": 256,
+          "proposed_computational_cell_size_m": 4.0,
+          "proposed_computational_rows_cols": [
+            64,
+            64
+          ],
+          "approximate_geographic_query_bbox_deg": {
+            "west_lon": 77.32491462864685,
+            "south_lat": 18.489656797578164,
+            "east_lon": 77.32946863135312,
+            "north_lat": 18.49397567242184
+          },
+          "bbox_order_if_serialized_as_array": "west,south,east,north",
+          "georegistration_verified": false,
+          "exact_verified_crop_bounds": null,
+          "native_DTM_resolution_m": 20.0,
+          "native_orthomosaic_resolution_m": 6.0
+        }
+      ],
+      "required_image_association_checks": [
+        "Tie the catalog's Bunsen Peak imagery to orbital landmarks before locating any geological target",
+        "Confirm whether the small endpoint separation actually brackets the sample workspace; do not infer stationary occupancy"
+      ],
+      "large_bracket_outside_512m_context": false,
+      "context_upgrade_policy": "Request1024m if the bracketing endpoints or the subsequently assessed target/registration uncertainty cannot fit the512m query. A short endpoint separation alone never validates a target coordinate.",
+      "exact_verified_crop_bounds": null,
+      "raster_coverage_verified": false,
+      "science_target_confirmed": false,
+      "candidate_route_feasible": null,
+      "mission_input": false,
+      "mission_execution_authorized": false
+    }
+  ],
+  "generated_data_scope": "Engineering selection, midpoint and approximate envelopes from preserved public historical waypoints; not NASA-measured target coordinates",
+  "raster_downloaded": false,
+  "new_observations_generated": false,
+  "profiles_approved": false,
+  "cost_agreement_approved": false,
+  "scientific_approval": false,
+  "mission_execution_authorized": false
+}

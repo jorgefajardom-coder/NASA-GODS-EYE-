@@ -40,6 +40,55 @@ units, sensitivity, owner, affected requirements and evidence for each approval.
 | Tasks | Discovery -> inspect -> sample; human sampling only after primary B; return overrides optional tasks | Policy accepted; execution inputs require integration |
 | Planner | Published bounded FAST/SAFE search in main; D* Lite only after benefit benchmark | Implemented; science-model agreement remains pending and authorization blocked |
 
+## Local agent-campaign proposal, 14 November 2026
+
+At the owner's request, separate rover reconnaissance/accompaniment, human EVA
+and drone sorties for the three requested Jezero patches. The
+[proposal](agent_campaign_proposal.md), [source register](../evidence/agent-campaign-proposal-20261114/sources.json)
+and [reproducible costs](../evidence/agent-campaign-proposal-20261114/campaign_analysis.json)
+are local design diagnostics at `c3ec4c1`, not an approved scenario replacement.
+Owner for the following decisions: David; all remain **proposed**.
+
+| ID | Proposed decision and justification | Units/sensitivity | Approval state |
+|---|---|---|---|
+| CAM-P01 | Give the rover a reconnaissance episode before human EVA, retain its clock/ledger through human work and charge its return; EVA starts at human habitat exit | Per-case time in s; no agent resource reset, no free waiting or habitat life-support claim | Proposed schedule; execution release/progress contract needs Jesús review |
+| CAM-P02 | Dimension analytical workloads for Bunsen/Bright Angel/Hawksbill: human 200/400/600 m and 1/2/3 documented samples; rover 500/800/1,200 m and 2/3/4 visual stations | Distances/ascents/counts are design assumptions, not map-derived paths; stress distance x1.25/ascent x1.5 | Proposed; real crops, targets and trajectories pending Daniel |
+| CAM-P03 | Cost each documented human sample as 600 s total, informed by D-RATS terrestrial analog; 420 s light + 180 s heavy is our allocation; retain 120 s primary check-in | s; service x1.5 in joint stress, human pauses 600/900/1,200 s explicit; documentation included once | Proposed; analog transfer and phase split unapproved; no completed work |
+| CAM-P04 | Use 600 s proposed visual/geometric rover stations, 1,800 s coordination and charged wait through actual human EVA | s; station alternatives 300/600/900; fixed mean model speed and separate directed return | Proposed engineering windows, not NASA spectroscopy/drill measurements |
+| CAM-P05 | Request nominal EVA 35/60/85 min, 225/400/550 metabolic Wh, 45/80/115 dry O2 L; rover 6.5/10/14.5 h and 800/1,200/1,800 gross electrical Wh | Separate 20% allocation reserves; compare 10/20/30%; upward rounding documented | Proposed nominal requirements, not hardware capacity or robust authorization; all nine joint adverse envelopes fail |
+| CAM-P06 | Cost drone takeoff/ascent/translation/observation/return/descent/landing and ground phases once; check each sortie and cumulative ledger | Bunsen/Bright/Hawks per-sortie 150/240/210 s, 12/19/15 electrical Wh incl. 20% reserve; desired sorties 1/2/2 | Proposed costing surrogates; historical flight duration is not certification; no counter reset |
+| CAM-P07 | Keep gross consumption, battery capacity and generation distinct; use Perseverance/MMRTG architecture only as reference; no solar/wind or recharge credit | Sol 88,775.244 s; 110 W BOL reference; sleep/thermal/SOC unmodeled, full drone campaign NOT_ESTIMATED | Diagnostic only; no full hardware energy balance or multi-sol feasibility claim |
+
+The 20% reserve is an existing experimental policy, not a NASA requirement or
+uncertainty bound. Nominal envelopes pass by construction; combined adverse
+endpoints retain rejection, including attempts to drop one sample without
+inventing a shorter route. Human Wh are metabolic, O2 is dry-gas equivalent at
+273.15 K/101.325 kPa, and full suit life support remains unmodeled. Profiles,
+cost agreement, strict success predicates, approvals/receipts and runtime
+configuration remain unchanged. No experiment or new MOCK is executed here.
+
+## Local patch-selection proposal, 14 November 2026
+
+The owner requested an extensive source review and a reasoned map-size decision,
+working locally while another chat audits reconciliation. The owner confirmed
+Daniel has preparation tools but has not delivered the requested new crops.
+This is a review proposal for CONT-DAV-03, not a new approved scenario or a
+completed map-feasibility acceptance. See the
+[survey](science_patch_survey.md) and [map requests](science_patch_map_requests.md).
+
+| ID | Proposed decision and justification | Units/sensitivity | Approval state |
+|---|---|---|---|
+| PATCH-P01 | Keep the approved Jezero 128 m control; distinguish regional science context from a local operational window | Compare 128/256/512/1,024/2,048 m at 4 m cells; finer sampling does not increase the native 20 m DTM detail | Proposed, no baseline replacement |
+| PATCH-P02 | Request Bright Angel/Neretva first, then Hawksbill/Hogwallow and Bunsen/ Margin Unit; retain Mawrth as the first non-Jezero alternative | Science-context windows 512–1,024 m, nested 128/256 m where verified; no NASA-mandated size or invented science score | Proposed, pending crop and owner review |
+| PATCH-P03 | More map area does not grant more consumables or authorize longer travel; retain separate reserves and actual activity costs | Existing flat ideal one-way ceilings: human about 222.98 m, rover 14.04 m, drone 103.57 m; not feasible routes or physical limits | Analytical diagnosis only; profiles/cost agreement still pending |
+| PATCH-P04 | Use published observations to justify research priorities; do not present known targets as discoveries of the simulator or infer minerals/soil from the DEM | Region, feature and instrument footprint must remain distinct; unknowns preserved and evaluator partition unchanged | Existing evidence boundary retained; no new observation/approval |
+| PATCH-P05 | Give Daniel source-traced geographic query centres, not operational poses; verify association/CRS before cutting or transforming | Historical NASA waypoint anchors and approximate query boxes; no silent re-centring, A/B and verified crop bounds remain unset | Proposed requests, NOT_READY until actual delivery |
+
+The [catalogues and analytical records](../evidence/science-patch-survey-20261114/)
+are research/diagnostic artifacts. Current JZ-P01..07 approval, original receipts,
+budgets, resource profiles, ROS contracts and A/B/C gates remain unchanged.
+No patch, coefficient, model agreement or mission execution is approved here.
+
 ## Jezero experimental scenario approval, 14 November 2026
 
 Originally prepared at David's request as proposal `jezero-primary-review-01`.

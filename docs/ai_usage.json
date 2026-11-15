@@ -7,21 +7,62 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "local_per_agent_campaign_and_EVA_proposal",
+      "generation": "AI-assisted primary-source synthesis, proposed workloads, standalone analytical code and derived model diagnostics",
+      "paths": [
+        "docs/agent_campaign_proposal.md",
+        "docs/science_decisions.md",
+        "docs/handoffs/david.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/agent-campaign-proposal-20261114",
+        "evidence/mission-proposal-publication-20261115"
+      ],
+      "use": "Prepare separate rover reconnaissance/accompaniment, human EVA and per-sortie drone resource proposals for the requested Bunsen, Bright Angel and Hawksbill patches. Price declared analytical distances, ascents, activities, waits and directed returns through the unchanged proposed scientific API; compare reserve policy and joint adverse endpoints, retain failed envelopes and unknown full drone-campaign energy. Cite primary mission/hardware/analog facts without treating derived allocations as physical capacities, mapped routes, observations or new NASA data. Preserve approved JZ-P01..07 values, profiles, receipts, shared contracts and all owner implementations. Work remains local, without fetch/commit/push/merge, mocks, terrain/media generation, recharge credit, scientific approval or integrated execution. Owner subsequently authorized publication after reconciliation; preserve both main and mission disclosures, merge main9198b3d unchanged and retain fresh software verification. Publication does not approve proposed budgets or scientific profiles."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "local_scientific_patch_survey_and_map_requests",
+      "generation": "AI-assisted source synthesis, proposed research catalogues, derived geographic queries, analytical diagnostics and standalone reproduction code",
+      "paths": [
+        "docs/science_patch_survey.md",
+        "docs/science_patch_map_requests.md",
+        "docs/science_decisions.md",
+        "docs/handoffs/david.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json",
+        "evidence/science-patch-survey-20261114"
+      ],
+      "use": "Review primary NASA/JPL/USGS/instrument and scientific sources for 17 candidate sectors, distinguish physical patch extent, computational grid and native data support, derive ideal flat resource ceilings using unchanged profiles and approved allocations, and prepare georeferencing-pending requests for Daniel. Historical NASA waypoint values are copied with provenance; candidate selection and query envelopes are generated proposals, not observational truth, current A/B, hidden tasks or execution evidence. Retain all approvals/gates, private evaluator isolation and owner implementations. Work remains local during the reconciliation audit, without commits, pushes or merges; no raster, media, mock, scientific measurement or new approval is generated."
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "delivery_documentation_reconciliation",
       "generation": "AI-assisted synthesis and owner-confirmed planning update",
       "paths": [
-        "AGENTS.md", "README.md",
+        "AGENTS.md",
+        "README.md",
         "docs/delivery_closure_plan.md",
         "docs/decisions/2026-11-14-delivery-freeze.md",
-        "docs/CONTRACT_BASELINE.md", "docs/contract_baseline.json",
-        "docs/ICD.md", "docs/INTEGRATION_MATRIX.md",
-        "docs/audit_reconciliation.md", "docs/verification.md",
-        "docs/science_decisions.md", "docs/competition.md",
-        "docs/team.md", "docs/team_continuation_plan.md",
-        "docs/mission_checklist.md", "docs/research_hypotheses.md",
-        "docs/handoffs/david.md", "docs/handoffs/daniel.md",
-        "docs/handoffs/diego.md", "docs/handoffs/jesus.md",
-        "docs/handoffs/jorge.md", "docs/AI_USAGE.md", "docs/ai_usage.json"
+        "docs/CONTRACT_BASELINE.md",
+        "docs/contract_baseline.json",
+        "docs/ICD.md",
+        "docs/INTEGRATION_MATRIX.md",
+        "docs/audit_reconciliation.md",
+        "docs/verification.md",
+        "docs/science_decisions.md",
+        "docs/competition.md",
+        "docs/team.md",
+        "docs/team_continuation_plan.md",
+        "docs/mission_checklist.md",
+        "docs/research_hypotheses.md",
+        "docs/handoffs/david.md",
+        "docs/handoffs/daniel.md",
+        "docs/handoffs/diego.md",
+        "docs/handoffs/jesus.md",
+        "docs/handoffs/jorge.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
       ],
       "use": "Reconcile all 20 delivery-PDF recommendations with published PR28 and the two chats; record the owner's freeze of extensions and retained 15 Nov 20:00 Bogota submission target. Summarize science/campaign review direction without importing local numerical drafts, new targets or the unpublished cost backend. Correct publication/evidence metadata while preserving historical audit inputs, semantic and scientific gates. Documentation only; no new code, datasets, measurements, observations, approvals or media generated."
     },
