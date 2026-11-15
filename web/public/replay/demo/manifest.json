@@ -20,7 +20,7 @@
     "observational_data": "Only the terrain heights come from NASA/USGS data; everything else here is simulated."
   },
   "world": "jezero",
-  "duration_s": 22646,
+  "duration_s": 22604,
   "local_z_offset_m": -2538,
   "imagery": {
     "file": "ctx_ortho.png",
@@ -47,7 +47,7 @@
   "photo_tour": {
     "agent_id": "rover_1",
     "start_s": 3056,
-    "end_s": 22636,
+    "end_s": 22594,
     "stops": 226,
     "speed_mps": 2,
     "dwell_s": 40

@@ -42,6 +42,21 @@ describe('zones', () => {
     expect(worldOfRun('mock-vertical-001')).toBeNull();
   });
 
+  it('keeps every agent off the crop edge, where the drawn terrain ends', () => {
+    type Pos = { x: number; y: number };
+    for (const w of WORLDS.filter((x) => x.status === 'scene')) {
+      const d = join(__dirname, '..', 'public', 'replay', w.runId!);
+      const m = JSON.parse(readFileSync(join(d, 'manifest.json'), 'utf8')) as { terrain_meta: { origin_x_m: number; origin_y_m: number; rows: number; cols: number; resolution_m: number }; pois: { id: string; position: Pos }[] };
+      const t = m.terrain_meta;
+      const edge = (p: Pos) => Math.min(p.x - t.origin_x_m, t.origin_x_m + t.cols * t.resolution_m - p.x, p.y - t.origin_y_m, t.origin_y_m + t.rows * t.resolution_m - p.y);
+      for (const id of ['A', 'B']) expect(edge(m.pois.find((p) => p.id === id)!.position)).toBeGreaterThanOrEqual(150);
+      const tl = JSON.parse(readFileSync(join(d, 'timeline.json'), 'utf8')) as { frames: { mission_state: { agents: { pose: { position: Pos } }[] } }[] };
+      let min = Infinity;
+      for (const f of tl.frames) for (const a of f.mission_state.agents) min = Math.min(min, edge(a.pose.position));
+      expect(min, w.id).toBeGreaterThanOrEqual(19.9);
+    }
+  });
+
   it('shows the Jezero card first in the zone menu, whatever run is open', () => {
     expect(WORLDS[defaultZoneIndex()].id).toBe('jezero');
   });

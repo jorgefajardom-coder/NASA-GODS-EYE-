@@ -941,3 +941,7 @@ OpenAI Codex assisted Chrome capture/edit scripts, English overlays/subtitles, m
 ## Viewer terrain shape and zone menu — 15 November 2026
 
 Claude (Anthropic) through Claude Code assisted a viewer fix registered in `ai_usage.json` as `viewer_terrain_shape_and_zone_menu_fix`: the updated-map layer keeps the ground shape of the run's last public map version from the start (no sudden rise of observed ground near the agents), while observed-cell tints and uncertainty still follow the current map version; the zone menu opens on the Jezero card. Code and tests only; no data or observations were generated.
+
+## Crop-edge margins in the demo generator — 15 November 2026
+
+Claude (Anthropic) through Claude Code assisted generator changes registered as `demo_generator_crop_edge_margins`: simulated agents no longer drive along the edge of the terrain crop (Meridiani's base and pads sat 4-12 m from it; Jezero and Gale photo tours ran 4 m from it). The regenerated Jezero, Gale and Meridiani packages remain SIMULATED stories on NASA terrain; rover stop markers keep their real NASA positions, and edge stops are visited from up to 20 m inside, as stated in the tour event. No observations were generated.
