@@ -13,9 +13,12 @@ describe('zones', () => {
     for (const w of WORLDS) expect(w.status === 'scene').toBe(w.runId != null);
   });
 
-  it('says why a zone without a scene has none, and has no locked zones left', () => {
-    for (const w of WORLDS.filter((x) => x.runId == null)) expect(w.note).toMatch(/^No scene/);
-    expect(WORLDS.filter((w) => w.body === 'Mars').every((w) => w.status === 'scene')).toBe(true);
+  it('offers only Mars zones, each with a scene (no locked zones, no external pages)', () => {
+    for (const w of WORLDS) {
+      expect(w.body).toBe('Mars');
+      expect(w.status).toBe('scene');
+      expect(w.runId).toBeTruthy();
+    }
   });
 
   it('ships each scene package with its terrain, and rover stops only where a rover drove', () => {
@@ -73,5 +76,19 @@ describe('zones', () => {
     expect(depot?.kind).toBe('depot');
     expect(depot?.source?.basis).toBe('nasa');
     expect(depot?.source?.text).toMatch(/Three Forks/);
+  });
+
+  it('documents water, ice and radiation per zone from NASA data, never an invented ice value', () => {
+    type R = { pressure_pa: number; dose_equivalent_msv_per_day: number; within_rad_pressure_range: boolean; note: string };
+    const env = JSON.parse(readFileSync(join(__dirname, '..', 'scripts', 'data', 'zone_environment.json'), 'utf8')) as { worlds: Record<string, { water: { wt_percent: number } | null; ice: { status: string }; radiation: R }> };
+    expect(Object.keys(env.worlds).sort()).toEqual(['gale', 'gusev', 'insight', 'jezero', 'melas', 'meridiani']);
+    for (const z of Object.values(env.worlds)) {
+      expect(z.water?.wt_percent).toBeGreaterThan(0);
+      expect(z.ice.status).toBe('not imported');
+      expect(z.radiation.within_rad_pressure_range).toBe(z.radiation.pressure_pa >= 700 && z.radiation.pressure_pa <= 950);
+      if (!z.radiation.within_rad_pressure_range) expect(z.radiation.note).toMatch(/OUTSIDE/);
+    }
+    expect(env.worlds.gale.radiation.dose_equivalent_msv_per_day).toBe(0.64); // what RAD measured
+    expect(env.worlds.insight.radiation.pressure_pa).toBe(700); // InSight's measured mean
   });
 });

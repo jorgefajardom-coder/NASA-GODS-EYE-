@@ -1,17 +1,17 @@
 /**
- * Zones the viewer can open: each is a place with its own real NASA terrain and, where one exists, a real
- * rover or lander mission. A zone with a `runId` has a scene; the other is an external page. The story
+ * Zones the viewer can open: each is a place on Mars with its own real NASA terrain and, where one exists, a
+ * real rover or lander mission, and each has a scene. The story
  * played on every scene (drone survey, scarp, replan, rover photo tour) is simulated; only the terrain,
  * the imagery and the rover stops are NASA data.
  *
  * Every card image is real orbital imagery of that zone, north up: the same orthomosaic that is draped on
  * its terrain, so the card and the 3D map line up for the transition.
  */
-export type ZoneStatus = 'scene' | 'external';
+export type ZoneStatus = 'scene';
 
 export interface WorldInfo {
   id: string;
-  body: 'Mars' | 'Earth';
+  body: 'Mars';
   place: string;
   mission: string;
   /** Replay folder under `replay/`, or null for a zone without a scene. */
@@ -114,20 +114,6 @@ export const WORLDS: ReadonlyArray<WorldInfo> = [
     image: 'replay/melas-demo/ctx_ortho.png',
     imageCaption: 'MRO CTX orthoimage B19_017187_1685 over the scene crop, the image draped on its terrain',
     url: 'https://trek.nasa.gov/mars/',
-  },
-  {
-    id: 'earth',
-    body: 'Earth',
-    place: 'Earth',
-    mission: 'NASA Worldview',
-    runId: null,
-    status: 'external',
-    note: 'No scene: Worldview offers satellite imagery of Earth, not terrain or rover stops. Opens in a new tab.',
-    data: 'NASA Earthdata satellite imagery.',
-    missing: null,
-    image: null,
-    imageCaption: null,
-    url: 'https://worldview.earthdata.nasa.gov/',
   },
 ];
 

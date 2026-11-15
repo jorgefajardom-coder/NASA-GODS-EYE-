@@ -7,7 +7,7 @@ export const ARRIVAL_KEY = 'mge-zone-arrival';
 /** Card-to-screen zoom before the page changes (ms). */
 const TRAVEL_MS = 750;
 
-const STATUS_TEXT: Record<WorldInfo['status'], string> = { scene: 'Scene', external: 'External' };
+const STATUS_TEXT: Record<WorldInfo['status'], string> = { scene: 'Scene' };
 
 /** Whether this load comes from the selector (the arrival fade will show), without consuming it. */
 export function arrivalPending(runId: string): boolean {
@@ -62,7 +62,7 @@ function ZoneCard({ zone, place, onPick }: { zone: WorldInfo; place: 'prev' | 'c
       tabIndex={place === 'current' ? 0 : -1}
     >
       <span className="zone-card__img">
-        {zone.image ? <img src={assetUrl(zone.image)} alt={zone.imageCaption ?? ''} draggable={false} /> : <span className="zone-card__globe" aria-hidden />}
+        {zone.image && <img src={assetUrl(zone.image)} alt={zone.imageCaption ?? ''} draggable={false} />}
       </span>
       <span className="zone-card__place">{zone.place}</span>
       <span className="zone-card__mission">
@@ -73,9 +73,10 @@ function ZoneCard({ zone, place, onPick }: { zone: WorldInfo; place: 'prev' | 'c
 }
 
 /**
- * Zone selector: a carousel of the zones (one scene per place, and NASA Worldview), each shown with real
+ * Zone selector: a carousel of the Mars zones (one scene per place), each shown with real
  * orbital imagery of that place. Travel zooms the card
  * to the screen and opens its scene; the same image then fades into the terrain (ZoneArrival).
+ * It is the first thing shown on load; travelling to the zone already loaded simply enters it.
  * Keys: left/right, Enter to travel, Esc to go back.
  */
 export function ZoneSelector({ runId, onClose }: { runId: string; onClose: () => void }) {
@@ -85,14 +86,10 @@ export function ZoneSelector({ runId, onClose }: { runId: string; onClose: () =>
   const zone = WORLDS[i];
   const prev = WORLDS[stepZone(i, -1)];
   const next = WORLDS[stepZone(i, 1)];
-  const canTravel = zone.status === 'scene' && zone.runId !== runId;
+  const canTravel = zone.status === 'scene';
 
   const travel = useCallback(() => {
     if (flight) return;
-    if (zone.status === 'external') {
-      window.open(zone.url, '_blank', 'noopener,noreferrer');
-      return;
-    }
     if (zone.status !== 'scene' || !zone.runId) return;
     if (zone.runId === runId) return onClose();
     const image = zone.image ? assetUrl(zone.image) : '';
@@ -157,26 +154,12 @@ export function ZoneSelector({ runId, onClose }: { runId: string; onClose: () =>
         ))}
       </div>
 
-      <section className="zones__info" aria-live="polite">
-        <p>{zone.note}</p>
-        <p className="zones__data">
-          <strong>NASA data:</strong> {zone.data}
-          {zone.missing && (
-            <>
-              {' '}
-              <strong>Not here:</strong> {zone.missing}
-            </>
-          )}
-        </p>
-        {zone.imageCaption && <p className="zones__caption">Image: {zone.imageCaption}. Panchromatic, tinted for display.</p>}
-      </section>
-
       <footer className="zones__foot">
         <button type="button" className="zones__back" onClick={onClose}>
           <kbd>Esc</kbd> Back
         </button>
-        <button type="button" className="zones__travel" onClick={travel} disabled={!canTravel && zone.status !== 'external'}>
-          {zone.status === 'external' ? 'Open ↗' : zone.runId === runId ? 'You are here' : 'Travel'} <span aria-hidden>›</span>
+        <button type="button" className="zones__travel" onClick={travel} disabled={!canTravel}>
+          Travel <span aria-hidden>›</span>
         </button>
       </footer>
 
