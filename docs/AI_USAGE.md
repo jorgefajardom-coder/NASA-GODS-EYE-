@@ -1027,3 +1027,9 @@ Claude (Anthropic) through Claude Code assisted the viewer changes registered as
 OpenAI Codex assisted the experimental consumer, seeded synthetic mission records, statistical protocol and analysis, independent bookkeeping audit, English explanation and numerical plots in `evidence/rigid-adaptive-study-20261115` and `docs/wiki/10-Adaptive-Planning-Study.md`. The archive includes the exact experimental code and meaningful verification tests without activating it in production paths. The source and result manifests identify tool use, SIMULATED status, seeds, input/module hashes and publication provenance. Every new plot retains a visible `AI-generated | SIMULATED` label.
 
 The records are analytical experiments on public CTX terrain with explicitly hypothetical perturbations and public simulated mission notices. They are not observational NASA data or verified LIVE execution. Published planning and science code is consumed at the declared SHA; this publication changes no shared contract, operational approval, production implementation or scientific coefficient approval. The experimental archive includes mandatory AI declarations as metadata and prose, with no optional authorship credit.
+
+## README scientific synthesis — 15 November 2026
+
+OpenAI Codex assisted the English scientific synthesis in `README.md`: the research question, terrain/model explanation and balanced summary of the already published fixed/adaptive study. The numerical claims retain the PR47 source catalogues, nominal empirical resampling intervals, separate batch denominators and existing approval states. This edit generates no new experimental results, media, profile values or production code. Existing AI declarations and marked assets are preserved.
+
+Documentation-only preparation and verification helpers are retained locally under `.local/readme-science-update`; their use is recorded in the machine-readable entry.
