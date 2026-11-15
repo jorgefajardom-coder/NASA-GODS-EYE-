@@ -35,26 +35,6 @@ export interface GatewayLiveState {
   updatedAt: number | null;
 }
 
-/**
- * Headline of the viewer's link status (top right) from the gateway store. Connected means a running gateway
- * answers, labelled with its own provenance (a MOCK stack says MOCK); it never claims a validated live mission,
- * and the replay on screen stays a replay.
- */
-export function linkSummary(s: Pick<GatewayLiveState, 'status' | 'label' | 'message'>): { text: string; detail: string; tone: GatewayStatus } {
-  switch (s.status) {
-    case 'connected':
-      return { text: 'Connected', detail: `ROS gateway · ${s.label}`, tone: 'connected' };
-    case 'connecting':
-      return { text: 'Connecting', detail: 'ROS gateway', tone: 'connecting' };
-    case 'not_ready':
-      return { text: 'Not ready', detail: `ROS gateway · ${s.message ?? 'NOT_READY'}`, tone: 'not_ready' };
-    case 'error':
-      return { text: 'Link error', detail: `ROS gateway · ${s.message ?? 'error'}`, tone: 'error' };
-    default:
-      return { text: 'Offline', detail: 'live link not available', tone: 'off' };
-  }
-}
-
 const OFF: GatewayLiveState = { status: 'off', base: null, message: null, runId: null, sourceMode: null, label: 'NOT_READY', datasetId: null, mission: null, events: [], transport: null, updatedAt: null };
 
 type FetchLike = (url: string) => Promise<{ ok: boolean; status: number; json(): Promise<unknown> }>;

@@ -6,7 +6,6 @@ import { fmtSimTime } from '../lib/format';
 import { OFFERED_RUNS, RUNS } from '../data/replayAdapter';
 import { displayState } from '../lib/provenance';
 import { terrainResolutionLabel } from '../lib/terrainPresentation';
-import { linkSummary, useGatewayLive } from '../lib/gatewayLive';
 
 export type UiMode = 'exploration' | 'geology' | 'atmos' | 'replay';
 
@@ -62,22 +61,16 @@ interface StatusProps {
 }
 
 /**
- * Link and replay status, top right (the agent position is in the details panel). The link follows the opt-in ROS
- * gateway (`?gateway=`): Offline without one, Connected with the gateway's own provenance label while one answers.
- * The mission, sim time and chip below always describe the recorded replay on screen.
+ * Replay status, top right (the agent position is in the details panel). The chip, mission and sim time describe the
+ * recorded replay on screen; the connection to a running ROS gateway (`?gateway=`) is shown only in its own panel.
  */
 export function StatusBlock({ manifest, missionState, t, evaluator, evaluatorMissing, exaggeration }: StatusProps) {
-  const link = linkSummary(useGatewayLive());
   return (
-    <section className="status" aria-label="Connection and mission status">
-      <div className={`status__link status__link--${link.tone}`} role="status">
-        {link.text}
-      </div>
+    <section className="status" aria-label="Replay and mission status">
       <div className="status__line">
         <span className="chip-mode" title="Recorded data (REPLAY) and who produced it (source_mode, ICD §6.1)">
           {displayState({ mode: 'REPLAY', source: manifest.source_mode ?? 'UNKNOWN' }).label}
         </span>
-        <span className="muted">{link.detail}</span>
       </div>
       <dl className="status__grid mono">
         <dt>Mission</dt>

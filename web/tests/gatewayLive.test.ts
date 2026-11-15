@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { createGatewayStore, eventsSocketUrl, gatewayBaseFrom, linkSummary } from '../src/lib/gatewayLive';
+import { createGatewayStore, eventsSocketUrl, gatewayBaseFrom } from '../src/lib/gatewayLive';
 
 // A synthetic MOCK gateway (envelopes shaped as mge_gateway/app.py answers them); no ROS, no network.
 const env = (payload: object, extra: object = {}) => ({ schema_version: '1.0.0', run_id: 'run-1', mode: 'LIVE', map_version: 1, timestamp_sim_s: 1, ...extra, ...payload });
@@ -119,17 +119,5 @@ describe('live gateway client', () => {
     expect(fetchFn.mock.calls.length).toBeGreaterThan(calls);
     s.disconnect();
     expect(s.getState().status).toBe('off');
-  });
-});
-
-describe('link status headline', () => {
-  it('stays Offline without a gateway and follows the gateway state otherwise, never claiming LIVE', () => {
-    expect(linkSummary({ status: 'off', label: 'NOT_READY', message: null })).toEqual({ text: 'Offline', detail: 'live link not available', tone: 'off' });
-    expect(linkSummary({ status: 'connecting', label: 'NOT_READY', message: null }).text).toBe('Connecting');
-    expect(linkSummary({ status: 'not_ready', label: 'NOT_READY', message: 'NO_ACTIVE_RUN' }).detail).toBe('ROS gateway · NO_ACTIVE_RUN');
-    expect(linkSummary({ status: 'error', label: 'NOT_READY', message: 'schema 2.0.0' }).text).toBe('Link error');
-    const on = linkSummary({ status: 'connected', label: 'MOCK', message: null });
-    expect(on).toEqual({ text: 'Connected', detail: 'ROS gateway · MOCK', tone: 'connected' });
-    expect(`${on.text} ${on.detail}`).not.toMatch(/LIVE/);
   });
 });

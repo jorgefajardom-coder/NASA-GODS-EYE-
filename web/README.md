@@ -7,10 +7,10 @@ terrain, with a saved-run replay that needs no ROS, Gazebo or network.
 
 ## Status
 
-**REPLAY mode only**. The link status (top right) reads *Offline* unless the viewer is opened with
-`?gateway=<url>`; then it follows that ROS gateway (*Connecting*, *Connected* with the gateway's own
-provenance label such as MOCK, *Not ready* or *Link error*). The 3D scene, timeline and mission state still
-play the recorded replay; a connected MOCK stack is not a validated live mission. The viewer opens only the simulated `demo`; recorded MOCK
+**REPLAY mode only**. The top-right status describes the recorded replay on screen. A running ROS gateway is
+shown only when the viewer is opened with `?gateway=<url>`, in its own read-only panel (connection, the
+gateway's provenance label such as MOCK, run, mission and events); the 3D scene, timeline and mission state
+still play the recorded replay, and a connected MOCK stack is not a validated live mission. The viewer opens only the simulated `demo`; recorded MOCK
 packages are neither offered nor used by the viewer (see the Run selector below).
 
 | Part | What it is |

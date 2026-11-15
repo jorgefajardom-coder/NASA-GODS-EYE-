@@ -581,23 +581,6 @@ input[type='checkbox'] {
   text-align: right;
 }
 
-.status__link {
-  font-family: var(--f-mono);
-  font-size: 22px;
-  letter-spacing: 0.12em;
-  color: var(--red);
-  line-height: 1;
-}
-
-.status__link--connected {
-  color: #5bd38a;
-}
-
-.status__link--connecting,
-.status__link--not_ready {
-  color: var(--amber);
-}
-
 .status__line {
   display: flex;
   justify-content: flex-end;
