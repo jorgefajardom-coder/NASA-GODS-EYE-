@@ -229,6 +229,9 @@ flowchart LR
   ground reaches the horizon. Optional camera sway (`B`).
 - Drone camera (`C`, first person): a window showing the scene from the drone, looking ahead
   and 35° down, from the replayed pose (not a video feed).
+  A *Map* tab shows the terrain the drone has surveyed so far (observed cells of the map in force
+  as a point cloud, the rest as orbital estimate, flight trail); the observations are simulated
+  in the replay, not a LiDAR measurement.
 - Astronaut helmet lights (`L`): one cool-white spot light at helmet height aimed ahead,
   as EVA suits carry; a display choice, not a suit specification.
 - Route sufficiency alerts (first person): each resource is compared with what finishing
@@ -297,6 +300,7 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Stars | Yale Bright Star Catalogue (Hoffleit & Warren 1991), V ≤ 5.5, IAU 2009 Mars rotation model | Real catalogue positions; no planets, moons, refraction or proper motion |
 | Artificial light (default), night fill, helmet lights | Viewer lighting choices | **Display only**, not sunlight or suit specifications |
 | Drone camera window | The scene drawn again from the replayed drone pose | **Display only**, not a camera feed |
+| Drone survey map (Map tab) | Cells marked observed in the map version in force, belief heights | **Simulated** observations in the replay; not a LiDAR measurement |
 | 2D map / lite 3D tiers | Same replay drawn with Canvas 2D or reduced 3D settings | Same data, reduced display |
 | Rover and drone models | NASA/JPL-Caltech Perseverance and Ingenuity 3D models | Real models, agency branding removed |
 | Astronaut model | Sketchfab, LasquetiSpice, CC BY 4.0 | Third-party asset |

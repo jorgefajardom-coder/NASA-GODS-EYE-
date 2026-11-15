@@ -712,7 +712,8 @@ from Mars24, stars from the Yale Bright Star Catalogue with the IAU rotation
 model of Mars, key light following the Sun) and the star-extraction script,
 the first-person terrain scan (state machine, wave/indicator/footprint shaders,
 scan key and synthesised sounds; inspired by Death Stranding's Odradek scanner,
-no game assets), the astronaut facing its walking direction,
+no game assets), the drone window's survey map tab (simulated observations of
+the replay, not LiDAR), the astronaut facing its walking direction,
 their tests, and the workflow that publishes the public viewer to
 GitHub Pages. The scan only redraws the slope already computed from the orbital
 CTX DTM prior around the drone in display bands; it is not an observation, it
