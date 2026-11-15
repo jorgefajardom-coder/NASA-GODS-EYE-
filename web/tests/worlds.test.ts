@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { WORLDS, initialZoneIndex, stepZone, worldOfRun, zoneUrl } from '../src/data/worlds';
+import { WORLDS, defaultZoneIndex, initialZoneIndex, stepZone, worldOfRun, zoneUrl } from '../src/data/worlds';
 import { OFFERED_RUNS } from '../src/data/replayAdapter';
 
 describe('zones', () => {
@@ -40,6 +40,10 @@ describe('zones', () => {
     expect(worldOfRun('gale-demo')?.id).toBe('gale');
     expect(worldOfRun('melas-demo')?.id).toBe('melas');
     expect(worldOfRun('mock-vertical-001')).toBeNull();
+  });
+
+  it('shows the Jezero card first in the zone menu, whatever run is open', () => {
+    expect(WORLDS[defaultZoneIndex()].id).toBe('jezero');
   });
 
   it('opens on the current zone, wraps around and builds the travel URL', () => {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { assetUrl } from '../data/replayAdapter';
-import { WORLDS, initialZoneIndex, stepZone, zoneUrl, type WorldInfo } from '../data/worlds';
+import { WORLDS, defaultZoneIndex, stepZone, zoneUrl, type WorldInfo } from '../data/worlds';
 import HORIZON from '../data/zoneHorizon.json';
 import { zoneEnvironment } from '../lib/zoneEnvironment';
 import { aimAt, angleDelta, globeDir, leftArc, radialCard } from '../lib/zoneGlobe';
@@ -177,10 +177,11 @@ async function globeCanvas(): Promise<HTMLCanvasElement> {
  * fitted radially against the planet, shows the zone's own orbital image (the one draped on its terrain) and a
  * synopsis. Travel zooms that image to fill the screen and opens the scene; the same image then lays itself down on the
  * terrain it is draped on and fades into it (ZoneArrival). It opens right after the intro on load (instantly, so the scene never shows behind it);
- * travelling to the zone already loaded simply enters it. Keys: left/right, Enter to travel, Esc to go back.
+ * travelling to the zone already loaded simply enters it. The menu always opens on the Jezero card, the first
+ * zone it shows; nothing is entered until the user travels. Keys: left/right, Enter to travel, Esc to go back.
  */
 export function ZoneSelector({ runId, onClose, instant = false, globeEnabled = true }: { runId: string; onClose: () => void; instant?: boolean; globeEnabled?: boolean }) {
-  const [i, setI] = useState(() => initialZoneIndex(runId));
+  const [i, setI] = useState(defaultZoneIndex);
   const [shown, setShown] = useState(i);
   const [swap, setSwap] = useState(false);
   const [on, setOn] = useState(false);
