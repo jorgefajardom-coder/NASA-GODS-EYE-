@@ -2157,6 +2157,24 @@
       ],
       "human_review": "pending integration owner (Jesus); display review Jorge; resource-time semantics David",
       "use": "Require exactly one external, advancing /clock before any provider starts whenever use_sim_time:=true (MOCK or real mission); record D-CLK-01 and clarify ICD section 2. No interface, unit, enum, replay or raster version changes; no data or media generated."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "atmos_dose_consistency_and_text_fixes",
+      "source_revision": "d06de5e",
+      "generation": "AI-assisted viewer code, a test and documentation text; no data, imagery, audio or NASA observation generated",
+      "paths": [
+        "web/src/components/AtmosPanel.tsx",
+        "web/tests/atmosPanelDose.test.ts",
+        "README.md",
+        "docs/astronaut_resources_proposal.md",
+        "web/public/about.html",
+        "web/public/llms.txt",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "human_review": "pending display review Jorge; radiation wording David",
+      "use": "Atmos run totals use the zone's surface dose rate (the HUD's), Gale rate rows relabelled, REMS sol count from the seasonal bins, guards for missing sunrise/sunset and empty chart values; stale 600 mSv career-limit wording, the Guo et al. year and the crew-dose source text corrected. Display and text only."
     }
   ],
   "generated_media": [
