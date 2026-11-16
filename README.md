@@ -199,6 +199,8 @@ mission acceptance is pending.** Merged on the evening of 15 November:
 - #51 with #57: cosmetic Gazebo animations matching the viewer (per-wheel rover
   visuals, spinning drone rotors, an opt-in walking astronaut actor) and a
   whole-model fallback when a model cannot be split.
+- #62: the Gazebo world decodes sparse glTF accessors and no longer needs the
+  undeclared SciPy dependency (a numpy resampler builds the heightmap).
 - #52: one advancing clock per simulated-time run
   ([D-CLK-01](docs/decisions/2026-11-15-simulation-time-source.md), proposed).
 - #60: the scientific replan stop-acknowledgement gate for one human (below).
@@ -343,13 +345,12 @@ sequenceDiagram
 
 ## Branches and pull requests
 
-Snapshot of the remote late on 2026-11-15 (`origin/main` = `822ce07`, merge of
-PR #61). See [docs/team.md](docs/team.md) for the authoritative ownership
+Snapshot of the remote late on 2026-11-15 (`origin/main` = `ac667ff`, merge of
+PR #62). See [docs/team.md](docs/team.md) for the authoritative ownership
 record. Open pull requests are pending review: their features are not on `main`
 or the public site until they are merged.
 
-**Open:** #62 (`fix/gazebo-sparse-glb-scipy`: decode sparse GLB accessors and
-drop SciPy from the Gazebo world). **Closed without merging:** #59
+**Open:** none. **Closed without merging:** #59
 (`feat/planner`: experimental terrain mobility evaluation, an extension
 outside the delivery scope) and #6 (historical viewer branch).
 
@@ -358,7 +359,7 @@ outside the delivery scope) and #6 (historical viewer branch).
 | `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5, #7–#58, #60 and #61 merged |
 | `feat/ux` | Jorge | Web viewer. Merged: #5, #19, #23, #27 (route guide, interface entrance, text access), #29 (first-person rework, drone camera, helmet and artificial light, Mars sky, route sufficiency alerts, render tiers) and #36 (Mars globe zone selector, six Mars zones, real NASA science sites, astronaut sites, rover cameras and photo tour, terrain-fitted arrival, MIT License, no-WebGL selector and image provenance fixes) |
 | `feat/challenge-gaps`, `feat/live-gateway`, `fix/viewer-terrain-and-zone-menu`, `fix/live-bar-always-visible`, `fix/dose-text-atmos` | Jorge | Merged: #37 (water and radiation for every zone, exhaled CO₂ and per-zone dose in the HUD, project page draft), #39 (read-only gateway panel), #45, #46 and #56 (Atmos dose totals at the zone rate, dose and citation text) |
-| `feature/live-ros-obstacles-gazebo`, `feature/gazebo-web-animations`, `feature/system-test-scenarios` | Jorge | Merged: #49 (obstacles, simulated sensing, Gazebo rover experiment), #51 (Gazebo model animations) and #55 (offline replay check T08/R15, start-up text fallback) |
+| `feature/live-ros-obstacles-gazebo`, `feature/gazebo-web-animations`, `feature/system-test-scenarios`, `fix/gazebo-sparse-glb-scipy` | Jorge | Merged: #49 (obstacles, simulated sensing, Gazebo rover experiment), #51 (Gazebo model animations), #62 (sparse GLB decoding, SciPy-free Gazebo world) and #55 (offline replay check T08/R15, start-up text fallback) |
 | `feat/integration`, `fix/sim-time-clock-contract`, `fix/gazebo-animation-review` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI. Merged: #18, #32, #35, #44 (late events and terrain metadata push), #52 (D-CLK-01 clock rule) and #57 (review fixes for #51) |
 | `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service. Merged: #2, #12 and #33. #59 closed without merging (see above) |
 | `feat/data` | Daniel | Public terrain data, mapping, provenance and control points. Merged: #8, #24 and #38 (auxiliary Jezero layers: CTX orthoimage and geology) |
@@ -753,9 +754,10 @@ physics; the drone's rotors spin up while it is active or airborne and down
 when it is idle on the ground, like the viewer (`mge_sim.rotors`, without loading
 the world generator); `MGE_GZ_WALKING_ACTOR=1` opts in to a walking astronaut
 actor (it freezes mid-stride when stopped, keeps its spawn height and lags above
-1 m/s). If a model's glTF layout cannot be split (for example compressed or
-sparse accessors), the world build warns and draws the whole web model instead
-of failing. The source GLBs are never modified. Details in
+1 m/s). Sparse glTF accessors are decoded (PR #62); if a model's glTF layout still
+cannot be split (for example compressed accessors), the world build warns and
+draws the whole web model instead of failing. The world generator needs only
+numpy, not SciPy (PR #62). The source GLBs are never modified. Details in
 [the sim package README](src/mge_sim/README.md).
 
 **Known blocker:** the planner rejects the physical rover's start with
