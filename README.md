@@ -88,7 +88,7 @@ Evidence for the featured recording: [source, test and browser record](evidence/
 ## Scientific question and analytical evidence
 
 When does information acquired after departure justify changing a route or its
-scientific work, while retaining the resources needed to return? Mars Gods Eye
+scientific work, while retaining the resources needed to return? Mars God's Eye
 studies this question through an inspectable chain: orbital terrain estimates,
 declared activity and slope costs, route/work decisions, and resource ledgers.
 The [scientific Wiki](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki)
@@ -177,7 +177,7 @@ legacy costs require explicit compatibility opt-in. The additive service and
 changed default prerequisite are a documented interface-package 2.0.0 migration.
 Profile approval and executed-mission acceptance retain their separate gates.
 
-Mars Gods Eye plans and replays crewed surface missions (astronaut, rover and
+Mars God's Eye plans and replays crewed surface missions (astronaut, rover and
 drone) over real Mars terrain at Jezero crater: orbital terrain priors, a
 resource-aware route planner, a mission authority, a ROS 2 simulation vertical
 with a gateway and replay recorder, and a 3D web viewer that plays saved runs

@@ -1,4 +1,4 @@
-# Mars Gods Eye — Mission Viewer
+# Mars God's Eye — Mission Viewer
 
 > NASA Space Apps 2026 project (challenge: Interplanetary Survival Guide: Martian Map; team: Houston, We Have a Bug!). The default entry is a six-zone selector with illustrative stories on real terrain. The separate recorded-recovery-002 entry replays height-recovery-20261115-01: real data/mapping/planner/recorder software, MOCK mission and kinematic human, one SIMULATED contradiction, parked/idle robots and final READY. Historical recorded-recovery-001 is preserved unchanged. Neither recording is a validated LIVE or coordinated three-agent mission. An optional ?gateway=<url> status panel is read-only and independent of the recorded 3D scene.
 
