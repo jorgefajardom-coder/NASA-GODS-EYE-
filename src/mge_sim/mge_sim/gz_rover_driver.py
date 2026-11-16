@@ -10,6 +10,12 @@ lets it: heightmap contact, Mars gravity, wheel friction and the rocks' collisio
 Stop acknowledgement keeps the ICD semantics: when the route changes or clears the rover
 brakes, and once it is at rest it reports HALTED (route interrupted) or IDLE (end reached)
 with exactly zero velocity and its rest pose frozen, so a re-plan starts from a stable pose.
+Height: the Gazebo ground is built on the planner's cell centres (gz_world), but the rover's
+reference point settles a few centimetres off it (wheel-ground contact penetration and the
+heightfield's collision thickness). That constant vertical datum offset is measured ONCE, at
+rest after spawning, against the public map height at the rover's XY, logged, and applied to
+every reported z. After that the reported z is the physics z: it follows the Gazebo terrain
+and is never replaced by the map. An offset above MAX_DATUM_OFFSET_M is refused (bad world).
 Energy is debited per metre actually driven at the route's own estimate (energy/length);
 time is debited as it passes while moving. Illustrative MOCK accounting, not a power model.
 """
@@ -30,6 +36,24 @@ ARRIVE_M = 0.6
 TURN_IN_PLACE_RAD = 0.6
 MAX_YAW_RATE = 0.5
 REST_SPEED_M_S = 0.03
+MAX_DATUM_OFFSET_M = 0.3
+
+
+def map_height(prior, origin, res, x, y):
+    """Bilinear height of a cell-centre grid (row 0 = south) at ENU (x, y), clamped at the edges."""
+    rows, cols = len(prior), len(prior[0])
+    fx = min(max((x - origin[0]) / res - 0.5, 0.0), cols - 1.0)
+    fy = min(max((y - origin[1]) / res - 0.5, 0.0), rows - 1.0)
+    c0, r0 = min(int(fx), cols - 2), min(int(fy), rows - 2)
+    tx, ty = fx - c0, fy - r0
+    return ((prior[r0][c0] * (1 - tx) + prior[r0][c0 + 1] * tx) * (1 - ty)
+            + (prior[r0 + 1][c0] * (1 - tx) + prior[r0 + 1][c0 + 1] * tx) * ty)
+
+
+def datum_offset(map_z, physics_z):
+    """Constant vertical offset between the map and the settled physics height, or None."""
+    offset = map_z - physics_z
+    return offset if abs(offset) <= MAX_DATUM_OFFSET_M else None
 
 
 def yaw_of(q):
@@ -61,7 +85,16 @@ class GzRoverDriver(Node):
         agents_file = self.declare_parameter('agents_file', '').value
         self.speed = float(self.declare_parameter('speed_m_s', 0.65).value)
         with open(world_json, encoding='utf-8') as f:
-            self.z_ref = json.load(f)['z_ref_m']
+            world = json.load(f)
+        self.z_ref = world['z_ref_m']
+        from mge_data.core import default_manifest_path, load_public_terrain
+        tile = load_public_terrain(default_manifest_path())
+        prior = tile.prior.astype(float)
+        prior[tile.nodata_mask] = float(prior[~tile.nodata_mask].min())
+        self.prior = prior.tolist()
+        self.origin = (world['origin_x_m'], world['origin_y_m'])
+        self.res = world['resolution_m']
+        self.offset = None          # vertical datum offset, measured once at rest
         spec = next(a for a in load_agents(agents_file) if a['id'] == self.agent_id)
         self.kind = spec['kind']
         self.time_s, self.energy_wh = float(spec['time_budget_s']), float(spec['energy_budget_wh'])
@@ -154,6 +187,12 @@ class GzRoverDriver(Node):
             rate = self.follow[2] if self.follow is not None else 0.0
             self.energy_wh = max(0.0, self.energy_wh - rate * math.dist(self.last_xy, (x, y)))
         if self.mode != 'MOVING' and self.rest is None and speed < REST_SPEED_M_S:
+            if self.offset is None:
+                self.offset = datum_offset(map_height(self.prior, self.origin, self.res, x, y), z + self.z_ref)
+                if self.offset is None:
+                    self.get_logger().error('rover rests too far from the map height; check the Gazebo world')
+                    return
+                self.get_logger().info(f'vertical datum offset measured at rest: {self.offset:+.4f} m')
             self.rest = (x, y, z, yaw)          # settled after spawning: report a stable pose
         self.last_xy, self.last_t = (x, y), now
         self.publish(now, (x, y, z, yaw, speed))
@@ -167,7 +206,8 @@ class GzRoverDriver(Node):
         msg.header.stamp = now.to_msg()
         msg.header.frame_id = 'map'
         msg.run_id, msg.agent_id, msg.agent_kind = self.run_id, self.agent_id, self.kind
-        msg.pose.position.x, msg.pose.position.y, msg.pose.position.z = x, y, z + self.z_ref
+        msg.pose.position.x, msg.pose.position.y = x, y
+        msg.pose.position.z = z + self.z_ref + (self.offset or 0.0)
         msg.pose.orientation.z, msg.pose.orientation.w = math.sin(yaw / 2), math.cos(yaw / 2)
         if self.mode == 'MOVING':
             msg.velocity.linear.x, msg.velocity.linear.y = speed * math.cos(yaw), speed * math.sin(yaw)
