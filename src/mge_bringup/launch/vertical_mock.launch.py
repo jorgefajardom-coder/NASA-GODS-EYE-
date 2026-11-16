@@ -118,10 +118,12 @@ def generate_launch_description():
         DeclareLaunchArgument('cors_origins', default_value="['http://localhost:5173', 'http://127.0.0.1:5173']"),
         DeclareLaunchArgument('planner', default_value='mock', choices=['mock', 'real']),
         DeclareLaunchArgument('profiles_file', default_value=''),
+        DeclareLaunchArgument('allow_legacy_cost_model', default_value='false'),
         DeclareLaunchArgument('exploration_policy_file', default_value=''),
         DeclareLaunchArgument('allow_continuous_starts', default_value='false'),
         DeclareLaunchArgument('mission', default_value='mock', choices=['mock', 'real']),
         DeclareLaunchArgument('mission_profiles_path', default_value=''),
+        DeclareLaunchArgument('scientific_profiles_path', default_value=LaunchConfiguration('mission_profiles_path')),
         DeclareLaunchArgument('mission_path', default_value=''),
         DeclareLaunchArgument('base_enu_m', default_value='[]'),
         DeclareLaunchArgument('allow_illustrative', default_value='false'),
@@ -158,6 +160,9 @@ def generate_launch_description():
              parameters=[{
                  'use_sim_time': LaunchConfiguration('use_sim_time'),
                  'profiles_file': LaunchConfiguration('profiles_file'),
+                 'scientific_profiles_path': LaunchConfiguration('scientific_profiles_path'),
+                 'allow_legacy_cost_model': ParameterValue(
+                     LaunchConfiguration('allow_legacy_cost_model'), value_type=bool),
                  'allow_illustrative_profiles': True,
                  'snapshot_contract_confirmed': True,
                  'allow_continuous_starts': ParameterValue(

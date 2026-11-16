@@ -1,0 +1,20 @@
+# Additive scientific cost context for an unchanged PlanRoute request.
+# Schema mge-planning-cost-context-1.0.0. Every activity is remaining AT_GOAL work.
+# Key is (run_id, request_id, agent_id, map_version); retries are immutable.
+# request_sha256 binds all canonical PlanRoute input fields and their wire values.
+string schema_version
+string run_id
+string request_id
+string agent_id
+uint32 map_version
+string request_sha256
+string model_id
+string model_source_sha256
+string profile_registry_sha256
+string[] activity_ids
+string[] activity_kinds
+float64[] activity_durations_s
+---
+bool accepted
+string reason_code
+string context_sha256

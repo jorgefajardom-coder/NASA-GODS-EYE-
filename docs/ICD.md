@@ -1,5 +1,26 @@
 # ICD-ROS2-V1 — Interface Control Document
 
+## Candidate scientific-cost migration: interface package 2.0.0
+
+The operational cost fix over main `d13a4b3` adds the typed
+`/mge/planner/register_context` service under
+`mge-planning-cost-context-1.0.0`. Existing message and service fields retain
+their exact definitions. The scientific PlanRoute server requires an immutable
+registered request/activity context by default; old callers require explicit
+legacy server opt-in. This changed prerequisite is a major semantic migration,
+recorded as candidate baseline `2.0.0-rc.1`. The owner accepted the migration and
+authorized PR50 integration after CI in [D-COST-03](decisions/2026-11-15-scientific-cost-context-migration.md).
+This does not freeze every contract or approve profile coefficients.
+
+The context binds all original PlanRoute fields, actual float64 XYZ, float32
+resource/service values, model ID/source hash, profile-registry hash and ordered
+remaining activities at the goal. Duplicate registration is idempotent;
+conflicting or missing context fails closed. Both producer and consumer are
+implemented together. Full semantics, failures, migration and verification are
+in [operational scientific costs](scientific_cost_integration.md).
+Gateway, replay and public-raster JSON versions remain unchanged. The historical
+published rc.2 description below retains its original source scope.
+
 Status: **contract reconciliation `1.0.0-rc.2`, published by PR28 at main9198b3d,
 not frozen or scientifically approved.** Original audit input:
 `main@6bcf208868e37b7e15e9189fac11de96e7414eff`; reviewed source `7f0ebaa`.

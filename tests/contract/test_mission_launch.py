@@ -30,6 +30,8 @@ def context(mission='real', planner='real', **changes):
         'cors_origins': "['http://localhost:5173', 'http://127.0.0.1:5173']",
         'agents_file': str(ROOT / 'src/mge_bringup/config/agents.yaml'),
         'profiles_file': str(ROOT / 'config/planner_profiles.illustrative.json'),
+        'scientific_profiles_path': str(ROOT / 'config/scenario_demo.yaml'),
+        'allow_legacy_cost_model': 'false',
         'exploration_policy_file': '',
         'mission_profiles_path': str(ROOT / 'config/scenario_demo.yaml'),
         'mission_path': str(ROOT / 'config/scenario_demo.yaml'),

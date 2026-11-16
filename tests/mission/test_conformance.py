@@ -126,7 +126,7 @@ def test_missing_optional_dependencies_produce_not_run_not_success(snapshot, pro
     def missing():
         raise ModuleNotFoundError("No module named numpy")
     monkeypatch.setattr(conformance, "_load_dependencies", missing)
-    result = conformance.run_conformance(package, profiles, REVISION)
+    result = conformance.run_conformance(package, profiles, REVISION, backend="legacy")
     assert result["classification"] == "MODEL_CONFORMANCE"
     assert result["status"] == "NOT_RUN"
     assert result["reason_code"] == "DEPENDENCIES_UNAVAILABLE"
@@ -228,7 +228,7 @@ def test_actual_published_snapshot_probe_when_explicit_snapshot_is_available(pro
     pytest.importorskip("numpy")
     pytest.importorskip("scipy")
     before = {name for name in sys.modules if name.startswith("_mge_conformance_")}
-    result = conformance.run_conformance(package, profiles, REVISION)
+    result = conformance.run_conformance(package, profiles, REVISION, backend="legacy")
     assert result["status"] == "COMPLETED"
     assert result["summary"] == {"AGREE": 1, "DISAGREE": 6, "NOT_FEASIBLE": 0, "ERROR": 0}
     assert result["authorization"] == "BLOCKED"
@@ -237,3 +237,30 @@ def test_actual_published_snapshot_probe_when_explicit_snapshot_is_available(pro
     assert human_slope["audit"]["cost_deltas_planner_minus_science"]["energy_wh"] < 0
     assert {name for name in sys.modules if name.startswith("_mge_conformance_")} == before
     json.dumps(result, allow_nan=False)
+
+
+def test_current_scientific_search_matches_all_seven_cases_and_preserves_legacy(tmp_path, profiles):
+    """Execute the service's real facade; keep the old mismatch reproducible."""
+    pytest.importorskip("numpy")
+    pytest.importorskip("scipy")
+    root = tmp_path / "candidate-snapshot"
+    package = root / "src/mge_planning/mge_planning"
+    package.mkdir(parents=True)
+    original = ROOT / "src/mge_planning/mge_planning"
+    for path in original.glob("*.py"):
+        (package / path.name).write_bytes(path.read_bytes())
+    fixture_revision = "e" * 40
+    files = {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+             for p in package.glob("*.py")}
+    (root / "source_manifest.json").write_text(json.dumps({
+        "schema_version": "1.0.0", "repository": REPOSITORY,
+        "revision": fixture_revision, "package_root": package.relative_to(root).as_posix(),
+        "files": files, "classification": "UNIT_TEST_SOURCE_SNAPSHOT_NOT_PUBLISHED_REVISION"}), encoding="utf-8")
+    current = conformance.run_conformance(package, profiles, fixture_revision)
+    assert current["cost_backend"] == "scientific"
+    assert current["summary"] == {"AGREE": 7, "DISAGREE": 0, "NOT_FEASIBLE": 0, "ERROR": 0}
+    assert current["authorization"] == "BLOCKED"
+    assert current["scientific_approval_changed"] is False
+    legacy = conformance.run_conformance(package, profiles, fixture_revision, backend="legacy")
+    assert legacy["summary"] == {"AGREE": 1, "DISAGREE": 6, "NOT_FEASIBLE": 0, "ERROR": 0}
+    assert legacy["authorization"] == "BLOCKED"

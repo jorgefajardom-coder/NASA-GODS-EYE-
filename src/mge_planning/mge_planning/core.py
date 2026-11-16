@@ -303,12 +303,18 @@ class _Work:
 _DIRECTIONS = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
 
 
-def _motion_costs(profile, horizontal, dz):
-    """Shared directed transition limits and nonnegative movement costs."""
-    p = profile
+def _transition_admitted(profile, horizontal, dz):
+    """Directed geometric limits, independent of the selected resource model."""
     slope = math.degrees(math.atan2(abs(dz), horizontal))
-    limit = p.max_slope_deg if dz >= 0 or p.max_downhill_slope_deg is None else p.max_downhill_slope_deg
-    if abs(dz) > p.max_step_m or slope > limit:
+    limit = (profile.max_slope_deg if dz >= 0 or profile.max_downhill_slope_deg is None
+             else profile.max_downhill_slope_deg)
+    return abs(dz) <= profile.max_step_m and slope <= limit
+
+
+def _motion_costs(profile, horizontal, dz):
+    """Legacy projection retained for explicit compatibility comparisons."""
+    p = profile
+    if not _transition_admitted(p, horizontal, dz):
         return None
     length = math.hypot(horizontal, dz)
     up, down = max(dz, 0)/horizontal, max(-dz, 0)/horizontal
@@ -383,20 +389,21 @@ class GeometryCache:
         self.grid = None
         self.entries = {}
 
-    def get(self, grid, profile, *, optimistic=False):
+    def get(self, grid, profile, *, optimistic=False, cost_model=None):
         if self.grid is not grid:
             self.grid, self.entries = grid, {}
-        key = profile, optimistic
+        key = profile, optimistic, id(cost_model)
         if key not in self.entries:
             if len(self.entries) >= 8:
                 self.entries.clear()
-            self.entries[key] = _Geometry(grid, profile, optimistic=optimistic)
+            self.entries[key] = _Geometry(grid, profile, optimistic=optimistic, cost_model=cost_model)
         return self.entries[key]
 
 
 class _Geometry:
-    def __init__(self, grid, profile, *, optimistic=False):
+    def __init__(self, grid, profile, *, optimistic=False, cost_model=None):
         self.grid, self.profile, self.optimistic = grid, profile, optimistic
+        self.cost_model = cost_model
         known = (grid.traversability == 0) & np.isfinite(grid.elevation_m)
         if grid.sigma_m is not None:
             known &= np.isfinite(grid.sigma_m) & (grid.sigma_m >= 0)
@@ -436,6 +443,14 @@ class _Geometry:
             bound = np.minimum(bound, distance)
         return bound
 
+    def _cost(self, start, end, horizontal, dz, *, unknown=False):
+        if not _transition_admitted(self.profile, horizontal, dz):
+            return None
+        if self.cost_model is None or (self.optimistic and unknown):
+            return _motion_costs(self.profile, horizontal, dz)
+        cost = self.cost_model.movement(start, end)
+        return cost.time_s, cost.energy_wh, cost.oxygen_l or 0.
+
     def connect_start(self, position, cell):
         """Conservative within-cell connector; never jump to another free cell.
 
@@ -459,7 +474,8 @@ class _Geometry:
         start = (position[0], position[1], z)
         a, b = np.array(start[:2]), np.array(end[:2])
         horizontal = float(np.linalg.norm(b-a))
-        costs = _motion_costs(p, horizontal, end[2]-start[2])
+        costs = self._cost(start, end, horizontal, end[2]-start[2],
+                           unknown=not self.known[cell])
         if costs is None:
             return None
         margin = _segment_clearance(self, start, end)
@@ -488,7 +504,7 @@ class _Geometry:
         horizontal = math.hypot(dr, dc)*g.resolution_m
         unknown = not self.known[a] or not self.known[b]
         dz = 0.0 if self.optimistic and unknown else float(g.elevation_m[b]-g.elevation_m[a])
-        costs = _motion_costs(p, horizontal, dz)
+        costs = self._cost(g.point(a), g.point(b), horizontal, dz, unknown=unknown)
         if costs is None:
             return None
         key = tuple(sorted((a, b)))
@@ -527,7 +543,7 @@ class _Found:
     connector: StartConnector | None = None
 
 
-def _search(geometry, request, start, goal, back, threshold, work, connector=None):
+def _search(geometry, request, start, goal, back, threshold, work, connector=None, stationary_costs=None):
     """Joint outbound/service/return A*; no independent-leg greedy selection."""
     g, p = geometry.grid, geometry.profile
     if any(not geometry.allowed[c] or geometry.clearance[c] < threshold for c in (start, goal, back)):
@@ -543,9 +559,12 @@ def _search(geometry, request, start, goal, back, threshold, work, connector=Non
 
     def heuristic(cell, phase):
         distance = lambda a, b: math.hypot(a[0]-b[0], a[1]-b[1])*g.resolution_m
+        speed = (geometry.cost_model.maximum_horizontal_speed
+                 if getattr(geometry, "cost_model", None) is not None else p.speed_m_s)
         if phase:
-            return distance(cell, back)/p.speed_m_s if request.require_return else 0.
-        return (distance(cell, goal) + (distance(goal, back) if request.require_return else 0.))/p.speed_m_s + request.service_time_s
+            return distance(cell, back)/speed if request.require_return else 0.
+        service = stationary_costs[0] if stationary_costs is not None else request.service_time_s
+        return (distance(cell, goal) + (distance(goal, back) if request.require_return else 0.))/speed + service
 
     def add(label):
         if label.time > cap[0] or label.energy > cap[1] or label.oxygen > cap[2]:
@@ -583,9 +602,11 @@ def _search(geometry, request, start, goal, back, threshold, work, connector=Non
         if label.phase and (not request.require_return or label.cell == back):
             return _Found(labels, identifier, connector)
         if label.phase == 0 and label.cell == goal:
-            dt = request.service_time_s
-            add(_Label(label.cell, 1, label.time+dt, label.energy+p.service_power_w*dt/3600.,
-                       label.oxygen+dt*(p.oxygen_l_per_s or 0.), identifier, label.clearance))
+            dt, energy, oxygen = (stationary_costs if stationary_costs is not None else
+                                  (request.service_time_s, p.service_power_w*request.service_time_s/3600.,
+                                   request.service_time_s*(p.oxygen_l_per_s or 0.)))
+            add(_Label(label.cell, 1, label.time+dt, label.energy+energy,
+                       label.oxygen+oxygen, identifier, label.clearance))
             continue
         for other, edge in geometry.neighbours(label.cell, threshold):
             margin, duration, energy, oxygen = edge
@@ -648,9 +669,13 @@ def _result(request, grid, work, status, reason, detail, found=None):
 
 def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
                profile: MotionProfile | None = None, limits: SearchLimits | None = None,
-               allow_continuous_start: bool = False, geometry_cache: GeometryCache | None = None) -> RouteResult:
+               allow_continuous_start: bool = False, geometry_cache: GeometryCache | None = None,
+               cost_model=None, stationary_costs: tuple | None = None) -> RouteResult:
     """Return a candidate under the supplied model, never an execution command.
 
+    Supplying a scientific cost model prices admitted directed movement through
+    that backend; its explicit stationary tuple is charged once at the goal.
+    Omitting it retains the legacy projection for compatibility diagnostics.
     A missing profile, unresolved corridor or exhausted work bound yields UNKNOWN.
     EFFICIENT is intentionally unsupported. SAFE proves maximal known-grid
     bottleneck by repeatedly asking for a strictly better feasible clearance;
@@ -666,6 +691,17 @@ def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
         return result(RouteStatus.UNKNOWN, "PROFILE_NOT_READY", "An explicit reviewed or illustrative motion profile is required.")
     if profile.agent_kind != request.agent_kind:
         return result(RouteStatus.ERROR, "PROFILE_KIND_MISMATCH", "Request and motion profile agent kinds differ.")
+    if cost_model is not None:
+        if cost_model.profile.kind != request.agent_kind or cost_model.profile.agent_id != request.agent_id:
+            return result(RouteStatus.ERROR, "COST_PROFILE_MISMATCH", "Scientific profile identity differs from request.")
+        if stationary_costs is None or len(stationary_costs) != 3:
+            return result(RouteStatus.ERROR, "STATIONARY_SCHEDULE_REQUIRED", "Explicit scientific stationary costs are required.")
+        for value in stationary_costs:
+            _number(value, "stationary_cost")
+        if request.agent_kind != "human" and stationary_costs[2] != 0:
+            return result(RouteStatus.ERROR, "ROBOT_OXYGEN_INVALID", "Robots cannot consume oxygen.")
+    elif stationary_costs is not None:
+        return result(RouteStatus.ERROR, "COST_MODEL_REQUIRED", "Stationary scientific costs require their movement backend.")
     try:
         mode = RouteMode(request.mode)
     except ValueError:
@@ -697,25 +733,28 @@ def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
                       "Continuous start connectors currently support ground agents only.")
     try:
         cache = geometry_cache if geometry_cache is not None else GeometryCache()
-        known = cache.get(terrain, profile)
+        known = (cache.get(terrain, profile, cost_model=cost_model) if cost_model is not None
+                 else cache.get(terrain, profile))
         work.check()
         connector = known.connect_start(request.start, start) if continuous_start else None
         if continuous_start and connector is None:
-            optimistic = cache.get(terrain, profile, optimistic=True)
+            optimistic = (cache.get(terrain, profile, optimistic=True, cost_model=cost_model)
+                          if cost_model is not None else cache.get(terrain, profile, optimistic=True))
             work.check()
             if optimistic.connect_start(request.start, start) is not None:
                 return result(RouteStatus.UNKNOWN, "UNVERIFIED_START_CONNECTOR",
                               "The start connector or its footprint depends on unresolved terrain.")
             return result(RouteStatus.NO_PATH, "NO_ADMISSIBLE_START_CONNECTOR",
                           "No admissible connection to the containing cell centre under the declared model; no other connector is attempted.")
-        best = _search(known, request, start, goal, back, 0., work, connector)
+        best = _search(known, request, start, goal, back, 0., work, connector, stationary_costs)
         if best is None:
             if _connected(known, start, goal, back, request, work):
                 if np.any(~known.known & (terrain.traversability != 100)):
                     return result(RouteStatus.UNKNOWN, "UNVERIFIED_BUDGET_CORRIDOR",
                                   "Known routes exceed resources, but unresolved terrain prevents a global budget impossibility claim.")
                 return result(RouteStatus.INSUFFICIENT_BUDGET, "BUDGET_EXCEEDED", "No known-grid route fits outbound, service, return and reserves.")
-            optimistic = cache.get(terrain, profile, optimistic=True)
+            optimistic = (cache.get(terrain, profile, optimistic=True, cost_model=cost_model)
+                          if cost_model is not None else cache.get(terrain, profile, optimistic=True))
             work.check()
             if _connected(optimistic, start, goal, back, request, work):
                 return result(RouteStatus.UNKNOWN, "UNVERIFIED_CORRIDOR", "A possible corridor depends on unknown or unverified terrain.")
@@ -723,7 +762,7 @@ def plan_route(*, terrain: TerrainGrid, request: PlanRequest,
         if mode == RouteMode.SAFE:
             while True:
                 threshold = float(np.nextafter(best.labels[best.terminal].clearance, math.inf))
-                candidate = _search(known, request, start, goal, back, threshold, work, connector)
+                candidate = _search(known, request, start, goal, back, threshold, work, connector, stationary_costs)
                 if candidate is None:
                     break
                 best = candidate

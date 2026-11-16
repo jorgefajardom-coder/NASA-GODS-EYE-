@@ -1,0 +1,58 @@
+{
+  "classification": "SOFTWARE_AND_SYNTHETIC_MODEL_CONFORMANCE_NOT_PHYSICAL_EXECUTION",
+  "recorded_at_utc": "2026-11-16T00:00:32.672283+00:00",
+  "baseline_main_sha": "d13a4b3f1035260cebf9f065472c56cc53158401",
+  "implementation_sha": "3830b8b0fb2d6269ac3e73e8b8fd8de71c876334",
+  "scientific": {
+    "AGREE": 7,
+    "DISAGREE": 0,
+    "NOT_FEASIBLE": 0,
+    "ERROR": 0
+  },
+  "explicit_legacy_control": {
+    "AGREE": 1,
+    "DISAGREE": 6,
+    "NOT_FEASIBLE": 0,
+    "ERROR": 0
+  },
+  "ros": {
+    "platform": "Ubuntu24.04 / ROS2Jazzy / colcon",
+    "build": "PASS:8packages",
+    "interface_inspection": "RegisterPlanningContext and unchanged PlanRoute inspected",
+    "regression_passed": 871,
+    "regression_skipped": 1,
+    "seven_case_actual_service": "PASS: all7 request/context DDS roundtrips independently audited",
+    "approval_gate": "MissionNode producer returns numerical agreement while Manager retains MODEL_NOT_AGREED default",
+    "domain_id": 74,
+    "junit": "ros/regression.xml"
+  },
+  "windows_python": {
+    "passed": 1346,
+    "skipped": 27,
+    "warnings": 1
+  },
+  "frontend": {
+    "node": "24.18.0",
+    "passed": 412,
+    "skipped": 1,
+    "build": "PASS"
+  },
+  "repository_checker": "PASS",
+  "existing_idl_bytes_unchanged": 8,
+  "new_interface": "RegisterPlanningContext.srv",
+  "interface_package_version": "2.0.0",
+  "candidate_contract": "2.0.0-rc.1",
+  "context_schema": "mge-planning-cost-context-1.0.0",
+  "model_parameters_changed": false,
+  "profile_approval_changed": false,
+  "physical_execution_verified": false,
+  "environment_notes": [
+    "WSL /tmp did not persist; finalbuilduses task-owned persistentLinuxprefix.",
+    "MissingFastAPI/WebSocketdependencies installedonlyin task-ownedvenv; systemROS NumPy1.26.4/SciPy1.11.4 retained.",
+    "Historical transportfixtures explicitlyselectlegacy; defaultscientificservicetests remainseparate."
+  ],
+  "ai_usage": {
+    "tool": "OpenAI Codex",
+    "use": "Code/test/context integration, local diagnostic orchestration, evidence assembly and documentation. Numerical outputs produced by actual unchanged scientific formulas."
+  }
+}

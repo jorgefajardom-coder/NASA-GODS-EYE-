@@ -73,9 +73,13 @@ def launch_parameters(profile, receipt, run_id):
     result["gateway"]["source_mode"] = source_mode(providers)
     if profile != "mock":
         planner, mission = result["planner"], result["mission"]
-        if not planner.get("profiles_file") or planner.get("snapshot_contract_confirmed") is not True:
+        if (not planner.get("scientific_profiles_path")
+                or planner.get("allow_legacy_cost_model", False) is not False
+                or planner.get("snapshot_contract_confirmed") is not True):
             raise ValueError("NOT_READY: PLANNER_CONFIGURATION_REQUIRED")
         if (not mission.get("profiles_path") or not mission.get("mission_path")
                 or mission.get("model_agreement_confirmed") is not True or not mission.get("approved_model_id")):
             raise ValueError("NOT_READY: MISSION_CONFIGURATION_REQUIRED")
+        if planner["scientific_profiles_path"] != mission["profiles_path"]:
+            raise ValueError("NOT_READY: SCIENTIFIC_PROFILE_IDENTITY_MISMATCH")
     return result

@@ -14,6 +14,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/MissionEvent.msg"
   "msg/MissionState.msg"
   "srv/PlanRoute.srv"
+  "srv/RegisterPlanningContext.srv"
   "srv/SetMissionGoal.srv"
   DEPENDENCIES std_msgs geometry_msgs
 )
