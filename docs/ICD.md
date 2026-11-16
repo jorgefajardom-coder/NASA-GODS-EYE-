@@ -1,5 +1,26 @@
 # ICD-ROS2-V1 — Interface Control Document
 
+## Candidate scientific-cost migration: interface package 2.0.0
+
+The operational cost fix over main `d13a4b3` adds the typed
+`/mge/planner/register_context` service under
+`mge-planning-cost-context-1.0.0`. Existing message and service fields retain
+their exact definitions. The scientific PlanRoute server requires an immutable
+registered request/activity context by default; old callers require explicit
+legacy server opt-in. This changed prerequisite is a major semantic migration,
+recorded as candidate baseline `2.0.0-rc.1`. The owner accepted the migration and
+authorized PR50 integration after CI in [D-COST-03](decisions/2026-11-15-scientific-cost-context-migration.md).
+This does not freeze every contract or approve profile coefficients.
+
+The context binds all original PlanRoute fields, actual float64 XYZ, float32
+resource/service values, model ID/source hash, profile-registry hash and ordered
+remaining activities at the goal. Duplicate registration is idempotent;
+conflicting or missing context fails closed. Both producer and consumer are
+implemented together. Full semantics, failures, migration and verification are
+in [operational scientific costs](scientific_cost_integration.md).
+Gateway, replay and public-raster JSON versions remain unchanged. The historical
+published rc.2 description below retains its original source scope.
+
 Status: **contract reconciliation `1.0.0-rc.2`, published by PR28 at main9198b3d,
 not frozen or scientifically approved.** Original audit input:
 `main@6bcf208868e37b7e15e9189fac11de96e7414eff`; reviewed source `7f0ebaa`.
@@ -31,6 +52,20 @@ field names and types; this document records the conventions around them.
   `y = origin_y_m + (row + 0.5) * resolution_m`.
   The same indexing applies to the `32FC1` rasters and to `OccupancyGrid`.
 - Web (Three.js, Y up): `(x_web, y_web, z_web) = (x_east, z_up, -y_north)`.
+- Terrain elevation and every authoritative `pose.position.z` / route Point.z
+  use metres above the declared `vertical_datum`; the recorded ROS chain has no
+  implicit local Z offset. AGL is a separate derived quantity, not a ROS pose.
+  The execution boundary must preserve finite current XYZ and reject a route
+  whose first point differs by more than the existing 1e-6 m model tolerance.
+  It must not replace telemetry with surface height. Goal/base XY target
+  semantics remain unchanged; a surface candidate is not a flight trajectory.
+- A new labelled MOCK scene may explicitly initialize missing initial Z from
+  its declared public-prior dataset/hash/datum. This is scenario construction,
+  never an observation or an update to an existing pose. The parked drone is
+  placed on that declared scene surface. Missing height without that declaration,
+  NoData or incompatible explicit XYZ must fail before publishing agent state.
+- Display sampling uses the actual rendered triangle and animated vertex buffer;
+  visual draping/exaggeration must never alter recorded XYZ or mission authority.
 - SI units, with the unit as field suffix: `_m`, `_s`, `_wh`, `_l`, `_deg`.
   ROS field names are lower case, so the guide's `energy_est_Wh` is
   `energy_est_wh`.
@@ -50,7 +85,16 @@ field names and types; this document records the conventions around them.
 
 ## 2. Time and identifiers
 
-- `/clock` from Gazebo when it runs, with `use_sim_time=true`. Mission headers use simulated time when a simulator is active. The separate
+- `/clock` from Gazebo when it runs, with `use_sim_time=true`. Mission headers use simulated time when a simulator is active.
+  Per [D-CLK-01](decisions/2026-11-15-simulation-time-source.md), a run has exactly one
+  time base: either every MGE node uses `use_sim_time=true` against exactly one
+  external, advancing `/clock` (Gazebo's, bridged unidirectionally), or the whole
+  run is a wall-clock MOCK run recorded as `clock_source: system`. Launches fail
+  `NOT_READY` (no or frozen clock) or `PROVIDER_COLLISION` (two clocks) before
+  any provider starts; no node fabricates a clock. Mission time, ETAs and
+  `time_remaining_s` debit follow that base. Steady-clock timers (stop/brake watchdog,
+  odometry freshness, mirror throttling, mission polling) are deliberate liveness exceptions and never
+  stamp messages or debit resources. Pausing Gazebo pauses mission time. The separate
   static MOCK smoke publisher uses wall time by default only for graph inspection;
   its timestamps are not mission ETA or evidence of simulated dynamics.
 - `run_id`: stable string per execution. Data from another run is dropped.
@@ -307,7 +351,13 @@ shown. The route's agent kind is read from `MissionState.agents`.
   to start with `NOT_READY: LIVE_BACKEND_UNAVAILABLE`. The field is an optional
   addition to JSON `1.0.0`; a client that does not find it must show `UNKNOWN`.
 - WebSocket messages carry `type`: `"event"` with an `event` object
-  (`MissionEvent`) or `"state"` with a `state` object (`MissionState`).
+  (`MissionEvent`), `"state"` with a `state` object (`MissionState`), or
+  `"terrain_meta"` with a `terrain_meta` object (`TerrainMeta`) when a newer
+  map version of the run arrives (the same type a timeline record uses, section 7;
+  an optional addition to JSON `1.0.0`, so a client may ignore it). Each event is
+  sent once per connection, even when it is both in the backlog and live. A
+  client that falls more than 1000 messages behind is closed with code 1013 and
+  resumes with `after_seq`.
 - **No active run.** Until a mission state of the configured run has been
   received, the gateway invents no run, map, clock or mode. It answers with
   the inactive envelope below: `GET /api/health` with HTTP 200 plus
@@ -591,3 +641,13 @@ retains profile approval, MODEL_NOT_AGREED/MODEL_MISMATCH, current run/map/pose,
 return reserve, idempotency and logical stop checks. The mock provider remains
 available for explicitly labelled contract tests. See
 [configuration and consumer proof](mission_integration_handoff.md).
+
+
+## Optional auxiliary visual-context topics (PR38 candidate)
+
+See [auxiliary schema1.0.0](AUXILIARY_LAYERS.md) for the optional immutable CTX
+DN and categorical display layers from data_node. Their OccupancyGrid values
+are color codes, never canonical traversability or navigation authorization.
+They remain separate from the stamped belief batch and require the sidecar
+prior-hash/full-georeference binding. No canonical message/service field or
+raster/replay version changes; scientific and consumer review remain pending.

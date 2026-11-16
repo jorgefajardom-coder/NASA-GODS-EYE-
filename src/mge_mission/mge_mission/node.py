@@ -8,6 +8,10 @@ from time import monotonic
 from threading import RLock
 
 from . import adapter
+from .planning_context import (
+    PlanningActivity, context_for_request, context_to_wire, profile_registry_sha256,
+    scientific_model_sha256,
+)
 
 
 def _serialized(method):
@@ -26,7 +30,7 @@ def create_node_class():
     from builtin_interfaces.msg import Time
     from geometry_msgs.msg import Point as WirePoint, PoseStamped
     from mge_interfaces.msg import AgentState, MissionEvent, MissionState, RouteDecision, TerrainMeta
-    from mge_interfaces.srv import PlanRoute, SetMissionGoal
+    from mge_interfaces.srv import PlanRoute, RegisterPlanningContext, SetMissionGoal
     from nav_msgs.msg import Path as WirePath
     from rcl_interfaces.msg import ParameterDescriptor
     from rclpy.clock import Clock, ClockType
@@ -59,6 +63,7 @@ def create_node_class():
             self._agent_wire, self._agent_stamps = {}, {}
             self._goal_answers = {}
             self._future = self._inflight_plan = self._request_wall_s = None
+            self._inflight_request = self._inflight_context = None
             self._inflight_map_stamp = None
             self._last_path_key = None
             for name, default in {
@@ -131,6 +136,19 @@ def create_node_class():
                 self.destroy_node()
                 raise ValueError("planner_timeout_s must be finite and positive")
             self._planner_timeout_s = float(timeout)
+            self._profiles_path = self.get_parameter("profiles_path").value
+            self._kernel_hash = scientific_model_sha256()
+            try:
+                if not self._profiles_path:
+                    raise ValueError("profiles_path is required to bind the scientific profile registry")
+                registered_profiles = load_profiles(self._profiles_path)
+                if registered_profiles != self._profiles:
+                    raise ValueError("Configured profile registry differs from the mission manager profiles")
+                self._registry_hash = profile_registry_sha256(self._profiles_path)
+                self._context_configuration_error = ""
+            except (OSError, ValueError, TypeError) as exc:
+                self._registry_hash = ""
+                self._context_configuration_error = str(exc)
             reliable = QoSProfile(history=HistoryPolicy.KEEP_LAST, depth=10,
                 reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE)
             retained = QoSProfile(history=HistoryPolicy.KEEP_LAST, depth=1,
@@ -139,6 +157,7 @@ def create_node_class():
             self._event_publisher = self.create_publisher(MissionEvent, "/mge/mission/events", reliable)
             self._path_publisher = self.create_publisher(WirePath, "/mge/planner/active_path", retained)
             self._planner_client = self.create_client(PlanRoute, "/mge/planner/plan_route")
+            self._context_client = self.create_client(RegisterPlanningContext, "/mge/planner/register_context")
             self._goal_service = self.create_service(SetMissionGoal, "/mge/mission/set_goal", self._set_goal)
             self.create_subscription(ClockMessage, "/clock", self._on_clock, clock_qos)
             self.create_subscription(TerrainMeta, "/mge/terrain/meta", self._on_meta, retained)
@@ -287,17 +306,67 @@ def create_node_class():
                 self._manager.fail_pending_plan("PLANNER_UNAVAILABLE", "The ROS planner service is unavailable.")
                 self._publish()
                 return
+            if self._context_configuration_error or not self._context_client.service_is_ready():
+                self._manager.fail_pending_plan("COST_CONTEXT_UNAVAILABLE",
+                    self._context_configuration_error or "Scientific context service is unavailable")
+                self._publish()
+                return
             try:
                 request = adapter.plan_to_wire(plan, PlanRoute.Request(), WirePoint)
+                if profile_registry_sha256(self._profiles_path) != self._registry_hash:
+                    raise ValueError("Scientific profile registry changed after initialization")
+                if scientific_model_sha256() != self._kernel_hash:
+                    raise ValueError("Scientific model source changed after initialization")
+                activities = (() if request.service_time_s == 0 else
+                    (PlanningActivity(plan.request_id + ":goal-service", plan.service_activity,
+                                      float(request.service_time_s)),))
+                context = context_for_request(request, self._profiles[plan.agent_id].model_id,
+                                              self._registry_hash, activities, model_source_sha256=self._kernel_hash)
                 self._inflight_plan, self._request_wall_s = plan, monotonic()
+                self._inflight_request, self._inflight_context = request, context
                 if self._map_stamp_key is None:
                     raise ValueError("no explicit terrain batch timestamp is available")
                 self._inflight_map_stamp = self._map_stamp_key
-                self._future = self._planner_client.call_async(request)
-                self._future.add_done_callback(self._on_plan_result)
-            except (ValueError, TypeError, RuntimeError) as exc:
+                registration = context_to_wire(context, RegisterPlanningContext.Request())
+                self._future = self._context_client.call_async(registration)
+                self._future.add_done_callback(self._on_context_result)
+            except (OSError, ValueError, TypeError, RuntimeError) as exc:
                 self._future = self._inflight_plan = None
                 self._manager.fail_pending_plan("PLANNER_ERROR", str(exc))
+                self._publish()
+
+        @_serialized
+        def _on_context_result(self, future):
+            if self._destroying or future is not self._future:
+                return
+            plan = self._inflight_plan
+            try:
+                if not self._ready_clock():
+                    return
+                if self._manager.pending_plan() != plan or self._map_stamp_key != self._inflight_map_stamp:
+                    self._future = self._inflight_plan = None
+                    self._inflight_request = self._inflight_context = None
+                    return  # A newer request/map must acquire its own immutable context.
+                result = future.result()
+                if result is None or result.accepted is not True:
+                    raise ValueError("Context registration rejected: " + str(getattr(result, "reason_code", "NO_RESPONSE")))
+                if result.context_sha256 != self._inflight_context.digest:
+                    raise ValueError("Context acknowledgement does not identify the dispatched schedule")
+                if profile_registry_sha256(self._profiles_path) != self._registry_hash:
+                    raise ValueError("Scientific profile registry changed while context registration was pending")
+                if scientific_model_sha256() != self._kernel_hash:
+                    raise ValueError("Scientific model source changed while context registration was pending")
+                if self._manager.refresh_pending_resources():
+                    self._future = self._inflight_plan = None
+                    self._inflight_request = self._inflight_context = None
+                    self._publish()
+                    return
+                self._future = self._planner_client.call_async(self._inflight_request)
+                self._future.add_done_callback(self._on_plan_result)
+            except Exception as exc:
+                self._future = self._inflight_plan = None
+                self._inflight_request = self._inflight_context = None
+                self._fail_if_current(plan.request_id, "COST_CONTEXT_REJECTED", str(exc))
                 self._publish()
 
         @_serialized
@@ -307,6 +376,7 @@ def create_node_class():
             plan = self._inflight_plan
             map_stamp = self._inflight_map_stamp
             self._future = self._inflight_plan = None
+            self._inflight_request = self._inflight_context = None
             try:
                 if not self._ready_clock():
                     return

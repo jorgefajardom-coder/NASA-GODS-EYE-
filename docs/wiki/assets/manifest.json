@@ -1,0 +1,238 @@
+{
+  "schema": "mge-wiki-assets-1.0.0",
+  "generated_with": "OpenAI Codex-assisted code and image_gen",
+  "documentation_reference_main_sha": "9013bebf2400d605f5a3d68e79dadbd5d1c57d03",
+  "case_planner_source_sha": "64985e7b4b69ac9683661db4842885d5a8293695",
+  "source_run_id": "local-cost-eva-bunsen-20261115-02",
+  "input_sha256": {
+    "evidence/mission-cost-experiment-20261115-local-v2/experiment.json": "553dd7b4abd855830bd913f77233d2b9f1e26bb0d91ac32f9d5784290c37692b",
+    "evidence/overnight-mission-research-20261115-v3/public/bunsen-512.npz": "1040100abd2cf797a96dc3e47d08b29b81047c46aa010beaa9d6255ea983f4ae",
+    "config/science_profiles.proposed.json": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+    "docs/wiki/tools/build_figures.py": "ecb05930d0e2bd98bd5c76c8603be91526e6dc095e353b0903401d01b8191aa3",
+    "docs/science_approvals/jezero_scenario_20261114.json": "c32f34f14e742f3e9666059cd337c3d249d9e2ffe2afb13fc29f1c1f030ba518",
+    "config/activity_duration.pilot.json": "e28933881a4bce1ce01bf65b18f10733b63b3a3ed98f33e89d24c2f9303afbfa",
+    "docs/agent_campaign_proposal.md": "11edd6ac907ba89f86fa575d8679c91bdea789d3b2b4baa9ee632a2aa2825125",
+    "evidence/mission-3d-video-20261115-local/map-analysis/crop-comparison.json": "f0e2fbd45b02ee358d90aea87b7a04226014d2fc6cee22c46ddf668df05e9180"
+  },
+  "versions": {
+    "python": "3.12.14",
+    "matplotlib": "3.11.2",
+    "numpy": "2.5.4",
+    "pillow": "13.0.0"
+  },
+  "directed_model_examples": {
+    "human": {
+      "-5": {
+        "time_s": 132.00528021120846,
+        "energy_wh": 15.316279317839381,
+        "oxygen_l": 3.1276258830333052
+      },
+      "0": {
+        "time_s": 120.00480019200768,
+        "energy_wh": 13.923890288944891,
+        "oxygen_l": 2.8432962573030047
+      },
+      "5": {
+        "time_s": 132.00528021120846,
+        "energy_wh": 19.45292931783938,
+        "oxygen_l": 3.9723410609538674
+      }
+    },
+    "rover": {
+      "-5": {
+        "time_s": 2781.2478325695533,
+        "energy_wh": 77.25688423804314,
+        "oxygen_l": null
+      },
+      "0": {
+        "time_s": 2777.7777777777774,
+        "energy_wh": 93.92746913580247,
+        "oxygen_l": null
+      },
+      "5": {
+        "time_s": 2781.2478325695533,
+        "energy_wh": 110.7908348553271,
+        "oxygen_l": null
+      }
+    }
+  },
+  "assets": [
+    {
+      "file": "research-loop.png",
+      "kind": "Conceptual diagram",
+      "source": "Project explanatory schematic",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Conceptual diagram",
+      "sha256": "15a33586e4e6021f5be7ccf5e30ce4c6aad3faf3b47d82b9b93385478991a1a1"
+    },
+    {
+      "file": "jezero-evidence-chain.png",
+      "kind": "Conceptual diagram",
+      "source": "Hurowitz et al.2025; Stack et al.2024; NASA Bunsen field report2024; conceptual synthesis",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Conceptual diagram",
+      "sha256": "50bad10f443f2bc08e0964ac037217b8e903e8881bcaff3b57da6e5a25ef6793"
+    },
+    {
+      "file": "terrain-scale.png",
+      "kind": "Conceptual diagram",
+      "source": "USGS CTX DTM metadata; schematic fields, not measured heights",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Conceptual diagram",
+      "sha256": "5c5d1250133a1188c74d58ace28019081e86ee6c92efb51a4347a0251dc83b0f"
+    },
+    {
+      "file": "agent-timescales.png",
+      "kind": "Conceptual diagram",
+      "source": "JZ-APP-20261114-01; docs/agent_campaign_proposal.md, proposed regional allocations",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Conceptual diagram",
+      "sha256": "2b1787f4887d9929aa4e47a432852a1f052bc42342234c5b4a0b7e1350b31f63"
+    },
+    {
+      "file": "activity-cycle.png",
+      "kind": "Conceptual diagram",
+      "source": "Hurtado et al.2011 D-RATS; activity_duration.pilot.json; not a measured phase split",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Conceptual diagram",
+      "sha256": "aa1bbdf042be0446ce7c601a703470a554f86a210b0dc16eece2c5d8e7a331cb"
+    },
+    {
+      "file": "task-precedence.png",
+      "kind": "Conceptual diagram",
+      "source": "Project explanatory schematic",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Conceptual diagram",
+      "sha256": "e695ca8dd52d23bcc0ed1d969433136f8478a644a3b380519dc60a82255d81d6"
+    },
+    {
+      "file": "experimental-design.png",
+      "kind": "Conceptual diagram",
+      "source": "Project explanatory schematic",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Conceptual diagram",
+      "sha256": "2e43d1e701c038c13468bc912a60a0c6764e7d36686ae029383428a98cb37f66"
+    },
+    {
+      "file": "evidence-ladder.png",
+      "kind": "Conceptual diagram",
+      "source": "Project explanatory schematic",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Conceptual diagram",
+      "sha256": "fe67fb40acd73d5a26e5a5214b86fd68a72819e0f0da8a23ec9cadf4ec85f599"
+    },
+    {
+      "file": "directed-costs.png",
+      "kind": "Model calculation",
+      "source": "Existing estimate_segment; config/science_profiles.proposed.json",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Model calculation",
+      "sha256": "b7746cef6193ee1b0c36d882cb1b15a23d1ed5a738afdbd2bb8419fe1584ff39"
+    },
+    {
+      "file": "resource-ledger.png",
+      "kind": "Model calculation",
+      "source": "Synthetic teaching allocation; existing scientific estimator",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Model calculation",
+      "sha256": "0cb95ebcfc386001fb411e29dadf41c838f45709d29c024b9fe17ec8f33096b6"
+    },
+    {
+      "file": "sensitivity.png",
+      "kind": "Model calculation",
+      "source": "Scientific estimator teaching sweep; constant 5% grade, fixed allocations",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Model calculation",
+      "sha256": "abecdd6ade1f52aa802d7f9973dbf9077e72ab3a62d0881c34c6ce4406e9b75e"
+    },
+    {
+      "file": "scale-crop.png",
+      "kind": "SIMULATED analytical case",
+      "source": "Recorded Bunsen case; public CTX prior; crop-comparison.json",
+      "frames": 1,
+      "visible_watermark": "AI-generated | SIMULATED analytical case",
+      "sha256": "946f7489bcd2ec14902ff0d0f3245f8e9ae64f621944a4a004d5d0a4abf1a6fc"
+    },
+    {
+      "file": "case-route.png",
+      "kind": "SIMULATED analytical case",
+      "source": "experiment.json timeline; public CTX prior; no geological target registration",
+      "frames": 1,
+      "visible_watermark": "AI-generated | SIMULATED analytical case",
+      "sha256": "0b943fcd727ae66d979543b712ac01a0c5d63facb6fcab201e7003d15d42b0c8"
+    },
+    {
+      "file": "case-resources.png",
+      "kind": "SIMULATED analytical case",
+      "source": "experiment.json nonresetting remaining resources",
+      "frames": 1,
+      "visible_watermark": "AI-generated | SIMULATED analytical case",
+      "sha256": "34d0c08d5032773162a0bf003ebe97840d79ae226128cd6190a0b131da93d342"
+    },
+    {
+      "file": "adaptation.gif",
+      "kind": "SIMULATED analytical case",
+      "source": "Recorded timeline; public prior and revealed observations only",
+      "frames": 48,
+      "visible_watermark": "AI-generated | SIMULATED analytical case",
+      "sha256": "95ec6288ff866ffef3df8c604f08892f6c6af9ab62adf993a5d1298e0262e76d"
+    },
+    {
+      "file": "adaptation-poster.png",
+      "kind": "SIMULATED analytical case",
+      "source": "Recorded timeline; public prior and revealed observations only",
+      "frames": 1,
+      "visible_watermark": "AI-generated | SIMULATED analytical case",
+      "sha256": "ec98601bbf98b4cfe46ac343b24168ea65c429e6025692529b103f5be0df0528"
+    },
+    {
+      "file": "prior-observation.gif",
+      "kind": "Conceptual simulation",
+      "source": "Synthetic grid; causal observation concept",
+      "frames": 3,
+      "visible_watermark": "AI-generated | Conceptual simulation",
+      "sha256": "8629c746d0183b394751e756ffe5c67130619bc5aef10e72923d28411b5d2e41",
+      "frame_duration_ms": [
+        2200,
+        2500,
+        2800
+      ],
+      "replacement_receipt": "../audit/slower-prior-observation-20261115.json"
+    },
+    {
+      "file": "prior-observation-poster.png",
+      "kind": "Conceptual simulation",
+      "source": "Synthetic grid; causal observation concept",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Conceptual simulation",
+      "sha256": "b0707b4916641f815fd8eddbec0c31347ed6568e9979cb51810578f9a3260713"
+    },
+    {
+      "file": "mission-decisions.gif",
+      "kind": "Conceptual diagram",
+      "source": "Mission authority causal sequence",
+      "frames": 6,
+      "visible_watermark": "AI-generated | Conceptual diagram",
+      "sha256": "2c80c138258e21ef31612cc8bcc3f8745b062e0b5b677d7b8958a0ec04993c58"
+    },
+    {
+      "file": "mission-decisions-poster.png",
+      "kind": "Conceptual diagram",
+      "source": "Mission authority causal sequence",
+      "frames": 1,
+      "visible_watermark": "AI-generated | Conceptual diagram",
+      "sha256": "4c02ae4c0fef64197989ce7cd7aa44c97c2ea05909c7febbc7b3f06aaf7c4595"
+    },
+    {
+      "file": "cooperative-exploration.png",
+      "kind": "Conceptual illustration",
+      "source": "image_gen; generic unbranded scene, not measured terrain",
+      "frames": 1,
+      "visible_watermark": "AI-generated / Conceptual illustration",
+      "sha256": "93860d7d0103ff337488560548073becd80891ef99a0691a3117ad0acf49bef2"
+    }
+  ],
+  "all_GIF_frames_stamped": true,
+  "technical_implementation_changed": false,
+  "published": false
+}

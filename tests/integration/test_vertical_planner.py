@@ -67,7 +67,7 @@ def assert_connected(path):
 def stack(planner_ready):
     proc = subprocess.Popen(
         ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}',
-         f'port:={PORT}', 'planner:=real', f'profiles_file:={PROFILES}'],
+         f'port:={PORT}', 'planner:=real', 'allow_legacy_cost_model:=true', f'profiles_file:={PROFILES}'],
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, start_new_session=True)
     try:
         wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,

@@ -64,3 +64,25 @@ describe('rover camera rig (display only)', () => {
     expect(s.el).toBeCloseTo(-10, 2);
   });
 });
+
+describe('smooth photo tour camera', () => {
+  it('cuts only when the camera changes, not when the stereo eye does', () => {
+    const s = createRig();
+    const before = s.cut;
+    requestShot(s, { camera: s.camera, side: s.side === 'left' ? 'right' : 'left' });
+    expect(s.cut).toBe(before); // the eyes are centimetres apart: the view slides, it does not cut
+    requestShot(s, { camera: s.camera === 'navcam' ? 'mastcamz' : 'navcam' });
+    expect(s.cut).toBe(before + 1);
+  });
+
+  it('turns the mast gently: a quarter turn takes several seconds', () => {
+    let p = { pos: 0, rate: 0 };
+    let t = 0;
+    while (Math.abs(p.pos - 90) > 0.05 && t < 30) {
+      p = stepAxis(p.pos, p.rate, 90, MAST_RATE_DEG_S, 24, 1 / 60);
+      t += 1 / 60;
+    }
+    expect(MAST_RATE_DEG_S).toBeLessThanOrEqual(15);
+    expect(t).toBeGreaterThan(6);
+  });
+});

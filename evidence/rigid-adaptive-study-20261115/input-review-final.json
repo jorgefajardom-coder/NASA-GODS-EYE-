@@ -1,0 +1,257 @@
+{
+  "classification": "INDEPENDENT_SOURCE_AND_PUBLIC_INPUT_CLOSURE_NOT_OPERATIONAL_ACCEPTANCE",
+  "audited_at_utc": "2026-11-15T22:19:58.317191+00:00",
+  "checks": "PASS",
+  "auditor_sha256": "9a418fdda96f6465e00f45ea11063dda3b2afce1bbb5d242ba92a371b9d8cda4",
+  "input_closure_sha256": "316c6db37229624e00118e27133118efe5d9d5d45e461afb8fb87635ab4a2482",
+  "source_sha": "3c82d72f972109113216039bff5cfd491df5f1ba",
+  "runtime_and_snapshot_files_verified": [
+    {
+      "path": "config/science_profiles.proposed.json",
+      "sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea"
+    },
+    {
+      "path": "src/mge_mapping/mge_mapping/__init__.py",
+      "sha256": "3aa6b8e871fb8c7ec9d0ad6e34a844d3586add21fac60147bc3b6cdd552a0dcc"
+    },
+    {
+      "path": "src/mge_mapping/mge_mapping/core.py",
+      "sha256": "7e2cd5ab6831b1787b73d49497a910919ed0e5c7a40fc0a9f9c6be477975a1a8"
+    },
+    {
+      "path": "src/mge_mission/mge_mission/__init__.py",
+      "sha256": "c4d0a343fe14d25931d280dda8e78281cb17d8444f22da58520691d792378df7"
+    },
+    {
+      "path": "src/mge_mission/mge_mission/models.py",
+      "sha256": "178785d57ed3fa478061c451e774bc0686a7a7c486a9c57820a517104fe2be52"
+    },
+    {
+      "path": "src/mge_planning/mge_planning/__init__.py",
+      "sha256": "a26f5fd6f9d68940c8358b1cebcb48d4fdada7b0d4af1383a9444f5d0a567bca"
+    },
+    {
+      "path": "src/mge_planning/mge_planning/core.py",
+      "sha256": "f59b51ccdd53218ecaa425b3fc7963fe43f3bfd95d1157a3aa687b9378c950d9"
+    },
+    {
+      "path": "src/mge_planning/mge_planning/resource_costs.py",
+      "sha256": "7d958896a9c9e69bf53f9dd6fe6014b9363d3c3988b8672d04aa8a562f6e7047"
+    },
+    {
+      "path": "evidence/overnight-mission-research-20261115-v3/campaign-campaign_analysis.json",
+      "sha256": "a4aafe7c9e97b0fee84141075b7198cc9a4083d10be9643d8909039eea0a0e1f"
+    },
+    {
+      "path": "scripts/run_rigid_adaptive_study.py",
+      "sha256": "0024f2dee8957980353938d82187c1034a5a2eda6248e60ccc29682d7e8ead85"
+    },
+    {
+      "path": "src/mge_mission/mge_mission/environment_pilots.py",
+      "sha256": "fa3c3e584a1716a1851af6588df5a6c0b10b6cf79ed8a3b5a268a39d4d978093"
+    },
+    {
+      "path": "src/mge_mission/mge_mission/research/__init__.py",
+      "sha256": "3de22f999a12998df5e9bc28803829c07da94f70589370d9e99e724677db5932"
+    },
+    {
+      "path": "src/mge_mission/mge_mission/research/design.py",
+      "sha256": "00157d5b2bd78672fed07b10cc32e30e98373e046735e060cfbb9e2373d8dc58"
+    },
+    {
+      "path": "src/mge_mission/mge_mission/research/protocol.py",
+      "sha256": "08373118fc1e9cb20e332c89322f88c242a4a6dab159a4f13e194b12a206d4e8"
+    },
+    {
+      "path": "src/mge_mission/mge_mission/research/rigid_adaptive.py",
+      "sha256": "5a685dbbf0720bc723504da13c787a01d55e3798f006905a3f48b79fe940ff40"
+    },
+    {
+      "path": "src/mge_mission/mge_mission/research/world.py",
+      "sha256": "56f454a13bfd73eb007b9df5df47dc1ba3c81c34cb8879058c4dd50c7fdb0d02"
+    },
+    {
+      "path": "src/mge_mission/mge_mission/scientific_search.py",
+      "sha256": "0c156fc5a762a4a8e28a954da883a0eaf2cdec85e7f997e3be11743d70f30030"
+    },
+    {
+      "path": "src/mge_mission/mge_mission/terrain_profile_variants.py",
+      "sha256": "f18c12d53bedb73b1b3aefaeb40f2be6c46b4cd2ef52111c8d45c236e0bc4d6b"
+    }
+  ],
+  "batches": [
+    {
+      "batch": "results",
+      "manifest_sha256": "23947914cc9faab7d5a8a3772bca58c519d23b9a93732187ecb6b30aaeb3ebec",
+      "summary_present": true,
+      "module_locks_verified": 14,
+      "profile_sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "map_checks": [
+        {
+          "id": "bright-256",
+          "map_sha256": "fb37e43701860aa054ab9771802a1110f8a0f2dcf1bc205318ea1b631a1f82ad",
+          "record_sha256": "0a51a0668ed8365d1720528c51f63c3dd7bfe6fa31182bc760b937b078854498",
+          "nodata_cells": 0
+        },
+        {
+          "id": "hawksbill-256",
+          "map_sha256": "41b9c5ef34a9735d75a7f0e6ae3afdcf4e731f75a1445ba0c28fccb4da1f4f14",
+          "record_sha256": "f360f60bc177b64ac7877cffde589b383ea13661c2f4999306dc639d2c4bdc60",
+          "nodata_cells": 0
+        },
+        {
+          "id": "bunsen-256",
+          "map_sha256": "d0756c91ffc9464a9eb6479bd7935e3bf9a97d171ba5590e0e1170fcd926b0db",
+          "record_sha256": "74fed411bcb389d98743aba1d169e7336adfb6827427b4816ef7c035dc9cc0a4",
+          "nodata_cells": 0
+        },
+        {
+          "id": "bright-512",
+          "map_sha256": "a495c0e9d4a517ef235cf2fddb6aa2025bc9aafcc3ccfcd2aef9a6ff5925954b",
+          "record_sha256": "8c9316eb883af03442b3060f3cb05d01bbd8748171c7634cc8969b04c501b2ad",
+          "nodata_cells": 0
+        },
+        {
+          "id": "hawksbill-512",
+          "map_sha256": "f06ab6fc515855e6ee8deebeb3306f35898040fd7e8bcfca2018bd27cdaee015",
+          "record_sha256": "9e682c570a7b2eae9eb18c04f8b3dc350db5476fb9488f950e4391f2eba06c91",
+          "nodata_cells": 0
+        },
+        {
+          "id": "bunsen-512",
+          "map_sha256": "1040100abd2cf797a96dc3e47d08b29b81047c46aa010beaa9d6255ea983f4ae",
+          "record_sha256": "9271d8ead458fc7849bb32bfcdfe53ec447983a2bb3ec96347b5d32659afe07e",
+          "nodata_cells": 0
+        }
+      ]
+    },
+    {
+      "batch": "directed-results",
+      "manifest_sha256": "93397f06e44814b9ad650455ccc231d56f2cf7a56f0cf0b53ef35b7f2b6b8daf",
+      "summary_present": true,
+      "module_locks_verified": 14,
+      "profile_sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "map_checks": [
+        {
+          "id": "bright-256",
+          "map_sha256": "fb37e43701860aa054ab9771802a1110f8a0f2dcf1bc205318ea1b631a1f82ad",
+          "record_sha256": "0a51a0668ed8365d1720528c51f63c3dd7bfe6fa31182bc760b937b078854498",
+          "nodata_cells": 0
+        },
+        {
+          "id": "hawksbill-256",
+          "map_sha256": "41b9c5ef34a9735d75a7f0e6ae3afdcf4e731f75a1445ba0c28fccb4da1f4f14",
+          "record_sha256": "f360f60bc177b64ac7877cffde589b383ea13661c2f4999306dc639d2c4bdc60",
+          "nodata_cells": 0
+        },
+        {
+          "id": "bunsen-256",
+          "map_sha256": "d0756c91ffc9464a9eb6479bd7935e3bf9a97d171ba5590e0e1170fcd926b0db",
+          "record_sha256": "74fed411bcb389d98743aba1d169e7336adfb6827427b4816ef7c035dc9cc0a4",
+          "nodata_cells": 0
+        },
+        {
+          "id": "bright-512",
+          "map_sha256": "a495c0e9d4a517ef235cf2fddb6aa2025bc9aafcc3ccfcd2aef9a6ff5925954b",
+          "record_sha256": "8c9316eb883af03442b3060f3cb05d01bbd8748171c7634cc8969b04c501b2ad",
+          "nodata_cells": 0
+        },
+        {
+          "id": "hawksbill-512",
+          "map_sha256": "f06ab6fc515855e6ee8deebeb3306f35898040fd7e8bcfca2018bd27cdaee015",
+          "record_sha256": "9e682c570a7b2eae9eb18c04f8b3dc350db5476fb9488f950e4391f2eba06c91",
+          "nodata_cells": 0
+        },
+        {
+          "id": "bunsen-512",
+          "map_sha256": "1040100abd2cf797a96dc3e47d08b29b81047c46aa010beaa9d6255ea983f4ae",
+          "record_sha256": "9271d8ead458fc7849bb32bfcdfe53ec447983a2bb3ec96347b5d32659afe07e",
+          "nodata_cells": 0
+        }
+      ]
+    },
+    {
+      "batch": "strict-sigma-controls",
+      "manifest_sha256": "e6bc6003517bc82d782fcf834490d40f482840914914396fb2d32e9503e338d2",
+      "summary_present": true,
+      "module_locks_verified": 14,
+      "profile_sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "map_checks": [
+        {
+          "id": "bright-256",
+          "map_sha256": "fb37e43701860aa054ab9771802a1110f8a0f2dcf1bc205318ea1b631a1f82ad",
+          "record_sha256": "0a51a0668ed8365d1720528c51f63c3dd7bfe6fa31182bc760b937b078854498",
+          "nodata_cells": 0
+        },
+        {
+          "id": "hawksbill-256",
+          "map_sha256": "41b9c5ef34a9735d75a7f0e6ae3afdcf4e731f75a1445ba0c28fccb4da1f4f14",
+          "record_sha256": "f360f60bc177b64ac7877cffde589b383ea13661c2f4999306dc639d2c4bdc60",
+          "nodata_cells": 0
+        },
+        {
+          "id": "bunsen-256",
+          "map_sha256": "d0756c91ffc9464a9eb6479bd7935e3bf9a97d171ba5590e0e1170fcd926b0db",
+          "record_sha256": "74fed411bcb389d98743aba1d169e7336adfb6827427b4816ef7c035dc9cc0a4",
+          "nodata_cells": 0
+        }
+      ]
+    },
+    {
+      "batch": "published-step-controls",
+      "manifest_sha256": "eaef45e8a4ec412bc8ae076458a7e77755f7e019a09f8387ab30ffdfe06264f2",
+      "summary_present": true,
+      "module_locks_verified": 14,
+      "profile_sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "map_checks": [
+        {
+          "id": "bright-256",
+          "map_sha256": "fb37e43701860aa054ab9771802a1110f8a0f2dcf1bc205318ea1b631a1f82ad",
+          "record_sha256": "0a51a0668ed8365d1720528c51f63c3dd7bfe6fa31182bc760b937b078854498",
+          "nodata_cells": 0
+        },
+        {
+          "id": "hawksbill-256",
+          "map_sha256": "41b9c5ef34a9735d75a7f0e6ae3afdcf4e731f75a1445ba0c28fccb4da1f4f14",
+          "record_sha256": "f360f60bc177b64ac7877cffde589b383ea13661c2f4999306dc639d2c4bdc60",
+          "nodata_cells": 0
+        },
+        {
+          "id": "bunsen-256",
+          "map_sha256": "d0756c91ffc9464a9eb6479bd7935e3bf9a97d171ba5590e0e1170fcd926b0db",
+          "record_sha256": "74fed411bcb389d98743aba1d169e7336adfb6827427b4816ef7c035dc9cc0a4",
+          "nodata_cells": 0
+        }
+      ]
+    },
+    {
+      "batch": "extended-1024-results",
+      "manifest_sha256": "670ca3f6627de5dab29be4307ec7fa3b4f43dc2800eeb1b7d496bd4619084175",
+      "summary_present": true,
+      "module_locks_verified": 14,
+      "profile_sha256": "537f6d4baf47531a8dd97e72cd2e3c57a97651dbc675a55ba019eaa622cce5ea",
+      "map_checks": [
+        {
+          "id": "bright-1024",
+          "map_sha256": "38dfdb7ebacb9d164f203ea679cac1b494a0983da4097281f5cc4154abfe8983",
+          "record_sha256": "670727eba8f073c58df9669a7b8ff64c97d65ae0d796f242dd5385dfeff09eab",
+          "nodata_cells": 0
+        },
+        {
+          "id": "hawksbill-1024",
+          "map_sha256": "bb79f68e97a8dd13f38be73aa9ae3ae04a92c17290fb1525eb57de22b0977bea",
+          "record_sha256": "6f61857e35f2df027c2e2cad2bfc6150f2b95f5c2d3e749b9b00fedec1fd3361",
+          "nodata_cells": 0
+        },
+        {
+          "id": "bunsen-1024",
+          "map_sha256": "54055dcf1413cb6c6e96543028e5e457a27d50a58405e9367e1c95944b03002b",
+          "record_sha256": "a63ccaf0bcebb9050e0246e8a28ccb987e28f7e9a5ddc042d644c430ea5f916d",
+          "nodata_cells": 0
+        }
+      ]
+    }
+  ],
+  "provenance_limitation": "Manifest import locks were recorded before the bulk run. The allocation helper and campaign JSON were identified and snapshotted after the run began; no modification of them was observed. This record does not claim a pre-run lock for those two dependencies.",
+  "resume_note": "The runner journal does not itself enforce the imported-module byte locks on resume. These independent final byte checks supplement the explicit source freeze; main and directed batches did not resume."
+}

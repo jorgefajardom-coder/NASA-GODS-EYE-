@@ -1,16 +1,13 @@
-"""Experimental Python-only estimates; never route authorization.
+"""Shared scientific costs and the production scientific-search entry point.
 
-Delegates scientific formulas to mission. Geometry admission and authoritative
-execution accounting remain external. Importing this module requires mge_mission.
+Formulas delegate to mission. Search prices every admitted directed edge and
+explicit pending goal activity through this API; mission retains authorization.
+AI-assisted integration and tests are declared in docs/ai_usage.json.
 """
-from dataclasses import dataclass, field
-import hashlib
-import json
-from pathlib import Path
-import re
+from dataclasses import dataclass
+import math
 
 from mge_mission.models import AgentProfile, CostEstimate, estimate_activity, estimate_segment
-from mge_mission import models
 
 
 @dataclass(frozen=True)
@@ -42,6 +39,12 @@ class BudgetCheck:
 @dataclass(frozen=True)
 class ScientificCosts:
     profile: AgentProfile
+
+    @property
+    def maximum_horizontal_speed(self):
+        """An admissible horizontal-time bound for the declared science model."""
+        p = self.profile.parameters
+        return p["speed_m_s"] * (1-p["slip"] if self.profile.kind == "rover" else 1.)
 
     def movement(self, start, end):
         return estimate_segment(self.profile, start, end)
@@ -87,105 +90,81 @@ class ScientificCosts:
             margins["time_s"], margins["energy_wh"], margins.get("oxygen_l")))
 
 
-@dataclass(frozen=True)
-class ScientificContext:
-    """Explicit pending goal work for ONE immutable Python request snapshot.
 
-    Hashes bind declared inputs, not scientific approval or authorization. Prefer
-    from_files to bind the actual registry/scenario bytes. No runtime ROS binding.
-    Service and waiting are separate, fixed goal schedules; no route stopovers,
-    arrival-time-dependent costs, recharge or execution ledger are supported.
+def _scientific_geometry_contract(motion, science):
+    if motion.agent_kind != science.kind:
+        raise ValueError("motion and scientific profile kinds differ")
+    p = science.parameters
+    down = motion.max_downhill_slope_deg if motion.max_downhill_slope_deg is not None else motion.max_slope_deg
+    if motion.max_slope_deg > p["max_slope_deg"] or down > p.get("max_downhill_slope_deg", p["max_slope_deg"]):
+        raise ValueError("motion geometry exceeds scientific directed slope limits")
+    if motion.max_step_m > p["max_step_m"]:
+        raise ValueError("motion geometry exceeds scientific step limit")
+    if motion.radius_m < p["radius_m"] or motion.localization_error_m < p["localization_error_m"]:
+        raise ValueError("motion footprint is smaller than the scientific profile")
+    if motion.max_sigma_m is None or motion.max_sigma_m > p["max_sigma_m"]:
+        raise ValueError("motion uncertainty admission exceeds the scientific profile")
+
+
+def _audit_scientific_candidate(result, request, profile, activities):
+    """Independent path/schedule reconciliation; comparison grants no resources."""
+    parts = [estimate_segment(profile, a, b)
+             for path in (result.outbound_path, result.return_path)
+             for a, b in zip(path, path[1:])]
+    parts.extend(estimate_activity(profile, a.kind, a.remaining_s) for a in activities)
+    expected = CostEstimate(sum(p.time_s for p in parts), sum(p.energy_wh for p in parts),
+                            sum(p.oxygen_l for p in parts) if profile.kind == "human" else None)
+    for field, output in (("time_s", "travel_time_s"), ("energy_wh", "energy_est_wh"),
+                          ("oxygen_l", "oxygen_est_l")):
+        actual, wanted = getattr(result, output), getattr(expected, field)
+        if wanted is None:
+            if actual is not None:
+                raise ValueError("nonhuman oxygen must remain absent")
+        elif not isinstance(actual, (int, float)) or not math.isfinite(actual) or not math.isclose(actual, wanted, rel_tol=1e-5, abs_tol=1e-3):
+            raise ValueError("candidate differs from independent scientific itinerary: " + field)
+    values = ((request.budget.time_s, request.reserve_time_s, expected.time_s, result.reserve_time_s),
+              (request.budget.energy_wh, request.budget.reserve_wh, expected.energy_wh, result.reserve_wh))
+    if profile.kind == "human":
+        values += ((request.budget.oxygen_l, request.budget.reserve_oxygen_l,
+                    expected.oxygen_l, result.reserve_oxygen_l),)
+    for available, reserve, spent, remaining in values:
+        if spent > available-reserve:
+            raise ValueError("independent scientific itinerary violates a strict reserve")
+        if remaining is None or not math.isfinite(remaining) or not math.isclose(remaining, available-spent, rel_tol=1e-5, abs_tol=1e-3):
+            raise ValueError("candidate remaining resources differ from the scientific ledger")
+
+
+def scientific_plan_route(*, terrain, request, motion_profile, scientific_profile,
+                          activities=(), limits=None, allow_continuous_start=False):
+    """Plan with scientific movement, activity and directed-return costs.
+
+    The fixed, explicit schedule belongs to the goal. Spent work is excluded by
+    the caller's current allocations. This function is used by the ROS service;
+    profile approval, typed request/context transport and mission authorization
+    remain separate checks. No coefficient, state, or pose is silently changed.
     """
-    request: object
-    profile: AgentProfile
-    model_id: str
-    profile_registry_sha256: str
-    scenario_sha256: str
-    phase: str
-    service: tuple[Activity, ...]
-    waiting: tuple[Activity, ...]
-    model_source_sha256: str = field(init=False)
-    profile_sha256: str = field(init=False)
-    goal_costs: tuple[float, float, float] = field(init=False)
-
-    def __post_init__(self):
-        from .core import PlanRequest, ResourceBudget
-        if not isinstance(self.request, PlanRequest) or not isinstance(self.profile, AgentProfile):
-            raise ValueError("a typed request and scientific profile are required")
-        if not isinstance(self.request.budget, ResourceBudget):
-            raise ValueError("an immutable planning budget is required")
-        if self.model_id != models.MODEL_ID or self.profile.model_id != self.model_id:
-            raise ValueError("scientific model identity mismatch")
-        for digest in (self.profile_registry_sha256, self.scenario_sha256):
-            if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
-                raise ValueError("registry and scenario SHA256 are required")
-        if self.phase not in {"OUTBOUND", "SERVICE", "RETURN"}:
-            raise ValueError("explicit mission phase required")
-        if self.profile.kind not in {"human", "rover"}:
-            raise ValueError("scientific search currently supports ground agents only")
-        r = self.request
-        if (r.agent_id, r.agent_kind) != (self.profile.agent_id, self.profile.kind):
-            raise ValueError("scientific profile agent mismatch")
-        ids = set()
-        for name in ("service", "waiting"):
-            values = tuple(getattr(self, name))
-            for item in values:
-                if not isinstance(item, Activity):
-                    raise ValueError("explicit Activity instances required")
-                if item.activity_id in ids:
-                    raise ValueError("duplicate pending activity identity")
-                ids.add(item.activity_id)
-                # Validate kinds/durations through the shared scientific API.
-                estimate_activity(self.profile, item.kind, item.remaining_s)
-            object.__setattr__(self, name, values)
-        if len(self.service) + len(self.waiting) > 256:
-            raise ValueError("at most 256 fixed goal activities are supported")
-        if sum(x.remaining_s for x in self.service) != r.service_time_s:
-            raise ValueError("explicit pending service must match service_time_s")
-        if self.phase == "SERVICE" and r.start[:2] != r.goal[:2]:
-            raise ValueError("SERVICE must start at the goal")
-        if self.phase == "RETURN" and (self.service or self.waiting or r.require_return):
-            raise ValueError("RETURN requires explicit one-leg request and no goal work")
-        c = ScientificCosts(self.profile).total(self.service + self.waiting)
-        object.__setattr__(self, "goal_costs", (c.time_s, c.energy_wh, c.oxygen_l or 0.))
-        object.__setattr__(self, "model_source_sha256", hashlib.sha256(Path(models.__file__).read_bytes()).hexdigest())
-        payload = (self.profile.agent_id, self.profile.kind, self.profile.model_id,
-                   self.profile.approval_status, self.profile.capabilities,
-                   sorted(self.profile.parameters.items()), sorted(self.profile.activity_power_w.items()))
-        object.__setattr__(self, "profile_sha256", hashlib.sha256(json.dumps(payload).encode()).hexdigest())
-
-    @classmethod
-    def from_files(cls, *, request, registry_path, scenario_path, phase, service, waiting):
-        """Load unchanged published-profile format, without promoting approval."""
-        profiles = models.load_profiles(registry_path)
-        return cls(request, profiles.get(request.agent_id), models.MODEL_ID,
-                   hashlib.sha256(Path(registry_path).read_bytes()).hexdigest(),
-                   hashlib.sha256(Path(scenario_path).read_bytes()).hexdigest(),
-                   phase, service, waiting)
-
-    @property
-    def model_key(self):
-        return (self.model_id, self.model_source_sha256, self.profile_registry_sha256,
-                self.scenario_sha256, self.profile_sha256)
-
-    @property
-    def fingerprint(self):
-        return hashlib.sha256(repr((self.model_key, self.request, self.phase,
-                                    self.service, self.waiting)).encode()).hexdigest()
-
-    def validate(self, request, motion_profile):
-        if self.request != request:
-            raise ValueError("scientific context does not match request snapshot")
-        p = self.profile.parameters
-        if motion_profile.agent_kind != self.profile.kind:
-            raise ValueError("scientific geometry kind mismatch")
-        # More conservative geometry is allowed; science never relaxes admission.
-        if (motion_profile.max_slope_deg > p['max_slope_deg']
-                or motion_profile.max_step_m > p['max_step_m']
-                or motion_profile.radius_m < p['radius_m']
-                or motion_profile.localization_error_m < p['localization_error_m']
-                or (motion_profile.max_downhill_slope_deg if motion_profile.max_downhill_slope_deg is not None
-                    else motion_profile.max_slope_deg) > p.get('max_downhill_slope_deg', p['max_slope_deg'])
-                or motion_profile.max_sigma_m is None
-                or motion_profile.max_sigma_m > p['max_sigma_m']):
-            raise ValueError("geometry limits may not weaken the scientific profile")
+    from .core import RouteResult, RouteStatus, plan_route
+    if request.agent_id != scientific_profile.agent_id or request.agent_kind != scientific_profile.kind:
+        raise ValueError("request and scientific profile identities differ")
+    _scientific_geometry_contract(motion_profile, scientific_profile)
+    activities = tuple(activities)
+    if any(not isinstance(a, Activity) for a in activities):
+        raise ValueError("explicit Activity records are required")
+    backend = ScientificCosts(scientific_profile)
+    service = backend.total(activities)
+    if not math.isclose(service.time_s, request.service_time_s, rel_tol=0., abs_tol=1e-9):
+        raise ValueError("service_time_s differs from the explicit pending goal schedule")
+    result = plan_route(terrain=terrain, request=request, profile=motion_profile,
+                        limits=limits, allow_continuous_start=allow_continuous_start,
+                        cost_model=backend,
+                        stationary_costs=(service.time_s, service.energy_wh, service.oxygen_l or 0.))
+    if result.status != RouteStatus.FEASIBLE:
+        return result
+    try:
+        _audit_scientific_candidate(result, request, scientific_profile, activities)
+    except ValueError as error:
+        return RouteResult(status=RouteStatus.ERROR, reason_code="SCIENTIFIC_COST_MISMATCH", detail=str(error),
+                           run_id=result.run_id, request_id=result.request_id, agent_id=result.agent_id,
+                           mode=result.mode, map_version_used=result.map_version_used,
+                           expanded_labels=result.expanded_labels, elapsed_s=result.elapsed_s)
+    return result

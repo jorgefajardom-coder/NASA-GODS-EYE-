@@ -5,6 +5,15 @@ route, publishes the route in force, and replans from the agent's current
 pose when the map version changes. It covers IDLE / PLANNING / READY / REPLAN
 / BLOCKED only. It has no tasks, precedences or execution; those belong to
 the real mge_mission package.
+
+Opt-in budget fallback (`budget_fallback:=true`, off by default): when the goal
+in force no longer fits the allocation that is left (planner INSUFFICIENT_BUDGET,
+a known route that only an unverified corridor could beat, or the mission's own
+budget check), the mission itself tries nearer targets on the base->goal line
+(`budget_fallback_fractions`, snapped to cell centres) and finally the base, with
+the same remaining allocation and reserves. It never lowers a reserve, never
+re-allocates consumed resources and stops at the first candidate the planner
+returns FEASIBLE under the model. MOCK behaviour, not a validated policy.
 """
 import math
 from copy import deepcopy
@@ -37,6 +46,45 @@ MAX_RETRIES = 120
 # apart from a search that really does not fit in the limit.
 MAX_LIMIT_RETRIES = 2
 RETRY_PERIOD_S = 0.25
+# Planner answers meaning "this goal does not fit the allocation that is left".
+BUDGET_REASONS = {'BUDGET_EXCEEDED', 'UNVERIFIED_BUDGET_CORRIDOR'}
+
+
+def budget_blocked(decision):
+    """True when the planner rejected the goal for resources, not geometry or staleness."""
+    return (decision.status == RouteDecision.STATUS_INSUFFICIENT_BUDGET
+            or decision.reason_code in BUDGET_REASONS)
+
+
+def on_grid(point, grid):
+    """True when the XY of `point` lies inside the map grid (origin_x, origin_y, res, rows, cols)."""
+    ox, oy, res, rows, cols = grid
+    return (all(math.isfinite(v) for v in (point.x, point.y))
+            and ox <= point.x < ox + cols * res and oy <= point.y < oy + rows * res)
+
+
+def fallback_targets(base, goal, fractions, grid):
+    """Nearer targets on the base->goal segment, snapped to cell centres, then the base.
+
+    `grid` is (origin_x_m, origin_y_m, resolution_m, rows, cols). Points off the
+    grid, duplicates and the original goal cell are skipped; the base is last.
+    """
+    ox, oy, res, rows, cols = grid
+    out, seen = [], set()
+
+    def cell(x, y):
+        return math.floor((y - oy) / res), math.floor((x - ox) / res)
+
+    seen.add(cell(goal.x, goal.y))
+    home = cell(base.x, base.y)
+    for f in sorted({float(f) for f in fractions if 0.0 < float(f) < 1.0}, reverse=True):
+        r, c = cell(base.x + f * (goal.x - base.x), base.y + f * (goal.y - base.y))
+        if not (0 <= r < rows and 0 <= c < cols) or (r, c) in seen or (r, c) == home:
+            continue
+        seen.add((r, c))
+        out.append((ox + (c + 0.5) * res, oy + (r + 0.5) * res))
+    out.append((base.x, base.y))
+    return out
 
 
 class MockMission(Node):
@@ -49,6 +97,16 @@ class MockMission(Node):
         self.stop_ack_timeout_s = self.declare_parameter('stop_ack_timeout_s', 5.0).value
         if not math.isfinite(self.stop_ack_timeout_s) or self.stop_ack_timeout_s <= 0:
             raise ValueError('stop_ack_timeout_s must be positive and finite')
+        self.budget_fallback = self.declare_parameter('budget_fallback', False).value
+        self.fallback_fractions = list(self.declare_parameter(
+            'budget_fallback_fractions', [0.75, 0.5, 0.25]).value)
+        # Opt-in: a goal whose agent finished its route back at base is complete (mission IDLE),
+        # so a later map update does not send that agent out again.
+        self.complete_on_return = self.declare_parameter('complete_on_return', False).value
+        self.completion_tolerance_m = float(self.declare_parameter('completion_tolerance_m', 1e-3).value)
+        self.departed = False       # the primary moved on the route in force
+        self.grid = None            # (origin_x, origin_y, resolution, rows, cols) of the map
+        self.fallback = None        # remaining fallback targets for the goal in force
 
         self.state = S.STATE_IDLE
         self.reason = ''
@@ -87,11 +145,37 @@ class MockMission(Node):
         if previous is not None and stamp_key(msg.header) < stamp_key(previous.header):
             return
         self.agents[msg.agent_id] = msg
+        if getattr(self, 'complete_on_return', False):
+            self.check_completion(msg)
         if (self.stop_barrier is not None and self.goal is not None
                 and msg.agent_id == self.goal.primary_agent_id
                 and stopped_after(msg, self.stop_barrier)):
             self.stop_barrier = self.stop_deadline = None
             self.request_plan()
+
+    def check_completion(self, msg):
+        """Close the goal once its agent, having moved on the published route, rests at its end."""
+        g = self.goal
+        if g is None or msg.agent_id != g.primary_agent_id or self.state != S.STATE_READY or not self.route.route_id:
+            return
+        if msg.mode == AgentState.MODE_MOVING:
+            self.departed = True
+            return
+        end = (list(self.route.return_path) or list(self.route.outbound_path) or [None])[-1]
+        p = msg.pose.position
+        if (self.departed and msg.mode == AgentState.MODE_IDLE and end is not None
+                and math.dist((p.x, p.y), (end.x, end.y)) <= getattr(self, 'completion_tolerance_m', 1e-3)):
+            route_id = self.route.route_id
+            # The finished route is withdrawn: no route stays in force on a later map version.
+            self.route = RouteDecision()
+            self.publish_path()
+            self.goal = None
+            self.fallback = None
+            self.departed = False
+            self.emit(E.TYPE_TASK_STATE_CHANGED, cause=route_id, task_id='primary', agent_id=msg.agent_id,
+                      route_id=route_id, reason='GOAL_COMPLETED',
+                      detail='The agent finished its route back at base; the goal is complete.')
+            self.set_state(S.STATE_IDLE, cause=route_id, reason='GOAL_COMPLETED')
 
     def check_stop_timeout(self):
         if self.stop_deadline is not None and self.get_clock().now().nanoseconds >= self.stop_deadline:
@@ -120,6 +204,8 @@ class MockMission(Node):
             return
         first = self.map_version == 0
         self.map_version = meta.map_version
+        if hasattr(meta, 'resolution_m'):
+            self.grid = (meta.origin_x_m, meta.origin_y_m, meta.resolution_m, meta.rows, meta.cols)
         if first:
             return
         self.emit(E.TYPE_MAP_UPDATED, cause=f'map-v{meta.map_version}',
@@ -153,6 +239,10 @@ class MockMission(Node):
             reject = ('UNKNOWN_AGENT', f'No state received for agent {req.primary_agent_id!r}.')
         elif self.map_version == 0:
             reject = ('NO_MAP', 'No terrain metadata received yet.')
+        elif getattr(self, 'grid', None) is not None and not all(
+                on_grid(p, self.grid) for p in (req.goal, req.base)):
+            # No agent is sent off the terrain: goal and base must lie on the map grid.
+            reject = ('OUT_OF_MAP', 'Goal and base must lie inside the terrain grid.')
         elif (self.require_stop_ack and self.goal is not None
               and req.primary_agent_id != self.goal.primary_agent_id
               and self.agents[self.goal.primary_agent_id].mode == AgentState.MODE_MOVING):
@@ -167,6 +257,8 @@ class MockMission(Node):
             moving = self.agents[req.primary_agent_id].mode == AgentState.MODE_MOVING
             self.invalidate_planning()
             self.goal = req
+            self.fallback = None
+            self.departed = False
             agent = self.agents[req.primary_agent_id]
             self.goal_resources = (agent.time_remaining_s, agent.energy_remaining_wh,
                                    agent.oxygen_remaining_l)
@@ -305,6 +397,8 @@ class MockMission(Node):
             except ValueError:
                 fits = False
             if not fits:
+                if getattr(self, 'budget_fallback', False) and self.try_budget_fallback(d, budget=True):
+                    return
                 self.set_state(S.STATE_BLOCKED, cause=d.request_id, reason='INSUFFICIENT_BUDGET')
                 return
             expected = self.dispatched.start
@@ -321,6 +415,7 @@ class MockMission(Node):
                 self.set_state(S.STATE_BLOCKED, cause=d.request_id, reason='CANDIDATE_START_MISMATCH')
                 return
             self.route = d
+            self.departed = False
             self.publish_path()
             self.emit(E.TYPE_ROUTE_PUBLISHED, cause=d.request_id, agent_id=d.agent_id,
                       route_id=d.route_id, reason=d.reason_code, detail=d.detail)
@@ -329,11 +424,52 @@ class MockMission(Node):
             self.route = d  # keeps status and reason visible, route_id is empty
             self.emit(E.TYPE_ERROR, cause=d.request_id, agent_id=d.agent_id,
                       reason=d.reason_code, detail=d.detail)
+            if (getattr(self, 'budget_fallback', False)
+                    and self.try_budget_fallback(d, budget=budget_blocked(d))):
+                return
             self.set_state(S.STATE_BLOCKED, cause=d.request_id, reason=d.status)
+
+    def try_budget_fallback(self, d, budget):
+        """Switch the goal in force to the next nearer target; False leaves the mission BLOCKED.
+
+        Starts only on a resource rejection; once started, any target that is not
+        authorized moves on to the next one. The allocation (`goal_resources` and
+        budgets) and the reserves of the original goal are kept unchanged.
+        """
+        if not getattr(self, 'budget_fallback', False) or self.goal is None or self.grid is None:
+            return False
+        if self.fallback is None:
+            if not budget:
+                return False
+            self.fallback = fallback_targets(
+                self.goal.base, self.goal.goal, self.fallback_fractions, self.grid)
+        failed = self.goal.goal
+        if not self.fallback:
+            self.emit(E.TYPE_ERROR, cause=d.request_id, agent_id=self.goal.primary_agent_id,
+                      reason='BUDGET_FALLBACK_EXHAUSTED',
+                      detail='No nearer target or return to base fits the remaining allocation.')
+            return False
+        x, y = self.fallback.pop(0)
+        goal = deepcopy(self.goal)
+        goal.goal.x, goal.goal.y, goal.goal.z = float(x), float(y), 0.0
+        home = math.isclose(x, goal.base.x) and math.isclose(y, goal.base.y)
+        self.goal = goal
+        self.emit(E.TYPE_TASK_STATE_CHANGED, cause=d.request_id, task_id='primary',
+                  agent_id=goal.primary_agent_id, reason='BUDGET_FALLBACK',
+                  detail=(f'Target ({failed.x:.0f}, {failed.y:.0f}) '
+                          + ('does not fit the remaining allocation; ' if budget else
+                             f'has no authorized route ({d.reason_code or d.status}); ')
+                          + ('returning to base.' if home else
+                                             f'trying nearer target ({x:.0f}, {y:.0f}).')))
+        self.set_state(S.STATE_REPLAN, cause=d.request_id, reason='BUDGET_FALLBACK')
+        self.attempt = 0
+        self.limit_retries = 0
+        self.request_plan()
+        return True
 
     # ---- outputs ----------------------------------------------------------
     def emit(self, event_type, cause='', agent_id='', route_id='', reason='', detail='',
-             previous='', new=''):
+             previous='', new='', task_id=''):
         self.seq += 1
         ev = E()
         ev.header.stamp = self.get_clock().now().to_msg()
@@ -342,6 +478,7 @@ class MockMission(Node):
         ev.run_id = self.run_id
         ev.causality_id = cause
         ev.event_type = event_type
+        ev.task_id = task_id
         ev.agent_id = agent_id
         ev.map_version = self.map_version
         ev.route_id = route_id

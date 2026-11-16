@@ -1,45 +1,5 @@
 # Diego's planner handoff
 
-F-TERRAIN-02 is LOCAL ONLY on the terrain experiment branch. See
-planner_terrain_mobility_f02.md and evidence/planner-terrain-f02:76 new synthetic
-cases and full1344 passed/22 skipped. Unmodified A* runs on an explicit complete
-fine synthetic surface; original step/slope/resource gates remain. Only its
-returned filtered evaluation_grid can be used for subsequent policy checks.
-Measured/orbital runtime providers, physical evidence and owner approvals remain
-blocked. No ROS activation, frozen-delivery change or publication.
-
-MVP-PL-01 local validation over d81407de: actual scientific Python A* candidates
-are now exercised against the unchanged real MissionManager in twelve synthetic
-consumer cases. FAST/SAFE, explicit inspect, directed return, remaining resources,
-map invalidation, continuous restart, stale identities, model gates and bounded
-failures are covered. See planner_mvp_pl01.md and evidence/planner-mvp-pl01-local.
-Fetched main7ad6050 contains PR33; no new Python/ROS consumer changes were found,
-and no merge or frozen-baseline/runtime activation was performed. The owner
-reports Jesus/David's C2 technical review closed; scientific parameter approval,
-ROS context transport, full role execution and organizer endorsement remain
-separate. Test-local illustrative admission does not approve production profiles.
-Current results: new12, planning465 and Windows full1236 passed/22 skipped;
-native Jazzy1117 passed/1 skipped, existing selected ROS integrations8 passed.
-Eight packages/interfaces checked; repository and web checks passed. Native
-pytest7.4.4 and Node24.18.1 deviate from declared/pinned versions; exact outcomes,
-initial environment failures and remaining CI/mission gates are recorded in JSON.
-
-Local final C2 audit: rejected scientific context/resource snapshots no longer
-lower the admitted availability bound. Correcting inputs retains invalidation;
-real admitted decreases still block replenishment. Default-limit cold-request
-benchmark (80 samples) is in planner_f033c2_final_audit.md and its evidence folder.
-Public Jezero remains UNKNOWN (sigma2.5 vs profile1); known D-07 search is feasible
-but scientific h=0 expands408 versus28 labels. No runtime activation/publication.
-
-Local F03.3-C2 continuation over PR33 source ffea8c2: ScientificContext is an
-explicit Python-only opt-in, default legacy behavior preserved. Scientific costs
-now participate in the actual search, connector and fixed goal-work transition,
-with h=0 and unchanged FAST/SAFE/resource/geometry bounds. Policy takes an explicit
-current pending context and preserves F03.3-A's latched monotonic resource guard.
-See planner_f033c2_local.md and evidence/planner-f033c2-local. No push or PR update,
-ROS activation, coefficient change, mission approval or submission readiness is
-implied. Jesus/David retain dependency/context/science review and organizer gates.
-
 F03.3 availability-guard review cut: based ONLY on published main0339bbd.
 Local audit documents/disclosures were hash-backed up under ignored
 tmp/f033-guard-backup, main was incorporated by fast-forward (no new commit),

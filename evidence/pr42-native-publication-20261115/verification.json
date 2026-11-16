@@ -1,0 +1,284 @@
+{
+  "status": "PASS",
+  "native_wiki_commit": "82534db4acddf37439758034acd9e1f5273256bf",
+  "expected_editorial_source": "a9f5b321721959d915940d5654cea7b61a98ec4a",
+  "retained_and_new_media_count": 39,
+  "media": [
+    {
+      "path": "assets/activity-cycle.png",
+      "bytes": 59160,
+      "sha256": "aa1bbdf042be0446ce7c601a703470a554f86a210b0dc16eece2c5d8e7a331cb"
+    },
+    {
+      "path": "assets/adaptation-poster.png",
+      "bytes": 63598,
+      "sha256": "ec98601bbf98b4cfe46ac343b24168ea65c429e6025692529b103f5be0df0528"
+    },
+    {
+      "path": "assets/adaptation.gif",
+      "bytes": 1719696,
+      "sha256": "95ec6288ff866ffef3df8c604f08892f6c6af9ab62adf993a5d1298e0262e76d"
+    },
+    {
+      "path": "assets/agent-timescales.png",
+      "bytes": 67992,
+      "sha256": "2b1787f4887d9929aa4e47a432852a1f052bc42342234c5b4a0b7e1350b31f63"
+    },
+    {
+      "path": "assets/case-resources.png",
+      "bytes": 77787,
+      "sha256": "34d0c08d5032773162a0bf003ebe97840d79ae226128cd6190a0b131da93d342"
+    },
+    {
+      "path": "assets/case-route.png",
+      "bytes": 73690,
+      "sha256": "0b943fcd727ae66d979543b712ac01a0c5d63facb6fcab201e7003d15d42b0c8"
+    },
+    {
+      "path": "assets/cooperative-exploration.png",
+      "bytes": 2644401,
+      "sha256": "93860d7d0103ff337488560548073becd80891ef99a0691a3117ad0acf49bef2"
+    },
+    {
+      "path": "assets/directed-costs.png",
+      "bytes": 95670,
+      "sha256": "b7746cef6193ee1b0c36d882cb1b15a23d1ed5a738afdbd2bb8419fe1584ff39"
+    },
+    {
+      "path": "assets/evidence-ladder.png",
+      "bytes": 70888,
+      "sha256": "fe67fb40acd73d5a26e5a5214b86fd68a72819e0f0da8a23ec9cadf4ec85f599"
+    },
+    {
+      "path": "assets/experimental-design.png",
+      "bytes": 73389,
+      "sha256": "2e43d1e701c038c13468bc912a60a0c6764e7d36686ae029383428a98cb37f66"
+    },
+    {
+      "path": "assets/imagegen-20261115/01-cooperative-exploration-reviewed.png",
+      "bytes": 2687561,
+      "sha256": "74a3dafe967f2e367579771aa2dd168a693c90941cfbaef35374d74d1a1a961d"
+    },
+    {
+      "path": "assets/imagegen-20261115/01-cooperative-exploration-reviewed.webp",
+      "bytes": 457154,
+      "sha256": "8b31faecd2d44ef414670bc8ea18345de2730261334d86ed97b743193d187357"
+    },
+    {
+      "path": "assets/imagegen-20261115/02-research-loop-reviewed.png",
+      "bytes": 2074759,
+      "sha256": "a940f6e906d551afdfdda799d6bc5c298efbf99bba717c9ef4a4d7d4869e0c4e"
+    },
+    {
+      "path": "assets/imagegen-20261115/02-research-loop-reviewed.webp",
+      "bytes": 271818,
+      "sha256": "b52278f8ef5a4845b1048c065178a1261f3c2fab191179f5216380b244a97071"
+    },
+    {
+      "path": "assets/imagegen-20261115/03-jezero-evidence-chain-reviewed.png",
+      "bytes": 2547238,
+      "sha256": "9105c9fbcbf813993ed22298e667e199a6bf8939f4d7f02d121b3f97d04a3b27"
+    },
+    {
+      "path": "assets/imagegen-20261115/03-jezero-evidence-chain-reviewed.webp",
+      "bytes": 445260,
+      "sha256": "21276ce9cfc094ca1d1598e910736d235f891f00604c659f7fcb33d38f26947f"
+    },
+    {
+      "path": "assets/imagegen-20261115/04-terrain-scale-reviewed.png",
+      "bytes": 1821647,
+      "sha256": "af3f1e64560ed0624ff7f224385a81f60650db4727df1301494c9104beadcf24"
+    },
+    {
+      "path": "assets/imagegen-20261115/04-terrain-scale-reviewed.webp",
+      "bytes": 216288,
+      "sha256": "c052c0bd302cd3620a648473c1a9ea4184682c2d4bb8d3c3df070d55e2b2d293"
+    },
+    {
+      "path": "assets/imagegen-20261115/05-agent-timescales-reviewed.png",
+      "bytes": 2006993,
+      "sha256": "e3487c1b1794e16c70321af517da260d276e6502654ff8cef65eb78912688710"
+    },
+    {
+      "path": "assets/imagegen-20261115/05-agent-timescales-reviewed.webp",
+      "bytes": 290148,
+      "sha256": "5e82a00d8a53c7703737b4bd5f86925686d735687d897af08b1e125f0600e62f"
+    },
+    {
+      "path": "assets/imagegen-20261115/06-activity-cycle-reviewed.png",
+      "bytes": 1989560,
+      "sha256": "1d4b40ef0d11b2b8d767dbe1efc5e93b8a9c383366b0835ce3adef206a01740e"
+    },
+    {
+      "path": "assets/imagegen-20261115/06-activity-cycle-reviewed.webp",
+      "bytes": 274688,
+      "sha256": "a301435aeda4a745e9119d3d701f7d2d28e3e784a6fd9f404e2e73edbd859100"
+    },
+    {
+      "path": "assets/imagegen-20261115/07-task-precedence-reviewed.png",
+      "bytes": 1984183,
+      "sha256": "08218ee9aa459383ad67b80a45aa44b7ca896ea4470423a609b0ee31fdfb9e5e"
+    },
+    {
+      "path": "assets/imagegen-20261115/07-task-precedence-reviewed.webp",
+      "bytes": 265796,
+      "sha256": "eb0b32c1e6e119fc28b0904f44c113041a9c7fb860eb54ee4745cb77338f7c53"
+    },
+    {
+      "path": "assets/imagegen-20261115/09-experimental-design-reviewed.png",
+      "bytes": 2006066,
+      "sha256": "2398881c4409550f2fd9274627efd737d27a14c1885370d02e52b06219b0911a"
+    },
+    {
+      "path": "assets/imagegen-20261115/09-experimental-design-reviewed.webp",
+      "bytes": 276312,
+      "sha256": "60a970d89a2750cfbd787e3e1e167f5b72995f619a65615a9a2f94d739f8d884"
+    },
+    {
+      "path": "assets/imagegen-20261115/10-evidence-ladder-reviewed.png",
+      "bytes": 2136760,
+      "sha256": "358b4110f622349e02988da184dc61384ff1111bc93ffb91ac1320200db45266"
+    },
+    {
+      "path": "assets/imagegen-20261115/10-evidence-ladder-reviewed.webp",
+      "bytes": 315120,
+      "sha256": "e9c449c21876e6a3cfc959df53ddd0a8154421bafe1cab7e20df0d5b46261870"
+    },
+    {
+      "path": "assets/jezero-evidence-chain.png",
+      "bytes": 88242,
+      "sha256": "50bad10f443f2bc08e0964ac037217b8e903e8881bcaff3b57da6e5a25ef6793"
+    },
+    {
+      "path": "assets/mission-decisions-poster.png",
+      "bytes": 56509,
+      "sha256": "4c02ae4c0fef64197989ce7cd7aa44c97c2ea05909c7febbc7b3f06aaf7c4595"
+    },
+    {
+      "path": "assets/mission-decisions.gif",
+      "bytes": 213506,
+      "sha256": "2c80c138258e21ef31612cc8bcc3f8745b062e0b5b677d7b8958a0ec04993c58"
+    },
+    {
+      "path": "assets/prior-observation-poster.png",
+      "bytes": 64198,
+      "sha256": "b0707b4916641f815fd8eddbec0c31347ed6568e9979cb51810578f9a3260713"
+    },
+    {
+      "path": "assets/prior-observation.gif",
+      "bytes": 117291,
+      "sha256": "aa51ee231a28fad5477f8ef8689afa3112f35f96916b2425a492cf260e876c28"
+    },
+    {
+      "path": "assets/research-loop.png",
+      "bytes": 74813,
+      "sha256": "15a33586e4e6021f5be7ccf5e30ce4c6aad3faf3b47d82b9b93385478991a1a1"
+    },
+    {
+      "path": "assets/resource-ledger.png",
+      "bytes": 63834,
+      "sha256": "0cb95ebcfc386001fb411e29dadf41c838f45709d29c024b9fe17ec8f33096b6"
+    },
+    {
+      "path": "assets/scale-crop.png",
+      "bytes": 113726,
+      "sha256": "946f7489bcd2ec14902ff0d0f3245f8e9ae64f621944a4a004d5d0a4abf1a6fc"
+    },
+    {
+      "path": "assets/sensitivity.png",
+      "bytes": 102027,
+      "sha256": "abecdd6ade1f52aa802d7f9973dbf9077e72ab3a62d0881c34c6ce4406e9b75e"
+    },
+    {
+      "path": "assets/task-precedence.png",
+      "bytes": 70035,
+      "sha256": "e695ca8dd52d23bcc0ed1d969433136f8478a644a3b380519dc60a82255d81d6"
+    },
+    {
+      "path": "assets/terrain-scale.png",
+      "bytes": 81767,
+      "sha256": "5c5d1250133a1188c74d58ace28019081e86ee6c92efb51a4347a0251dc83b0f"
+    }
+  ],
+  "new_media_head_requests": [
+    {
+      "path": "assets/imagegen-20261115/01-cooperative-exploration-reviewed.png",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/01-cooperative-exploration-reviewed.webp",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/02-research-loop-reviewed.png",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/02-research-loop-reviewed.webp",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/03-jezero-evidence-chain-reviewed.png",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/03-jezero-evidence-chain-reviewed.webp",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/04-terrain-scale-reviewed.png",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/04-terrain-scale-reviewed.webp",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/05-agent-timescales-reviewed.png",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/05-agent-timescales-reviewed.webp",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/06-activity-cycle-reviewed.png",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/06-activity-cycle-reviewed.webp",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/07-task-precedence-reviewed.png",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/07-task-precedence-reviewed.webp",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/09-experimental-design-reviewed.png",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/09-experimental-design-reviewed.webp",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/10-evidence-ladder-reviewed.png",
+      "status": 200
+    },
+    {
+      "path": "assets/imagegen-20261115/10-evidence-ladder-reviewed.webp",
+      "status": 200
+    }
+  ],
+  "write_performed": false,
+  "scope": "Read-only verification of concurrent owner-authorized publication; no overwriting or repeat publication",
+  "visual_review": "Nine-illustration independent local review retained in .local/pr42-review/visual-review.json; existing publisher records page rendering review in PR42",
+  "ai_usage": {
+    "tool": "OpenAI Codex",
+    "scope": "software integrity/availability verification receipt, no generated imagery or observations"
+  }
+}

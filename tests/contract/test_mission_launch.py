@@ -27,14 +27,19 @@ def context(mission='real', planner='real', **changes):
         'run_id': 'mission-launch-contract', 'use_sim_time': 'true',
         'mission': mission, 'planner': planner, 'terrain': 'mock', 'agents': 'static',
         'host': '127.0.0.1', 'port': '8769',
+        'cors_origins': "['http://localhost:5173', 'http://127.0.0.1:5173']",
         'agents_file': str(ROOT / 'src/mge_bringup/config/agents.yaml'),
         'profiles_file': str(ROOT / 'config/planner_profiles.illustrative.json'),
+        'scientific_profiles_path': str(ROOT / 'config/scenario_demo.yaml'),
+        'allow_legacy_cost_model': 'false',
         'exploration_policy_file': '',
         'mission_profiles_path': str(ROOT / 'config/scenario_demo.yaml'),
         'mission_path': str(ROOT / 'config/scenario_demo.yaml'),
         'base_enu_m': '[2.5, 2.5, 0.0]', 'allow_illustrative': 'true',
         'model_agreement_confirmed': 'false', 'approved_model_id': '',
-        'allow_continuous_starts': 'false',
+        'allow_continuous_starts': 'false', 'budget_fallback': 'false', 'complete_on_return': 'false', 'completion_tolerance_m': '0.001', 'external_agents': '',
+        'sensor': 'false', 'sensor_scene_file': '',
+        'sensor_agents': "['drone_1', 'human_1', 'rover_1']", 'sensor_radii_m': '[24.0, 8.0, 12.0]',
         'record': 'false', 'record_dir': 'evidence', **changes,
     })
     return value
@@ -105,14 +110,38 @@ def test_real_selection_rejects_wall_clock_and_missing_configuration(tmp_path):
     assert module._check_real_configuration(context(mission='mock', use_sim_time='false')) is False
 
 
-def test_real_selection_cannot_skip_external_clock_preflight(monkeypatch):
+@pytest.mark.parametrize('mission', ['mock', 'real'])
+def test_simulated_time_cannot_skip_external_clock_preflight(monkeypatch, mission):
+    """D-CLK-01: use_sim_time=true needs its clock for every mission provider."""
     module = load_launch()
     def unavailable():
         raise RuntimeError('NOT_READY: EXTERNAL_SIMULATION_CLOCK_REQUIRED')
     monkeypatch.setattr(module, '_require_external_clock', unavailable)
     with pytest.raises(RuntimeError, match='EXTERNAL_SIMULATION_CLOCK_REQUIRED'):
-        module._real_mission_preflight(context())
-    assert module._real_mission_preflight(context(mission='mock')) == []
+        module._clock_preflight(context(mission=mission))
+
+
+def test_wall_clock_mock_run_does_not_probe_a_clock(monkeypatch):
+    module = load_launch()
+    def unexpected():
+        raise AssertionError('a wall-clock run must not wait for /clock')
+    monkeypatch.setattr(module, '_require_external_clock', unexpected)
+    assert module._clock_preflight(context(mission='mock', use_sim_time='false')) == []
+    with pytest.raises(RuntimeError, match='REQUIRES_SIM_TIME'):
+        module._clock_preflight(context(mission='real', use_sim_time='false'))
+
+
+@pytest.mark.parametrize('stamps, publishers, expected', [
+    ([0, 100], 1, None),
+    ([5, 5, 5], 1, 'EXTERNAL_SIMULATION_CLOCK_REQUIRED'),   # paused/frozen clock
+    ([7], 1, 'EXTERNAL_SIMULATION_CLOCK_REQUIRED'),         # one sample proves no advance
+    ([], 0, 'EXTERNAL_SIMULATION_CLOCK_REQUIRED'),          # nothing publishes /clock
+    ([0, 100], 0, 'EXTERNAL_SIMULATION_CLOCK_REQUIRED'),    # publisher gone at the end
+    ([0, 100], 2, 'PROVIDER_COLLISION'),                    # two time bases
+])
+def test_clock_problem_requires_one_advancing_publisher(stamps, publishers, expected):
+    problem = load_launch()._clock_problem(stamps, publishers)
+    assert problem is None if expected is None else expected in problem
 
 
 def test_real_terrain_rejects_mock_planner_before_startup():
@@ -161,3 +190,79 @@ def test_only_kinematic_mock_mission_requires_stop_acknowledgement(monkeypatch, 
             assert values[0]['require_stop_ack'] is (agents == 'kinematic')
         else:
             assert all('require_stop_ack' not in value for value in values)
+
+
+@pytest.mark.parametrize('enabled', ['false', 'true'])
+def test_budget_fallback_reaches_only_the_mock_mission(monkeypatch, enabled):
+    module = load_launch()
+    original, nodes = module.Node, []
+    def capture(**kwargs):
+        node = original(**kwargs)
+        nodes.append(kwargs)
+        return node
+    monkeypatch.setattr(module, 'Node', capture)
+    module.generate_launch_description()
+    ctx = context(mission='mock', budget_fallback=enabled)
+    for item in nodes:
+        values = evaluate_parameters(ctx, normalize_parameters(item.get('parameters', [])))
+        if item['executable'] == 'mock_mission':
+            assert values[0]['budget_fallback'] is (enabled == 'true')
+        else:
+            assert all('budget_fallback' not in value for value in values)
+
+
+def test_scene_sensor_is_opt_in_and_receives_its_scene_and_radii(monkeypatch):
+    module = load_launch()
+    original, nodes = module.Node, []
+    def capture(**kwargs):
+        node = original(**kwargs)
+        nodes.append(kwargs)
+        return node
+    monkeypatch.setattr(module, 'Node', capture)
+    module.generate_launch_description()
+    sensor = next(item for item in nodes if item['executable'] == 'scene_sensor')
+    assert sensor['condition'].evaluate(context(sensor='false')) is False
+    ctx = context(sensor='true', sensor_scene_file='/tmp/scene.json')
+    assert sensor['condition'].evaluate(ctx) is True
+    values = evaluate_parameters(ctx, normalize_parameters(sensor['parameters']))[0]
+    assert values['scene_file'] == '/tmp/scene.json'
+    assert values['agent_ids'] == ['drone_1', 'human_1', 'rover_1']
+    assert values['radii_m'] == [24.0, 8.0, 12.0]
+
+
+def test_complete_on_return_reaches_only_the_mock_mission(monkeypatch):
+    module = load_launch()
+    original, nodes = module.Node, []
+    def capture(**kwargs):
+        node = original(**kwargs)
+        nodes.append(kwargs)
+        return node
+    monkeypatch.setattr(module, 'Node', capture)
+    module.generate_launch_description()
+    ctx = context(mission='mock', complete_on_return='true')
+    for item in nodes:
+        values = evaluate_parameters(ctx, normalize_parameters(item.get('parameters', [])))
+        if item['executable'] == 'mock_mission':
+            assert values[0]['complete_on_return'] is True
+        else:
+            assert all('complete_on_return' not in value for value in values)
+
+
+def test_external_agents_reach_only_the_kinematic_executor(monkeypatch):
+    module = load_launch()
+    original, nodes = module.Node, []
+    def capture(**kwargs):
+        node = original(**kwargs)
+        nodes.append(kwargs)
+        return node
+    monkeypatch.setattr(module, 'Node', capture)
+    module.generate_launch_description()
+    ctx = context(mission='mock', agents='kinematic', external_agents='rover_1', completion_tolerance_m='1.0')
+    for item in nodes:
+        values = evaluate_parameters(ctx, normalize_parameters(item.get('parameters', [])))
+        if item['executable'] == 'kinematic_executor':
+            assert values[0]['external_agents'] == 'rover_1'
+        else:
+            assert all('external_agents' not in value for value in values)
+        if item['executable'] == 'mock_mission':
+            assert values[0]['completion_tolerance_m'] == 1.0

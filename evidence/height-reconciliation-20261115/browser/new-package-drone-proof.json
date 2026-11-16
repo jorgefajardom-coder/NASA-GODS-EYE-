@@ -1,0 +1,253 @@
+{
+  "state": {
+    "schema": "mge.viewer-state/1",
+    "source": {
+      "mode": "REPLAY",
+      "label": "REPLAY · MOCK",
+      "run_id": "height-recovery-20261115-01",
+      "title": "Gateway replay height-recovery-20261115-01",
+      "disclaimer": "Recorded replay with MOCK providers; agent execution or mission authority may be simulated. Not a validated live mission. Terrain: recorded public rasters (mge-public-rasters-1.0.0). Clock: wall clock (no simulator)."
+    },
+    "time": {
+      "sim_s": 113.9,
+      "duration_s": 113.88379764556885,
+      "playing": false,
+      "speed": 10
+    },
+    "mission": {
+      "state": "READY",
+      "reason_code": "",
+      "map_version": 2,
+      "primary_agent_id": "human_1",
+      "active_task": "primary (primary, no state)"
+    },
+    "agents": [
+      {
+        "id": "drone_1",
+        "kind": "DRONE",
+        "mode": "IDLE",
+        "position_enu_m": {
+          "x": -10,
+          "y": -14,
+          "z": -2571.23
+        },
+        "heading_deg_from_north": 90,
+        "energy_wh": 100,
+        "oxygen_l": null,
+        "time_s": 600
+      },
+      {
+        "id": "human_1",
+        "kind": "HUMAN",
+        "mode": "IDLE",
+        "position_enu_m": {
+          "x": -14,
+          "y": -14,
+          "z": -2571.2
+        },
+        "heading_deg_from_north": 90,
+        "energy_wh": 979.6102294921875,
+        "oxygen_l": 998.8837890625,
+        "time_s": 14288.3818359375
+      },
+      {
+        "id": "rover_1",
+        "kind": "ROVER",
+        "mode": "IDLE",
+        "position_enu_m": {
+          "x": -14,
+          "y": -10,
+          "z": -2571.33
+        },
+        "heading_deg_from_north": 90,
+        "energy_wh": 2000,
+        "oxygen_l": null,
+        "time_s": 14400
+      }
+    ],
+    "active_route": {
+      "id": "route-9f73844a6c4a55b987093774",
+      "agent_id": "human_1",
+      "status": "FEASIBLE",
+      "mode": "FAST",
+      "map_version_used": 2,
+      "waypoints": 12,
+      "travel_time_s": 109.2181625366211,
+      "energy_est_wh": 19.9504337310791,
+      "oxygen_est_l": 1.0921815633773804
+    },
+    "invalidated_routes": [
+      "route-ce12f05f289ce8034fd0fb71"
+    ],
+    "recent_events": [
+      {
+        "t_s": 1.6,
+        "type": "MISSION_STATE_CHANGED",
+        "agent_id": "",
+        "detail": "Mission state PLANNING -> READY."
+      },
+      {
+        "t_s": 4,
+        "type": "MAP_UPDATED",
+        "agent_id": "",
+        "detail": "Map updated to version 2."
+      },
+      {
+        "t_s": 4.1,
+        "type": "ROUTE_INVALIDATED",
+        "agent_id": "",
+        "detail": "Route was computed on an older map version."
+      },
+      {
+        "t_s": 4.1,
+        "type": "MISSION_STATE_CHANGED",
+        "agent_id": "",
+        "detail": "Mission state READY -> REPLAN."
+      },
+      {
+        "t_s": 4.1,
+        "type": "ROUTE_PUBLISHED",
+        "agent_id": "human_1",
+        "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety."
+      },
+      {
+        "t_s": 4.1,
+        "type": "MISSION_STATE_CHANGED",
+        "agent_id": "",
+        "detail": "Mission state REPLAN -> READY."
+      }
+    ],
+    "view": {
+      "tab": "exploration",
+      "terrain_layer": "belief",
+      "camera": "free",
+      "first_person": false
+    }
+  },
+  "rawDrone": {
+    "run_id": "height-recovery-20261115-01",
+    "agent_id": "drone_1",
+    "agent_kind": "DRONE",
+    "pose": {
+      "position": {
+        "x": -10,
+        "y": -14,
+        "z": -2571.231201171875
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 1
+      }
+    },
+    "velocity": {
+      "linear": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "angular": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "mode": "IDLE",
+    "time_remaining_s": 600,
+    "energy_remaining_wh": 100,
+    "oxygen_remaining_l": null,
+    "confidence": 1,
+    "timestamp_sim_s": 113.86454629898071
+  },
+  "drawnDrone": [
+    -10.000000000000002,
+    -2571.231201171875,
+    14
+  ],
+  "groundHeight": -2571.231201171875,
+  "footDelta": 0,
+  "agl": 0,
+  "ndc": [
+    -0.024916278235434488,
+    -0.12572639196861446,
+    0.9927135995620475
+  ],
+  "cameras": [
+    {
+      "name": "Astronaut",
+      "view": {
+        "tab": "exploration",
+        "terrain_layer": "belief",
+        "camera": "human_1",
+        "first_person": false
+      },
+      "camera": [
+        -14,
+        -2568.599462890625,
+        8
+      ],
+      "finite": true
+    },
+    {
+      "name": "Rover",
+      "view": {
+        "tab": "exploration",
+        "terrain_layer": "belief",
+        "camera": "rover_1",
+        "first_person": false
+      },
+      "camera": [
+        -20,
+        -2568.72958984375,
+        10
+      ],
+      "finite": true
+    },
+    {
+      "name": "Drone",
+      "view": {
+        "tab": "exploration",
+        "terrain_layer": "belief",
+        "camera": "drone_1",
+        "first_person": false
+      },
+      "camera": [
+        -16,
+        -2568.631201171875,
+        14
+      ],
+      "finite": true
+    },
+    {
+      "name": "Base",
+      "view": {
+        "tab": "exploration",
+        "terrain_layer": "belief",
+        "camera": "base",
+        "first_person": false
+      },
+      "camera": [
+        -12,
+        -2555.8941650390625,
+        36
+      ],
+      "finite": true
+    },
+    {
+      "name": "Map",
+      "view": {
+        "tab": "exploration",
+        "terrain_layer": "belief",
+        "camera": "free",
+        "first_person": false
+      },
+      "camera": [
+        -82.55999999999975,
+        -2432.80673828125,
+        187.1359999999993
+      ],
+      "finite": true
+    }
+  ]
+}

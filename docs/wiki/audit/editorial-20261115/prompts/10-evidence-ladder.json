@@ -1,0 +1,15 @@
+{
+  "tool": "image_gen",
+  "operation": "reference_image_edit",
+  "source_id": 10,
+  "source_asset": "10_evidence-ladder.png",
+  "source_png_sha256": "efa3e4d4ed869d6c0a54a125fc570502f14a073da2043fbd14d632e133927c32",
+  "prompt": "Edit this supplied science-Wiki infographic. Preserve the polished cinematic Mars colors and broad four-stage visual metaphor, but remove every existing body sentence, the numbered success hierarchy and 'Stronger evidence' arrow. New exact title: 'What each kind of evidence establishes'. New exact subtitle: 'Read the claim together with the record'. Four equally important, easy-to-read panels contain ONLY the following exact texts: 'Software checks' with 'Tested implementation properties'; 'Analytical case' with 'Conclusions under declared assumptions'; 'Integrated execution' with 'Evidence from one connected run'; 'Physical validation' with 'Measurements of the evaluated system'. Small generic computer/model/connected-system/robot icons may illustrate those concepts. No checkmarks asserting general correctness, no claim of Mars measurement by this project, no numerical metrics, no biological/mineral results, no logos, flags or agency/mission branding. The generic Mars scene is conceptual decoration. Short text, large letters readable at 900 px width. Full-width high-contrast dark footer with exact large text 'AI-generated | Conceptual illustration', at least 32 px font. Landscape composition and safe margins; no extra words.",
+  "generation_steps": [
+    "Edit this supplied science-Wiki infographic. Preserve the polished cinematic Mars colors and broad four-stage visual metaphor, but remove every existing body sentence, the numbered success hierarchy and 'Stronger evidence' arrow. New exact title: 'What each kind of evidence establishes'. New exact subtitle: 'Read the claim together with the record'. Four equally important, easy-to-read panels contain ONLY the following exact texts: 'Software checks' with 'Tested implementation properties'; 'Analytical case' with 'Conclusions under declared assumptions'; 'Integrated execution' with 'Evidence from one connected run'; 'Physical validation' with 'Measurements of the evaluated system'. Small generic computer/model/connected-system/robot icons may illustrate those concepts. No checkmarks asserting general correctness, no claim of Mars measurement by this project, no numerical metrics, no biological/mineral results, no logos, flags or agency/mission branding. The generic Mars scene is conceptual decoration. Short text, large letters readable at 900 px width. Full-width high-contrast dark footer with exact large text 'AI-generated | Conceptual illustration', at least 32 px font. Landscape composition and safe margins; no extra words."
+  ],
+  "output_png_sha256": "358b4110f622349e02988da184dc61384ff1111bc93ffb91ac1320200db45266",
+  "webp_conversion": "Pillow encoding only, quality92; visible content and footer retained",
+  "classification": "AI-generated conceptual illustration",
+  "owner_review": "pending"
+}

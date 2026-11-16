@@ -10,11 +10,14 @@ import { fromGatewayPackage, isGatewayManifest, parseJsonLines, validateGatewayM
 
 /** Runs offered in the viewer. `dir` is relative to the site under replay/. */
 export const RECORDED_RECOVERY_ENTRY = 'recorded-recovery-001';
+export const HEIGHT_RECOVERY_ENTRY = 'recorded-recovery-002';
+export const isRecordedRecoveryEntry = (id: string): boolean => id === RECORDED_RECOVERY_ENTRY || id === HEIGHT_RECOVERY_ENTRY;
 /** Default (owner's choice): the simulated demo on the CTX crop. MOCK entries are not offered. */
 export const DEFAULT_RUN_ENTRY = 'demo';
 export const RUNS: ReadonlyArray<{ id: string; label: string; note?: string }> = [
   { id: 'demo', label: 'Illustrative demo · generated story' },
-  { id: RECORDED_RECOVERY_ENTRY, label: 'Recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Not a scientific COMPLETE mission.' },
+  { id: RECORDED_RECOVERY_ENTRY, label: 'Historical recorded recovery · MOCK', note: 'Recorder output: human stop, replan and return. Rover and drone remain idle. Historical idle-drone Z uses the legacy zero default. Not a scientific COMPLETE mission.' },
+  { id: HEIGHT_RECOVERY_ENTRY, label: 'Recorded recovery · parked drone · MOCK', note: 'Recorder output with explicit scene heights: human stop, replan and return. Rover and parked drone remain idle. Not a scientific COMPLETE mission.' },
   { id: 'mock-vertical-001', label: 'Gateway replay mock-vertical-001 (MOCK)' },
   { id: 'gale-demo', label: 'Gale crater · Curiosity · generated story' },
   { id: 'gusev-demo', label: 'Gusev crater · Spirit · generated story' },
@@ -106,6 +109,23 @@ export async function loadEvaluatorReference(runId: string, rows: number, cols: 
   }
 }
 
+/**
+ * A recorded package carries no geologic map, but its public dataset may have one: the USGS
+ * SIM 3464 units of that crop, published under geology/<dataset_id>.json. It is attached only
+ * when its frame, dataset, origin and datum match the run exactly. Optional: a missing or
+ * mismatched file leaves the run without geology.
+ */
+async function attachDatasetGeology(bundle: ReplayBundle): Promise<void> {
+  const id = bundle.manifest.terrain_meta.dataset_id;
+  if (!/^[A-Za-z0-9._-]+$/.test(id)) return;
+  try {
+    const geology = await getJson<GeologyData>(assetUrl(`geology/${id}.json`));
+    if (geologyMatchesRun(geology, bundle.manifest)) bundle.geology = geology;
+  } catch {
+    /* no public geology for this dataset */
+  }
+}
+
 /** ReplayAdapter: loads a saved run from static files (no ROS, no gateway, no network). */
 export async function loadReplay(runDir: string): Promise<ReplayBundle> {
   const dir = runDir.replace(/\/+$/, '');
@@ -119,7 +139,9 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
     const named = raw.files.public_rasters;
     const rasters = named ? await getJson<PublicRasters>(assetUrl(`${dir}/${named}`)) : undefined;
     const snapshot = await getJson<GatewaySnapshot>(assetUrl(`${dir}/${raw.files.snapshot}`));
-    return fromGatewayPackage(raw, parseJsonLines(await res.text()), rasters, snapshot);
+    const bundle = fromGatewayPackage(raw, parseJsonLines(await res.text()), rasters, snapshot);
+    await attachDatasetGeology(bundle);
+    return bundle;
   }
   const manifest = raw as ReplayManifest;
   const [rasters, timeline, routes] = await Promise.all([

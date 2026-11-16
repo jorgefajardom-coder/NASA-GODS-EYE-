@@ -9,17 +9,21 @@ Sources ingested via bounded HTTP 206 range reads:
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from functools import lru_cache
 import hashlib
+import http.client
 import io
 import json
 import math
 from pathlib import Path
 import platform
+import re
 import struct
 import sys
-import urllib.request
+import threading
+from urllib.parse import urlparse
 import zlib
 
 import numpy as np
@@ -84,8 +88,183 @@ DEFAULT_JEZERO_BOUNDS = {
 }
 
 
+_TLS_LOCAL = threading.local()
+_BLOCK_CACHE: dict[tuple[str, str | None, int, int], bytes] = {}
+_CACHE_LOCK = threading.Lock()
+_MAX_CACHED_BLOCKS = 512
+
+
+def _get_https_conn(host: str, timeout: float = 6.0) -> http.client.HTTPSConnection:
+    conns: dict[str, http.client.HTTPSConnection] = getattr(_TLS_LOCAL, "conns", None)
+    if conns is None:
+        conns = {}
+        _TLS_LOCAL.conns = conns
+    conn = conns.get(host)
+    if conn is None:
+        conn = http.client.HTTPSConnection(host, timeout=timeout)
+        conns[host] = conn
+    return conn
+
+
+def _drop_https_conn(host: str) -> None:
+    conn = getattr(_TLS_LOCAL, "conns", {}).pop(host, None)
+    if conn is not None:
+        try:
+            conn.close()
+        except Exception:
+            pass
+
+
+class _InvalidRangeResponse(OSError):
+    """Reject an upstream representation without draining an unbounded body."""
+
+
+def _range_span(headers: dict[str, str]) -> tuple[int, int]:
+    value = next((value for key, value in headers.items() if key.lower() == "range"), "")
+    match = re.fullmatch(r"bytes=(\d+)-(\d+)", value)
+    if match is None or int(match[2]) < int(match[1]):
+        raise ValueError("an explicit bounded byte range is required")
+    return int(match[1]), int(match[2])
+
+
+def _validate_range_response(status: int, headers: dict[str, str], start: int, end: int,
+                             expected_total: int | None) -> None:
+    if status != 206:
+        raise _InvalidRangeResponse(f"upstream server did not return HTTP 206 (got {status})")
+    fields = {key.lower(): value for key, value in headers.items()}
+    content_range = re.fullmatch(r"bytes (\d+)-(\d+)/(\d+|\*)", fields.get("content-range", ""))
+    if content_range is None or (int(content_range[1]), int(content_range[2])) != (start, end):
+        raise _InvalidRangeResponse("upstream Content-Range does not match the requested byte range")
+    total = None if content_range[3] == "*" else int(content_range[3])
+    if (total is not None and total <= end) or (expected_total is not None and total != expected_total):
+        raise _InvalidRangeResponse("upstream Content-Range total does not match the source length")
+    content_length = fields.get("content-length", "")
+    if re.fullmatch(r"\d+", content_length) is None or int(content_length) != end-start+1:
+        raise _InvalidRangeResponse("upstream Content-Length does not match the requested byte count")
+    if (fields.get("content-encoding", "identity").lower() != "identity"
+            or "transfer-encoding" in fields):
+        raise _InvalidRangeResponse("upstream byte range has an unsupported encoded or ambiguous body")
+
+
+def _request_with_keepalive(
+    method: str, url: str, headers: dict[str, str], timeout: float = 6.0,
+    *, expected_total: int | None = None,
+) -> tuple[int, dict[str, str], bytes]:
+    parsed = urlparse(url)
+    path = parsed.path + (f"?{parsed.query}" if parsed.query else "")
+    req_headers = {"Connection": "keep-alive", **headers}
+    span = None if method == "HEAD" else _range_span(headers)
+    for attempt in range(4):
+        conn = _get_https_conn(parsed.netloc, timeout=timeout)
+        try:
+            conn.request(method, path, headers=req_headers)
+            resp = conn.getresponse()
+            resp_headers, seen = {}, {}
+            for key, value in resp.getheaders():
+                lower = key.lower()
+                if lower in {"content-range", "content-length", "content-encoding", "transfer-encoding"}:
+                    if lower in seen and seen[lower] != value:
+                        raise _InvalidRangeResponse(f"conflicting upstream {key} headers")
+                    seen[lower] = value
+                resp_headers[key] = value
+            if method == "HEAD":
+                # HTTPResponse closes its HEAD response with a zero-sized read;
+                # Content-Length describes the resource, not a response body.
+                resp.read(0)
+                body = b""
+            else:
+                start, end = span
+                _validate_range_response(resp.status, resp_headers, start, end, expected_total)
+                expected = end-start+1
+                body = resp.read(expected+1)
+                if len(body) != expected:
+                    raise _InvalidRangeResponse(
+                        f"upstream byte range body has {len(body)} bytes; expected {expected}")
+            return resp.status, resp_headers, body
+        except _InvalidRangeResponse:
+            _drop_https_conn(parsed.netloc)
+            raise
+        except Exception:
+            _drop_https_conn(parsed.netloc)
+            if attempt == 3:
+                raise
+    raise RuntimeError("unreachable")
+
+
+def _cache_put_block(cache_key: tuple[str, str | None, int, int], payload: bytes) -> None:
+    with _CACHE_LOCK:
+        if len(_BLOCK_CACHE) >= _MAX_CACHED_BLOCKS:
+            _BLOCK_CACHE.pop(next(iter(_BLOCK_CACHE)))
+        _BLOCK_CACHE[cache_key] = payload
+
+
+def _fetch_shared_block(url: str, etag: str | None, length: int, block_size: int, index: int) -> bytes:
+    cache_key = (url, etag, block_size, index)
+    with _CACHE_LOCK:
+        cached = _BLOCK_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
+
+    start = index * block_size
+    end = min(start + block_size, length) - 1
+    headers = {"Range": f"bytes={start}-{end}", "Accept-Encoding": "identity"}
+    if etag:
+        headers["If-Match"] = etag
+    status, _, payload = _request_with_keepalive("GET", url, headers, timeout=6.0, expected_total=length)
+    if status != 206 or len(payload) != end - start + 1:
+        raise OSError(f"upstream server did not return HTTP 206 (got {status}, len={len(payload)})")
+    _cache_put_block(cache_key, payload)
+    return payload
+
+
+def _prefetch_contiguous_blocks(
+    url: str, etag: str | None, length: int, block_size: int, first_idx: int, last_idx: int, max_workers: int = 6
+) -> None:
+    """Coalesce contiguous 1 MB blocks into multi-MB HTTP Range requests across bounded workers."""
+    missing = []
+    with _CACHE_LOCK:
+        for idx in range(first_idx, last_idx + 1):
+            if (url, etag, block_size, idx) not in _BLOCK_CACHE:
+                missing.append(idx)
+    if not missing:
+        return
+
+    groups: list[tuple[int, int]] = []
+    g_start = missing[0]
+    g_prev = missing[0]
+    for idx in missing[1:]:
+        if idx == g_prev + 1 and (idx - g_start) < 4:
+            g_prev = idx
+        else:
+            groups.append((g_start, g_prev))
+            g_start = idx
+            g_prev = idx
+    groups.append((g_start, g_prev))
+
+    def _fetch_group(bounds: tuple[int, int]) -> None:
+        b0, b1 = bounds
+        byte_start = b0 * block_size
+        byte_end = min((b1 + 1) * block_size, length) - 1
+        headers = {"Range": f"bytes={byte_start}-{byte_end}", "Accept-Encoding": "identity"}
+        if etag:
+            headers["If-Match"] = etag
+        status, _, payload = _request_with_keepalive("GET", url, headers, timeout=8.0, expected_total=length)
+        if status != 206 or len(payload) != byte_end - byte_start + 1:
+            raise OSError(f"coalesced range failed (status={status}, len={len(payload)})")
+        for idx in range(b0, b1 + 1):
+            rel0 = (idx - b0) * block_size
+            rel1 = min(rel0 + block_size, len(payload))
+            _cache_put_block((url, etag, block_size, idx), payload[rel0:rel1])
+
+    if len(groups) == 1:
+        _fetch_group(groups[0])
+    else:
+        with ThreadPoolExecutor(max_workers=min(max_workers, len(groups))) as pool:
+            list(pool.map(_fetch_group, groups))
+
+
 class HTTPRangeReader(io.RawIOBase):
-    """Seekable bounded HTTP 206 range reader for cloud-optimized/tiled planetary GeoTIFFs."""
+    """Seekable bounded HTTP 206 range reader with keep-alive, shared cache, and coalesced prefetch."""
 
     def __init__(self, url: str, headers: dict[str, str], block_size: int = 1024 * 1024):
         super().__init__()
@@ -94,6 +273,8 @@ class HTTPRangeReader(io.RawIOBase):
         self.etag = headers.get("ETag")
         self.position = 0
         self.block_size = block_size
+        self.expected_span_bytes = 0
+        self._prefetched_span = False
 
     def readable(self) -> bool:
         return True
@@ -118,33 +299,33 @@ class HTTPRangeReader(io.RawIOBase):
         self.position = target
         return target
 
-    @lru_cache(maxsize=64)
-    def _block(self, index: int) -> bytes:
-        start = index * self.block_size
-        end = min(start + self.block_size, self.length) - 1
-        headers = {"Range": f"bytes={start}-{end}", "Accept-Encoding": "identity"}
-        if self.etag:
-            headers["If-Match"] = self.etag
-        request = urllib.request.Request(self.url, headers=headers)
-        with urllib.request.urlopen(request, timeout=90) as response:
-            if response.status != 206:
-                raise OSError(f"upstream server did not return HTTP 206 (got {response.status})")
-            payload = response.read(end - start + 2)
-        if len(payload) != end - start + 1:
-            raise OSError("incomplete or oversized HTTP 206 range payload")
-        return payload
-
     def read(self, size: int = -1) -> bytes:
         if size is None or size < 0:
             size = self.length - self.position
         size = max(0, min(size, self.length - self.position))
+        if size == 0:
+            return b""
         if size > 32 * 1024 * 1024:
             raise OSError("refusing unbounded upstream read; request a bounded window")
         end = self.position + size
+        first_idx = self.position // self.block_size
+        last_idx = (end - 1) // self.block_size
+
+        # Prefetch once GDAL seeks past the TIFF IFD/StripOffsets header (first_idx >= 2)
+        if self.expected_span_bytes > self.block_size and not self._prefetched_span and first_idx >= 2:
+            self._prefetched_span = True
+            span_end = min(self.length, self.position + self.expected_span_bytes + self.block_size)
+            span_last_idx = (span_end - 1) // self.block_size
+            _prefetch_contiguous_blocks(
+                self.url, self.etag, self.length, self.block_size, first_idx, span_last_idx, max_workers=6
+            )
+
+        indices = list(range(first_idx, last_idx + 1))
+        blocks = [_fetch_shared_block(self.url, self.etag, self.length, self.block_size, idx) for idx in indices]
+
         result = bytearray()
-        while self.position < end:
-            block = self._block(self.position // self.block_size)
-            offset = self.position % self.block_size
+        for idx, block in zip(indices, blocks):
+            offset = (self.position % self.block_size) if idx == first_idx else 0
             count = min(len(block) - offset, end - self.position)
             result.extend(block[offset:offset + count])
             self.position += count
@@ -167,27 +348,36 @@ def south_first(elevation: np.ndarray, valid: np.ndarray) -> tuple[np.ndarray, n
     return np.flipud(elevation).copy(), np.flipud(valid).copy()
 
 
-def resolve_upstream(source_info: dict) -> tuple[str, dict[str, str]]:
-    urls = [source_info["source_url"], *source_info.get("fallback_urls", [])]
+@lru_cache(maxsize=16)
+def _resolve_upstream_cached(source_url: str, fallback_urls: tuple[str, ...], instrument: str) -> tuple[str, dict[str, str]]:
+    urls = [source_url, *fallback_urls]
     last_err = None
     for url in urls:
         try:
-            req = urllib.request.Request(url, method="HEAD")
-            with urllib.request.urlopen(req, timeout=60) as resp:
-                return resp.url, dict(resp.headers)
+            status, headers, _ = _request_with_keepalive("HEAD", url, {}, timeout=6.0)
+            if 200 <= status < 400:
+                return url, headers
         except Exception as exc:  # noqa: BLE001
             last_err = exc
-    raise RuntimeError(f"failed to reach upstream URLs for {source_info['instrument']}: {last_err}")
+    raise RuntimeError(f"failed to reach upstream URLs for {instrument}: {last_err}")
 
 
-def crop_source(
+def resolve_upstream(source_info: dict) -> tuple[str, dict[str, str]]:
+    return _resolve_upstream_cached(
+        source_info["source_url"],
+        tuple(source_info.get("fallback_urls", ())),
+        source_info["instrument"],
+    )
+
+
+@lru_cache(maxsize=32)
+def _cached_crop_source(
     key: str,
-    *,
     latitude: float,
     longitude: float,
     side_m: float,
     resolution_m: float,
-    padding_pixels: int = 3,
+    padding_pixels: int,
 ) -> tuple[np.ndarray, np.ndarray, dict]:
     """Fetch bounded upstream window and reproject to Mars-local Equirectangular ENU grid."""
     import rasterio
@@ -207,11 +397,14 @@ def crop_source(
     source_info = SOURCES[key]
     resolved_url, upstream_headers = resolve_upstream(source_info)
     virtual_name = f"upstream_{key}.tif"
+    active_readers: list[HTTPRangeReader] = []
 
     def opener(path, mode="rb"):
         if str(path) != virtual_name:
             raise FileNotFoundError(path)
-        return HTTPRangeReader(resolved_url, upstream_headers)
+        reader = HTTPRangeReader(resolved_url, upstream_headers, block_size=1024 * 1024)
+        active_readers.append(reader)
+        return reader
 
     with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR"):
         with rasterio.open(virtual_name, opener=opener) as src:
@@ -226,6 +419,11 @@ def crop_source(
             window = Window(x0, y0, max(4, x1 - x0), max(4, y1 - y0)).intersection(
                 Window(0, 0, src.width, src.height)
             )
+            bytes_per_px = 4 if "float" in str(src.dtypes[0]) else 2
+            approx_span = int(window.height) * int(src.width) * bytes_per_px
+            for reader in active_readers:
+                reader.expected_span_bytes = approx_span
+
             raw = src.read(1, window=window, masked=True).astype(np.float32)
             native = raw.filled(np.nan)
             destination = np.full((n, n), np.nan, dtype=np.float32)
@@ -269,12 +467,28 @@ def crop_source(
                 "upstream_etag": upstream_headers.get("ETag"),
                 "upstream_last_modified": upstream_headers.get("Last-Modified"),
                 "upstream_content_length": int(upstream_headers["Content-Length"]),
-                "read_method": "fresh HTTP 206 ranges via bounded urllib reader",
+                "read_method": "fresh HTTP 206 ranges via bounded keep-alive reader",
             }
     south_elev, valid_mask = south_first(destination, np.isfinite(destination))
     if not valid_mask.any():
         raise ValueError(f"the {key} crop contains no valid upstream elevations")
     return south_elev, valid_mask, details
+
+
+def crop_source(
+    key: str,
+    *,
+    latitude: float,
+    longitude: float,
+    side_m: float,
+    resolution_m: float,
+    padding_pixels: int = 3,
+) -> tuple[np.ndarray, np.ndarray, dict]:
+    """Fetch bounded upstream window (with in-session cache) and reproject to Mars-local ENU."""
+    elev, valid, details = _cached_crop_source(
+        key, float(latitude), float(longitude), float(side_m), float(resolution_m), int(padding_pixels)
+    )
+    return elev.copy(), valid.copy(), dict(details)
 
 
 def compute_control_points(
@@ -420,16 +634,25 @@ def is_window_valid(
     resolution_m: float = DEFAULT_RESOLUTION_M,
     min_valid_fraction: float = 1.0,
 ) -> bool:
-    """Return True if both CTX and HiRISE have >= min_valid_fraction valid data in the window."""
-    for key in ("CTX", "HiRISE"):
-        try:
-            _, valid_mask, _ = crop_source(
-                key, latitude=latitude, longitude=longitude, side_m=side_m, resolution_m=resolution_m
-            )
-        except ValueError:
-            return False
-        if float(valid_mask.mean()) < min_valid_fraction:
-            return False
+    """Return True if both CTX and HiRISE have >= min_valid_fraction valid data (fetching MOLA too)."""
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        f_ctx = pool.submit(
+            crop_source, "CTX", latitude=latitude, longitude=longitude, side_m=side_m, resolution_m=resolution_m, padding_pixels=3
+        )
+        f_hir = pool.submit(
+            crop_source, "HiRISE", latitude=latitude, longitude=longitude, side_m=side_m, resolution_m=resolution_m, padding_pixels=3
+        )
+        f_mol = pool.submit(
+            crop_source, "MOLA", latitude=latitude, longitude=longitude, side_m=side_m, resolution_m=resolution_m, padding_pixels=6
+        )
+        for fut in (f_ctx, f_hir):
+            try:
+                _, valid_mask, _ = fut.result()
+            except ValueError:
+                return False
+            if float(valid_mask.mean()) < min_valid_fraction:
+                return False
+        f_mol.result()
     return True
 
 
@@ -697,20 +920,19 @@ def build_package(
     import rasterio
 
     retrieved_utc = datetime.now(timezone.utc).isoformat()
-    ctx_elev, ctx_valid, ctx_details = crop_source(
-        "CTX", latitude=latitude, longitude=longitude, side_m=side_m, resolution_m=resolution_m
-    )
-    hirise_elev, hirise_valid, hirise_details = crop_source(
-        "HiRISE", latitude=latitude, longitude=longitude, side_m=side_m, resolution_m=resolution_m
-    )
-    mola_elev, mola_valid, mola_details = crop_source(
-        "MOLA",
-        latitude=latitude,
-        longitude=longitude,
-        side_m=side_m,
-        resolution_m=resolution_m,
-        padding_pixels=6,
-    )
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        f_ctx = pool.submit(
+            crop_source, "CTX", latitude=latitude, longitude=longitude, side_m=side_m, resolution_m=resolution_m
+        )
+        f_hir = pool.submit(
+            crop_source, "HiRISE", latitude=latitude, longitude=longitude, side_m=side_m, resolution_m=resolution_m
+        )
+        f_mol = pool.submit(
+            crop_source, "MOLA", latitude=latitude, longitude=longitude, side_m=side_m, resolution_m=resolution_m, padding_pixels=6
+        )
+        ctx_elev, ctx_valid, ctx_details = f_ctx.result()
+        hirise_elev, hirise_valid, hirise_details = f_hir.result()
+        mola_elev, mola_valid, mola_details = f_mol.result()
 
     rows, cols = ctx_elev.shape
     origin_x_m = -side_m / 2.0

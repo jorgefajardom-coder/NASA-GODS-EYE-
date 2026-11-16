@@ -22,6 +22,9 @@ setup(
             'mock_planner = mge_sim.mock_planner:main',
             'mock_mission = mge_sim.mock_mission:main',
             'sim_node = mge_sim.node:main',
+            'scene_sensor = mge_sim.scene_sensor:main',
+            'gz_mirror = mge_sim.gz_mirror:main',
+            'gz_rover_driver = mge_sim.gz_rover_driver:main',
         ],
     },
 )

@@ -1,0 +1,7 @@
+{
+  "video_sha256": "3486cbba345999b10898f74cc70fb5a17c8b4338c861882346667e4498bf88f3",
+  "viewer_source_commit": "f7938f503e8adabcf7cc677e8913cf251096d632",
+  "technical_review": "PASS: source/package hashes, English subtitle claims, global and portrait watermarks verified; no raw frames/profiles copied",
+  "parent_review": "Inspected watermarked midpoint frame and complete ffprobe/capture metadata; independent browser checks passed",
+  "publication_scope": "Review candidate authorized by implementation request; final owner merge, organizer endorsement and submission remain pending"
+}

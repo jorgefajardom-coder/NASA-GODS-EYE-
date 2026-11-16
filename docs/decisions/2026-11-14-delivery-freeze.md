@@ -71,3 +71,7 @@ Historical continuation plans remain evidence of prior assignments. This decisio
 supersedes their permission to pursue extensions before delivery, including the
 former 16:00 function-freeze target; it preserves the original 20:00 submission
 target, JES-07/AC-10 and scientific/contract review requirements.
+
+## Owner timing update — 15 November 2026
+
+The owner clarified that **20:00 America/Bogota is Jesus's handoff of the closed package to the organizer**, not the final submission. The confirmed final deadline is 23:59; aim to submit by22:00 after explicit endorsement. All time before20:00 remains available for isolated pilots and validated integration, with a continuously ready stable fallback. This supersedes earlier time-based feature/pilot cuts; acceptance gates and scientific/evidence limits remain. No changes are planned after handoff. See [height and delivery handoff](../height_reconciliation_handoff.md) for the current cut.

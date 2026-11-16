@@ -70,9 +70,10 @@
 
       <h2>What it shows</h2>
       <p>
-        The default <code>recorded-recovery-001</code> entry opens an unchanged recorder package over Daniel's
+        The viewer opens on a Mars globe of six zones; the default scene is the illustrative Jezero demo. The
+        <code>recorded-recovery-002</code> entry (<code>?run=recorded-recovery-002</code>) opens a separately identified height-corrected recorder package over Daniel's
         128 m Jezero scene (32×32 cells at 4 m, CTX source spacing 20 m), preserving its internal run ID, datum,
-        routes, resources, events and rasters. A separate illustrative 2 km demo shows a generated story: the drone
+        routes, resources, events and rasters. A separate illustrative Jezero demo spans a 3.4 km by 7.6 km display crop and shows a generated story: the drone
         surveys an uncertain corridor, finds a scarp, the first route is invalidated and the astronaut is replanned around
         it, reaches goal B and returns to base. That story is not an integrated mission result. The viewer never plans routes itself.
       </p>
@@ -101,8 +102,12 @@
           <tr><td><kbd>Q</kbd> <kbd>E</kbd></td><td>Rotate the view</td></tr>
         </table>
       </div>
-      <p>URL parameters: <code>?run=recorded-recovery-001</code> (default, intro omitted),
-        <code>?run=demo</code> (illustrative story), or <code>?run=mock-vertical-001</code> (historical flat-MOCK sample).
+      <p>The historical <code>?run=recorded-recovery-001</code> remains available unchanged.
+        An optional <code>?gateway=&lt;url&gt;</code> panel shows read-only gateway status separately from the saved 3D scene;
+        it sends no goals and a connection does not certify LIVE execution.</p>
+      <p>URL parameters: <code>?run=demo</code> (default: the illustrative Jezero story),
+        <code>?run=gale-demo</code>, <code>gusev-demo</code>, <code>insight-demo</code>, <code>meridiani-demo</code> or <code>melas-demo</code> (the other zones),
+        <code>?run=recorded-recovery-002</code> (recorded real-planner recovery, intro omitted), or <code>?run=mock-vertical-001</code> (historical flat-MOCK sample).
         <code>?nointro=1</code> skips the demo intro. The entry folder is separate from the recorded run ID.</p>
 
       <h2>Data sources</h2>
@@ -131,10 +136,10 @@
 
       <h2>Machine-readable access</h2>
       <ul>
-        <li>Featured package: <a href="./replay/recorded-recovery-001/manifest.json">manifest</a>,
-          <a href="./replay/recorded-recovery-001/timeline.jsonl">timeline</a>,
-          <a href="./replay/recorded-recovery-001/snapshot.json">closing snapshot</a> and
-          <a href="./replay/recorded-recovery-001/public_rasters.json">public rasters</a>.
+        <li>Featured package: <a href="./replay/recorded-recovery-002/manifest.json">manifest</a>,
+          <a href="./replay/recorded-recovery-002/timeline.jsonl">timeline</a>,
+          <a href="./replay/recorded-recovery-002/snapshot.json">closing snapshot</a> and
+          <a href="./replay/recorded-recovery-002/public_rasters.json">public rasters</a>.
           Counts, snapshot closure, route identity, geometry and consumed versions are validated before rendering.</li>
         <li><a href="./llms.txt">llms.txt</a>: this information in Markdown for language models.</li>
         <li><a href="./replay/demo/manifest.json">replay/demo/manifest.json</a>, <a href="./replay/demo/timeline.json">timeline.json</a> and <a href="./replay/demo/routes.json">routes.json</a>: the demo run.</li>

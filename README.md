@@ -28,11 +28,21 @@ map.
    with the resources they have left.
 4. Record every decision and replay it in a web browser, with no server.
 
-**See it.** [Open the web viewer](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/).
-The default run, *Recorded recovery · MOCK*, is a recording of the real planner
-on public Jezero terrain: the astronaut follows an estimated route, a simulated
-observation contradicts the map, the astronaut stops, receives a new route and
-returns. Video and project page: links will be added here before submission.
+**Demo video.** [Mars God's Eye — NASA Space Apps Challenge 2026 (YouTube)](https://www.youtube.com/watch?v=c2VRwuGgy84)
+
+**See it.** [Watch the same-run software recovery (21 s)](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/media/height-recovery-002.mp4)
+([English subtitles](web/public/media/height-recovery-002.en.srt)).
+[Explore the six illustrative zones](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/),
+or [open the corrected recorded recovery](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/?run=recorded-recovery-002).
+The latter is a separately identified ROS software recording: one kinematic MOCK
+astronaut stops, replans and returns after a SIMULATED terrain contradiction;
+rover and parked drone remain idle. It ends READY, not scientific COMPLETE.
+The 3D scene consumes saved files. An optional read-only gateway panel can show a running stack; it sends no goals and does not drive the scene.
+[Source locks, validation and limitations](evidence/height-reconciliation-20261115/README.md)
+accompany this exact package. The historical recording remains unchanged.
+[Scientific foundations](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki) and
+[paired fixed/adaptive planning results](#scientific-question-and-analytical-evidence).
+How each challenge requirement is addressed: [project page draft](docs/project_page.md).
 
 **NASA data in the project.**
 
@@ -42,9 +52,14 @@ returns. Video and project page: links will be added here before submission.
 | MGS/MOLA global elevation model (NASA PDS) | Regional context: places the study area and checks the vertical alignment of the CTX tile |
 | MRO/CTX orthomosaic via [JPL Mars Trek](https://trek.nasa.gov/mars/) | Surface image draped over the terrain (display) |
 | USGS SIM 3464 geologic map of Jezero | Geologic units in the viewer (display; boundaries approximate to 100–200 m) |
-| Perseverance MEDA, Curiosity REMS, MSL RAD | Weather and radiation context in the viewer (display; the radiation values come from Gale crater, not Jezero) |
+| Perseverance MEDA, Curiosity REMS, MSL RAD | Weather and radiation context in the viewer (display; RAD measured the dose at Gale crater, the other zones, Jezero included, use RAD's dose-pressure relation) |
 | MRO/HiRISE terrain model (USGS) | Held back as a reference for evaluating results; never given to the planner or the viewer |
 | Perseverance and Ingenuity 3D models (NASA/JPL-Caltech) | Rover and drone models in the viewer |
+| Zone terrain models via JPL Mars Trek: MSL Gale DEM mosaic, Columbia Hills and InSight HiRISE/CTX/HRSC mosaics, Endeavour crater HiRISE DEM, CTX stereo DEM of Melas Chasma | Terrain of the five other zone scenes (display; mission stories there are simulated) |
+| Viking MDIM 2.1 colour mosaic via JPL Mars Trek | The Mars globe of the zone selector |
+| Mars 2020 and MSL traverse waypoints (MMGIS); PDS Geosciences Node corrected Spirit and Opportunity traverses | Real rover stops drawn on the map and driven in the photo tour |
+| Perseverance and Curiosity raw images (NASA/JPL-Caltech public feed) | Real photos at each rover stop and the latest Perseverance images; loaded only on request |
+| Mars Odyssey GRS water map; MSL RAD surface dose | Water and radiation context for every zone (display; radiation measured at Gale, estimated elsewhere) |
 
 Sources, versions and file hashes are in [data sources](docs/data_sources.md)
 and [NASA traceability](docs/nasa_traceability.md).
@@ -60,14 +75,107 @@ and [NASA traceability](docs/nasa_traceability.md).
   energy and oxygen costs are model estimates pending scientific review.
 - Orbital data cannot show rocks or hazards smaller than its 20 m spacing;
   the 4 m planning grid adds no detail.
-- The wider 2 km scene with geology, weather and points of interest is a
-  scripted illustration; its points of interest are fictitious.
+- The wider 2 km scene and the other five zones are scripted illustrations on
+  real terrain: their mission stories are simulated. Their points of interest C
+  and D are real NASA science sites (or labelled fictitious where none exists).
+- Radiation is a surface average without shielding; solar storms (NASA DONKI
+  space weather) are not included.
 - AI-generated media carry a visible `AI-generated` mark; all AI use is declared
   in [docs/AI_USAGE.md](docs/AI_USAGE.md).
 
 Evidence for the featured recording: [source, test and browser record](evidence/audit-reconciliation-20261115/runtime-v1/README.md).
 
+## Scientific question and analytical evidence
+
+When does information acquired after departure justify changing a route or its
+scientific work, while retaining the resources needed to return? Mars Gods Eye
+studies this question through an inspectable chain: orbital terrain estimates,
+declared activity and slope costs, route/work decisions, and resource ledgers.
+The [scientific Wiki](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki)
+develops the geological motivation, models and experimental reasoning.
+
+The terrain experiments use public CTX query windows around Bright Angel–Neretva,
+Hawksbill–Hogwallow and Bunsen Peak. Each 2.5D map assigns one elevation to each
+horizontal cell. The 4 m computational grid resamples a native 20 m terrain
+product; its extra cells provide computational sampling rather than new measured
+detail. Slope enters the resource and access models, while soil, friction and
+slip are not inferred from the DEM. [Terrain provenance and scale](docs/wiki/03-Terrain-and-Scale.md)
+identify the sources, processing and limits of the candidate query areas.
+
+The [resource models](docs/wiki/05-Resource-Models.md) distinguish human metabolic
+energy from robot electrical energy, with oxygen consumption only for humans.
+Movement, stationary work and waiting are charged once; directed return and
+reserves are checked separately. Each proposed coefficient has a unit, source or
+assumption, sensitivity range and approval state in the
+[profile registry](config/science_profiles.proposed.json). This makes the
+calculation reproducible while keeping coefficient approval and production cost
+agreement explicit.
+
+### Fixed itineraries and adaptation
+
+The published study contains 660 scenario instances and six separate
+uncertainty/step controls. Within each agent/mode pair, fixed and always-replanning
+policies share the initial planning outcome. When execution starts, they share
+the candidate, resources, private simulated world and paid observation at one
+reached checkpoint. Human/rover and FAST/SAFE conditions are repeated within that
+scenario. Analytical completion requires primary work,
+directed return and explicit compliance with resources/reserves; unavailable
+initial plans and UNKNOWN remain in the denominator. Additional work is a newly
+announced inspection at B.
+
+An archived experimental scientific-cost consumer exercises the pinned published
+planner. Research copies use a 3 m uncertainty cap and a grade-consistent step
+projection; the separate controls retain a 1 m cap or the published 0.20 m step.
+The [configuration and control records](evidence/rigid-adaptive-study-20261115/README.md)
+identify these experimental choices.
+
+| Separate experiment | Scenario blocks | Paired conditions | Fixed → adaptive completion | Difference in percentage points, nominal 95% interval | Additional inspections |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| [Broad, 256/512 m](evidence/rigid-adaptive-study-20261115/main/analysis/summary.json) | 360 | 1,440 | 60.76% → 59.38% | −1.39 [−1.94, −0.83] | 317 |
+| [Corridor-conditioned, 256/512 m](evidence/rigid-adaptive-study-20261115/directed/analysis/summary.json) | 120 | 480 | 37.71% → 44.58% | +6.88 [+4.38, +9.58] | 92 |
+| [Larger windows, 1,024 m](evidence/rigid-adaptive-study-20261115/extended-1024/analysis/summary.json) | 180 | 720 | 32.36% → 29.31% | −3.06 [−4.31, −1.94] | 82 |
+
+The broad worlds are specified independently of initial planning outcomes.
+Corridor-conditioned cases deliberately make some perturbations relevant to an
+initial route and reuse some main-batch seeded inputs. The panels therefore have
+separate denominators and are not pooled. Intervals use 10,000 stratified
+paired-scenario bootstrap resamples, keeping all dependent agent/mode conditions
+together. They describe empirical resampling sensitivity within this design;
+shared-worker wall-time limits also make outcomes depend on host scheduling.
+
+### What the comparison teaches
+
+Among 858 resolved posterior routes in the broad study, 612 retained their
+horizontal path and 246 changed it. Additional inspections occurred in 259 of
+the retained-path cases: adaptation can change useful work without changing the
+route. The corridor-conditioned results show how a detour can preserve primary
+work and return when an observed obstruction affects the initial corridor.
+
+The broad comparison also exposes a computational tradeoff. All 20 fixed-only
+completions occurred in SAFE conditions whose adaptive primary queries reached
+the search limit. In a [separate serial diagnostic](evidence/rigid-adaptive-study-20261115/quiet-serial/summary.json),
+12 of those queries became FEASIBLE and eight remained UNKNOWN at the same 8 s
+limit; the original outcomes were preserved. The 1,024 m panel uses a separate
+20 s limit and larger physical A/B separations under the same sector allocations,
+so it changes mission difficulty as well as search space.
+
+These are SIMULATED analytical outcomes with idealized local observations and
+declared hypothetical terrain departures. They concern policy responses and
+additional inspection, with calibrated sensing, new spatial-target discovery and
+integrated three-agent execution left to their own evidence requirements.
+The [full study](https://github.com/jorgefajardom-coder/NASA-GODS-EYE-/wiki/10-Adaptive-Planning-Study)
+and [reproducibility archive](evidence/rigid-adaptive-study-20261115/README.md)
+provide the frozen source SHA, seeds, assumptions, original catalogues, exact
+result tables and independent cost/coordinate audits.
+
 ## Project status for the team
+
+The [operational scientific-cost integration](docs/scientific_cost_integration.md)
+connects the shared segment/activity API to the actual planner search and its ROS
+producer/consumer. Scientific mode requires an immutable registered context;
+legacy costs require explicit compatibility opt-in. The additive service and
+changed default prerequisite are a documented interface-package 2.0.0 migration.
+Profile approval and executed-mission acceptance retain their separate gates.
 
 Mars Gods Eye plans and replays crewed surface missions (astronaut, rover and
 drone) over real Mars terrain at Jezero crater: orbital terrain priors, a
@@ -75,14 +183,17 @@ resource-aware route planner, a mission authority, a ROS 2 simulation vertical
 with a gateway and replay recorder, and a 3D web viewer that plays saved runs
 offline.
 
-**Status (2026-11-14): mission authority, planner, data/mapping, gateway and web
-viewer are implemented and on `main`; integrated mission acceptance is pending.** Nothing in
+**Status (2026-11-15): mission authority, planner, data/mapping, gateway and web
+viewer are implemented and on `main`, and the public site shows the six Mars zones (PR #36);
+PRs #37 (viewer and submission texts) and #38 (auxiliary data layers) are open for review;
+integrated mission acceptance is pending.** Nothing in
 this repository is a validated LIVE mission. MOCK providers, synthetic
 observations, replays and successful builds are labelled as such and are not
 mission evidence. Final English video/project-page links and acceptance remain
 tracked in the [delivery closure plan](docs/delivery_closure_plan.md) and
 [submission checklist](docs/competition.md).
 
+- **Demo video (YouTube):** <https://www.youtube.com/watch?v=c2VRwuGgy84>
 - **Web viewer (public preview):** <https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/>
   — static build of `main`, published automatically on the `gh-pages` branch by
   `.github/workflows/pages.yml` on every push to `main` that touches the viewer (each publish
@@ -172,20 +283,24 @@ sequenceDiagram
 
 ## Branches and pull requests
 
-Snapshot of the remote on 2026-11-14 (`origin/main` = `b5dc681`). See
-[docs/team.md](docs/team.md) for the authoritative ownership record.
+Snapshot of the remote on 2026-11-15 (`origin/main` = `9013beb`). See
+[docs/team.md](docs/team.md) for the authoritative ownership record. Open pull
+requests are pending review: their features are not on `main` or the public site
+until they are merged.
 
 | Branch | Owner | State |
 | --- | --- | --- |
-| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#26 merged |
-| `feat/ux` | Jorge | Web viewer; PRs #5, #19, #23 and #27 are merged in main (offline viewer, public raster input, intro, first person, orbital preview (since replaced by the terrain scan), route guide and text access). PR #29 open: first-person rework, drone camera, helmet and artificial light, Mars sky, route sufficiency alerts, render tiers, demo-only run selector |
-| `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI; last merged in PR #18 |
-| `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service; merged in PRs #2 and #12 |
-| `feat/data` | Daniel | Public terrain data, mapping, provenance and control points; merged in PRs #8 and #24 (configurable terrain region) |
-| `feat/mission` | David | Mission authority, resource profiles and acceptance; merged in PRs #10, #14 and #25 (activity cost evidence) |
+| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#36 merged |
+| `feat/ux` | Jorge | Web viewer. Merged: #5, #19, #23, #27 (route guide, interface entrance, text access), #29 (first-person rework, drone camera, helmet and artificial light, Mars sky, route sufficiency alerts, render tiers) and #36 (Mars globe zone selector, six Mars zones, real NASA science sites, astronaut sites, rover cameras and photo tour, terrain-fitted arrival, MIT License, no-WebGL selector and image provenance fixes) |
+| `feat/challenge-gaps` | Jorge | **PR #37 open:** water and radiation for every zone, exhaled CO₂ and per-zone dose in the astronaut HUD, smoother rover camera in the photo tour, the project page in the official form order, the astronaut resources proposal and README updates |
+| `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI. Merged: #18, #32 (one-minute summary for judges) and #35 (private-browser replay record for AC-08) |
+| `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service. Merged: #2, #12 and #33 (resource safety and scientific cost validation) |
+| `feat/data` | Daniel | Public terrain data, mapping, provenance and control points. Merged: #8 and #24. **PR #38 open:** auxiliary Jezero layers (CTX orthoimage and geology) in the data package, published by the data node, with HTTP range caching |
+| `feat/mission` | David | Mission authority, resource profiles and acceptance. Merged: #10, #14, #25 (activity cost evidence) and #31 (patch-specific agent campaign proposal) |
+| `codex/audit-contract-reconciliation`, `codex/docs-delivery-reconciliation`, `codex/docs-science-extension-tree` | Jesus / David | Merged: #28 (estimated terrain and replay contract reconciliation), #30 (delivery conclusions and scope freeze) and #34 (science extension tree) |
 | `codex/mission-replay-recovery` | Jesus (with Jorge's history) | Continuous-pose replan recovery after a stop and strict web replay validation; merged in PR #21 |
 | `fix/recorder-shutdown` | Jesus | Recorder shutdown and replanning on new maps; merged in PR #26 |
-| `gh-pages` | Jorge + Jesus | Static viewer build from `main`, published by the Pages workflow |
+| `gh-pages` | Jorge + Jesus | Static viewer build from `main`, published by the Pages workflow (last publish: `main` `9013beb`, PR #36) |
 | `feature/web-replay-viewer` | Jorge | Historical viewer branch, ancestor of `feat/ux`; PR #6 closed, preserved |
 | `docs/agents-policy`, `codex/*` (other) | Owner / Jesus | Merged documentation and reconciliation branches, kept for traceability |
 
@@ -231,8 +346,9 @@ flowchart LR
 
 - REPLAY mode only. The status block shows `REPLAY · <source_mode>` (`MOCK`,
   `SIMULATION` or `UNKNOWN`); a package that claims `LIVE` is refused.
-- Default and only offered entry: the simulated `demo` on the 2 km CTX crop (no MOCK
-  runs in the viewer). `recorded-recovery-001` stays loadable with `?run=`: an unchanged recorder package
+- Default entry: the simulated `demo` on the Jezero CTX crop. The selector offers it and the
+  five other zone scenes (`OFFERED_RUNS`: `demo` and every `*-demo`), all simulated stories
+  on real terrain; no MOCK runs are offered. `recorded-recovery-001` stays loadable with `?run=`: an unchanged recorder package
   on Daniel's 128 m Jezero crop (32×32 computational cells at 4 m; CTX source
   spacing 20 m). Real data/mapping/planner providers are paired with MOCK mission
   and kinematic execution. The human stops, replans, resumes and returns; rover
@@ -265,8 +381,29 @@ flowchart LR
   *Travel* zooms the card image to fill the screen edge to edge (cover, no black bands); on
   arrival the same image lays itself down on the terrain it is draped on, a perspective warp
   onto the projected footprint that follows the camera, then fades into the 3D map. Display
-  only; reduced motion skips the warp and simply fades.
-- Terrain formation: the layer appears flat and its relief rises to the true shape in 2.5 s,
+  only; reduced motion skips the warp and simply fades. The photo stays on screen across the
+  page change (no loading screen in between). Each card also shows the zone's water and daily
+  radiation dose. Without WebGL, or on the 2D tier, the selector runs flat: the same card,
+  arrows, dots, keys and *Travel*, without the globe.
+- Sites from real NASA science: points C and D are the rover's real science sites where the
+  mission has them (Perseverance samples Salette and Swift Run at Jezero; Curiosity drill holes
+  Buckskin and Big Sky at Gale; Spirit and Opportunity contact-science rocks at Gusev and
+  Meridiani). Astronaut sites: the Three Forks sample depot (Jezero), a science stop the
+  astronaut can walk to, and a habitat area chosen by the slope criterion of NASA's human
+  Exploration Zone rubric. Each site shows its source (NASA, chosen on NASA terrain or
+  fictitious). Reasoning in the [science POI dossier](docs/science_poi_dossier.md).
+- Real rover stops and photo tour (*Photo tour*): the simulated rover drives through every real
+  stop of the map in NASA's order; at each one the view turns to where each real photo was taken
+  and shows it. Perseverance images match the exact stop; Curiosity's feed only gives the sol;
+  Spirit and Opportunity have no images in the feed, and the viewer says so.
+- Rover cameras and arm (`1`–`5` while following the rover): Navcam, Mastcam-Z with its zoom,
+  front and rear Hazcam and WATSON, drawn from the camera nodes of the 3D model with published
+  fields of view; an arm close-up. Camera changes ease over about a third of a second instead of jumping, the
+  view is stabilised relative to the rover, and the photo tour plays at 5× (10× can be chosen).
+- Real images (*Mars now*, `M` in first person, and the Atmos tab): Perseverance and Curiosity
+  raw images from NASA's public feed, loaded only on request. Images keep their mission and stop:
+  a rover's tour photos are never shown as another rover's latest images.
+- Terrain formation: the layer appears flat and its relief rises to the true shape in 1.4 s,
   valleys first and ridges last, with rising ground lit. Switching layers or a new map version
   morphs the heights in 1.8 s instead of jumping. Display only.
 - Modes: Exploration, Ground layers, Atmos and Mission replay.
@@ -287,12 +424,20 @@ flowchart LR
   fails to start; `?render=full|lite|2d` forces one.
 - Ground layers: USGS SIM 3464 geologic map with unit list and a schematic
   cut-away block of strata.
-- Atmos: Perseverance MEDA weather at Jezero, Curiosity REMS annual cycle at
-  Gale (reference) and an unshielded radiation estimate from MSL RAD averages.
+- Atmos: water and radiation at every zone (Mars Odyssey GRS water-equivalent hydrogen; MSL
+  RAD surface dose, measured at Gale and estimated elsewhere, flagged where it extrapolates;
+  an example dose for a 4 h Marswalk, without shielding or solar storms). At Jezero also
+  Perseverance MEDA weather, the Curiosity REMS annual cycle at Gale (reference) and the latest
+  Perseverance raw images.
 - Management list of agents, tasks and routes, contextual details panel, event
   inspector and replan alerts built only from received objects.
 - Agent HUD: heading-up minimap plus six gauges (oxygen, energy, time, route,
-  atmosphere, dose), amber when a route leaves under 15 % of the starting budget.
+  atmosphere, dose), amber when a route leaves under 15 % of the starting budget. A second
+  press on the oxygen button shows the CO₂ the astronaut has exhaled, as a red tank like the
+  oxygen one (oxygen used × an assumed respiratory quotient of 0.85; the suit's CO₂ removal
+  capacity is not modelled); a third press goes back to the map. The dose gauge uses each
+  zone's own surface rate (measured at Gale, estimated elsewhere) and puts the dose in
+  proportion to NASA's 600 mSv career limit (NASA-STD-3001).
 - Live Earth and Mars clocks (NASA GISS Mars24: MTC, LMST at Jezero, sol, Ls),
   independent of the replay time.
 - Cameras: Map, Astronaut, Rover, Drone and Base; grab-to-drag map and 45° view rotation.
@@ -323,6 +468,13 @@ flowchart LR
   no game assets used.
 - The astronaut faces the direction it walks (display), also in recorded packages whose human
   orientation is constant.
+- Live ROS gateway panel (opt-in, `?gateway=http://127.0.0.1:8010`): a read-only panel that
+  connects to a running `mge_gateway` (health, manifest, snapshot and the `/api/events`
+  WebSocket, with snapshot polling as fallback) and shows the provenance label from the
+  gateway's `source_mode` (a MOCK stack shows MOCK, never LIVE), run, dataset, mission state,
+  agents and the newest events. It sends no goals and does not drive the 3D scene, which
+  still plays saved runs; the gateway serves no terrain rasters yet. The gateway accepts the
+  `http://localhost:5173` origin by default. See "Run the viewer against ROS" below.
 - Text access for language models: `llms.txt`, `about.html`, page metadata with JSON-LD, a
   static summary for readers without JavaScript, and `window.mge.state()`, which returns the
   displayed replay state as JSON (always labelled REPLAY).
@@ -332,8 +484,8 @@ flowchart LR
   terrain clearance and downwash dust. None of it changes a position in the data.
 
 Keys: `F` follow camera, `V` first person, `Q` terrain scan (first person; rotates the view otherwise), `C` drone camera
-(first person), `L` helmet lights, `I` artificial / real light, `B` camera sway (first person),
-`G` grab map, `Q` / `E` rotate view, `Z` zone selector (map view), `Space` play/pause, `←` `→` ±5 s, `Home` restart.
+(first person), `M` Mars now (first person), `1`–`5` rover cameras, `L` helmet lights, `I` artificial / real light, `B` camera sway (first person),
+`G` grab map, `Q` / `E` rotate view, `Z` zone selector (map view; `←` `→`, `Enter` travel, `Esc` back), `Space` play/pause, `←` `→` ±5 s, `Home` restart.
 
 ### What is real in the viewer
 
@@ -360,15 +512,19 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Atmos: Jezero weather | Perseverance MEDA daily summaries, NASA Mars weather feed | Real; outreach summary, not the PDS archive |
 | Atmos: annual cycle | Curiosity REMS daily summaries at Gale crater | Real, another site; reference only |
 | Atmos: radiation | MSL RAD surface averages, Hassler et al. (2014), [doi:10.1126/science.1244797](https://doi.org/10.1126/science.1244797) | Published values; Gale, unshielded estimate |
-| HUD: crew dose | RAD surface average times the replay time | **Estimate**, not a dosimeter reading |
+| HUD: crew dose | The zone's surface dose rate (MSL RAD at Gale; RAD's dose-pressure relation elsewhere) times the replay time, shown against NASA's 600 mSv career limit (NASA-STD-3001) | **Estimate**, not a dosimeter reading; no shielding or solar storms |
 | HUD: pressure map | Latest MEDA pressure scaled with height over the area (barometric law, 11.1 km scale height) | **Estimate**, not a measured field |
+| HUD: exhaled CO₂ | Oxygen used × an assumed respiratory quotient of 0.85 | **Estimate** pending review; no CO₂ data or suit scrubber capacity |
 | HUD: resource use | Drop between the two received samples around the replay time; route cost and reserve as published | Derived from the simulated run |
 | Earth and Mars clocks | Device clock; NASA GISS Mars24 algorithm (Allison and McEwen 2000) | Real present time, not the run's time |
 | Uncertainty (sigma) | Set by the demo fixture (1 m, 3 m on the surveyed crossing, 0.2 m once observed); the data package uses a constant 2.5 m | **Assumed, not measured** |
 | Updated map (v2) | CTX prior plus a simulated drone observation over a scarp added to the hidden reference | **Synthetic** adverse case |
-| Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated**; POIs C and D fictitious; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
+| Mission, agents, routes, budgets, events | `web/scripts/make-demo-fixture.mjs` | **Simulated** story; POIs C and D are real NASA science sites (Salette and Swift Run samples) visited in that story; rover 1 m/s with pivot turns, drone 4 m/s at 40 m with spin-up, vertical climb and descent |
 | Shadows, footprints, dust, rotor blur, wheel and steering motion | Derived in the viewer from the drawn poses | **Cosmetic display** only |
 | Zone selector globe | Viking MDIM 2.1 colour mosaic, NASA/USGS via [JPL Mars Trek](https://trek.nasa.gov/mars/) (32 level-2 tiles); each zone card shows the orbital image draped on that scene | Real NASA imagery; horizon band from the Melas DEM is decorative, not to scale; synopses are AI-assisted text |
+| Zone scenes (Gale, Gusev, Elysium, Meridiani, Melas) | NASA terrain models and orbital mosaics via JPL Mars Trek; real rover stops from MMGIS and the PDS Geosciences Node | Real terrain, imagery and stops; mission stories **simulated** |
+| Zone water and radiation | Mars Odyssey GRS (Boynton et al. 2007); MSL RAD (Hassler et al. 2014) and RAD's dose-pressure relation (Guo et al. 2018) | Real orbital and surface-average context; **estimate** outside Gale, flagged outside RAD's measured range; no shielding or solar storms |
+| Rover photos at stops and *Mars now* | Perseverance and Curiosity raw images, NASA/JPL-Caltech public feed, loaded on request | Real images, kept with their mission and stop; not terrain data |
 | Zone arrival transition | The zone's orbital image warped from full screen onto the projected footprint of its terrain | **Cosmetic display**; no data changes |
 | Terrain formation, height morph, interface entrance, camera sway | Viewer animations on the drawn surface and camera | **Cosmetic display**; no height or pose in the data changes |
 | Terrain scan | Prior-derived slope classes and NoData around the astronaut, using the current run's grid | **Display only**: not an observation, sensor or route update; display bands are unvalidated |
@@ -394,7 +550,7 @@ Credits and licences are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md),
 AI use in [docs/AI_USAGE.md](docs/AI_USAGE.md), and the viewer details in
 [web/README.md](web/README.md).
 
-Known gaps: the viewer does not consume a live gateway; the recorded recovery
+Known gaps: the 3D scene does not play a live gateway (only the read-only panel does); the recorded recovery
 package has public rasters but no draped imagery, so it shows a plain-coloured
 128 m block, and `mock-vertical-001` remains a flat MOCK grid; AC-08 has an automated private-browser replay record with every backend off
 ([evidence](evidence/web-private-replay-20261115/README.md)) but is not accepted: no person-operated or
@@ -525,12 +681,13 @@ Launch arguments of `vertical_mock.launch.py`:
 | --- | --- | --- |
 | `run_id` | `mock-run` | Run identifier used by the gateway and recorder |
 | `terrain` | `mock` | `real` uses `mge_data` + `mge_mapping` on the public Jezero package (requires `planner:=real`) |
-| `planner` | `mock` | `real` routes through `mge_planning`; set `profiles_file` |
+| `planner` | `mock` | `real` uses scientific context and `mission_profiles_path`; legacy-MOCK compatibility requires `allow_legacy_cost_model:=true` plus `profiles_file` |
 | `mission` | `mock` | `real` substitutes the real mission authority; needs explicit configuration and a clock |
 | `agents` | `static` | `kinematic` runs the MOCK kinematic executor |
 | `agents_file` | per terrain | Agent positions and budgets (illustrative) |
 | `record`, `record_dir` | `false`, `evidence` | Write a replay package to `<record_dir>/<run_id>` |
-| `host`, `port`, `use_sim_time` | `127.0.0.1`, `8000`, `false` | Gateway binding and clock |
+| `host`, `port`, `use_sim_time` | `127.0.0.1`, `8000`, `false` | Gateway binding and clock; `use_sim_time:=true` requires exactly one external, advancing `/clock` before nodes start ([D-CLK-01](docs/decisions/2026-11-15-simulation-time-source.md)) |
+| `cors_origins` | `['http://localhost:5173', 'http://127.0.0.1:5173']` | Browser origins the gateway answers (YAML list), for example the viewer's dev server or a published site |
 
 Mission-provider arguments (`mission_profiles_path`, `mission_path`,
 `base_enu_m`, `allow_illustrative`, `model_agreement_confirmed`,
@@ -542,8 +699,9 @@ With the default MOCK planner, routes are straight lines that ignore terrain.
 Agent positions and budgets come from `src/mge_bringup/config/agents.yaml` and
 are explicitly illustrative. Nothing here is a moving mission or a NASA measurement.
 
-- `planner:=real profiles_file:=$PWD/config/planner_profiles.illustrative.json`
-  routes through `mge_planning`. Terrain and mission stay MOCK, positions must be
+- `planner:=real allow_legacy_cost_model:=true profiles_file:=$PWD/config/planner_profiles.illustrative.json`
+  explicitly selects historical cost compatibility through `mge_planning`.
+  Terrain and mission stay MOCK, positions must be
   cell centres of the 5 m grid (for example `2.5, 2.5`), and the profiles are illustrative.
 - `terrain:=real` (with `planner:=real`) loads the public Jezero package: a
   32 x 32 grid of 4 m cells centred on the map origin, so cell centres are
@@ -560,6 +718,25 @@ are explicitly illustrative. Nothing here is a moving mission or a NASA measurem
   default); PR #21 added the acknowledged-stop recovery that resumes from the
   exact stopped pose (see [the recovery handoff](docs/mission_replay_recovery.md)).
 
+### Run the viewer against ROS
+
+Checked on 2026-11-15 on Windows with WSL 2 (Ubuntu 24.04, ROS 2 Jazzy):
+`colcon build` of the 8 packages, `tests/integration/test_vertical_execution.py` and
+`test_vertical_mock.py` (12 passed), then this live session. If port 8000 is taken (for
+example by Docker), use another one:
+
+```sh
+ros2 launch mge_bringup vertical_mock.launch.py run_id:=ros-live-001 port:=8010   terrain:=real planner:=real allow_legacy_cost_model:=true profiles_file:=$PWD/config/planner_profiles.illustrative.json   agents:=kinematic allow_continuous_starts:=true record:=true record_dir:=$PWD/evidence/live
+```
+
+WSL forwards `127.0.0.1:8010` to Windows. Start the viewer's dev server on port 5173
+(`npm run dev` in `web/`) and open `http://localhost:5173/?gateway=http://127.0.0.1:8010`:
+the panel connects, and a goal sent to `/api/mission/goal` appears in it within a second.
+Without a simulated observation the integrated planner still answers `UNKNOWN` and the
+mission goes to `BLOCKED` (a legitimate result under D-EST-01). Stopping the launch with
+Ctrl+C makes the recorder close `evidence/live/ros-live-001/`, which the viewer opens as
+`REPLAY · MOCK` when copied to `web/public/replay/` (not committed).
+
 ### Gateway API
 
 Interactive documentation is at `http://127.0.0.1:8000/docs`; the web contract
@@ -574,7 +751,11 @@ is in [docs/ICD.md](docs/ICD.md), section 6.
 | POST | `/api/mission/goal` | Mission goal request; Bearer token when `MGE_CONTROL_TOKEN` is set |
 | WS | `/api/events` | Event and state stream |
 
-Without an active run the endpoints answer `503` with `NO_ACTIVE_RUN`.
+Without an active run the manifest, snapshot, events and goal endpoints answer `503`
+with `NO_ACTIVE_RUN`; `/api/health` answers `200` with `status: NOT_READY` and
+`ros_connected: false`, so a monitor can tell the process is up (ICD section 6.1).
+WebSocket messages are `event`, `state` and, when the map version changes,
+`terrain_meta`.
 
 ## Planner
 

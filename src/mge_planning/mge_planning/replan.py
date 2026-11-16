@@ -153,19 +153,6 @@ def _distance_to_segment(point, a, b):
     return float(np.linalg.norm(p-start-t*delta))
 
 
-def _planning_request(state, terrain, request_id, *, returning=False):
-    """Snapshot current authority-supplied availability; never debit consumption."""
-    m = state.mission
-    base = m.return_to if m.return_to is not None else m.start
-    return replace(m, request_id=request_id, start=state.pose,
-                   goal=base if returning else m.goal,
-                   require_return=False if returning else m.require_return,
-                   return_to=base, budget=(state.remaining.planning_budget()
-                   if isinstance(state.remaining, RemainingResources) else state.remaining),
-                   map_version=terrain.map_version,
-                   service_time_s=0. if returning else state.service_remaining_s)
-
-
 def _segment_issue(geometry, a, b, max_samples):
     """Whole-segment footprint bound plus traversed-cell directed transitions.
 
@@ -244,11 +231,9 @@ class ReplanPolicy:
         self._map_snapshot = None
         self._retry_key, self._retry_count = None, 0
         self._remaining_floor = None  # Observed availability bound, never a consumption ledger.
-        self._cost_mode = None
-        self._science_activity_floor = None
 
     def evaluate(self, *, terrain: TerrainGrid, profile: MotionProfile, state: ReplanState,
-                 event: ReplanEvent, now_s: float, scientific_context=None) -> ReplanDecision:
+                 event: ReplanEvent, now_s: float) -> ReplanDecision:
         """Validate every call, then deduplicate/debounce and optionally call A*.
 
         STOP_REQUIRED is advisory and persists after a feasible candidate. Only a
@@ -378,13 +363,9 @@ class ReplanPolicy:
                 (remaining.energy_wh, remaining.reserve_wh, "ENERGY_RESERVE_DEPLETED"),
                 (remaining.oxygen_l, remaining.reserve_oxygen_l, "OXYGEN_RESERVE_DEPLETED")):
             if actual is not None and actual < reserve:
-                # Keep the legacy depleted-telemetry bound. A scientific snapshot
-                # below reserves cannot form a valid planning context/budget:
-                # STOP immediately, but do not admit unvalidated availability.
-                scientific = (scientific_context is not None or active.cost_context is not None
-                              or (self._cost_mode is not None and self._cost_mode[0] == 'science'))
-                if not scientific:
-                    self._remaining_floor = available
+                # Depleted telemetry is still an observed availability bound.
+                # A later route adoption must not turn it into replenishment.
+                self._remaining_floor = available
                 return decision(ReplanAction.STOP_REQUIRED, reason, True)
         try:
             if _start_z_mismatch(terrain, state.pose, m.agent_kind, profile,
@@ -407,53 +388,9 @@ class ReplanPolicy:
             return decision(ReplanAction.UNKNOWN, "RETURN_CONTEXT_MISMATCH", True)
         if state.phase == MissionPhase.OUTBOUND and m.require_return and not future:
             return decision(ReplanAction.UNKNOWN, "RETURN_CONTEXT_MISSING", True)
-        context = None
-        science_selected = scientific_context is not None or active.cost_context is not None
-        mode = 'science' if science_selected else 'legacy'
-        if self._cost_mode is not None and self._cost_mode[0] != mode:
-            return decision(ReplanAction.UNKNOWN, "SCIENTIFIC_MODEL_CHANGED", True)
-        if science_selected:
-            try:
-                from .resource_costs import ScientificContext, ScientificCosts
-                if (not isinstance(scientific_context, ScientificContext)
-                        or not isinstance(active.cost_context, ScientificContext)):
-                    raise ValueError("both active and explicit pending scientific contexts are required")
-                active.cost_context.validate(r, profile)
-                expected = _planning_request(state, terrain, r.request_id,
-                                             returning=state.phase == MissionPhase.RETURN)
-                scientific_context.validate(expected, profile)
-                if scientific_context.phase != state.phase.value:
-                    raise ValueError("pending context phase mismatch")
-                if scientific_context.model_key != active.cost_context.model_key:
-                    raise ValueError("active and pending science identities differ")
-                if self._cost_mode is not None and self._cost_mode[1] != scientific_context.model_key:
-                    raise ValueError("scientific model/profile cannot change within a policy")
-                if state.phase == MissionPhase.OUTBOUND and (
-                        scientific_context.service != active.cost_context.service
-                        or scientific_context.waiting != active.cost_context.waiting):
-                    raise ValueError("OUTBOUND cannot complete pending goal activities")
-                def durations(ctx):
-                    return {(role, a.activity_id, a.kind): a.remaining_s
-                            for role in ('service', 'waiting') for a in getattr(ctx, role)}
-                before = self._science_activity_floor
-                if before is None:
-                    before = durations(active.cost_context)
-                current = durations(scientific_context)
-                if any(k not in before or v > before[k] for k, v in current.items()):
-                    raise ValueError("pending activity progress cannot increase or change kind")
-                if state.phase == MissionPhase.SERVICE and state.service_remaining_s > 0 and any(
-                        current.get(k, 0.) != v for k, v in before.items() if k[0] == 'waiting'):
-                    raise ValueError("goal waiting cannot complete before service")
-                context = scientific_context
-                self._science_activity_floor = {k: current.get(k, 0.) for k in before}
-            except (ValueError, TypeError, OverflowError):
-                return decision(ReplanAction.UNKNOWN, "INVALID_SCIENTIFIC_CONTEXT", True)
-        # Admit availability only after ALL applicable context checks. A rejected
-        # lower value must not make a corrected snapshot look like replenishment.
-        # The earlier increase check still uses the last admitted bound; the
-        # invalidation latch is not cleared by correcting inputs.
+        # Commit only after context/progress/service/position admission. This is
+        # an atomic observation of supplied values: no cost or reserve is debited.
         self._remaining_floor = available
-        self._cost_mode = (mode, context.model_key if context is not None else None)
         pending = (state.pose,) + leg[state.next_waypoint:]
         if len(pending) == 1:
             pending += (leg[-1],)
@@ -487,27 +424,15 @@ class ReplanPolicy:
         # Budget check of pending geometry, without subtracting consumed resources.
         time, energy, oxygen = state.service_remaining_s, profile.service_power_w*state.service_remaining_s/3600., 0.
         oxygen += time*(profile.oxygen_l_per_s or 0.)
-        if context is not None:
-            time, energy, oxygen = context.goal_costs
         if issue is None:
             for path in paths:
                 for a, b in zip(path, path[1:]):
                     h = math.dist(a[:2], b[:2])
-                    if context is not None:
-                        try:
-                            c = ScientificCosts(context.profile).movement(a, b)
-                            time += c.time_s
-                            energy += c.energy_wh
-                            oxygen += c.oxygen_l or 0.
-                        except (ValueError, OverflowError):
-                            return decision(ReplanAction.UNKNOWN, "SCIENTIFIC_COST_ERROR", True)
-                    elif h:
+                    if h:
                         dt, de, do = _motion_costs(profile, h, b[2]-a[2])
                         time += dt
                         energy += de
                         oxygen += do
-            if context is not None and not all(math.isfinite(x) for x in (time, energy, oxygen)):
-                return decision(ReplanAction.UNKNOWN, "SCIENTIFIC_COST_ERROR", True)
             b = state.remaining
             if (time > b.time_s-m.reserve_time_s or energy > b.energy_wh-b.reserve_wh
                     or (b.agent_kind == "human" and oxygen > b.oxygen_l-b.reserve_oxygen_l)):
@@ -547,7 +472,7 @@ class ReplanPolicy:
         action = ReplanAction.STOP_REQUIRED if immediate else ReplanAction.REPLAN
         attempt = (active.route_id, terrain.map_version, fingerprint, state.phase, state.pose,
                    state.next_waypoint, state.remaining, state.service_remaining_s, profile,
-                   m, trigger, self._task_generation, context.fingerprint if context is not None else None)
+                   m, trigger, self._task_generation)
         retrying = self._retry_key == attempt
         if retrying:
             if self._retry_count > self.config.max_search_retries:
@@ -567,20 +492,15 @@ class ReplanPolicy:
             return decision(ReplanAction.UNKNOWN, issue, True)
         self._attempt, self._last_plan_s = attempt, now_s
         self._sequence += 1
-        returning = state.phase == MissionPhase.RETURN or (
-            state.phase == MissionPhase.SERVICE and state.service_remaining_s == 0
-            and (context is None or not any(a.remaining_s for a in context.waiting)))
-        request = _planning_request(state, terrain, f"{m.request_id}-replan-{self._sequence}", returning=returning)
-        def science_args(req, is_return):
-            if context is None:
-                return {}
-            return {'scientific_context': replace(context, request=req,
-                    phase='RETURN' if is_return else state.phase.value,
-                    service=() if is_return else context.service,
-                    waiting=() if is_return else context.waiting)}
+        returning = state.phase == MissionPhase.RETURN or (state.phase == MissionPhase.SERVICE and state.service_remaining_s == 0)
+        request = replace(m, request_id=f"{m.request_id}-replan-{self._sequence}",
+                          start=state.pose, goal=base if returning else m.goal,
+                          require_return=False if returning else m.require_return,
+                          return_to=base, budget=(state.remaining.planning_budget()
+                          if isinstance(state.remaining, RemainingResources) else state.remaining), map_version=terrain.map_version,
+                          service_time_s=0. if returning else state.service_remaining_s)
         candidate = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
-                               allow_continuous_start=True, geometry_cache=self._geometry_cache,
-                               **science_args(request, returning))
+                               allow_continuous_start=True, geometry_cache=self._geometry_cache)
         self._pending = None
         primary = {}
         contingency = ((state.phase == MissionPhase.OUTBOUND or
@@ -594,8 +514,7 @@ class ReplanPolicy:
             request = replace(request, request_id=request.request_id+"-contingency-return",
                               goal=base, require_return=False, service_time_s=0.)
             candidate = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
-                               allow_continuous_start=True, geometry_cache=self._geometry_cache,
-                               **science_args(request, True))
+                               allow_continuous_start=True, geometry_cache=self._geometry_cache)
             returning = True
         if candidate.status == RouteStatus.FEASIBLE and math.dist(candidate.outbound_path[0][:2], state.pose[:2]) > 1e-6:
             # Start z was already checked uniformly against the ground snapshot.

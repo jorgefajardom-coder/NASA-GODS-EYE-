@@ -37,11 +37,16 @@ class KinematicExecutor(Node):
         self.run_id = self.declare_parameter('run_id', 'mock-run').value
         agents_file = self.declare_parameter('agents_file', '').value
         rate_hz = float(self.declare_parameter('rate_hz', 10.0).value)
+        # Agents driven and published by another node (e.g. a physical rover in Gazebo):
+        # comma-separated IDs. Keeps exactly one publisher per agent state topic.
+        external = {i.strip() for i in str(self.declare_parameter('external_agents', '').value).split(',') if i.strip()}
         self.agents = {}
         for a in load_agents(agents_file):
+            if a['id'] in external:
+                continue
             self.agents[a['id']] = {
                 'kind': a['kind'],
-                'position': (float(a['x_m']), float(a['y_m']), float(a.get('z_m', 0.0))),
+                'position': (float(a['x_m']), float(a['y_m']), float(a['z_m'])),
                 'time_s': float(a['time_budget_s']),
                 'energy_wh': float(a['energy_budget_wh']),
                 'oxygen_l': float(a.get('oxygen_budget_l', math.nan)),
@@ -102,6 +107,8 @@ class KinematicExecutor(Node):
                                 route.travel_time_s, route.energy_est_wh, route.oxygen_est_l)
             follower = PathFollower(points, rates, agent['position'])
         except ExecutionRefused as e:
+            # Rejection is a stop, never a vertical correction or a resource debit.
+            agent['mode'] = HALTED
             self.get_logger().error(f'route {route_id} not executed: {e}')
             return
         self.follow = (agent_id, route_id, follower)

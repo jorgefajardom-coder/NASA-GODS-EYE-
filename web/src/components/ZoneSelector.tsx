@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { assetUrl } from '../data/replayAdapter';
-import { WORLDS, initialZoneIndex, stepZone, zoneUrl, type WorldInfo } from '../data/worlds';
+import { WORLDS, defaultZoneIndex, stepZone, zoneUrl, type WorldInfo } from '../data/worlds';
 import HORIZON from '../data/zoneHorizon.json';
+import { zoneEnvironment } from '../lib/zoneEnvironment';
 import { aimAt, angleDelta, globeDir, leftArc, radialCard } from '../lib/zoneGlobe';
 import { arrivalView, coverQuad, easeInOut, lerpQuad, quadMatrix3d, type Quad } from '../lib/arrivalQuad';
 
@@ -176,10 +177,11 @@ async function globeCanvas(): Promise<HTMLCanvasElement> {
  * fitted radially against the planet, shows the zone's own orbital image (the one draped on its terrain) and a
  * synopsis. Travel zooms that image to fill the screen and opens the scene; the same image then lays itself down on the
  * terrain it is draped on and fades into it (ZoneArrival). It opens right after the intro on load (instantly, so the scene never shows behind it);
- * travelling to the zone already loaded simply enters it. Keys: left/right, Enter to travel, Esc to go back.
+ * travelling to the zone already loaded simply enters it. The menu always opens on the Jezero card, the first
+ * zone it shows; nothing is entered until the user travels. Keys: left/right, Enter to travel, Esc to go back.
  */
 export function ZoneSelector({ runId, onClose, instant = false, globeEnabled = true }: { runId: string; onClose: () => void; instant?: boolean; globeEnabled?: boolean }) {
-  const [i, setI] = useState(() => initialZoneIndex(runId));
+  const [i, setI] = useState(defaultZoneIndex);
   const [shown, setShown] = useState(i);
   const [swap, setSwap] = useState(false);
   const [on, setOn] = useState(false);
@@ -195,6 +197,7 @@ export function ZoneSelector({ runId, onClose, instant = false, globeEnabled = t
   const pickRef = useRef<(k: number) => void>(() => undefined);
   const zone = WORLDS[i];
   const card = WORLDS[shown];
+  const cardEnv = card.runId ? zoneEnvironment(card.runId) : null;
 
   const select = useCallback((k: number) => setI(((k % WORLDS.length) + WORLDS.length) % WORLDS.length), []);
   pickRef.current = select;
@@ -547,6 +550,14 @@ export function ZoneSelector({ runId, onClose, instant = false, globeEnabled = t
             <span className="zones__scale">3.4 km</span>
           </div>
           <p className="zones__synopsis">{card.synopsis}</p>
+          {cardEnv && (
+            <div className="zones__env" title="Mars Odyssey GRS water-equivalent hydrogen (orbital, top tens of cm) and MSL RAD surface dose (measured at Gale, estimated elsewhere); no shielding, no solar storms">
+              <span>Water {cardEnv.water.wtPercent.toFixed(1)} wt%</span>
+              <span>
+                Radiation {cardEnv.radiation.doseMsvPerDay.toFixed(2)} mSv/day{cardEnv.radiation.measuredHere ? ' · measured' : ' · est.'}
+              </span>
+            </div>
+          )}
           <div className="zones__meta">
             <span>
               {fmtLat(card.lat)} · {fmtLon(card.lon)}

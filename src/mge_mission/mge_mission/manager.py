@@ -353,6 +353,24 @@ class MissionManager:
     def pending_plan(self):
         return self._pending
 
+    def refresh_pending_resources(self):
+        """Refresh a pre-search context after its acknowledgement, if needed.
+
+        Telemetry does not invalidate an already dispatched search on every
+        stationary clock/resource tick. Its candidate is independently checked
+        against current resources by apply_plan.
+        """
+        request = self._pending
+        if request is None or self._route is not None:
+            return False
+        budgets = self._remaining_primary_budgets()
+        before = (request.time_budget_s, request.energy_budget_wh, request.oxygen_budget_l)
+        current = (budgets.time_s, budgets.energy_wh, budgets.oxygen_l)
+        if before == current:
+            return False
+        self._schedule_plan(request.request_id, "REPLAN")
+        return True
+
     def _audit(self, request, decision):
         if (decision.run_id != self.run_id or decision.map_version_used != self.map_version
                 or request.map_version != self.map_version):

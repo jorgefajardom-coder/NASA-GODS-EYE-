@@ -4,8 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReplayBundle } from '../types/replay';
 import type { ReplayView } from '../lib/replay';
 import type { TerrainLayer } from '../lib/layers';
-import { finiteRange, heightGrid } from '../lib/layers';
-import { smoothHeightAt } from '../lib/terrainSmooth';
+import { finiteRange, retrospectiveShapeAllowed, shapeGrid, versionKey } from '../lib/layers';
+import { createTerrainSurface, terrainSurfaceHeight } from '../lib/terrainSurface';
 import { CAMERA_SMOOTHING, type CameraSmoothing } from '../lib/smoothing';
 import { rasterizeUnits, unitPixels, type GeologyData } from '../lib/geology';
 import * as THREE from 'three';
@@ -32,6 +32,7 @@ import { SiteMarkers } from './SiteMarkers';
 import { RoverStopMarkers } from './RoverStopMarkers';
 import { BaseModel, CLUSTER_OFFSET } from './BaseModel';
 import { ContextTerrain } from './ContextTerrain';
+import { ObstacleRocks } from './ObstacleRocks';
 
 interface Props {
   bundle: ReplayBundle;
@@ -93,9 +94,19 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
   const hemiLight = useRef<THREE.HemisphereLight>(null);
   const meta = bundle.manifest.terrain_meta;
   const mapVersion = view.state?.map_version ?? 1;
-  const grid = heightGrid(bundle.rasters, layer, mapVersion);
-  // Same interpolation as the mesh, so agents stand on the surface that is drawn.
-  const groundHeight = useCallback((x: number, y: number) => smoothHeightAt(meta, grid, x, y), [meta, grid]);
+  // Only explicit illustrative simulations have a fixed retrospective surface.
+  // Recorder packages follow the current version, including before an observation.
+  const grid = shapeGrid(bundle.rasters, layer, mapVersion, retrospectiveShapeAllowed(bundle.manifest));
+  // Renderer and consumers share the live Float32 vertices, including animation.
+  const surface = useMemo(() => createTerrainSurface(meta, grid), [meta, grid]);
+  const groundHeight = useCallback((x: number, y: number) => terrainSurfaceHeight(surface, x, y), [surface]);
+  // Geologic unit of each terrain cell (USGS SIM 3464), for the style of obstacle rocks.
+  const rockUnitAt = useMemo(() => {
+    const g = bundle.geology;
+    if (!g || meta.rows !== meta.cols) return undefined;
+    const grid = rasterizeUnits(g, meta.cols);
+    return (cell: number) => (grid[cell] >= 0 ? g.units[grid[cell]].symbol : null);
+  }, [bundle.geology, meta.rows, meta.cols]);
   // Orbital slope of the run (prior, Horn 3x3), for the terrain scan classes.
   const priorSlope = useMemo(() => slopeDegrees(bundle.rasters.prior, meta.rows, meta.cols, meta.resolution_m), [bundle.rasters.prior, meta]);
   const followed = view.state?.agents.some((a) => a.agent_id === followAgentId) ? followAgentId : null;
@@ -117,9 +128,9 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
     // The habitat cluster is drawn offset from the base point; aim at the habitat.
     const x = base.position.x + CLUSTER_OFFSET.x;
     const y = base.position.y + CLUSTER_OFFSET.y;
-    const h = smoothHeightAt(meta, grid, x, y);
+    const h = groundHeight(x, y);
     return enuToThree({ x, y, z: h ?? base.position.z }, exaggeration);
-  }, [base, meta, grid, exaggeration]);
+  }, [base, groundHeight, exaggeration]);
   const cameraTarget = followed ? `agent-${followed}` : baseCamera && baseAnchor ? BASE_ANCHOR : null;
   const extent = Math.max(meta.rows, meta.cols) * meta.resolution_m;
   // Fit to the public prior once per dataset/exaggeration, not to future frames.
@@ -151,6 +162,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       <hemisphereLight ref={hemiLight} args={['#ffe2c8', '#2a1a12', 0.4]} />
       <directionalLight ref={sunLight} position={SUN_FROM.clone().multiplyScalar(extent * 1.37).toArray()} intensity={2.6} color="#fff1e0" />
       <TerrainView
+        surface={surface}
         meta={meta}
         rasters={bundle.rasters}
         layer={layer}
@@ -180,6 +192,15 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       {/* The route is a map overlay: hidden in the follow view, where it reads as a line painted on the ground. */}
       {/* Route lines, site markers, the base and the agents appear once the terrain has grown. */}
       {grown && !followed && <RouteOverlay active={view.activeRoute} previous={view.previousRoutes} verticalExaggeration={exaggeration} />}
+      {grown && (
+        <ObstacleRocks
+          meta={meta}
+          unitAt={rockUnitAt}
+          cells={bundle.rasters.versions[versionKey(bundle.rasters, mapVersion)]?.impassable}
+          groundHeight={groundHeight}
+          verticalExaggeration={exaggeration}
+        />
+      )}
       {grown && bundle.manifest.pois.filter((p) => p.kind === 'base').map((p) => (
         <BaseModel key={p.id} site={p.position} verticalExaggeration={exaggeration} groundHeight={groundHeight} />
       ))}
@@ -211,7 +232,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
         hideLabelFor={pov ? followed : null}
       />
       )}
-      {baseAnchor && <group name={BASE_ANCHOR} position={baseAnchor} />}
+      {baseAnchor && <SurfaceAnchor name={BASE_ANCHOR} position={baseAnchor} groundHeight={groundHeight} exaggeration={exaggeration} />}
       <FollowCamera target={cameraTarget} framing={followed ? (tourHud ? TOUR_FRAMING : undefined) : BASE_FRAMING} mirrorHud={tourHud} />
       {/* Mounted after the follow camera: same frame priority, so it places the eye after the follow update. */}
       <FirstPersonCamera target={pov ? `agent-${followed}` : null} kind={pov ? followedKind : null} sway={povSway} lite={lite} />
@@ -239,7 +260,7 @@ export function MissionScene({ bundle, view, layer, exaggeration, showControlPoi
       <DroneCamRenderer droneName={grown && droneCam && drone ? `agent-${drone.agent_id}` : null} />
       {/* First person: the followed agent's own route draped on the ground, with its next waypoint. */}
       {grown && pov && povAgent && view.activeRoute?.agent_id === followed && view.activeRoute.outbound_path.length > 1 && (
-        <PovRoute route={view.activeRoute} position={povAgent.pose.position} groundHeight={groundHeight} verticalExaggeration={exaggeration} />
+        <PovRoute route={view.activeRoute} position={povAgent.pose.position} groundHeight={groundHeight} groundRevision={() => surface.revision} verticalExaggeration={exaggeration} />
       )}
       <OrbitControls
         makeDefault
@@ -296,6 +317,18 @@ function ArrivalAnchor({ extent, groundY }: { extent: { origin_x_m: number; orig
 /** Scene name of the base camera anchor, and how that camera frames the habitat. */
 const BASE_ANCHOR = 'camera-anchor-base';
 const BASE_FRAMING: Framing = { distanceM: 32, heightM: 14, lookAtM: 3 };
+
+function SurfaceAnchor({ name, position, groundHeight, exaggeration }: {
+  name: string; position: [number, number, number];
+  groundHeight: (x: number, y: number) => number | null; exaggeration: number;
+}) {
+  const group = useRef<THREE.Group>(null);
+  useFrame(() => {
+    const h = groundHeight(position[0], -position[2]);
+    if (group.current && h != null) group.current.position.y = h * exaggeration;
+  }, -2);
+  return <group ref={group} name={name} position={position} />;
+}
 
 /** Least height of the camera above the drawn ground (m), and the radius sampled around it (m). */
 const CAMERA_CLEARANCE_M = 0.15;

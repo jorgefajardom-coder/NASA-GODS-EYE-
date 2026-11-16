@@ -145,6 +145,13 @@ export function worldOfRun(runId: string): WorldInfo | null {
   return WORLDS.find((w) => w.runId === runId) ?? null;
 }
 
+/** Zone whose card the selector menu shows first (owner's choice), whatever run is open. The scene is not entered. */
+export const DEFAULT_ZONE_ID = 'jezero';
+export function defaultZoneIndex(): number {
+  const i = WORLDS.findIndex((w) => w.id === DEFAULT_ZONE_ID);
+  return i >= 0 ? i : Math.max(0, WORLDS.findIndex((w) => w.status === 'scene'));
+}
+
 /** Index of the zone shown first in the selector: the current run's, else the first scene. */
 export function initialZoneIndex(runId: string): number {
   const i = WORLDS.findIndex((w) => w.runId === runId);

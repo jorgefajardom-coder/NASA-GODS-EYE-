@@ -1,0 +1,15 @@
+{
+  "tool": "image_gen",
+  "operation": "reference_image_edit",
+  "source_id": 2,
+  "source_asset": "02_research-loop.png",
+  "source_png_sha256": "20efd38acedd17470de360dd314be8e424f9317a6b466c4d33f76421e2c36931",
+  "prompt": "Edit this supplied infographic for a rigorous educational science Wiki. Preserve its cinematic Mars palette, six-node circular layout and uncluttered illustrations. Simplify the title to 'From question to evidence'. Keep exactly these six large labels in clockwise causal order: 'Scientific question', 'Orbital prior', 'Candidate itinerary', 'Local observation', 'Mission decision', 'Recorded result'. Clear arrowheads must connect them in that order and then return to the question. The background crater is generic conceptual art. Replace the rover's spectrum display with a simple camera observation icon, no mineral/spectral claims. No numerical data, checkmarks of successful execution, logos, flags or NASA/mission branding. Make all labels readable at 900 px display width. Put a high-contrast full-width dark footer with large exact text 'AI-generated | Conceptual illustration', at least 32 px font in the output. Keep generous margins, landscape composition, no additional text.",
+  "generation_steps": [
+    "Edit this supplied infographic for a rigorous educational science Wiki. Preserve its cinematic Mars palette, six-node circular layout and uncluttered illustrations. Simplify the title to 'From question to evidence'. Keep exactly these six large labels in clockwise causal order: 'Scientific question', 'Orbital prior', 'Candidate itinerary', 'Local observation', 'Mission decision', 'Recorded result'. Clear arrowheads must connect them in that order and then return to the question. The background crater is generic conceptual art. Replace the rover's spectrum display with a simple camera observation icon, no mineral/spectral claims. No numerical data, checkmarks of successful execution, logos, flags or NASA/mission branding. Make all labels readable at 900 px display width. Put a high-contrast full-width dark footer with large exact text 'AI-generated | Conceptual illustration', at least 32 px font in the output. Keep generous margins, landscape composition, no additional text."
+  ],
+  "output_png_sha256": "a940f6e906d551afdfdda799d6bc5c298efbf99bba717c9ef4a4d7d4869e0c4e",
+  "webp_conversion": "Pillow encoding only, quality92; visible content and footer retained",
+  "classification": "AI-generated conceptual illustration",
+  "owner_review": "pending"
+}

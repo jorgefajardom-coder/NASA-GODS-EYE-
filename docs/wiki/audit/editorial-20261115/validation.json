@@ -1,0 +1,28 @@
+{
+  "editorial_audit": "PASS with --require-pixels",
+  "historical_local_audit": "PASS, source unmodified; report output redirected to preserve original seal",
+  "historical_publication_audit": "PASS on original immutable32ab source copy",
+  "negative_cases": [
+    {
+      "case": "missing_owner_review_gate",
+      "correctly_rejected": true,
+      "last_error": "AssertionError: The edition must retain the package-required owner review gate"
+    },
+    {
+      "case": "vetoed_source_selection",
+      "correctly_rejected": true,
+      "last_error": "AssertionError: Accepted asset selection differs from reviewed scope"
+    },
+    {
+      "case": "changed_image_hash",
+      "correctly_rejected": true,
+      "last_error": "AssertionError: Image hash mismatch: assets/imagegen-20261115/01-cooperative-exploration-reviewed.webp"
+    }
+  ],
+  "visual_review": "All9editedPNGand900pxWebPpreviews inspected;1200pxreading copies retained locally",
+  "before_after_GitHub_capture": "Pending source-branch rendering; native Wiki remains unchanged until owner review",
+  "source_checks": 40,
+  "original_media_preserved": 21,
+  "original_GIFs_preserved": 3,
+  "technical_implementation_changes": 0
+}

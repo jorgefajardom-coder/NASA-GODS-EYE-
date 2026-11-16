@@ -1,0 +1,73 @@
+{
+  "id": "bright-1024",
+  "path": "public/bright-1024.npz",
+  "file_sha256": "38dfdb7ebacb9d164f203ea679cac1b494a0983da4097281f5cc4154abfe8983",
+  "array_sha256": "b1d7bfbbf8f8c4d9536f8e2d201e29f45b5020c128e2dfc76311c8eb391e8055",
+  "rows": 256,
+  "cols": 256,
+  "side_m": 1024,
+  "resolution_m": 4,
+  "native_resolution_m": 20,
+  "origin_x_m": -512.0,
+  "origin_y_m": -512.0,
+  "row_orientation": "south_to_north",
+  "region": {
+    "id": "bright",
+    "candidate_id": "JZ-ROI-01",
+    "name": "Bright Angel–Neretva",
+    "lat": 18.496798465,
+    "lon": 77.3045133,
+    "campaign": "CAM-BRIGHT"
+  },
+  "valid_fraction": 1.0,
+  "nodata_cells": 0,
+  "elevation_range_m": [
+    -2372.225830078125,
+    -2221.9638671875
+  ],
+  "slope_p50_p95_deg": [
+    8.351024627685547,
+    22.698398113250732
+  ],
+  "prior_sigma_m": 2.5,
+  "observed_cells": 0,
+  "geographic_target_association": "QUERY_ANCHOR_NOT_VERIFIED_WORKSPACE",
+  "controls": "Projection/centering self-consistency only; independent field controls unavailable",
+  "provenance": {
+    "mission": "MRO",
+    "instrument": "CTX",
+    "role": "prior",
+    "product_id": "JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0",
+    "source_url": "https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/CTX/JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0.tif",
+    "license_or_terms_url": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+    "native_resolution_m": 20.0,
+    "citation": "Fergason et al. (2020), Mars 2020 Terrain Relative Navigation CTX DTM Mosaic, USGS Astrogeology Science Center.",
+    "source_window_col_row_width_height": [
+      396,
+      636,
+      61,
+      58
+    ],
+    "source_window_values_sha256": "dcac69d381328616706af916c115503ec0b0eae5befc56892c73ae2b966eaecc",
+    "source_shape": [
+      1512,
+      1596
+    ],
+    "source_crs_wkt": "PROJCS[\"Equirectangular Mars 2000 Sphere IAU\",GEOGCS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",SPHEROID[\"Mars_2000_Sphere_IAU\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",0],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+    "source_nodata": "-3.4028226550889045e+38",
+    "target_crs_wkt": "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"unknown\",SPHEROID[\"unknown\",3396190,0]],PRIMEM[\"Reference meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",18.496798465],PARAMETER[\"latitude_of_origin\",18.496798465],PARAMETER[\"central_meridian\",77.3045133],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+    "resampling": "bilinear, GDAL NoData-aware; no synthetic replacement",
+    "native_valid_fraction": 1.0,
+    "native_min_m": -2374.985595703125,
+    "native_max_m": -2210.67724609375,
+    "native_mean_m": -2319.99755859375,
+    "upstream_etag": "\"8f6693aae0b562f7db2dfdec89282955-2\"",
+    "upstream_last_modified": "Thu, 10 Nov 2022 20:43:51 GMT",
+    "upstream_content_length": 9662387,
+    "read_method": "fresh HTTP 206 ranges via bounded urllib reader"
+  },
+  "upstream_full_file_sha256": null,
+  "source_window_hash_not_full_file_hash": true,
+  "source_role": "public_orbital_prior",
+  "scientific_approval": false
+}

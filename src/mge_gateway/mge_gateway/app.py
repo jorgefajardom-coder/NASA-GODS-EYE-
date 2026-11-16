@@ -23,6 +23,22 @@ from pydantic import BaseModel, Field, confloat
 from mge_gateway.store import to_json, unavailable
 
 NO_ACTIVE_RUN = 'NO_ACTIVE_RUN'
+# Messages one WebSocket client may have waiting. A client that falls this far
+# behind is closed (1013) and resumes with after_seq, instead of the gateway
+# holding an ever-growing queue for it.
+CLIENT_QUEUE_MAX = 1000
+OVERFLOW = object()
+
+
+def offer(clients, queue, message):
+    """Queue a message for one client; a full queue drops that client."""
+    try:
+        queue.put_nowait(message)
+    except asyncio.QueueFull:
+        clients.discard(queue)
+        while not queue.empty():
+            queue.get_nowait()
+        queue.put_nowait(OVERFLOW)
 
 # Match float64 geometry and float32 resource fields on the existing ROS wire.
 FiniteCoordinate = confloat(allow_inf_nan=False)
@@ -65,7 +81,7 @@ def create_app(bridge):
         def fan_out(kind, payload):
             message = envelope(type=kind, **{kind: payload})
             for queue in list(clients):
-                queue.put_nowait(message)
+                offer(clients, queue, message)
 
         # Called from the ROS thread; hand over to the web event loop.
         bridge.on_update = lambda kind, payload: loop.call_soon_threadsafe(
@@ -160,15 +176,30 @@ def create_app(bridge):
             await ws.send_json(unavailable(NO_ACTIVE_RUN))
             await ws.close(code=1013, reason='No active run')
             return
-        queue = asyncio.Queue()
+        queue = asyncio.Queue(maxsize=CLIENT_QUEUE_MAX)
         clients.add(queue)
 
         async def pump():
+            # The client is registered before the backlog is read, so an event
+            # can be both in the backlog and in the queue: it is sent once.
+            # after_seq is a fixed resume floor, not a live high-water mark:
+            # a lower sequence may legitimately arrive after a higher one.
+            sent = set()
             for event in store.events(after_seq):
                 await ws.send_json(envelope(type='event', event=event))
+                sent.add(event['seq'])
             await ws.send_json(envelope(type='state', state=store.state()))
             while True:
-                await ws.send_json(await queue.get())
+                message = await queue.get()
+                if message is OVERFLOW:
+                    await ws.close(code=1013, reason='Client too slow; reconnect with after_seq')
+                    return
+                if message.get('type') == 'event':
+                    seq = message['event']['seq']
+                    if seq <= after_seq or seq in sent:
+                        continue
+                    sent.add(seq)
+                await ws.send_json(message)
 
         # Sending alone never notices a client that left while the run is
         # quiet, so the socket is also read: a disconnect ends the stream.

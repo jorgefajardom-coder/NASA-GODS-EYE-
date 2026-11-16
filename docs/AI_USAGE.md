@@ -1,5 +1,55 @@
 # Required AI-use declaration
 
+## Reviewed ImageGen Wiki illustrations
+
+The repository owner supplied a 20-image ImageGen package for a scientific-Wiki visual refresh. OpenAI Codex assisted the semantic review, captions, provenance and documentation-only validation. Nine selected images were edited with image_gen to remove unsupported numerical, geographic, capability or evidence claims and to improve readability. Eleven originals remain excluded with reasons in `docs/wiki/Editorial-Review.md`. The supplied theses and private research working files were not uploaded as part of this edition.
+
+New PNGs and encoding-only WebP reading copies are stored in `docs/wiki/assets/imagegen-20261115`. Each carries a large visible `AI-generated | Conceptual illustration` footer; prompts and source/output hashes are recorded under `docs/wiki/audit/editorial-20261115`. Original measured/model figures, all 21 existing assets, the three GIFs and historical manifests are preserved. Numerical interpretation remains tied to the original primary sources and run records. The edition introduces no technical or scientific-parameter change. The source package requires owner review before a separate Wiki synchronization; that review remains pending.
+## Submission videos: AI-generated voice-over, 15 November 2026
+
+The English voice-over of the team's 30-second submission videos is
+**AI-generated speech**. It was made with Higgsfield (model Seed Audio 1.0 by
+ByteDance) from text the team wrote, using built-in preset voices, not a cloned
+or recorded human voice:
+
+| Video file | Preset voice | Lines spoken |
+| --- | --- | --- |
+| `mars-gods-eye-demo.mp4` (Mars Gods Eye - Demo) | Andre | "Houston, we have a bug. It's not in our code. It's in the map." / "Explore six Mars zones, built on real NASA terrain." / "It plans the route, checks time, energy and oxygen, and replans when the ground disagrees." / "Follow the rover through its real stops, and see the photos NASA took there." / "Water and radiation for every zone, and a live link to the ROS gateway." / "Mars Gods Eye. Open it in your browser." |
+| `mars-gods-eye-d.mp4` (Houston, we have a bug) | Andre | "Houston, we have a bug. It's not in our code. It's in the map." / "From orbit, Mars gets one height every twenty metres. A crew on foot needs more." / "So we built Mars Gods Eye. It plans the route, checks time, energy and oxygen. When the ground disagrees, it stops and replans." / "Five people. One hackathon. One crater." / "Mars Gods Eye. Open it in your browser." |
+| `mars-gods-eye-a.mp4` (The map was wrong) | Gideon | "Jezero crater. The map says this ground is clear." / "The map was made from orbit. One height, every twenty metres." / "So when the ground disagrees, Mars Gods Eye stops, cancels the route, and plans a new one, with the oxygen that's left." / "Every decision, recorded. Replay it in your browser." / "Mars Gods Eye." |
+
+The voice is also declared in each file's metadata (MP4 `comment` tag, which
+starts "AI use: the voice-over is AI-generated speech (Higgsfield, Seed Audio
+1.0, preset voice ...)"). The spoken words were checked against the script with
+a local speech-to-text model.
+
+Other AI use in the same videos:
+
+- **Music and sound effects**: synthesised by a Python script written with
+  Claude (Anthropic) through Claude Code; no generative audio model and no
+  samples. Declared in the same metadata tag.
+- **Editing**: the shot timing, on-screen type and frame-by-frame capture and
+  render scripts were written with Claude through Claude Code.
+- **Picture**: screen recordings of the project's own web viewer, not
+  AI-generated video. The AI-generated images that appear in them (team logo,
+  astronaut portrait) keep their burned-in `AI-generated` marks.
+- **Not AI-generated**: the three Perseverance photos in the demo video are
+  real NASA/JPL-Caltech raw images (sol 13: Navcam, front and rear Hazcam) from
+  NASA's public raw-image feed, credited on screen.
+
+The videos, voice files and scripts are kept outside the repository (Git-ignored
+`.local/video/`). The videos contain no NASA logos, flags or mission marks, and
+they label the replan as a recorded run with MOCK execution and the gateway
+panel as a MOCK source: no live mission is claimed.
+
+## English scientific Wiki and pedagogical media
+
+OpenAI Codex assisted the complete English scientific Wiki in `docs/wiki`: nine chapters, the landing page and supporting glossary, parameter, bibliography and reproduction pages. Private doctoral and master's theses supplied style references only; they were read locally and were not uploaded or copied into the Wiki. Scientific statements cite original articles, NASA/JPL technical reports and public product metadata with locators; project outcomes retain their configuration and run identifiers.
+
+The cover was generated with image_gen as an unbranded conceptual illustration. Documentation-only code constructs the scientific diagrams, model examples and three GIFs from declared inputs. Every image and every decoded GIF frame has a visible `AI-generated` mark; captions and metadata distinguish conceptual media, model calculations and the recorded SIMULATED case. Assets, input hashes, library versions and audit results are stored within the Wiki. No NASA insignia or mission-brand graphic is included in the generated artwork.
+
+The work changes explanatory documentation and its tools only. Existing model coefficients, runtime configuration, contracts and technical implementations remain unchanged. The complete first draft is prepared for owner scientific audit; publication and approval retain their separate records. Previous sealed AI declarations are preserved under `docs/wiki/audit/previous-document-versions`.
+
 ## Root README summary for judges
 
 Claude Code (Anthropic) assisted the integration owner in writing the
@@ -813,6 +863,21 @@ the team, not with AI; only its black background was removed and it was resized.
 An earlier SVG icon drawn with Claude Code was replaced and is not shipped. None of these
 images uses NASA logos, flags or mission marks or is presented as NASA data.
 
+## Optional auxiliary NASA/USGS terrain layers and HTTP range optimization
+
+Google Antigravity assisted the data and mapping owner with bounded HTTP 206
+keep-alive/block-cache optimizations in `scripts/prepare_jezero_terrain.py` and
+with a standalone auxiliary layer pipeline (`scripts/prepare_jezero_aux_layers.py`,
+`src/mge_data/mge_data/core.py`, `src/mge_data/mge_data/node.py`, and
+`tests/contracts/test_data_manifest.py`). The pipeline keeps `data/sample/terrain.npz`
+and `data/sample/manifest.json` unchanged by default while producing separate,
+cell-aligned auxiliary files (`jezero_aux_layers.npz`, `ctx_ortho.png`,
+`geology.json`, `aux_layers_manifest.json`) derived via GDAL/rasterio and ArcGIS
+REST from the official USGS Mars 2020 TRN MRO/CTX 6 m/px controlled orthomosaic
+and USGS SIM 3464 geologic map. `data/sample/ctx_ortho.png` is a deterministic
+north-up grayscale crop of the observational MRO/CTX orthomosaic, not an
+AI-generated image.
+
 ## Proposal publication after reconciliation
 
 OpenAI Codex assisted publication of the local scientific patch/campaign proposal,
@@ -873,26 +938,167 @@ software evidence; no image, video, NASA observation or mission result was
 generated. Existing asset declarations and watermarks remain intact. This cut
 does not close AC-08, steps 4/5, scientific approvals or organizer endorsement.
 
+## Zone water and radiation display and project page text
+
+Claude Code (Anthropic) assisted the display of the existing per-zone water and
+radiation context (`web/src/lib/zoneEnvironment.ts`, the Atmos panel and zone
+cards, with tests) and the English project-page draft `docs/project_page.md`.
+The values come unchanged from `web/scripts/data/zone_environment.json` (Mars
+Odyssey GRS, MSL RAD, Guo et al. 2018); the 4 h Marswalk dose is a linear
+display estimate without shielding or solar particle events. No image, video,
+audio or NASA observation was generated; scientific review of the wording and
+organizer endorsement remain open.
+
+The same assistance added the HUD's exhaled-CO₂ gauge (`web/src/lib/co2.ts`, the second
+press of the oxygen button, with tests): a display estimate from the replay's oxygen line
+and an assumed respiratory quotient of 0.85, pending scientific review; no CO₂ data or
+suit capacity is generated. It also switched the HUD dose gauge to each zone's surface
+rate from the existing zone environment data, with NASA's 600 mSv career limit as scale
+context; no dose value was generated.
+
+It also assisted the read-only live gateway panel (`web/src/lib/gatewayLive.ts`,
+`web/src/components/LiveGatewayPanel.tsx`, `web/tests/gatewayLive.test.ts`) and its check
+against a running MOCK ROS stack in WSL. The tests use synthetic gateway envelopes; no ROS
+output, NASA observation or mission result was generated, and the panel labels a MOCK stack
+MOCK.
+The fixed *Offline* link headline in the top-right status (`web/src/components/Frame.tsx`) was
+removed, since the panel already shows the connection; that status now describes only the replay.
+An *Exit photo tour* button (also Esc) in the rover HUD (`web/src/components/FirstPersonHud.tsx`,
+`web/src/App.tsx`, `web/tests/photoTourExit.test.ts`) leaves the photo tour from anywhere; it
+changes no data.
+The gateway panel was then reduced to one thin line at the top of the status column (where
+*Offline* used to be) with a dropdown for the details (`web/tests/liveGatewayPanel.test.ts`, synthetic
+MOCK state), so it no longer covers the map.
+
+## PR37 scientific presentation corrections — 15 November 2026
+
+OpenAI Codex assisted the HUD/context code, source-year corrections, project-page draft and regression tests listed in `ai_usage.json` under `pr37_scientific_presentation_corrections`. RAD dose equivalent is not converted into NASA effective dose or a career-limit percentage. An unavailable CO2 rate remains unavailable. No new measured data, numerical radiation inputs, scientific profile or approval was generated. Owner scientific review remains pending.
+
+## PR38 auxiliary-context reconciliation — 15 November 2026
+
+OpenAI Codex assisted strict DEM/metadata/hash/path and public-array validation, bounded HTTP Range handling, synthetic regression fixtures, a ROS consumer test, and the auxiliary visual-context contract. The complete file scope is registered in `ai_usage.json` under `pr38_auxiliary_context_reconciliation`. Acquired imagery/geology/NPZ bytes were preserved; interpreted DN/slope categories are estimated visual proxies without navigation authorization. No new scientific parameter, measured observation or approval was generated.
+
+## Height contract reconciliation — 15 November 2026
+
+OpenAI Codex assisted the initial-condition resolver, executor XYZ guards, immutable planner metadata binding, shared rendered-triangle sampler and regression tests listed in `ai_usage.json` under `height_contract_reconciliation`. New scene heights are explicitly SIMULATED initial conditions derived from the declared public prior, not measured observations. Historical packages are retained unchanged. New recordings and browser captures preserve MOCK/REPLAY and required marks; no scientific approval, physical validation or complete three-agent mission is asserted.
+
+## Height-corrected software recovery recording — 15 November 2026
+
+OpenAI Codex assisted recording workflow, new URL-entry integration, tests and audit receipts for `height-recovery-20261115-01` / `recorded-recovery-002`. The exact MOCK recording includes AI-assisted code and a deterministic SIMULATED observation, not new observational NASA data. Its scene initialization parks the drone; the human alone executes stop/replan/return. File scope and evidence are registered as `height_recovery_recording_and_presentation`; source/pose identities and historical package bytes are preserved. Capture/edited media retains visible labels and metadata.
+
+## Final delivery candidate reconciliation — 15 November 2026
+
+OpenAI Codex assisted local integration of PR37/PR38 and the height/replay cut, structured conflict resolution preserving both mandatory disclosure histories, a trailing-blank-line correction and delivery handoff documentation. Registered as `final_delivery_candidate_reconciliation`. Actual checks, deferred work and human gates are distinguished in `final_delivery_candidate.md`; no automatic main merge, physical validation or external submission was performed.
+
+## Same-run browser video — 15 November 2026
+
+OpenAI Codex assisted Chrome capture/edit scripts, English overlays/subtitles, metadata and technical review for `web/public/media/height-recovery-002.mp4`. The actual viewer replays the exact MOCK software run; the edit does not generate NASA observations or mission telemetry. Visible `AI-generated edit | SIMULATED | NOT LIVE` and existing portrait marks remain readable. Capture metadata locks viewerf7938f5, execution742eed5 and all four recorder files. No image-generation model or NASA branding was used to create the capture/edit. Third-party source terms remain; raw frames/browser profiles/caches are excluded. Final owner merge, organizer endorsement and submission approval remain pending.
+
+## PR39 read-only gateway contract reconciliation — 15 November 2026
+
+OpenAI Codex assisted client envelope/payload validation, session recovery, contiguous event cursors, separate mission/terrain versions, regression tests and public status documentation. The exact file scope is registered as `pr39_gateway_contract_reconciliation`. The bounded HTTP/WebSocket consumer evidence uses the actual unchanged gateway with public recorded-recovery-002 inputs, explicitly replay-fed MOCK. It sends no goals and performs no ROS mission execution or scientific acceptance. No recorded package, measured NASA observation, generated media or shared contract was changed. Existing contributor declarations and mandatory watermarks are preserved.
+
+## Viewer terrain shape and zone menu — 15 November 2026
+
+Claude (Anthropic) through Claude Code assisted a viewer fix registered in `ai_usage.json` as `viewer_terrain_shape_and_zone_menu_fix`: the updated-map layer keeps the ground shape of the run's last public map version from the start (no sudden rise of observed ground near the agents), while observed-cell tints and uncertainty still follow the current map version; the zone menu opens on the Jezero card. Code and tests only; no data or observations were generated.
+
+## Crop-edge margins in the demo generator — 15 November 2026
+
+Claude (Anthropic) through Claude Code assisted generator changes registered as `demo_generator_crop_edge_margins`: simulated agents no longer drive along the edge of the terrain crop (Meridiani's base and pads sat 4-12 m from it; Jezero and Gale photo tours ran 4 m from it). The regenerated Jezero, Gale and Meridiani packages remain SIMULATED stories on NASA terrain; rover stop markers keep their real NASA positions, and edge stops are visited from up to 20 m inside, as stated in the tour event. No observations were generated.
+
+PR39 refresh against main798016e preserves the concurrent terrain/menu/crop fixes and combines its per-zone photo-tour title with the reviewed exit handler. OpenAI Codex assisted this narrow conflict resolution; no scene, recording or scientific value was generated by the refresh.
+
+The same PR39 refresh restricts final-story terrain geometry to explicitly illustrative SIMULATION scenes, with a shared stable shape for belief/sigma. Recorded and unknown-source runs keep current-version geometry; no future observation is displayed early. The exact recorded002 cell regression and NoData/layer checks are software tests, not generated NASA measurements.
+
+## PR42 delivery integration continuation — 15 November 2026
+
+OpenAI Codex assisted the metadata/hash continuation and read-only native Wiki verification registered as `pr42_delivery_integration_reconciliation`. The owner explicitly approved PR39/42 merge and native synchronization; native82534db was already published with recorded authorization and is preserved. All39 media match the reviewed edition and18new endpoints return HTTP200. Preparation-time editorial flags remain historical; this continuation does not confer scientific-model, mission or final-delivery acceptance. No new media or observations were generated.
+
+## PR44 late-event stream reconciliation — 15 November 2026
+
+OpenAI Codex assisted a minimal gateway event-stream correction, four real WebSocket regressions, actual-client validation and review handoff registered as `pr44_late_event_stream_reconciliation`. The original high-water filter lost a unique event2 after event3; a fixed resume floor plus emitted-sequence set preserves late events and deduplicates backlog/queue overlap. Tests use synthetic envelopes or the existing public MOCK replay, not new NASA observations or a new mission. Original contributor history, declarations and schema1.0.0 are retained. Final owner merge approval and organizer endorsement remain separate gates.
+
+## Live bar and run selector — 15 November 2026
+
+Claude (Anthropic) through Claude Code assisted the viewer changes registered as `live_bar_and_direct_run_switch`: the read-only ROS gateway bar is always shown, disconnected (and never contacting a server) when the page has no `?gateway=`; a run chosen in the run selector opens directly instead of returning to the intro and zone menu. Code and tests only; no data, observation or live mission is claimed.
+
+## Paired fixed and adaptive analytical study — 15 November 2026
+
+OpenAI Codex assisted the experimental consumer, seeded synthetic mission records, statistical protocol and analysis, independent bookkeeping audit, English explanation and numerical plots in `evidence/rigid-adaptive-study-20261115` and `docs/wiki/10-Adaptive-Planning-Study.md`. The archive includes the exact experimental code and meaningful verification tests without activating it in production paths. The source and result manifests identify tool use, SIMULATED status, seeds, input/module hashes and publication provenance. Every new plot retains a visible `AI-generated | SIMULATED` label.
+
+The records are analytical experiments on public CTX terrain with explicitly hypothetical perturbations and public simulated mission notices. They are not observational NASA data or verified LIVE execution. Published planning and science code is consumed at the declared SHA; this publication changes no shared contract, operational approval, production implementation or scientific coefficient approval. The experimental archive includes mandatory AI declarations as metadata and prose, with no optional authorship credit.
+
+## README scientific synthesis — 15 November 2026
+
+OpenAI Codex assisted the English scientific synthesis in `README.md`: the research question, terrain/model explanation and balanced summary of the already published fixed/adaptive study. The numerical claims retain the PR47 source catalogues, nominal empirical resampling intervals, separate batch denominators and existing approval states. This edit generates no new experimental results, media, profile values or production code. Existing AI declarations and marked assets are preserved.
+
+Documentation-only preparation and verification helpers are retained locally under `.local/readme-science-update`; their use is recorded in the machine-readable entry.
+
+## Operational scientific cost integration — 15 November 2026
+
+OpenAI Codex assisted the native scientific-cost search integration, typed immutable planning context, real ROS producer/consumer, compatibility migration, regression tests and this documentation. `docs/ai_usage.json` lists every affected delivered path. The existing scientific formulas and profile coefficients are reused; their approval status is unchanged. Declared synthetic maps support software/model tests, not new NASA observations or physical mission completion. Original evidence and all previous AI declarations remain intact. Local preparation and verification helpers are recorded as internal provenance.
+
+The executed reports, source fingerprints and real-service JUnit record are retained under `evidence/scientific-cost-integration-20261115`. Their values come from the actual scientific search, explicit legacy control and ROS service calls; AI assisted orchestration, metadata and explanation. Both reports retain blocked operational authorization because numerical consistency does not grant scientific coefficient or mission approval.
+
+## PR49 Gazebo integration corrections — 15 November 2026
+
+OpenAI Codex assisted the corrections registered as
+`pr49_gazebo_integration_corrections` in `docs/ai_usage.json`: physical-rover
+execution guards, measured odometry/stop feedback, coherent scene-sensor
+confirmation, immutable recorded obstacle masks, the opt-in MOCK Gazebo launch,
+regression tests and this handoff. The exact modules and tests are listed in the
+machine-readable declaration. Test scenes and observations are explicitly
+synthetic/SIMULATED; runtime checks are experimental software evidence, not NASA
+measurements, scientific approval or validated LIVE execution. No image, video
+or audio asset was generated in this correction cut. Existing third-party
+attributions, disclosures and required media watermarks remain intact.
+
+## MOCK budget fallback and obstacle fields — 15 November 2026
+
+Claude (Anthropic) through Claude Code assisted the changes registered as `mock_mission_budget_fallback_and_obstacle_field`. The MOCK mission gains an opt-in `budget_fallback` (off by default): when the goal in force no longer fits the remaining allocation it tries nearer targets on the base-goal line and then the base, without lowering reserves or re-allocating consumed resources. Goals and bases outside the terrain grid are rejected (`OUT_OF_MAP`). `mge_sim.obstacle_field` generates deterministic SIMULATED obstacle fields (a ridge with one gap and seeded rock clusters) that keep a passage from base to goal. The recorder adds an optional `impassable` cell list per map version to the public raster attachment, taken from the mapping's human traversability mask, and the viewer draws those cells as cosmetic rocks with a rust tint; rock sizes and turns are display only. An opt-in `scene_sensor` node reports a declared SIMULATED scene around the agents (a drone on landing, ground agents as they walk), and an opt-in `complete_on_return` closes a MOCK goal once its agent is back at base. Viewer rocks follow the Golombek-Rapp size law with each blocked cell's main rock deliberately enlarged to 1.5 m for readability, styled by the cell's USGS SIM 3464 unit. A Gazebo Harmonic world generator (`gz_world`) and pose mirror (`gz_mirror`) show a run on the public terrain with the scene's rocks; the terrain tint, grain, normal map and rock shapes are cosmetic, and mirrored agents are only shown; a later addition drives one physical rover in Gazebo along the authorized route (heightmap aligned with the planner cell centres, one constant vertical datum offset measured at rest) and draws the web viewer GLB models at their true sizes. Code and tests only; the obstacle fields are synthetic test scenes, never NASA observations, and no run is a validated LIVE mission.
+
+## Owner-supplied slower Wiki animation — 15 November 2026
+
+OpenAI Codex assisted copying and verifying the owner-supplied slower `docs/wiki/assets/prior-observation.gif`, with no image edits. The three displayed stages total 7.5 seconds instead of 4.2 seconds. The existing visible `AI-generated | Conceptual simulation` watermark is preserved. The current asset manifest and `docs/wiki/audit/slower-prior-observation-20261115.json` record the new hash and timing; historical publication/editorial seals retain their original dated scope. No scientific results or technical implementation changed.
+
+## Simulation time source (D-CLK-01) — 15 November 2026
+
+Claude (Anthropic) through Claude Code assisted the change registered as `simulation_time_source_contract` in `docs/ai_usage.json`: the `vertical_mock.launch.py` preflight that now requires exactly one external, advancing `/clock` whenever `use_sim_time:=true` (MOCK or real mission), its contract tests, the ICD section 2 clarification and the D-CLK-01 decision record. No ROS message, service, unit, enum, replay or raster version changes. No data, image, video or audio was generated, and no run is claimed as LIVE or physically validated. Existing declarations, attributions and watermarks are unchanged.
+
+
+## Historical planner disclosures retained during reconciliation
+
+These records describe historical commits, not the current operational backend.
+
 ## F03.3-C2 immutable Python scientific context
 
 OpenAI Codex assisted ScientificContext in resource_costs.py, tests/planning/test_scientific_context.py and docs/planner_scientific_context.md. Published science functions and profile coefficients are reused unchanged. The explicit immutable context is experimental, has no ROS transport or authorization and does not approve profiles. Test terrains are synthetic inputs.
+
 
 ## F03.3-C2 local opt-in scientific search and replanning
 
 OpenAI Codex assisted core.py and replan.py experimental context integration, tests/planning/test_scientific_search.py and test_scientific_replan.py, MODEL/handoff/local technical documentation and evidence/planner-f033c2-local. Costs reuse the published science API; graph/raster fixtures are synthetic. Evidence records actual local software results and computational timings, including the corrected pytest helper-name error. No ROS activation, production node wiring, coefficients, mission authority or scientific approvals were changed. No GitHub publication is part of this cut.
 
+
 ## F03.3-C2 local final admission and performance audit
 
 OpenAI Codex assisted the minimal replan.py admission-order correction, tests/planning/test_scientific_admission.py and test_scientific_benchmark_protocol.py, scripts/benchmark_scientific_planner.py, planner MODEL/handoff/audit documentation and evidence/planner-f033c2-audit-local. The before-fix failures and actual local software measurements are retained. Public Jezero data and source uncertainties were loaded unchanged; the secondary synthetic D-07 control reuses existing inputs. No observation, coefficient, MissionManager, ROS contract, production activation or scientific approval was generated. No GitHub publication is part of this cut.
+
 
 ## MVP-PL-01 local planner consumer validation
 
 OpenAI Codex assisted tests/planning/test_mvp_mission_consumer.py, docs/planner_mvp_pl01.md, the planner handoff and evidence/planner-mvp-pl01-local. The tests join the actual Python planner and MissionManager using an explicit test-only translation and synthetic grid/telemetry; test-local illustrative flags exercise the independent numerical audit without granting approval. Evidence records actual software outcomes and limitations, including environment failures. Production implementations, scientific coefficients, ROS interfaces and the frozen delivery revision are unchanged. No scientific observations, executed physical mission, media, runtime science activation or publication are generated by this cut.
 
+
 ## F-TERRAIN-01 local diagnostics
 
 OpenAI Codex assisted terrain_diagnostics.py, test_terrain_diagnostics.py, planner_terrain_mobility_review.md and evidence/planner-terrain-local. All new terrain and paired jump samples are explicitly synthetic analytical fixtures. Diagnostics do not authorize routes or alter production admission, profiles, science equations, mapping, public data or ROS. Computation timings are local software measurements, not physical mobility validation.
 
+
 ## F-TERRAIN-02 synthetic local-surface experiment
 
 OpenAI Codex assisted local_surface.py, test_local_surface.py, planner_terrain_mobility_f02.md, planner handoff and evidence/planner-terrain-f02. Analytic synthetic grids and explicit trial parameters exercise the unchanged A* on a fine raster. All outputs are software estimates and diagnostics, not Mars observations or physical certification. No production default, shared core, scientific coefficients, MissionManager, ROS, public data or frozen delivery revision is altered.
+
+
+## Local planner reconciliation
+Codex assisted conflict reconciliation preserving the published scientific backend and historical disclosure records; no scientific coefficients or interfaces changed.

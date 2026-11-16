@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="0.261" timestamp="2026-11-15T14:47:54.422733-05:00" hostname="LAPTOP-C6UQO8L3"><testcase classname="" name="test_event_stream_retains_late_events_after_newer_live_events" time="0.049"><failure message="assert 4 == 2">..\..\pr37-science-corrections\Hacktón NASA\tests\contracts\test_gateway.py:272: in test_event_stream_retains_late_events_after_newer_live_events
+    assert socket.receive_json()['event']['seq'] == 2
+E   assert 4 == 2</failure></testcase><testcase classname="" name="test_event_stream_deduplicates_backlog_queue_overlap_without_losing_gaps[0]" time="0.007"><failure message="assert 4 == 2">..\..\pr37-science-corrections\Hacktón NASA\tests\contracts\test_gateway.py:300: in test_event_stream_deduplicates_backlog_queue_overlap_without_losing_gaps
+    assert socket.receive_json()['event']['seq'] == 2
+E   assert 4 == 2</failure></testcase><testcase classname="" name="test_event_stream_deduplicates_backlog_queue_overlap_without_losing_gaps[1]" time="0.006"><failure message="assert 4 == 2">..\..\pr37-science-corrections\Hacktón NASA\tests\contracts\test_gateway.py:300: in test_event_stream_deduplicates_backlog_queue_overlap_without_losing_gaps
+    assert socket.receive_json()['event']['seq'] == 2
+E   assert 4 == 2</failure></testcase><testcase classname="" name="test_event_stream_keeps_resume_floor_fixed_for_late_new_events" time="0.006"><failure message="assert 6 == 4">..\..\pr37-science-corrections\Hacktón NASA\tests\contracts\test_gateway.py:317: in test_event_stream_keeps_resume_floor_fixed_for_late_new_events
+    assert socket.receive_json()['event']['seq'] == 4
+E   assert 6 == 4</failure></testcase></testsuite></testsuites>

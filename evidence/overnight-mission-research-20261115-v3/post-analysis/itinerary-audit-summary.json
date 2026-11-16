@@ -1,0 +1,38 @@
+{
+  "created_at_utc": "2026-11-15T11:48:57.035578+00:00",
+  "source_sha": "7ad605039a524d5b5cbe2c983f2da9113f8b1ce9",
+  "code_sha256": "6f5feae5269aeff165624f27648dc9bc0bf3dd102d9dc7b6e7958e5bfb63017b",
+  "input_journals": {
+    "ensemble.jsonl": "650f0cae514197076f4f10b7c8aadfb1b31562cf1531549020c23e1d9d87c572",
+    "directed.jsonl": "2505bf1143655ce7d7a380905b164eb82be86f977afc4f24de65249b248e1b5b",
+    "directed-large.jsonl": "aa54c0468ac0b798ea903fffd2ac75d9f9ead3ce3921ae01063c9e95c041dae0",
+    "scale.jsonl": "0f000b288a116eda1a40406098a7116e0695a9cc3ad299300d1f4a57b9e3586c",
+    "margin-thresholds.jsonl": "4ed635fecd80a93178ddf2dac899bb8a6c3a2c78f9ca72d2664fb4ca5900471b",
+    "isolated-memory.jsonl": "477330f5b0e50c3fdaffc9cff05200b97c3fb3cdcea7c204abd4ddf3c36b0b8f"
+  },
+  "counts": {
+    "recorded_logical_search_results": 34118,
+    "status_NO_PATH": 18781,
+    "status_UNKNOWN": 6274,
+    "status_FEASIBLE": 4799,
+    "audited_feasible_itineraries": 4799,
+    "numerically_matching": 94,
+    "status_INSUFFICIENT_BUDGET": 4264
+  },
+  "by_agent": {
+    "human_1": {
+      "audited": 1645,
+      "numerically_matching": 0
+    },
+    "rover_1": {
+      "audited": 3154,
+      "numerically_matching": 94
+    }
+  },
+  "unique_path_profile_schedule_costs": 605,
+  "audits_sha256": "9e65fdedffc4ccf2557d5c4a643a453fd12437b7d980622789ab62df791f12c2",
+  "scope": "All feasible recorded raw search results in completed experimental blocks, all scale repeats, reduction samples and isolated-memory controls. Shared initial calls counted once. Nonfeasible results have no itinerary. Resource authorization remains with the original phase-specific ledger/audits; this pass compares costs only and makes no new planner query.",
+  "model_agreement": false,
+  "candidate_authorized": false,
+  "mission_success": null
+}

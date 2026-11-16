@@ -1,5 +1,20 @@
 # Contract reconciliation baseline 1.0.0-rc.2
 
+## Candidate 2.0.0-rc.1: operational scientific costs
+
+The working candidate adds `RegisterPlanningContext.srv` while retaining every
+existing IDL byte. Interface package 2.0.0 reflects the new default requirement
+to register an immutable cost/activity context before PlanRoute. Explicit legacy
+server opt-in supports historical callers. The machine-readable lock retains
+the original rc.2 data under `historical_baselines` and records all nine current
+definitions. See [scientific cost integration](scientific_cost_integration.md)
+for producer/consumer semantics and migration. [D-COST-03](decisions/2026-11-15-scientific-cost-context-migration.md)
+records the owner's migration approval and merge authorization after CI.
+Coefficient approval, execution evidence and global contract freeze remain
+separate; this is not a release.
+
+The following published rc.2 record is historical relative to this candidate.
+
 Status: **published in main through PR28; not frozen, no release or scientific
 approval**. Reviewed source `7f0ebaaefa90b7ae48505f8e06d22f2660e5d491` was
 merged as `9198b3d8b3257dfd452d240ee9708cb038c3bb42`. The original audit input
@@ -137,3 +152,9 @@ Subsequent published integrations supersede those implementation-status claims.
 The complete original source-lock object is retained under rc.1 in
 `contract_baseline.json`; source history preserves the earlier prose. The shared
 semantics and models were never frozen or scientifically approved by that audit.
+
+## Height reconciliation working cut — 15 November 2026
+
+Base main `9013beb`; this cut requires the reviewed PR path and is not a contract freeze. ROS package/messages and canonical JSON/raster versions remain unchanged. Scene initialization is explicit SIMULATED public-prior construction; parked-drone Z is absolute datum height. Execution preserves finite current XYZ, and display samples its rendered mesh without changing telemetry. Planner snapshots also bind origin latitude/longitude, prior checksum and sources immutably. See `docs/height_reconciliation_handoff.md` for source locks, actual checks and remaining acceptance.
+
+`recorded-recovery-001` remains byte-for-byte historical evidence. Its idle drone retained an omitted-height default of zero over negative terrain; it does not evidence flight or three-role completion. A corrected recording must have a separate package/revision and retain MOCK/REPLAY and final READY limitations.

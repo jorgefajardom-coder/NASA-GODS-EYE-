@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react';
 
-/** The six options around the dial, clockwise from the top. Each turns the inner circle into its own gauge. */
-export type HudOption = 'oxygen' | 'energy' | 'time' | 'route' | 'atmos' | 'dose';
+/**
+ * The six options around the dial, clockwise from the top. Each turns the inner circle into its own gauge.
+ * `co2` has no button of its own: a second press on the oxygen button shows it (O2, then CO2, then the map).
+ */
+export type HudOption = 'oxygen' | 'co2' | 'energy' | 'time' | 'route' | 'atmos' | 'dose';
 
-export const HUD_OPTIONS: Array<{ id: HudOption; label: string }> = [
+export const HUD_OPTIONS: Array<{ id: Exclude<HudOption, 'co2'>; label: string }> = [
   { id: 'oxygen', label: 'Oxygen' },
   { id: 'energy', label: 'Energy' },
   { id: 'time', label: 'Time' },
@@ -29,6 +32,15 @@ export const HUD_ICON: Record<HudOption, ReactNode> = {
       <circle cx="8" cy="11" r="4.5" />
       <circle cx="16" cy="11" r="4.5" />
       <text x="12" y="22.5" fontSize="5.5" textAnchor="middle" stroke="none" fill="currentColor">O₂</text>
+    </>
+  ),
+  // CO2 molecule: a carbon between two oxygens.
+  co2: (
+    <>
+      <circle cx="4.5" cy="11" r="3" />
+      <circle cx="12" cy="11" r="3.6" />
+      <circle cx="19.5" cy="11" r="3" />
+      <text x="12" y="22.5" fontSize="5.5" textAnchor="middle" stroke="none" fill="currentColor">CO₂</text>
     </>
   ),
   // Lightning bolt.
@@ -82,7 +94,8 @@ interface Props {
 /**
  * Agent HUD: an inner circle and six option buttons on an outer ring. With no option active the
  * circle is the heading-up minimap; pressing an option turns the circle into that element's own
- * gauge (and its icon glows); pressing it again goes back to the map.
+ * gauge (and its icon glows); pressing it again goes back to the map. The oxygen button has two gauges: a
+ * second press switches it to the exhaled CO2 (its icon and label change), a third goes back to the map.
  */
 export function RadialHud({ who, center, active, onSelect, warn, hints }: Props) {
   return (
@@ -125,7 +138,11 @@ export function RadialHud({ who, center, active, onSelect, warn, hints }: Props)
         </svg>
         {HUD_OPTIONS.map((o, i) => {
           const a = ((i * 60 - 90) * Math.PI) / 180;
-          const on = active === o.id;
+          // The oxygen button stays lit on its second gauge (CO2) and shows that gauge's icon and name.
+          const co2 = o.id === 'oxygen' && active === 'co2';
+          const on = active === o.id || co2;
+          const label = co2 ? 'Carbon dioxide' : o.label;
+          const next: HudOption | null = o.id === 'oxygen' ? (active === 'oxygen' ? 'co2' : co2 ? null : 'oxygen') : on ? null : o.id;
           return (
             <button
               key={o.id}
@@ -133,12 +150,15 @@ export function RadialHud({ who, center, active, onSelect, warn, hints }: Props)
               className={`rhud__btn${on ? ' rhud__btn--on' : ''}${warn.has(o.id) ? ' rhud__btn--warn' : ''}`}
               style={{ left: C + Math.cos(a) * ORBIT_R - BTN_R, top: C + Math.sin(a) * ORBIT_R - BTN_R, width: BTN_R * 2, height: BTN_R * 2, ['--i' as string]: i }}
               aria-pressed={on}
-              aria-label={o.label}
-              title={hints[o.id] ? `${o.label}: ${hints[o.id]}` : o.label}
-              onClick={() => onSelect(on ? null : o.id)}
+              aria-label={o.id === 'oxygen' && on ? `${label} (press again for ${co2 ? 'the map' : 'carbon dioxide'})` : label}
+              title={(() => {
+                const hint = hints[co2 ? 'co2' : o.id];
+                return hint ? `${label}: ${hint}` : label;
+              })()}
+              onClick={() => onSelect(next)}
             >
               <svg viewBox="0 0 24 24" width={24} height={24} fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                {HUD_ICON[o.id]}
+                {HUD_ICON[co2 ? 'co2' : o.id]}
               </svg>
             </button>
           );

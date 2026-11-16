@@ -268,3 +268,61 @@ Original analysis/report hashes and pinned c3ec4c1 reproduction remain historica
 Publication CI for 6e497a1: Python, web and ROS passed (run43670914573). ROS built/inspected all interfaces and passed the MOCK vertical integration suite. This remains software evidence, not scientific mission acceptance. See evidence/mission-proposal-publication-20261115/ci.json.
 
 Final publication refresh incorporates main99f3e2e (delivery PR30); both sides of AI disclosures retained. Runtime/configuration still matches the earlier CI-passed main9198b3d. Numeric campaign drafts remain proposed research, excluded from the operational delivery freeze.
+
+## Scientific Wiki publication cut
+
+The owner authorized publication of the complete English Wiki after its local first draft. This documentation-only overlay includes nine chapters, Home and four supporting reader pages,21 unchanged marked assets including three GIFs, and the bounded public/analytical records linked by the articles. The original draft seal remains historical under docs/wiki/audit/local-draft-manifest.json.
+
+Published-main baseline:9013bebf2400d605f5a3d68e79dadbd5d1c57d03. Both AI registers retain all main declarations and add only this Wiki entry. No application source, runtime configuration, message, planner implementation, private world, evaluator reference, raw capture frames or browser profile is included. Scientific owner audit remains pending. The publication manifest and standard-library checker identify the precise exported scope; the historical3394-artifact local archive is not claimed to be uploaded.
+
+JES-07/AC-10 organizer notification and explicit endorsement remain separate delivery gates. Jesus coordinates and David backs up; this publication does not mark the submission complete and sends no external message.
+
+## Reviewed ImageGen Wiki visual edition
+
+Prepared a documentation-only refresh from main 7ff5a077dfe70e181e960a2d638e3a1e955591c1 and native Wiki acf3edddb25718dc5c234a4f836cc7b96b064a6b. The supplied package has 20 images; nine corrected conceptual illustrations are selected and 11 originals excluded. Every accepted PNG/WebP carries the visible AI-generated footer. Existing numerical figures, source citations, three GIFs and historical manifests retain their bytes. Both AI declarations are appended without removing main entries. `docs/wiki/Editorial-Review.md` and the edition manifest identify exact placements, prompts, hashes and exclusions.
+
+The supplied README_START_HERE item4 and PROMPT_FOR_CODEX section6 require a PR and owner review before the separate Wiki push. Prepare the concrete source/native diff and visual checks; leave native synchronization pending that review. Scientific profile/model/mission acceptance is unchanged. JES-07/AC-10 organizer notification and endorsement remain a separate submission gate; Jesus coordinates and David backs up. This editorial cut does not claim submission readiness.
+
+## Paired analytical policy study — 15 November 2026
+
+Owner request: one hour of parallel local missions without rendering, followed by statistical analysis and English Wiki publication. Pinned planning/science source: `3c82d72f972109113216039bff5cfd491df5f1ba`; shared contract versions unchanged. The source publication contains documentation and the separate `evidence/rigid-adaptive-study-20261115` archive, with no production module, operational allocation or scientific approval change.
+
+| main | 360 | 360 | 0 |
+| directed | 120 | 120 | 0 |
+| extended-1024 | 180 | 180 | 0 |
+| strict-sigma | 3 | 3 | 0 |
+| published-step | 3 | 3 | 0 |
+| development-pilot-1 | 2 | 2 | 0 |
+| development-pilot-2 | 2 | 2 | 0 |
+
+Read the [study](../wiki/10-Adaptive-Planning-Study.md), frozen protocol, compressed original catalogues and their separate main/directed/large-window analyses. The main predeclared comparison retains all initial rejections and UNKNOWN; conditional directed results and supplementary maps do not replace it. Allocation helper/campaign closure after the first cases is explicitly recorded. No results from development pilots count as additional independent evidence.
+
+Validation: frozen main Python 1,281 passed / 26 skipped; four new accounting/retreat controls passed; repository checker passed; frontend 412 passed / one skipped; build passed on Node 24.18.0. Initial Windows temp/dependency/layout failures were resolved without source changes and recorded. Independent source/input/ledger audits accompany the archive. Ubuntu/Jazzy, ROS, Gazebo and physical mission acceptance were not executed for this research cut.
+
+Remaining: agreed production cost/context consumer; owner-approved profiles/allocations; calibrated observations and real task/work/traversal inputs; current-map/current-resource reauthorization before reusing incumbent geometry; actual integrated mission evidence. The research comparison does not close these gates.
+
+Submission coordination remains separate: JES-07 / AC-10 still requires recorded organizer notification, review and explicit endorsement. Jesús coordinates and David is backup. For the intended 20:00 America/Bogota submission, the four-hour review lead time has already passed at this research cut; notify promptly if the package becomes ready and record the lost margin. This archive is not a final submission-readiness declaration and sends no external message.
+
+## README scientific evidence update — 15 November 2026
+
+The owner requested a stronger scientific explanation and inclusion of the published paired-study results. This documentation cut starts from main `9bae0f0fc8337fed235b7fe71301c4bea6cce80e`, which includes PR47. The README adds the research question, CTX/computational scale distinction, resource-model provenance, experimental-consumer/configuration scope, separate 360/120/180 result panels, geometry/work interpretation and serial-query diagnostic. Existing introduction, technical setup and owner material are preserved from main.
+
+Both AI registers append this prose-synthesis use. No implementation, contract, coefficient, operational approval or original evidence changes. This README documentation cut does not declare submission readiness. JES-07 / AC-10 organizer notification, review and endorsement remain the separate submission gate coordinated by Jesús, with David as backup; the intended 20:00 America/Bogota cut has less than four hours of review margin.
+
+Validation for this README cut: nine local links and three result panels checked against the published summaries; prior main README text and AI entries preserved. Python: 1,281 passed / 26 skipped / one warning. Frontend: 412 passed / one skipped; build and repository checker passed. Commands/logs are retained locally under `.local/readme-science-update`. Ubuntu/Jazzy was not run locally for this documentation-only change. The owner authorized publication through `codex/readme-scientific-results` and a PR against main. The active mission checkout and unrelated local files remain separate.
+
+## Operational scientific-cost closure candidate — 15 November 2026
+
+Source baseline: main `d13a4b3f1035260cebf9f065472c56cc53158401`; isolated branch `codex/operational-scientific-costs`. The owner requested urgent resolution of the live service cost mismatch. The actual FAST/SAFE search now consumes the shared scientific movement/activity costs, and default PlanningNode requires a typed immutable context registered by MissionNode before PlanRoute. Existing IDL fields are unchanged; the new default prerequisite is explicitly versioned as interface package2.0.0 / candidate baseline2.0.0-rc.1. Jesus reviews integration; David science. This is not a release or a contract freeze.
+
+Input identities include all wire request fields, current XYZ/resources/reserves, profile-registry SHA-256 and scientific model source SHA-256. Duplicate context retries are idempotent; conflicting/stale/missing inputs fail closed. Pending resource changes during context acknowledgement acquire a fresh request; already dispatched searches retain anti-starvation behavior and final current-resource audit. Legacy costs require explicit compatibility opt-in and remain separately reproducible.
+
+Pure/model, actual seven-case ROS, contract/integration and build outcomes are recorded in the integration evidence and final validation ledger. The old 1/7 diagnosis remains historical; the new diagnostic explicitly identifies its backend and source. Numerical agreement does not approve coefficients or establish task/work/traversal execution. Profile and operational mission acceptance gates remain unchanged.
+
+Before final submission, JES-07 / AC-10 still requires organizer notification, review and explicit endorsement. Jesus coordinates and David is backup. The intended 20:00 America/Bogota cut has less than four hours of review margin; notify promptly when the package is ready and record response/corrections. This technical repair does not itself declare submission readiness or send external messages.
+
+Executed verification is [source-pinned in the cost record](../../evidence/scientific-cost-integration-20261115/README.md): scientific7/7; explicitlegacy1/7; sevenactualROScomparisons7/7. Implementation3830b8b; WindowsPython1,346pass/27skip; Jazzy871pass/1skip; frontend412pass/1skip; colcon8packages, newinterfaceinspection, repositoryandwhitespacechecksPASS. The oneJazzy skip concerns an optional historical planner snapshot. Failed initial dependency/legacyfixture setup was corrected before final runs and retained locally. Defaultapprovalflags, coefficients and original historicalevidence remain unchanged.
+
+Integration dependency: newly published `feature/live-ros-obstacles-gazebo` at `afb25b9` is not part of this repair. Its old PlanRoute callers need the registered-context producer or an explicit labelled legacy-MOCK setting when rebased. Coordinate this migration with Jesus/Diego before combining the branches; do not copy or auto-merge their work.
+
+The owner approved the package2.0 context migration and PR50 integration after all CI checks pass; [D-COST-03](../decisions/2026-11-15-scientific-cost-context-migration.md) records its precise scope. This accepts the operational software migration without changing coefficient or physical-execution approval.

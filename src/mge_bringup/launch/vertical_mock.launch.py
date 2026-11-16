@@ -4,6 +4,8 @@ agents -> terrain meta -> mission -> planner -> gateway (REST / WebSocket).
 `record:=true` also writes a replay package to <record_dir>/<run_id>.
 `planner:=real` and `terrain:=real` select their real providers.
 `mission:=real` selects the real authority with explicit configuration and /clock.
+`use_sim_time:=true` (any mission) requires exactly one external, advancing /clock
+before any node starts (ICD section 2, D-CLK-01); gazebo_mock.launch.py bridges it.
 `agents:=kinematic` replaces the static agents by the MOCK kinematic executor:
 the primary agent follows the authorized active path and halts when it clears.
 Agents remain MOCK, so this vertical always declares source_mode=MOCK.
@@ -11,6 +13,7 @@ Agents remain MOCK, so this vertical always declares source_mode=MOCK.
 import os
 from pathlib import Path
 from time import monotonic
+from typing import List
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -38,7 +41,7 @@ def _check_real_configuration(context):
     """Fail before starting nodes if a real mission lacks explicit inputs."""
     if LaunchConfiguration('mission').perform(context) != 'real':
         return False
-    if LaunchConfiguration('use_sim_time').perform(context).lower() != 'true':
+    if not _uses_sim_time(context):
         raise RuntimeError('NOT_READY: REAL_MISSION_REQUIRES_SIM_TIME')
     for argument in ('mission_profiles_path', 'mission_path'):
         value = LaunchConfiguration(argument).perform(context)
@@ -47,8 +50,26 @@ def _check_real_configuration(context):
     return True
 
 
+def _uses_sim_time(context):
+    return LaunchConfiguration('use_sim_time').perform(context).lower() == 'true'
+
+
+def _clock_problem(stamps_ns, publishers):
+    """Reason the observed /clock cannot be the run's single time base, or None.
+
+    ICD section 2 (D-CLK-01): with use_sim_time=true every node reads one
+    external, advancing /clock. A frozen, absent or duplicated clock would leave
+    nodes at t=0 or mix two time bases, so the launch fails before any provider.
+    """
+    if publishers > 1:
+        return 'PROVIDER_COLLISION: multiple ROS /clock publishers'
+    if publishers < 1 or not any(a < b for a, b in zip(stamps_ns, stamps_ns[1:])):
+        return 'NOT_READY: EXTERNAL_SIMULATION_CLOCK_REQUIRED'
+    return None
+
+
 def _require_external_clock():
-    """Observe a real clock message; no clock or mission provider is fabricated."""
+    """Observe one advancing external clock; no clock or mission provider is fabricated."""
     import rclpy
     from rclpy.context import Context
     from rclpy.executors import SingleThreadedExecutor
@@ -57,15 +78,15 @@ def _require_external_clock():
 
     ros_context = Context()
     rclpy.init(args=[], context=ros_context)
-    probe = rclpy.create_node('mge_real_mission_preflight', context=ros_context)
+    probe = rclpy.create_node('mge_sim_time_preflight', context=ros_context)
     executor = SingleThreadedExecutor(context=ros_context)
     executor.add_node(probe)
-    received = []
+    stamps = []
     def on_clock(message):
         if message.clock.sec >= 0 and 0 <= message.clock.nanosec < 10**9:
-            received.append(True)
+            stamps.append(message.clock.sec * 10**9 + message.clock.nanosec)
     subscription = probe.create_subscription(Clock, '/clock', on_clock,
-        QoSProfile(depth=1, reliability=ReliabilityPolicy.BEST_EFFORT))
+        QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT))
     try:
         deadline = monotonic() + 2.0
         while monotonic() < deadline:
@@ -75,8 +96,9 @@ def _require_external_clock():
         existing = {name for name, _ in probe.get_service_names_and_types()}
         if '/mge/mission/set_goal' in existing:
             raise RuntimeError('PROVIDER_COLLISION: mission service already active')
-        if not received:
-            raise RuntimeError('NOT_READY: EXTERNAL_SIMULATION_CLOCK_REQUIRED')
+        problem = _clock_problem(stamps, probe.count_publishers('/clock'))
+        if problem:
+            raise RuntimeError(problem)
     finally:
         executor.shutdown(timeout_sec=2.0)
         executor.remove_node(probe)
@@ -85,8 +107,10 @@ def _require_external_clock():
         ros_context.shutdown()
 
 
-def _real_mission_preflight(context):
-    if _check_real_configuration(context):
+def _clock_preflight(context):
+    """Real missions need simulated time; any simulated-time run needs its clock."""
+    _check_real_configuration(context)
+    if _uses_sim_time(context):
         _require_external_clock()
     return []
 
@@ -113,12 +137,29 @@ def generate_launch_description():
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('host', default_value='127.0.0.1'),
         DeclareLaunchArgument('port', default_value='8000'),
+        # Browser origins the gateway answers (CORS), as a YAML list.
+        DeclareLaunchArgument('cors_origins', default_value="['http://localhost:5173', 'http://127.0.0.1:5173']"),
         DeclareLaunchArgument('planner', default_value='mock', choices=['mock', 'real']),
         DeclareLaunchArgument('profiles_file', default_value=''),
+        DeclareLaunchArgument('allow_legacy_cost_model', default_value='false'),
         DeclareLaunchArgument('exploration_policy_file', default_value=''),
         DeclareLaunchArgument('allow_continuous_starts', default_value='false'),
         DeclareLaunchArgument('mission', default_value='mock', choices=['mock', 'real']),
+        # MOCK mission only: on a resource rejection, try nearer targets and then the base.
+        DeclareLaunchArgument('budget_fallback', default_value='false', choices=['true', 'false']),
+        # MOCK mission only: a goal is complete once its agent finishes the route back at base.
+        DeclareLaunchArgument('complete_on_return', default_value='false', choices=['true', 'false']),
+        # Distance to the route end that counts as arrived (a physical agent never lands exactly).
+        DeclareLaunchArgument('completion_tolerance_m', default_value='0.001'),
+        # Comma-separated agents the kinematic executor leaves to another driver (e.g. Gazebo).
+        DeclareLaunchArgument('external_agents', default_value=''),
+        # SIMULATED on-board sensing of a declared test scene (terrain:=real only).
+        DeclareLaunchArgument('sensor', default_value='false', choices=['true', 'false']),
+        DeclareLaunchArgument('sensor_scene_file', default_value=''),
+        DeclareLaunchArgument('sensor_agents', default_value="['drone_1', 'human_1', 'rover_1']"),
+        DeclareLaunchArgument('sensor_radii_m', default_value='[24.0, 8.0, 12.0]'),
         DeclareLaunchArgument('mission_profiles_path', default_value=''),
+        DeclareLaunchArgument('scientific_profiles_path', default_value=LaunchConfiguration('mission_profiles_path')),
         DeclareLaunchArgument('mission_path', default_value=''),
         DeclareLaunchArgument('base_enu_m', default_value='[]'),
         DeclareLaunchArgument('allow_illustrative', default_value='false'),
@@ -128,14 +169,21 @@ def generate_launch_description():
         DeclareLaunchArgument('record_dir', default_value='evidence'),
         OpaqueFunction(function=_check_terrain_selection),
 
-        OpaqueFunction(function=_real_mission_preflight),
+        OpaqueFunction(function=_clock_preflight),
         # Exactly one publisher per agent state topic.
         Node(package='mge_sim', executable='mock_agents', output='screen',
              condition=_when('agents', 'static'), parameters=[with_agents]),
         Node(package='mge_sim', executable='kinematic_executor', output='screen',
-             condition=_when('agents', 'kinematic'), parameters=[with_agents]),
+             condition=_when('agents', 'kinematic'),
+             parameters=[{**with_agents, 'external_agents': LaunchConfiguration('external_agents')}]),
         Node(package='mge_sim', executable='mock_terrain', output='screen',
              condition=_when('terrain', 'mock'), parameters=[common]),
+        Node(package='mge_sim', executable='scene_sensor', output='screen',
+             condition=_when('sensor', 'true'),
+             parameters=[{**common,
+                          'scene_file': LaunchConfiguration('sensor_scene_file'),
+                          'agent_ids': ParameterValue(LaunchConfiguration('sensor_agents'), value_type=List[str]),
+                          'radii_m': ParameterValue(LaunchConfiguration('sensor_radii_m'), value_type=List[float])}]),
         # Exactly one terrain provider set: mapping_node alone publishes the
         # map batch (metadata included); data_node only the immutable prior.
         Node(package='mge_data', executable='data_node', output='screen',
@@ -155,6 +203,9 @@ def generate_launch_description():
              parameters=[{
                  'use_sim_time': LaunchConfiguration('use_sim_time'),
                  'profiles_file': LaunchConfiguration('profiles_file'),
+                 'scientific_profiles_path': LaunchConfiguration('scientific_profiles_path'),
+                 'allow_legacy_cost_model': ParameterValue(
+                     LaunchConfiguration('allow_legacy_cost_model'), value_type=bool),
                  'allow_illustrative_profiles': True,
                  'snapshot_contract_confirmed': True,
                  'allow_continuous_starts': ParameterValue(
@@ -163,7 +214,13 @@ def generate_launch_description():
         Node(package='mge_sim', executable='mock_mission', output='screen',
              condition=IfCondition(EqualsSubstitution(LaunchConfiguration('mission'), 'mock')),
              parameters=[{**with_agents, 'require_stop_ack': ParameterValue(
-                 EqualsSubstitution(LaunchConfiguration('agents'), 'kinematic'), value_type=bool)}]),
+                 EqualsSubstitution(LaunchConfiguration('agents'), 'kinematic'), value_type=bool),
+                 'budget_fallback': ParameterValue(
+                     LaunchConfiguration('budget_fallback'), value_type=bool),
+                 'complete_on_return': ParameterValue(
+                     LaunchConfiguration('complete_on_return'), value_type=bool),
+                 'completion_tolerance_m': ParameterValue(
+                     LaunchConfiguration('completion_tolerance_m'), value_type=float)}]),
         Node(package='mge_mission', executable='mission_node', output='screen',
              condition=IfCondition(EqualsSubstitution(LaunchConfiguration('mission'), 'real')),
              parameters=[{
@@ -180,6 +237,7 @@ def generate_launch_description():
                  **web,
                  'host': LaunchConfiguration('host'),
                  'port': ParameterValue(LaunchConfiguration('port'), value_type=int),
+                 'cors_origins': ParameterValue(LaunchConfiguration('cors_origins'), value_type=List[str]),
              }]),
         Node(package='mge_gateway', executable='replay_recorder', output='screen',
              condition=IfCondition(LaunchConfiguration('record')),

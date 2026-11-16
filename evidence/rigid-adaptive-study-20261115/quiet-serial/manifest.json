@@ -1,0 +1,117 @@
+{
+  "classification": "SEPARATE_SERIAL_LOAD_DIAGNOSTIC_NOT_PRIMARY_OUTCOME_REPLACEMENT",
+  "started_at_utc": "2026-11-15T22:20:44.916329+00:00",
+  "input_manifest_sha256": "23947914cc9faab7d5a8a3772bca58c519d23b9a93732187ecb6b30aaeb3ebec",
+  "input_journal_sha256": "307f1466b19948b7455bb76595f9fadf3ea0ad194a68b9e3582895cd8ae2429a",
+  "script_sha256": "867176975ca85443a2cf451de80a7f82cdbfb5c39be8973d5a2016e3cd671de1",
+  "selected_conditions": 20,
+  "selection": "ALL original SAFE conditions with RIGID completion credit, no ADAPTIVE completion credit, and posterior-primary UNKNOWN/SEARCH_LIMIT",
+  "limits": {
+    "max_labels": 1000000,
+    "timeout_s": 8.0
+  },
+  "rule": "One serial repeat each, original limits and exact public state; preserve success and failure alike; no primary estimates are replaced",
+  "quiet_execution": "Caller must stop other experiment workers first; this script does not inspect or terminate other processes",
+  "conditions": [
+    {
+      "block_id": "bright-512-blocked-0-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "18d8c444a4f178ef316d9beea0993dbfbe9307d104d11f4333fc321fdade88cf"
+    },
+    {
+      "block_id": "bunsen-512-blocked-0-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "089579ac6d244728f4bed3e51c932388a8c9c5712ca3e171b1da555a9384466a"
+    },
+    {
+      "block_id": "bright-512-relief-1-broad",
+      "condition_id": "rover_1:SAFE",
+      "source_payload_sha256": "95e11173de1a3b6297b8713abd3d220f58156778836100d104afb07f7409102a"
+    },
+    {
+      "block_id": "bright-512-resource-1-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "843726135da2566ac622073c7e577224b88d7159cc2615a04712708b739a771a"
+    },
+    {
+      "block_id": "hawksbill-512-resource-1-broad",
+      "condition_id": "rover_1:SAFE",
+      "source_payload_sha256": "9cefe6c3727c84c8d855bc0ce8da6065510c013ddac7ffe460ffde056106aaf7"
+    },
+    {
+      "block_id": "bright-512-resource-2-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "b5b43cea3aadbc1c98e636ec3687654825fbbbe8bcf7a74ad3fdcb444eaf0dd1"
+    },
+    {
+      "block_id": "hawksbill-512-relief-3-broad",
+      "condition_id": "rover_1:SAFE",
+      "source_payload_sha256": "c7c9e0b8379bc80347e540af70a883831daf80604e3d64dcbb31095938eb59b4"
+    },
+    {
+      "block_id": "hawksbill-512-relief-4-broad",
+      "condition_id": "rover_1:SAFE",
+      "source_payload_sha256": "14dd3966fb723bfb6f7cb25183c773cf890074a7978b712c2d90f68fb4911996"
+    },
+    {
+      "block_id": "hawksbill-512-blocked-5-broad",
+      "condition_id": "rover_1:SAFE",
+      "source_payload_sha256": "bdd5ce031dbe9968f99df66a72047804b38c1e535f828ac6d7588d9b5e7fce81"
+    },
+    {
+      "block_id": "bright-512-detour-5-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "b5b7166cd221f75962ca1fe4370fdd3cdefa2c5710c1a25c7df85ac37dba6aa4"
+    },
+    {
+      "block_id": "hawksbill-512-blocked-6-broad",
+      "condition_id": "rover_1:SAFE",
+      "source_payload_sha256": "4eb860601cd1b9c8842c71ca78399f0088109cdd8caf443c351f3896f73960b3"
+    },
+    {
+      "block_id": "bunsen-512-unchanged-5-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "58d650cd6f69d292c3dd35aff7caf182f5d7e038af714448a928685cf4cf557a"
+    },
+    {
+      "block_id": "hawksbill-512-resource-6-broad",
+      "condition_id": "rover_1:SAFE",
+      "source_payload_sha256": "bc253e2cd5bc9efe74f985d85f5f1655f63500274ecef5f05f5b054e5033ead5"
+    },
+    {
+      "block_id": "hawksbill-512-blocked-10-broad",
+      "condition_id": "rover_1:SAFE",
+      "source_payload_sha256": "02c9ef6fcc36f238521bbe2e79b9ff847da0d0ec43dccb2a454b2e404552079a"
+    },
+    {
+      "block_id": "bunsen-512-blocked-10-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "89edfa61a4468d9441c9faa3c7694fd670262af9fe92675e2ae3a333715eb658"
+    },
+    {
+      "block_id": "hawksbill-512-detour-10-broad",
+      "condition_id": "rover_1:SAFE",
+      "source_payload_sha256": "9555aaada2eb78c7f198eca8f1787fa525e53bff65296a605e3101a7cffb0375"
+    },
+    {
+      "block_id": "bunsen-512-unchanged-10-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "b50e75c9750eca8032ffd85dadcb6d524784721bde9b30c77fb923b2cfc397cc"
+    },
+    {
+      "block_id": "bright-512-unchanged-10-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "f332b72cc76d914429b0920e4b4feda66f0beb6aaf9135539a67ca5971a91694"
+    },
+    {
+      "block_id": "hawksbill-512-resource-11-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "4d66b7c1c7182a5688d90d3aa907b397fbee897872074e3f0090f79fa334dd75"
+    },
+    {
+      "block_id": "bunsen-512-unchanged-11-broad",
+      "condition_id": "human_1:SAFE",
+      "source_payload_sha256": "c32460751a6894634ab4c5c8174d5c18b065899af2af4778b3b26141508f6fa1"
+    }
+  ]
+}

@@ -11,13 +11,15 @@ from jsonschema import Draft202012Validator, ValidationError
 import yaml
 
 from mge_data.core import (
+    AuxiliaryTerrainLayers,
     GeoTransform,
     ManifestValidator,
     SourceRegistry,
     TerrainMetadata,
+    load_auxiliary_terrain_layers,
     load_public_terrain,
 )
-from mge_data.node import build_terrain_meta_dict
+from mge_data.node import build_aux_layer_messages_dict, build_terrain_meta_dict
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA = json.loads((ROOT / "data/manifest.schema.json").read_text(encoding="utf-8"))
@@ -224,3 +226,44 @@ def test_t07_reference_isolation_prevents_loading_or_bundling_evaluator_assets(t
     (sample_copy / "manifest.json").write_text(json.dumps(manifest_copy), encoding="utf-8")
     with pytest.raises(PermissionError, match="forbidden reference key"):
         load_public_terrain(sample_copy / "manifest.json")
+
+
+def test_auxiliary_layers_align_with_public_terrain_and_build_rviz_messages():
+    """Optional NASA/USGS auxiliary layers align 1:1 with TerrainTile and build RViz messages."""
+    tile = load_public_terrain(READY_MANIFEST_PATH)
+    aux = load_auxiliary_terrain_layers(READY_MANIFEST_PATH, tile=tile, strict=True)
+    assert isinstance(aux, AuxiliaryTerrainLayers)
+    assert aux.ctx_ortho_dn.shape == (tile.metadata.rows, tile.metadata.cols)
+    assert aux.surface_zone_code.shape == (tile.metadata.rows, tile.metadata.cols)
+    assert aux.geology_unit_code.shape == (tile.metadata.rows, tile.metadata.cols)
+    assert np.all(aux.ctx_ortho_valid_mask)
+    assert set(np.unique(aux.surface_zone_code)).issubset({1, 2, 3, 4, 5})
+    assert aux.ctx_ortho_png_path is not None and aux.ctx_ortho_png_path.is_file()
+
+    cell_info = aux.zone_at_row_col(16, 16)
+    assert cell_info["geology_symbol"] == "Nle"
+    assert cell_info["surface_zone_code"] in {1, 2, 3, 4, 5}
+    assert cell_info["ctx_ortho_dn"] > 0
+
+    msgs = build_aux_layer_messages_dict(tile, aux)
+    assert msgs["ctx_ortho"]["topic"] == "/mge/terrain/aux/ctx_ortho"
+    assert msgs["ctx_ortho"]["encoding"] == "mono8"
+    assert len(msgs["ctx_ortho"]["data"]) == tile.metadata.rows * tile.metadata.cols
+    assert msgs["surface_zones"]["topic"] == "/mge/terrain/aux/surface_zones"
+    assert len(msgs["surface_zones"]["data"]) == tile.metadata.rows * tile.metadata.cols
+    assert msgs["geology_zones"]["topic"] == "/mge/terrain/aux/geology_zones"
+    assert len(msgs["geology_zones"]["data"]) == tile.metadata.rows * tile.metadata.cols
+
+
+def test_auxiliary_layers_can_be_removed_without_affecting_default_terrain(tmp_path):
+    """If auxiliary files are removed, load_public_terrain works unchanged and aux loader returns None."""
+    sample_copy = tmp_path / "sample"
+    shutil.copytree(ROOT / "data/sample", sample_copy)
+    for aux_name in ("aux_layers_manifest.json", "jezero_aux_layers.npz", "geology.json", "ctx_ortho.png"):
+        aux_file = sample_copy / aux_name
+        if aux_file.exists():
+            aux_file.unlink()
+
+    tile = load_public_terrain(sample_copy / "manifest.json")
+    assert tile.prior.shape == (32, 32)
+    assert load_auxiliary_terrain_layers(sample_copy / "manifest.json", tile=tile, strict=False) is None

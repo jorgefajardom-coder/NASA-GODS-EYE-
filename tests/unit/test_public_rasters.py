@@ -247,3 +247,95 @@ def test_recorded_attachment_is_read_from_the_package(tmp_path):
     (tmp_path / FIXTURE.name / FILE).write_text(json.dumps(attachment), encoding='utf-8')
     with pytest.raises(ReplayContractError, match='EVALUATOR_REFERENCE_FORBIDDEN'):
         read_public_rasters(tmp_path / FIXTURE.name, manifest)
+
+
+def test_impassable_layer_attaches_to_its_version_in_any_order():
+    early = PublicRasterAssembler(RUN)
+    early.on_prior(ROWS, COLS, [0.0] * CELLS)
+    early.on_impassable(header(5), ROWS, COLS, [-1, 0, 100, 100, 0, -1])
+    early.on_meta(meta(1, 5))
+    batch(early, 5)
+    assert early.attachment()['versions']['1']['impassable'] == [2, 3]
+
+    late = PublicRasterAssembler(RUN)
+    late.on_prior(ROWS, COLS, [0.0] * CELLS)
+    late.on_meta(meta(1, 5))
+    batch(late, 5)
+    assert 'impassable' not in late.attachment()['versions']['1']
+    assert late.on_impassable(header(5), ROWS, COLS, [100, 0, 0, 0, 0, 0]) is True
+    assert late.attachment()['versions']['1']['impassable'] == [0]
+    assert late.on_impassable(header(5), ROWS, COLS, [100, 0, 0, 0, 0, 0]) is False
+
+
+def test_impassable_layer_rejects_bad_frames_shapes_and_values():
+    a = PublicRasterAssembler(RUN)
+    a.on_meta(meta(1, 5))
+    with pytest.raises(RasterInputError):
+        a.on_impassable({'frame_id': 'odom', 'stamp': {'sec': 5, 'nanosec': 0}}, ROWS, COLS, [0] * CELLS)
+    with pytest.raises(RasterInputError):
+        a.on_impassable(header(5), ROWS, COLS, [0] * (CELLS - 1))
+    with pytest.raises(RasterInputError):
+        a.on_impassable(header(5), ROWS, COLS, [50] + [0] * (CELLS - 1))
+
+
+@pytest.mark.parametrize('complete', [False, True])
+def test_impassable_duplicate_cannot_rewrite_a_pending_or_recorded_version(complete):
+    a = PublicRasterAssembler(RUN)
+    a.on_prior(ROWS, COLS, [0.0] * CELLS)
+    a.on_meta(meta(1, 5))
+    if complete:
+        batch(a, 5)
+    a.on_impassable(header(5), ROWS, COLS, [100, 0, 0, 0, 0, 0])
+    with pytest.raises(RasterInputError, match='immutable'):
+        a.on_impassable(header(5), ROWS, COLS, [0, 100, 0, 0, 0, 0])
+    batch(a, 5)
+    assert a.attachment()['versions']['1']['impassable'] == [0]
+
+
+@pytest.mark.parametrize('geometry', [(-2., -2., 2.), (-3., -1., 2.), (-3., -2., 4.),
+                                      (math.nan, -2., 2.), (-3., -2., 0.)])
+def test_impassable_mask_requires_the_recorded_grid_geometry(geometry):
+    a = PublicRasterAssembler(RUN)
+    a.on_meta(meta(1, 5))
+    with pytest.raises(RasterInputError, match='geometry'):
+        a.on_impassable(header(5), ROWS, COLS, [0] * CELLS, geometry=geometry)
+
+
+def test_impassable_geometry_and_shape_are_checked_when_metadata_arrives_late():
+    a = PublicRasterAssembler(RUN)
+    a.on_impassable(header(5), COLS, ROWS, [0] * CELLS)
+    batch(a, 5)
+    with pytest.raises(RasterInputError, match='differs'):
+        a.on_meta(meta(1, 5))
+    b = PublicRasterAssembler(RUN)
+    b.on_impassable(header(5), ROWS, COLS, [0] * CELLS, geometry=(-2., -2., 2.))
+    batch(b, 5)
+    with pytest.raises(RasterInputError, match='geometry'):
+        b.on_meta(meta(1, 5))
+
+
+def test_impassable_late_attachment_remains_bound_to_its_original_stamp():
+    a = PublicRasterAssembler(RUN)
+    a.on_prior(ROWS, COLS, [0.] * CELLS)
+    for version, sec in ((1, 5), (2, 10)):
+        a.on_meta(meta(version, sec))
+        batch(a, sec)
+    a.on_impassable(header(5), ROWS, COLS, [100, 0, 0, 0, 0, 0], geometry=(-3., -2., 2.))
+    assert a.attachment()['versions']['1']['impassable'] == [0]
+    assert 'impassable' not in a.attachment()['versions']['2']
+
+
+def test_oracle_accepts_valid_and_rejects_invalid_impassable_indices():
+    manifest, records, snapshot = read_package(FIXTURE)
+    attachment = fixture_attachment(manifest, records)
+    cells = attachment['rows'] * attachment['cols']
+    for layer in attachment['versions'].values():
+        layer['impassable'] = [0, cells - 1]
+    check_public_rasters(manifest, records, attachment)
+    assert to_viewer(manifest, records, snapshot, public_rasters=attachment)['status'] == 'READY'
+    for bad, code in (([cells], 'INVALID_IMPASSABLE_INDEX'), ([True], 'INVALID_IMPASSABLE_INDEX'),
+                      ('x', 'INVALID_IMPASSABLE_INDEX'), ([0, 0], 'DUPLICATE_IMPASSABLE_INDEX')):
+        broken = deepcopy(attachment)
+        broken['versions']['1']['impassable'] = bad
+        with pytest.raises(ReplayContractError, match=code):
+            check_public_rasters(manifest, records, broken)

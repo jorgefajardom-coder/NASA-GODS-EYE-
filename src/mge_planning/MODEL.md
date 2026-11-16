@@ -1,13 +1,5 @@
 # P0 planning model and proof boundaries
 
-F03.3-C2 LOCAL experiment: pure Python plan_route accepts an explicit immutable
-scientific_context; omitted context retains the legacy model below. Nodes/ROS do
-not enable it. It uses the published mission segment/activity API before label
-pruning/dominance, with h=0, explicit pending goal service/waits and directed return.
-See [local integration and validation](../../docs/planner_f033c2_local.md) and
-[context admission](../../docs/planner_scientific_context.md). No profile/model
-approval or operational authorization follows from this experiment.
-
 Inputs are one copied, read-only **public belief** snapshot, explicit profile,
 request and resource budget. There is no evaluator-reference argument. Local ENU
 uses metres, southwest origin, rows north, columns east. Goals and return targets
@@ -158,11 +150,8 @@ mission's original allocation. Subsequent values must be nonincreasing, with
 strict comparison and no resource-credit tolerance. Unexplained increases yield
 UNKNOWN with TIME_AVAILABILITY_INCREASE, ENERGY_AVAILABILITY_INCREASE or
 OXYGEN_AVAILABILITY_INCREASE, invalidate the active route and make no request.
-Rejected updates never raise the stored bound. Legacy reserve-depleted observations
-retain their lower bound before STOP_REQUIRED. Scientific availability is admitted
-only after its explicit context validates; an invalid reduction cannot poison the
-bound. A scientific snapshot below reserves still issues STOP immediately but
-cannot admit an invalid planning context. Original reserves, phase,
+Rejected updates never raise the stored bound. Reserve-depleted observations
+also retain their lower bound before STOP_REQUIRED. Original reserves, phase,
 cursor and service checks remain; stale-route/progress rejection keeps precedence.
 
 This is an observed-value admission bound, NOT a consumed-resource ledger: no

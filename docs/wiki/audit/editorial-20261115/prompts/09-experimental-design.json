@@ -1,0 +1,15 @@
+{
+  "tool": "image_gen",
+  "operation": "reference_image_edit",
+  "source_id": 9,
+  "source_asset": "09_experimental-design.png",
+  "source_png_sha256": "887a16dd93d71e780cacd9b3eb4242821b5e22e402a341c0356109a4b0a1fdd5",
+  "prompt": "Edit this infographic for an English scientific Wiki. Preserve the cinematic Mars editorial palette and branching paired-comparison layout, but simplify every panel and remove dense prose. Exact title: 'A paired planning comparison'. Exact subtitle: 'Control the world; account for observation cost'. Left input panel: 'Same initial world and resources'. Split into two middle panels labeled exactly 'Public prior' and 'Prior + reconnaissance'. Show generic unbranded rover and scout illustrations as explanatory concepts, not real mission observations. Both arrows join a right panel with three large labels: 'Route geometry', 'Task eligibility', 'Resource margin'. Remove snow/ice claims by using generic red rocky terrain. No numbers, measured maps, scientific success checks, physical-execution claims, logos, flags or agency/mission branding. No additional words. Large legible type at 900 px display width. Full-width dark footer with prominent exact text 'AI-generated | Conceptual illustration', at least 32 px original font. Keep safe margins and a clean landscape composition.",
+  "generation_steps": [
+    "Edit this infographic for an English scientific Wiki. Preserve the cinematic Mars editorial palette and branching paired-comparison layout, but simplify every panel and remove dense prose. Exact title: 'A paired planning comparison'. Exact subtitle: 'Control the world; account for observation cost'. Left input panel: 'Same initial world and resources'. Split into two middle panels labeled exactly 'Public prior' and 'Prior + reconnaissance'. Show generic unbranded rover and scout illustrations as explanatory concepts, not real mission observations. Both arrows join a right panel with three large labels: 'Route geometry', 'Task eligibility', 'Resource margin'. Remove snow/ice claims by using generic red rocky terrain. No numbers, measured maps, scientific success checks, physical-execution claims, logos, flags or agency/mission branding. No additional words. Large legible type at 900 px display width. Full-width dark footer with prominent exact text 'AI-generated | Conceptual illustration', at least 32 px original font. Keep safe margins and a clean landscape composition."
+  ],
+  "output_png_sha256": "2398881c4409550f2fd9274627efd737d27a14c1885370d02e52b06219b0911a",
+  "webp_conversion": "Pillow encoding only, quality92; visible content and footer retained",
+  "classification": "AI-generated conceptual illustration",
+  "owner_review": "pending"
+}

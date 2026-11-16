@@ -5,6 +5,7 @@ Run on Jazzy after colcon build and sourcing install/setup.bash.
 """
 
 from pathlib import Path
+from dataclasses import replace
 from time import monotonic
 
 import pytest
@@ -15,10 +16,11 @@ pytest.importorskip("mge_interfaces.msg", reason="Requires built mission interfa
 from builtin_interfaces.msg import Time
 from geometry_msgs.msg import Point as WirePoint
 from mge_interfaces.msg import AgentState, MissionEvent, MissionState, RouteDecision, TerrainMeta
-from mge_interfaces.srv import PlanRoute, SetMissionGoal
+from mge_interfaces.srv import PlanRoute, RegisterPlanningContext, SetMissionGoal
 from nav_msgs.msg import Path as WirePath
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
+from rclpy.task import Future
 from rclpy.parameter import Parameter
 from rclpy.qos import DurabilityPolicy, HistoryPolicy, QoSProfile, ReliabilityPolicy
 from rosgraph_msgs.msg import Clock
@@ -27,6 +29,7 @@ from mge_mission import adapter
 from mge_mission.manager import MissionManager
 from mge_mission.models import MODEL_ID, estimate_activity, estimate_segment, load_profiles
 from mge_mission.node import create_node_class
+from mge_mission.planning_context import ContextStore, context_from_wire, profile_registry_sha256
 from mge_mission.types import Point, RouteDecision as CoreDecision
 
 
@@ -59,7 +62,9 @@ def graph():
         approved_model_id=MODEL_ID,
     )
     mission = create_node_class()(
-        parameter_overrides=[Parameter("use_sim_time", value=True)], manager=manager)
+        parameter_overrides=[Parameter("use_sim_time", value=True),
+                             Parameter("profiles_path", value=str(Path(__file__).resolve().parents[2] / "config/scenario_demo.yaml"))],
+        manager=manager)
     peer = Node("controlled_mission_contract_peer")
     executor = SingleThreadedExecutor()
     executor.add_node(peer)
@@ -75,8 +80,17 @@ def graph():
     peer.create_subscription(MissionEvent, "/mge/mission/events", events.append, reliable)
     peer.create_subscription(WirePath, "/mge/planner/active_path", paths.append, retained)
     behavior = {"value": "FEASIBLE"}
+    contexts = ContextStore()
+    registry_hash = profile_registry_sha256(Path(__file__).resolve().parents[2] / "config/scenario_demo.yaml")
+
+    def register_context(request, response):
+        result = contexts.register(context_from_wire(request))
+        response.accepted, response.reason_code = result.accepted, result.reason_code
+        response.context_sha256 = result.context_sha256
+        return response
 
     def planner(request, response):
+        contexts.resolve(request, expected_model_id=MODEL_ID, expected_profile_registry_sha256=registry_hash)
         requests.append(request)
         output = response.decision
         if behavior["value"] in {"UNKNOWN", "NO_PATH", "INSUFFICIENT_BUDGET"}:
@@ -124,6 +138,7 @@ def graph():
         return response
 
     service = peer.create_service(PlanRoute, "/mge/planner/plan_route", planner)
+    context_service = peer.create_service(RegisterPlanningContext, "/mge/planner/register_context", register_context)
     goal_client = peer.create_client(SetMissionGoal, "/mge/mission/set_goal")
 
     def send_inputs(version=1, agent_stamp=None):
@@ -155,7 +170,8 @@ def graph():
                    behavior=behavior, client=goal_client, send_inputs=send_inputs,
                    goal_request=goal_request, planner_service=service, clock=clock)
     try:
-        spin_until(executor, lambda: goal_client.service_is_ready() and mission._planner_client.service_is_ready())
+        spin_until(executor, lambda: goal_client.service_is_ready() and mission._planner_client.service_is_ready()
+                   and mission._context_client.service_is_ready())
         yield context
     finally:
         executor.remove_node(mission)
@@ -178,6 +194,36 @@ def test_goal_requires_actual_simulation_clock(graph):
     spin_until(graph["executor"], duplicate.done)
     assert duplicate.result().reason_code == "CLOCK_NOT_READY"
     assert not graph["requests"]
+
+
+def test_delayed_context_ack_cannot_forward_previous_resource_snapshot(graph, monkeypatch):
+    """Inject a delayed acknowledgement while keeping the normal planner peer."""
+    manager, executor, mission = graph["manager"], graph["executor"], graph["mission"]
+    spin_until(executor, lambda: manager.snapshot().map_version == 1 and manager.snapshot().agents,
+               tick=graph["send_inputs"])
+    held = Future()
+    original = mission._context_client.call_async
+    monkeypatch.setattr(mission._context_client, "call_async", lambda request: held)
+    goal = graph["client"].call_async(graph["goal_request"]())
+    spin_until(executor, lambda: goal.done() and mission._inflight_context is not None)
+    first = manager.pending_plan()
+    old_digest = mission._inflight_context.digest
+    current = manager._agents["human_1"]
+    assert manager.update_agent(replace(current, timestamp_sim_s=current.timestamp_sim_s+1,
+                                        time_remaining_s=current.time_remaining_s-10,
+                                        energy_remaining_wh=current.energy_remaining_wh-1))
+    assert manager.pending_plan() == first
+    answer = RegisterPlanningContext.Response(accepted=True, reason_code="COST_CONTEXT_REGISTERED",
+                                               context_sha256=old_digest)
+    held.set_result(answer)
+    refreshed = manager.pending_plan()
+    assert refreshed.request_id != first.request_id
+    assert not graph["requests"]
+    assert manager.pending_plan() == refreshed
+    monkeypatch.setattr(mission._context_client, "call_async", original)
+    spin_until(executor, lambda: manager.snapshot().mission_state == "READY")
+    assert graph["requests"][0].request_id == refreshed.request_id
+    assert graph["requests"][0].time_budget_s == refreshed.time_budget_s
 
 
 def test_ros_goal_plan_topics_idempotency_and_map_invalidation(graph):

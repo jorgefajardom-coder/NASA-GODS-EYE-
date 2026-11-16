@@ -108,6 +108,15 @@ convertible; no flat terrain is synthesized. The attachment holds:
   allowed only for versions whose TerrainMeta the package recorded. Each holds
   `belief`, nonnegative `sigma` and distinct in-bounds `observed` linear cell
   indices.
+  Optionally (an addition to 1.0.0), a version may also hold `impassable`:
+  distinct in-bounds linear cell indices that the mapping provider's human
+  traversability mask of the same batch marks forbidden (100), i.e. observed
+  obstacles or slopes beyond the human limit. Its absence says nothing about
+  obstacles; it is a planner-model mask, not certified physical safety.
+  Its first attachment may arrive after the required layers. Repeated masks
+  with the same stamp/version must be identical; a conflicting repetition is
+  rejected without changing recorded history. OccupancyGrid origin, resolution,
+  orientation, shape and frame must match the recorded map grid.
 
 This is the compatibility export attachment representation, not a new ROS
 raster format or replacement dataset manifest. Dataset provenance, hashes,
