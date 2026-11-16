@@ -90,7 +90,7 @@ log(f'world built: {len(field.blocked)} blocked cells, rover_1 physical')
 start('gz', ['gz', 'sim', '-r', 'world.sdf'], cwd=world, env={**os.environ, 'GZ_SIM_RESOURCE_PATH': str(world)})
 time.sleep(20)
 start('launch', ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}', f'port:={PORT}',
-                 'terrain:=real', 'planner:=real', f'profiles_file:={ROOT / "config/planner_profiles.illustrative.json"}',
+                 'terrain:=real', 'planner:=real', 'allow_legacy_cost_model:=true', f'profiles_file:={ROOT / "config/planner_profiles.illustrative.json"}',
                  f'exploration_policy_file:={ROOT / "config/exploration_policy.illustrative.json"}',
                  f'agents_file:={agents_file}', 'agents:=kinematic', 'allow_continuous_starts:=true',
                  'external_agents:=rover_1', 'completion_tolerance_m:=1.0',

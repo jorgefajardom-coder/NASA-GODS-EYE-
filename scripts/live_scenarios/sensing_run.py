@@ -129,7 +129,7 @@ agents_file = Path(RECORD_DIR) / f'{RUN_ID}-simulated-ground-agents.yaml'
 agents_file.write_text(yaml.safe_dump(initialize_ground_agents(template, surface)))
 proc = subprocess.Popen(
     ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}', f'port:={PORT}',
-     'terrain:=real', 'planner:=real', f'profiles_file:={ROOT / "config/planner_profiles.illustrative.json"}',
+     'terrain:=real', 'planner:=real', 'allow_legacy_cost_model:=true', f'profiles_file:={ROOT / "config/planner_profiles.illustrative.json"}',
      f'exploration_policy_file:={ROOT / "config/exploration_policy.illustrative.json"}',
      f'agents_file:={agents_file}', 'agents:=kinematic', 'allow_continuous_starts:=true',
      'budget_fallback:=true', 'complete_on_return:=true', 'sensor:=true', f'sensor_scene_file:={scene_file}',

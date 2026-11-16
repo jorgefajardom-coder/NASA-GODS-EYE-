@@ -83,7 +83,7 @@ agents_file.write_text(yaml.safe_dump(initialize_ground_agents(template, surface
 launch_log = open(Path(RECORD_DIR) / f'{RUN_ID}-launch.log', 'w')
 proc = subprocess.Popen(
     ['ros2', 'launch', 'mge_bringup', 'vertical_mock.launch.py', f'run_id:={RUN_ID}', f'port:={PORT}',
-     'terrain:=real', 'planner:=real', f'profiles_file:={PROFILES}', f'agents_file:={agents_file}',
+     'terrain:=real', 'planner:=real', 'allow_legacy_cost_model:=true', f'profiles_file:={PROFILES}', f'agents_file:={agents_file}',
      'agents:=kinematic', 'allow_continuous_starts:=true', 'budget_fallback:=true',
      'record:=true', f'record_dir:={RECORD_DIR}'],
     stdout=launch_log, stderr=subprocess.STDOUT, start_new_session=True)

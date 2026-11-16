@@ -33,6 +33,11 @@ Run each from a built, sourced workspace root:
   stay kinematic and mirrored; the scene sensor, budget fallback and goal completion are on.
   Pass the web models with `MGE_WEB_MODELS=<repo>/web/public/assets/models`.
 
+Since the scientific cost integration (#50) the real planner needs a scientific
+planning context from the mission; the MOCK mission does not register one, so these
+drivers launch with `allow_legacy_cost_model:=true`, as main's own MOCK integration
+tests do. Their routes use the legacy illustrative cost model.
+
 Stop a launched stack with `kill -INT -<pid>` (pid in `<record_dir>/<run_id>-launch.pid`)
 so the recorder closes the package. Observations are SIMULATED test inputs and
 budgets are illustrative; no run is a validated LIVE mission. AI-assisted
