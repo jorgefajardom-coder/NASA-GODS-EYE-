@@ -1106,3 +1106,7 @@ Codex assisted conflict reconciliation preserving the published scientific backe
 
 ## Local terrain contribution 1
 OpenAI Codex assisted add conservative terrain mobility diagnostics. Affected code/tests: src/mge_planning/mge_planning/terrain_diagnostics.py, tests/planning/terrain_fixtures.py, tests/planning/test_terrain_diagnostics.py. Synthetic fixtures only; no physical certification, coefficient approval or operational activation.
+
+
+## Local terrain contribution 2
+OpenAI Codex assisted add experimental scientific fine-surface evaluation. Affected code/tests: src/mge_planning/mge_planning/local_surface.py, tests/planning/test_local_surface.py. Synthetic fixtures only; no physical certification, coefficient approval or operational activation.

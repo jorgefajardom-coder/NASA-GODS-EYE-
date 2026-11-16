@@ -2176,6 +2176,15 @@
         "tests/planning/test_terrain_diagnostics.py"
       ],
       "use": "add conservative terrain mobility diagnostics; synthetic experimental code/tests, not physical or scientific approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_terrain_contribution_2",
+      "paths": [
+        "src/mge_planning/mge_planning/local_surface.py",
+        "tests/planning/test_local_surface.py"
+      ],
+      "use": "add experimental scientific fine-surface evaluation; synthetic experimental code/tests, not physical or scientific approval."
     }
   ],
   "generated_media": [
