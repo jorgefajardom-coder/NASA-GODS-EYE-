@@ -15,6 +15,9 @@
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>python3-yaml</exec_depend>
+  <!-- gz_world (Gazebo world generator) only; gz_mirror and the nodes do not import it. -->
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-scipy</exec_depend>
 
 
   <export>

@@ -107,6 +107,9 @@ def test_physical_rover_has_six_driven_wheels_and_ground_truth_odometry(tmp_path
     assert drive.findtext('topic') == '/model/rover_1/cmd_vel'
     assert plugins['gz::sim::systems::OdometryPublisher'].findtext('odom_topic') == '/model/rover_1/odometry_gt'
     assert rover.find('link[@name="chassis"]/collision') is not None       # it can hit rocks
+    wheels = [link for link in rover.findall('link') if link.get('name').startswith('wheel_')]
+    assert all(w.find('collision/geometry/cylinder') is not None for w in wheels)
+    assert {j.text for j in rover.findall('plugin/joint_name')} == {f'wheel_{s}{k}_joint' for s in 'lr' for k in range(3)}
     assert rover.find('link/gravity') is None                              # it falls onto the ground
     assert meta['agents']['rover_1'] == {'model': 'rover', 'lift_m': 0.0, 'physical': True, 'web_model': False}
     assert meta['agents']['human_1']['physical'] is False
@@ -190,3 +193,218 @@ def test_web_models_are_drawn_at_the_web_true_sizes(tmp_path):
     assert human.findtext('link/visual/geometry/mesh/scale') == '0.50000 0.50000 0.50000'
     assert meta['agents']['human_1']['lift_m'] == 0.0 and meta['web_models'] == {'ROVER': 'rover.glb', 'HUMAN': 'astronaut.glb'}
     assert 'CC BY 4.0' in meta['attribution']
+    assert 'derived_models' not in meta          # these GLBs have no wheel set, rotors or skin
+
+
+def wheel_glb(path):
+    """A real (tiny) rover GLB: a body box and one 'Wheels_objs' mesh with six square 'wheels'
+    (radius 0.25 m, at mesh-local x = +-1, z = -1, 0, +1; the mesh's forward is +z) under a
+    root turned +90 deg about y like the web rover (forward +x in the scene)."""
+    def square(cx, cy, cz):         # a wheel-like quad in the y-z plane, two triangles
+        return [(cx, cy - 0.25, cz - 0.25), (cx, cy + 0.25, cz - 0.25), (cx, cy + 0.25, cz + 0.25), (cx, cy - 0.25, cz + 0.25)]
+    wpos, widx = [], []
+    for x in (-1.0, 1.0):
+        for z in (-1.0, 0.0, 1.0):
+            base = len(wpos)
+            wpos += square(x, 0.25, z)
+            widx += [base, base + 1, base + 2, base, base + 2, base + 3]
+    bpos = [(-1.2, 0.5, -1.4), (1.2, 0.5, -1.4), (1.2, 1.5, 1.4), (-1.2, 1.5, 1.4)]
+    bidx = [0, 1, 2, 0, 2, 3]
+    blob = bytearray()
+    views, accs = [], []
+
+    def add(arr, ctype, kind, target):
+        data = np.asarray(arr, dtype=np.float32 if ctype == 5126 else np.uint16).tobytes()
+        views.append({'buffer': 0, 'byteOffset': len(blob), 'byteLength': len(data), 'target': target})
+        blob.extend(data + b'\x00' * (-len(data) % 4))
+        acc = {'bufferView': len(views) - 1, 'componentType': ctype, 'count': len(arr), 'type': kind}
+        if kind == 'VEC3':
+            acc['min'], acc['max'] = np.min(arr, axis=0).tolist(), np.max(arr, axis=0).tolist()
+        accs.append(acc)
+        return len(accs) - 1
+    wp, wi = add(wpos, 5126, 'VEC3', 34962), add(widx, 5123, 'SCALAR', 34963)
+    bp, bi = add(bpos, 5126, 'VEC3', 34962), add(bidx, 5123, 'SCALAR', 34963)
+    gltf = {'asset': {'version': '2.0'}, 'scene': 0, 'scenes': [{'nodes': [0]}],
+            'nodes': [{'name': 'Empty', 'rotation': [0, 0.7071068, 0, 0.7071068], 'children': [1, 2]},
+                      {'name': 'Body', 'mesh': 0}, {'name': 'Wheels_objs', 'mesh': 1}],
+            'meshes': [{'primitives': [{'attributes': {'POSITION': bp}, 'indices': bi}]},
+                       {'primitives': [{'attributes': {'POSITION': wp}, 'indices': wi}]}],
+            'accessors': accs, 'bufferViews': views, 'buffers': [{'byteLength': len(blob)}]}
+    body = json.dumps(gltf).encode()
+    body += b' ' * (-len(body) % 4)
+    path.write_bytes(struct.pack('<4sII', b'glTF', 2, 12 + 8 + len(body) + 8 + len(blob))
+                     + struct.pack('<I4s', len(body), b'JSON') + body + struct.pack('<I4s', len(blob), b'BIN\x00') + bytes(blob))
+    return path
+
+
+def test_wheel_split_follows_the_web_rule():
+    from mge_sim.gz_world import split_wheel_triangles
+    pos = np.array([(x, 0.0, z + dz) for x in (-1.0, 1.0) for z in (-1.0, 0.0, 1.0) for dz in (-0.1, 0.0, 0.1)])
+    idx = np.arange(len(pos))
+    groups, centres, radii = split_wheel_triangles([(pos, idx)])
+    assert [len(g) for g in groups[0]] == [3] * 6
+    assert centres[:, 0].tolist() == [-1.0] * 3 + [1.0] * 3                 # side by the sign of x
+    assert centres[:3, 2] == pytest.approx([-1.0, 0.0, 1.0])               # axles ordered along z
+
+
+def test_physical_rover_wheels_are_the_web_wheels_on_their_links(tmp_path):
+    from mge_sim.gz_world import glb_bbox, read_glb
+    models = tmp_path / 'models'
+    models.mkdir()
+    wheel_glb(models / 'rover.glb')
+    out = tmp_path / 'w'
+    agents = [('rover_1', 'ROVER', -14.0, -10.0, -2570.0)]
+    meta = build_world(out, GRID, np.full((32, 32), -2570.0), [], agents, physical=('rover_1',),
+                       web_models={'ROVER': models / 'rover.glb'})
+    assert meta['agents']['rover_1']['wheel_visuals'] is True
+    assert meta['derived_models'][0] == 'rover_body.glb' and len(meta['derived_models']) == 7
+    # Each wheel file holds one wheel (two triangles) centred on its axle; the body has no wheel.
+    for k in range(6):
+        g, _ = read_glb(out / f'rover_wheel_{k}.glb')
+        assert g['accessors'][g['meshes'][0]['primitives'][0]['indices']]['count'] == 6
+        lo, hi = glb_bbox(out / f'rover_wheel_{k}.glb')
+        assert list((lo + hi) / 2) == pytest.approx([0, 0, 0], abs=1e-6) and hi[1] == pytest.approx(0.25)
+    lo, hi = glb_bbox(out / 'rover_body.glb')
+    assert lo[1] == pytest.approx(0.5)
+    rover = ET.parse(out / 'world.sdf').getroot().find('world/model[@name="rover_1"]')
+    s = 3.6 / 2.8                                                          # web fit: length 3.6 m
+    links = {link.get('name'): link for link in rover.findall('link')}
+    # Scene forward is +x (root turned about y): wheel_l0 is the front-left wheel.
+    for name, (x, y) in {'wheel_l0': (1, 1), 'wheel_l1': (0, 1), 'wheel_l2': (-1, 1), 'wheel_r0': (1, -1)}.items():
+        px, py, pz, *_ = map(float, links[name].findtext('pose').split())
+        assert (px, py, pz) == pytest.approx((x * s, y * s, 0.25 * s), abs=1e-3)
+        assert links[name].findtext('visual/geometry/mesh/uri').startswith('rover_wheel_')
+        assert float(links[name].findtext('collision/geometry/cylinder/radius')) == pytest.approx(0.25 * s, abs=1e-3)
+    assert links['chassis'].findtext('visual/geometry/mesh/uri') == 'rover_body.glb'
+    drive = rover.find('plugin[@name="gz::sim::systems::DiffDrive"]')
+    assert float(drive.findtext('wheel_separation')) == pytest.approx(2 * s, abs=1e-3)
+    assert float(drive.findtext('wheel_radius')) == pytest.approx(0.25 * s, abs=1e-3)
+    assert (models / 'rover.glb').read_bytes() == (out / 'rover.glb').read_bytes()   # source untouched
+
+
+def test_rotor_command_ramps_like_the_web():
+    from mge_sim.gz_world import rotor_command
+    assert rotor_command(0.0, 'IDLE', 1.0) == 0.0
+    assert rotor_command(0.0, 'MOVING', 1.0) == pytest.approx(0.25)        # about 4 s to full speed
+    assert rotor_command(0.9, 'OBSERVING', 1.0) == 1.0
+    assert rotor_command(1.0, 'IDLE', 1.0) == pytest.approx(0.8)           # about 5 s to stop
+    assert rotor_command(0.1, 'IDLE', 1.0) == 0.0
+
+
+def test_drone_rotors_are_spinning_joints_with_velocity_controllers(tmp_path):
+    from mge_sim.gz_world import drone_sdf
+    rotors = {'body': 'drone_body.glb', 'rotors': [('drone_rotor_0.glb', np.array([0.0, 0.45, 0.0]), 1),
+                                                   ('drone_rotor_1.glb', np.array([0.0, 0.35, 0.0]), -1)]}
+    lo, hi = np.array([-0.5, 0.0, -0.6]), np.array([0.5, 0.55, 0.6])
+    model = ET.fromstring(drone_sdf('drone_1', 1.0, 2.0, 3.0, ('drone.glb', lo, hi), rotors))
+    joints = model.findall('joint')
+    assert [j.get('type') for j in joints] == ['revolute', 'revolute'] and all(j.findtext('axis/xyz') == '0 0 1' for j in joints)
+    topics = [p.findtext('topic') for p in model.findall('plugin') if p.get('name') == 'gz::sim::systems::JointController']
+    assert topics == ['/model/drone_1/joint/rotor_0_joint/cmd_vel', '/model/drone_1/joint/rotor_1_joint/cmd_vel']
+    assert all(link.findtext('gravity') == 'false' and link.find('collision') is None for link in model.findall('link'))
+    hub = [float(v) for v in model.find('link[@name="rotor_0"]/pose').text.split()[:3]]
+    assert hub == pytest.approx([0.0, 0.0, 0.45 * 1.0], abs=1e-4)          # 1.2 m / 1.2 units -> s = 1
+
+
+def rewrite_glb(path, edit):
+    """Apply edit(gltf_json) to a GLB written by wheel_glb, keeping its BIN chunk."""
+    data = path.read_bytes()
+    json_len = struct.unpack('<I', data[12:16])[0]
+    gltf = json.loads(data[20:20 + json_len])
+    rest = data[20 + json_len:]
+    edit(gltf)
+    body = json.dumps(gltf).encode()
+    body += b' ' * (-len(body) % 4)
+    path.write_bytes(struct.pack('<4sII', b'glTF', 2, 12 + 8 + len(body) + len(rest))
+                     + struct.pack('<I4s', len(body), b'JSON') + body + rest)
+    return path
+
+
+def test_unsupported_rover_glb_falls_back_to_the_whole_model(tmp_path):
+    """PR #51 review: an unsupported glTF layout must not abort the whole world build."""
+    models = tmp_path / 'models'
+    models.mkdir()
+    # The wheel positions become a view-less accessor, which the minimal reader rejects.
+    rewrite_glb(wheel_glb(models / 'rover.glb'), lambda g: g['accessors'][0].pop('bufferView'))
+    out = tmp_path / 'w'
+    with pytest.warns(RuntimeWarning, match='derive_rover_parts'):
+        meta = build_world(out, GRID, np.full((32, 32), -2570.0), [], [('rover_1', 'ROVER', -14.0, -10.0, -2570.0)],
+                           physical=('rover_1',), web_models={'ROVER': models / 'rover.glb'})
+    assert 'wheel_visuals' not in meta['agents']['rover_1'] and 'derived_models' not in meta
+    rover = ET.parse(out / 'world.sdf').getroot().find('world/model[@name="rover_1"]')
+    assert rover.findtext('link[@name="chassis"]/visual/geometry/mesh/uri') == 'rover.glb'
+
+
+def test_rejected_wheel_layout_claims_no_wheel_parts(tmp_path, monkeypatch):
+    """world.json follows the layout the SDF actually used (PR #51 review)."""
+    import mge_sim.gz_world as gz_world
+    original = gz_world.rover_wheel_layout
+    monkeypatch.setattr(gz_world, 'rover_wheel_layout',
+                        lambda glb, parts: (original(glb, parts)[0][:5], original(glb, parts)[1]))
+    models = tmp_path / 'models'
+    models.mkdir()
+    wheel_glb(models / 'rover.glb')
+    out = tmp_path / 'w'
+    meta = build_world(out, GRID, np.full((32, 32), -2570.0), [], [('rover_1', 'ROVER', -14.0, -10.0, -2570.0)],
+                       physical=('rover_1',), web_models={'ROVER': models / 'rover.glb'})
+    assert 'wheel_visuals' not in meta['agents']['rover_1'] and 'derived_models' not in meta
+    rover = ET.parse(out / 'world.sdf').getroot().find('world/model[@name="rover_1"]')
+    assert rover.findtext('link[@name="chassis"]/visual/geometry/mesh/uri') == 'rover.glb'
+    assert all(link.find('visual') is None for link in rover.findall('link') if link.get('name').startswith('wheel'))
+
+
+def drone_glb(path):
+    """A tiny drone GLB: a body quad and the two coaxial rotor nodes the web viewer spins."""
+    quads = {'Body': (0.0, 0.2), 'rotors_01': (0.0, 0.45), 'rotors_02': (0.0, 0.35)}
+    blob, views, accs, meshes, nodes = bytearray(), [], [], [], []
+    for name, (_, y) in quads.items():
+        pos = np.array([(-0.5, y, -0.5), (0.5, y, -0.5), (0.5, y, 0.5), (-0.5, y, 0.5)], dtype=np.float32)
+        idx = np.array([0, 1, 2, 0, 2, 3], dtype=np.uint16)
+        ids = []
+        for arr, ctype, kind, target in ((pos, 5126, 'VEC3', 34962), (idx, 5123, 'SCALAR', 34963)):
+            data = arr.tobytes()
+            views.append({'buffer': 0, 'byteOffset': len(blob), 'byteLength': len(data), 'target': target})
+            blob.extend(data + b'\x00' * (-len(data) % 4))
+            acc = {'bufferView': len(views) - 1, 'componentType': ctype, 'count': len(arr), 'type': kind}
+            if kind == 'VEC3':
+                acc['min'], acc['max'] = pos.min(axis=0).tolist(), pos.max(axis=0).tolist()
+            accs.append(acc)
+            ids.append(len(accs) - 1)
+        meshes.append({'primitives': [{'attributes': {'POSITION': ids[0]}, 'indices': ids[1]}]})
+        nodes.append({'name': name, 'mesh': len(meshes) - 1})
+    gltf = {'asset': {'version': '2.0'}, 'scene': 0, 'scenes': [{'nodes': [0]}],
+            'nodes': [{'name': 'Root', 'children': [1, 2, 3]}] + nodes,
+            'meshes': meshes, 'accessors': accs, 'bufferViews': views, 'buffers': [{'byteLength': len(blob)}]}
+    body = json.dumps(gltf).encode()
+    body += b' ' * (-len(body) % 4)
+    path.write_bytes(struct.pack('<4sII', b'glTF', 2, 12 + 8 + len(body) + 8 + len(blob))
+                     + struct.pack('<I4s', len(body), b'JSON') + body + struct.pack('<I4s', len(blob), b'BIN\x00') + bytes(blob))
+    return path
+
+
+def test_drone_parts_name_their_own_body(tmp_path):
+    """derive_drone_parts returns its body file like derive_rover_parts (PR #51 review)."""
+    from mge_sim.gz_world import derive_drone_parts
+    parts = derive_drone_parts(drone_glb(tmp_path / 'drone.glb'), tmp_path, stem='uav')
+    assert parts['body'] == 'uav_body.glb' and (tmp_path / 'uav_body.glb').exists()
+    assert [(name, d) for name, _, d in parts['rotors']] == [('uav_rotor_0.glb', 1), ('uav_rotor_1.glb', -1)]
+    models = tmp_path / 'models'
+    models.mkdir()
+    drone_glb(models / 'drone.glb')
+    meta = build_world(tmp_path / 'w', GRID, np.full((32, 32), -2570.0), [],
+                       [('drone_1', 'DRONE', -10.0, -14.0, -2570.0)], web_models={'DRONE': models / 'drone.glb'})
+    assert meta['derived_models'] == ['drone_body.glb', 'drone_rotor_0.glb', 'drone_rotor_1.glb']
+    assert all((tmp_path / 'w' / name).exists() for name in meta['derived_models'])
+    assert [r['direction'] for r in meta['agents']['drone_1']['rotors']] == [1, -1]
+
+
+def test_world_json_ground_matches_the_heightmap_at_cell_centres(world):
+    """gz_mirror's airborne test reads ground_z_m instead of the heightmap (PR #51 review)."""
+    from mge_sim.rotors import ground_at
+    _, meta = world
+    assert len(meta['ground_z_m']) == 32 and all(len(row) == 32 for row in meta['ground_z_m'])
+    ox, oy, res = meta['origin_x_m'], meta['origin_y_m'], meta['resolution_m']
+    for i, j in ((10, 20), (31, 31), (5, 1)):
+        expected = -2570.0 + 0.2 * j + 0.1 * i - meta['z_ref_m']
+        assert meta['ground_z_m'][i][j] == pytest.approx(expected, abs=1e-3)
+        assert ground_at(meta, ox + (j + 0.5) * res, oy + (i + 0.5) * res) == pytest.approx(expected, abs=1e-3)
