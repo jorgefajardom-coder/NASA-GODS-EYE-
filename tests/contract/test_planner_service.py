@@ -1,4 +1,8 @@
-"""Actual generated PlanRoute service over a coherent, illustrative ROS batch."""
+"""Actual legacy-compatibility PlanRoute transport on an illustrative ROS batch.
+
+Scientific-default transport and numerical agreement have their own generated
+service tests in test_scientific_cost_service.py.
+"""
 
 import json
 import math
@@ -33,6 +37,7 @@ def ros_pair(tmp_path, request):
     planner = make_node_class()(parameter_overrides=[
         Parameter("profiles_file", value=str(profiles)),
         Parameter("allow_illustrative_profiles", value=True),
+        Parameter("allow_legacy_cost_model", value=True),
         Parameter("snapshot_contract_confirmed", value=True),
         Parameter("search_timeout_s", value=5.0),
         Parameter("allow_continuous_starts", value=getattr(request, "param", False)),

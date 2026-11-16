@@ -1,5 +1,11 @@
 # Cost context and execution evidence reconciliation proposal
 
+The [operational scientific-cost candidate](scientific_cost_integration.md)
+implements the shared search backend and typed request-context producer/consumer
+described here. It retains historical comparison artifacts and separate profile,
+execution and owner-review gates. The older proposal and its published-source
+diagnosis below identify their original revisions.
+
 Status: **proposal for David, Diego and Jesus review; no new active interface,
 version freeze, profile approval or runtime authorization**. Audited published
 baseline: `main@6bcf208868e37b7e15e9189fac11de96e7414eff`.

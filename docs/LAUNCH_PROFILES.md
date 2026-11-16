@@ -30,7 +30,8 @@ be true after actual evidence. Booleans record owner decisions; they do not
 create that evidence or automatically identify a scaffold as REAL.
 
 The receipt's optional parameters map passes dictionaries per provider role.
-Real profiles require planner profiles_file and snapshot_contract_confirmed=true;
+Real profiles require planner scientific_profiles_path matching the mission's
+profiles_path, snapshot_contract_confirmed=true and no legacy cost opt-in;
 mission profiles_path, mission_path, model_agreement_confirmed=true and
 approved_model_id. Other owner parameters (terrain manifest, base/tolerances,
 service assumptions, agents_file, gateway host) pass through unchanged. The

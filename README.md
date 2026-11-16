@@ -168,6 +168,13 @@ result tables and independent cost/coordinate audits.
 
 ## Project status for the team
 
+The [operational scientific-cost integration](docs/scientific_cost_integration.md)
+connects the shared segment/activity API to the actual planner search and its ROS
+producer/consumer. Scientific mode requires an immutable registered context;
+legacy costs require explicit compatibility opt-in. The additive service and
+changed default prerequisite are a documented interface-package 2.0.0 migration.
+Profile approval and executed-mission acceptance retain their separate gates.
+
 Mars Gods Eye plans and replays crewed surface missions (astronaut, rover and
 drone) over real Mars terrain at Jezero crater: orbital terrain priors, a
 resource-aware route planner, a mission authority, a ROS 2 simulation vertical
@@ -671,7 +678,7 @@ Launch arguments of `vertical_mock.launch.py`:
 | --- | --- | --- |
 | `run_id` | `mock-run` | Run identifier used by the gateway and recorder |
 | `terrain` | `mock` | `real` uses `mge_data` + `mge_mapping` on the public Jezero package (requires `planner:=real`) |
-| `planner` | `mock` | `real` routes through `mge_planning`; set `profiles_file` |
+| `planner` | `mock` | `real` uses scientific context and `mission_profiles_path`; legacy-MOCK compatibility requires `allow_legacy_cost_model:=true` plus `profiles_file` |
 | `mission` | `mock` | `real` substitutes the real mission authority; needs explicit configuration and a clock |
 | `agents` | `static` | `kinematic` runs the MOCK kinematic executor |
 | `agents_file` | per terrain | Agent positions and budgets (illustrative) |
@@ -689,8 +696,9 @@ With the default MOCK planner, routes are straight lines that ignore terrain.
 Agent positions and budgets come from `src/mge_bringup/config/agents.yaml` and
 are explicitly illustrative. Nothing here is a moving mission or a NASA measurement.
 
-- `planner:=real profiles_file:=$PWD/config/planner_profiles.illustrative.json`
-  routes through `mge_planning`. Terrain and mission stay MOCK, positions must be
+- `planner:=real allow_legacy_cost_model:=true profiles_file:=$PWD/config/planner_profiles.illustrative.json`
+  explicitly selects historical cost compatibility through `mge_planning`.
+  Terrain and mission stay MOCK, positions must be
   cell centres of the 5 m grid (for example `2.5, 2.5`), and the profiles are illustrative.
 - `terrain:=real` (with `planner:=real`) loads the public Jezero package: a
   32 x 32 grid of 4 m cells centred on the map origin, so cell centres are
@@ -715,7 +723,7 @@ Checked on 2026-11-15 on Windows with WSL 2 (Ubuntu 24.04, ROS 2 Jazzy):
 example by Docker), use another one:
 
 ```sh
-ros2 launch mge_bringup vertical_mock.launch.py run_id:=ros-live-001 port:=8010   terrain:=real planner:=real profiles_file:=$PWD/config/planner_profiles.illustrative.json   agents:=kinematic allow_continuous_starts:=true record:=true record_dir:=$PWD/evidence/live
+ros2 launch mge_bringup vertical_mock.launch.py run_id:=ros-live-001 port:=8010   terrain:=real planner:=real allow_legacy_cost_model:=true profiles_file:=$PWD/config/planner_profiles.illustrative.json   agents:=kinematic allow_continuous_starts:=true record:=true record_dir:=$PWD/evidence/live
 ```
 
 WSL forwards `127.0.0.1:8010` to Windows. Start the viewer's dev server on port 5173

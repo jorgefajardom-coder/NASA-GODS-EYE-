@@ -59,6 +59,7 @@ jobs:
           done
           ros2 interface show mge_interfaces/srv/PlanRoute
           ros2 interface show mge_interfaces/srv/SetMissionGoal
+          ros2 interface show mge_interfaces/srv/RegisterPlanningContext
           python3 -m pytest tests/contract tests/mission tests/unit tests/contracts/test_gateway.py -q
       - name: Run the mock vertical end to end
         shell: bash

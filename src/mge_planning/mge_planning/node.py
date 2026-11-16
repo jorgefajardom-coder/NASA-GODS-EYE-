@@ -4,6 +4,12 @@ from math import isfinite
 
 from .adapter import SnapshotStore, load_profiles, request_from_ros
 from .core import RouteStatus, SearchLimits, plan_route
+from .resource_costs import Activity
+from mge_mission.models import estimate_activity, export_planner_profiles, load_profiles as load_scientific_profiles
+from mge_mission.planning_context import (
+    ContextStore, PlanningContextError, context_from_wire, profile_registry_sha256,
+    scientific_model_sha256,
+)
 
 
 def _failure(message, response, status, reason, detail):
@@ -30,7 +36,7 @@ def make_node_class():
     # Keep adapters/core importable on computers without ROS.
     from geometry_msgs.msg import Point
     from mge_interfaces.msg import TerrainMeta
-    from mge_interfaces.srv import PlanRoute
+    from mge_interfaces.srv import PlanRoute, RegisterPlanningContext
     from nav_msgs.msg import OccupancyGrid
     from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
     from rclpy.node import Node
@@ -43,6 +49,11 @@ def make_node_class():
             self.store = SnapshotStore()
             path = self.declare_parameter("profiles_file", "").value
             allow = self.declare_parameter("allow_illustrative_profiles", False).value
+            self.allow_legacy = self.declare_parameter("allow_legacy_cost_model", False).value
+            self.scientific_path = self.declare_parameter("scientific_profiles_path", "").value
+            self.contexts = ContextStore(self.declare_parameter("context_capacity", 4096).value)
+            self.scientific_profiles, self.registry_hash = {}, ""
+            self.kernel_hash = scientific_model_sha256()
             self.contract_confirmed = self.declare_parameter("snapshot_contract_confirmed", False).value
             self.allow_continuous = self.declare_parameter("allow_continuous_starts", False).value
             self.limits = SearchLimits(
@@ -50,7 +61,19 @@ def make_node_class():
                 timeout_s=self.declare_parameter("search_timeout_s", 2.0).value,
             )
             try:
-                self.profiles = load_profiles(path, allow)
+                if self.allow_legacy:
+                    self.profiles = load_profiles(path, allow)
+                    self.get_logger().warning("LEGACY_PROJECTED_COST_MODEL explicitly enabled; not scientific cost agreement")
+                else:
+                    if not self.scientific_path:
+                        raise ValueError("scientific_profiles_path is required; legacy costs have no automatic fallback")
+                    self.scientific_profiles = load_scientific_profiles(self.scientific_path)
+                    if not allow and any(p.approval_status != "approved" for p in self.scientific_profiles.values()):
+                        raise ValueError("Scientific profiles require approval or explicit illustrative opt-in")
+                    self.registry_hash = profile_registry_sha256(self.scientific_path)
+                    from .core import MotionProfile
+                    projected = export_planner_profiles(self.scientific_profiles)
+                    self.profiles = {key: MotionProfile(**value) for key, value in projected["profiles"].items()}
                 self.profile_error = ""
             except (OSError, ValueError, TypeError) as error:
                 self.profiles = {}
@@ -79,6 +102,8 @@ def make_node_class():
                     qos, callback_group=self.map_group))
             self.service = self.create_service(PlanRoute, "/mge/planner/plan_route",
                                                self._plan, callback_group=self.plan_group)
+            self.context_service = self.create_service(RegisterPlanningContext, "/mge/planner/register_context",
+                                                        self._register_context, callback_group=self.plan_group)
             self.get_logger().info("PlanRoute ready; waits for explicit profiles and coherent public map batches")
 
         def _ingest(self, function, *args):
@@ -96,6 +121,36 @@ def make_node_class():
 
         def _mask(self, name, message):
             self._ingest(self.store.ingest_mask, name, message)
+
+        def _register_context(self, message, response):
+            response.accepted, response.context_sha256 = False, ""
+            try:
+                if self.allow_legacy:
+                    raise PlanningContextError("LEGACY_COST_MODEL", "Legacy search cannot acknowledge scientific context")
+                context = context_from_wire(message)
+                profile = self.scientific_profiles.get(context.agent_id)
+                if profile is None:
+                    raise PlanningContextError("PROFILE_NOT_READY", self.profile_error or "Scientific agent profile unavailable")
+                if profile_registry_sha256(self.scientific_path) != self.registry_hash:
+                    raise PlanningContextError("PROFILE_CHANGED", "Profile bytes changed after node initialization")
+                if context.model_id != profile.model_id or context.profile_registry_sha256 != self.registry_hash:
+                    raise PlanningContextError("COST_MODEL_MISMATCH", "Context model/profile identity differs from planner")
+                if scientific_model_sha256() != self.kernel_hash or context.model_source_sha256 != self.kernel_hash:
+                    raise PlanningContextError("COST_MODEL_MISMATCH", "Context scientific kernel differs from planner")
+                for activity in context.activities:
+                    estimate_activity(profile, activity.kind, activity.remaining_s)
+                with self.store.lock:
+                    meta = self.store.meta
+                    if meta is not None and context.run_id != meta.run_id:
+                        raise PlanningContextError("RUN_MISMATCH", "Context and current terrain belong to different runs")
+                    if meta is not None and context.map_version != meta.map_version:
+                        raise PlanningContextError("STALE_MAP", "Context does not match current terrain version")
+                result = self.contexts.register(context)
+                response.accepted, response.reason_code = result.accepted, result.reason_code
+                response.context_sha256 = result.context_sha256
+            except (OSError, ValueError, TypeError) as error:
+                response.reason_code = getattr(error, "reason_code", "INVALID_COST_CONTEXT")
+            return response
 
         def _plan(self, message, response):
             try:
@@ -118,14 +173,49 @@ def make_node_class():
                 if terrain is None:
                     return _failure(message, response, RouteStatus.UNKNOWN, reason,
                                     "Waiting for matching public belief, sigma and traversability")
-                result = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
-                                    allow_continuous_start=self.allow_continuous)
-            except (ValueError, TypeError, OverflowError) as error:
+                if request.run_id != terrain.run_id:
+                    return _failure(message, response, RouteStatus.UNKNOWN, "RUN_MISMATCH",
+                                    "Request and public map belong to different runs")
+                if request.map_version != terrain.map_version:
+                    return _failure(message, response, RouteStatus.STALE_MAP, "MAP_VERSION_MISMATCH",
+                                    "Request does not match the current public map version")
+                if self.allow_legacy:
+                    result = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
+                                        allow_continuous_start=self.allow_continuous)
+                else:
+                    if profile_registry_sha256(self.scientific_path) != self.registry_hash:
+                        raise PlanningContextError("PROFILE_CHANGED", "Profile bytes changed after node initialization")
+                    if scientific_model_sha256() != self.kernel_hash:
+                        raise PlanningContextError("MODEL_SOURCE_CHANGED", "Scientific kernel bytes changed after initialization")
+                    science = self.scientific_profiles[request.agent_id]
+                    context = self.contexts.resolve(message, expected_model_id=science.model_id,
+                                                    expected_profile_registry_sha256=self.registry_hash,
+                                                    expected_model_source_sha256=self.kernel_hash)
+                    from .resource_costs import scientific_plan_route
+                    result = scientific_plan_route(
+                        terrain=terrain, request=request, motion_profile=profile, scientific_profile=science,
+                        activities=tuple(Activity(a.activity_id, a.kind, a.remaining_s) for a in context.activities),
+                        limits=self.limits, allow_continuous_start=self.allow_continuous)
+            except PlanningContextError as error:
+                status = RouteStatus.UNKNOWN if error.reason_code in {"COST_CONTEXT_REQUIRED", "PROFILE_CHANGED"} else RouteStatus.ERROR
+                return _failure(message, response, status, error.reason_code, str(error))
+            except (OSError, ValueError, TypeError, OverflowError) as error:
                 return _failure(message, response, RouteStatus.ERROR, "INVALID_INPUT", str(error))
             if key != self.store.batch_key:
                 return _failure(message, response, RouteStatus.STALE_MAP, "SNAPSHOT_CHANGED_DURING_SEARCH",
                                 "Map inputs changed or were rejected; recompute from the current pose")
+            if not self.allow_legacy:
+                try:
+                    if profile_registry_sha256(self.scientific_path) != self.registry_hash:
+                        raise PlanningContextError("PROFILE_CHANGED", "Profile bytes changed during search")
+                    if scientific_model_sha256() != self.kernel_hash:
+                        raise PlanningContextError("MODEL_SOURCE_CHANGED", "Scientific kernel bytes changed during search")
+                except (OSError, ValueError) as error:
+                    return _failure(message, response, RouteStatus.ERROR,
+                                    getattr(error, "reason_code", "PROFILE_CHANGED"), str(error))
             _failure(message, response, result.status, result.reason_code, result.detail)
+            if self.allow_legacy:
+                response.decision.detail = "LEGACY_PROJECTED_COST_MODEL; " + response.decision.detail
             decision = response.decision
             decision.map_version_used = result.map_version_used
             decision.header.stamp.sec, decision.header.stamp.nanosec = key[2]
