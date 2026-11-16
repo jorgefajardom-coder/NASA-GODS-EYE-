@@ -28,6 +28,8 @@ map.
    with the resources they have left.
 4. Record every decision and replay it in a web browser, with no server.
 
+**Demo video.** [Mars God's Eye — NASA Space Apps Challenge 2026 (YouTube)](https://www.youtube.com/watch?v=c2VRwuGgy84)
+
 **See it.** [Watch the same-run software recovery (21 s)](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/media/height-recovery-002.mp4)
 ([English subtitles](web/public/media/height-recovery-002.en.srt)).
 [Explore the six illustrative zones](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/),
@@ -191,6 +193,7 @@ mission evidence. Final English video/project-page links and acceptance remain
 tracked in the [delivery closure plan](docs/delivery_closure_plan.md) and
 [submission checklist](docs/competition.md).
 
+- **Demo video (YouTube):** <https://www.youtube.com/watch?v=c2VRwuGgy84>
 - **Web viewer (public preview):** <https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/>
   — static build of `main`, published automatically on the `gh-pages` branch by
   `.github/workflows/pages.yml` on every push to `main` that touches the viewer (each publish
@@ -683,7 +686,7 @@ Launch arguments of `vertical_mock.launch.py`:
 | `agents` | `static` | `kinematic` runs the MOCK kinematic executor |
 | `agents_file` | per terrain | Agent positions and budgets (illustrative) |
 | `record`, `record_dir` | `false`, `evidence` | Write a replay package to `<record_dir>/<run_id>` |
-| `host`, `port`, `use_sim_time` | `127.0.0.1`, `8000`, `false` | Gateway binding and clock |
+| `host`, `port`, `use_sim_time` | `127.0.0.1`, `8000`, `false` | Gateway binding and clock; `use_sim_time:=true` requires exactly one external, advancing `/clock` before nodes start ([D-CLK-01](docs/decisions/2026-11-15-simulation-time-source.md)) |
 | `cors_origins` | `['http://localhost:5173', 'http://127.0.0.1:5173']` | Browser origins the gateway answers (YAML list), for example the viewer's dev server or a published site |
 
 Mission-provider arguments (`mission_profiles_path`, `mission_path`,

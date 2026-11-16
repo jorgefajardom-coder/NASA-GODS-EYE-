@@ -1,0 +1,27 @@
+{
+  "schema": "mge-wiki-asset-replacement-1.0.0",
+  "date": "2026-11-15",
+  "asset": "docs/wiki/assets/prior-observation.gif",
+  "source": "Owner-supplied prior-observation-mas-despacio.gif",
+  "authorization": "Owner requested replacement and merge on team recommendation",
+  "previous_sha256": "aa51ee231a28fad5477f8ef8689afa3112f35f96916b2425a492cf260e876c28",
+  "sha256": "8629c746d0183b394751e756ffe5c67130619bc5aef10e72923d28411b5d2e41",
+  "size_bytes": 114609,
+  "dimensions": [
+    1080,
+    720
+  ],
+  "decoded_frames": 3,
+  "previous_frame_duration_ms": [
+    1400,
+    1400,
+    1400
+  ],
+  "frame_duration_ms": [
+    2200,
+    2500,
+    2800
+  ],
+  "visible_watermark": "AI-generated | Conceptual simulation",
+  "scope": "Owner-supplied bytes copied without image edits. Historical publication/editorial seals retain their dated scope and original hashes; this receipt supersedes their hash for this asset only. Original figure generator is retained as historical source, not a byte-exact reproduction of this supplied edition."
+}

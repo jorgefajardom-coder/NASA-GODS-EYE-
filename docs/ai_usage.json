@@ -2129,6 +2129,36 @@
       "use": "Opt-in MOCK mission budget fallback (budget_fallback:=true): on a resource rejection the mission itself tries nearer targets on the base-goal line and then the base, keeping the original allocation and reserves; reject goals or bases outside the terrain grid; deterministic seeded generator of SIMULATED obstacle fields (a ridge with one gap plus rock clusters) that always keeps a passage from base to goal. Record the mapping's human traversability as an optional `impassable` cell list per map version in the public raster attachment (an addition to mge-public-rasters-1.0.0, validated by the oracle and the web reader), and draw those cells in the viewer as cosmetic rocks with a rust tint. Add an opt-in SIMULATED scene_sensor node (a drone reports what it saw on landing, ground agents report hazards as they walk), an opt-in MOCK goal completion on return to base, and data-styled obstacle rocks: sizes follow the Golombek-Rapp rock size law (k illustrative) with each blocked cell's main rock deliberately enlarged to 1.5 m (HiRISE-resolvable boulder size) for readability, styled by the USGS SIM 3464 unit of the cell (public geology of the jezero_mvp crop). Scenes are synthetic; no NASA observation is generated. Generate a Gazebo Harmonic world of the public jezero_mvp crop (heightmap from the public prior as the only ground collision, CTX orthoimage albedo with cosmetic tint/grain/normal map, procedural boulders with collision, Mars gravity) and mirror the agents' ROS poses into it; Gazebo is a viewer here, not the simulation backend. Align the Gazebo heightmap vertices with the planner cell centres, drive a physical six-wheel rover in Gazebo (gz_rover_driver, one constant vertical datum offset measured at rest) and draw the web viewer GLB models at the same true sizes; the physical rover is a simulation, not a validated mission."
     },
     {
+      "tool": "OpenAI Codex",
+      "kind": "wiki_owner_supplied_slower_animation",
+      "paths": [
+        "docs/wiki/assets/prior-observation.gif",
+        "docs/wiki/assets/manifest.json",
+        "docs/wiki/audit/slower-prior-observation-20261115.json",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Copy owner-supplied slower GIF without image edits; inspect timing and visible existing AI watermark; update current asset hash and replacement provenance. No new scientific data, generated image or technical changes. Historical publication seals remain unchanged."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "simulation_time_source_contract",
+      "source_revision": "a2efc2e",
+      "generation": "AI-assisted launch preflight code, contract tests and contract documentation; no data, media or measured results generated",
+      "paths": [
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "tests/contract/test_mission_launch.py",
+        "docs/ICD.md",
+        "docs/decisions/2026-11-15-simulation-time-source.md",
+        "README.md",
+        "docs/handoffs/jesus.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "human_review": "pending integration owner (Jesus); display review Jorge; resource-time semantics David",
+      "use": "Require exactly one external, advancing /clock before any provider starts whenever use_sim_time:=true (MOCK or real mission); record D-CLK-01 and clarify ICD section 2. No interface, unit, enum, replay or raster version changes; no data or media generated."
+    },
+    {
       "tool": "Claude (Anthropic) through Claude Code",
       "kind": "gazebo_web_model_animation",
       "generation": "AI-assisted code, tests and documentation; the Gazebo worlds derive cosmetic GLB parts at build time from the existing web models (not data, not new assets, sources unmodified)",
