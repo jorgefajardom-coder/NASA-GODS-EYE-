@@ -2,7 +2,7 @@
   <img src="web/public/assets/brand/mars-gods-eye-logo.webp" alt="Mars God's Eye logo: an eye whose iris is Mars, a rover on the horizon. AI-generated with ChatGPT and edited; watermarked." width="280" />
 </p>
 
-# MARS GODS EYE
+# MARS GOD'S EYE
 
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
@@ -185,10 +185,35 @@ resource-aware route planner, a mission authority, a ROS 2 simulation vertical
 with a gateway and replay recorder, and a 3D web viewer that plays saved runs
 offline.
 
-**Status (2026-11-15): mission authority, planner, data/mapping, gateway and web
-viewer are implemented and on `main`, and the public site shows the six Mars zones (PR #36);
-PRs #37 (viewer and submission texts) and #38 (auxiliary data layers) are open for review;
-integrated mission acceptance is pending.** Nothing in
+**Status (2026-11-15, `main` = `822ce07`): mission authority, planner,
+data/mapping, gateway and web viewer are implemented and on `main`; integrated
+mission acceptance is pending.** Merged on the evening of 15 November:
+
+- #50: scientific costs inside the real FAST/SAFE search and an immutable
+  `RegisterPlanningContext` from the real mission (interface package 2.0.0;
+  legacy costs only with `allow_legacy_cost_model:=true`).
+- #49: seeded obstacle fields, SIMULATED declared-scene sensing, MOCK mission
+  opt-ins (`budget_fallback`, `complete_on_return`), recorded `impassable`
+  cells drawn as rocks in the viewer, and an opt-in Gazebo Harmonic view of the
+  Jezero crop with one physical rover (`gazebo_mock.launch.py`).
+- #51 with #57: cosmetic Gazebo animations matching the viewer (per-wheel rover
+  visuals, spinning drone rotors, an opt-in walking astronaut actor) and a
+  whole-model fallback when a model cannot be split.
+- #52: one advancing clock per simulated-time run
+  ([D-CLK-01](docs/decisions/2026-11-15-simulation-time-source.md), proposed).
+- #60: the scientific replan stop-acknowledgement gate for one human (below).
+- #55: the offline replay check T08/R15 (`tests/e2e/test_offline_replay.py`)
+  and the start-up text fallback; #56: Atmos dose totals use the zone rate.
+- #53, #54, #58, #61: slower wiki animation, demo video links and thumbnail,
+  organizer evidence, the project name and the `base.glb` provenance notice.
+
+Still open: step 4 (integrated execution with the three agent roles, stop and
+authorized replan on one run) and step 5 (offline replay and web video of that
+same run). The physical Gazebo rover cannot yet be planned for: the planner
+rejects its physics height with `INVALID_START_Z` (exact centred-start rule),
+which needs an owner decision. Integration and scientific reviews flagged in
+these PRs, profile approval and model agreement remain pending (see
+[Open milestones](#open-milestones)). Nothing in
 this repository is a validated LIVE mission. MOCK providers, synthetic
 observations, replays and successful builds are labelled as such and are not
 mission evidence. Final English video/project-page links and acceptance remain
@@ -207,10 +232,14 @@ tracked in the [delivery closure plan](docs/delivery_closure_plan.md) and
 - **Intended submission:** 2026-11-15 20:00 America/Bogota (UTC-05:00), per
   [D-DEL-03](docs/decisions/2026-11-14-delivery-freeze.md); 23:59 is the team
   backstop only. An earlier local cutoff or longer organizer review takes precedence.
-- **Delivery gate pending:** local organizer notification and explicit
-  endorsement (JES-07 / AC-10 in [the mission checklist](docs/mission_checklist.md))
-  are not yet recorded. Reserve at least four hours before final submission;
-  silence is not approval. See [AGENTS.md](AGENTS.md), section 15.
+- **Delivery gate (JES-07 / AC-10 in [the mission checklist](docs/mission_checklist.md)):**
+  the local organizer was notified at 18:32 America/Bogota and approved work
+  until 23:59, as reported by the owner
+  ([evidence](evidence/delivery-20261115/organizer-endorsement.md)). Still to
+  record: the exact revision and links sent (Jesus to confirm), the final
+  `main` revision and links, whether the organizer was told about the changes
+  merged after 18:32, and the *Submit for Judging* receipt. A merge is not a
+  submission and silence is not approval. See [AGENTS.md](AGENTS.md), section 15.
 
 ## Start here
 
@@ -230,6 +259,11 @@ tracked in the [delivery closure plan](docs/delivery_closure_plan.md) and
 - Per-owner handoffs: [Jesus](docs/handoffs/jesus.md), [Jorge](docs/handoffs/jorge.md),
   [Diego](docs/handoffs/diego.md), [Daniel](docs/handoffs/daniel.md), [David](docs/handoffs/david.md)
 - [Planner handoff](docs/planner_handoff.md) and [temporary data provenance](docs/planner_provenance.md)
+- [Scientific cost integration](docs/scientific_cost_integration.md),
+  [stop/replan control handoff](docs/replan_control_handoff.md) and
+  [simulated-time decision D-CLK-01](docs/decisions/2026-11-15-simulation-time-source.md)
+- [Live ROS and Gazebo scenario drivers](scripts/live_scenarios/README.md) and
+  [organizer endorsement evidence](evidence/delivery-20261115/organizer-endorsement.md)
 - [Required AI declaration](docs/AI_USAGE.md) and [metadata](docs/ai_usage.json)
 
 ## System overview
@@ -261,6 +295,29 @@ re-checked on the new map version and the mission authority decides
 authorizes a route or commands a stop. Integrated execution of this loop on one
 run (step 4) is still open.
 
+**Stop acknowledgement before a scientific replan (PR #60).** With
+`mission:=real`, the launch starts `mission_replan_node`, which wraps the
+existing MissionNode/MissionManager (still the only authority). When a map
+version invalidates the authorized route, the node publishes an empty route,
+records `STOP_REQUESTED` and plans nothing until the agent proves it has
+stopped. The receipt (`src/mge_mission/mge_mission/stop_ack.py`) needs two
+fresh AgentState samples in `HALTED` or `IDLE`, at least 50 ms apart, with the
+same XYZ within 1e-6 m and zero linear and angular velocity; then
+`STOP_ACKNOWLEDGED` is recorded and the replan uses registered scientific
+context, the actual stopped pose and the remaining resources, with reserves
+unchanged. The failures latch for the whole run and block until a new run:
+`STOP_ACK_TIMEOUT` (no acknowledgement within 5 s of the run clock; pausing
+the simulated clock pauses it), `STOP_ACK_LIVENESS_TIMEOUT` (no fresh feedback
+within 5 steady seconds) and `STOP_ACK_LOST` (movement before the new route is
+authorized). Limits: the tolerances are software test bounds, not calibrated
+braking; the evidence uses a deterministic SIMULATED 20x20 map and the
+kinematic executor
+([evidence](evidence/scientific-replan-ack-20261115/README.md),
+[handoff](docs/replan_control_handoff.md)). A physics-driven Gazebo agent whose
+reported pose jitters by more than 1e-6 m may never satisfy the exact-pose rule
+and then ends in `STOP_ACK_TIMEOUT`; this combination has not been tested. One
+human only; three-role execution and scientific COMPLETE remain open.
+
 ```mermaid
 sequenceDiagram
     participant A as Agent (drone, rover or astronaut)
@@ -277,6 +334,7 @@ sequenceDiagram
     alt Route invalidated
         MM->>A: Hold or stop (agreed behaviour)
         MM-->>G: ROUTE_INVALIDATED
+        A-->>MM: Stationary feedback (STOP_ACKNOWLEDGED, or a latched STOP_ACK_* failure)
         MM->>MM: Authorize, reject or abort the candidate (resources and return reserve)
         MM-->>G: ROUTE_PUBLISHED (new route)
     end
@@ -285,24 +343,31 @@ sequenceDiagram
 
 ## Branches and pull requests
 
-Snapshot of the remote on 2026-11-15 (`origin/main` = `9013beb`). See
-[docs/team.md](docs/team.md) for the authoritative ownership record. Open pull
-requests are pending review: their features are not on `main` or the public site
-until they are merged.
+Snapshot of the remote late on 2026-11-15 (`origin/main` = `822ce07`, merge of
+PR #61). See [docs/team.md](docs/team.md) for the authoritative ownership
+record. Open pull requests are pending review: their features are not on `main`
+or the public site until they are merged.
+
+**Open:** #62 (`fix/gazebo-sparse-glb-scipy`: decode sparse GLB accessors and
+drop SciPy from the Gazebo world). **Closed without merging:** #59
+(`feat/planner`: experimental terrain mobility evaluation, an extension
+outside the delivery scope) and #6 (historical viewer branch).
 
 | Branch | Owner | State |
 | --- | --- | --- |
-| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5 and #7–#36 merged |
+| `main` | Everyone, via reviewed PRs | Integrated contract and code: PRs #1–#5, #7–#58, #60 and #61 merged |
 | `feat/ux` | Jorge | Web viewer. Merged: #5, #19, #23, #27 (route guide, interface entrance, text access), #29 (first-person rework, drone camera, helmet and artificial light, Mars sky, route sufficiency alerts, render tiers) and #36 (Mars globe zone selector, six Mars zones, real NASA science sites, astronaut sites, rover cameras and photo tour, terrain-fitted arrival, MIT License, no-WebGL selector and image provenance fixes) |
-| `feat/challenge-gaps` | Jorge | **PR #37 open:** water and radiation for every zone, exhaled CO₂ and per-zone dose in the astronaut HUD, smoother rover camera in the photo tour, the project page in the official form order, the astronaut resources proposal and README updates |
-| `feat/integration` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI. Merged: #18, #32 (one-minute summary for judges) and #35 (private-browser replay record for AC-08) |
-| `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service. Merged: #2, #12 and #33 (resource safety and scientific cost validation) |
-| `feat/data` | Daniel | Public terrain data, mapping, provenance and control points. Merged: #8 and #24. **PR #38 open:** auxiliary Jezero layers (CTX orthoimage and geology) in the data package, published by the data node, with HTTP range caching |
-| `feat/mission` | David | Mission authority, resource profiles and acceptance. Merged: #10, #14, #25 (activity cost evidence) and #31 (patch-specific agent campaign proposal) |
-| `codex/audit-contract-reconciliation`, `codex/docs-delivery-reconciliation`, `codex/docs-science-extension-tree` | Jesus / David | Merged: #28 (estimated terrain and replay contract reconciliation), #30 (delivery conclusions and scope freeze) and #34 (science extension tree) |
+| `feat/challenge-gaps`, `feat/live-gateway`, `fix/viewer-terrain-and-zone-menu`, `fix/live-bar-always-visible`, `fix/dose-text-atmos` | Jorge | Merged: #37 (water and radiation for every zone, exhaled CO₂ and per-zone dose in the HUD, project page draft), #39 (read-only gateway panel), #45, #46 and #56 (Atmos dose totals at the zone rate, dose and citation text) |
+| `feature/live-ros-obstacles-gazebo`, `feature/gazebo-web-animations`, `feature/system-test-scenarios` | Jorge | Merged: #49 (obstacles, simulated sensing, Gazebo rover experiment), #51 (Gazebo model animations) and #55 (offline replay check T08/R15, start-up text fallback) |
+| `feat/integration`, `fix/sim-time-clock-contract`, `fix/gazebo-animation-review` | Jesus | ROS interfaces, ICD, gateway, recorder, bringup, sim and CI. Merged: #18, #32, #35, #44 (late events and terrain metadata push), #52 (D-CLK-01 clock rule) and #57 (review fixes for #51) |
+| `feat/planner` | Diego | Planning engine, snapshot adapter and PlanRoute service. Merged: #2, #12 and #33. #59 closed without merging (see above) |
+| `feat/data` | Daniel | Public terrain data, mapping, provenance and control points. Merged: #8, #24 and #38 (auxiliary Jezero layers: CTX orthoimage and geology) |
+| `feat/mission` | David | Mission authority, resource profiles and acceptance. Merged: #10, #14, #25 and #31 |
+| `codex/*` | David | Merged: #28, #30, #34, #40–#42, #47, #48, #50 (scientific cost planning and ROS context), #53 (slower wiki animation) and #60 (scientific replan stop-acknowledgement gate) |
+| `docs/*` | Jesus / Jorge | Merged: #43 and #54 (Jesus: voice-over declaration, demo video link); #58 (organizer evidence, project name, `base.glb` notice) and #61 (Jorge: README video thumbnail) |
 | `codex/mission-replay-recovery` | Jesus (with Jorge's history) | Continuous-pose replan recovery after a stop and strict web replay validation; merged in PR #21 |
 | `fix/recorder-shutdown` | Jesus | Recorder shutdown and replanning on new maps; merged in PR #26 |
-| `gh-pages` | Jorge + Jesus | Static viewer build from `main`, published by the Pages workflow (last publish: `main` `9013beb`, PR #36) |
+| `gh-pages` | Jorge + Jesus | Static viewer build from `main`, published by the Pages workflow (last publish: `main` `6187623`, PR #56) |
 | `feature/web-replay-viewer` | Jorge | Historical viewer branch, ancestor of `feat/ux`; PR #6 closed, preserved |
 | `docs/agents-policy`, `codex/*` (other) | Owner / Jesus | Merged documentation and reconciliation branches, kept for traceability |
 
@@ -359,7 +424,14 @@ flowchart LR
   with `?run=`; both MOCK packages remain in the repository for the team's contract and
   consumer tests. A folder entry can differ from the immutable `run_id` inside its files.
   Never combine metrics or layers between these scenes. Browser/backend-off acceptance
-  of this cut remains to be recorded.
+  of this cut remains to be recorded. `recorded-recovery-002`, the corrected recorded
+  recovery featured for judges, also opens with `?run=`.
+- `tests/e2e/test_offline_replay.py` (T08 / R15, PR #55) checks that every catalogued run
+  opens from static files alone, is labelled MOCK or illustrative (never LIVE) and that no
+  evaluator reference is published. It is a static check, not the browser AC-08 acceptance.
+- Recorded map versions may carry `impassable` cells (the mapping's human traversability
+  mask, PR #49); the viewer draws them as rust-tinted cells with enlarged rocks styled by the
+  USGS geologic unit. This is a drawing of the planner mask, not measured rocks.
 - Reads gateway replay packages (ICD §7) and their public raster attachment
   `files.public_rasters` (`mge-public-rasters-1.0.0`), checked against the package;
   mismatches fail with `PUBLIC_RASTERS_INVALID`, and non-MOCK packages without it
@@ -423,12 +495,15 @@ flowchart LR
   key light and the astronaut's shadow following the Sun, with a dim night fill.
 - Render tiers for any computer: full 3D with a GPU, a lite 3D tier for software
   rasterisers or slow GPUs, and a 2D top-down map without WebGL or when the 3D view
-  fails to start; `?render=full|lite|2d` forces one.
+  fails to start; `?render=full|lite|2d` forces one. The static text summary stays hidden
+  while the viewer starts and shows again if the viewer fails to start.
 - Ground layers: USGS SIM 3464 geologic map with unit list and a schematic
   cut-away block of strata.
 - Atmos: water and radiation at every zone (Mars Odyssey GRS water-equivalent hydrogen; MSL
   RAD surface dose, measured at Gale and estimated elsewhere, flagged where it extrapolates;
-  an example dose for a 4 h Marswalk, without shielding or solar storms). At Jezero also
+  an example dose for a 4 h Marswalk, without shielding or solar storms). The run dose totals
+  use the zone's own rate, like the HUD; the Gale rows are labelled as RAD measured at Gale
+  (PR #56). At Jezero also
   Perseverance MEDA weather, the Curiosity REMS annual cycle at Gale (reference) and the latest
   Perseverance raw images.
 - Management list of agents, tasks and routes, contextual details panel, event
@@ -531,6 +606,7 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Zone arrival transition | The zone's orbital image warped from full screen onto the projected footprint of its terrain | **Cosmetic display**; no data changes |
 | Terrain formation, height morph, interface entrance, camera sway | Viewer animations on the drawn surface and camera | **Cosmetic display**; no height or pose in the data changes |
 | Terrain scan | Prior-derived slope classes and NoData around the astronaut, using the current run's grid | **Display only**: not an observation, sensor or route update; display bands are unvalidated |
+| Obstacle rocks (recorded runs) | `impassable` cells of a recorded map version (planner traversability mask); rock sizes after Golombek and Rapp (1997), main rock enlarged to 1.5 m | **Display** of the planner mask, not measured rocks; sizes and styles pending owner review |
 | First-person route | Route in force as recorded, draped on the ground, with the next waypoint and its distance | Drawn from the received route |
 | Route sufficiency alert | Route cost spread per metre, remaining amounts, 20 % reserve (JZ-P06) | **Estimate** for display; experimental reserve, not a NASA standard; pending science review |
 | Sun position and sky | NASA GISS Mars24 at the real present time and site latitude/longitude | Real computed position; sky colours are a display rendering |
@@ -581,6 +657,17 @@ npm run build       # tsc -b && vite build into dist/
 npm run preview     # serve the production build
 npm run dev         # development server
 npm run fixture     # regenerate the demo replay fixture
+```
+
+Focused checks added on 15 November (tests that need ROS 2 Jazzy are skipped
+without it, not passed):
+
+```sh
+python -m pytest tests/e2e/test_offline_replay.py   # T08 / R15 offline replay (PR #55)
+python -m pytest tests/unit/test_stop_ack.py         # stop receipt and its latched failures (PR #60)
+python -m pytest tests/unit/test_gz_world.py tests/unit/test_rotors.py   # Gazebo world, parts and rotors (PRs #49, #51, #57)
+python -m pytest tests/unit/test_obstacle_field.py tests/unit/test_scene_sensing.py tests/unit/test_public_rasters.py   # obstacles, simulated sensing, impassable cells (PR #49)
+cd web && npx vitest run tests/atmosPanelDose.test.ts tests/obstacleLayer.test.ts   # Atmos dose totals (PR #56), obstacle rocks (PR #49)
 ```
 
 A static build does not imply a loaded replay or a connected ROS system. Do not
@@ -639,11 +726,44 @@ configuration, not an accepted E2E mission. Read the package READMEs.
 | Launch file | Purpose |
 | --- | --- |
 | `vertical_mock.launch.py` | Gateway plus selectable MOCK or real terrain, planner, mission and agents (below) |
+| `gazebo_mock.launch.py` | Opt-in MOCK experiment: Gazebo Harmonic world of the Jezero crop, one physical rover, kinematic human and drone (see Gazebo below) |
 | `profile.launch.py` | Exclusive provider profiles `mock`, `integration`, `simulation`, `live` with an approval receipt; see [LAUNCH_PROFILES](docs/LAUNCH_PROFILES.md) |
 | `smoke.launch.py` | Static MOCK agent publisher only |
 | `demo.launch.py` | Scaffold processes of every package; the gateway reports `NOT_READY` |
 
 None of these launches establishes E2E acceptance.
+
+### Gazebo (opt-in MOCK experiment)
+
+`scripts/live_scenarios/gazebo_world.py` builds a Gazebo Harmonic world of the
+public `jezero_mvp` crop: heightmap from the orbital prior, albedo from the CTX
+orthoimage with a cosmetic tint, one boulder per blocked cell and Mars gravity.
+`gazebo_mock.launch.py` (PR #49) bridges Gazebo's `/clock`, runs every node on
+it ([D-CLK-01](docs/decisions/2026-11-15-simulation-time-source.md)) and drives
+`rover_1` with Gazebo physics (`gz_rover_driver`); the human and drone stay
+kinematic MOCK agents mirrored into the world by `gz_mirror`. The mission is the
+existing `mock_mission`, resources are illustrative and any scene sensing is
+SIMULATED declared-scene sensing, not a Gazebo camera or lidar. Steps, required
+packages and the `ROS_DOMAIN_ID` rule are in the
+[scenario drivers README](scripts/live_scenarios/README.md).
+
+Animations (PR #51, review fixes in #57), all **cosmetic**: the rover's web model
+is split per wheel at world-build time so the visible wheels roll with the
+physics; the drone's rotors spin up while it is active or airborne and down
+when it is idle on the ground, like the viewer (`mge_sim.rotors`, without loading
+the world generator); `MGE_GZ_WALKING_ACTOR=1` opts in to a walking astronaut
+actor (it freezes mid-stride when stopped, keeps its spawn height and lags above
+1 m/s). If a model's glTF layout cannot be split (for example compressed or
+sparse accessors), the world build warns and draws the whole web model instead
+of failing. The source GLBs are never modified. Details in
+[the sim package README](src/mge_sim/README.md).
+
+**Known blocker:** the planner rejects the physical rover's start with
+`INVALID_START_Z`, because its reported physics height differs from the belief
+height by more than the 1e-6 m centred-start tolerance, so no physical sortie
+can be planned yet. The fix needs an owner decision on start-height handling;
+it is not changed by these PRs. Nothing here is Gazebo acceptance or a LIVE
+mission.
 
 ## Docker alternative for ROS
 
@@ -685,7 +805,11 @@ Launch arguments of `vertical_mock.launch.py`:
 | `run_id` | `mock-run` | Run identifier used by the gateway and recorder |
 | `terrain` | `mock` | `real` uses `mge_data` + `mge_mapping` on the public Jezero package (requires `planner:=real`) |
 | `planner` | `mock` | `real` uses scientific context and `mission_profiles_path`; legacy-MOCK compatibility requires `allow_legacy_cost_model:=true` plus `profiles_file` |
-| `mission` | `mock` | `real` substitutes the real mission authority; needs explicit configuration and a clock |
+| `mission` | `mock` | `real` starts `mission_replan_node` (`mge_bringup`), which wraps the real mission authority with the stop-acknowledgement gate; needs explicit configuration and a clock |
+| `replan_policy_file` | empty | With `mission:=real`, a replan policy configuration that opts into scientific replan advice; empty keeps the existing consumer. The policy file is illustrative and approves no thresholds or coefficients |
+| `budget_fallback`, `complete_on_return`, `completion_tolerance_m` | `false`, `false`, `0.001` | MOCK mission only: on a resource rejection try nearer targets, then the base; complete a goal once its agent is back at base; arrival distance (a physical agent never lands exactly) |
+| `external_agents` | empty | Agents the kinematic executor leaves to another driver, for example Gazebo |
+| `sensor`, `sensor_scene_file`, `sensor_agents`, `sensor_radii_m` | `false`, empty, all three agents, `[24.0, 8.0, 12.0]` | SIMULATED on-board sensing of a declared test scene (`terrain:=real` only) |
 | `agents` | `static` | `kinematic` runs the MOCK kinematic executor |
 | `agents_file` | per terrain | Agent positions and budgets (illustrative) |
 | `record`, `record_dir` | `false`, `evidence` | Write a replay package to `<record_dir>/<run_id>` |
@@ -765,11 +889,18 @@ WebSocket messages are `event`, `state` and, when the map version changes,
 The planner retains FAST/SAFE joint outbound/service/return A*, validated
 continuous human/rover starts behind an explicit opt-in (disabled by default in
 the ROS service), D-07 after 20 m and the ROS-independent F03.4 policy with
-bounded search retries and outbound/service contingency-return proposals. Its
-shared connector extension remains pending owner review; ReplanPolicy is not
-wired into MissionManager or the physical supervisor and never authorizes
-motion. Existing scientific model-agreement gates remain enforced by the
-integrated manager. See [the planning package](src/mge_planning) and
+bounded search retries and outbound/service contingency-return proposals. Since
+PR #50 the real PlanRoute service searches with the scientific segment, connector
+and activity costs and requires an immutable context registered by the real
+mission (`RegisterPlanningContext`); historical callers need
+`allow_legacy_cost_model:=true` ([integration notes](docs/scientific_cost_integration.md)).
+Its shared connector extension remains pending owner review. Since PR #60 the
+policy reaches the real mission only through `mission_replan_node`
+(`mission:=real` with `replan_policy_file`), as advice: the MissionManager audits
+every candidate against the actual stopped pose, remaining resources and
+reserves, and the policy never authorizes motion. It is not wired into the
+physical (Gazebo) supervisor. Existing scientific model-agreement gates remain
+enforced by the integrated manager. See [the planning package](src/mge_planning) and
 [the replan policy](docs/replan_policy.md).
 
 ## Replay package
@@ -806,15 +937,33 @@ actual agent traversal, completed tasks, mission success or an A/B/C result.
 
 See [real mission provider handoff](docs/mission_integration_handoff.md) for exclusive
 launch selection, clock/configuration requirements and unchanged scientific gates.
+With `mission:=real`, `vertical_mock.launch.py` starts `mission_replan_node`, the
+same MissionNode plus the stop-acknowledgement gate and optional replan advice
+(see [Map change and replanning](#map-change-and-replanning)). The focused ROS
+checks are listed in the [stop/replan control handoff](docs/replan_control_handoff.md);
+its recorded run reports 1,686 passed with one historical skip on Ubuntu 24.04 /
+Jazzy for a SIMULATED fixture, which approves no profile or coefficient.
 
 ## Open milestones
 
 - Step 4: integrated execution with three agent roles, stop and authorized
   replan on the same run (C3/C4 in the [continuation plan](docs/team_continuation_plan.md)).
+  PR #60 gates the replan on a stop acknowledgement for one human on a SIMULATED
+  fixture; the rover and drone roles and scientific COMPLETE are not yet shown.
 - Step 5: offline replay and web video of that same run, validated without
-  backends (C5, AC-08).
-- D-EST-01 implementation, scientific model agreement and Gazebo acceptance.
-- Local organizer notification and endorsement before submission (JES-07 / AC-10).
+  backends (C5, AC-08). The T08/R15 static check (PR #55) does not replace it.
+- Gazebo: `INVALID_START_Z` blocks planning for the physical rover (owner
+  decision on start heights); the exact-pose stop rule has not been tried with
+  physics-driven agents; Gazebo acceptance is open.
+- D-EST-01 implementation, scientific model agreement and profile approval;
+  D-CLK-01 is proposed, not accepted.
+- Reviews still flagged in the merged PRs: owner integration (Jesus) and
+  scientific (David) review of #50; integration review of #60 and Jorge's
+  display review of it; David's review of the radiation wording in #56.
+- Delivery gate (JES-07 / AC-10): organizer notified at 18:32 and approved work
+  until 23:59; final revision, links, notice of later changes and the
+  *Submit for Judging* receipt still to record
+  ([evidence](evidence/delivery-20261115/organizer-endorsement.md)).
 
 Varied scenes, larger maps and H-DAN-01 are optional extensions, not substitutes
 for these milestones.
