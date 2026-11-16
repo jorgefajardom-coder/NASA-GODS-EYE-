@@ -7,6 +7,7 @@ Then: gz sim -r <out_dir>/world.sdf   and   ros2 run mge_sim gz_mirror --ros-arg
 """
 import json
 from hashlib import sha256
+import os
 from pathlib import Path
 import sys
 
@@ -40,7 +41,9 @@ def build_from_files(scene_file, agents_file, out_dir, physical=(), models_dir=N
     with np.load(Path(default_manifest_path()).parent / 'jezero_aux_layers.npz') as aux:
         meta = build_world(out_dir, grid, heights, scene.blocked, agents,
                            ctx_dn=aux['ctx_ortho_dn'], physical=physical,
-                           web_models=web_models, base_xy=home)
+                           web_models=web_models, base_xy=home,
+                           # MGE_GZ_WALKING_ACTOR=1: the astronaut walks as a Gazebo actor (opt-in).
+                           walking_actor=os.environ.get('MGE_GZ_WALKING_ACTOR') == '1')
     meta['input_files'] = {
         'scene_sha256': sha256(Path(scene_file).read_bytes()).hexdigest(),
         'agents_sha256': sha256(Path(agents_file).read_bytes()).hexdigest(),
