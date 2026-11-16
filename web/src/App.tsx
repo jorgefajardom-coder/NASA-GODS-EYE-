@@ -108,7 +108,7 @@ export function App() {
 function Splash({ title, detail, error }: { title: string; detail: string; error?: boolean }) {
   return (
     <main className={`splash ${error ? 'splash--error' : ''}`} role={error ? 'alert' : 'status'}>
-      <h1>Mars Gods Eye</h1>
+      <h1>{"Mars God's Eye"}</h1>
       <p>{title}</p>
       <p className="muted small">{detail}</p>
     </main>

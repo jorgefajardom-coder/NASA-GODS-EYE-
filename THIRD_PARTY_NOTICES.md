@@ -83,6 +83,13 @@ Official 3D models by NASA/JPL-Caltech: "Mars Perseverance Rover, 3D Model" (htt
 - Modifications: all agency branding on the textures (logos, flag, mission plaques, perforated agency names, commemorative and brand text) was painted out with the surrounding plain surface, as the competition rules forbid NASA branding in the delivery; the rover was decimated to about 35 % and textures limited to 512 px; the rover was turned to face +X. Marks the Blender pass missed (the rover's stowed-helicopter blade sheet and the drone's blade roughness map) were then removed by `web/scripts/strip-glb-branding.mjs`. Details and checksums in `web/scripts/blender/README.md`.
 - Use of NASA imagery and models follows NASA's media usage guidelines; no NASA endorsement is implied.
 
+## Surface base 3D model
+
+Not third-party: an AI-generated 3D model created by the project owner with OpenAI Codex (source `web/scripts/blender/source/base-marciana-v2.blend`, owner-confirmed 14 November 2026), processed by `web/scripts/blender/prepare_base.py`.
+
+- File: `web/public/assets/models/base.glb`: flat colours, no textures and no agency marks.
+- AI use is declared in `docs/AI_USAGE.md` and `docs/ai_usage.json`; listed here so every bundled model has a provenance entry.
+
 ## Mars weather and radiation context
 
 - File: `web/public/replay/demo/atmosphere.json` (built by `web/scripts/extract-atmosphere.mjs`).
