@@ -7,6 +7,10 @@
 NASA Space Apps 2026 / Interplanetary Survival Guide: Martian Map.
 Team: **Houston, We Have a Bug!**
 
+[![Mars God's Eye demo video on YouTube](https://img.youtube.com/vi/c2VRwuGgy84/maxresdefault.jpg)](https://www.youtube.com/watch?v=c2VRwuGgy84)
+
+**Demo video (YouTube, click the image).** It includes screen recordings of our web viewer replaying recorded MOCK runs (not a validated LIVE mission); its AI use, including the voice-over, is declared in [AI usage](docs/AI_USAGE.md).
+
 ## For judges: the project in one minute
 
 **The problem.** Mars maps from orbit are built for regions, not for a walk.
@@ -27,8 +31,6 @@ map.
    crew member, cancel the route and plan a new one from where they actually are,
    with the resources they have left.
 4. Record every decision and replay it in a web browser, with no server.
-
-**Demo video.** [Mars God's Eye — NASA Space Apps Challenge 2026 (YouTube)](https://www.youtube.com/watch?v=c2VRwuGgy84)
 
 **See it.** [Watch the same-run software recovery (21 s)](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/media/height-recovery-002.mp4)
 ([English subtitles](web/public/media/height-recovery-002.en.srt)).
