@@ -14,6 +14,12 @@ policy implemented; mission/supervisor integration pending**.
 Run after a ROS 2 Jazzy workspace build: `ros2 run mge_planning planning_node`.
 This starts the PlanRoute service; explicit profiles and a coherent map batch
 are required before it can return a candidate. It never publishes an active route.
+Scientific mode is now the default: set `scientific_profiles_path` to the same
+full registry as MissionNode and register each typed activity/request context
+through `/mge/planner/register_context` before PlanRoute. Proposed profiles need
+explicit illustrative opt-in. `profiles_file` applies to explicitly selected
+legacy compatibility (`allow_legacy_cost_model=true`), not scientific pricing.
+See [migration and executed verification](../../docs/scientific_cost_integration.md).
 `core.py` imports without ROS; NumPy and SciPy are required.
 The package maintainer email is a placeholder and the distribution license is not yet assigned; the team must decide both before redistribution.
 
