@@ -25,6 +25,7 @@ for readability; Golombek-Rapp tail above it). Nothing here is a NASA product, a
 rock or a validated mission.
 """
 import json
+import logging
 import math
 from pathlib import Path
 import shutil
@@ -33,6 +34,8 @@ import zlib
 
 import numpy as np
 from scipy import ndimage
+
+LOG =logging.getLogger(__name__)
 
 HEIGHTMAP_SIZE = 129             # 2^7 + 1 vertices per side
 TEXTURE_PX = 1024
@@ -312,18 +315,50 @@ def read_glb(path):
     return g, bin_
 
 
-def _accessor_bytes(g, bin_, i):
-    """Tightly packed raw bytes of accessor i (byteStride removed)."""
-    acc = g['accessors'][i]
-    if 'sparse' in acc or 'bufferView' not in acc:
-        raise ValueError('sparse or view-less accessors are not supported')
-    view = g['bufferViews'][acc['bufferView']]
-    item = np.dtype(_COMPONENTS[acc['componentType']]).itemsize * _WIDTH[acc['type']]
-    start = view.get('byteOffset', 0) + acc.get('byteOffset', 0)
+def _view_bytes(g, bin_, view_index, offset, item, count, what):
+    """`count` tightly packed items of `item` bytes from a bufferView (byteStride removed)."""
+    view = g['bufferViews'][view_index]
+    start = view.get('byteOffset', 0) + offset
     stride = view.get('byteStride') or item
+    end = start + stride * (count - 1) + item if count else start
+    if view.get('buffer', 0) != 0 or end > len(bin_) or end - view.get('byteOffset', 0) > view['byteLength']:
+        raise ValueError(f'{what} reads outside its bufferView or the GLB BIN chunk')
     if stride == item:
-        return bin_[start:start + item * acc['count']]
-    return b''.join(bin_[start + k * stride:start + k * stride + item] for k in range(acc['count']))
+        return bin_[start:start + item * count]
+    return b''.join(bin_[start + k * stride:start + k * stride + item] for k in range(count))
+
+
+def _accessor_bytes(g, bin_, i):
+    """Tightly packed raw bytes of accessor i (byteStride removed), sparse substitutions applied.
+
+    glTF 2.0: an accessor without a bufferView starts as zeros; a sparse accessor starts from
+    that base (its bufferView, or zeros) and then replaces the elements at `sparse.indices`
+    with `sparse.values` (both tightly packed, in their own bufferViews)."""
+    acc = g['accessors'][i]
+    if acc.get('componentType') not in _COMPONENTS or acc.get('type') not in _WIDTH:
+        raise ValueError(f'accessor {i} has an unsupported componentType or type')
+    item = np.dtype(_COMPONENTS[acc['componentType']]).itemsize * _WIDTH[acc['type']]
+    count = acc['count']
+    if 'bufferView' in acc:
+        base = _view_bytes(g, bin_, acc['bufferView'], acc.get('byteOffset', 0), item, count, f'accessor {i}')
+    else:
+        base = bytes(item * count)
+    sparse = acc.get('sparse')
+    if not sparse or not sparse.get('count'):
+        return base
+    n, ind, val = sparse['count'], sparse['indices'], sparse['values']
+    if ind.get('componentType') not in (5121, 5123, 5125):
+        raise ValueError(f'accessor {i} has an unsupported sparse index componentType')
+    ind_type = np.dtype(_COMPONENTS[ind['componentType']])
+    idx = np.frombuffer(_view_bytes(g, bin_, ind['bufferView'], ind.get('byteOffset', 0), ind_type.itemsize, n,
+                                    f'accessor {i} sparse indices'), dtype=ind_type).astype(np.int64)
+    if idx.size and idx.max() >= count:
+        raise ValueError(f'accessor {i} has a sparse index beyond its count')
+    values = np.frombuffer(_view_bytes(g, bin_, val['bufferView'], val.get('byteOffset', 0), item, n,
+                                       f'accessor {i} sparse values'), dtype=np.uint8).reshape(n, item)
+    out = np.frombuffer(base, dtype=np.uint8).reshape(count, item).copy()
+    out[idx] = values
+    return out.tobytes()
 
 
 def accessor_array(g, bin_, i):
@@ -666,13 +701,25 @@ def derive_walking_actor(src, out_dir, height_m=WEB_MODEL_FIT['HUMAN'][1], clip_
 
     def rewrite(i, fn):
         acc = g['accessors'][i]
-        view = g['bufferViews'][acc['bufferView']]
+        if acc.get('componentType') != 5126:
+            raise ValueError(f'accessor {i} is not float32; the walking actor cannot be rescaled in place')
         a = fn(accessor_array(g, bin_, i).astype(np.float32).copy()).astype(np.float32)
-        item = a[0].nbytes
-        start = view.get('byteOffset', 0) + acc.get('byteOffset', 0)
-        stride = view.get('byteStride') or item
-        for k in range(len(a)):
-            data[start + k * stride:start + k * stride + item] = a[k].tobytes()
+        if 'sparse' in acc or 'bufferView' not in acc:
+            # No dense bytes to rewrite in place (and a sparse base view may be shared): store the
+            # decoded, transformed values as a new bufferView and drop the sparse block.
+            data.extend(b'\x00' * (-len(data) % 4))
+            g['bufferViews'].append({'buffer': 0, 'byteOffset': len(data), 'byteLength': a.nbytes})
+            data.extend(np.ascontiguousarray(a, dtype='<f4').tobytes())
+            acc.pop('sparse', None)
+            acc.pop('byteOffset', None)
+            acc['bufferView'] = len(g['bufferViews']) - 1
+        else:
+            view = g['bufferViews'][acc['bufferView']]
+            item = a[0].nbytes
+            start = view.get('byteOffset', 0) + acc.get('byteOffset', 0)
+            stride = view.get('byteStride') or item
+            for k in range(len(a)):
+                data[start + k * stride:start + k * stride + item] = a[k].tobytes()
         if 'min' in acc:
             flat = a.reshape(len(a), -1)
             acc['min'], acc['max'] = flat.min(axis=0).tolist(), flat.max(axis=0).tolist()
@@ -722,9 +769,11 @@ def derive_walking_actor(src, out_dir, height_m=WEB_MODEL_FIT['HUMAN'][1], clip_
     g['scenes'], g['scene'] = [{'nodes': [root]}], 0
     g['animations'] = [clip]
     g['asset'] = {**g.get('asset', {}), 'generator': 'mge_sim.gz_world (derived walking actor of the web astronaut)'}
+    data.extend(b'\x00' * (-len(data) % 4))
+    if g.get('buffers'):
+        g['buffers'][0]['byteLength'] = len(data)
     text = json.dumps(g, separators=(',', ':')).encode()
     text += b' ' * (-len(text) % 4)
-    data.extend(b'\x00' * (-len(data) % 4))
     Path(out_dir, name).write_bytes(struct.pack('<4sII', b'glTF', 2, 12 + 8 + len(text) + 8 + len(data))
                                     + struct.pack('<I4s', len(text), b'JSON') + text
                                     + struct.pack('<I4s', len(data), b'BIN\x00') + bytes(data))
@@ -937,6 +986,16 @@ def _base_sdf(models, base_xy, ground):
             f'<link name="link">{web_model_visual("v", uri, "BASE", lo, hi)}</link></model>')
 
 
+def _cosmetic(derive, src, out_dir, fallback):
+    """derive(src, out_dir), or None with a logged warning when the GLB cannot be derived
+    (unsupported or malformed glTF content): the derived parts are cosmetic only."""
+    try:
+        return derive(src, out_dir)
+    except (ValueError, KeyError, IndexError, TypeError, struct.error) as exc:
+        LOG.warning('%s(%s) failed (%s: %s); %s', derive.__name__, Path(src).name, type(exc).__name__, exc, fallback)
+        return None
+
+
 def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name='jezero', physical=(),
                 web_models=None, base_xy=None, walking_actor=False):
     """grid = (origin_x_m, origin_y_m, resolution_m, rows, cols); heights and ctx_dn are
@@ -973,15 +1032,20 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
             lo, hi = glb_bbox(src)
             models[kind] = (Path(src).name, lo, hi)
     # Moving parts like the web viewer's (derived at build time; the source GLBs are untouched).
+    # The parts are COSMETIC: a model they cannot be derived from is drawn undivided (or, for
+    # the walking actor, as the mirrored model) with a warning; it never aborts the world.
     rover_parts = drone_parts = None
     if 'ROVER' in models and any(a in physical and k == 'ROVER' for a, k, *_ in agents):
-        rover_parts = derive_rover_parts(out / models['ROVER'][0], out)
+        rover_parts = _cosmetic(derive_rover_parts, out / models['ROVER'][0], out,
+                                fallback='the rover is drawn undivided (no wheel visuals)')
     if 'DRONE' in models and any(k == 'DRONE' and a not in physical for a, k, *_ in agents):
-        found = derive_drone_parts(out / models['DRONE'][0], out)
+        found = _cosmetic(derive_drone_parts, out / models['DRONE'][0], out,
+                          fallback='the drone is drawn undivided (no spinning rotors)')
         drone_parts = {'body': 'drone_body.glb', 'rotors': found} if found else None
     walker = None
     if walking_actor and 'HUMAN' in models and any(k == 'HUMAN' and a not in physical for a, k, *_ in agents):
-        walker = derive_walking_actor(out / models['HUMAN'][0], out)
+        walker = _cosmetic(derive_walking_actor, out / models['HUMAN'][0], out,
+                           fallback='the astronaut is drawn undivided (no walking actor)')
     width, height = cols * res, rows * res
     x0, y0 = ox + res / 2, oy + res / 2               # the lattice starts on the first cell centre
 
