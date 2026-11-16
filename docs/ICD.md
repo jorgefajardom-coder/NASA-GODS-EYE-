@@ -651,3 +651,26 @@ are color codes, never canonical traversability or navigation authorization.
 They remain separate from the stamped belief batch and require the sidecar
 prior-hash/full-georeference binding. No canonical message/service field or
 raster/replay version changes; scientific and consumer review remain pending.
+
+
+## PR candidate: one-human scientific stop/replan control
+
+Reconciled with main `d06de5e` and D-CLK-01; see [handoff](replan_control_handoff.md).
+The composition entry point reuses the existing MissionNode/Manager and
+planner-owned scientific advisory policy. No ROS IDL, package 2.0.0, enum,
+unit, canonical replay 1.0.0 or public-raster version changes. `candidate_phase`
+is immutable internal request context; direct RETURN remains RETURN.
+
+After invalidation, dispatch and authorization require a fresh stationary
+AgentState stop receipt. Two distinct post-command/nonfuture stamps, stable
+XYZ and zero twist are required. David confirmed the D-CLK-01 clock split:
+the logical ACK deadline uses run time; a separate steady safety watchdog
+can block a paused run without consuming logical time/resources. Late ACK,
+liveness loss or motion before reauthorization latches a stop failure for the
+run. No callback or resumed clock can silently clear it. The handoff defines
+the illustrative software thresholds and explicit reason strings.
+
+Policy advice still requires registered scientific PlanRoute and the manager's
+current-state audit. Model/profile agreement, work/ledger, physical and
+three-role acceptance remain separate. This PR is not a contract freeze or
+a completed scientific mission.

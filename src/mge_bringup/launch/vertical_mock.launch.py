@@ -145,6 +145,7 @@ def generate_launch_description():
         DeclareLaunchArgument('exploration_policy_file', default_value=''),
         DeclareLaunchArgument('allow_continuous_starts', default_value='false'),
         DeclareLaunchArgument('mission', default_value='mock', choices=['mock', 'real']),
+        DeclareLaunchArgument('replan_policy_file', default_value=''),
         # MOCK mission only: on a resource rejection, try nearer targets and then the base.
         DeclareLaunchArgument('budget_fallback', default_value='false', choices=['true', 'false']),
         # MOCK mission only: a goal is complete once its agent finishes the route back at base.
@@ -221,11 +222,12 @@ def generate_launch_description():
                      LaunchConfiguration('complete_on_return'), value_type=bool),
                  'completion_tolerance_m': ParameterValue(
                      LaunchConfiguration('completion_tolerance_m'), value_type=float)}]),
-        Node(package='mge_mission', executable='mission_node', output='screen',
+        Node(package='mge_bringup', executable='mission_replan_node', output='screen',
              condition=IfCondition(EqualsSubstitution(LaunchConfiguration('mission'), 'real')),
              parameters=[{
                  **common,
                  'profiles_path': LaunchConfiguration('mission_profiles_path'),
+                 'replan_policy_file': ParameterValue(LaunchConfiguration('replan_policy_file', default=''), value_type=str),
                  'mission_path': LaunchConfiguration('mission_path'),
                  'base_enu_m': ParameterValue(LaunchConfiguration('base_enu_m')),
                  'allow_illustrative': ParameterValue(LaunchConfiguration('allow_illustrative'), value_type=bool),

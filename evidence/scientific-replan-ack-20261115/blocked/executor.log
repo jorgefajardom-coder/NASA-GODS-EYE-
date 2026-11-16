@@ -1,0 +1,3 @@
+[WARN] [1794799072.185901108] [kinematic_executor]: MOCK kinematic executor for 1 agents (run_id=simulated-human-scientific-replan-blocked): constant speed and linear consumption from the route estimates
+[INFO] [1794799074.790967790] [kinematic_executor]: human_1 executing route route-d85ef815317d0b9e1ea426b3
+[INFO] [1794799077.343395760] [kinematic_executor]: human_1 halted at (7.749789979973642, 5.5, 0.0)

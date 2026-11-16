@@ -25,7 +25,7 @@ def _serialized(method):
     return call
 
 
-def create_node_class():
+def create_node_class(*, replan_factory=None):
     """Return the real rclpy Node class after sourcing the ROS workspace."""
     from builtin_interfaces.msg import Time
     from geometry_msgs.msg import Point as WirePoint, PoseStamped
@@ -66,6 +66,10 @@ def create_node_class():
             self._inflight_request = self._inflight_context = None
             self._inflight_map_stamp = None
             self._last_path_key = None
+            self._stop = None
+            self._stop_failed = False
+            self._replan = None
+            self.declare_parameter("replan_policy_file", "")
             for name, default in {
                 "run_id": "", "profiles_path": "", "mission_path": "",
                 "model_agreement_confirmed": False, "approved_model_id": "",
@@ -165,6 +169,12 @@ def create_node_class():
                 AgentState, f"/mge/agents/{agent_id}/state",
                 lambda message, expected=agent_id: self._on_agent(message, expected), reliable,
             ) for agent_id in self._profiles]
+            selected_policy = self.get_parameter("replan_policy_file").value
+            if selected_policy:
+                if replan_factory is None:
+                    self.destroy_node()
+                    raise ValueError("POLICY_PROVIDER_UNAVAILABLE: use the integrated bringup entry point")
+                self._replan = replan_factory(self, selected_policy)
             self._steady_clock = Clock(clock_type=ClockType.STEADY_TIME)
             self._timer = self.create_timer(0.05, self._poll, clock=self._steady_clock)
             if not self._use_sim_time:
@@ -224,7 +234,13 @@ def create_node_class():
                         raise ValueError("terrain batch timestamp changed without a new map version")
                     if current_version != message.map_version and stamp_key == self._map_stamp_key:
                         raise ValueError("terrain batch timestamp was reused for another map version")
+                before = self._manager.snapshot()
+                if self._replan is not None:
+                    self._replan.bind()
                 if self._manager.update_map(message.run_id, message.map_version, stamp):
+                    self._track_invalidation(before)
+                    if self._replan is not None:
+                        self._replan.meta(message)
                     self._terrain_signature, self._map_stamp = signature, stamp
                     self._map_stamp_key = stamp_key
                 self._publish()
@@ -242,9 +258,23 @@ def create_node_class():
                 previous_stamp = self._agent_stamps.get(expected_id)
                 if previous_stamp is not None and state.timestamp_sim_s < previous_stamp:
                     raise ValueError("agent state is older than the last accepted state")
+                before = self._manager.snapshot()
                 if self._manager.update_agent(state):
+                    self._track_invalidation(before)
                     self._agent_wire[expected_id] = deepcopy(message)
                     self._agent_stamps[expected_id] = state.timestamp_sim_s
+                    if self._stop is not None:
+                        from .stop_ack import stamp_ns
+                        was_acknowledged = self._stop.acknowledged
+                        if self._stop.observe(message, stamp_ns(self._clock_stamp)) and not was_acknowledged:
+                            self._manager.control_event("STOP_ACKNOWLEDGED", "Fresh stationary pose and zero twist", self._stop.route_id)
+                            self._manager.refresh_pending_resources()
+                        if self._stop.failure:
+                            self._stop_ready()
+                            return
+                    if self._replan is not None:
+                        self._replan.evaluate("POSE")
+                        self._replan.evaluate("RESOURCES")
                     self._publish()
             except (TypeError, ValueError) as exc:
                 self.get_logger().warning(f"Ignored agent state: {exc}")
@@ -278,6 +308,9 @@ def create_node_class():
                 return self._reject_goal(request, response, "CONFIG_NOT_READY", self._configuration_error)
             if not self._ready_clock():
                 return self._reject_goal(request, response, "CLOCK_NOT_READY", "A monotonic simulation clock is required.")
+            if self._stop_failed:
+                return self._reject_goal(request, response, self._stop.failure,
+                                         "Stop safety failure is latched; start a new run.")
             try:
                 profile = self._profiles.get(request.primary_agent_id)
                 if profile is None:
@@ -296,8 +329,71 @@ def create_node_class():
             if current is not None and current.request_id == request_id:
                 self._manager.fail_pending_plan(reason, detail)
 
+        def _track_invalidation(self, before):
+            after = self._manager.snapshot()
+            if before.route_id and before.route_id != after.route_id:
+                self._arm_stop(before.route_id, before.primary_agent_id)
+
+        def _arm_stop(self, route_id, agent_id):
+            if self._stop_failed or (self._stop is not None and self._stop.route_id == route_id):
+                return
+            from .stop_ack import StopBarrier, stamp_ns
+            self._stop_failed = False
+            self._stop = StopBarrier(self._run_id, agent_id, route_id, stamp_ns(self._clock_stamp), monotonic())
+            if self._future is not None:
+                future,self._future = self._future,None
+                self._inflight_plan = self._inflight_request = self._inflight_context = None
+                future.cancel()
+            self._publish_empty_path()
+            self._manager.control_event("STOP_REQUESTED", "Invalidated route; await fresh stationary feedback", route_id)
+
+        def _stop_ready(self):
+            """Check at every asynchronous boundary, not just the poll timer."""
+            if self._stop is None:
+                return True
+            from .stop_ack import stamp_ns
+            reason = self._stop.failure_reason(stamp_ns(self._clock_stamp))
+            if reason:
+                if not self._stop_failed:
+                    self._stop_failed = True
+                    future, self._future = self._future, None
+                    self._inflight_plan = self._inflight_request = self._inflight_context = None
+                    self._inflight_map_stamp = None
+                    if future is not None:
+                        future.cancel()
+                    self._manager.block_runtime(reason, "Stop receipt failed; new run required. No automatic resume.")
+                    self._publish_empty_path()
+                    self._publish(force=True)
+                return False
+            return self._stop.acknowledged
+
+        def _policy_stop(self, reason, *, candidate_phase="OUTBOUND"):
+            if self._stop_failed:
+                return
+            before = self._manager.snapshot()
+            if before.active_route is None and self._manager.pending_plan() is None:
+                return
+            if reason == "POLICY_SNAPSHOT_INVALID":
+                self._manager.block_runtime(reason, "Advisory snapshot was rejected")
+                self._track_invalidation(before)
+                self._publish()
+                return
+            # Repeated advice cannot churn a pending RETURN request or reset the stop timer.
+            if candidate_phase == "RETURN":
+                pending = self._manager.pending_plan()
+                if pending is None or pending.candidate_phase != "RETURN":
+                    self._manager.request_return(reason)
+            elif before.route_id:
+                self._manager.request_replan(reason, candidate_phase=candidate_phase)
+            self._track_invalidation(before)
+            self._publish()
+
         def _dispatch_plan(self):
             if self._manager is None or not self._ready_clock() or self._future is not None:
+                return
+            if not self._stop_ready():
+                return
+            if self._replan is not None and not self._replan.ready():
                 return
             plan = self._manager.pending_plan()
             if plan is None:
@@ -343,6 +439,8 @@ def create_node_class():
             try:
                 if not self._ready_clock():
                     return
+                if not self._stop_ready():
+                    return
                 if self._manager.pending_plan() != plan or self._map_stamp_key != self._inflight_map_stamp:
                     self._future = self._inflight_plan = None
                     self._inflight_request = self._inflight_context = None
@@ -380,6 +478,8 @@ def create_node_class():
             try:
                 if not self._ready_clock():
                     return
+                if not self._stop_ready():
+                    return
                 result = future.result()
                 if result is None:
                     raise ValueError("planner returned no response")
@@ -390,7 +490,10 @@ def create_node_class():
                     raise ValueError("planner response stamp does not match the dispatched terrain batch")
                 if decision.request_id != plan.request_id:
                     raise ValueError("planner request ID does not match the dispatched request")
-                self._manager.apply_plan(decision)
+                if self._manager.apply_plan(decision):
+                    self._stop = None  # Consume this receipt before authorized motion.
+                    if self._replan is not None:
+                        self._replan.bind()
             except Exception as exc:
                 self._fail_if_current(plan.request_id, "INVALID_PLANNER_RESPONSE", str(exc))
                 self.get_logger().warning(f"Rejected planner response: {exc}")
@@ -401,12 +504,16 @@ def create_node_class():
         def _poll(self):
             if self._manager is None or not self._ready_clock():
                 return
+            if not self._stop_ready():
+                return
             if self._future is not None and monotonic() - self._request_wall_s > self._planner_timeout_s:
                 future, plan = self._future, self._inflight_plan
                 self._future = self._inflight_plan = None
                 future.cancel()
                 self._fail_if_current(plan.request_id, "PLANNER_TIMEOUT", "Planner exceeded its configured wall-clock timeout.")
                 self._publish()
+            if self._replan is not None:
+                self._replan.evaluate("TICK")
             self._dispatch_plan()
 
         def _stamp_for(self, seconds):
@@ -446,12 +553,12 @@ def create_node_class():
     return MissionNode
 
 
-def main(args=None):
+def main(args=None, *, replan_factory=None):
     import rclpy
     rclpy.init(args=args)
     node = None
     try:
-        node = create_node_class()()
+        node = create_node_class(replan_factory=replan_factory)()
         rclpy.spin(node)
     except KeyboardInterrupt:
         pass

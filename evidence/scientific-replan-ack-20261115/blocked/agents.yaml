@@ -1,0 +1,9 @@
+agents:
+- energy_budget_wh: 600.0
+  id: human_1
+  kind: HUMAN
+  oxygen_budget_l: 150.0
+  time_budget_s: 3600.0
+  x_m: 2.5
+  y_m: 5.5
+  z_m: 0.0

@@ -61,3 +61,17 @@ Whether non-Gazebo MOCK runs must also move to simulated time (which would need
 a separately reviewed clock provider) is left open. So are physical calibration,
 scientific approval of resource rates, three-role acceptance and the JES-07 /
 AC-10 organizer review.
+
+
+## David's scoped confirmation — 15 November 2026
+
+David explicitly confirmed in the stop/replan reconciliation chat: the ACK
+deadline follows simulated time and pauses with it; a separate steady safety
+watchdog may request a stop without debiting resources and must not permit
+automatic resumption after failure. The implementation/review candidate is
+documented in [the stop/replan handoff](../replan_control_handoff.md).
+
+This confirms that clock split, not scientific resource-rate/profile approval
+or validation of all paused/slow Gazebo resource debits. Jorge's display review,
+remaining runtime validation, three-role acceptance and organizer endorsement
+remain pending. The original proposal and its source scope above are retained.

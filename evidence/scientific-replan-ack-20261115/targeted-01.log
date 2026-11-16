@@ -1,0 +1,12 @@
+.............................F.......................................... [ 81%]
+................                                                         [100%]
+=================================== FAILURES ===================================
+__________ test_ros_goal_plan_topics_idempotency_and_map_invalidation __________
+tests/contract/test_mission_service.py:261: in test_ros_goal_plan_topics_idempotency_and_map_invalidation
+    assert any(event.reason_code == "STOP_ACKNOWLEDGED" for event in graph["events"])
+E   assert False
+E    +  where False = any(<generator object test_ros_goal_plan_topics_idempotency_and_map_invalidation.<locals>.<genexpr> at 0x7a20401d1b10>)
+- generated xml file: /home/dryanguasr/.local/share/mge-replan-ack-20261115/targeted-01.xml -
+=========================== short test summary info ============================
+FAILED tests/contract/test_mission_service.py::test_ros_goal_plan_topics_idempotency_and_map_invalidation
+1 failed, 87 passed in 2.77s
