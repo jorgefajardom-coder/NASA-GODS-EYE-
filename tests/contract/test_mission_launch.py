@@ -110,14 +110,38 @@ def test_real_selection_rejects_wall_clock_and_missing_configuration(tmp_path):
     assert module._check_real_configuration(context(mission='mock', use_sim_time='false')) is False
 
 
-def test_real_selection_cannot_skip_external_clock_preflight(monkeypatch):
+@pytest.mark.parametrize('mission', ['mock', 'real'])
+def test_simulated_time_cannot_skip_external_clock_preflight(monkeypatch, mission):
+    """D-CLK-01: use_sim_time=true needs its clock for every mission provider."""
     module = load_launch()
     def unavailable():
         raise RuntimeError('NOT_READY: EXTERNAL_SIMULATION_CLOCK_REQUIRED')
     monkeypatch.setattr(module, '_require_external_clock', unavailable)
     with pytest.raises(RuntimeError, match='EXTERNAL_SIMULATION_CLOCK_REQUIRED'):
-        module._real_mission_preflight(context())
-    assert module._real_mission_preflight(context(mission='mock')) == []
+        module._clock_preflight(context(mission=mission))
+
+
+def test_wall_clock_mock_run_does_not_probe_a_clock(monkeypatch):
+    module = load_launch()
+    def unexpected():
+        raise AssertionError('a wall-clock run must not wait for /clock')
+    monkeypatch.setattr(module, '_require_external_clock', unexpected)
+    assert module._clock_preflight(context(mission='mock', use_sim_time='false')) == []
+    with pytest.raises(RuntimeError, match='REQUIRES_SIM_TIME'):
+        module._clock_preflight(context(mission='real', use_sim_time='false'))
+
+
+@pytest.mark.parametrize('stamps, publishers, expected', [
+    ([0, 100], 1, None),
+    ([5, 5, 5], 1, 'EXTERNAL_SIMULATION_CLOCK_REQUIRED'),   # paused/frozen clock
+    ([7], 1, 'EXTERNAL_SIMULATION_CLOCK_REQUIRED'),         # one sample proves no advance
+    ([], 0, 'EXTERNAL_SIMULATION_CLOCK_REQUIRED'),          # nothing publishes /clock
+    ([0, 100], 0, 'EXTERNAL_SIMULATION_CLOCK_REQUIRED'),    # publisher gone at the end
+    ([0, 100], 2, 'PROVIDER_COLLISION'),                    # two time bases
+])
+def test_clock_problem_requires_one_advancing_publisher(stamps, publishers, expected):
+    problem = load_launch()._clock_problem(stamps, publishers)
+    assert problem is None if expected is None else expected in problem
 
 
 def test_real_terrain_rejects_mock_planner_before_startup():
