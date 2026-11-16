@@ -18,7 +18,9 @@ No ROS imports. `build_world(out_dir, ...)` writes one self-contained directory:
   world.sdf      terrain + one boulder (mesh visual, ellipsoid collision) on every blocked
                  cell of the SIMULATED scene, smaller visual-only rocks around it, Mars
                  gravity, a low sun, a dusty sky, and one visual-only model per agent.
-  world.json     frame and z_ref_m (gz z = ROS z - z_ref_m) for gz_mirror.
+  world.json     frame and z_ref_m (gz z = ROS z - z_ref_m) for gz_mirror, and ground_z_m:
+                 the Gazebo ground height at every cell centre (rows from origin_y upwards),
+                 so the mirror can tell an airborne drone without loading the heightmap.
 
 Boulders follow the viewer's display choice (main rock from 1.5 m, deliberately enlarged
 for readability; Golombek-Rapp tail above it). Nothing here is a NASA product, a measured
@@ -29,10 +31,15 @@ import math
 from pathlib import Path
 import shutil
 import struct
+import warnings
 import zlib
 
 import numpy as np
 from scipy import ndimage
+
+# The drone's rotor animation lives in mge_sim.rotors (pure Python, imported by gz_mirror);
+# re-exported here for existing callers.
+from mge_sim.rotors import ROTOR_RAD_S, ROTOR_SPINDOWN_PER_S, ROTOR_SPINUP_PER_S, rotor_command  # noqa: F401
 
 HEIGHTMAP_SIZE = 129             # 2^7 + 1 vertices per side
 TEXTURE_PX = 1024
@@ -559,7 +566,8 @@ def derive_rover_parts(src, out_dir, stem='rover'):
 
 def derive_drone_parts(src, out_dir, stem='drone'):
     """<stem>_body.glb (everything but the rotors) and <stem>_rotor_<k>.glb (one rotor, its hub
-    at the origin). Returns [(file, hub in scene coordinates, spin direction)] or None."""
+    at the origin). Returns {'body': file, 'rotors': [(file, hub in scene coordinates, spin
+    direction)]} like derive_rover_parts, or None."""
     g, bin_ = read_glb(src)
     found = [(_node_by_prefix(g, name), d) for name, d in DRONE_ROTOR_NODES]
     if any(i is None for i, _ in found):
@@ -576,7 +584,7 @@ def derive_drone_parts(src, out_dir, stem='drone'):
         name = f'{stem}_rotor_{k}.glb'
         write_glb(out / name, g, bin_, [(shift @ m, prims) for m, prims in _mesh_nodes(g, {j: wm[j] for j in _subtree(g, i)})])
         rotors.append((name, hub, d))
-    return rotors
+    return {'body': f'{stem}_body.glb', 'rotors': rotors}
 
 
 # The astronaut as a Gazebo <actor> walking with the web's moon_walk clip (AstronautModel.tsx).
@@ -783,21 +791,6 @@ def _mesh_visual(name, uri, s, rpy='1.5708 0 0', xyz='0 0 0'):
             f'<scale>{s:.5f} {s:.5f} {s:.5f}</scale></mesh></geometry></visual>')
 
 
-# The drone's rotors (VehicleModel.tsx): about 525 rpm drawn, spin-up ~4 s, spin-down ~5 s.
-ROTOR_RAD_S = 55.0
-ROTOR_SPINUP_PER_S = 0.25
-ROTOR_SPINDOWN_PER_S = 0.2
-
-
-def rotor_command(share, mode, dt):
-    """Next rotor speed share (0..1) toward full speed while the drone is not IDLE (the web's
-    `spinning = mode !== 'IDLE'`), at the web's spin-up and spin-down rates."""
-    target = 0.0 if mode == 'IDLE' else 1.0
-    rate = ROTOR_SPINUP_PER_S if target > share else ROTOR_SPINDOWN_PER_S
-    step = rate * max(0.0, dt)
-    return min(target, share + step) if target > share else max(target, share - step)
-
-
 def drone_sdf(agent_id, x, y, z, glb, rotors):
     """The web's drone as a body link plus one link per rotor on a revolute joint about the
     vertical through its hub. rotors = {'body': body GLB, 'rotors': derive_drone_parts(...)}.
@@ -860,6 +853,19 @@ def rover_wheel_layout(glb, parts):
     return out, centre
 
 
+def usable_wheel_layout(glb, parts):
+    """rover_wheel_layout when it gives three wheels per side, else (None, None).
+
+    The single rule both the SDF and world.json use, so the metadata never claims per-wheel
+    visuals for a rover that is drawn as the whole model on its chassis."""
+    if glb is None or not parts:
+        return None, None
+    layout, centre = rover_wheel_layout(glb, parts)
+    if len(layout) != 6 or sum(w[0].startswith('wheel_l') for w in layout) != 3:
+        return None, None
+    return layout, centre
+
+
 def physical_rover_sdf(agent_id, x, y, z, yaw=0.0, glb=None, parts=None):
     """A six-wheel rover driven by gz DiffDrive on /model/<id>/cmd_vel, with ground-truth
     odometry on /model/<id>/odometry_gt. It rests on the terrain under Mars gravity.
@@ -870,11 +876,7 @@ def physical_rover_sdf(agent_id, x, y, z, yaw=0.0, glb=None, parts=None):
     cz = WHEEL_R + CLEARANCE + CHASSIS[2] / 2 - 0.35
     mat = '<material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.78 0.78 0.8 1</diffuse></material>'
     dark = '<material><ambient>0.15 0.15 0.16 1</ambient><diffuse>0.22 0.22 0.24 1</diffuse></material>'
-    layout = None
-    if glb is not None and parts:   # the web's rover split into body + six wheels
-        layout, centre = rover_wheel_layout(glb, parts)
-        if len(layout) != 6 or sum(w[0].startswith('wheel_l') for w in layout) != 3:
-            layout = None
+    layout, centre = usable_wheel_layout(glb, parts)   # the web's rover split into body + six wheels
     if layout is not None:
         body = web_model_visual('web_model', parts['body'], 'ROVER', glb[1], glb[2], z_shift=-cz, centre=centre)
         s = web_scale('ROVER', glb[1], glb[2])
@@ -937,6 +939,22 @@ def _base_sdf(models, base_xy, ground):
             f'<link name="link">{web_model_visual("v", uri, "BASE", lo, hi)}</link></model>')
 
 
+# glTF layouts the minimal reader does not support (Draco/meshopt compression, sparse or
+# view-less accessors, missing min/max, truncated buffers) surface as these errors.
+DERIVE_ERRORS = (ValueError, KeyError, IndexError, TypeError, struct.error)
+
+
+def _derived_or_none(derive, *args):
+    """Run a COSMETIC part derivation; on an unsupported model warn and return None, so the
+    world is still built with the whole web model (the behaviour before part derivation)."""
+    try:
+        return derive(*args)
+    except DERIVE_ERRORS as e:
+        warnings.warn(f'{derive.__name__}({Path(args[0]).name}): {type(e).__name__}: {e}; '
+                      'drawing the whole web model instead', RuntimeWarning, stacklevel=2)
+        return None
+
+
 def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name='jezero', physical=(),
                 web_models=None, base_xy=None, walking_actor=False):
     """grid = (origin_x_m, origin_y_m, resolution_m, rows, cols); heights and ctx_dn are
@@ -973,15 +991,17 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
             lo, hi = glb_bbox(src)
             models[kind] = (Path(src).name, lo, hi)
     # Moving parts like the web viewer's (derived at build time; the source GLBs are untouched).
+    # Any unsupported model falls back to the whole web model instead of aborting the build.
     rover_parts = drone_parts = None
     if 'ROVER' in models and any(a in physical and k == 'ROVER' for a, k, *_ in agents):
-        rover_parts = derive_rover_parts(out / models['ROVER'][0], out)
+        rover_parts = _derived_or_none(derive_rover_parts, out / models['ROVER'][0], out)
+        if usable_wheel_layout(models['ROVER'], rover_parts)[0] is None:
+            rover_parts = None      # the SDF would draw the whole model; claim no wheel parts
     if 'DRONE' in models and any(k == 'DRONE' and a not in physical for a, k, *_ in agents):
-        found = derive_drone_parts(out / models['DRONE'][0], out)
-        drone_parts = {'body': 'drone_body.glb', 'rotors': found} if found else None
+        drone_parts = _derived_or_none(derive_drone_parts, out / models['DRONE'][0], out)
     walker = None
     if walking_actor and 'HUMAN' in models and any(k == 'HUMAN' and a not in physical for a, k, *_ in agents):
-        walker = derive_walking_actor(out / models['HUMAN'][0], out)
+        walker = _derived_or_none(derive_walking_actor, out / models['HUMAN'][0], out)
     width, height = cols * res, rows * res
     x0, y0 = ox + res / 2, oy + res / 2               # the lattice starts on the first cell centre
 
@@ -1022,6 +1042,10 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
     meta = {'world_name': world_name, 'origin_x_m': ox, 'origin_y_m': oy, 'resolution_m': res,
             'rows': rows, 'cols': cols, 'z_ref_m': z_ref, 'relief_m': span,
             'heightmap_origin_m': [x0, y0], 'heightmap_on_cell_centres': True,
+            # Gazebo ground z at each cell centre (row i = origin_y upwards): lets gz_mirror tell
+            # an airborne drone like the web viewer, without numpy or the heightmap.
+            'ground_z_m': [[round(ground(x0 + j * res, y0 + i * res), 4) for j in range(cols)]
+                           for i in range(rows)],
             'boulders': sum(r['collide'] for r in rocks), 'small_rocks': sum(not r['collide'] for r in rocks),
             'agents': {a: {'model': AGENT_MODELS[k][0],
                            'lift_m': 0.0 if a in physical or k in models else AGENT_MODELS[k][3],
