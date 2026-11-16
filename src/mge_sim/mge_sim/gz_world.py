@@ -18,7 +18,9 @@ No ROS imports. `build_world(out_dir, ...)` writes one self-contained directory:
   world.sdf      terrain + one boulder (mesh visual, ellipsoid collision) on every blocked
                  cell of the SIMULATED scene, smaller visual-only rocks around it, Mars
                  gravity, a low sun, a dusty sky, and one visual-only model per agent.
-  world.json     frame and z_ref_m (gz z = ROS z - z_ref_m) for gz_mirror.
+  world.json     frame and z_ref_m (gz z = ROS z - z_ref_m) for gz_mirror, and ground_z_m:
+                 the Gazebo ground height at every cell centre (rows from origin_y upwards),
+                 so the mirror can tell an airborne drone without loading the heightmap.
 
 Boulders follow the viewer's display choice (main rock from 1.5 m, deliberately enlarged
 for readability; Golombek-Rapp tail above it). Nothing here is a NASA product, a measured
@@ -34,6 +36,10 @@ import zlib
 
 import numpy as np
 from scipy import ndimage
+
+# The drone's rotor animation lives in mge_sim.rotors (pure Python, imported by gz_mirror);
+# re-exported here for existing callers.
+from mge_sim.rotors import ROTOR_RAD_S, ROTOR_SPINDOWN_PER_S, ROTOR_SPINUP_PER_S, rotor_command  # noqa: F401
 
 HEIGHTMAP_SIZE = 129             # 2^7 + 1 vertices per side
 TEXTURE_PX = 1024
@@ -785,21 +791,6 @@ def _mesh_visual(name, uri, s, rpy='1.5708 0 0', xyz='0 0 0'):
             f'<scale>{s:.5f} {s:.5f} {s:.5f}</scale></mesh></geometry></visual>')
 
 
-# The drone's rotors (VehicleModel.tsx): about 525 rpm drawn, spin-up ~4 s, spin-down ~5 s.
-ROTOR_RAD_S = 55.0
-ROTOR_SPINUP_PER_S = 0.25
-ROTOR_SPINDOWN_PER_S = 0.2
-
-
-def rotor_command(share, mode, dt):
-    """Next rotor speed share (0..1) toward full speed while the drone is not IDLE (the web's
-    `spinning = mode !== 'IDLE'`), at the web's spin-up and spin-down rates."""
-    target = 0.0 if mode == 'IDLE' else 1.0
-    rate = ROTOR_SPINUP_PER_S if target > share else ROTOR_SPINDOWN_PER_S
-    step = rate * max(0.0, dt)
-    return min(target, share + step) if target > share else max(target, share - step)
-
-
 def drone_sdf(agent_id, x, y, z, glb, rotors):
     """The web's drone as a body link plus one link per rotor on a revolute joint about the
     vertical through its hub. rotors = {'body': body GLB, 'rotors': derive_drone_parts(...)}.
@@ -885,11 +876,7 @@ def physical_rover_sdf(agent_id, x, y, z, yaw=0.0, glb=None, parts=None):
     cz = WHEEL_R + CLEARANCE + CHASSIS[2] / 2 - 0.35
     mat = '<material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.78 0.78 0.8 1</diffuse></material>'
     dark = '<material><ambient>0.15 0.15 0.16 1</ambient><diffuse>0.22 0.22 0.24 1</diffuse></material>'
-    layout = None
-    if glb is not None and parts:   # the web's rover split into body + six wheels
-        layout, centre = rover_wheel_layout(glb, parts)
-        if len(layout) != 6 or sum(w[0].startswith('wheel_l') for w in layout) != 3:
-            layout = None
+    layout, centre = usable_wheel_layout(glb, parts)   # the web's rover split into body + six wheels
     if layout is not None:
         body = web_model_visual('web_model', parts['body'], 'ROVER', glb[1], glb[2], z_shift=-cz, centre=centre)
         s = web_scale('ROVER', glb[1], glb[2])
@@ -1055,6 +1042,10 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
     meta = {'world_name': world_name, 'origin_x_m': ox, 'origin_y_m': oy, 'resolution_m': res,
             'rows': rows, 'cols': cols, 'z_ref_m': z_ref, 'relief_m': span,
             'heightmap_origin_m': [x0, y0], 'heightmap_on_cell_centres': True,
+            # Gazebo ground z at each cell centre (row i = origin_y upwards): lets gz_mirror tell
+            # an airborne drone like the web viewer, without numpy or the heightmap.
+            'ground_z_m': [[round(ground(x0 + j * res, y0 + i * res), 4) for j in range(cols)]
+                           for i in range(rows)],
             'boulders': sum(r['collide'] for r in rocks), 'small_rocks': sum(not r['collide'] for r in rocks),
             'agents': {a: {'model': AGENT_MODELS[k][0],
                            'lift_m': 0.0 if a in physical or k in models else AGENT_MODELS[k][3],

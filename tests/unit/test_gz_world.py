@@ -397,3 +397,14 @@ def test_drone_parts_name_their_own_body(tmp_path):
     assert all((tmp_path / 'w' / name).exists() for name in meta['derived_models'])
     assert [r['direction'] for r in meta['agents']['drone_1']['rotors']] == [1, -1]
 
+
+def test_world_json_ground_matches_the_heightmap_at_cell_centres(world):
+    """gz_mirror's airborne test reads ground_z_m instead of the heightmap (PR #51 review)."""
+    from mge_sim.rotors import ground_at
+    _, meta = world
+    assert len(meta['ground_z_m']) == 32 and all(len(row) == 32 for row in meta['ground_z_m'])
+    ox, oy, res = meta['origin_x_m'], meta['origin_y_m'], meta['resolution_m']
+    for i, j in ((10, 20), (31, 31), (5, 1)):
+        expected = -2570.0 + 0.2 * j + 0.1 * i - meta['z_ref_m']
+        assert meta['ground_z_m'][i][j] == pytest.approx(expected, abs=1e-3)
+        assert ground_at(meta, ox + (j + 0.5) * res, oy + (i + 0.5) * res) == pytest.approx(expected, abs=1e-3)
