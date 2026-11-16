@@ -13,14 +13,7 @@ from rclpy.node import Node
 
 from mge_interfaces.msg import AgentState
 from mge_sim.common import RELIABLE, agent_state_topic
-
-
-def gz_pose(state, meta):
-    """(x, y, z, qx, qy, qz, qw) in the Gazebo world of `meta` (world.json) for an AgentState."""
-    p, q = state.pose.position, state.pose.orientation
-    lift = meta['agents'][state.agent_id]['lift_m']
-    w = q.w if (q.x, q.y, q.z, q.w) != (0.0, 0.0, 0.0, 0.0) else 1.0
-    return (p.x, p.y, p.z - meta['z_ref_m'] + lift, q.x, q.y, q.z, w)
+from mge_sim.gz_control import gz_pose
 
 
 class GzMirror(Node):
@@ -65,10 +58,17 @@ class GzMirror(Node):
 
 def main():
     rclpy.init()
+    node = None
     try:
-        rclpy.spin(GzMirror())
+        node = GzMirror()
+        rclpy.spin(node)
     except KeyboardInterrupt:
         pass
+    finally:
+        if node is not None:
+            node.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == '__main__':

@@ -1040,6 +1040,19 @@ OpenAI Codex assisted the native scientific-cost search integration, typed immut
 
 The executed reports, source fingerprints and real-service JUnit record are retained under `evidence/scientific-cost-integration-20261115`. Their values come from the actual scientific search, explicit legacy control and ROS service calls; AI assisted orchestration, metadata and explanation. Both reports retain blocked operational authorization because numerical consistency does not grant scientific coefficient or mission approval.
 
+## PR49 Gazebo integration corrections — 15 November 2026
+
+OpenAI Codex assisted the corrections registered as
+`pr49_gazebo_integration_corrections` in `docs/ai_usage.json`: physical-rover
+execution guards, measured odometry/stop feedback, coherent scene-sensor
+confirmation, immutable recorded obstacle masks, the opt-in MOCK Gazebo launch,
+regression tests and this handoff. The exact modules and tests are listed in the
+machine-readable declaration. Test scenes and observations are explicitly
+synthetic/SIMULATED; runtime checks are experimental software evidence, not NASA
+measurements, scientific approval or validated LIVE execution. No image, video
+or audio asset was generated in this correction cut. Existing third-party
+attributions, disclosures and required media watermarks remain intact.
+
 ## MOCK budget fallback and obstacle fields — 15 November 2026
 
 Claude (Anthropic) through Claude Code assisted the changes registered as `mock_mission_budget_fallback_and_obstacle_field`. The MOCK mission gains an opt-in `budget_fallback` (off by default): when the goal in force no longer fits the remaining allocation it tries nearer targets on the base-goal line and then the base, without lowering reserves or re-allocating consumed resources. Goals and bases outside the terrain grid are rejected (`OUT_OF_MAP`). `mge_sim.obstacle_field` generates deterministic SIMULATED obstacle fields (a ridge with one gap and seeded rock clusters) that keep a passage from base to goal. The recorder adds an optional `impassable` cell list per map version to the public raster attachment, taken from the mapping's human traversability mask, and the viewer draws those cells as cosmetic rocks with a rust tint; rock sizes and turns are display only. An opt-in `scene_sensor` node reports a declared SIMULATED scene around the agents (a drone on landing, ground agents as they walk), and an opt-in `complete_on_return` closes a MOCK goal once its agent is back at base. Viewer rocks follow the Golombek-Rapp size law with each blocked cell's main rock deliberately enlarged to 1.5 m for readability, styled by the cell's USGS SIM 3464 unit. A Gazebo Harmonic world generator (`gz_world`) and pose mirror (`gz_mirror`) show a run on the public terrain with the scene's rocks; the terrain tint, grain, normal map and rock shapes are cosmetic, and mirrored agents are only shown; a later addition drives one physical rover in Gazebo along the authorized route (heightmap aligned with the planner cell centres, one constant vertical datum offset measured at rest) and draws the web viewer GLB models at their true sizes. Code and tests only; the obstacle fields are synthetic test scenes, never NASA observations, and no run is a validated LIVE mission.

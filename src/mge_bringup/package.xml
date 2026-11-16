@@ -18,6 +18,8 @@
   <exec_depend>mge_planning</exec_depend>
   <exec_depend>mge_mission</exec_depend>
   <exec_depend>mge_gateway</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>rosgraph_msgs</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>

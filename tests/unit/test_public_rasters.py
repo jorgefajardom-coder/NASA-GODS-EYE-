@@ -278,6 +278,53 @@ def test_impassable_layer_rejects_bad_frames_shapes_and_values():
         a.on_impassable(header(5), ROWS, COLS, [50] + [0] * (CELLS - 1))
 
 
+@pytest.mark.parametrize('complete', [False, True])
+def test_impassable_duplicate_cannot_rewrite_a_pending_or_recorded_version(complete):
+    a = PublicRasterAssembler(RUN)
+    a.on_prior(ROWS, COLS, [0.0] * CELLS)
+    a.on_meta(meta(1, 5))
+    if complete:
+        batch(a, 5)
+    a.on_impassable(header(5), ROWS, COLS, [100, 0, 0, 0, 0, 0])
+    with pytest.raises(RasterInputError, match='immutable'):
+        a.on_impassable(header(5), ROWS, COLS, [0, 100, 0, 0, 0, 0])
+    batch(a, 5)
+    assert a.attachment()['versions']['1']['impassable'] == [0]
+
+
+@pytest.mark.parametrize('geometry', [(-2., -2., 2.), (-3., -1., 2.), (-3., -2., 4.),
+                                      (math.nan, -2., 2.), (-3., -2., 0.)])
+def test_impassable_mask_requires_the_recorded_grid_geometry(geometry):
+    a = PublicRasterAssembler(RUN)
+    a.on_meta(meta(1, 5))
+    with pytest.raises(RasterInputError, match='geometry'):
+        a.on_impassable(header(5), ROWS, COLS, [0] * CELLS, geometry=geometry)
+
+
+def test_impassable_geometry_and_shape_are_checked_when_metadata_arrives_late():
+    a = PublicRasterAssembler(RUN)
+    a.on_impassable(header(5), COLS, ROWS, [0] * CELLS)
+    batch(a, 5)
+    with pytest.raises(RasterInputError, match='differs'):
+        a.on_meta(meta(1, 5))
+    b = PublicRasterAssembler(RUN)
+    b.on_impassable(header(5), ROWS, COLS, [0] * CELLS, geometry=(-2., -2., 2.))
+    batch(b, 5)
+    with pytest.raises(RasterInputError, match='geometry'):
+        b.on_meta(meta(1, 5))
+
+
+def test_impassable_late_attachment_remains_bound_to_its_original_stamp():
+    a = PublicRasterAssembler(RUN)
+    a.on_prior(ROWS, COLS, [0.] * CELLS)
+    for version, sec in ((1, 5), (2, 10)):
+        a.on_meta(meta(version, sec))
+        batch(a, sec)
+    a.on_impassable(header(5), ROWS, COLS, [100, 0, 0, 0, 0, 0], geometry=(-3., -2., 2.))
+    assert a.attachment()['versions']['1']['impassable'] == [0]
+    assert 'impassable' not in a.attachment()['versions']['2']
+
+
 def test_oracle_accepts_valid_and_rejects_invalid_impassable_indices():
     manifest, records, snapshot = read_package(FIXTURE)
     attachment = fixture_attachment(manifest, records)

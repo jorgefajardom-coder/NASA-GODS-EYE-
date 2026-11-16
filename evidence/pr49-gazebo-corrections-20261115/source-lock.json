@@ -1,0 +1,118 @@
+{
+  "source_head": "53cef780a35af6027f8af9aa3688d291a8977996",
+  "scope": "corrected runtime/tests/scripts and unchanged selected public inputs; LF hash distinguishes checkout line endings",
+  "files": {
+    "src/mge_sim/mge_sim/gz_control.py": {
+      "working_tree_sha256": "6505ccc9bbe6eefff733695a9e8b07739b683ddf4e065c7f951277634ac291af",
+      "sha256_lf": "6505ccc9bbe6eefff733695a9e8b07739b683ddf4e065c7f951277634ac291af"
+    },
+    "src/mge_sim/mge_sim/gz_rover_driver.py": {
+      "working_tree_sha256": "94d63783d86b0068e16f43d65871302d6963706ed297ee331177adbc9370419f",
+      "sha256_lf": "94d63783d86b0068e16f43d65871302d6963706ed297ee331177adbc9370419f"
+    },
+    "src/mge_sim/mge_sim/gz_mirror.py": {
+      "working_tree_sha256": "70643faf67aabc4d1327d4b54b1db6a23a6cb4b2dd90665ebc06228100afa64d",
+      "sha256_lf": "70643faf67aabc4d1327d4b54b1db6a23a6cb4b2dd90665ebc06228100afa64d"
+    },
+    "src/mge_sim/mge_sim/scene_sensing.py": {
+      "working_tree_sha256": "15d3921131d08b729e96a98e21d939725fc057464a05e70bcafc98113d5198f0",
+      "sha256_lf": "15d3921131d08b729e96a98e21d939725fc057464a05e70bcafc98113d5198f0"
+    },
+    "src/mge_sim/mge_sim/scene_sensor.py": {
+      "working_tree_sha256": "856de94155dd73f42e2846f5f5dbf8db8c41a8b9c0e4095c62f0e6dfb6b9d80c",
+      "sha256_lf": "856de94155dd73f42e2846f5f5dbf8db8c41a8b9c0e4095c62f0e6dfb6b9d80c"
+    },
+    "src/mge_bringup/launch/gazebo_mock.launch.py": {
+      "working_tree_sha256": "2e34cefd2fef25723d186cf73ed746c86a077d7f96494328daf91ac6aabf36a4",
+      "sha256_lf": "2e34cefd2fef25723d186cf73ed746c86a077d7f96494328daf91ac6aabf36a4"
+    },
+    "src/mge_bringup/mge_bringup/gazebo_inputs.py": {
+      "working_tree_sha256": "3259914ba62d176abfd94386e725cdf1e1b4942636d3ac3a2de2cc073ec910e4",
+      "sha256_lf": "3259914ba62d176abfd94386e725cdf1e1b4942636d3ac3a2de2cc073ec910e4"
+    },
+    "src/mge_bringup/package.xml": {
+      "working_tree_sha256": "9759fdbff1e8f8e09a6b92e55e9a992f23dadddd81b04358d146757d59986359",
+      "sha256_lf": "9759fdbff1e8f8e09a6b92e55e9a992f23dadddd81b04358d146757d59986359"
+    },
+    "src/mge_gateway/mge_gateway/public_rasters.py": {
+      "working_tree_sha256": "ddfb508e592f223143befb0016ea3bcb04623e825bbc2d819c5a7d711ca24411",
+      "sha256_lf": "ddfb508e592f223143befb0016ea3bcb04623e825bbc2d819c5a7d711ca24411"
+    },
+    "src/mge_gateway/mge_gateway/recorder.py": {
+      "working_tree_sha256": "545a1fc08416065e3269abcdb2c9e6cb93e7bd3fe2919814d872ee779feceabc",
+      "sha256_lf": "545a1fc08416065e3269abcdb2c9e6cb93e7bd3fe2919814d872ee779feceabc"
+    },
+    "scripts/live_scenarios/gazebo_world.py": {
+      "working_tree_sha256": "1cb72de9bc4e55b03c06c43437858fb237fc662e08078c03247bac19f5fe19e4",
+      "sha256_lf": "1cb72de9bc4e55b03c06c43437858fb237fc662e08078c03247bac19f5fe19e4"
+    },
+    "scripts/live_scenarios/rover_gz_run.py": {
+      "working_tree_sha256": "360e4979c4c0f5dc664f3d5ef085b44065aa8d06131e50b807413f4888fca9ab",
+      "sha256_lf": "360e4979c4c0f5dc664f3d5ef085b44065aa8d06131e50b807413f4888fca9ab"
+    },
+    "tests/unit/test_gz_world.py": {
+      "working_tree_sha256": "00305c5c7d0649c770174a584e3091f8a418bd7559a994e1080bbed398cbef1b",
+      "sha256_lf": "00305c5c7d0649c770174a584e3091f8a418bd7559a994e1080bbed398cbef1b"
+    },
+    "tests/unit/test_gz_driver.py": {
+      "working_tree_sha256": "94c9bd396b3dfd85c10aa852c8c84e0981cda6e3e710214b16e9276f7d00b055",
+      "sha256_lf": "94c9bd396b3dfd85c10aa852c8c84e0981cda6e3e710214b16e9276f7d00b055"
+    },
+    "tests/unit/test_gz_driver_ros.py": {
+      "working_tree_sha256": "9dfd216b567a6754af925b3aa4bce1d898edb425ed35a4650e50570d58a35c62",
+      "sha256_lf": "9dfd216b567a6754af925b3aa4bce1d898edb425ed35a4650e50570d58a35c62"
+    },
+    "tests/unit/test_scene_sensing.py": {
+      "working_tree_sha256": "2b3bb4b58de2991108c43d92581baccc21939467ab6a628df3fc03b57b7343e2",
+      "sha256_lf": "2b3bb4b58de2991108c43d92581baccc21939467ab6a628df3fc03b57b7343e2"
+    },
+    "tests/unit/test_scene_sensor_consumer.py": {
+      "working_tree_sha256": "543183df69fc02b7a0057e0001fd1e4afdda9ed52249c88f88a2fb4a32001ab5",
+      "sha256_lf": "543183df69fc02b7a0057e0001fd1e4afdda9ed52249c88f88a2fb4a32001ab5"
+    },
+    "tests/unit/test_gazebo_inputs.py": {
+      "working_tree_sha256": "51755b071237f90040494c9b3506ab872c6e898adb2844aaa1aa99b945dc22d0",
+      "sha256_lf": "51755b071237f90040494c9b3506ab872c6e898adb2844aaa1aa99b945dc22d0"
+    },
+    "tests/unit/test_public_rasters.py": {
+      "working_tree_sha256": "48f9804f6a49a205d6e3f7ea05574ec060c4cfc6b870269762647e002a5b3c43",
+      "sha256_lf": "48f9804f6a49a205d6e3f7ea05574ec060c4cfc6b870269762647e002a5b3c43"
+    },
+    "tests/contract/test_scene_sensor.py": {
+      "working_tree_sha256": "6801bc1e4d92be59e1559a61195edea816cfc141bad83928f25bf4eb4fad6bbc",
+      "sha256_lf": "6801bc1e4d92be59e1559a61195edea816cfc141bad83928f25bf4eb4fad6bbc"
+    },
+    "tests/contract/test_gazebo_launch.py": {
+      "working_tree_sha256": "600726d8a9ab7eba1f9bb9c4b45cdcf626f42e79e29e5a2b473fd26de724392e",
+      "sha256_lf": "600726d8a9ab7eba1f9bb9c4b45cdcf626f42e79e29e5a2b473fd26de724392e"
+    },
+    "tests/contract/test_recorder_impassable_geometry.py": {
+      "working_tree_sha256": "cda736b544e7f70131cfdded6dcc7c448ed6ca8ae62b2844631b2073e627db2b",
+      "sha256_lf": "cda736b544e7f70131cfdded6dcc7c448ed6ca8ae62b2844631b2073e627db2b"
+    },
+    "config/planner_profiles.illustrative.json": {
+      "working_tree_sha256": "f856b8d77507e82745c15189aadc097c185686a27282b9901c77132c6a65721d",
+      "sha256_lf": "f856b8d77507e82745c15189aadc097c185686a27282b9901c77132c6a65721d"
+    },
+    "config/exploration_policy.illustrative.json": {
+      "working_tree_sha256": "a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd",
+      "sha256_lf": "a4782be2125e476a00f5771f15d804beafb2a458b6bfc9b046248eaf2a9543bd"
+    },
+    "src/mge_bringup/config/agents_jezero.yaml": {
+      "working_tree_sha256": "cb626fa22bef610b9f7cb7b8926d6878d80cdb3d962ba610320495f1d53302dd",
+      "sha256_lf": "cb626fa22bef610b9f7cb7b8926d6878d80cdb3d962ba610320495f1d53302dd"
+    },
+    "data/sample/manifest.json": {
+      "working_tree_sha256": "f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1",
+      "sha256_lf": "f45bec0f543dc419fe92398c73fe418e7ec0b41f6ad96b6415b592eeba1ea3f1"
+    },
+    "data/sample/terrain.npz": {
+      "working_tree_sha256": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91",
+      "sha256_lf": "ab2e9c916e23d96c25f343213249eb906ca2685ff977006915f09883fe226d91"
+    },
+    "data/sample/jezero_aux_layers.npz": {
+      "working_tree_sha256": "c0030fac48aa1519d4497df83f8fa99876b7c6e1b4ce517ee6cd7c699bde3c2a",
+      "sha256_lf": "c0030fac48aa1519d4497df83f8fa99876b7c6e1b4ce517ee6cd7c699bde3c2a"
+    }
+  }
+}

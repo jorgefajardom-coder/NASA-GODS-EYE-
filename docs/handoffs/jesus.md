@@ -1,5 +1,68 @@
 # Jesus - integrate providers through the canonical interfaces
 
+## PR49 experimental Gazebo correction cut — 15 November 2026
+
+Owner-requested corrections are prepared over PR49 source
+`53cef780a35af6027f8af9aa3688d291a8977996`; inspected main is
+`f5116685077d6c95f96bfab3a6b31d6a71ea6e5d`. The initial diagnosis and native
+validation over `afb25b9` are historical; the correction was reconciled with
+Jorge's concurrent world/model/datum work and the published PR50 migration.
+This cut changes no ROS message/service,
+unit, enum, canonical JSON/replay 1.0.0 or `mge-public-rasters-1.0.0` version.
+Interface package remains 2.0.0 and baseline review 2.0.0-rc.1, not frozen.
+The nine definitions include RegisterPlanningContext. Keep the author's history and use
+the reviewed PR path. No owner-PR merge or deployment is authorized by this cut.
+
+- **Inputs/outputs:** source-stamped Gazebo odometry, authoritative MissionState
+  and matching Path produce measured AgentState and brake/follow commands.
+  The existing public stamped batch confirms SIMULATED sensor footprints;
+  metadata advancement alone confirms nothing. Recorder masks retain exact
+  version/stamp and validated grid geometry. No evaluator reference is consumed.
+- **Changes:** current finite XYZ and immutable route context, full measured
+  orientation/twist, a steady-clock watchdog and a measured stop window replace
+  stale-data reuse and frozen poses. Scene reports are serialized, rejected or
+  expired acquisitions remain unconfirmed, and new reports require fresh pose
+  acquisition. Pure helpers remain testable without ROS. The opt-in
+  `gazebo_mock.launch.py` binds one physical rover, kinematic companions, an
+  advancing bridged clock and the existing MOCK mission, without sending goals.
+  The MOCK caller uses legacy planning only with explicit
+  `allow_legacy_cost_model:=true`; this does not impersonate the scientific
+  registered-context producer accepted in D-COST-03. Jorge's datum comparison
+  remains diagnostic; authoritative height is not projected onto the DEM.
+- **Reproduction:** use the [scenario guide](../../scripts/live_scenarios/README.md)
+  with ROS 2 Jazzy/Ubuntu 24.04 and Gazebo Harmonic. Run `python -m pytest`,
+  `python scripts/check_repository.py`, web `npm test`/`npm run build`,
+  `colcon build --symlink-install`, all nine `ros2 interface show` commands,
+  ROS contract/consumer tests and the explicit Gazebo runtime smoke. Final
+  command outcomes, source/configuration hashes and limits are retained in the
+  correction evidence; successful builds alone do not close mission acceptance.
+- **Outcomes:** native Python 1,478 passed / 32 skipped; web 421 passed /
+  1 skipped and build passed. Jazzy built eight packages and inspected six
+  messages plus three services. Contract/adaptor checks passed 274 cases;
+  the final sensor overlay passed four cases; integration passed 52 cases.
+  The actual Gazebo wrapper had one clock publisher and one state publisher
+  per agent, no fabricated pause telemetry, resumed measured telemetry and
+  a valid closed recorder package. No goal was sent by that smoke. The later
+  historical scenario CLI adaptation was statically checked, not executed as
+  a complete sortie. See [validation](../../evidence/pr49-gazebo-corrections-20261115/validation.json),
+  [source lock](../../evidence/pr49-gazebo-corrections-20261115/source-lock.json)
+  and [runtime observations](../../evidence/pr49-gazebo-corrections-20261115/wrapper-smoke.json).
+- **Limits/next:** the connected web panel remains read-only status; obstacle
+  geometry is consumed from a recorded package. Scene lookup is not Gazebo
+  camera/LiDAR perception. Historical drone sightings keep their acquisition
+  context; landing samples only the current footprint. Full drone survey,
+  scientific coefficient approval, three-role mission completion and the exact-run
+  stop/replan/reauthorize/closed-replay chain still require owner-reviewed evidence.
+  Jesus reviews integration; David reviews physical/scientific thresholds,
+  resources and success criteria. No validated LIVE or submission readiness is claimed.
+  RouteDecision reserve fields are estimated residuals, not the requested
+  minimum reserves. Runtime enforcement of requested mission reserves requires
+  the proper mission/context consumer; the driver does not redefine those fields.
+- **Delivery coordination:** JES-07/AC-10 organizer notification and explicit
+  endorsement of the final submission revision remain required while evidence
+  is missing. Jesus coordinates, David backs up; preserve at least four hours of
+  review margin or the organizer's longer requested lead time. Do not infer approval.
+
 Future guide: [science extension tree](../science_extension_tree.md). Jesus
 leads G2, C2/C3 and F2/F3 proposals and reviews integration evidence. Maintain
 D-DEL-03 and verified parent gates. New unlisted ideas may be assessed in an

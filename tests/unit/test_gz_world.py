@@ -87,7 +87,7 @@ def test_boulder_mesh_is_a_closed_triangle_mesh():
 
 
 def test_mirror_pose_uses_the_world_frame():
-    from mge_sim.gz_mirror import gz_pose
+    from mge_sim.gz_control import gz_pose
     meta = {'z_ref_m': -2570.0, 'agents': {'human_1': {'lift_m': 0.95}}}
     state = NS(agent_id='human_1', pose=NS(position=NS(x=1.0, y=2.0, z=-2568.0),
                                           orientation=NS(x=0.0, y=0.0, z=0.0, w=0.0)))
@@ -113,7 +113,7 @@ def test_physical_rover_has_six_driven_wheels_and_ground_truth_odometry(tmp_path
 
 
 def test_pure_pursuit_turns_first_then_drives_and_stops_at_the_end():
-    from mge_sim.gz_rover_driver import pursuit
+    from mge_sim.gz_control import pursuit
     points = [(0.0, 0.0), (10.0, 0.0), (10.0, 10.0)]
     v, w, i, done = pursuit((0.0, 0.0), math.pi, points, 0, 0.65)       # facing backwards
     assert v == 0.0 and abs(w) > 0 and not done                         # turn in place
@@ -143,13 +143,15 @@ def test_world_heightmap_is_placed_on_the_cell_centres(world):
     assert pos.split()[:2] == ['2.0', '2.0']                      # lattice spans -62 .. 66 m
 
 
-def test_datum_offset_is_measured_once_and_bounded():
-    from mge_sim.gz_rover_driver import MAX_DATUM_OFFSET_M, datum_offset, map_height
+def test_datum_offset_diagnostic_is_bounded():
+    from mge_sim.gz_control import MAX_DATUM_OFFSET_M, datum_offset, map_height
     prior = [[0.0, 4.0], [8.0, 12.0]]
     assert map_height(prior, (0.0, 0.0), 4.0, 2.0, 2.0) == pytest.approx(0.0)
     assert map_height(prior, (0.0, 0.0), 4.0, 4.0, 4.0) == pytest.approx(6.0)
     assert datum_offset(-2571.3296, -2571.4120) == pytest.approx(0.0824)
     assert datum_offset(0.0, -MAX_DATUM_OFFSET_M - 0.01) is None
+    assert datum_offset(math.nan, 0.0) is None
+    assert datum_offset(0.0, math.inf) is None
 
 
 def tiny_glb(path, lo, hi, translation=(0.0, 0.0, 0.0), scale=(1.0, 1.0, 1.0)):

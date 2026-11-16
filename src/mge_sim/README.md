@@ -55,6 +55,27 @@ maintainer contact is a placeholder and repository/asset licensing needs review.
 - `obstacle_field.py`: seeded obstacle scenes (ridge with one gap and rock clusters) that always keep a passage.
 - MOCK mission opt-ins: `budget_fallback` (nearer targets, then base) and `complete_on_return`; goals off the terrain grid are rejected (`OUT_OF_MAP`).
 - `gz_world.py` heightmap: its vertices sit on the planner's cell centres with the planner's heights (linear in between), so Gazebo's ground matches the planner's terrain model.
-- `gz_rover_driver` node (with `external_agents:=rover_1` and `completion_tolerance_m:=1.0`): a six-wheel DiffDrive rover driven by the Gazebo physics along the authorized route (pure pursuit), publishing its AgentState from ground-truth odometry. Its reported z is the physics z plus one constant vertical datum offset measured at rest after spawning (wheel-ground contact; about +8 cm in the 15-Nov run); the map never replaces the physics z. Resources are illustrative MOCK accounting.
+- `gz_rover_driver` node (with `external_agents:=rover_1` and `completion_tolerance_m:=1.0`): a six-wheel DiffDrive rover driven by Gazebo physics along the authorized route, publishing measured AgentState. The contributed one-time DEM/datum comparison remains available as a diagnostic; it does not shift authoritative telemetry to make a route admissible. Reported Z uses physics Z plus the declared world reference. Resources are illustrative MOCK accounting.
 - With `web/public/assets/models`, the world draws the web viewer's GLB models (astronaut, rover, drone, habitat) at the web's true sizes; the rover's collision shapes stay simple and invisible.
-- `gz_world.py` + `gz_mirror` node: a Gazebo Harmonic view of a run (public terrain, scene rocks with collision, Mars gravity; agents mirrored from ROS by `set_pose`). Mirrored agents only show the run; a physical rover (`gz_rover_driver`) is driven by Gazebo. Gazebo still provides no `/clock` and this is not the `simulation` launch profile.
+- `gz_world.py` + `gz_mirror` node: a Gazebo Harmonic view of a run (public terrain, scene rocks with collision, Mars gravity; agents mirrored from ROS by `set_pose`). Mirrored agents only show the run; a physical rover (`gz_rover_driver`) is driven by Gazebo. The opt-in wrapper below bridges Gazebo's clock; this is not the approved `simulation` profile.
+
+## Experimental Gazebo correction cut (15 November 2026)
+
+The opt-in `gazebo_mock.launch.py` recipe in
+[the scenario guide](../../scripts/live_scenarios/README.md) connects one physical
+rover to the existing MOCK mission. Gazebo supplies physics and an explicitly
+bridged clock; the other agents remain kinematic display/execution stand-ins.
+This does not replace the reviewed `simulation` profile or approve a real mission.
+
+The physical driver preserves the odometry acquisition timestamp, orientation
+and six velocity axes. A steady-clock watchdog brakes on missing data, including
+simulator pause. HALTED requires advancing stationary samples with a stable pose;
+the driver never freezes a physical pose or invents a fresh stop acknowledgement.
+Routes must preserve current finite XYZ and immutable run/map/route context.
+
+The declared scene sensor serializes reports and confirms only matching public
+map evidence. Expired reports require fresh acquisition. Drone sightings retain
+their original context; the footprint sampled at landing is the current footprint,
+not the union of an earlier flight relabelled with a new timestamp. Full survey
+history, three-role mission acceptance and Gazebo camera/LiDAR perception remain
+separate work. ROS, replay and raster versions are unchanged.

@@ -4,7 +4,7 @@ import json
 import pytest
 
 from mge_sim.scene_sensing import (
-    SCENE_SCHEMA, Scene, SensorLedger, footprint, observation_values, scene_from_file,
+    SCENE_SCHEMA, Scene, SensorFeedback, SensorLedger, footprint, observation_values, scene_from_file,
 )
 
 GRID = (8, 8, 0.0, 0.0, 4.0)
@@ -35,16 +35,30 @@ def test_moving_agents_report_only_when_a_new_obstacle_is_in_view():
     assert ledger.select(s, [0, 1, 8], moving=False) == [0, 1, 8]
 
 
-def test_reports_count_once_the_map_advances_and_are_resent_otherwise():
+def feedback(s, cells, version=3, stamp=13_000_000_000):
+    observed, mask = [0] * 64, [-1] * 64
+    sigma = [2.5] * 64
+    for c in cells:
+        observed[c], mask[c], sigma[c] = 1, 100 if c in s.blocked else 0, 0.25
+    return SensorFeedback(version, stamp, s.heights, tuple(sigma), tuple(observed), tuple(mask))
+
+
+def sent(ledger, s, rid, cells, version, now):
+    ledger.sent(rid, cells, version, now, acquired_ns=round(now * 1e9),
+                values=observation_values(s, cells, 0.25))
+
+
+def test_reports_need_matching_public_evidence_and_expired_reports_require_reacquisition():
     s, ledger = scene(blocked={9}), SensorLedger(resend_s=3.0)
-    ledger.sent('r1', [8, 9], base_version=2, now_s=10.0)
+    sent(ledger, s, 'r1', [8, 9], 2, 10.0)
     assert ledger.select(s, [8, 9], moving=False) == []        # in flight
-    ledger.confirm(2)
+    ledger.confirm(feedback(s, [], version=3))                # unrelated map advance is not ACK
     assert 'r1' in ledger.pending
     ledger.expire(13.0)
-    assert ledger.select(s, [8, 9], moving=True) == [8, 9]     # lost: sent again
-    ledger.sent('r2', [8, 9], base_version=2, now_s=13.0)
-    ledger.confirm(3)
+    assert 'r1' in ledger.unconfirmed and ledger.reported == set()
+    assert ledger.select(s, [8, 9], moving=True) == [8, 9]     # needs new acquisition
+    sent(ledger, s, 'r2', [8, 9], 3, 13.0)
+    ledger.confirm(feedback(s, [8, 9], version=4))
     assert ledger.reported == {8, 9} and not ledger.pending
     assert ledger.select(s, [8, 9], moving=False) == []
 
@@ -66,21 +80,25 @@ def test_scene_file_must_be_simulated_and_match_the_grid(tmp_path):
             scene_from_file(path, GRID, [0.0] * 64)
 
 
-def test_a_deferring_drone_remembers_its_flight_and_reports_on_landing():
+def test_deferred_flight_history_keeps_original_context_and_is_not_relabelled_on_landing():
     s, ledger = scene(blocked={9}), SensorLedger(defer=frozenset({'drone_1'}))
-    for cells in ([0, 1], [8, 9], [10]):
-        view, moving = ledger.view('drone_1', cells, moving=True)
+    for tick, cells in enumerate(([0, 1], [8, 9], [10]), 10):
+        view, moving = ledger.view('drone_1', cells, moving=True, acquired_ns=tick * 1_000_000_000,
+                                   base_version=2)
         assert ledger.select(s, view, moving) == []            # never interrupts the flight
-    view, moving = ledger.view('drone_1', [2], moving=False)
-    assert ledger.select(s, view, moving) == [0, 1, 2, 8, 9, 10]
+    view, moving = ledger.view('drone_1', [2], moving=False, acquired_ns=20_000_000_000, base_version=3)
+    assert ledger.select(s, view, moving) == [2]               # only actual landing footprint
+    assert ledger.seen['drone_1'][9] == (11_000_000_000, 2)
+    assert ledger.seen['drone_1'][2] == (20_000_000_000, 3)
     assert ledger.view('human_1', [9], True) == ([9], True)    # ground agents report hazards at once
 
 
-def test_a_lost_deferred_report_is_sent_again():
+def test_expired_deferred_report_requires_return_to_its_footprint():
     s, ledger = scene(), SensorLedger(resend_s=1.0, defer=frozenset({'drone_1'}))
-    ledger.view('drone_1', [0, 1], moving=True)
-    view, moving = ledger.view('drone_1', [2], moving=False)
-    ledger.sent('r1', ledger.select(s, view, moving), base_version=3, now_s=0.0)
+    ledger.view('drone_1', [0, 1], moving=True, acquired_ns=1, base_version=3)
+    view, moving = ledger.view('drone_1', [2], moving=False, acquired_ns=2, base_version=3)
+    sent(ledger, s, 'r1', ledger.select(s, view, moving), 3, 0.0)
     ledger.expire(1.0)                                          # the map never advanced
-    view, moving = ledger.view('drone_1', [], moving=False)
-    assert ledger.select(s, view, moving) == [0, 1, 2]
+    view, moving = ledger.view('drone_1', [], moving=False, acquired_ns=1_000_000_000, base_version=3)
+    assert ledger.select(s, view, moving) == []                 # no replay of old sightings
+    assert 'r1' in ledger.unconfirmed

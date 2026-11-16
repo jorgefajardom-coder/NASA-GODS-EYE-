@@ -113,6 +113,10 @@ convertible; no flat terrain is synthesized. The attachment holds:
   traversability mask of the same batch marks forbidden (100), i.e. observed
   obstacles or slopes beyond the human limit. Its absence says nothing about
   obstacles; it is a planner-model mask, not certified physical safety.
+  Its first attachment may arrive after the required layers. Repeated masks
+  with the same stamp/version must be identical; a conflicting repetition is
+  rejected without changing recorded history. OccupancyGrid origin, resolution,
+  orientation, shape and frame must match the recorded map grid.
 
 This is the compatibility export attachment representation, not a new ROS
 raster format or replacement dataset manifest. Dataset provenance, hashes,

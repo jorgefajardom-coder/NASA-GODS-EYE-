@@ -76,7 +76,7 @@ class PublicRasterAssembler:
         self.versions = {}          # str(map version) -> complete layers
         self.pending = {}           # stamp -> {layer: raw values}
         self.done = set()           # stamps of completed versions
-        self.impassable = {}        # stamp -> impassable cell indices (optional layer)
+        self.impassable = {}        # stamp -> (rows, cols, cells, geometry), optional
 
     def _geometry(self):
         return {k: self.meta[k] for k in GEOMETRY}
@@ -148,7 +148,20 @@ class PublicRasterAssembler:
             del self.pending[min(self.pending)]
         return self._complete()
 
-    def on_impassable(self, header, rows, cols, values):
+    def _check_mask_geometry(self, geometry):
+        if geometry is None:
+            return
+        if (len(geometry) != 3 or any(not math.isfinite(v) for v in geometry)
+                or geometry[2] <= 0):
+            raise RasterInputError('impassable: invalid occupancy grid geometry')
+        if self.meta is not None:
+            expected = (self.meta['origin_x_m'], self.meta['origin_y_m'],
+                        self.meta['resolution_m'])
+            if any(not math.isclose(a, b, rel_tol=1e-6, abs_tol=1e-6)
+                   for a, b in zip(geometry, expected)):
+                raise RasterInputError('impassable: occupancy geometry differs from metadata')
+
+    def on_impassable(self, header, rows, cols, values, *, geometry=None):
         """Human traversability of one batch (OccupancyGrid values, row-major).
 
         Optional: attached to its version whether it arrives before or after the
@@ -157,16 +170,22 @@ class PublicRasterAssembler:
         if header.get('frame_id') != 'map':
             raise RasterInputError(f'impassable: frame {header.get("frame_id")!r} is not map')
         self._check_shape(rows, cols, len(values), 'impassable')
+        self._check_mask_geometry(geometry)
         stamp = _stamp(header)
         cells = impassable_cells(values)
         for version, known in self.stamps.items():
             layers = self.versions.get(str(version))
             if known == stamp and layers is not None:
-                if layers.get('impassable') == cells:
+                if 'impassable' in layers:
+                    if layers['impassable'] != cells:
+                        raise RasterInputError('impassable: immutable map version changed')
                     return False
                 layers['impassable'] = cells
                 return self.ready()
-        self.impassable[stamp] = cells
+        incoming = (rows, cols, cells, tuple(geometry) if geometry is not None else None)
+        if stamp in self.impassable and self.impassable[stamp] != incoming:
+            raise RasterInputError('impassable: immutable pending batch changed')
+        self.impassable[stamp] = incoming
         while len(self.impassable) > MAX_PENDING_STAMPS:
             del self.impassable[min(self.impassable)]
         return False
@@ -180,13 +199,18 @@ class PublicRasterAssembler:
             nodata = self.meta['nodata_value']
             for layer, (rows, cols, values) in layers.items():
                 self._check_shape(rows, cols, len(values), layer)
+            mask = self.impassable.get(stamp)
+            if mask is not None:
+                mask_rows, mask_cols, cells, geometry = mask
+                self._check_shape(mask_rows, mask_cols, len(layers['belief'][2]), 'impassable')
+                self._check_mask_geometry(geometry)
             self.versions[str(version)] = {
                 'belief': height_cells(layers['belief'][2], nodata, 'belief'),
                 'sigma': height_cells(layers['sigma'][2], nodata, 'sigma'),
                 'observed': observed_cells(layers['observed'][2]),
             }
             if stamp in self.impassable:
-                self.versions[str(version)]['impassable'] = self.impassable.pop(stamp)
+                self.versions[str(version)]['impassable'] = self.impassable.pop(stamp)[2]
             del self.pending[stamp]
             self.done.add(stamp)
             changed = True
