@@ -1060,3 +1060,7 @@ Claude (Anthropic) through Claude Code assisted the changes registered as `mock_
 ## Owner-supplied slower Wiki animation — 15 November 2026
 
 OpenAI Codex assisted copying and verifying the owner-supplied slower `docs/wiki/assets/prior-observation.gif`, with no image edits. The three displayed stages total 7.5 seconds instead of 4.2 seconds. The existing visible `AI-generated | Conceptual simulation` watermark is preserved. The current asset manifest and `docs/wiki/audit/slower-prior-observation-20261115.json` record the new hash and timing; historical publication/editorial seals retain their original dated scope. No scientific results or technical implementation changed.
+
+## Simulation time source (D-CLK-01) — 15 November 2026
+
+Claude (Anthropic) through Claude Code assisted the change registered as `simulation_time_source_contract` in `docs/ai_usage.json`: the `vertical_mock.launch.py` preflight that now requires exactly one external, advancing `/clock` whenever `use_sim_time:=true` (MOCK or real mission), its contract tests, the ICD section 2 clarification and the D-CLK-01 decision record. No ROS message, service, unit, enum, replay or raster version changes. No data, image, video or audio was generated, and no run is claimed as LIVE or physically validated. Existing declarations, attributions and watermarks are unchanged.

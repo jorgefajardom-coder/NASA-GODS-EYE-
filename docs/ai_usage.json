@@ -2139,6 +2139,24 @@
         "docs/ai_usage.json"
       ],
       "use": "Copy owner-supplied slower GIF without image edits; inspect timing and visible existing AI watermark; update current asset hash and replacement provenance. No new scientific data, generated image or technical changes. Historical publication seals remain unchanged."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "simulation_time_source_contract",
+      "source_revision": "a2efc2e",
+      "generation": "AI-assisted launch preflight code, contract tests and contract documentation; no data, media or measured results generated",
+      "paths": [
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "tests/contract/test_mission_launch.py",
+        "docs/ICD.md",
+        "docs/decisions/2026-11-15-simulation-time-source.md",
+        "README.md",
+        "docs/handoffs/jesus.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "human_review": "pending integration owner (Jesus); display review Jorge; resource-time semantics David",
+      "use": "Require exactly one external, advancing /clock before any provider starts whenever use_sim_time:=true (MOCK or real mission); record D-CLK-01 and clarify ICD section 2. No interface, unit, enum, replay or raster version changes; no data or media generated."
     }
   ],
   "generated_media": [

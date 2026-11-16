@@ -683,7 +683,7 @@ Launch arguments of `vertical_mock.launch.py`:
 | `agents` | `static` | `kinematic` runs the MOCK kinematic executor |
 | `agents_file` | per terrain | Agent positions and budgets (illustrative) |
 | `record`, `record_dir` | `false`, `evidence` | Write a replay package to `<record_dir>/<run_id>` |
-| `host`, `port`, `use_sim_time` | `127.0.0.1`, `8000`, `false` | Gateway binding and clock |
+| `host`, `port`, `use_sim_time` | `127.0.0.1`, `8000`, `false` | Gateway binding and clock; `use_sim_time:=true` requires exactly one external, advancing `/clock` before nodes start ([D-CLK-01](docs/decisions/2026-11-15-simulation-time-source.md)) |
 | `cors_origins` | `['http://localhost:5173', 'http://127.0.0.1:5173']` | Browser origins the gateway answers (YAML list), for example the viewer's dev server or a published site |
 
 Mission-provider arguments (`mission_profiles_path`, `mission_path`,
