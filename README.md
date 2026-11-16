@@ -28,6 +28,8 @@ map.
    with the resources they have left.
 4. Record every decision and replay it in a web browser, with no server.
 
+**Demo video.** [Mars God's Eye — NASA Space Apps Challenge 2026 (YouTube)](https://www.youtube.com/watch?v=c2VRwuGgy84)
+
 **See it.** [Watch the same-run software recovery (21 s)](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/media/height-recovery-002.mp4)
 ([English subtitles](web/public/media/height-recovery-002.en.srt)).
 [Explore the six illustrative zones](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/),
@@ -191,6 +193,7 @@ mission evidence. Final English video/project-page links and acceptance remain
 tracked in the [delivery closure plan](docs/delivery_closure_plan.md) and
 [submission checklist](docs/competition.md).
 
+- **Demo video (YouTube):** <https://www.youtube.com/watch?v=c2VRwuGgy84>
 - **Web viewer (public preview):** <https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/>
   — static build of `main`, published automatically on the `gh-pages` branch by
   `.github/workflows/pages.yml` on every push to `main` that touches the viewer (each publish
