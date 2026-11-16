@@ -85,7 +85,16 @@ field names and types; this document records the conventions around them.
 
 ## 2. Time and identifiers
 
-- `/clock` from Gazebo when it runs, with `use_sim_time=true`. Mission headers use simulated time when a simulator is active. The separate
+- `/clock` from Gazebo when it runs, with `use_sim_time=true`. Mission headers use simulated time when a simulator is active.
+  Per [D-CLK-01](decisions/2026-11-15-simulation-time-source.md), a run has exactly one
+  time base: either every MGE node uses `use_sim_time=true` against exactly one
+  external, advancing `/clock` (Gazebo's, bridged unidirectionally), or the whole
+  run is a wall-clock MOCK run recorded as `clock_source: system`. Launches fail
+  `NOT_READY` (no or frozen clock) or `PROVIDER_COLLISION` (two clocks) before
+  any provider starts; no node fabricates a clock. Mission time, ETAs and
+  `time_remaining_s` debit follow that base. Steady-clock timers (stop/brake watchdog,
+  odometry freshness, mirror throttling, mission polling) are deliberate liveness exceptions and never
+  stamp messages or debit resources. Pausing Gazebo pauses mission time. The separate
   static MOCK smoke publisher uses wall time by default only for graph inspection;
   its timestamps are not mission ETA or evidence of simulated dynamics.
 - `run_id`: stable string per execution. Data from another run is dropped.

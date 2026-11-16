@@ -317,3 +317,21 @@ ICD-ROS2-V1 / package 1.0.0, JSON/replay 1.0.0, baseline review 1.0.0-rc.1.
   for the ICD section 7 acknowledgement wording; real mission once David and
   Diego agree the model; M04/M05 runs with David. JES-07 organizer endorsement
   remains undocumented.
+
+## D-CLK-01 simulation time source cut — 15 November 2026
+
+Source branch `fix/sim-time-clock-contract` over main `a2efc2e` (local, not pushed).
+Jorge flagged that switching the stack to Gazebo simulated time is an integration
+contract decision. PR49 already bridges Gazebo `/clock` and passes
+`use_sim_time=true` to every node in `gazebo_mock.launch.py`; this cut records the
+rule in [D-CLK-01](../decisions/2026-11-15-simulation-time-source.md) and ICD
+section 2, and closes the remaining gap: `vertical_mock.launch.py` with
+`use_sim_time:=true` and the MOCK mission no longer starts without exactly one
+advancing `/clock` publisher. No ROS message/service, unit, enum, interface
+package, replay 1.0.0 or public-raster version changes.
+
+- **Pending:** Jorge confirms viewer display of a `clock_source: sim` package;
+  David reviews resource-time semantics under a paused/slow Gazebo clock. Whether
+  non-Gazebo MOCK runs also move to simulated time stays open.
+- **Delivery coordination:** JES-07/AC-10 organizer notification and explicit
+  endorsement remain required while evidence is missing; silence is not approval.
