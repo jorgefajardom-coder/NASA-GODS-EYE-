@@ -33,7 +33,6 @@ import struct
 import zlib
 
 import numpy as np
-from scipy import ndimage
 
 LOG =logging.getLogger(__name__)
 
@@ -80,10 +79,40 @@ def centre_lattice(grid, n, order=1):
     between, no overshoot). Points beyond the last centre repeat the edge cells."""
     rows, cols = grid.shape
     t = np.linspace(0.0, 1.0, n)
-    yy = (1.0 - t)[:, None] * rows                # north first
-    xx = t[None, :] * cols
-    coords = np.array([np.broadcast_to(yy, (n, n)), np.broadcast_to(xx, (n, n))])
-    return ndimage.map_coordinates(grid, coords, order=order, mode='nearest')
+    return resample(grid, (1.0 - t) * rows, t * cols, order=order)     # north first
+
+
+def _axis_weights(coords, size, order, wrap):
+    """(len(coords) x size) interpolation weights along one axis at fractional indices `coords`:
+    order 1 = linear, order 3 = cubic convolution (Catmull-Rom). Out-of-range taps clamp to the
+    edge ('nearest') or wrap around (wrap=True)."""
+    c = np.asarray(coords, dtype=float)
+    if not wrap:
+        c = np.clip(c, 0.0, size - 1.0)
+    i0 = np.floor(c).astype(np.int64)
+    u = c - i0
+    if order == 1:
+        taps, w = (0, 1), (1.0 - u, u)
+    elif order == 3:
+        u2, u3 = u * u, u * u * u
+        taps = (-1, 0, 1, 2)
+        w = (-0.5 * u3 + u2 - 0.5 * u, 1.5 * u3 - 2.5 * u2 + 1.0, -1.5 * u3 + 2.0 * u2 + 0.5 * u, 0.5 * u3 - 0.5 * u2)
+    else:
+        raise ValueError('order must be 1 or 3')
+    out = np.zeros((len(c), size))
+    rows = np.arange(len(c))
+    for d, wk in zip(taps, w):
+        j = np.mod(i0 + d, size) if wrap else np.clip(i0 + d, 0, size - 1)
+        np.add.at(out, (rows, j), wk)
+    return out
+
+
+def resample(a, ys, xs, order=1, wrap=False):
+    """2-D array `a` sampled on the grid of fractional row indices `ys` x column indices `xs`
+    (separable linear or cubic interpolation, pure numpy). Integer indices return the exact
+    samples; order=1 never overshoots."""
+    a = np.asarray(a, dtype=float)
+    return _axis_weights(ys, a.shape[0], order, wrap) @ a @ _axis_weights(xs, a.shape[1], order, wrap).T
 
 
 def fractal_noise(n, seed, octaves=6, base=8):
@@ -93,7 +122,8 @@ def fractal_noise(n, seed, octaves=6, base=8):
     for o in range(octaves):
         cells = base * 2 ** o
         coarse = rng.random((cells + 1, cells + 1))
-        total += amp * ndimage.zoom(coarse, n / (cells + 1), order=3, mode='wrap')[:n, :n]
+        at = np.linspace(0.0, cells, n)            # the coarse lattice stretched over n samples
+        total += amp * resample(coarse, at, at, order=3, wrap=True)
         norm += amp
         amp *= 0.55
     total /= norm
@@ -1052,7 +1082,7 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
     def ground(x, y):
         j = (x - x0) / width * (HEIGHTMAP_SIZE - 1)
         i = (1 - (y - y0) / height) * (HEIGHTMAP_SIZE - 1)
-        return float(ndimage.map_coordinates(verts, [[i], [j]], order=1, mode='nearest')[0]) - z_ref
+        return float(resample(verts, [i], [j], order=1)[0, 0]) - z_ref
 
     terrain = (f'<heightmap><texture><diffuse>albedo.png</diffuse><normal>normal.png</normal>'
                f'<size>{width}</size></texture><uri>heightmap.png</uri>'
