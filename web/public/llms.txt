@@ -8,7 +8,7 @@ Mission playback is a REPLAY of simulated data, not a live mission. The public o
 
 - Recorded entries (recorded-recovery-001 and -002): public CTX prior and recorded belief/sigma/observed versions on a 32x32 grid at 4 m, 128 m across, with 20 m native CTX source spacing and separate MGS/MOLA regional context. Resampling adds no native detail. Absolute datum and recorded poses are preserved.
 - Separate illustrative Jezero demo: provisional 3.4 km x 7.6 km NASA/USGS CTX crop on an 8 m display grid, interpolated from 20 m native terrain, draped MRO CTX image (NASA/JPL-Caltech/MSSS/USGS, via JPL Mars Trek), and USGS SIM 3464 geology. Geology boundaries have about 100-200 m registration uncertainty and do not identify a precise sampling cell. These layers are not silently attached to the 128 m recording.
-- Historical references, not live weather: Perseverance MEDA daily summaries at Jezero (a few sols) and the published MSL RAD surface dose rate at Gale (Hassler et al. 2014), used for an estimated crew dose.
+- Historical references, not live weather: Perseverance MEDA daily summaries at Jezero (a few sols) and an estimated crew dose from MSL RAD (measured at Gale, Hassler et al. 2014; estimated at other zones with RAD's dose-pressure relation, Guo et al. 2017).
 - The illustrative demo's mission, routes, agent motion, budgets, scarp and POIs are generated data. The recorded entries instead contain the planner's actual outputs and executed MOCK states; their budgets and observation inputs remain experimental. Vertical exaggeration is display only and is specified per run.
 - The browser never plans routes: it draws the routes and decisions recorded in the replay.
 

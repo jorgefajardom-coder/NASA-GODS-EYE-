@@ -2235,6 +2235,24 @@
         "docs/ai_usage.json"
       ],
       "use": "T08/R15 static check that every catalogued replay opens from static files with MOCK or illustrative labels and no published evaluator reference; hide the no-JavaScript summary during start-up and show it again when a module script or stylesheet fails to load or the viewer has not replaced it within 6 s (jsdom regression test); align llms.txt with the current viewer entries"
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "atmos_dose_consistency_and_text_fixes",
+      "source_revision": "d06de5e",
+      "generation": "AI-assisted viewer code, a test and documentation text; no data, imagery, audio or NASA observation generated",
+      "paths": [
+        "web/src/components/AtmosPanel.tsx",
+        "web/tests/atmosPanelDose.test.ts",
+        "README.md",
+        "docs/astronaut_resources_proposal.md",
+        "web/public/about.html",
+        "web/public/llms.txt",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "human_review": "pending display review Jorge; radiation wording David",
+      "use": "Atmos run totals use the zone's surface dose rate (the HUD's), Gale rate rows relabelled, REMS sol count from the seasonal bins, guards for missing sunrise/sunset and empty chart values; stale 600 mSv career-limit wording, the Guo et al. year and the crew-dose source text corrected. Display and text only."
     }
   ],
   "generated_media": [

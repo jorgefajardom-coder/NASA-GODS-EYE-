@@ -11,7 +11,7 @@ import {
 import { fmtSimTime } from '../lib/format';
 import { Info } from './Info';
 import { RawImagesPanel } from './RawImagesPanel';
-import { DONKI_URL, excursionDoseMsv, zoneEnvironment } from '../lib/zoneEnvironment';
+import { DONKI_URL, excursionDoseMsv, zoneCrewDose, zoneEnvironment } from '../lib/zoneEnvironment';
 
 /** Jezero (about -2.57 km) sits roughly 1.9 km above the REMS site in Gale crater (about -4.5 km). */
 const JEZERO_ABOVE_GALE_M = 1900;
@@ -76,8 +76,16 @@ export function AtmosList({ data, t, duration, runId }: { data: AtmosphereData |
   }
   const last = latestJezeroSol(data);
   const sols = data.jezero_sols.filter((s) => s.min_temp_c != null || s.pressure_pa != null);
-  const now = surfaceDose(data, t);
-  const full = surfaceDose(data, duration);
+  // Run totals use this zone's surface rate, the same one the HUD and the zone block show; the Gale
+  // measurement is the fallback for a run without zone context.
+  const toDose = (s: number) => {
+    const z = zoneCrewDose(runId, s);
+    if (z) return { msv: z.usv / 1000, sigmaMsv: z.sigmaUsv / 1000 };
+    return surfaceDose(data, s);
+  };
+  const now = toDose(t);
+  const full = toDose(duration);
+  const zoneRate = zoneCrewDose(runId, 0);
   const r = data.radiation;
   return (
     <section className="panel atmos" aria-label="Atmosphere and radiation">
@@ -102,7 +110,7 @@ export function AtmosList({ data, t, duration, runId }: { data: AtmosphereData |
             <div className="muted small">surface pressure</div>
           </div>
           <div className="atmos__when muted small">
-            Sol {last.sol} · {last.earth_date} · Ls {fmt(last.ls_deg, 0, '°')} ({last.season}) · sun {last.sunrise.slice(0, 5)}–{last.sunset.slice(0, 5)}
+            Sol {last.sol} · {last.earth_date} · Ls {fmt(last.ls_deg, 0, '°')} ({last.season}) · sun {last.sunrise?.slice(0, 5) ?? '–'}–{last.sunset?.slice(0, 5) ?? '–'}
           </div>
         </div>
       ) : (
@@ -140,11 +148,11 @@ export function AtmosList({ data, t, duration, runId }: { data: AtmosphereData |
         <span className="mono">RAD</span>
       </div>
       <dl className="atmos__rad mono">
-        <dt>Dose rate</dt>
+        <dt>Dose rate at Gale (RAD measured)</dt>
         <dd>
           {r.dose_equivalent_msv_per_day.toFixed(2)} ± {r.dose_equivalent_sigma_msv_per_day.toFixed(2)} mSv/day
         </dd>
-        <dt>Absorbed</dt>
+        <dt>Absorbed at Gale</dt>
         <dd>
           {r.absorbed_mgy_per_day.toFixed(2)} ± {r.absorbed_sigma_mgy_per_day.toFixed(2)} mGy/day
         </dd>
@@ -157,7 +165,12 @@ export function AtmosList({ data, t, duration, runId }: { data: AtmosphereData |
           {(full.msv * 1000).toFixed(0)} ± {(full.sigmaMsv * 1000).toFixed(0)} µSv <span className="muted">({fmtSimTime(duration)})</span>
         </dd>
       </dl>
-      <p className="muted small atmos__note">Estimate with the Gale surface average and no suit or habitat shielding. Not a Jezero dose map or a certified exposure limit.</p>
+      <p className="muted small atmos__note">
+        {zoneRate
+          ? `Run totals use this zone's surface rate (${zoneRate.msvPerDay.toFixed(2)} mSv/day, ${zoneRate.measuredHere ? 'measured at Gale' : 'estimated from the Gale measurement'}), with no suit or habitat shielding.`
+          : 'Run totals use the Gale surface rate, with no suit or habitat shielding.'}{' '}
+        Not a dose map or a certified exposure limit.
+      </p>
     </section>
   );
 }
@@ -175,7 +188,7 @@ export function AtmosDetails({ data }: { data: AtmosphereData | undefined }) {
       </div>
       <h2 className="details__title">Seasonal cycle</h2>
       <p className="details__sub">
-        Median per {g.bin_deg}° of solar longitude, Curiosity REMS at Gale, {g.sols_used.toLocaleString('en-US')} sols ({g.first_sol?.date.slice(0, 4)}–{g.last_sol?.date.slice(0, 4)}), with the Jezero sols.
+        Median per {g.bin_deg}° of solar longitude, Curiosity REMS at Gale, {g.bins.reduce((a, b) => a + b.n, 0).toLocaleString('en-US')} sols ({g.first_sol?.date.slice(0, 4)}–{g.last_sol?.date.slice(0, 4)}), with the Jezero sols.
       </p>
       <div className="atmos__legend small" aria-hidden>
         <span>
@@ -259,6 +272,7 @@ function SeasonChart({ title, bins, band, line, points, tip }: ChartProps) {
       }
     }
     for (const p of points) if (p.v != null) vals.push(p.v);
+    if (!vals.length) vals.push(0); // no readings: draw an empty, finite axis
     const lo = Math.min(...vals);
     const hi = Math.max(...vals);
     const step = niceStep((hi - lo) / 3);

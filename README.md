@@ -436,8 +436,9 @@ flowchart LR
   press on the oxygen button shows the CO₂ the astronaut has exhaled, as a red tank like the
   oxygen one (oxygen used × an assumed respiratory quotient of 0.85; the suit's CO₂ removal
   capacity is not modelled); a third press goes back to the map. The dose gauge uses each
-  zone's own surface rate (measured at Gale, estimated elsewhere) and puts the dose in
-  proportion to NASA's 600 mSv career limit (NASA-STD-3001).
+  zone's own surface rate (measured at Gale, estimated elsewhere) and fills on the scale of
+  the whole run. It is RAD dose equivalent, not NASA effective dose, so no comparison with
+  the NASA-STD-3001 career limit is made.
 - Live Earth and Mars clocks (NASA GISS Mars24: MTC, LMST at Jezero, sol, Ls),
   independent of the replay time.
 - Cameras: Map, Astronaut, Rover, Drone and Base; grab-to-drag map and 45° view rotation.
@@ -512,7 +513,7 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Atmos: Jezero weather | Perseverance MEDA daily summaries, NASA Mars weather feed | Real; outreach summary, not the PDS archive |
 | Atmos: annual cycle | Curiosity REMS daily summaries at Gale crater | Real, another site; reference only |
 | Atmos: radiation | MSL RAD surface averages, Hassler et al. (2014), [doi:10.1126/science.1244797](https://doi.org/10.1126/science.1244797) | Published values; Gale, unshielded estimate |
-| HUD: crew dose | The zone's surface dose rate (MSL RAD at Gale; RAD's dose-pressure relation elsewhere) times the replay time, shown against NASA's 600 mSv career limit (NASA-STD-3001) | **Estimate**, not a dosimeter reading; no shielding or solar storms |
+| HUD: crew dose | The zone's surface dose rate (MSL RAD at Gale; RAD's dose-pressure relation elsewhere) times the replay time; RAD dose equivalent, not converted to NASA effective dose or a career-limit percentage | **Estimate**, not a dosimeter reading; no shielding or solar storms |
 | HUD: pressure map | Latest MEDA pressure scaled with height over the area (barometric law, 11.1 km scale height) | **Estimate**, not a measured field |
 | HUD: exhaled CO₂ | Oxygen used × an assumed respiratory quotient of 0.85 | **Estimate** pending review; no CO₂ data or suit scrubber capacity |
 | HUD: resource use | Drop between the two received samples around the replay time; route cost and reserve as published | Derived from the simulated run |
@@ -523,7 +524,7 @@ recorded scene. Optional layers must match their declared frame and datum.
 | Shadows, footprints, dust, rotor blur, wheel and steering motion | Derived in the viewer from the drawn poses | **Cosmetic display** only |
 | Zone selector globe | Viking MDIM 2.1 colour mosaic, NASA/USGS via [JPL Mars Trek](https://trek.nasa.gov/mars/) (32 level-2 tiles); each zone card shows the orbital image draped on that scene | Real NASA imagery; horizon band from the Melas DEM is decorative, not to scale; synopses are AI-assisted text |
 | Zone scenes (Gale, Gusev, Elysium, Meridiani, Melas) | NASA terrain models and orbital mosaics via JPL Mars Trek; real rover stops from MMGIS and the PDS Geosciences Node | Real terrain, imagery and stops; mission stories **simulated** |
-| Zone water and radiation | Mars Odyssey GRS (Boynton et al. 2007); MSL RAD (Hassler et al. 2014) and RAD's dose-pressure relation (Guo et al. 2018) | Real orbital and surface-average context; **estimate** outside Gale, flagged outside RAD's measured range; no shielding or solar storms |
+| Zone water and radiation | Mars Odyssey GRS (Boynton et al. 2007); MSL RAD (Hassler et al. 2014) and RAD's dose-pressure relation (Guo et al. 2017) | Real orbital and surface-average context; **estimate** outside Gale, flagged outside RAD's measured range; no shielding or solar storms |
 | Rover photos at stops and *Mars now* | Perseverance and Curiosity raw images, NASA/JPL-Caltech public feed, loaded on request | Real images, kept with their mission and stop; not terrain data |
 | Zone arrival transition | The zone's orbital image warped from full screen onto the projected footprint of its terrain | **Cosmetic display**; no data changes |
 | Terrain formation, height morph, interface entrance, camera sway | Viewer animations on the drawn surface and camera | **Cosmetic display**; no height or pose in the data changes |
