@@ -108,7 +108,7 @@ def test_physical_rover_has_six_driven_wheels_and_ground_truth_odometry(tmp_path
     assert plugins['gz::sim::systems::OdometryPublisher'].findtext('odom_topic') == '/model/rover_1/odometry_gt'
     assert rover.find('link[@name="chassis"]/collision') is not None       # it can hit rocks
     assert rover.find('link/gravity') is None                              # it falls onto the ground
-    assert meta['agents']['rover_1'] == {'model': 'rover', 'lift_m': 0.0, 'physical': True}
+    assert meta['agents']['rover_1'] == {'model': 'rover', 'lift_m': 0.0, 'physical': True, 'web_model': False}
     assert meta['agents']['human_1']['physical'] is False
 
 
@@ -121,3 +121,70 @@ def test_pure_pursuit_turns_first_then_drives_and_stops_at_the_end():
     assert v == pytest.approx(0.65) and w == pytest.approx(0.0) and i == 1
     v, w, i, done = pursuit((10.0, 9.7), math.pi / 2, points, 2, 0.65)
     assert done and (v, w) == (0.0, 0.0)
+
+
+def test_heightmap_vertices_sit_on_the_planner_cell_centres():
+    from mge_sim.gz_world import centre_lattice
+    rng = np.random.default_rng(4)
+    h = rng.random((32, 32)) * 7
+    v = centre_lattice(h, HEIGHTMAP_SIZE)
+    for r in (0, 5, 31):
+        for c in (0, 17, 31):
+            assert v[HEIGHTMAP_SIZE - 1 - 4 * r, 4 * c] == pytest.approx(h[r, c])
+    # Linear between two neighbouring centres, never outside their range.
+    mid = v[HEIGHTMAP_SIZE - 1 - 4 * 5, 4 * 17 + 2]
+    assert mid == pytest.approx((h[5, 17] + h[5, 18]) / 2)
+
+
+def test_world_heightmap_is_placed_on_the_cell_centres(world):
+    out, meta = world
+    assert meta['heightmap_origin_m'] == [-62.0, -62.0] and meta['heightmap_on_cell_centres']
+    pos = ET.parse(out / 'world.sdf').getroot().find('world/model[@name="terrain"]/link/collision/geometry/heightmap/pos').text
+    assert pos.split()[:2] == ['2.0', '2.0']                      # lattice spans -62 .. 66 m
+
+
+def test_datum_offset_is_measured_once_and_bounded():
+    from mge_sim.gz_rover_driver import MAX_DATUM_OFFSET_M, datum_offset, map_height
+    prior = [[0.0, 4.0], [8.0, 12.0]]
+    assert map_height(prior, (0.0, 0.0), 4.0, 2.0, 2.0) == pytest.approx(0.0)
+    assert map_height(prior, (0.0, 0.0), 4.0, 4.0, 4.0) == pytest.approx(6.0)
+    assert datum_offset(-2571.3296, -2571.4120) == pytest.approx(0.0824)
+    assert datum_offset(0.0, -MAX_DATUM_OFFSET_M - 0.01) is None
+
+
+def tiny_glb(path, lo, hi, translation=(0.0, 0.0, 0.0), scale=(1.0, 1.0, 1.0)):
+    """A minimal GLB whose single mesh has the given POSITION bounds (no geometry needed)."""
+    gltf = {'asset': {'version': '2.0'}, 'scene': 0, 'scenes': [{'nodes': [0]}],
+            'nodes': [{'mesh': 0, 'translation': list(translation), 'scale': list(scale)}],
+            'meshes': [{'primitives': [{'attributes': {'POSITION': 0}}]}],
+            'accessors': [{'componentType': 5126, 'count': 2, 'type': 'VEC3', 'min': list(lo), 'max': list(hi)}]}
+    body = json.dumps(gltf).encode()
+    body += b' ' * (-len(body) % 4)
+    path.write_bytes(struct.pack('<4sII', b'glTF', 2, 12 + 8 + len(body)) + struct.pack('<I4s', len(body), b'JSON') + body)
+    return path
+
+
+def test_glb_bounds_follow_node_transforms(tmp_path):
+    from mge_sim.gz_world import glb_bbox
+    lo, hi = glb_bbox(tiny_glb(tmp_path / 'm.glb', (-1, 0, -0.5), (1, 2, 0.5), translation=(3, 0, 0), scale=(2, 2, 2)))
+    assert list(lo) == pytest.approx([1, 0, -1]) and list(hi) == pytest.approx([5, 4, 1])
+
+
+def test_web_models_are_drawn_at_the_web_true_sizes(tmp_path):
+    models = tmp_path / 'models'
+    models.mkdir()
+    tiny_glb(models / 'rover.glb', (-2.0, 0.0, -1.0), (2.0, 2.0, 1.0))      # 4 m long -> 3.6 m
+    tiny_glb(models / 'astronaut.glb', (-0.5, 0.0, -0.3), (0.5, 3.8, 0.3))  # 3.8 m tall -> 1.9 m
+    out = tmp_path / 'w'
+    agents = [('rover_1', 'ROVER', -14.0, -10.0, -2570.0), ('human_1', 'HUMAN', -14.0, -14.0, -2570.0)]
+    meta = build_world(out, GRID, np.full((32, 32), -2570.0), [], agents, physical=('rover_1',),
+                       web_models={'ROVER': models / 'rover.glb', 'HUMAN': models / 'astronaut.glb'})
+    assert (out / 'rover.glb').exists() and (out / 'astronaut.glb').exists()
+    w = ET.parse(out / 'world.sdf').getroot().find('world')
+    rover = next(m for m in w.findall('model') if m.get('name') == 'rover_1')
+    assert rover.findtext('link[@name="chassis"]/visual/geometry/mesh/scale') == '0.90000 0.90000 0.90000'
+    assert all(link.find('visual') is None for link in rover.findall('link') if link.get('name').startswith('wheel'))
+    human = next(m for m in w.findall('model') if m.get('name') == 'human_1')
+    assert human.findtext('link/visual/geometry/mesh/scale') == '0.50000 0.50000 0.50000'
+    assert meta['agents']['human_1']['lift_m'] == 0.0 and meta['web_models'] == {'ROVER': 'rover.glb', 'HUMAN': 'astronaut.glb'}
+    assert 'CC BY 4.0' in meta['attribution']

@@ -2,9 +2,14 @@
 
 No ROS imports. `build_world(out_dir, ...)` writes one self-contained directory:
 
-  heightmap.png  16-bit, 129 x 129 vertices, bilinear resampling of the public prior's
-                 cell centres. It is the only collision surface of the ground: no relief is
-                 invented there. NoData cells take the lowest finite height.
+  heightmap.png  16-bit, 129 x 129 vertices ALIGNED WITH THE PLANNER'S CELL CENTRES: every
+                 fourth vertex sits exactly on a cell centre with that cell's public prior
+                 height (the planner's belief height), the vertices between are linear in
+                 between. The Gazebo ground therefore matches the planner's terrain model, so
+                 a physical agent's height agrees with what the planner expects. The lattice
+                 starts at the first cell centre (half a cell inside the grid's south-west
+                 edge) and its last row/column repeats the edge cells. It is the only
+                 collision surface of the ground; NoData cells take the lowest finite height.
   albedo.png     terrain colour: the real MRO CTX orthoimage DN of the crop (panchromatic),
                  cubic-resampled, tinted with a Mars regolith palette and multiplied by a
                  fine procedural grain. The tint and grain are COSMETIC.
@@ -22,6 +27,7 @@ rock or a validated mission.
 import json
 import math
 from pathlib import Path
+import shutil
 import struct
 import zlib
 
@@ -64,13 +70,15 @@ def png_rgb8(a):
     return _png(a.shape[1], a.shape[0], [r.tobytes() for r in a], 8, 2)
 
 
-def _sample(grid, n, order=3):
-    """Spline sample (cubic by default) of a cell-centre grid (row 0 = south) on an n x n lattice spanning the
-    grid's outer edges, returned with row 0 = north."""
+def centre_lattice(grid, n, order=1):
+    """Sample a cell-centre grid (row 0 = south) on an n x n lattice from the first cell centre
+    to one cell beyond the last (index units 0 .. cols), returned with row 0 = north. With
+    (n - 1) a multiple of cols, lattice points land exactly on cell centres (order=1: linear in
+    between, no overshoot). Points beyond the last centre repeat the edge cells."""
     rows, cols = grid.shape
     t = np.linspace(0.0, 1.0, n)
-    yy = (1.0 - t)[:, None] * rows - 0.5          # north first
-    xx = t[None, :] * cols - 0.5
+    yy = (1.0 - t)[:, None] * rows                # north first
+    xx = t[None, :] * cols
     coords = np.array([np.broadcast_to(yy, (n, n)), np.broadcast_to(xx, (n, n))])
     return ndimage.map_coordinates(grid, coords, order=order, mode='nearest')
 
@@ -101,7 +109,7 @@ def terrain_heights(heights):
 
 def albedo_texture(ctx_dn, n=TEXTURE_PX, seed=11):
     """CTX DN (rows x cols, row 0 = south) -> tinted RGB texture with cosmetic grain."""
-    dn = _sample(np.asarray(ctx_dn, dtype=float), n)
+    dn = centre_lattice(np.asarray(ctx_dn, dtype=float), n, order=3)
     lo, hi = np.percentile(dn, 2), np.percentile(dn, 98)
     tone = np.clip((dn - lo) / max(1e-6, hi - lo), 0, 1) * 0.6 + 0.2
     grain = fractal_noise(n, seed)
@@ -222,12 +230,72 @@ def _rock_sdf(rock, z):
             f'<link name="link">{collision}{visual}</link></model>')
 
 
-def _agent_sdf(agent_id, kind, x, y, z):
+def _agent_sdf(agent_id, kind, x, y, z, glb=None):
+    if glb is not None:     # the web's model, resting on its origin (lift 0)
+        return (f'<model name="{agent_id}"><pose>{x:.3f} {y:.3f} {z:.3f} 0 0 0</pose><link name="link">'
+                f'<gravity>false</gravity>{web_model_visual("v", glb[0], kind, glb[1], glb[2])}</link></model>')
     _, color, geom, lift = AGENT_MODELS[kind]
     # Visual only, no gravity, no collision: its pose comes from ROS through gz_mirror.
     return (f'<model name="{agent_id}"><pose>{x:.3f} {y:.3f} {z + lift:.3f} 0 0 0</pose>'
             f'<link name="link"><gravity>false</gravity><visual name="v"><geometry>{geom}</geometry>'
             f'<material><ambient>{color}</ambient><diffuse>{color}</diffuse></material></visual></link></model>')
+
+
+# The web viewer's GLB models, drawn at the same true sizes (web/src/components/AgentLayer.tsx,
+# AstronautModel.tsx, BaseModel.tsx): the fit rule and target size per kind.
+WEB_MODEL_FIT = {'ROVER': ('length', 3.6), 'DRONE': ('length', 1.2), 'HUMAN': ('height', 1.9), 'BASE': ('scale', 1.0)}
+BASE_CLUSTER_OFFSET = (34.0, -22.0)   # the web's CLUSTER_OFFSET of the habitat from the base point
+
+
+def glb_bbox(path):
+    """Axis-aligned bounds (min, max) of a GLB's scene in its own Y-up frame, from accessor bounds."""
+    data = Path(path).read_bytes()
+    length = struct.unpack('<I', data[12:16])[0]
+    g = json.loads(data[20:20 + length])
+
+    def local(node):
+        if 'matrix' in node:
+            return np.array(node['matrix'], dtype=float).reshape(4, 4).T
+        x, y, z, w = node.get('rotation', [0, 0, 0, 1])
+        m = np.eye(4)
+        rot = np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+                        [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+                        [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]])
+        m[:3, :3] = rot * np.array(node.get('scale', [1, 1, 1]))
+        m[:3, 3] = node.get('translation', [0, 0, 0])
+        return m
+    lo, hi = np.full(3, np.inf), np.full(3, -np.inf)
+
+    def walk(i, parent):
+        node = g['nodes'][i]
+        m = parent @ local(node)
+        if 'mesh' in node:
+            for prim in g['meshes'][node['mesh']]['primitives']:
+                acc = g['accessors'][prim['attributes']['POSITION']]
+                for corner in np.array(np.meshgrid(*zip(acc['min'], acc['max']))).T.reshape(-1, 3):
+                    q = (m @ np.append(corner, 1.0))[:3]
+                    lo[:], hi[:] = np.minimum(lo, q), np.maximum(hi, q)
+        for child in node.get('children', []):
+            walk(child, m)
+    for i in g['scenes'][g.get('scene', 0)]['nodes']:
+        walk(i, np.eye(4))
+    return lo, hi
+
+
+def web_model_visual(name, uri, kind, lo, hi, z_shift=0.0):
+    """A <visual> drawing a Y-up GLB upright (Z-up), sized like the web and resting on z = 0."""
+    rule, target = WEB_MODEL_FIT[kind]
+    size = hi - lo
+    if rule == 'length':
+        s = target / max(size[0], size[2])
+    elif rule == 'height':
+        s = target / size[1]
+    else:
+        s = target
+    cx, cz = (lo[0] + hi[0]) / 2, (lo[2] + hi[2]) / 2
+    # Roll +90 deg about x maps glTF (x, y, z) to Gazebo (x, -z, y): centre it, base on z = 0.
+    return (f'<visual name="{name}"><pose>{-cx * s:.4f} {cz * s:.4f} {-lo[1] * s + z_shift:.4f} 1.5708 0 0</pose>'
+            f'<geometry><mesh><uri>{uri}</uri><scale>{s:.5f} {s:.5f} {s:.5f}</scale></mesh></geometry></visual>')
 
 
 # Physical rover (display proportions near Perseverance's: 3 m long, 2.7 m wide, 52.5 cm wheels;
@@ -246,19 +314,22 @@ def _box_inertia(m, x, y, z):
             '<ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>')
 
 
-def physical_rover_sdf(agent_id, x, y, z, yaw=0.0):
+def physical_rover_sdf(agent_id, x, y, z, yaw=0.0, glb=None):
     """A six-wheel rover driven by gz DiffDrive on /model/<id>/cmd_vel, with ground-truth
     odometry on /model/<id>/odometry_gt. It rests on the terrain under Mars gravity."""
     cz = WHEEL_R + CLEARANCE + CHASSIS[2] / 2 - 0.35
     mat = '<material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.78 0.78 0.8 1</diffuse></material>'
     dark = '<material><ambient>0.15 0.15 0.16 1</ambient><diffuse>0.22 0.22 0.24 1</diffuse></material>'
+    if glb is not None:     # the web's rover model; the chassis link sits cz above the ground
+        body = web_model_visual('web_model', glb[0], 'ROVER', glb[1], glb[2], z_shift=-cz)
+    else:                   # simple stand-in shapes
+        body = (f'<visual name="body"><geometry><box><size>{CHASSIS[0]} {CHASSIS[1]} {CHASSIS[2]}</size></box></geometry>{mat}</visual>'
+                f'<visual name="mast"><pose>0.9 0.6 1.0 0 0 0</pose><geometry><cylinder><radius>0.08</radius><length>1.5</length></cylinder></geometry>{mat}</visual>'
+                f'<visual name="head"><pose>0.9 0.6 1.8 0 0 0</pose><geometry><box><size>0.3 0.5 0.25</size></box></geometry>{dark}</visual>'
+                f'<visual name="rtg"><pose>-1.45 0 0.35 0 0.6 0</pose><geometry><cylinder><radius>0.3</radius><length>0.7</length></cylinder></geometry>{dark}</visual>')
     links = (f'<link name="chassis"><pose>0 0 {cz:.3f} 0 0 0</pose>{_box_inertia(900, *CHASSIS)}'
              f'<collision name="c"><geometry><box><size>{CHASSIS[0]} {CHASSIS[1]} {CHASSIS[2]}</size></box></geometry></collision>'
-             f'<visual name="body"><geometry><box><size>{CHASSIS[0]} {CHASSIS[1]} {CHASSIS[2]}</size></box></geometry>{mat}</visual>'
-             f'<visual name="mast"><pose>0.9 0.6 1.0 0 0 0</pose><geometry><cylinder><radius>0.08</radius><length>1.5</length></cylinder></geometry>{mat}</visual>'
-             f'<visual name="head"><pose>0.9 0.6 1.8 0 0 0</pose><geometry><box><size>0.3 0.5 0.25</size></box></geometry>{dark}</visual>'
-             f'<visual name="rtg"><pose>-1.45 0 0.35 0 0.6 0</pose><geometry><cylinder><radius>0.3</radius><length>0.7</length></cylinder></geometry>{dark}</visual>'
-             '</link>')
+             + body + '</link>')
     joints, left, right = '', [], []
     for side, sy in (('l', WHEEL_Y), ('r', -WHEEL_Y)):
         for k, wx in enumerate(WHEEL_X):
@@ -268,7 +339,8 @@ def physical_rover_sdf(agent_id, x, y, z, yaw=0.0):
                       '<inertial><mass>25</mass><inertia><ixx>0.8</ixx><iyy>0.8</iyy><izz>0.9</izz>'
                       '<ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>'
                       f'<collision name="c"><geometry>{geom}</geometry><surface><friction><ode><mu>0.9</mu><mu2>0.9</mu2></ode></friction></surface></collision>'
-                      f'<visual name="v"><geometry>{geom}</geometry>{dark}</visual></link>')
+                      + ('' if glb is not None else f'<visual name="v"><geometry>{geom}</geometry>{dark}</visual>')
+                      + '</link>')
             joints += (f'<joint name="{name}_joint" type="revolute"><parent>chassis</parent><child>{name}</child>'
                        '<axis><xyz>0 0 1</xyz><limit><lower>-1e16</lower><upper>1e16</upper></limit></axis></joint>')
             (left if side == 'l' else right).append(f'{name}_joint')
@@ -285,18 +357,31 @@ def physical_rover_sdf(agent_id, x, y, z, yaw=0.0):
             + links + joints + plugins + '</model>')
 
 
-def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name='jezero', physical=()):
+def _base_sdf(models, base_xy, ground):
+    """The web's habitat model at the base point plus the web's cluster offset (visual only)."""
+    if base_xy is None or 'BASE' not in models:
+        return ''
+    bx, by = base_xy[0] + BASE_CLUSTER_OFFSET[0], base_xy[1] + BASE_CLUSTER_OFFSET[1]
+    uri, lo, hi = models['BASE']
+    return (f'<model name="base"><static>true</static><pose>{bx:.3f} {by:.3f} {ground(bx, by):.3f} 0 0 0</pose>'
+            f'<link name="link">{web_model_visual("v", uri, "BASE", lo, hi)}</link></model>')
+
+
+def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name='jezero', physical=(),
+                web_models=None, base_xy=None):
     """grid = (origin_x_m, origin_y_m, resolution_m, rows, cols); heights and ctx_dn are
     rows x cols arrays with row 0 = south (None/NaN = NoData); blocked = flat indices of the
     SIMULATED scene's obstacle cells; agents = [(agent_id, kind, x, y, z)] in ROS ENU;
-    physical = agent IDs built as driven rovers (gz_rover_driver) instead of mirrored models."""
+    physical = agent IDs built as driven rovers (gz_rover_driver) instead of mirrored models;
+    web_models = {'ROVER'|'DRONE'|'HUMAN'|'BASE': path to the web viewer's GLB} draws the same
+    models at the same true sizes (copied into the world); base_xy = base point of the habitat."""
     ox, oy, res, rows, cols = grid
     if rows != cols:
         raise ValueError('the heightmap needs a square grid')
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     h = terrain_heights(np.array(heights, dtype=float).reshape(rows, cols))
-    verts = _sample(h, HEIGHTMAP_SIZE, order=1)   # bilinear: no overshoot, no invented relief
+    verts = centre_lattice(h, HEIGHTMAP_SIZE)     # vertices on the planner's cell centres
     z_ref, span = float(verts.min()), max(float(verts.max() - verts.min()), 0.01)
     (out / 'heightmap.png').write_bytes(png_gray16(np.round((verts - z_ref) / span * 65535)))
     dn = np.full((rows, cols), 135.0) if ctx_dn is None else np.array(ctx_dn, dtype=float).reshape(rows, cols)
@@ -304,16 +389,23 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
     (out / 'normal.png').write_bytes(png_rgb8(normal_texture()))
     for k in range(ROCK_VARIANTS):
         (out / f'rock_{k}.obj').write_text(boulder_obj(k + 1), encoding='utf-8')
+    models = {}
+    for kind, src in (web_models or {}).items():
+        if src and Path(src).exists():
+            shutil.copyfile(src, out / Path(src).name)
+            lo, hi = glb_bbox(src)
+            models[kind] = (Path(src).name, lo, hi)
     width, height = cols * res, rows * res
+    x0, y0 = ox + res / 2, oy + res / 2               # the lattice starts on the first cell centre
 
     def ground(x, y):
-        j = (x - ox) / width * (HEIGHTMAP_SIZE - 1)
-        i = (1 - (y - oy) / height) * (HEIGHTMAP_SIZE - 1)
+        j = (x - x0) / width * (HEIGHTMAP_SIZE - 1)
+        i = (1 - (y - y0) / height) * (HEIGHTMAP_SIZE - 1)
         return float(ndimage.map_coordinates(verts, [[i], [j]], order=1, mode='nearest')[0]) - z_ref
 
     terrain = (f'<heightmap><texture><diffuse>albedo.png</diffuse><normal>normal.png</normal>'
                f'<size>{width}</size></texture><uri>heightmap.png</uri>'
-               f'<size>{width} {height} {span:.3f}</size><pos>{ox + width / 2} {oy + height / 2} 0</pos></heightmap>')
+               f'<size>{width} {height} {span:.3f}</size><pos>{x0 + width / 2} {y0 + height / 2} 0</pos></heightmap>')
     rocks = rock_layout(grid, blocked)
     sdf = ('<?xml version="1.0"?><sdf version="1.10">'
            f'<world name="{world_name}"><gravity>0 0 -{MARS_GRAVITY}</gravity>'
@@ -331,15 +423,23 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
            f'<collision name="c"><geometry>{terrain}</geometry></collision>'
            f'<visual name="v"><geometry>{terrain}</geometry></visual></link></model>'
            + ''.join(_rock_sdf(r, ground(r['x'], r['y'])) for r in rocks)
-           + ''.join(physical_rover_sdf(a, x, y, ground(x, y)) if a in physical else _agent_sdf(a, k, x, y, z - z_ref)
+           + ''.join(physical_rover_sdf(a, x, y, ground(x, y), glb=models.get(k)) if a in physical
+                     else _agent_sdf(a, k, x, y, (ground(x, y) if k in models else z - z_ref), glb=models.get(k))
                      for a, k, x, y, z in agents)
+           + _base_sdf(models, base_xy, ground)
            + '</world></sdf>')
     (out / 'world.sdf').write_text(sdf, encoding='utf-8')
     meta = {'world_name': world_name, 'origin_x_m': ox, 'origin_y_m': oy, 'resolution_m': res,
             'rows': rows, 'cols': cols, 'z_ref_m': z_ref, 'relief_m': span,
+            'heightmap_origin_m': [x0, y0], 'heightmap_on_cell_centres': True,
             'boulders': sum(r['collide'] for r in rocks), 'small_rocks': sum(not r['collide'] for r in rocks),
-            'agents': {a: {'model': AGENT_MODELS[k][0], 'lift_m': 0.0 if a in physical else AGENT_MODELS[k][3],
-                           'physical': a in physical} for a, k, *_ in agents},
+            'agents': {a: {'model': AGENT_MODELS[k][0],
+                           'lift_m': 0.0 if a in physical or k in models else AGENT_MODELS[k][3],
+                           'physical': a in physical, 'web_model': k in models} for a, k, *_ in agents},
+            'web_models': {k: v[0] for k, v in models.items()},
+            'attribution': ('astronaut.glb: "Animated Astronaut Character in Space Suit Loop" by LasquetiSpice, '
+                            'CC BY 4.0; rover.glb, drone.glb: NASA models with agency branding removed; '
+                            'see THIRD_PARTY_NOTICES.md') if models else None,
             'real_inputs': ['public prior heights (collision surface)', 'MRO CTX orthoimage DN (albedo)'],
             'cosmetic': ['regolith tint and grain', 'normal map', 'boulder shapes and sizes (enlarged)'],
             'note': 'SIMULATED scene on the public Jezero crop; not a NASA product or a validated mission.'}
