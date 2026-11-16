@@ -29,6 +29,10 @@ Run each from a built, sourced workspace root:
   are visual-only models moved by `set_pose`, so this is not a physics simulation
   of the agents and not the `simulation` launch profile.
 
+- `rover_gz_run.py`: rover_1 is a physical rover in Gazebo (gz_rover_driver), the others
+  stay kinematic and mirrored; the scene sensor, budget fallback and goal completion are on.
+  Pass the web models with `MGE_WEB_MODELS=<repo>/web/public/assets/models`.
+
 Stop a launched stack with `kill -INT -<pid>` (pid in `<record_dir>/<run_id>-launch.pid`)
 so the recorder closes the package. Observations are SIMULATED test inputs and
 budgets are illustrative; no run is a validated LIVE mission. AI-assisted
