@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0.0",
+  "kind": "EXPERIMENTAL_SOFTWARE_VALIDATION",
+  "source_head": "53cef780a35af6027f8af9aa3688d291a8977996",
+  "published_main": "f5116685077d6c95f96bfab3a6b31d6a71ea6e5d",
+  "contract_versions": {
+    "interface_package": "2.0.0",
+    "baseline_review": "2.0.0-rc.1",
+    "gateway_replay": "1.0.0",
+    "public_rasters": "mge-public-rasters-1.0.0"
+  },
+  "source_mode": "MOCK",
+  "observations": "SIMULATED",
+  "mission_acceptance": false,
+  "checks": {
+    "native_python": {
+      "command": "python -m pytest -q --basetemp .local/pytest-reconciled-final",
+      "python": "3.12.14",
+      "passed": 1478,
+      "skipped": 32,
+      "warnings": 1,
+      "seconds": 32.32,
+      "skip_scope": "ROS, Windows symlink privileges and unavailable explicit planner snapshot",
+      "warning_scope": "existing Starlette/httpx deprecation"
+    },
+    "repository_checker": {
+      "command": "python scripts/check_repository.py",
+      "result": "PASS",
+      "package_manifests": 8,
+      "scope": "structural checks only"
+    },
+    "web_tests": {
+      "command": "npm test",
+      "node": "24.18.0",
+      "passed": 421,
+      "skipped": 1,
+      "seconds": 9.12,
+      "warning_scope": "existing multiple Three.js imports warning"
+    },
+    "web_build": {
+      "command": "npm run build",
+      "result": "PASS",
+      "seconds": 6.2
+    },
+    "jazzy_build": {
+      "command": "colcon build --symlink-install",
+      "packages": 8,
+      "result": "PASS",
+      "seconds": 30.5,
+      "platform": "Ubuntu 24.04 / ROS 2 Jazzy"
+    },
+    "interface_inspection": {
+      "command": "ros2 interface show mge_interfaces/msg/<six messages>; ros2 interface show mge_interfaces/srv/<three services>",
+      "result": "PASS",
+      "messages": [
+        "TerrainMeta",
+        "TerrainObservation",
+        "AgentState",
+        "MissionEvent",
+        "MissionState",
+        "RouteDecision"
+      ],
+      "services": [
+        "PlanRoute",
+        "SetMissionGoal",
+        "RegisterPlanningContext"
+      ]
+    },
+    "ros_contracts": {
+      "command": "python3 -m pytest -q -p no:cacheprovider tests/contract tests/unit/test_gz_driver_ros.py tests/unit/test_gazebo_inputs.py tests/unit/test_scene_sensor_consumer.py",
+      "passed": 274,
+      "seconds": 5.67
+    },
+    "final_sensor_overlay": {
+      "command": "python3 -m pytest -q -p no:cacheprovider tests/contract/test_scene_sensor.py",
+      "passed": 4,
+      "scope": "latest idle-velocity tolerance regression; sensor source copied into runtime after the broad contract group"
+    },
+    "ros_integration": {
+      "command": "python3 -m pytest -q -p no:cacheprovider tests/integration",
+      "passed": 52,
+      "seconds": 290.96
+    },
+    "gazebo_wrapper": {
+      "result": "PLUMBING_PASS",
+      "record": "wrapper-smoke.json"
+    },
+    "git_diff_check": {
+      "command": "git diff --cached --check",
+      "result": "PASS"
+    },
+    "disclosure_preservation": {
+      "result": "PASS",
+      "scope": "every published AI metadata record and descriptive line retained"
+    }
+  },
+  "runtime_provenance": {
+    "base_snapshot_tar_sha256": "9a246d5effe2f5a3ca083af83d38cdcbcbda20b1d5cc888bdd2b241fcae57bb2",
+    "overlays": [
+      "src/mge_bringup/launch/gazebo_mock.launch.py",
+      "tests/contract/test_gazebo_launch.py",
+      "tests/contract/test_scene_sensor.py",
+      "src/mge_sim/mge_sim/scene_sensor.py"
+    ],
+    "note": "Snapshot plus overlays were used because ROS runtime is built in a temporary Linux path without Windows spaces. Failed initial harness log is retained locally; it is not a passing result."
+  },
+  "limitations": [
+    "No mission goal was sent in the physical wrapper smoke; stop/replan/reauthorize/route execution and complete mission acceptance remain open.",
+    "The historical physical scenario CLI now delegates to the wrapper; its complete sortie was not executed in this correction cut.",
+    "No DEM-derived offset is applied to authoritative telemetry. A real physical/planner height mismatch remains an explicit refusal.",
+    "RouteDecision reserve fields are estimated residuals; requested mission reserve enforcement needs the proper mission/context consumer.",
+    "Scene lookup is synthetic, not Gazebo camera/LiDAR perception; landing samples the current footprint rather than relabelling historical flight coverage.",
+    "Legacy planning is an explicit MOCK opt-in; scientific registered-context and coefficient approvals are not supplied by this wrapper.",
+    "No submission or organizer endorsement is claimed."
+  ],
+  "ai_use": {
+    "ai_assisted": true,
+    "tool": "OpenAI Codex",
+    "scope": "corrective code, synthetic regressions, orchestration and evidence metadata",
+    "details": "../../docs/AI_USAGE.md"
+  }
+}

@@ -37,7 +37,9 @@ def context(mission='real', planner='real', **changes):
         'mission_path': str(ROOT / 'config/scenario_demo.yaml'),
         'base_enu_m': '[2.5, 2.5, 0.0]', 'allow_illustrative': 'true',
         'model_agreement_confirmed': 'false', 'approved_model_id': '',
-        'allow_continuous_starts': 'false',
+        'allow_continuous_starts': 'false', 'budget_fallback': 'false', 'complete_on_return': 'false', 'completion_tolerance_m': '0.001', 'external_agents': '',
+        'sensor': 'false', 'sensor_scene_file': '',
+        'sensor_agents': "['drone_1', 'human_1', 'rover_1']", 'sensor_radii_m': '[24.0, 8.0, 12.0]',
         'record': 'false', 'record_dir': 'evidence', **changes,
     })
     return value
@@ -164,3 +166,79 @@ def test_only_kinematic_mock_mission_requires_stop_acknowledgement(monkeypatch, 
             assert values[0]['require_stop_ack'] is (agents == 'kinematic')
         else:
             assert all('require_stop_ack' not in value for value in values)
+
+
+@pytest.mark.parametrize('enabled', ['false', 'true'])
+def test_budget_fallback_reaches_only_the_mock_mission(monkeypatch, enabled):
+    module = load_launch()
+    original, nodes = module.Node, []
+    def capture(**kwargs):
+        node = original(**kwargs)
+        nodes.append(kwargs)
+        return node
+    monkeypatch.setattr(module, 'Node', capture)
+    module.generate_launch_description()
+    ctx = context(mission='mock', budget_fallback=enabled)
+    for item in nodes:
+        values = evaluate_parameters(ctx, normalize_parameters(item.get('parameters', [])))
+        if item['executable'] == 'mock_mission':
+            assert values[0]['budget_fallback'] is (enabled == 'true')
+        else:
+            assert all('budget_fallback' not in value for value in values)
+
+
+def test_scene_sensor_is_opt_in_and_receives_its_scene_and_radii(monkeypatch):
+    module = load_launch()
+    original, nodes = module.Node, []
+    def capture(**kwargs):
+        node = original(**kwargs)
+        nodes.append(kwargs)
+        return node
+    monkeypatch.setattr(module, 'Node', capture)
+    module.generate_launch_description()
+    sensor = next(item for item in nodes if item['executable'] == 'scene_sensor')
+    assert sensor['condition'].evaluate(context(sensor='false')) is False
+    ctx = context(sensor='true', sensor_scene_file='/tmp/scene.json')
+    assert sensor['condition'].evaluate(ctx) is True
+    values = evaluate_parameters(ctx, normalize_parameters(sensor['parameters']))[0]
+    assert values['scene_file'] == '/tmp/scene.json'
+    assert values['agent_ids'] == ['drone_1', 'human_1', 'rover_1']
+    assert values['radii_m'] == [24.0, 8.0, 12.0]
+
+
+def test_complete_on_return_reaches_only_the_mock_mission(monkeypatch):
+    module = load_launch()
+    original, nodes = module.Node, []
+    def capture(**kwargs):
+        node = original(**kwargs)
+        nodes.append(kwargs)
+        return node
+    monkeypatch.setattr(module, 'Node', capture)
+    module.generate_launch_description()
+    ctx = context(mission='mock', complete_on_return='true')
+    for item in nodes:
+        values = evaluate_parameters(ctx, normalize_parameters(item.get('parameters', [])))
+        if item['executable'] == 'mock_mission':
+            assert values[0]['complete_on_return'] is True
+        else:
+            assert all('complete_on_return' not in value for value in values)
+
+
+def test_external_agents_reach_only_the_kinematic_executor(monkeypatch):
+    module = load_launch()
+    original, nodes = module.Node, []
+    def capture(**kwargs):
+        node = original(**kwargs)
+        nodes.append(kwargs)
+        return node
+    monkeypatch.setattr(module, 'Node', capture)
+    module.generate_launch_description()
+    ctx = context(mission='mock', agents='kinematic', external_agents='rover_1', completion_tolerance_m='1.0')
+    for item in nodes:
+        values = evaluate_parameters(ctx, normalize_parameters(item.get('parameters', [])))
+        if item['executable'] == 'kinematic_executor':
+            assert values[0]['external_agents'] == 'rover_1'
+        else:
+            assert all('external_agents' not in value for value in values)
+        if item['executable'] == 'mock_mission':
+            assert values[0]['completion_tolerance_m'] == 1.0

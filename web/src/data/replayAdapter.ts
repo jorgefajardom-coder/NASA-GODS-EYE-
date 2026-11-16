@@ -109,6 +109,23 @@ export async function loadEvaluatorReference(runId: string, rows: number, cols: 
   }
 }
 
+/**
+ * A recorded package carries no geologic map, but its public dataset may have one: the USGS
+ * SIM 3464 units of that crop, published under geology/<dataset_id>.json. It is attached only
+ * when its frame, dataset, origin and datum match the run exactly. Optional: a missing or
+ * mismatched file leaves the run without geology.
+ */
+async function attachDatasetGeology(bundle: ReplayBundle): Promise<void> {
+  const id = bundle.manifest.terrain_meta.dataset_id;
+  if (!/^[A-Za-z0-9._-]+$/.test(id)) return;
+  try {
+    const geology = await getJson<GeologyData>(assetUrl(`geology/${id}.json`));
+    if (geologyMatchesRun(geology, bundle.manifest)) bundle.geology = geology;
+  } catch {
+    /* no public geology for this dataset */
+  }
+}
+
 /** ReplayAdapter: loads a saved run from static files (no ROS, no gateway, no network). */
 export async function loadReplay(runDir: string): Promise<ReplayBundle> {
   const dir = runDir.replace(/\/+$/, '');
@@ -122,7 +139,9 @@ export async function loadReplay(runDir: string): Promise<ReplayBundle> {
     const named = raw.files.public_rasters;
     const rasters = named ? await getJson<PublicRasters>(assetUrl(`${dir}/${named}`)) : undefined;
     const snapshot = await getJson<GatewaySnapshot>(assetUrl(`${dir}/${raw.files.snapshot}`));
-    return fromGatewayPackage(raw, parseJsonLines(await res.text()), rasters, snapshot);
+    const bundle = fromGatewayPackage(raw, parseJsonLines(await res.text()), rasters, snapshot);
+    await attachDatasetGeology(bundle);
+    return bundle;
   }
   const manifest = raw as ReplayManifest;
   const [rasters, timeline, routes] = await Promise.all([

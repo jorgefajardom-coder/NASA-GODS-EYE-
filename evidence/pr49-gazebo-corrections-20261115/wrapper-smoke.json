@@ -1,0 +1,40 @@
+{
+  "run_id": "pr49-wrapper-smoke-001",
+  "source_mode": "MOCK",
+  "mission_acceptance": false,
+  "goal_sent": false,
+  "world_scene": "SIMULATED empty obstacle field",
+  "checks": {
+    "advancing_clock": true,
+    "state_publisher_counts": {
+      "human_1": 1,
+      "drone_1": 1,
+      "rover_1": 1
+    },
+    "clock_publishers": 1,
+    "pause_no_new_acquisition_stamps": true,
+    "pause_no_fabricated_states": true,
+    "resume_new_measured_telemetry": true
+  },
+  "rover_initial_mode": "HALTED",
+  "initial_pose": [
+    -14.007497730378839,
+    -10.012891028562906,
+    -2571.411967796579
+  ],
+  "observed_map_versions": [
+    2
+  ],
+  "goal_not_sent_reason": "The smoke admitted only IDLE at its sampled goal gate; HALTED was observed, so no goal was submitted.",
+  "rover_final_mode": "MOVING",
+  "final_pose": [
+    -14.00749769943842,
+    -10.01289092835047,
+    -2571.4119675601933
+  ],
+  "physical_displacement_m": 2.586080350984851e-07,
+  "status": "PLUMBING_PASS",
+  "recorded_package_validation": [],
+  "raw_summary_sha256": "9fae321853d0285acac7017d2ad01ab5c35605e2ef76790154c8ce4c66858132",
+  "interpretation": "PLUMBING_PASS covers clock, provider exclusivity, pause/resume and recorder closure. HALTED can be a valid measured stop. This run did not test route execution, scientific success or a complete mission."
+}

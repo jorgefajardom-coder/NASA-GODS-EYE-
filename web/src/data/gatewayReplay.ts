@@ -72,7 +72,7 @@ export interface PublicRasters {
   cols: number;
   terrain_geometry: Record<string, unknown>;
   prior: (number | null)[];
-  versions: Record<string, { belief: (number | null)[]; sigma: (number | null)[]; observed: number[] }>;
+  versions: Record<string, { belief: (number | null)[]; sigma: (number | null)[]; observed: number[]; impassable?: number[] }>;
 }
 
 export const PUBLIC_RASTERS_SCHEMA = 'mge-public-rasters-1.0.0';
@@ -325,6 +325,18 @@ export function checkPublicRasters(att: PublicRasters, manifest: GatewayManifest
       seen.add(i);
     }
     versions[key] = { belief: layer.belief, sigma: layer.sigma, observed: obs };
+    // Optional addition to 1.0.0: impassable cells of the same map batch (obstacles, too steep).
+    if (layer.impassable !== undefined) {
+      const blocked = layer.impassable;
+      if (!Array.isArray(blocked)) fail(`versions.${key}.impassable must be a list of cell indices.`);
+      const hit = new Set<number>();
+      for (const i of blocked) {
+        if (!Number.isInteger(i) || i < 0 || i >= cells) fail(`versions.${key}.impassable holds ${String(i)}, outside the grid.`);
+        if (hit.has(i)) fail(`versions.${key}.impassable repeats cell ${i}.`);
+        hit.add(i);
+      }
+      versions[key].impassable = blocked;
+    }
   }
   for (const v of usedVersions) {
     if (v === 0) continue; // no map received yet: no raster can exist

@@ -5,6 +5,7 @@ raster layers: the immutable prior and, per map version, the belief, sigma and
 observed mask of the batch published under that version's stamp
 (mge_gateway.public_rasters). Only public topics are subscribed.
 """
+import math
 import signal
 import struct
 import sys
@@ -14,6 +15,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
 from rclpy.signals import SignalHandlerOptions
+from nav_msgs.msg import OccupancyGrid
 from sensor_msgs.msg import Image
 
 from mge_gateway.public_rasters import PublicRasterAssembler, RasterInputError
@@ -71,6 +73,9 @@ class ReplayRecorder(Node):
             self.create_subscription(
                 Image, f'/mge/terrain/{name}',
                 lambda m, name=name: self.on_layer(name, m), LAYER_QOS)
+        # Optional obstacle layer: the human traversability mask of each batch.
+        self.create_subscription(
+            OccupancyGrid, '/mge/terrain/traversability/human', self.on_traversability, LAYER_QOS)
         self.get_logger().info(f'recording run {run_id} to {self.writer.dir}')
 
     def record(self, kind, msg):
@@ -102,10 +107,24 @@ class ReplayRecorder(Node):
         else:
             self.update_rasters(self.rasters.on_layer, name, header_json(msg), rows, cols, values)
 
-    def update_rasters(self, method, *args):
+    def on_traversability(self, msg):
+        if msg.header.frame_id != 'map':
+            self.get_logger().error(f'not recorded, traversability in frame {msg.header.frame_id!r}')
+            return
+        p, q = msg.info.origin.position, msg.info.origin.orientation
+        if (not math.isfinite(p.z) or abs(p.z) > 1e-6
+                or any(not math.isfinite(v) or abs(v - expected) > 1e-6
+                       for v, expected in zip((q.x, q.y, q.z, q.w), (0., 0., 0., 1.)))):
+            self.get_logger().error('not recorded, traversability origin is not an unrotated map grid')
+            return
+        rows, cols = msg.info.height, msg.info.width
+        self.update_rasters(self.rasters.on_impassable, header_json(msg), rows, cols, list(msg.data),
+                            geometry=(p.x, p.y, msg.info.resolution))
+
+    def update_rasters(self, method, *args, **kwargs):
         """A rejected layer is reported and left out; nothing is filled in."""
         try:
-            changed = method(*args)
+            changed = method(*args, **kwargs)
         except RasterInputError as e:
             self.get_logger().error(f'public raster not recorded: {e}')
             return
