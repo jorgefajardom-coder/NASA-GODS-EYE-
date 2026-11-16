@@ -15,11 +15,11 @@ explicitly endorsed the package (JES-07 / AC-10). Silence is not endorsement.
 
 ## Project Name
 
-Mars Gods Eye
+Mars God's Eye
 
 ## High-Level Project Summary
 
-Mars Gods Eye is a research prototype for exploring Mars terrain, mission
+Mars God's Eye is a research prototype for exploring Mars terrain, mission
 resources and the route home. Its browser presents six illustrative zone scenes
 built from NASA terrain and imagery, with a map and first-person helmet display.
 Separately, a recorded ROS software test demonstrates one kinematic MOCK
@@ -32,11 +32,12 @@ validation remain open.
 
 ## Link to Project Demo
 
-[Same-run software recovery, 21 seconds](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/media/height-recovery-002.mp4)
-([English subtitles](https://jorgefajardom-coder.github.io/NASA-GODS-EYE-/media/height-recovery-002.en.srt)).
-Recorded MOCK human stop/replan/return; parked rover/drone, final READY. This is
-not validated LIVE or a coordinated three-agent mission. Candidate links become
-public after the reviewed merge and Pages deployment; verify before submitting.
+[Mars God's Eye — NASA Space Apps Challenge 2026 (YouTube)](https://www.youtube.com/watch?v=c2VRwuGgy84).
+AI use in the video (voice-over, music, edited media) is declared in
+`docs/AI_USAGE.md`; AI-generated images and footage must show a visible
+`AI-generated` mark. Recorded runs shown are MOCK/simulated software replays,
+not a validated LIVE or coordinated three-agent mission. Before submitting,
+verify the public link, the visible marks and the ≤30 s demo limit.
 
 ## Link to Final Project
 
@@ -250,7 +251,7 @@ viewer, label what is recorded and what is illustrative, and keep the
 | --- | --- | --- |
 | 0:00 | Team logo (with its AI-generated mark) | "We are Houston, We Have a Bug!" |
 | 0:02 | Mars globe turning | "Mars maps are made for regions. Astronauts walk metres." |
-| 0:05 | Zone card, then *Travel* onto the terrain | "Mars Gods Eye: a walkable map built from NASA data." |
+| 0:05 | Zone card, then *Travel* onto the terrain | "Mars God's Eye: a walkable map built from NASA data." |
 | 0:10 | 3D terrain with layers, then the helmet HUD with oxygen, CO₂ and dose | "Terrain, imagery, geology, water and radiation from six NASA missions, with oxygen and the way home on the visor." |
 | 0:17 | Recorded run: contradiction, stop, new route | "When the ground disagrees with the map, the astronaut stops and gets a new route home." |
 | 0:23 | Real Perseverance photo at a real stop | "Real rover photos show what is waiting there." |

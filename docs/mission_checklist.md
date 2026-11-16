@@ -192,6 +192,9 @@ than rewriting historical runs.
   **Acceptance:** notification timestamp, exact package revision/links,
   organizer's explicit endorsement and closure of requested corrections retained
   in delivery evidence. Silence is not endorsement. See the coordination margin below.
+  **Status (15 Nov, 22:11 Bogota):** notified 18:32 and approved, as reported by the
+  owner; final revision, links and receipt pending. See
+  `evidence/delivery-20261115/organizer-endorsement.md`.
 
 ### Jorge: explainable view and backend-independent replay
 

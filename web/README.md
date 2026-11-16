@@ -1,4 +1,4 @@
-# Mars Gods Eye — web viewer
+# Mars God's Eye — web viewer
 
 Owner: Jorge. Integration: Jesús. Scientific review: David.
 
