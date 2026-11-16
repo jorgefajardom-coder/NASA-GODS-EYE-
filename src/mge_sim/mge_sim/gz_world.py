@@ -35,7 +35,6 @@ import warnings
 import zlib
 
 import numpy as np
-from scipy import ndimage
 
 # The drone's rotor animation lives in mge_sim.rotors (pure Python, imported by gz_mirror);
 # re-exported here for existing callers.
@@ -84,10 +83,40 @@ def centre_lattice(grid, n, order=1):
     between, no overshoot). Points beyond the last centre repeat the edge cells."""
     rows, cols = grid.shape
     t = np.linspace(0.0, 1.0, n)
-    yy = (1.0 - t)[:, None] * rows                # north first
-    xx = t[None, :] * cols
-    coords = np.array([np.broadcast_to(yy, (n, n)), np.broadcast_to(xx, (n, n))])
-    return ndimage.map_coordinates(grid, coords, order=order, mode='nearest')
+    return resample(grid, (1.0 - t) * rows, t * cols, order=order)     # north first
+
+
+def _axis_weights(coords, size, order, wrap):
+    """(len(coords) x size) interpolation weights along one axis at fractional indices `coords`:
+    order 1 = linear, order 3 = cubic convolution (Catmull-Rom). Out-of-range taps clamp to the
+    edge ('nearest') or wrap around (wrap=True)."""
+    c = np.asarray(coords, dtype=float)
+    if not wrap:
+        c = np.clip(c, 0.0, size - 1.0)
+    i0 = np.floor(c).astype(np.int64)
+    u = c - i0
+    if order == 1:
+        taps, w = (0, 1), (1.0 - u, u)
+    elif order == 3:
+        u2, u3 = u * u, u * u * u
+        taps = (-1, 0, 1, 2)
+        w = (-0.5 * u3 + u2 - 0.5 * u, 1.5 * u3 - 2.5 * u2 + 1.0, -1.5 * u3 + 2.0 * u2 + 0.5 * u, 0.5 * u3 - 0.5 * u2)
+    else:
+        raise ValueError('order must be 1 or 3')
+    out = np.zeros((len(c), size))
+    rows = np.arange(len(c))
+    for d, wk in zip(taps, w):
+        j = np.mod(i0 + d, size) if wrap else np.clip(i0 + d, 0, size - 1)
+        np.add.at(out, (rows, j), wk)
+    return out
+
+
+def resample(a, ys, xs, order=1, wrap=False):
+    """2-D array `a` sampled on the grid of fractional row indices `ys` x column indices `xs`
+    (separable linear or cubic interpolation, pure numpy). Integer indices return the exact
+    samples; order=1 never overshoots."""
+    a = np.asarray(a, dtype=float)
+    return _axis_weights(ys, a.shape[0], order, wrap) @ a @ _axis_weights(xs, a.shape[1], order, wrap).T
 
 
 def fractal_noise(n, seed, octaves=6, base=8):
@@ -97,7 +126,8 @@ def fractal_noise(n, seed, octaves=6, base=8):
     for o in range(octaves):
         cells = base * 2 ** o
         coarse = rng.random((cells + 1, cells + 1))
-        total += amp * ndimage.zoom(coarse, n / (cells + 1), order=3, mode='wrap')[:n, :n]
+        at = np.linspace(0.0, cells, n)            # the coarse lattice stretched over n samples
+        total += amp * resample(coarse, at, at, order=3, wrap=True)
         norm += amp
         amp *= 0.55
     total /= norm
@@ -319,18 +349,50 @@ def read_glb(path):
     return g, bin_
 
 
-def _accessor_bytes(g, bin_, i):
-    """Tightly packed raw bytes of accessor i (byteStride removed)."""
-    acc = g['accessors'][i]
-    if 'sparse' in acc or 'bufferView' not in acc:
-        raise ValueError('sparse or view-less accessors are not supported')
-    view = g['bufferViews'][acc['bufferView']]
-    item = np.dtype(_COMPONENTS[acc['componentType']]).itemsize * _WIDTH[acc['type']]
-    start = view.get('byteOffset', 0) + acc.get('byteOffset', 0)
+def _view_bytes(g, bin_, view_index, offset, item, count, what):
+    """`count` tightly packed items of `item` bytes from a bufferView (byteStride removed)."""
+    view = g['bufferViews'][view_index]
+    start = view.get('byteOffset', 0) + offset
     stride = view.get('byteStride') or item
+    end = start + stride * (count - 1) + item if count else start
+    if view.get('buffer', 0) != 0 or end > len(bin_) or end - view.get('byteOffset', 0) > view['byteLength']:
+        raise ValueError(f'{what} reads outside its bufferView or the GLB BIN chunk')
     if stride == item:
-        return bin_[start:start + item * acc['count']]
-    return b''.join(bin_[start + k * stride:start + k * stride + item] for k in range(acc['count']))
+        return bin_[start:start + item * count]
+    return b''.join(bin_[start + k * stride:start + k * stride + item] for k in range(count))
+
+
+def _accessor_bytes(g, bin_, i):
+    """Tightly packed raw bytes of accessor i (byteStride removed), sparse substitutions applied.
+
+    glTF 2.0: an accessor without a bufferView starts as zeros; a sparse accessor starts from
+    that base (its bufferView, or zeros) and then replaces the elements at `sparse.indices`
+    with `sparse.values` (both tightly packed, in their own bufferViews)."""
+    acc = g['accessors'][i]
+    if acc.get('componentType') not in _COMPONENTS or acc.get('type') not in _WIDTH:
+        raise ValueError(f'accessor {i} has an unsupported componentType or type')
+    item = np.dtype(_COMPONENTS[acc['componentType']]).itemsize * _WIDTH[acc['type']]
+    count = acc['count']
+    if 'bufferView' in acc:
+        base = _view_bytes(g, bin_, acc['bufferView'], acc.get('byteOffset', 0), item, count, f'accessor {i}')
+    else:
+        base = bytes(item * count)
+    sparse = acc.get('sparse')
+    if not sparse or not sparse.get('count'):
+        return base
+    n, ind, val = sparse['count'], sparse['indices'], sparse['values']
+    if ind.get('componentType') not in (5121, 5123, 5125):
+        raise ValueError(f'accessor {i} has an unsupported sparse index componentType')
+    ind_type = np.dtype(_COMPONENTS[ind['componentType']])
+    idx = np.frombuffer(_view_bytes(g, bin_, ind['bufferView'], ind.get('byteOffset', 0), ind_type.itemsize, n,
+                                    f'accessor {i} sparse indices'), dtype=ind_type).astype(np.int64)
+    if idx.size and idx.max() >= count:
+        raise ValueError(f'accessor {i} has a sparse index beyond its count')
+    values = np.frombuffer(_view_bytes(g, bin_, val['bufferView'], val.get('byteOffset', 0), item, n,
+                                       f'accessor {i} sparse values'), dtype=np.uint8).reshape(n, item)
+    out = np.frombuffer(base, dtype=np.uint8).reshape(count, item).copy()
+    out[idx] = values
+    return out.tobytes()
 
 
 def accessor_array(g, bin_, i):
@@ -674,13 +736,25 @@ def derive_walking_actor(src, out_dir, height_m=WEB_MODEL_FIT['HUMAN'][1], clip_
 
     def rewrite(i, fn):
         acc = g['accessors'][i]
-        view = g['bufferViews'][acc['bufferView']]
+        if acc.get('componentType') != 5126:
+            raise ValueError(f'accessor {i} is not float32; the walking actor cannot be rescaled in place')
         a = fn(accessor_array(g, bin_, i).astype(np.float32).copy()).astype(np.float32)
-        item = a[0].nbytes
-        start = view.get('byteOffset', 0) + acc.get('byteOffset', 0)
-        stride = view.get('byteStride') or item
-        for k in range(len(a)):
-            data[start + k * stride:start + k * stride + item] = a[k].tobytes()
+        if 'sparse' in acc or 'bufferView' not in acc:
+            # No dense bytes to rewrite in place (and a sparse base view may be shared): store the
+            # decoded, transformed values as a new bufferView and drop the sparse block.
+            data.extend(b'\x00' * (-len(data) % 4))
+            g['bufferViews'].append({'buffer': 0, 'byteOffset': len(data), 'byteLength': a.nbytes})
+            data.extend(np.ascontiguousarray(a, dtype='<f4').tobytes())
+            acc.pop('sparse', None)
+            acc.pop('byteOffset', None)
+            acc['bufferView'] = len(g['bufferViews']) - 1
+        else:
+            view = g['bufferViews'][acc['bufferView']]
+            item = a[0].nbytes
+            start = view.get('byteOffset', 0) + acc.get('byteOffset', 0)
+            stride = view.get('byteStride') or item
+            for k in range(len(a)):
+                data[start + k * stride:start + k * stride + item] = a[k].tobytes()
         if 'min' in acc:
             flat = a.reshape(len(a), -1)
             acc['min'], acc['max'] = flat.min(axis=0).tolist(), flat.max(axis=0).tolist()
@@ -730,9 +804,11 @@ def derive_walking_actor(src, out_dir, height_m=WEB_MODEL_FIT['HUMAN'][1], clip_
     g['scenes'], g['scene'] = [{'nodes': [root]}], 0
     g['animations'] = [clip]
     g['asset'] = {**g.get('asset', {}), 'generator': 'mge_sim.gz_world (derived walking actor of the web astronaut)'}
+    data.extend(b'\x00' * (-len(data) % 4))
+    if g.get('buffers'):
+        g['buffers'][0]['byteLength'] = len(data)
     text = json.dumps(g, separators=(',', ':')).encode()
     text += b' ' * (-len(text) % 4)
-    data.extend(b'\x00' * (-len(data) % 4))
     Path(out_dir, name).write_bytes(struct.pack('<4sII', b'glTF', 2, 12 + 8 + len(text) + 8 + len(data))
                                     + struct.pack('<I4s', len(text), b'JSON') + text
                                     + struct.pack('<I4s', len(data), b'BIN\x00') + bytes(data))
@@ -1008,7 +1084,7 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
     def ground(x, y):
         j = (x - x0) / width * (HEIGHTMAP_SIZE - 1)
         i = (1 - (y - y0) / height) * (HEIGHTMAP_SIZE - 1)
-        return float(ndimage.map_coordinates(verts, [[i], [j]], order=1, mode='nearest')[0]) - z_ref
+        return float(resample(verts, [i], [j], order=1)[0, 0]) - z_ref
 
     terrain = (f'<heightmap><texture><diffuse>albedo.png</diffuse><normal>normal.png</normal>'
                f'<size>{width}</size></texture><uri>heightmap.png</uri>'

@@ -324,8 +324,9 @@ def test_unsupported_rover_glb_falls_back_to_the_whole_model(tmp_path):
     """PR #51 review: an unsupported glTF layout must not abort the whole world build."""
     models = tmp_path / 'models'
     models.mkdir()
-    # The wheel positions become a view-less accessor, which the minimal reader rejects.
-    rewrite_glb(wheel_glb(models / 'rover.glb'), lambda g: g['accessors'][0].pop('bufferView'))
+    # The wheel positions get an unknown component type, which no glTF reader can decode.
+    # (A view-less accessor is valid glTF 2.0 and is now decoded as zeros plus sparse values.)
+    rewrite_glb(wheel_glb(models / 'rover.glb'), lambda g: g['accessors'][0].update(componentType=9999))
     out = tmp_path / 'w'
     with pytest.warns(RuntimeWarning, match='derive_rover_parts'):
         meta = build_world(out, GRID, np.full((32, 32), -2570.0), [], [('rover_1', 'ROVER', -14.0, -10.0, -2570.0)],
