@@ -1,0 +1,24 @@
+{
+  "classification": "INDEPENDENT_QUIET_SERIAL_QUERY_AUDIT_NOT_MISSION_OUTCOME_REPLACEMENT",
+  "audited_at_utc": "2026-11-15T22:23:56.964153+00:00",
+  "checks": "PASS",
+  "selected_and_completed_queries": 20,
+  "statuses": {
+    "FEASIBLE": 12,
+    "UNKNOWN": 8
+  },
+  "limits": {
+    "max_labels": 1000000,
+    "timeout_s": 8.0
+  },
+  "queries_sha256": "599c86cd3730933b2f7cd0f910d33ef28a16f4138f10f81fbd1c530c16b181ad",
+  "verified": [
+    "All 20 originally adverse conditions were repeated exactly once.",
+    "Original query and payload identities match.",
+    "Actual XYZ, map version, remaining resources, reserves and primary service match the original posterior request.",
+    "FEASIBLE query starts and directed return targets are preserved.",
+    "All eight remaining UNKNOWN results retain SEARCH_LIMIT.",
+    "No execution was rerun and no primary outcome was replaced."
+  ],
+  "interpretation": "A selected-case serial computational diagnostic. Host and scheduler uncertainty are not fully controlled, and the original primary estimates remain unchanged."
+}

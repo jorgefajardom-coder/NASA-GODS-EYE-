@@ -15,3 +15,5 @@
 [Bibliography](Bibliography.md) · [Reproduction](Reproducibility.md)
 
 [Visual edition: selection and review](Editorial-Review.md).
+
+[Paired fixed and adaptive planning study](10-Adaptive-Planning-Study.md).

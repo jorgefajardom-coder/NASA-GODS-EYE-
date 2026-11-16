@@ -1,0 +1,39 @@
+{
+  "classification": "POSTHOC_PRIVATE_SYNTHETIC_WORLD_AUDIT_NOT_PLANNER_INPUT",
+  "audited_at_utc": "2026-11-15T22:15:30.909117+00:00",
+  "batch": "published-step-controls",
+  "checks": "PASS",
+  "journal_sha256": "bf8f3b4c2555b7b369b2feefe79e054ccb248af0ef46d7fb737d3e398c8d1d97",
+  "auditor_sha256": "1db94e2b7a9b6dbc53dace3496543629d9f707fbc6d755ee9072056ceb42373c",
+  "blocks": 3,
+  "max_20m_computational_block_mean_error_m": 0.0,
+  "checks_performed": [
+    "Independent mission seed to endpoint reproduction",
+    "Independent world stream seed derivation",
+    "Public prior plus recorded world specification to complete world hash",
+    "NoData preservation",
+    "Protected base elevation",
+    "20m computation-block residual mean within1mm"
+  ],
+  "scope": "The post-hoc auditor may reconstruct the private hypothetical world after decisions were recorded. No generated private arrays or future observations are exported to the planner consumer.",
+  "cases": [
+    {
+      "block_id": "hawksbill-256-unchanged-0-broad",
+      "endpoint_reproduced": true,
+      "world_sha256": "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bright-256-unchanged-0-broad",
+      "endpoint_reproduced": true,
+      "world_sha256": "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4",
+      "max_block_mean_error_m": 0.0
+    },
+    {
+      "block_id": "bunsen-256-unchanged-0-broad",
+      "endpoint_reproduced": true,
+      "world_sha256": "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980",
+      "max_block_mean_error_m": 0.0
+    }
+  ]
+}

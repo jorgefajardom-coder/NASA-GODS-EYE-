@@ -1,0 +1,124 @@
+{
+  "classification": "INDEPENDENT_SCIENTIFIC_PUBLICATION_REVIEW_NOT_OPERATIONAL_ACCEPTANCE",
+  "reviewed_at_utc": "2026-11-15T22:09:13.322755+00:00",
+  "article_path": ".local/rigid-adaptive-study/article-final.md",
+  "article_sha256": "c3df86e092ad25c8eecbe98e7970f0983a748055fe90d247587a810515dbd65b",
+  "status": "PASS",
+  "counts_cases_and_scientific_scope": "PASS",
+  "reviewed_source_sha": "3c82d72f972109113216039bff5cfd491df5f1ba",
+  "closed_catalogues": [
+    {
+      "name": "main",
+      "sha256": "307f1466b19948b7455bb76595f9fadf3ea0ad194a68b9e3582895cd8ae2429a",
+      "blocks": 360,
+      "conditions": 1440,
+      "fixed_credit": 875,
+      "adaptive_credit": 855,
+      "fixed_only": 20,
+      "adaptive_only": 0,
+      "optional_extras": 317
+    },
+    {
+      "name": "directed",
+      "sha256": "c7014c75b4d38fdc493b10afc3cff59ad905431b9aa7ebd73ebafb4b59eefb79",
+      "blocks": 120,
+      "conditions": 480,
+      "fixed_credit": 181,
+      "adaptive_credit": 214,
+      "fixed_only": 3,
+      "adaptive_only": 36,
+      "optional_extras": 92
+    },
+    {
+      "name": "extended-1024",
+      "sha256": "6fc5b9f6bf04ab739f4c2b53c0d04348f2bb9d959077275bd9b2a70cdeccfd5b",
+      "blocks": 180,
+      "conditions": 720,
+      "fixed_credit": 233,
+      "adaptive_credit": 211,
+      "optional_extras": 82
+    }
+  ],
+  "verified": [
+    "Both tables of completion counts, optional work counts, paired estimates and confidence limits match the closed catalogues and final analysis summaries.",
+    "Main initial statuses match FEASIBLE890 / NO_PATH484 / UNKNOWN63 / INSUFFICIENT_BUDGET3; two common prefix halts are retained.",
+    "Main geometry counts match 888 decisions / FEASIBLE858 / UNKNOWN30 / unchanged612 / changed246.",
+    "Directed geometry counts match 285 decisions / FEASIBLE274 / UNKNOWN10 / INSUFFICIENT_BUDGET1 / unchanged152 / changed122.",
+    "All76 INVALID_START_Z errors are relief-family optional queries following primary completion; all76 episodes returned.",
+    "All20 main fixed-only completions are SAFE posterior-primary SEARCH_LIMIT cases.",
+    "Strict sigma controls contain12 UNKNOWN/UNVERIFIED_CORRIDOR; published-step controls contain8 NO_PATH and4 insufficient budget.",
+    "Four case narratives and their numerical observations, checkpoint resources, outcomes and margins match their raw block/condition records.",
+    "The text distinguishes fixed native CTX20m from resampled4m grid, nominal profile coefficients from coupled mission tiers, broad from directed design, dependent repeated conditions from independent seeded blocks, and model completion from verified mission execution.",
+    "The text explicitly describes paid observations, ideal/noiseless synthetic sensor values, analytical guards, one checkpoint, exogenous additional INSPECT at B, no new spatial target, unequal return fallback, no sampling workflow, and no probability-of-Mars-discovery inference.",
+    "The final 1,024 m raw records independently reproduce 180 blocks, 720 conditions, 233 fixed completion credits, 211 adaptive credits, 82 extra inspections and 111 world hashes. Initial queries contain 239 FEASIBLE, 291 UNKNOWN, 184 NO_PATH and six INSUFFICIENT_BUDGET results. Posterior queries contain 211 FEASIBLE and 28 UNKNOWN, with 149 retained and 62 changed horizontal geometries.",
+    "All 20 original adverse queries were repeated once with identical public state, actual XYZ, remaining allocations, reserves, primary service and original 8 s / 1,000,000-label limits. Twelve returned FEASIBLE and eight UNKNOWN. No original outcome was replaced.",
+    "The final article separates larger task spans, 20 s supplementary limits and lower-load query checks from the predeclared broad estimate, and qualifies intervals as empirical scenario-resampling sensitivity under shared-host scheduling."
+  ],
+  "provenance_clarification": {
+    "location": "Reproducing the comparison, after the paragraph describing the published baseline and local wrapper",
+    "text": "The allocation helper and campaign-analysis JSON were identified and copied after the first cases had started. Their hashes and capture times are retained in the input-closure record; no modification was observed. This post-start dependency closure is distinct from the producer and statistical-plan locks recorded before the main batch.",
+    "reason": "The companion input-closure.json already records this timing limitation; the main explanatory page should retain it for a reader assessing source freezing.",
+    "resolved": true
+  },
+  "optional_editorial_note": {
+    "location": "First paragraph",
+    "suggestion": "Use newly announced additional inspection at B in place of newly identified optional objective to match the later exact description.",
+    "resolved": true
+  },
+  "technical_identity_note": {
+    "experimental_event_identity": [
+      "study_identity",
+      "block_id",
+      "condition_id",
+      "event_id"
+    ],
+    "explanation": "The notice event_id is reused across four nested analytic conditions while their payloads can differ by agent. Each matched policy pair sees the same payload. These are separate analytic condition missions, not four notices submitted to one MissionManager or ROS run."
+  },
+  "source_freeze_note": "Runner resume does not enforce stored imported-module lock bytes itself. No main/directed resume occurred; independent final audits check these hashes. Preserve the explicit final hash audit and input closure with publication.",
+  "remaining_checks": [],
+  "mandatory_ai_declaration": {
+    "tool": "OpenAI Codex",
+    "use": "AI-assisted independent source, scientific accounting and publication review; no authorship claim."
+  },
+  "previous_review_article_sha256": "fd5d772008328f97d66872700b8f771054d48f88b27f3c2d02371854b15a85d7",
+  "clarification_resolved_at_utc": "2026-11-15T22:10:57.815344+00:00",
+  "pass_scope": "Final frozen article, closed main/direct/1024 catalogues, both strict controls and completed separate serial query diagnostic.",
+  "figure_visual_review": {
+    "status": "PASS",
+    "checks": [
+      "All three displayed figures have visible legible AI-generated and SIMULATED labels.",
+      "Effect directions, values, confidence limits and scenario counts agree with the final data.",
+      "The comparison plots distinguish percentage points from additional objectives per episode; the prose specifies extra INSPECT at B.",
+      "No NASA branding appears in the generated charts."
+    ],
+    "files": [
+      {
+        "path": "analysis-main/paired-effects.png",
+        "sha256": "bf95092c3d0d570109954def0c195945f2a27088583e06a37b7d56488eed213c"
+      },
+      {
+        "path": "analysis-main/paired-coverage.png",
+        "sha256": "66361c41ef46ae393b3cfc73c461b93017d5400ad6ce0e7d70f12d03121c2454"
+      },
+      {
+        "path": "analysis-directed/paired-effects.png",
+        "sha256": "4178b76e4a4f6a68ab40a857f1b978d91c7e7eb0dffded32adfe5eec75528d0d"
+      }
+    ]
+  },
+  "final_reviewed_at_utc": "2026-11-15T22:24:55.235239+00:00",
+  "independent_evidence": [
+    "source-review-main-final.json",
+    "source-review-directed-final.json",
+    "source-review-extended-final.json",
+    "source-review-strict-sigma-final.json",
+    "source-review-published-step-final.json",
+    "input-review-final.json",
+    "seed-review-results.json",
+    "seed-review-directed-results.json",
+    "seed-review-extended-1024-results.json",
+    "seed-review-strict-sigma-controls.json",
+    "seed-review-published-step-controls.json",
+    "quiet-serial-review.json"
+  ]
+}

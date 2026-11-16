@@ -1,0 +1,25 @@
+{
+  "classification": "SIMULATED_ANALYTICAL_RECORD_AUDIT_NOT_OPERATIONAL_ACCEPTANCE",
+  "audited_at_utc": "2026-11-15T21:52:32.817847+00:00",
+  "directory": "C:\\Users\\User\\.codex\\worktrees\\david-mission\\Hacktón NASA\\.local\\rigid-adaptive-study\\results",
+  "manifest_sha256": "23947914cc9faab7d5a8a3772bca58c519d23b9a93732187ecb6b30aaeb3ebec",
+  "journal_sha256": "307f1466b19948b7455bb76595f9fadf3ea0ad194a68b9e3582895cd8ae2429a",
+  "journal_bytes": 30679375,
+  "auditor_sha256": "49c9da8949bd95f28b5b5c6dc19a7cd465f135058f18512eb33a3431c001fc04",
+  "module_hashes_verified": 14,
+  "checks": "PASS",
+  "counts": {
+    "blocks": 360,
+    "conditions": 1440,
+    "paired_episodes": 1776,
+    "explicit_unavailable": 552,
+    "observations": 888,
+    "movement_intervals": 96137,
+    "activity_intervals": 5975
+  },
+  "limits": [
+    "Read-only prefix snapshot while workers may append later records",
+    "No physical, ROS, sensor, geological or scientific-profile approval",
+    "Unavailable conditions have no executed itinerary; safety cannot be inferred for unattempted motion"
+  ]
+}

@@ -1,0 +1,1596 @@
+{
+  "classification": "SIMULATED_EXPLORATORY_ANALYTICAL_NOT_LIVE",
+  "analysis_scope": "primary",
+  "selected_design": "broad",
+  "independent_unit": "independently seeded scenario/mission block conditional on fixed public terrains",
+  "primary_design": "broad",
+  "n_planned_blocks": 360,
+  "n_planned_selected_blocks": 360,
+  "n_planned_broad_blocks": 360,
+  "n_recorded_blocks": 360,
+  "n_complete_broad_worlds": 360,
+  "n_independent_analysis_blocks": 360,
+  "n_recorded_paired_conditions": 1440,
+  "n_directed_blocks": 0,
+  "n_incomplete_blocks": 0,
+  "n_pending_inventory_blocks": 0,
+  "coverage": {
+    "all_planned_seed_blocks_complete": true,
+    "n_planned_selected_design_blocks": 360,
+    "n_planned_selected_design_blocks_complete": 360,
+    "unexpected_recorded_block_ids": [],
+    "interpretation": "Complete stratum representation and complete planned-seed execution are separate checks. Deadline-dependent availability can bias a partial catalogue."
+  },
+  "terrain_realizations": {
+    "n_recorded_world_array_hashes": 222,
+    "n_blocks_with_world_hash": 360,
+    "array_hash_multiplicities": {
+      "009cd242dc38dbe7da4f6ee82732e4b5e23f8e7288a534bdf009e4d8e5d3bbe9": 1,
+      "02301f18ef49b971c04866fff3e8555996e5e0fc3adc53948f83163bc2a55a45": 1,
+      "02677a95f2883755b7553769896a8271b6917c429cb362e53bca906bf976acc0": 1,
+      "0380e38bdda785175517528be94067796f9d3603107e1e76932f5c26b242cef9": 1,
+      "0463f14a239007b63a0ec46cabcb4adb27e055615e8b37f238045d8face47cc2": 1,
+      "04ec19691eca66a494031e794f96d1af9d07ea4ab18b661f4920dee7d93961d4": 1,
+      "059412fa99417e0a4962a32200645574892cf37db626e36d53950a0eb1845e9e": 1,
+      "05a1ba7caaee44419a5b4f6678da44bc2793312b0fc0005ae293c01e0cbcef49": 1,
+      "06486abd5ee73b7a8e781c416b105cd9e098776fbbbb85808251bf8bd8a7d356": 24,
+      "0672149b92c05e8546c88a25318e37c013484c662d86a74d6324ccab271af035": 1,
+      "0835a491bc78c460e7696c93ea04caeaa41b03c131c4033687b1a0447aa966dd": 1,
+      "086e86b4b133d39a770dbfbdb55193904d696bfd5db4f6f698eced335f0dbe3d": 1,
+      "09db2b6db6d8187523582db7e4d8cfa71f6a3702511ffb974ed38b39a540e989": 1,
+      "0a17e179ed813bfd3d37d487e628c19003574dc06b136c35169744279f7b0636": 1,
+      "0a89ea90e16dfd64b01e6a599c52284ce3fb9e784b9c4aaf3054960193858a4b": 24,
+      "0ab87d48d632458ca8dc317b89a965861eb868149dd4eea2df20664fe7512223": 1,
+      "0e69d6226845d9ecd6824f3f2063622c53cb6d09140ec859ec50b8d6b49a9769": 1,
+      "0fbe4114094890ec36fcdf18af5a84a8cd9a9e127df8b572c85cbb502a648c3d": 1,
+      "110339e27ccd9d6508735c6423ea30b58326a0d180bd7c768d6464921a39a47d": 1,
+      "113ad6f83066ea7d2e61d405dc8a9f688a28c0ee9af6b2899adc712d6502d15e": 1,
+      "12e810d6c2c7a4c7a506e107453759340d1775f8842df75845a3c543fc31edf6": 1,
+      "179c32cf71811eba6af69628e249ab61dbe6c1877a889ea1138aab114bd0e973": 1,
+      "17a84659f6531c019627bc82bec366a41d6e5214ab1b05a7434099301596dde9": 1,
+      "17da8da95c60bd044c70ddaa4f09c66453be2106d8518afc691dad720dd225bc": 1,
+      "1d046155f7aa129f8809f215e60a8e3381e5d4717e74cb9dcc1b8dca4b53ec00": 1,
+      "1e876fca12e4e4a6120a52f10c2a10faaae5ffbaf1334d611000ad1a37ad08f0": 1,
+      "1e8bf88392f3d082deb9ec23a43cb3482857580a9a619e963d08af78ff40ffed": 1,
+      "1ea58457ea261c84931413efa94fbca063482bd46e8c96598d59865289198a88": 1,
+      "1eddb98be6c42807812636443a7ebf37a8a9d965f418a8aa3d8d6718b384e2fd": 1,
+      "20821df62d345a30ef946580b52c8b5523563134908471838f469244e44ccf01": 1,
+      "21c3a0b1892ae2e069cbb68f29815d0babc73d36aeec82f1564b782796dea090": 1,
+      "242ef88cfa18af70fa3f2b97ec96d8364ca2c749d8519267574acc32537cab9a": 1,
+      "24ac4a4acce9959c6127cf50d2a46320cfd8bf4c3377a3b98b9b9874a5dcd181": 1,
+      "258959b63ba073af1f5abf03e14862d68c733fb21bbac3c98f915e0878534449": 1,
+      "25e053f8b2ad1432f3b815a77b2639763613aa1b4554584187e6634189d111d4": 1,
+      "26e815a45fa4f0c1f28484b446cbc020b299eac772c5d51271408d9cefdef5f2": 1,
+      "275979f080b95d798f8b982d91b86d54a64de1eb302891005f6b6320e8d257c2": 1,
+      "279add3561945b6ee6e2f4f2a7aeb7d351794b4f1eacc98990ea0b6cb35e12a4": 1,
+      "28531b26740720d64a3fd445f120e2797734d74be7dc5610f532c22603560e20": 1,
+      "28afc63fcf9340baaf4399b5946f06423a4cfdebdba4c2298d1c4cf897d7a74f": 1,
+      "296451791de43268c1f233554bcf1ee69efa3f8347fa1b95e82dfc2465eaeb60": 1,
+      "2969cc46073340a77768603938c8e7c86fd032be88032fba53752941cd717df3": 1,
+      "29a1cc9686e8c56b98c6afce74397f3e6f62666bf7e40ee576e1f78897b79ff7": 1,
+      "2b206b27252e85892098adaa5963451fefc92def8304c83739e0370a48e04547": 1,
+      "2b6cc37133f27991654562d667822d1f193459b2f060ee5f9b7c0a6b071f295f": 1,
+      "2b9c35b9c2a042a77ea3835641682a51e2edf255f0d998c37d214927b88abebc": 1,
+      "2bdc549c616ed3fe7772454aa7f96b83288bdb23bcbe42e203639134a182d165": 1,
+      "2c520625ab99b4730920a4a0fcbb7d07a038c2b159efa6cdd88b9e2437ea88a1": 1,
+      "2e8c4c6442801136f4eab20f50ee299a5450fc045cdeab35a4311499630df0d0": 1,
+      "2fa43322c9d2e7e7f5ce2237edc028bed11e1282994caf6bdb4bb29f83cb8028": 1,
+      "302107218320aab74da8b397cb2e088fcae387b24f2dd5100c98a6a949e690ef": 1,
+      "308a26e8e7eb2b95b0b0228a7bbcbf303181c474f081550a339b4776889a12b0": 1,
+      "3114c721c319916b01464cfff49a67919936d9acee534df0273fcfba706b3f89": 1,
+      "31514314d7cb3251aa0f4310d18be74f042d1f5115500927c6d932e520293225": 1,
+      "31c737bcbb3040bcbfbe81946f068dcbb5405640a6b53c79239afdcc79d89e15": 1,
+      "3240e634ab8ef450f04b8cc6817ad91829c3e0617422b1dc8ff3ab67d2422912": 1,
+      "346c62213e5a8b7b83e3d6e42f8e51325e69a2c4f963bfdd1cd0b47fbc518343": 1,
+      "35507ed2ab1d633fcebf7725ab0fcbd1233faf862c2d2c51bfdc52bff9a9674b": 1,
+      "356d6b6ef50d79be1a332c9598e4ae31f05b85b6ec34881be330608fa3d0ec19": 1,
+      "3674728480f5a69c745d04e876da85840b3711aaa46354ac01fbdf1ebc1c1dfb": 1,
+      "376b86356bc77b7ae664b4d2b1d2ab4ed8168d5df8a977ac09d7459cd8be105d": 1,
+      "38da6c3c89034bd4493313d60aaafa278963f091dd9ee77490c3924a2086af3b": 1,
+      "39bff2adbe0fdb946a2bab3c8e7ad3a122db20b74ce01daf705dec1421c1098f": 1,
+      "3b06a21593d765a65ae8c1bb9342cd929c6f91c79c5c6aca72e1f2a71e14a754": 1,
+      "3c643c0f473c6285403aed238b827fcbc87f64c25a90a7d0b83ae28fb2ad2268": 1,
+      "3c7b66b16a70c65572db6e1a01026351ece4e7d2a268e1b3318d2ae6e1b730fc": 1,
+      "3d2a8563a3b6f137d20bb4de520bd2ce194b5433e645b7728850114e8f1f383c": 1,
+      "3d5f997b9dd338c37955fe2821b23aed48e2691c8d92a6efef40926b8fa045ee": 1,
+      "42ed0213d15b80094a60c80c6ba7ccfb40d6a2216b835aaa3e930af2887e5e29": 1,
+      "43ab0dbe57deb3f3900df839e4f54f0f2e368c2b1f60ab2cf4276b0264b24135": 1,
+      "45330c49ee9adc5828889a75aae3eafed5599859ebe2f7a8e4875f64e8df9c23": 1,
+      "454d67dd17d10f5b53c5f639658753aed33bb7b25922795dd4d08ceffba1eb56": 1,
+      "468fe267f0aaa5aab157245076b49c2a6f2d2726b4d2cf4624885ba935c19139": 1,
+      "46d75f7d4797b5ac3b147678b9d1d425f5a89b39afb9fe94ee568d744e9f60f0": 1,
+      "4767bb4ebd3cb7da11acdef6cd3afd4e2fa74a6cc4d16380c49268cfb53af3dd": 1,
+      "48dfc85c0415167d6b43c4b86afadd43a1e302ec53e254f010685b34c3a9f995": 1,
+      "49af0cc1c0b2aaf33558320f595dc7792211379d5b38408d1d1a2c5a579a3a5d": 1,
+      "4ba7db1bc46cd2f97f69db4f17148a07adfc855efc61f78513db97c209a8bdf8": 1,
+      "4c4ff37cbc79ed845e9466c16a88b89c2df178194e9606f6bf5f7fdff223e7b3": 1,
+      "4c8bacbee493fda66114fe9ee9524d7afff00cdc9a66483b9a137ef864a90b93": 1,
+      "4ccc7a0ab04cd85d5ec2f67a8f2d9ee49fdd8e33a28b6f2f771ee23f23ca2dd2": 1,
+      "4d280b578b2ffec27cb835fda0da058db58379e7f207a0beb9a7b20b6417b047": 1,
+      "4f7a1d12a95031aefbd3e97a827d4f5ef094103319bb88ebc15eefc5921fffbc": 1,
+      "555cfff6414cda4b72b2573668de9c0c30a53e776f5bd6f2a4bf7185e29721a7": 1,
+      "57502c95e9009fa9103eb117e1c11a91165d31ee6493ca99baa807e8f6ea7b63": 1,
+      "5868899336d31e06d82027af090befb0d56d93f3d7b6806d6ca075e593239154": 1,
+      "5a6c80a4a37a723816d22aa8ca841dd9813904cef1896cd78192e3a1f4303898": 1,
+      "5b1fafbcd2c11b98e358dbf8f647119261c507af60fd8c393444eeea32a4f2d3": 1,
+      "5b4c3db51a549a7770d0110d0a9a4446b81cbedef8d9144eba901f44e8050d94": 1,
+      "5d10a1345cc99afd8aa78c213f5c24c1e9fd303009c5b4bc1fa1a14efad16eaa": 1,
+      "5d369426f40d0679558739b567de951ab03aff0b5a0523855ce2fa5ef376fbf1": 1,
+      "5e7917e9bc0fe263be913cad577eb48698ae13c600dc3d4207c556c4815a27ef": 1,
+      "5f42438f1e446861713a2f9173b2e1699a4d38889d30d1a4e645660e3b5cec67": 1,
+      "6419ea079f8c3c0d08c2546f4e8f78440cda9f22e29f0c1d91fe02a3f230ba05": 1,
+      "644fdc1f460ad426529778ece5ec5909b1f6447a78935868ea40acedf5780153": 1,
+      "681fad468b1846680b3af1ba11dd704ef471f28fb8f89475756e44671afe87d8": 1,
+      "6a8eb8cdb7738c0c3bbbb0b26c223990682a8c621f0bf2b900cc4c248d06c896": 1,
+      "6b606cf6e5834bcf7d19962c141f5f1dd550f00cbafd0ac9c08f350829397a4f": 1,
+      "6c709c976389a4f8703fbdc6e8720ff70e1fc60283aa50f7e534fb24eb6b4b15": 1,
+      "6c905bd434142bd1e0138708659e82688b6093fbd645859d612f97befe3911d5": 1,
+      "7168ab112cef65d212be1a30096b56e73c2be50095bc82f3e8abc08959a119f0": 1,
+      "71c135f327af0de582db8851eeaf415197e4b91c37dc4e2950d9dbfa9ce6caaa": 1,
+      "71e64cc84662c1e1147ce24171d528500d57cd468f2d108648b9c77ffb80c1ea": 1,
+      "721e45a1416b9009400d1b446db427d869a62d793b86bb2591bd372993551f75": 1,
+      "74361d3eefbfea7d7e29bd747310bb68779bfdeeb796fc29a85c39cb602785f5": 1,
+      "7724a6ee3616e2af6a2010e8a58ebb26bb678556f71c0b4182afbb15b2e27185": 1,
+      "779679164cecd53476e9a54944355adcd7460e4316474c4ca98ef513f2065980": 24,
+      "7865394261a38960edc2d6454f79dc98bc1be5a5f73f40d0853bdfbac310861f": 1,
+      "7ad0efe44bd3fad71efc5f737d35ee2fb80f5e056edf1f3e5e22ba9ff67a02fe": 1,
+      "7b101957c3794e4a9a58d28b19b48ae53ce9b4a7f45d11662ad7ece7bbaff54c": 1,
+      "7b45d7d1c9779ea2424a00db249a8ba6be2a443b6b35329eb51f90b69e807ed8": 1,
+      "7b83cc89fd79395dbee5bd563d1128974c329f3ac4a355d0f5dbda7be74cd17d": 1,
+      "7ba198f9841233e78e2054c17279d61dd0dcdf559b680c34eaf0753eeac96a39": 1,
+      "7c613d36b04b68c0efe37de13427781aa05bbf45383e4e252dd464e8d6a90585": 1,
+      "7e015258e825287ce4b4eb7a3e4f167b0af3c3b631f4b49dc2a492dab753520e": 1,
+      "7ef172175b1632068f469252b9d111500187fd9ea75866ee4d5bb102607b4ad5": 1,
+      "7f14f47197de520c7932a2d8c0c02ed4b47047b435f0b5f1e26ef43e7c2abeee": 1,
+      "839f3b188d5c62e3cf896c5347b7b8cfaa97d3b1e45a59585b54c2aa1cc41db9": 1,
+      "84c5a322e40c4b29a7872878dae9826945f712c4980652a6c01006779315e726": 1,
+      "8560bf3d93b393d698eb0b81824cb0eaf8187a6418f6bfaa8fc43db360bd3405": 1,
+      "8ae94153267c2131cb6f716740c12ba2f7b05ad120a6f388f0cac2142cffebf8": 1,
+      "8b4c43183cbeb3b4b0a4c3adcafeec7a910e1bca2aef9b3f3ab0bd05b16762b3": 1,
+      "9207187f442c17b1c2cbfe8e451601a2008c4cfc4a869bed4c24106a086ad65f": 1,
+      "92b5895304e153f9bccd88e95aaaedfc1ad6080f061eeb0155fea40a1fa62b33": 1,
+      "93c6b9358c051464c625dea7a59fe0662603d85a42646887dd49587ca5220d24": 1,
+      "94b5e84c479d3c00ee65044d9d79f3ea692e3a4f92c1850fe7718d780451a877": 1,
+      "95764c1b57a58f04e46c0ce2100d9bac969641172e4434b5ea8ed65525606fab": 1,
+      "9614638b306414fba16b70ac8b540dead8987b6ee9a8523a47a0545eb5417c85": 1,
+      "96e4170fc0114e975259cd0a5f60f36300af63827d330334f81b059a1638a717": 1,
+      "980395e5ed224854f0f1699e7ce50f7be53189ff7b3f49b964c232abe19c8254": 1,
+      "98b3017c7156282bce67587deda74dc5af02ec876d487fa5d1192913336c7148": 1,
+      "995b3f29d75574f34698cd2ff2136b8082a02dccf1ad2320b962b0f86c83751d": 1,
+      "9a4b54ad159fe2672a9c5c5c22828b5610747c5e6ff4dca7884878fe5ae81764": 1,
+      "9a9ec0b3f4b1deeddd2f1fe364a72bf839f65e84aae4d1bdcb4e50b2ee04c547": 1,
+      "9be9d37c0d19a4360fa9f3d231c39afd701291ef8a56f8038bcc0a544cec0533": 1,
+      "9bf7244fabed5dcc6ea5e25bf7801822299601565183c3b274709e338a249b71": 1,
+      "9d56fc976dc3d2b79d3b90d9d7dbfa460daa1193436fa28803485711bb644bc0": 1,
+      "9e7cef8936f49f195b6510033a9ba28445dc3a68dea518132b91bf0d77c2e9a3": 1,
+      "9f18bc262d2f1eb873dd6e7e9df95701fd4e81f10124c41d3ff47dfb120bcd8a": 1,
+      "9f9a49e502d3b5058d386bf6eecb9ab3eb91d3fc86b4d094174a6b983f0e2ce1": 1,
+      "a058ad55c8d4fc876828a644f1000334bf3ffc5cb10aa439671f0f7d085e6ae0": 1,
+      "a127507edbc4c4eb779684d5fb1c689facfad8b192d444f58e4142f443b3a96e": 1,
+      "a1bb3edab5e2b038dd227ab60b52f103e9d2d37d07e51cc3f40b1f36477be039": 1,
+      "a35974002b02867d1d5402859e51bb929e93771fb451d4f84ec9fa46c270f82a": 1,
+      "a408ca88a4cee50a9dd4ec9cd00e61a8e56c65d3cd9b60b3744c0fb7b5436891": 1,
+      "a4362ef67fb59b1da4489109443600949cf81af4e01da409f83b8be994d43ff6": 1,
+      "a44ab51e36c7575b4cda645048a2813fb55aa734b2d63076b0134be19764bf84": 1,
+      "a4aa6bd61589b7861eb738a2ac612847ce7daf87d77d1d3066f171b03591b6a4": 24,
+      "a85358ec46c0f676115bf15de5e8dcd8f1ce1991bf813c7d76320d7473064e8a": 1,
+      "ac782600dda3ef5478a20daa3229094d1bbd33f3a58c3c351318e15840b3d9b9": 1,
+      "acd4c18a01950092ef5c5afdf994e6ad6d7347ac7d13a7b9977b8adbc49e4114": 24,
+      "acf8a27abab948fdec01afa03feb5718c7c447a465504e6fb0199bfe0cad1a87": 1,
+      "ae1f0275900bcd8c0360778d0fc37ae9a558a983c3b192302bf44b3126a4b51b": 1,
+      "aebd19f8715abb5559f35b72b994772b4fa9d74948c7bf60292e8f183808d896": 1,
+      "aef3f7ea01c0478696fba89b66f755c744295f4c18e6f0b319c4d1520dd65060": 1,
+      "af62fabd102f6a2e155d36a9bdaa1cd9164b75bf87e513c563db0885e9877644": 1,
+      "b133da94fc8872a22c4b904a3322ed68f4313de584a6f9bd85b76989725aee2b": 1,
+      "b533ab3e58f165713e20bbae1c5bbc95a4efffbdc4413fe1f3d92f34db817e6b": 1,
+      "b5eaf7eb8bebbf60b1b24746841aa2338c709943eef524033c0d20e4e5aa15de": 1,
+      "b5eb3d32515b49ead8280a0a4b6e1b2c04eeabde92f2c7408d098a64660cf9c2": 1,
+      "b646a0e015a1529a386be65f24adbd6f1ec0ffa5919c772d895074847e35f4a0": 1,
+      "b805885298db14690bec070fec597961f04c8f55426d49e342635f574f3f95ab": 1,
+      "b88a2f4e7c0b89fd7fbb0455286990a96462b33d39ca99757f5c15f11e3b390b": 1,
+      "ba8b381f02608421d651aa5e7cd168a1bcda796af6e1a432b4ca69a7c751f5b0": 1,
+      "bb042c53e0cf011c0e006bbf39c69cfee6479b9590eafa007b60e861f785fa3b": 1,
+      "bd6b3f48b9ed7de2aa34730f16e252c973c4f0e99d1a7af3da00c1a02e67cf75": 1,
+      "bf4085645c62e9de1b40eb34658aa3072aa8d591dcd9aee20ac5ef6e8a36874b": 1,
+      "c08b537300ff4c5616b2f6661070ff6e40dc5b2514bcbe4bc19583f551e304b6": 1,
+      "c2dbe4c5a25c32c7e763b815f65dd41c08802895b86f9c5098e17cd85e25ce17": 1,
+      "c5fb10fd5dadc0882d865992f32865397d36e40728b71d831ab426afe92bbc02": 1,
+      "c6f0d4ce8e3b940565f7cb5e2c03a1022a73bfe7949be80e511cfcd5603c56c1": 1,
+      "c727b891be9d05995221d695d6c4330b4f8e40269aeeb420ae693058d6ae75ba": 1,
+      "c7638de24a942a889a1f7011b7c622d1cf164c22d593cefce868e56ac8465b3f": 1,
+      "c9647211de65e8c21de171829447a667eba6243574f924766ec1eeb776358356": 1,
+      "ca67a9793c129188303e73d8b71ef377350815297c0d1367445b7515ee394d71": 1,
+      "cba54c401217acc9da048e5441b23d0622fc6054af0c9f9d54767584b7b37461": 1,
+      "ccd410c6024333aa41cb907ada171c170cc74dde2c5bdf2b337e366e71f05cc7": 1,
+      "ce4670f0b4ab70acacfafe88bfcafa757bb7504e590aa873a58ddc84bbef59ce": 1,
+      "ce6e6df877d4b9387b8925e6483a1aa159815ad16ef4213250475c0c2e385eef": 1,
+      "cef528158ea2df11e09d511f59b207af98bd184823c7c78f75eda74e23205f5c": 1,
+      "d0381a19bf7caf5610158db929fbdb0cea1e10af234546184073a0d8bf8f3e86": 1,
+      "d284b895881cdd612284e0af41f4c714bd7ceb7fdeefb189c25598d4a681c869": 1,
+      "d48d6c64ab790613464f430e427389bd61e1267acad60856eaf965d45013902e": 1,
+      "d5a990fcb14b0afbe8096b6005f62a33f64c65397ca278bb47c1be84cb89191f": 1,
+      "d71dc8edecc39325db8ad1e638ba1273796371e34f66681cab697cda7e918b30": 1,
+      "d77c5f6e9a77486bf4502030ce19c09cd1d59d15b85ef174fe9f8a0d1ba75c35": 1,
+      "d7b936aab67a26a0d3af5a2c92639d99c1a64cc9701736b75225500f62f063c9": 1,
+      "d8e03459fa15e5c15cbbfc22e976450ab097520d090e7b6c27abcc1056723dec": 1,
+      "db1ae58e830074ab28e81b1bdfce250992f9b8dd1de8ddad7ae37f315722c1aa": 1,
+      "dbf7cd16fd00bd73534e49e86186828d40871ce5a49eb87d79286180f12e0a4b": 1,
+      "dc7a742aae5daee2152c9e246314f030aaad9e7441cd37a046e1892c46d7ef5b": 1,
+      "dd3c1a55fefd76122395de277432be8cca717768334b676629cbed794ab70e08": 24,
+      "ddfcc8845868efc7a34f22effd72b6e8414b65bb8aa84062c5ab40d1eacb9262": 1,
+      "de37f18f03777c4bbe0ca8b08faa4122bf0ce0c9b736a3838a47976e71777788": 1,
+      "e1c286a57885497675069d5a058463f379c89dd1ef2054391cf79e5b5b500ec7": 1,
+      "e41d63f6642b6fc365ccbc2a76d9dd8b6de6edc48f1848507d593950bf98ef3b": 1,
+      "e4eef81c4b2c171d95925f0fa74802d17d44d476c6ea2b6ec46b74851db8c7cc": 1,
+      "e4f6d9e5a4d2e95fa157f2d00042e302c2cac9431bc19fa7059819aa00d96b3a": 1,
+      "e545459275c4d4cb6e8101927ff3278282a002b28a0264507ed988d0444531e1": 1,
+      "e64ab3c4ae5604df477a903869a5a2d520986909b4b8edde4e1152e086c6371d": 1,
+      "e6b5086b7fc22398e3f6b472c71b8c171204ddafbdd1fadb47f96d31b1f6808a": 1,
+      "e6c6c42a7c6ac89313e2be7fe2bbc5e60c2c47b7894737373ff81c07e77af411": 1,
+      "e6cd1def332358c82ede6a11e0e1efdbda70b77f75e4ffc8df25e57c811044de": 1,
+      "e6f803f80fbf96be450f78700659ecc7348e198391960a9d71578b3b3472d8bd": 1,
+      "e82ce151612d64fcd260ee500d6fd209d069c1a51fdb88b41252aee199e31810": 1,
+      "e8a570bb6ae8f35e9b4375bbdeed9714a8d694f946d0b426b29ddfb0701ff7be": 1,
+      "e9db2901033796a341e4e879d40dc8c1217bcbc5c07763c55e379e7ec86e9cac": 1,
+      "ea596f24cdbe5ff6284ce96135acf2f0e8fcbce879d713fb5897cc2cb8a837a7": 1,
+      "ea6ca338adf6111364d84569f80e1bf89146e6636d9e7fee24e6f37f8d30337b": 1,
+      "ea808a139c2d015df9709a80635785ed6779cf8eade7d1f06ccc9122c26d1b5b": 1,
+      "ebd0e29c8c92cf785444d0c6da444102e4f9ef08644cdc20b6690d177a407712": 1,
+      "edc9c3960d939fe56dd9948f30735ea81c9c99810bd58962844628e430a6856f": 1,
+      "ee84295e3825a0a7ee04ddc3d693caab0353c2b1204988ed1b25d808c47006df": 1,
+      "ef1fd2afc01bbf341c98087d31ae0eed7ca3c0d2beda173f54b4b551193482f9": 1,
+      "f6cb13732dca54f17306e3ce8952de2c7baf543695ab08bbf96382724214cd5f": 1,
+      "f74f81d956278eabec70e72e4824ddfe1d84a30e24f4071a82144564f5cce08b": 1,
+      "fa1924adac1aac410964e354a72b91371181cda6616b9f5332032ed24d246f79": 1,
+      "fb2172616d1ec9e8ebb905834f4d64e4b2994affb605cf3aba1005e0d5d4cf0c": 1,
+      "fcae98818bbaf1e9413417e7baee22686dc950a1a23dbccfcaf583b7586c04ee": 1,
+      "fd1409ff7a7fc2e952a8526fab04f75c0a4cf86953c088d4df52f7280555e1ec": 1,
+      "ff9df981d33ff91f211b3f415c0d23c8dcee85206c5dd91001cc83207491a37d": 1,
+      "ffdbd7f628df649dd15e17140b0d9577c886622c6902c89a54863084474fc6b0": 1
+    },
+    "interpretation": "Independent scenario seeds do not imply distinct terrain arrays. Unchanged cases can share the same fixed public prior; intervals condition on these selected terrains."
+  },
+  "planned_strata": [
+    [
+      "bright",
+      "blocked",
+      256
+    ],
+    [
+      "bright",
+      "blocked",
+      512
+    ],
+    [
+      "bright",
+      "detour",
+      256
+    ],
+    [
+      "bright",
+      "detour",
+      512
+    ],
+    [
+      "bright",
+      "relief",
+      256
+    ],
+    [
+      "bright",
+      "relief",
+      512
+    ],
+    [
+      "bright",
+      "resource",
+      256
+    ],
+    [
+      "bright",
+      "resource",
+      512
+    ],
+    [
+      "bright",
+      "unchanged",
+      256
+    ],
+    [
+      "bright",
+      "unchanged",
+      512
+    ],
+    [
+      "bunsen",
+      "blocked",
+      256
+    ],
+    [
+      "bunsen",
+      "blocked",
+      512
+    ],
+    [
+      "bunsen",
+      "detour",
+      256
+    ],
+    [
+      "bunsen",
+      "detour",
+      512
+    ],
+    [
+      "bunsen",
+      "relief",
+      256
+    ],
+    [
+      "bunsen",
+      "relief",
+      512
+    ],
+    [
+      "bunsen",
+      "resource",
+      256
+    ],
+    [
+      "bunsen",
+      "resource",
+      512
+    ],
+    [
+      "bunsen",
+      "unchanged",
+      256
+    ],
+    [
+      "bunsen",
+      "unchanged",
+      512
+    ],
+    [
+      "hawksbill",
+      "blocked",
+      256
+    ],
+    [
+      "hawksbill",
+      "blocked",
+      512
+    ],
+    [
+      "hawksbill",
+      "detour",
+      256
+    ],
+    [
+      "hawksbill",
+      "detour",
+      512
+    ],
+    [
+      "hawksbill",
+      "relief",
+      256
+    ],
+    [
+      "hawksbill",
+      "relief",
+      512
+    ],
+    [
+      "hawksbill",
+      "resource",
+      256
+    ],
+    [
+      "hawksbill",
+      "resource",
+      512
+    ],
+    [
+      "hawksbill",
+      "unchanged",
+      256
+    ],
+    [
+      "hawksbill",
+      "unchanged",
+      512
+    ]
+  ],
+  "metrics": {
+    "rigid_credit": {
+      "estimate": 0.6076388888888888,
+      "ci95": [
+        0.5743055555555555,
+        0.642361111111111
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "adaptive_credit": {
+      "estimate": 0.59375,
+      "ci95": [
+        0.5611111111111112,
+        0.6257118055555555
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "completion_delta": {
+      "estimate": -0.01388888888888889,
+      "ci95": [
+        -0.019444444444444445,
+        -0.008333333333333333
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "rigid_optional": {
+      "estimate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": true,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "adaptive_optional": {
+      "estimate": 0.2201388888888889,
+      "ci95": [
+        0.18680555555555556,
+        0.25347222222222227
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "optional_delta": {
+      "estimate": 0.2201388888888889,
+      "ci95": [
+        0.18819444444444444,
+        0.2527777777777778
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "any_adaptive_change": {
+      "estimate": 0.9184607984607985,
+      "ci95": [
+        0.8817537578162578,
+        0.9515031265031265
+      ],
+      "n_blocks": 211,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "rigid_any_violation": {
+      "estimate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": true,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "adaptive_any_violation": {
+      "estimate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": true,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "rigid_any_unknown": {
+      "estimate": 0.11944444444444444,
+      "ci95": [
+        0.08888888888888889,
+        0.15
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "adaptive_any_unknown": {
+      "estimate": 0.17777777777777776,
+      "ci95": [
+        0.14444444444444443,
+        0.21111111111111114
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "rigid_any_planner_unknown": {
+      "estimate": 0.11666666666666665,
+      "ci95": [
+        0.08888888888888888,
+        0.14722222222222223
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "adaptive_any_planner_unknown": {
+      "estimate": 0.175,
+      "ci95": [
+        0.14166666666666666,
+        0.20833333333333334
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "rigid_query_count": {
+      "estimate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": true,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "adaptive_query_count": {
+      "estimate": 0.9479166666666665,
+      "ci95": [
+        0.8840277777777777,
+        1.0125
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "rigid_query_wall_s": {
+      "estimate": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": true,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    },
+    "adaptive_query_wall_s": {
+      "estimate": 0.6953617252776642,
+      "ci95": [
+        0.5925279382394808,
+        0.80445991024818
+      ],
+      "n_blocks": 360,
+      "n_strata": 30,
+      "planned_strata": 30,
+      "full_planned_target_covered": true,
+      "small_strata_less_than_two_blocks": [],
+      "degenerate_interval": false,
+      "covered_strata_only": false,
+      "method": "equal-stratum percentile paired-world cluster bootstrap",
+      "all_planned_strata_represented": true,
+      "complete_planned_seed_coverage": true
+    }
+  },
+  "directed_cases": {
+    "n_recorded_blocks": 0,
+    "n_complete_blocks": 0,
+    "n_recorded_pairs": 0,
+    "rigid_only_credit_pairs": 0,
+    "adaptive_only_credit_pairs": 0,
+    "both_credit_pairs": 0,
+    "neither_credit_pairs": 0,
+    "interpretation": "Corridor-conditioned mechanism cases, descriptive only. Repeated conditions are dependent; counts are not broadly sampled Mars hazard or discovery probabilities."
+  },
+  "outcome_counts": {
+    "block_status:COMPLETED_PAIRED_BLOCK": 360,
+    "episode_status:ADAPTIVE:HALT_BEFORE_PRIVATE_INADMISSIBLE_SEGMENT": 5,
+    "episode_status:ADAPTIVE:INSUFFICIENT_BUDGET": 3,
+    "episode_status:ADAPTIVE:NO_PATH": 484,
+    "episode_status:ADAPTIVE:PRIMARY_COMPLETED": 855,
+    "episode_status:ADAPTIVE:UNKNOWN": 93,
+    "episode_status:RIGID:BUDGET_HOLD": 10,
+    "episode_status:RIGID:HALT_BEFORE_PRIVATE_INADMISSIBLE_SEGMENT": 5,
+    "episode_status:RIGID:INSUFFICIENT_BUDGET": 3,
+    "episode_status:RIGID:NO_PATH": 484,
+    "episode_status:RIGID:PRIMARY_COMPLETED": 875,
+    "episode_status:RIGID:UNKNOWN": 63,
+    "pair_status:COMMON_PREFIX_HALTED": 2,
+    "pair_status:INITIAL_UNAVAILABLE": 550,
+    "pair_status:PAIRED": 888,
+    "query_status:ADAPTIVE:ERROR:INVALID_START_Z": 76,
+    "query_status:ADAPTIVE:FEASIBLE:FEASIBLE_UNDER_MODEL": 1201,
+    "query_status:ADAPTIVE:INSUFFICIENT_BUDGET:BUDGET_EXCEEDED": 54,
+    "query_status:ADAPTIVE:UNKNOWN:SEARCH_LIMIT": 34
+  },
+  "conditions": [
+    {
+      "agent_id": "human_1",
+      "mode": "FAST",
+      "panel": "all_attempted",
+      "n_independent_worlds": 360,
+      "rigid_only": 0,
+      "adaptive_only": 0,
+      "both_credit": 164,
+      "neither_credit": 196,
+      "exact_mcnemar_p_exploratory": 1.0,
+      "completion_delta": {
+        "estimate": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "n_blocks": 360,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": true,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      },
+      "optional_delta": {
+        "estimate": 0.13055555555555556,
+        "ci95": [
+          0.09999999999999999,
+          0.16388888888888886
+        ],
+        "n_blocks": 360,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      }
+    },
+    {
+      "agent_id": "human_1",
+      "mode": "FAST",
+      "panel": "initially_FEASIBLE",
+      "n_independent_worlds": 171,
+      "rigid_only": 0,
+      "adaptive_only": 0,
+      "both_credit": 164,
+      "neither_credit": 7,
+      "exact_mcnemar_p_exploratory": 1.0,
+      "completion_delta": {
+        "estimate": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "n_blocks": 171,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": true,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      },
+      "optional_delta": {
+        "estimate": 0.32235449735449734,
+        "ci95": [
+          0.2622222222222222,
+          0.38177314814814817
+        ],
+        "n_blocks": 171,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      }
+    },
+    {
+      "agent_id": "human_1",
+      "mode": "SAFE",
+      "panel": "all_attempted",
+      "n_independent_worlds": 360,
+      "rigid_only": 11,
+      "adaptive_only": 0,
+      "both_credit": 135,
+      "neither_credit": 214,
+      "exact_mcnemar_p_exploratory": 0.0009765624999999999,
+      "completion_delta": {
+        "estimate": -0.030555555555555555,
+        "ci95": [
+          -0.04722222222222223,
+          -0.013888888888888888
+        ],
+        "n_blocks": 360,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      },
+      "optional_delta": {
+        "estimate": 0.11111111111111112,
+        "ci95": [
+          0.08333333333333331,
+          0.14166666666666666
+        ],
+        "n_blocks": 360,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      }
+    },
+    {
+      "agent_id": "human_1",
+      "mode": "SAFE",
+      "panel": "initially_FEASIBLE",
+      "n_independent_worlds": 150,
+      "rigid_only": 11,
+      "adaptive_only": 0,
+      "both_credit": 135,
+      "neither_credit": 4,
+      "exact_mcnemar_p_exploratory": 0.0009765624999999999,
+      "completion_delta": {
+        "estimate": -0.07658730158730158,
+        "ci95": [
+          -0.11746031746031746,
+          -0.037698412698412696
+        ],
+        "n_blocks": 150,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      },
+      "optional_delta": {
+        "estimate": 0.2892592592592592,
+        "ci95": [
+          0.23277777777777778,
+          0.3450046296296296
+        ],
+        "n_blocks": 150,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      }
+    },
+    {
+      "agent_id": "rover_1",
+      "mode": "FAST",
+      "panel": "all_attempted",
+      "n_independent_worlds": 360,
+      "rigid_only": 0,
+      "adaptive_only": 0,
+      "both_credit": 286,
+      "neither_credit": 74,
+      "exact_mcnemar_p_exploratory": 1.0,
+      "completion_delta": {
+        "estimate": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "n_blocks": 360,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": true,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      },
+      "optional_delta": {
+        "estimate": 0.33055555555555555,
+        "ci95": [
+          0.28611111111111115,
+          0.37499999999999994
+        ],
+        "n_blocks": 360,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      }
+    },
+    {
+      "agent_id": "rover_1",
+      "mode": "FAST",
+      "panel": "initially_FEASIBLE",
+      "n_independent_worlds": 288,
+      "rigid_only": 0,
+      "adaptive_only": 0,
+      "both_credit": 286,
+      "neither_credit": 2,
+      "exact_mcnemar_p_exploratory": 1.0,
+      "completion_delta": {
+        "estimate": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "n_blocks": 288,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": true,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      },
+      "optional_delta": {
+        "estimate": 0.4356096681096681,
+        "ci95": [
+          0.38082999639249643,
+          0.4886195887445887
+        ],
+        "n_blocks": 288,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      }
+    },
+    {
+      "agent_id": "rover_1",
+      "mode": "SAFE",
+      "panel": "all_attempted",
+      "n_independent_worlds": 360,
+      "rigid_only": 9,
+      "adaptive_only": 0,
+      "both_credit": 270,
+      "neither_credit": 81,
+      "exact_mcnemar_p_exploratory": 0.00390625,
+      "completion_delta": {
+        "estimate": -0.024999999999999998,
+        "ci95": [
+          -0.041666666666666664,
+          -0.01111111111111111
+        ],
+        "n_blocks": 360,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      },
+      "optional_delta": {
+        "estimate": 0.3083333333333333,
+        "ci95": [
+          0.2638888888888889,
+          0.3527777777777777
+        ],
+        "n_blocks": 360,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      }
+    },
+    {
+      "agent_id": "rover_1",
+      "mode": "SAFE",
+      "panel": "initially_FEASIBLE",
+      "n_independent_worlds": 281,
+      "rigid_only": 9,
+      "adaptive_only": 0,
+      "both_credit": 270,
+      "neither_credit": 2,
+      "exact_mcnemar_p_exploratory": 0.00390625,
+      "completion_delta": {
+        "estimate": -0.0316979316979317,
+        "ci95": [
+          -0.05084295334295334,
+          -0.01414141414141414
+        ],
+        "n_blocks": 281,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      },
+      "optional_delta": {
+        "estimate": 0.41736050986050993,
+        "ci95": [
+          0.36315106421356425,
+          0.47047071909571914
+        ],
+        "n_blocks": 281,
+        "n_strata": 30,
+        "planned_strata": 30,
+        "full_planned_target_covered": true,
+        "small_strata_less_than_two_blocks": [],
+        "degenerate_interval": false,
+        "covered_strata_only": false,
+        "method": "equal-stratum percentile paired-world cluster bootstrap"
+      }
+    }
+  ],
+  "incomplete_blocks": [],
+  "pending_inventory_blocks": [],
+  "strata": [
+    {
+      "sector": "bright",
+      "family": "blocked",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.5,
+      "adaptive_credit": 0.5,
+      "completion_delta": 0.0,
+      "optional_delta": 0.2916666666666667,
+      "changed_worlds": 6,
+      "change_evaluable_worlds": 6,
+      "change_wilson_ci95": [
+        0.6096657120978346,
+        1.0
+      ]
+    },
+    {
+      "sector": "bright",
+      "family": "blocked",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.22916666666666666,
+      "adaptive_credit": 0.20833333333333334,
+      "completion_delta": -0.020833333333333332,
+      "optional_delta": 0.125,
+      "changed_worlds": 3,
+      "change_evaluable_worlds": 3,
+      "change_wilson_ci95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "sector": "bright",
+      "family": "detour",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.3333333333333333,
+      "adaptive_credit": 0.3333333333333333,
+      "completion_delta": 0.0,
+      "optional_delta": 0.3333333333333333,
+      "changed_worlds": 4,
+      "change_evaluable_worlds": 4,
+      "change_wilson_ci95": [
+        0.5101091635454027,
+        1.0
+      ]
+    },
+    {
+      "sector": "bright",
+      "family": "detour",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.375,
+      "adaptive_credit": 0.3541666666666667,
+      "completion_delta": -0.020833333333333332,
+      "optional_delta": 0.25,
+      "changed_worlds": 4,
+      "change_evaluable_worlds": 4,
+      "change_wilson_ci95": [
+        0.5101091635454027,
+        1.0
+      ]
+    },
+    {
+      "sector": "bright",
+      "family": "relief",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.3333333333333333,
+      "adaptive_credit": 0.3333333333333333,
+      "completion_delta": 0.0,
+      "optional_delta": 0.0,
+      "changed_worlds": 3,
+      "change_evaluable_worlds": 3,
+      "change_wilson_ci95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "sector": "bright",
+      "family": "relief",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.375,
+      "adaptive_credit": 0.3541666666666667,
+      "completion_delta": -0.020833333333333332,
+      "optional_delta": 0.0,
+      "changed_worlds": 4,
+      "change_evaluable_worlds": 5,
+      "change_wilson_ci95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "sector": "bright",
+      "family": "resource",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.5,
+      "adaptive_credit": 0.5,
+      "completion_delta": 0.0,
+      "optional_delta": 0.375,
+      "changed_worlds": 6,
+      "change_evaluable_worlds": 6,
+      "change_wilson_ci95": [
+        0.6096657120978346,
+        1.0
+      ]
+    },
+    {
+      "sector": "bright",
+      "family": "resource",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.5833333333333334,
+      "adaptive_credit": 0.5416666666666666,
+      "completion_delta": -0.041666666666666664,
+      "optional_delta": 0.1875,
+      "changed_worlds": 5,
+      "change_evaluable_worlds": 7,
+      "change_wilson_ci95": [
+        0.35893445183261935,
+        0.9177810759959433
+      ]
+    },
+    {
+      "sector": "bright",
+      "family": "unchanged",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.20833333333333334,
+      "adaptive_credit": 0.20833333333333334,
+      "completion_delta": 0.0,
+      "optional_delta": 0.125,
+      "changed_worlds": 3,
+      "change_evaluable_worlds": 3,
+      "change_wilson_ci95": [
+        0.4385029682449546,
+        1.0
+      ]
+    },
+    {
+      "sector": "bright",
+      "family": "unchanged",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.3958333333333333,
+      "adaptive_credit": 0.375,
+      "completion_delta": -0.020833333333333332,
+      "optional_delta": 0.20833333333333334,
+      "changed_worlds": 6,
+      "change_evaluable_worlds": 6,
+      "change_wilson_ci95": [
+        0.6096657120978346,
+        1.0
+      ]
+    },
+    {
+      "sector": "bunsen",
+      "family": "blocked",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.9166666666666666,
+      "adaptive_credit": 0.9166666666666666,
+      "completion_delta": 0.0,
+      "optional_delta": 0.3125,
+      "changed_worlds": 9,
+      "change_evaluable_worlds": 11,
+      "change_wilson_ci95": [
+        0.523019438039156,
+        0.9486323102539149
+      ]
+    },
+    {
+      "sector": "bunsen",
+      "family": "blocked",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.8125,
+      "adaptive_credit": 0.7708333333333334,
+      "completion_delta": -0.041666666666666664,
+      "optional_delta": 0.25,
+      "changed_worlds": 9,
+      "change_evaluable_worlds": 9,
+      "change_wilson_ci95": [
+        0.7008549515804559,
+        1.0
+      ]
+    },
+    {
+      "sector": "bunsen",
+      "family": "detour",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.875,
+      "adaptive_credit": 0.875,
+      "completion_delta": 0.0,
+      "optional_delta": 0.3333333333333333,
+      "changed_worlds": 9,
+      "change_evaluable_worlds": 10,
+      "change_wilson_ci95": [
+        0.5958499732047615,
+        0.9821237869049271
+      ]
+    },
+    {
+      "sector": "bunsen",
+      "family": "detour",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.8125,
+      "adaptive_credit": 0.8125,
+      "completion_delta": 0.0,
+      "optional_delta": 0.25,
+      "changed_worlds": 9,
+      "change_evaluable_worlds": 11,
+      "change_wilson_ci95": [
+        0.523019438039156,
+        0.9486323102539149
+      ]
+    },
+    {
+      "sector": "bunsen",
+      "family": "relief",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.9166666666666666,
+      "adaptive_credit": 0.9166666666666666,
+      "completion_delta": 0.0,
+      "optional_delta": 0.0,
+      "changed_worlds": 9,
+      "change_evaluable_worlds": 10,
+      "change_wilson_ci95": [
+        0.5958499732047615,
+        0.9821237869049271
+      ]
+    },
+    {
+      "sector": "bunsen",
+      "family": "relief",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.6458333333333334,
+      "adaptive_credit": 0.6458333333333334,
+      "completion_delta": 0.0,
+      "optional_delta": 0.041666666666666664,
+      "changed_worlds": 7,
+      "change_evaluable_worlds": 8,
+      "change_wilson_ci95": [
+        0.5291118177871464,
+        0.9775825085499433
+      ]
+    },
+    {
+      "sector": "bunsen",
+      "family": "resource",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.8333333333333334,
+      "adaptive_credit": 0.8333333333333334,
+      "completion_delta": 0.0,
+      "optional_delta": 0.25,
+      "changed_worlds": 8,
+      "change_evaluable_worlds": 9,
+      "change_wilson_ci95": [
+        0.5650002944233439,
+        0.9801091123614551
+      ]
+    },
+    {
+      "sector": "bunsen",
+      "family": "resource",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.4583333333333333,
+      "adaptive_credit": 0.4583333333333333,
+      "completion_delta": 0.0,
+      "optional_delta": 0.20833333333333334,
+      "changed_worlds": 6,
+      "change_evaluable_worlds": 6,
+      "change_wilson_ci95": [
+        0.6096657120978346,
+        1.0
+      ]
+    },
+    {
+      "sector": "bunsen",
+      "family": "unchanged",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.875,
+      "adaptive_credit": 0.875,
+      "completion_delta": 0.0,
+      "optional_delta": 0.3333333333333333,
+      "changed_worlds": 9,
+      "change_evaluable_worlds": 9,
+      "change_wilson_ci95": [
+        0.7008549515804559,
+        1.0
+      ]
+    },
+    {
+      "sector": "bunsen",
+      "family": "unchanged",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.8333333333333334,
+      "adaptive_credit": 0.7708333333333334,
+      "completion_delta": -0.0625,
+      "optional_delta": 0.25,
+      "changed_worlds": 9,
+      "change_evaluable_worlds": 9,
+      "change_wilson_ci95": [
+        0.7008549515804559,
+        1.0
+      ]
+    },
+    {
+      "sector": "hawksbill",
+      "family": "blocked",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.625,
+      "adaptive_credit": 0.625,
+      "completion_delta": 0.0,
+      "optional_delta": 0.2916666666666667,
+      "changed_worlds": 6,
+      "change_evaluable_worlds": 7,
+      "change_wilson_ci95": [
+        0.4868721707256811,
+        0.9743203756552565
+      ]
+    },
+    {
+      "sector": "hawksbill",
+      "family": "blocked",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.5625,
+      "adaptive_credit": 0.5,
+      "completion_delta": -0.0625,
+      "optional_delta": 0.2708333333333333,
+      "changed_worlds": 7,
+      "change_evaluable_worlds": 8,
+      "change_wilson_ci95": [
+        0.5291118177871464,
+        0.9775825085499433
+      ]
+    },
+    {
+      "sector": "hawksbill",
+      "family": "detour",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.7083333333333334,
+      "adaptive_credit": 0.7083333333333334,
+      "completion_delta": 0.0,
+      "optional_delta": 0.375,
+      "changed_worlds": 8,
+      "change_evaluable_worlds": 8,
+      "change_wilson_ci95": [
+        0.6755924351161198,
+        1.0
+      ]
+    },
+    {
+      "sector": "hawksbill",
+      "family": "detour",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.5,
+      "adaptive_credit": 0.4791666666666667,
+      "completion_delta": -0.020833333333333332,
+      "optional_delta": 0.125,
+      "changed_worlds": 7,
+      "change_evaluable_worlds": 7,
+      "change_wilson_ci95": [
+        0.6456695649333126,
+        1.0
+      ]
+    },
+    {
+      "sector": "hawksbill",
+      "family": "relief",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.625,
+      "adaptive_credit": 0.625,
+      "completion_delta": 0.0,
+      "optional_delta": 0.0,
+      "changed_worlds": 3,
+      "change_evaluable_worlds": 4,
+      "change_wilson_ci95": [
+        0.30064184258240184,
+        0.9544127391902995
+      ]
+    },
+    {
+      "sector": "hawksbill",
+      "family": "relief",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.6458333333333334,
+      "adaptive_credit": 0.6041666666666666,
+      "completion_delta": -0.041666666666666664,
+      "optional_delta": 0.0,
+      "changed_worlds": 5,
+      "change_evaluable_worlds": 6,
+      "change_wilson_ci95": [
+        0.43649717781352987,
+        0.9699466302516935
+      ]
+    },
+    {
+      "sector": "hawksbill",
+      "family": "resource",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.7083333333333334,
+      "adaptive_credit": 0.7083333333333334,
+      "completion_delta": 0.0,
+      "optional_delta": 0.4166666666666667,
+      "changed_worlds": 6,
+      "change_evaluable_worlds": 7,
+      "change_wilson_ci95": [
+        0.4868721707256811,
+        0.9743203756552565
+      ]
+    },
+    {
+      "sector": "hawksbill",
+      "family": "resource",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.7083333333333334,
+      "adaptive_credit": 0.6458333333333334,
+      "completion_delta": -0.0625,
+      "optional_delta": 0.3541666666666667,
+      "changed_worlds": 8,
+      "change_evaluable_worlds": 9,
+      "change_wilson_ci95": [
+        0.5650002944233439,
+        0.9801091123614551
+      ]
+    },
+    {
+      "sector": "hawksbill",
+      "family": "unchanged",
+      "side_m": 256,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.5833333333333334,
+      "adaptive_credit": 0.5833333333333334,
+      "completion_delta": 0.0,
+      "optional_delta": 0.25,
+      "changed_worlds": 7,
+      "change_evaluable_worlds": 7,
+      "change_wilson_ci95": [
+        0.6456695649333126,
+        1.0
+      ]
+    },
+    {
+      "sector": "hawksbill",
+      "family": "unchanged",
+      "side_m": 512,
+      "attempted_blocks": 12,
+      "complete_blocks": 12,
+      "rigid_credit": 0.75,
+      "adaptive_credit": 0.75,
+      "completion_delta": 0.0,
+      "optional_delta": 0.3958333333333333,
+      "changed_worlds": 7,
+      "change_evaluable_worlds": 9,
+      "change_wilson_ci95": [
+        0.45258896910698887,
+        0.9367748928821533
+      ]
+    }
+  ],
+  "uncertainty": {
+    "method": "stratified paired-world percentile bootstrap",
+    "replicates": 10000,
+    "seed": 2026111591,
+    "confidence_level": 0.95
+  },
+  "interpretation": "Declared synthetic scenario ensemble conditional on selected fixed public terrains only. Repeated agent/mode/strategy episodes are dependent. Unknown and unavailable are reported; no new approval or LIVE verification.",
+  "exact_duplicate_records_ignored": 0,
+  "provenance": {
+    "analyzed_at_utc": "2026-11-15T22:03:46.603048+00:00",
+    "inputs": [
+      {
+        "path": ".local\\rigid-adaptive-study\\results\\paired-blocks.jsonl",
+        "sha256": "307f1466b19948b7455bb76595f9fadf3ea0ad194a68b9e3582895cd8ae2429a"
+      }
+    ],
+    "protocol_sha256": "9ee048f77d4cff837516401508342fd414e29c92a96a9306e411e667152e743d",
+    "script_sha256": "f5c0a502c17cb4d9227437a2c8ec2dbd44cc88f66e32180a9ce1319bd98e4954",
+    "inventory_sha256": "23947914cc9faab7d5a8a3772bca58c519d23b9a93732187ecb6b30aaeb3ebec",
+    "versions": {
+      "python": "3.12.14",
+      "numpy": "2.5.4"
+    },
+    "mandatory_ai_declaration": "OpenAI Codex assisted analysis code and derived synthetic data; not observational NASA data."
+  }
+}

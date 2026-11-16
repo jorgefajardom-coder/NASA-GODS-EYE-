@@ -1,0 +1,56 @@
+{
+  "schema_version": "mge-rigid-adaptive-statistics-1.0.0",
+  "frozen_at_utc": "2026-11-15T21:39:00Z",
+  "classification": "SIMULATED_EXPLORATORY_ANALYTICAL_NOT_LIVE",
+  "scope": "One-hour local comparison; this protocol freezes estimands before inspecting experimental outcomes.",
+  "independent_unit": "Independently seeded world block; rigid/adaptive strategies, agent kinds, FAST/SAFE modes, checkpoints and observations within a block are dependent repeated conditions.",
+  "condition_keys": ["agent_id", "mode"],
+  "expected_conditions": [["human_1", "FAST"], ["human_1", "SAFE"], ["rover_1", "FAST"], ["rover_1", "SAFE"]],
+  "strategies": ["RIGID", "ADAPTIVE"],
+  "primary_design": "broad",
+  "planned_main_grid": {"sectors": ["bright", "hawksbill", "bunsen"], "families": ["unchanged", "detour", "blocked", "relief", "resource"], "sides_m": [256, 512], "indices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], "world_blocks": 360, "paired_conditions": 1440},
+  "pre_outcome_amendment_utc": "2026-11-15T21:40:00Z",
+  "pre_outcome_amendment": "Root confirmed main grid. Add initially-FEASIBLE condition-specific descriptive panel; retain unconditional attempted-block primary. Strict sigma=1 controls remain separate from research sigma=3. Optional-objective acceptance differs by policy design and is not proof of a general navigation advantage.",
+  "directed_cases": "Keep separately; corridor-conditioned threshold cases demonstrate mechanisms and their frequencies do not estimate the broad ensemble.",
+  "estimands": {
+    "primary": "Mean within-world ADAPTIVE minus RIGID difference in analytical completion credit, first averaging equally over the four frozen agent/mode conditions; then equally weight all planned sector/family/size strata when covered.",
+    "completion_credit": "1 only when primary_completed and returned are both true, resource_violation and reserve_violation are both explicitly false, and unknown is explicitly false; otherwise 0. UNKNOWN/no initial route are no-credit outcomes, not demonstrated physical failures.",
+    "secondary": [
+      "Paired difference in optional_completed count, within-world condition mean, with unavailable episode values explicitly retained as missing rather than imputed discoveries.",
+      "Any directed-return/resource/reserve violation by strategy and condition; missing safety evidence remains unknown.",
+      "Meaningful adaptive decision changes based on geometry or work eligibility, rather than route identifiers alone.",
+      "Initial feasibility, UNKNOWN, computational limits, censored/unexecuted conditions and map unavailability in all attempted and planned blocks.",
+      "Paired condition-specific completion credit and discordant outcome counts."
+    ]
+  },
+  "denominators": {
+    "primary": "Complete attempted broad blocks containing all four frozen conditions and both recorded strategies; UNKNOWN episodes remain in the denominator with zero credit.",
+    "pending_or_incomplete": "Do not silently treat work not executed before deadline as physical failure; list all missing planned blocks/conditions and report coverage.",
+    "public_map_unavailable": "Report explicitly; do not substitute a more favorable map or fabricate an environment.",
+    "standardization": "Equal weights over planned sector x family x side_m strata; if any planned stratum lacks complete blocks the full planned-target estimate is unavailable, and a clearly labelled covered-strata estimate is secondary."
+  },
+  "uncertainty": {
+    "confidence_level": 0.95,
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 2026111591,
+    "method": "Stratified paired cluster bootstrap: resample whole independent world blocks with replacement within sector x family x side_m, retaining both strategies and every agent/mode condition together. Report empirical 2.5 and 97.5 percentiles and actual stratum counts.",
+    "interpretation": "Monte Carlo sensitivity to the declared synthetic sampling design and frozen model; neither a probability of discoveries on Mars nor a statement about unmodelled hazards.",
+    "small_or_degenerate": "Flag strata with fewer than two blocks and degenerate bootstrap intervals. A point interval from identical cases is not evidence of universal behavior.",
+    "binary_condition_checks": "Optional exact two-sided McNemar/binomial calculation on discordant pairs, one episode condition per independent world. No pooled checkpoint-level or mode-level significance tests.",
+    "proportions": "Wilson intervals only for explicit independent binary world-level descriptive indicators; retain denominators and avoid interpreting them as Mars event probabilities.",
+    "multiplicity": "One primary estimand; all conditions, families, optional work, safety and mechanism comparisons are descriptive/exploratory. Report all signs and all strata; no selection of only beneficial cases."
+  },
+  "validation": [
+    "Reject conflicting duplicate block identities and duplicate condition keys.",
+    "Preserve provenance and world hashes; never use strategy/mode repetition as extra independent worlds.",
+    "Reject impossible booleans/counts and nonfinite statistics; require explicit safety fields for completion credit.",
+    "Verify paired calculations against small controls containing improvement, deterioration, UNKNOWN and missing conditions.",
+    "Export exact input SHA256, protocol SHA256, script SHA256, software versions, exclusions and outcome tables."
+  ],
+  "sources": [
+    {"title": "SciPy bootstrap: paired resampling and percentile confidence intervals", "url": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html", "accessed_utc": "2026-11-15T21:38:00Z"},
+    {"title": "NIST/SEMATECH e-Handbook: Wilson confidence intervals for proportions", "url": "https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm", "accessed_utc": "2026-11-15T21:38:00Z"},
+    {"title": "statsmodels: exact McNemar test uses the binomial distribution", "url": "https://www.statsmodels.org/stable/generated/statsmodels.stats.contingency_tables.mcnemar.html", "accessed_utc": "2026-11-15T21:38:00Z"}
+  ],
+  "mandatory_ai_declaration": {"tool": "OpenAI Codex", "use": "AI-assisted experimental protocol and analysis code; simulated records are not observational NASA measurements."}
+}
