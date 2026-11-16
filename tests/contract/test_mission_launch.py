@@ -62,8 +62,8 @@ def test_selected_mission_and_planner_are_exclusive(monkeypatch, mission, planne
     selected = [kwargs['executable'] for node, kwargs in nodes
                 if node.condition is None or node.condition.evaluate(
                     context(mission, planner, terrain=terrain, agents=agents))]
-    assert set(selected) & {'mock_mission', 'mission_node'} == {
-        'mock_mission' if mission == 'mock' else 'mission_node'}
+    assert set(selected) & {'mock_mission', 'mission_replan_node'} == {
+        'mock_mission' if mission == 'mock' else 'mission_replan_node'}
     assert set(selected) & {'mock_planner', 'planning_node'} == {
         'mock_planner' if planner == 'mock' else 'planning_node'}
     assert set(selected) & {'mock_terrain', 'data_node', 'mapping_node'} == (
@@ -82,7 +82,7 @@ def test_real_owner_parameters_forward_without_autoagreement(monkeypatch):
         return node
     monkeypatch.setattr(module, 'Node', capture)
     description = module.generate_launch_description()
-    mission = next(item for item in nodes if item['executable'] == 'mission_node')
+    mission = next(item for item in nodes if item['executable'] == 'mission_replan_node')
     values = evaluate_parameters(context(), normalize_parameters(mission['parameters']))[0]
     assert values['profiles_path'] == str(ROOT / 'config/scenario_demo.yaml')
     assert values['mission_path'] == str(ROOT / 'config/scenario_demo.yaml')

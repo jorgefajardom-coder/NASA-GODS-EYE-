@@ -1057,6 +1057,21 @@ attributions, disclosures and required media watermarks remain intact.
 
 Claude (Anthropic) through Claude Code assisted the changes registered as `mock_mission_budget_fallback_and_obstacle_field`. The MOCK mission gains an opt-in `budget_fallback` (off by default): when the goal in force no longer fits the remaining allocation it tries nearer targets on the base-goal line and then the base, without lowering reserves or re-allocating consumed resources. Goals and bases outside the terrain grid are rejected (`OUT_OF_MAP`). `mge_sim.obstacle_field` generates deterministic SIMULATED obstacle fields (a ridge with one gap and seeded rock clusters) that keep a passage from base to goal. The recorder adds an optional `impassable` cell list per map version to the public raster attachment, taken from the mapping's human traversability mask, and the viewer draws those cells as cosmetic rocks with a rust tint; rock sizes and turns are display only. An opt-in `scene_sensor` node reports a declared SIMULATED scene around the agents (a drone on landing, ground agents as they walk), and an opt-in `complete_on_return` closes a MOCK goal once its agent is back at base. Viewer rocks follow the Golombek-Rapp size law with each blocked cell's main rock deliberately enlarged to 1.5 m for readability, styled by the cell's USGS SIM 3464 unit. A Gazebo Harmonic world generator (`gz_world`) and pose mirror (`gz_mirror`) show a run on the public terrain with the scene's rocks; the terrain tint, grain, normal map and rock shapes are cosmetic, and mirrored agents are only shown; a later addition drives one physical rover in Gazebo along the authorized route (heightmap aligned with the planner cell centres, one constant vertical datum offset measured at rest) and draws the web viewer GLB models at their true sizes. Code and tests only; the obstacle fields are synthetic test scenes, never NASA observations, and no run is a validated LIVE mission.
 
+
+## Scientific single-human stop/replan control and ACK reconciliation
+
+OpenAI Codex assisted the implementation, late-ACK correction, main/D-CLK-01
+reconciliation, controlled synthetic tests, evidence audit and handoff listed
+in `docs/ai_usage.json` under `local_scientific_single_human_replan_control`.
+Operational agreement defaults and scientific coefficients are unchanged.
+Fixture agreement is explicit and test-only; the flat public map is SIMULATED,
+not NASA observational terrain. Full work/ledger, physical and three-role
+acceptance remains open. The fresh PR receipt is retained under
+`evidence/scientific-replan-ack-20261115`, with source hashes, real test outcomes
+and machine-readable disclosure. No new image/video/audio is generated in the
+ACK correction. Earlier local capture tooling and visibly watermarked replay
+remain local historical evidence and are not presented as the corrected run.
+
 ## Owner-supplied slower Wiki animation — 15 November 2026
 
 OpenAI Codex assisted copying and verifying the owner-supplied slower `docs/wiki/assets/prior-observation.gif`, with no image edits. The three displayed stages total 7.5 seconds instead of 4.2 seconds. The existing visible `AI-generated | Conceptual simulation` watermark is preserved. The current asset manifest and `docs/wiki/audit/slower-prior-observation-20261115.json` record the new hash and timing; historical publication/editorial seals retain their original dated scope. No scientific results or technical implementation changed.
@@ -1072,6 +1087,10 @@ Claude (Anthropic) through Claude Code assisted the code, tests and documentatio
 ## Gazebo animation review fixes — 15 November 2026
 
 Claude (Anthropic) through Claude Code assisted the fixes registered as `gazebo_animation_review_fixes` in `docs/ai_usage.json`, made in response to the integration review of PR #51: unsupported GLB layouts now fall back to the whole web model instead of aborting the world build; `world.json` records wheel visuals only for the layout actually used; the drone rotor animation moved to the pure-Python `mge_sim.rotors` module so `gz_mirror` no longer loads numpy, scipy or the world generator; rotors follow the web viewer's airborne rule using per-cell Gazebo ground heights (`ground_z_m`). The animation remains COSMETIC display. No data, image, video or audio was generated, and no run is claimed as LIVE or physically validated. Existing declarations, attributions and watermarks are unchanged.
+
+## Offline replay system check and viewer start-up text — 15 November 2026
+
+Claude (Anthropic) through Claude Code assisted the test, page and text changes registered as `offline_replay_system_check_and_startup_text`. `tests/e2e/test_offline_replay.py` (T08/R15) checks that every run in the viewer catalogue opens from static files: every file the loader requests exists and parses, recorder packages pass the offline replay checker, packages are labelled MOCK or illustrative (never LIVE) and no evaluator reference is published. `web/index.html` hides the no-JavaScript summary while the viewer starts and shows it again when a module script or stylesheet fails to load or the viewer has not replaced it within 6 s (`web/tests/staticSummaryFallback.test.ts` runs that inline script in jsdom), and `web/public/llms.txt` was aligned with the current entries. No data, imagery, audio or NASA observation was generated; the backend-off browser check was a local static-file build, not the private-browser AC-08 acceptance.
 
 ## Atmos dose consistency and text fixes — 15 November 2026
 

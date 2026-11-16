@@ -318,6 +318,11 @@ ICD-ROS2-V1 / package 1.0.0, JSON/replay 1.0.0, baseline review 1.0.0-rc.1.
   Diego agree the model; M04/M05 runs with David. JES-07 organizer endorsement
   remains undocumented.
 
+
+## Historical local one-human stop/replan working cut
+
+Owner prioritized one hour for this control loop over main a2efc2e. Review [source, commands, evidence and remaining acceptance](../replan_control_handoff.md): the existing real authority now waits for fresh stable zero-twist acknowledgement, invokes the scientific policy and reauthorizes through registered PlanRoute from actual pose/resources. RETURN context stays internal and immutable. Synthetic test/kinematic execution is labelled; no scientific profile approval, ledger/work completion, three-role mission or submission readiness is inferred. The later reconciled PR candidate is described below; no merge is authorized by that cut. JES-07/AC-10 organizer notification and explicit endorsement remain separate gates.
+
 ## D-CLK-01 simulation time source cut — 15 November 2026
 
 Source branch `fix/sim-time-clock-contract` over main `a2efc2e` (local, not pushed).
@@ -335,3 +340,17 @@ package, replay 1.0.0 or public-raster version changes.
   non-Gazebo MOCK runs also move to simulated time stays open.
 - **Delivery coordination:** JES-07/AC-10 organizer notification and explicit
   endorsement remain required while evidence is missing; silence is not approval.
+
+
+## Scientific stop receipt reconciliation — 15 November 2026
+
+David authorized commit/PR after correcting the late ACK and reconciling with
+main `d06de5e` / D-CLK-01. [Current handoff](../replan_control_handoff.md): the
+run-clock ACK deadline and independent steady watchdog latch failure before
+feedback, dispatch and both asynchronous responses. No automatic resume,
+clock/resource fabrication or change to IDL/replay versions. David confirmed
+this clock split; Jorge's display review and remaining time-debit validation
+remain pending. Jesus/Diego review integration; scientific profiles, full ROS
+work/ledger, three-role step 4, same-run acceptance/video step 5 and organizer
+notification/endorsement remain open. Prior local evidence is historical;
+use the fresh source-locked reconciliation receipt for this PR.

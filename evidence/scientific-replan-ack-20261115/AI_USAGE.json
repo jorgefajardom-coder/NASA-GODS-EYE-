@@ -1,0 +1,14 @@
+{
+  "ai_assisted": true,
+  "tool": "OpenAI Codex",
+  "scope": [
+    "candidate code and documentation",
+    "deterministic synthetic regression inputs",
+    "test/evidence orchestration and metadata"
+  ],
+  "media_generated": false,
+  "nasa_observations_generated": false,
+  "physical_validation": false,
+  "scientific_profile_approval": false,
+  "project_declaration": "../../docs/AI_USAGE.md"
+}

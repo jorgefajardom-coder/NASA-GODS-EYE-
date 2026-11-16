@@ -7,6 +7,37 @@
   "uses": [
     {
       "tool": "OpenAI Codex",
+      "kind": "local_scientific_single_human_replan_control",
+      "paths": [
+        "src/mge_mission/mge_mission/stop_ack.py",
+        "src/mge_mission/mge_mission/node.py",
+        "src/mge_mission/mge_mission/manager.py",
+        "src/mge_mission/mge_mission/types.py",
+        "src/mge_planning/mge_planning/replan.py",
+        "src/mge_planning/mge_planning/mission_replan.py",
+        "src/mge_bringup/mge_bringup/mission_replan.py",
+        "src/mge_bringup/launch/vertical_mock.launch.py",
+        "src/mge_bringup/setup.py",
+        "config/replan_policy.illustrative.json",
+        "tests/unit/test_stop_ack.py",
+        "tests/planning/test_scientific_replan.py",
+        "tests/integration/test_scientific_mission_replan.py",
+        "tests/contract/test_mission_service.py",
+        "tests/contract/test_mission_launch.py",
+        "docs/replan_control_handoff.md",
+        "docs/ICD.md",
+        "docs/CONTRACT_BASELINE.md",
+        "docs/handoffs/jesus.md",
+        "docs/decisions/2026-11-15-simulation-time-source.md",
+        "evidence/scientific-replan-ack-20261115/"
+      ],
+      "use": "AI-assisted scientific policy/mission composition, fail-closed stop receipts, late-ACK and async-boundary regressions, main/D-CLK-01 reconciliation, deterministic synthetic control inputs, executed-test provenance and handoff. No NASA observational data, scientific coefficient approval, physical validation or full scientific mission completion is generated or claimed.",
+      "metadata": "Source hashes, actual validation logs and AI_USAGE.json under evidence/scientific-replan-ack-20261115; earlier watermarked video remains local historical evidence",
+      "production_model_agreement_default_changed": false,
+      "publication": "PR candidate; no main merge, release or deployment"
+    },
+    {
+      "tool": "OpenAI Codex",
       "kind": "pr49_gazebo_integration_corrections",
       "source_revision": "53cef780a35af6027f8af9aa3688d291a8977996",
       "main_revision": "f5116685077d6c95f96bfab3a6b31d6a71ea6e5d",
@@ -2190,6 +2221,20 @@
         "docs/ai_usage.json"
       ],
       "use": "Fall back to the whole web model when GLB part derivation fails; record wheel visuals only for the layout the SDF uses; return the drone body name from derive_drone_parts; move the rotor animation to a pure-Python module so gz_mirror does not load numpy, scipy or the world generator; follow the web viewer's airborne rotor rule using per-cell Gazebo ground heights in world.json; skip repeated zero rotor commands. Cosmetic Gazebo display only; no NASA data, physical validation or LIVE mission is claimed."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "offline_replay_system_check_and_startup_text",
+      "generation": "AI-assisted test code, page markup and documentation text; no data, imagery, audio or NASA observation generated",
+      "paths": [
+        "tests/e2e/test_offline_replay.py",
+        "web/index.html",
+        "web/public/llms.txt",
+        "web/tests/staticSummaryFallback.test.ts",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "T08/R15 static check that every catalogued replay opens from static files with MOCK or illustrative labels and no published evaluator reference; hide the no-JavaScript summary during start-up and show it again when a module script or stylesheet fails to load or the viewer has not replaced it within 6 s (jsdom regression test); align llms.txt with the current viewer entries"
     },
     {
       "tool": "Claude (Anthropic) through Claude Code",

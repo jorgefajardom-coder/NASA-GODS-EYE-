@@ -1,0 +1,447 @@
+mge_interfaces/msg/TerrainMeta
+# ICD-ROS2-V1 | Static description of the terrain grid for one run.
+# Topic: /mge/terrain/meta  (DataProvider -> all, reliable + transient_local)
+#
+# Grid convention (applies to every raster and OccupancyGrid of the run):
+#   frame "map": x east, y north, z up, metres.
+#   (origin_x_m, origin_y_m) is the south-west corner of cell (row 0, col 0).
+#   row grows to the north, col grows to the east, flat index = row * cols + col.
+#   cell centre: x = origin_x_m + (col + 0.5) * resolution_m
+#                y = origin_y_m + (row + 0.5) * resolution_m
+
+std_msgs/Header header          # frame_id = "map", stamp = simulated time
+	builtin_interfaces/Time stamp
+		int32 sec
+		uint32 nanosec
+	string frame_id
+string run_id
+string dataset_id
+uint32 map_version              # grows with every valid observation
+
+float64 origin_x_m
+float64 origin_y_m
+float64 resolution_m
+uint32 rows
+uint32 cols
+
+# Georeference of the local origin. Planetocentric latitude, east-positive
+# longitude on the Mars body named in `crs`. Never Earth WGS84.
+string crs
+float64 origin_lat_deg
+float64 origin_lon_deg
+string vertical_datum           # e.g. "MOLA areoid"; heights are metres above it
+float32 nodata_value            # value used in 32FC1 rasters for NoData cells
+
+string[] sources                # one provenance entry per contributing product
+string checksum_sha256          # checksum of the prior raster of this run
+mge_interfaces/msg/TerrainObservation
+# ICD-ROS2-V1 | One local observation of the terrain made by an agent.
+# Topic: /mge/observations  (SimulationAdapter -> Mapping, reliable)
+# Only the cells listed here may change in the belief map. Re-sending the
+# same observation_id must not be applied twice.
+
+string SOURCE_SIMULATED=SIMULATED
+
+int8 OBSTACLE_UNKNOWN=-1
+int8 OBSTACLE_FREE=0
+int8 OBSTACLE_BLOCKED=100
+
+std_msgs/Header header          # frame_id = "map", stamp = simulated time
+	builtin_interfaces/Time stamp
+		int32 sec
+		uint32 nanosec
+	string frame_id
+string observation_id           # unique, idempotency key
+string run_id
+string agent_id
+uint32 base_map_version         # map version the observation was taken against
+string source_kind              # SOURCE_* ; P0 is always SIMULATED
+
+# Parallel arrays, one entry per observed cell (flat index, see TerrainMeta).
+uint32[] cell_indices
+float32[] elevation_m
+float32[] sigma_m               # 1-sigma of the simulated sensor model
+int8[] obstacle                 # OBSTACLE_*
+mge_interfaces/msg/AgentState
+# ICD-ROS2-V1 | State of one agent.
+# Topic: /mge/agents/{agent_id}/state  (SimulationAdapter -> Mission, reliable)
+# Resource values are assumptions of a simulated mission, never certified limits.
+
+string KIND_HUMAN=HUMAN
+string KIND_DRONE=DRONE
+string KIND_ROVER=ROVER
+
+string MODE_IDLE=IDLE
+string MODE_MOVING=MOVING
+string MODE_OBSERVING=OBSERVING
+string MODE_WORKING=WORKING
+string MODE_RETURNING=RETURNING
+string MODE_HALTED=HALTED
+
+std_msgs/Header header          # frame_id = "map", stamp = simulated time
+	builtin_interfaces/Time stamp
+		int32 sec
+		uint32 nanosec
+	string frame_id
+string run_id
+string agent_id                 # unique within the run
+string agent_kind               # KIND_*
+geometry_msgs/Pose pose
+	Point position
+		float64 x
+		float64 y
+		float64 z
+	Quaternion orientation
+		float64 x 0
+		float64 y 0
+		float64 z 0
+		float64 w 1
+geometry_msgs/Twist velocity
+	Vector3  linear
+		float64 x
+		float64 y
+		float64 z
+	Vector3  angular
+		float64 x
+		float64 y
+		float64 z
+string mode                     # MODE_*
+
+float32 time_remaining_s        # estimated
+float32 energy_remaining_wh     # estimated
+float32 oxygen_remaining_l      # estimated; NaN for agents that are not HUMAN
+float32 confidence              # 0..1, confidence in the pose estimate
+mge_interfaces/msg/MissionEvent
+# ICD-ROS2-V1 | One ordered, idempotent mission event.
+# Topic: /mge/mission/events  (Mission -> Gateway/logs, reliable)
+# Consumers order by `seq` and ignore an event_id they have already applied.
+# Events of another run_id must be dropped.
+
+string TYPE_MISSION_STATE_CHANGED=MISSION_STATE_CHANGED
+string TYPE_GOAL_ACCEPTED=GOAL_ACCEPTED
+string TYPE_GOAL_REJECTED=GOAL_REJECTED
+string TYPE_MAP_UPDATED=MAP_UPDATED
+string TYPE_ROUTE_PUBLISHED=ROUTE_PUBLISHED
+string TYPE_ROUTE_INVALIDATED=ROUTE_INVALIDATED
+string TYPE_TASK_DISCOVERED=TASK_DISCOVERED
+string TYPE_TASK_STATE_CHANGED=TASK_STATE_CHANGED
+string TYPE_ERROR=ERROR
+
+std_msgs/Header header          # stamp = simulated time
+	builtin_interfaces/Time stamp
+		int32 sec
+		uint32 nanosec
+	string frame_id
+string event_id                 # unique, idempotency key
+uint64 seq                      # strictly increasing within a run
+string run_id
+string causality_id             # event_id / request_id / observation_id that caused it
+string event_type               # TYPE_*
+string task_id
+string agent_id
+uint32 map_version
+string route_id
+string previous_state
+string new_state
+string reason_code              # machine-readable, UPPER_SNAKE_CASE
+string detail                   # short English sentence for the UI
+mge_interfaces/msg/MissionState
+# ICD-ROS2-V1 | Authoritative mission state. Only MissionManager publishes it.
+# Topic: /mge/mission/state  (Mission -> Gateway, reliable + transient_local)
+
+string STATE_IDLE=IDLE
+string STATE_PLANNING=PLANNING
+string STATE_READY=READY
+string STATE_ACTIVE=ACTIVE
+string STATE_REPLAN=REPLAN
+string STATE_RETURNING=RETURNING
+string STATE_COMPLETE=COMPLETE
+string STATE_BLOCKED=BLOCKED
+string STATE_ABORTED=ABORTED
+
+string TASK_DISCOVERED=DISCOVERED
+string TASK_ELIGIBLE=ELIGIBLE
+string TASK_ASSIGNED=ASSIGNED
+string TASK_EXECUTING=EXECUTING
+string TASK_DONE=DONE
+string TASK_REJECTED=REJECTED
+string TASK_BLOCKED=BLOCKED
+
+std_msgs/Header header          # frame_id = "map", stamp = simulated time
+	builtin_interfaces/Time stamp
+		int32 sec
+		uint32 nanosec
+	string frame_id
+string run_id
+uint64 last_event_seq           # seq of the last MissionEvent reflected here
+string mission_state            # STATE_*
+string reason_code              # why BLOCKED / ABORTED, empty otherwise
+
+geometry_msgs/Point base
+	float64 x
+	float64 y
+	float64 z
+geometry_msgs/Point primary_goal
+	float64 x
+	float64 y
+	float64 z
+string primary_agent_id
+
+string active_task_id
+string active_task_kind         # e.g. primary, inspect, sample, return
+string active_task_state        # TASK_*
+
+uint32 map_version
+string route_id                 # route in force, empty if none
+RouteDecision active_route      # full decision of the route in force
+	string STATUS_FEASIBLE=FEASIBLE
+	string STATUS_UNKNOWN=UNKNOWN
+	string STATUS_NO_PATH=NO_PATH
+	string STATUS_INSUFFICIENT_BUDGET=INSUFFICIENT_BUDGET
+	string STATUS_STALE_MAP=STALE_MAP
+	string STATUS_ERROR=ERROR
+	string MODE_FAST=FAST
+	string MODE_EFFICIENT=EFFICIENT
+	string MODE_SAFE=SAFE
+	std_msgs/Header header          #
+		builtin_interfaces/Time stamp
+			int32 sec
+			uint32 nanosec
+		string frame_id
+	string run_id
+	string request_id               #
+	string route_id                 #
+	string agent_id
+	string mode                     #
+	uint32 map_version_used
+	string status                   #
+	string reason_code              #
+	string detail                   #
+	geometry_msgs/Point[] outbound_path   #
+		float64 x
+		float64 y
+		float64 z
+	geometry_msgs/Point[] return_path     #
+		float64 x
+		float64 y
+		float64 z
+	float32 travel_time_s           #
+	float32 energy_est_wh
+	float32 oxygen_est_l            #
+	float32 min_clearance_m         #
+	float32 reserve_time_s          #
+	float32 reserve_wh
+	float32 reserve_oxygen_l        #
+AgentState[] agents
+	string KIND_HUMAN=HUMAN
+	string KIND_DRONE=DRONE
+	string KIND_ROVER=ROVER
+	string MODE_IDLE=IDLE
+	string MODE_MOVING=MOVING
+	string MODE_OBSERVING=OBSERVING
+	string MODE_WORKING=WORKING
+	string MODE_RETURNING=RETURNING
+	string MODE_HALTED=HALTED
+	std_msgs/Header header          #
+		builtin_interfaces/Time stamp
+			int32 sec
+			uint32 nanosec
+		string frame_id
+	string run_id
+	string agent_id                 #
+	string agent_kind               #
+	geometry_msgs/Pose pose
+		Point position
+			float64 x
+			float64 y
+			float64 z
+		Quaternion orientation
+			float64 x 0
+			float64 y 0
+			float64 z 0
+			float64 w 1
+	geometry_msgs/Twist velocity
+		Vector3  linear
+			float64 x
+			float64 y
+			float64 z
+		Vector3  angular
+			float64 x
+			float64 y
+			float64 z
+	string mode                     #
+	float32 time_remaining_s        #
+	float32 energy_remaining_wh     #
+	float32 oxygen_remaining_l      #
+	float32 confidence              #
+mge_interfaces/msg/RouteDecision
+# ICD-ROS2-V1 | Result of one planning request.
+# Returned by PlanRoute and embedded in MissionState for the route in force.
+# UNKNOWN does not mean NO_PATH. A decision computed on an older map version
+# is answered with STALE_MAP or dropped by the consumer.
+
+string STATUS_FEASIBLE=FEASIBLE
+string STATUS_UNKNOWN=UNKNOWN
+string STATUS_NO_PATH=NO_PATH
+string STATUS_INSUFFICIENT_BUDGET=INSUFFICIENT_BUDGET
+string STATUS_STALE_MAP=STALE_MAP
+string STATUS_ERROR=ERROR
+
+string MODE_FAST=FAST
+string MODE_EFFICIENT=EFFICIENT
+string MODE_SAFE=SAFE
+
+std_msgs/Header header          # frame_id = "map", stamp = simulated time
+	builtin_interfaces/Time stamp
+		int32 sec
+		uint32 nanosec
+	string frame_id
+string run_id
+string request_id               # echoes the request
+string route_id                 # unique per route version; empty if not FEASIBLE
+string agent_id
+string mode                     # MODE_*
+uint32 map_version_used
+string status                   # STATUS_*
+string reason_code              # machine-readable, UPPER_SNAKE_CASE
+string detail                   # short English sentence for the UI
+
+geometry_msgs/Point[] outbound_path   # start -> goal, cell centres in "map"
+	float64 x
+	float64 y
+	float64 z
+geometry_msgs/Point[] return_path     # goal -> return point
+	float64 x
+	float64 y
+	float64 z
+
+float32 travel_time_s           # outbound + service + return, estimated
+float32 energy_est_wh
+float32 oxygen_est_l            # NaN for agents that are not HUMAN
+float32 min_clearance_m         # smallest distance to a forbidden cell
+float32 reserve_time_s          # left after the plan, estimated
+float32 reserve_wh
+float32 reserve_oxygen_l        # NaN for agents that are not HUMAN
+mge_interfaces/srv/PlanRoute
+# ICD-ROS2-V1 | /mge/planner/plan_route  (Mission -> Planner)
+# The planner only returns candidates; MissionManager decides what is published.
+# Budgets are per agent. Oxygen fields are NaN for agents that are not HUMAN.
+
+string run_id
+string request_id               # idempotency key
+string agent_id
+string agent_kind               # AgentState.KIND_*
+geometry_msgs/Point start       # current pose of the agent
+	float64 x
+	float64 y
+	float64 z
+geometry_msgs/Point goal
+	float64 x
+	float64 y
+	float64 z
+geometry_msgs/Point return_to   # base or shelter
+	float64 x
+	float64 y
+	float64 z
+bool require_return
+string mode                     # RouteDecision.MODE_*
+uint32 map_version              # version the caller believes is current
+
+float32 service_time_s          # time spent at the goal
+float32 time_budget_s           # available
+float32 energy_budget_wh
+float32 oxygen_budget_l
+float32 reserve_time_s          # must remain after outbound + service + return
+float32 reserve_wh
+float32 reserve_oxygen_l
+---
+RouteDecision decision
+	string STATUS_FEASIBLE=FEASIBLE
+	string STATUS_UNKNOWN=UNKNOWN
+	string STATUS_NO_PATH=NO_PATH
+	string STATUS_INSUFFICIENT_BUDGET=INSUFFICIENT_BUDGET
+	string STATUS_STALE_MAP=STALE_MAP
+	string STATUS_ERROR=ERROR
+	string MODE_FAST=FAST
+	string MODE_EFFICIENT=EFFICIENT
+	string MODE_SAFE=SAFE
+	std_msgs/Header header          #
+		builtin_interfaces/Time stamp
+			int32 sec
+			uint32 nanosec
+		string frame_id
+	string run_id
+	string request_id               #
+	string route_id                 #
+	string agent_id
+	string mode                     #
+	uint32 map_version_used
+	string status                   #
+	string reason_code              #
+	string detail                   #
+	geometry_msgs/Point[] outbound_path   #
+		float64 x
+		float64 y
+		float64 z
+	geometry_msgs/Point[] return_path     #
+		float64 x
+		float64 y
+		float64 z
+	float32 travel_time_s           #
+	float32 energy_est_wh
+	float32 oxygen_est_l            #
+	float32 min_clearance_m         #
+	float32 reserve_time_s          #
+	float32 reserve_wh
+	float32 reserve_oxygen_l        #
+mge_interfaces/srv/SetMissionGoal
+# ICD-ROS2-V1 | /mge/mission/set_goal  (Gateway -> Mission)
+# Idempotent: repeating a request_id returns the first answer.
+
+string request_id               # idempotency key
+string run_id                   # empty = current run
+string primary_agent_id
+geometry_msgs/Point base
+	float64 x
+	float64 y
+	float64 z
+geometry_msgs/Point goal
+	float64 x
+	float64 y
+	float64 z
+string mode                     # RouteDecision.MODE_*
+
+float32 time_budget_s
+float32 energy_budget_wh
+float32 oxygen_budget_l
+float32 reserve_time_s
+float32 reserve_wh
+float32 reserve_oxygen_l
+---
+bool accepted
+string request_id
+string run_id
+string mission_state            # MissionState.STATE_* after handling the request
+string reason_code              # machine-readable, UPPER_SNAKE_CASE
+string detail                   # short English sentence for the UI
+mge_interfaces/srv/RegisterPlanningContext
+# Additive scientific cost context for an unchanged PlanRoute request.
+# Schema mge-planning-cost-context-1.0.0. Every activity is remaining AT_GOAL work.
+# Key is (run_id, request_id, agent_id, map_version); retries are immutable.
+# request_sha256 binds all canonical PlanRoute input fields and their wire values.
+string schema_version
+string run_id
+string request_id
+string agent_id
+uint32 map_version
+string request_sha256
+string model_id
+string model_source_sha256
+string profile_registry_sha256
+string[] activity_ids
+string[] activity_kinds
+float64[] activity_durations_s
+---
+bool accepted
+string reason_code
+string context_sha256

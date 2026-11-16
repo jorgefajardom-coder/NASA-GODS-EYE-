@@ -107,6 +107,7 @@ class PlanRequest:
     reserve_oxygen_l: float | None
     state_revision: int = 0
     service_activity: str = "idle"
+    candidate_phase: str = "OUTBOUND"  # Internal context; never inferred from a response ID
 
 
 @dataclass(frozen=True)

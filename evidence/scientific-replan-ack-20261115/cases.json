@@ -1,0 +1,151 @@
+[
+  {
+    "run_id": "simulated-human-scientific-replan-detour",
+    "source": "d06de5e6532811a6becbd5be6d52df0e85ab81bf-plus-isolated-candidate",
+    "scope": "SIMULATED one-human control loop; no scientific/physical/three-role completion",
+    "real_nodes": [
+      "MissionManager",
+      "MissionNode",
+      "PlanningNode",
+      "ReplanPolicy",
+      "KinematicExecutor",
+      "ReplayRecorder"
+    ],
+    "scenario": "detour",
+    "original_route": "route-48cf178a7c0fb67d231f385a",
+    "replanned_route": "route-74dfa5eeb2ec5d1ad6ef89c1",
+    "actual_stopped_start": [
+      7.749789979973642,
+      5.5,
+      0.0
+    ],
+    "remaining": [
+      3593.699951171875,
+      599.26904296875,
+      149.85073852539062
+    ],
+    "map_version": 2,
+    "request_phase": "OUTBOUND",
+    "ros_states": 44,
+    "halted_states": 2,
+    "reasons": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "MAP_CHANGED",
+      "",
+      "STOP_REQUESTED",
+      "STOP_ACKNOWLEDGED"
+    ],
+    "mission_complete": false,
+    "actual_arrival": true,
+    "planner_calls": 2,
+    "final_state": "ACTIVE",
+    "final_reason": "",
+    "evidence_directory": "detour"
+  },
+  {
+    "run_id": "simulated-human-scientific-replan-contingency-return",
+    "source": "d06de5e6532811a6becbd5be6d52df0e85ab81bf-plus-isolated-candidate",
+    "scope": "SIMULATED one-human control loop; no scientific/physical/three-role completion",
+    "real_nodes": [
+      "MissionManager",
+      "MissionNode",
+      "PlanningNode",
+      "ReplanPolicy",
+      "KinematicExecutor",
+      "ReplayRecorder"
+    ],
+    "scenario": "contingency-return",
+    "original_route": "route-fbaba6973e4e4885228bbdd9",
+    "replanned_route": "route-07b3d83073aa5fa6f56179cc",
+    "actual_stopped_start": [
+      7.166479982198792,
+      5.5,
+      0.0
+    ],
+    "remaining": [
+      3594.39990234375,
+      599.3502197265625,
+      149.86732482910156
+    ],
+    "map_version": 2,
+    "request_phase": "RETURN",
+    "ros_states": 21,
+    "halted_states": 2,
+    "reasons": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "MAP_CHANGED",
+      "",
+      "STOP_REQUESTED",
+      "",
+      "STOP_ACKNOWLEDGED"
+    ],
+    "mission_complete": false,
+    "actual_arrival": true,
+    "planner_calls": 2,
+    "final_state": "RETURNING",
+    "final_reason": "",
+    "evidence_directory": "contingency-return"
+  },
+  {
+    "run_id": "simulated-human-scientific-replan-blocked",
+    "source": "d06de5e6532811a6becbd5be6d52df0e85ab81bf-plus-isolated-candidate",
+    "scope": "SIMULATED one-human control loop; no scientific/physical/three-role completion",
+    "real_nodes": [
+      "MissionManager",
+      "MissionNode",
+      "PlanningNode",
+      "ReplanPolicy",
+      "KinematicExecutor",
+      "ReplayRecorder"
+    ],
+    "scenario": "blocked",
+    "original_route": "route-d85ef815317d0b9e1ea426b3",
+    "replanned_route": null,
+    "actual_stopped_start": [
+      7.749789979973642,
+      5.5,
+      0.0
+    ],
+    "remaining": [
+      3593.699951171875,
+      599.26904296875,
+      149.85073852539062
+    ],
+    "map_version": 2,
+    "request_phase": "RETURN",
+    "ros_states": 21,
+    "halted_states": 2,
+    "reasons": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "MAP_CHANGED",
+      "",
+      "STOP_REQUESTED",
+      "",
+      "STOP_ACKNOWLEDGED"
+    ],
+    "mission_complete": false,
+    "actual_arrival": false,
+    "planner_calls": 2,
+    "final_state": "BLOCKED",
+    "final_reason": "NO_ADMISSIBLE_START_CONNECTOR",
+    "evidence_directory": "blocked"
+  }
+]

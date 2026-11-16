@@ -229,11 +229,13 @@ class ReplanPolicy:
         self._phase_index = -1
         self._geometry_cache = GeometryCache()
         self._map_snapshot = None
+        self._science_profile = self._science_backend = None
         self._retry_key, self._retry_count = None, 0
         self._remaining_floor = None  # Observed availability bound, never a consumption ledger.
 
     def evaluate(self, *, terrain: TerrainGrid, profile: MotionProfile, state: ReplanState,
-                 event: ReplanEvent, now_s: float) -> ReplanDecision:
+                 event: ReplanEvent, now_s: float, scientific_profile=None,
+                 service_activity="wait") -> ReplanDecision:
         """Validate every call, then deduplicate/debounce and optionally call A*.
 
         STOP_REQUIRED is advisory and persists after a feasible candidate. Only a
@@ -244,6 +246,30 @@ class ReplanPolicy:
             if invalid:
                 self._invalidated = True
             return ReplanDecision(action, reason, terrain.map_version, self._invalidated, **kwargs)
+
+        backend = None
+        if scientific_profile is not None:
+            from .resource_costs import ScientificCosts
+            if self._science_profile is not None and self._science_profile is not scientific_profile:
+                return decision(ReplanAction.UNKNOWN, "SCIENTIFIC_PROFILE_CHANGED", True)
+            if self._science_backend is None:
+                self._science_profile = scientific_profile
+                self._science_backend = ScientificCosts(scientific_profile)
+            backend = self._science_backend
+            if (backend.profile.agent_id != state.mission.agent_id
+                    or backend.profile.kind != state.mission.agent_kind):
+                return decision(ReplanAction.UNKNOWN, "SCIENTIFIC_PROFILE_MISMATCH", True)
+
+        def search(request):
+            if backend is None:
+                return plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
+                                  allow_continuous_start=True, geometry_cache=self._geometry_cache)
+            from .resource_costs import Activity, scientific_plan_route
+            activities = (() if request.service_time_s == 0 else
+                          (Activity(request.request_id+":remaining-service", service_activity, request.service_time_s),))
+            return scientific_plan_route(terrain=terrain, request=request, motion_profile=profile,
+                         scientific_profile=scientific_profile, activities=activities,
+                         limits=self.limits, allow_continuous_start=True)
 
         m, r, active = state.mission, state.active_request, state.active_route
         identity = (m.run_id, m.agent_id, m.agent_kind)
@@ -397,7 +423,7 @@ class ReplanPolicy:
         paths = (pending,) + ((future,) if future else ())
         if sum(len(path)-1 for path in paths) > self.config.max_route_segments:
             return decision(ReplanAction.UNKNOWN, "VALIDATION_LIMIT", True)
-        known = self._geometry_cache.get(terrain, profile)
+        known = self._geometry_cache.get(terrain, profile, cost_model=backend) if backend is not None else self._geometry_cache.get(terrain, profile)
         issue, immediate = None, False
         reference = leg[max(0, state.next_waypoint-1)]
         try:
@@ -424,12 +450,20 @@ class ReplanPolicy:
         # Budget check of pending geometry, without subtracting consumed resources.
         time, energy, oxygen = state.service_remaining_s, profile.service_power_w*state.service_remaining_s/3600., 0.
         oxygen += time*(profile.oxygen_l_per_s or 0.)
+        if backend is not None:
+            from .resource_costs import Activity
+            cost = backend.activity(Activity("remaining-service",service_activity,state.service_remaining_s))
+            time,energy,oxygen = cost.time_s,cost.energy_wh,cost.oxygen_l or 0.
         if issue is None:
             for path in paths:
                 for a, b in zip(path, path[1:]):
                     h = math.dist(a[:2], b[:2])
                     if h:
-                        dt, de, do = _motion_costs(profile, h, b[2]-a[2])
+                        if backend is None:
+                            dt, de, do = _motion_costs(profile, h, b[2]-a[2])
+                        else:
+                            cost = backend.movement(a,b)
+                            dt,de,do = cost.time_s,cost.energy_wh,cost.oxygen_l or 0.
                         time += dt
                         energy += de
                         oxygen += do
@@ -499,8 +533,7 @@ class ReplanPolicy:
                           return_to=base, budget=(state.remaining.planning_budget()
                           if isinstance(state.remaining, RemainingResources) else state.remaining), map_version=terrain.map_version,
                           service_time_s=0. if returning else state.service_remaining_s)
-        candidate = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
-                               allow_continuous_start=True, geometry_cache=self._geometry_cache)
+        candidate = search(request)
         self._pending = None
         primary = {}
         contingency = ((state.phase == MissionPhase.OUTBOUND or
@@ -513,8 +546,7 @@ class ReplanPolicy:
             primary = dict(primary_request=request, primary_candidate=candidate)
             request = replace(request, request_id=request.request_id+"-contingency-return",
                               goal=base, require_return=False, service_time_s=0.)
-            candidate = plan_route(terrain=terrain, request=request, profile=profile, limits=self.limits,
-                               allow_continuous_start=True, geometry_cache=self._geometry_cache)
+            candidate = search(request)
             returning = True
         if candidate.status == RouteStatus.FEASIBLE and math.dist(candidate.outbound_path[0][:2], state.pose[:2]) > 1e-6:
             # Start z was already checked uniformly against the ground snapshot.

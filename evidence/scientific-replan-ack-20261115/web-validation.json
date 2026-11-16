@@ -1,0 +1,15 @@
+{
+  "receipt": "Summary of observed exec tool output; not a raw stdout transcript",
+  "node": "24.18.0",
+  "test_command": "npm test -- --reporter=dot",
+  "test_exit_code": 0,
+  "passed": 421,
+  "skipped": 1,
+  "test_files_passed": 62,
+  "build_command": "npm run build",
+  "build_exit_code": 0,
+  "warnings": [
+    "Existing test warning: Multiple instances of Three.js being imported"
+  ],
+  "scope": "No web source or dependency changes in this candidate"
+}

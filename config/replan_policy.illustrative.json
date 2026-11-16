@@ -1,0 +1,6 @@
+{
+  "schema_version": "mge-replan-policy-1.0.0",
+  "status": "illustrative",
+  "policy": {"deviation_enter_m": 2.0, "deviation_exit_m": 1.0, "min_interval_s": 1.0, "immediate_horizon_m": 4.0},
+  "meaning": "Explicit local software-test assumptions; no physical or scientific profile approval. MissionManager and registered scientific PlanRoute remain authoritative."
+}

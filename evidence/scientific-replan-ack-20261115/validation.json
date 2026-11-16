@@ -1,0 +1,79 @@
+{
+  "verified_at_utc": "2026-11-16T03:22:14.931908+00:00",
+  "base_main_sha": "d06de5e6532811a6becbd5be6d52df0e85ab81bf",
+  "operational_source_digest": "78a5e4b93b553306f2a9dbcc0a0732a893c3c3ae6f474ea44b966cc2a6f8c810",
+  "python_jazzy": {
+    "status": "PASS",
+    "tests": 1687,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "passed": 1686,
+    "duration_s": 343.08,
+    "log": "full-02.log",
+    "junit": "full-02.xml"
+  },
+  "ros_build": {
+    "status": "PASS",
+    "packages": 8,
+    "log": "build-ack-venv.log"
+  },
+  "interfaces": {
+    "status": "PASS",
+    "messages": 6,
+    "services": 3,
+    "idl_changes": false,
+    "record": "checked-interfaces.txt"
+  },
+  "web": {
+    "status": "PASS",
+    "passed": 421,
+    "skipped": 1,
+    "build": "PASS",
+    "receipt": "web-validation.json"
+  },
+  "historical_attempts": [
+    {
+      "receipt": "targeted-01.log",
+      "status": "FAIL",
+      "cause": "Old test advanced simulation one second per callback; corrected stimulus to 100 ms without increasing the production deadline"
+    },
+    {
+      "receipt": "full-01.log",
+      "status": "FAIL",
+      "cause": "Initial colcon invocation used system Python instead of the existing virtual environment; gateway dependencies unavailable. Rebuilt all executables with the virtual Python before full-02."
+    }
+  ],
+  "actual_consumer_cases": [
+    "detour",
+    "contingency-return",
+    "blocked"
+  ],
+  "clock_owner_confirmation": "David: ACK deadline in simulated time, independent steady safety watchdog, no automatic resume",
+  "scientific_profile_approval": false,
+  "full_scientific_mission_complete": false,
+  "three_role_acceptance": false,
+  "gazebo_or_physical_execution": false,
+  "milestone_4_closed": false,
+  "milestone_5_closed": false,
+  "organizer_notification_or_endorsement_evidenced": false,
+  "no_evaluator_reference_copied": true,
+  "no_main_merge_or_deployment": true,
+  "repository_checks": {
+    "status": "PASS",
+    "command": "python scripts/check_repository.py",
+    "scope": "Static scaffold checks, not scientific acceptance"
+  },
+  "diff_check": "PASS",
+  "skip_reason": "Historical published planner snapshot is not materialized (tests/mission/test_conformance.py:227)",
+  "warning": "Existing FastAPI/Starlette httpx test-client deprecation",
+  "final_consumer": {
+    "status": "PASS",
+    "passed": 55,
+    "failures": 0,
+    "errors": 0,
+    "log": "final-consumer.log",
+    "junit": "final-consumer.xml",
+    "note": "After trailing blank-line cleanup in two new files; identical ASTs to the full-suite sources"
+  }
+}

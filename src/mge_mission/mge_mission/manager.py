@@ -289,7 +289,8 @@ class MissionManager:
                            require_return, mode, self.map_version, duration,
                            budgets.time_s, budgets.energy_wh, budgets.oxygen_l,
                            budgets.reserve_time_s, budgets.reserve_wh, budgets.reserve_oxygen_l,
-                           self._revisions[agent.agent_id], activity)
+                           self._revisions[agent.agent_id], activity,
+                           "OUTBOUND" if require_return else "RETURN")
 
     def _schedule_plan(self, cause, state):
         if self._goal is None or self.map_version is None:
@@ -349,6 +350,32 @@ class MissionManager:
                 or sum(p.oxygen_l for p in parts) + budget.reserve_oxygen_l > budget.oxygen_l):
             return "RETURN_BUDGET_AT_RISK"
         return ""
+
+    def remaining_primary_budgets(self):
+        return self._remaining_primary_budgets()
+
+    def replan_context(self):
+        """Immutable authorized request/route and current allocation for an advisory policy."""
+        if self._route is None or self._route_request is None:
+            return None
+        return self._route_request, self._route, self._remaining_primary_budgets()
+
+    def request_replan(self, reason, *, candidate_phase="OUTBOUND"):
+        if self._goal is None or self._state in _TERMINAL:
+            return False
+        if candidate_phase == "RETURN":
+            return self.request_return(reason)
+        if candidate_phase != "OUTBOUND":
+            return False
+        if self._route is None and self._pending is not None:
+            return True
+        self._clear_route(reason, reason)
+        self._schedule_plan(reason, "REPLAN")
+        return True
+
+    def control_event(self, reason, detail="", route_id=""):
+        self._emit("MISSION_STATE_CHANGED", reason, reason=reason, detail=detail,
+                   previous=self._state, new=self._state, route_id=route_id)
 
     def pending_plan(self):
         return self._pending
@@ -464,7 +491,7 @@ class MissionManager:
         self._route_request = request
         self._reset_return_evidence()
         self._used_route_ids.add(decision.route_id)
-        returning = self._return_requested or self._facts["primary_goal_completed"]
+        returning = request.candidate_phase == "RETURN"
         self._active_task_id, self._active_task_kind = ("return", "return") if returning else ("primary", "primary")
         self._active_task_state = "ASSIGNED"
         self._emit("ROUTE_PUBLISHED", decision.request_id, agent_id=decision.agent_id)

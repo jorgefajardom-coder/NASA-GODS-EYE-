@@ -4,6 +4,7 @@ These verify the adapter, not an integrated simulator, real terrain or a mission
 Run on Jazzy after colcon build and sourcing install/setup.bash.
 """
 
+from copy import deepcopy
 from pathlib import Path
 from dataclasses import replace
 from time import monotonic
@@ -144,14 +145,17 @@ def graph():
     def send_inputs(version=1, agent_stamp=None):
         map_stamp = 9 + version
         agent_stamp = map_stamp if agent_stamp is None else agent_stamp
-        clock.publish(Clock(clock=Time(sec=max(map_stamp, agent_stamp))))
+        def stamp(seconds):
+            ns = round(seconds * 10**9)
+            return Time(sec=ns//10**9, nanosec=ns%10**9)
+        clock.publish(Clock(clock=stamp(max(map_stamp, agent_stamp))))
         terrain = TerrainMeta()
         terrain.header.frame_id, terrain.header.stamp = "map", Time(sec=map_stamp)
         terrain.run_id, terrain.dataset_id, terrain.map_version = "contract-run", "synthetic-contract", version
         terrain.rows, terrain.cols, terrain.resolution_m = 20, 20, 1.0
         meta.publish(terrain)
         state = AgentState()
-        state.header.frame_id, state.header.stamp = "map", Time(sec=agent_stamp)
+        state.header.frame_id, state.header.stamp = "map", stamp(agent_stamp)
         state.run_id, state.agent_id, state.agent_kind = "contract-run", "human_1", "HUMAN"
         state.pose.orientation.w, state.mode, state.confidence = 1.0, "IDLE", 1.0
         state.time_remaining_s, state.energy_remaining_wh, state.oxygen_remaining_l = 3600.0, 600.0, 150.0
@@ -254,8 +258,10 @@ def test_ros_goal_plan_topics_idempotency_and_map_invalidation(graph):
     assert len(graph["requests"]) == count
     graph["behavior"]["value"] = "UNKNOWN"
     paths_before = len(graph["paths"])
+    stamps = (11 + index / 10 for index in range(1, 10000))
     spin_until(executor, lambda: manager.snapshot().map_version == 2 and manager.snapshot().mission_state == "BLOCKED",
-               tick=lambda: graph["send_inputs"](2))
+               tick=lambda: graph["send_inputs"](2, agent_stamp=next(stamps)))
+    assert any(event.reason_code == "STOP_ACKNOWLEDGED" for event in graph["events"])
     spin_until(executor, lambda: any(not path.poses for path in graph["paths"][paths_before:]))
     assert not manager.snapshot().route_id
     assert manager.snapshot().reason_code == "MAP_NOT_VERIFIED"
@@ -393,3 +399,121 @@ def test_illustrative_runtime_configuration_requires_explicit_opt_in(allow):
     finally:
         node.destroy_node()
         rclpy.shutdown()
+
+
+def arm_authorized_stop(graph):
+    """Real ROS initial plan, followed by a controlled invalidation boundary."""
+    manager, executor, mission = graph["manager"], graph["executor"], graph["mission"]
+    spin_until(executor, lambda: manager.snapshot().map_version == 1 and manager.snapshot().agents,
+               tick=graph["send_inputs"])
+    goal = graph["client"].call_async(graph["goal_request"]())
+    spin_until(executor, lambda: goal.done() and manager.snapshot().route_id)
+    before = manager.snapshot()
+    mission._on_clock(Clock(clock=Time(sec=11)))
+    assert manager.update_map("contract-run", 2, 11.)
+    mission._map_stamp_key = (11, 0)
+    mission._track_invalidation(before)
+    assert mission._stop is not None and not manager.snapshot().route_id
+    return mission
+
+
+def stop_feedback(mission, ns):
+    message = deepcopy(mission._agent_wire["human_1"])
+    message.header.stamp = Time(sec=ns//10**9, nanosec=ns%10**9)
+    message.mode = "HALTED"
+    return message
+
+
+@pytest.mark.parametrize("poll_first", [False, True])
+def test_late_stop_ack_cannot_revive_real_authority(graph, poll_first):
+    mission = arm_authorized_stop(graph)
+    mission._on_clock(Clock(clock=Time(sec=12)))
+    mission._on_agent(stop_feedback(mission, 11_100_000_000), "human_1")
+    assert not mission._stop.acknowledged
+    count = len(graph["requests"])
+    mission._on_clock(Clock(clock=Time(sec=16)))  # Exactly the run-time deadline.
+    if poll_first:
+        mission._poll()
+    mission._on_agent(stop_feedback(mission, 11_200_000_000), "human_1")
+    mission._poll()
+    mission._dispatch_plan()
+    assert mission._stop.failure == "STOP_ACK_TIMEOUT"
+    assert mission._stop_failed and not mission._stop.acknowledged
+    assert graph["manager"].snapshot().reason_code == "STOP_ACK_TIMEOUT"
+    assert graph["manager"].pending_plan() is None
+    assert not graph["manager"].snapshot().route_id
+    assert len(graph["requests"]) == count
+    spin_until(graph["executor"], lambda: any(e.reason_code == "STOP_ACK_TIMEOUT" for e in graph["events"]))
+    assert sum(e.reason_code == "STOP_ACK_TIMEOUT" for e in graph["events"]) == 1
+    assert not any(e.reason_code == "STOP_ACKNOWLEDGED" for e in graph["events"])
+    fresh = graph["goal_request"]()
+    fresh.request_id = "after-stop-failure"
+    response = mission._set_goal(fresh, SetMissionGoal.Response())
+    assert not response.accepted and response.reason_code == "STOP_ACK_TIMEOUT"
+
+
+@pytest.mark.parametrize("boundary", ["dispatch", "context", "plan"])
+def test_stale_stop_receipt_blocks_each_async_authorization_boundary(graph, monkeypatch, boundary):
+    from mge_mission import stop_ack
+    wall = [100.]
+    monkeypatch.setattr(stop_ack, "monotonic", lambda: wall[0])
+    mission = arm_authorized_stop(graph)
+    mission._stop.started_wall_s = wall[0]
+    mission._on_clock(Clock(clock=Time(sec=12)))
+    mission._on_agent(stop_feedback(mission, 11_100_000_000), "human_1")
+    mission._on_agent(stop_feedback(mission, 11_200_000_000), "human_1")
+    assert mission._stop.acknowledged
+    held_context, held_plan = Future(), Future()
+    monkeypatch.setattr(mission._context_client, "call_async", lambda _: held_context)
+    monkeypatch.setattr(mission._planner_client, "call_async", lambda _: held_plan)
+    if boundary != "dispatch":
+        mission._dispatch_plan()
+        assert mission._future is held_context
+        ack = RegisterPlanningContext.Response(accepted=True, reason_code="COST_CONTEXT_REGISTERED",
+                                              context_sha256=mission._inflight_context.digest)
+        if boundary == "plan":
+            held_context.set_result(ack)
+            assert mission._future is held_plan
+    wall[0] = 105.  # Run time remains paused at 12 s; only liveness expires.
+    if boundary == "dispatch":
+        mission._dispatch_plan()
+    elif boundary == "context":
+        held_context.set_result(ack)
+    else:
+        held_plan.set_result(PlanRoute.Response())
+    assert mission._stop.failure == "STOP_ACK_LIVENESS_TIMEOUT"
+    assert mission._stop_failed and not mission._stop.acknowledged
+    assert mission._future is None
+    assert graph["manager"].pending_plan() is None
+    assert graph["manager"].snapshot().reason_code == "STOP_ACK_LIVENESS_TIMEOUT"
+    assert not graph["manager"].snapshot().route_id
+    # A later valid-looking sample cannot revive the same stop or reset budgets.
+    balances = graph["manager"].remaining_primary_budgets()
+    mission._on_agent(stop_feedback(mission, 11_300_000_000), "human_1")
+    mission._poll()
+    assert graph["manager"].remaining_primary_budgets() == balances
+    assert not graph["manager"].snapshot().route_id
+
+
+def test_paused_run_keeps_ack_budget_but_watchdog_blocks_without_resource_debit(graph, monkeypatch):
+    from mge_mission import stop_ack
+    wall = [100.]
+    monkeypatch.setattr(stop_ack, "monotonic", lambda: wall[0])
+    mission = arm_authorized_stop(graph)
+    mission._stop.started_wall_s = wall[0]
+    balances = graph["manager"].remaining_primary_budgets()
+    run_stamp = deepcopy(mission._clock_stamp)
+    wall[0] = 104.
+    mission._poll()
+    assert not mission._stop.failure and not mission._stop.acknowledged
+    assert graph["manager"].remaining_primary_budgets() == balances
+    wall[0] = 105.
+    mission._poll()
+    assert mission._stop.failure == "STOP_ACK_LIVENESS_TIMEOUT"
+    assert mission._clock_stamp == run_stamp
+    assert graph["manager"].remaining_primary_budgets() == balances
+    mission._on_clock(Clock(clock=Time(sec=12)))
+    mission._on_agent(stop_feedback(mission, 11_100_000_000), "human_1")
+    mission._on_agent(stop_feedback(mission, 11_200_000_000), "human_1")
+    mission._dispatch_plan()
+    assert not mission._stop.acknowledged and not graph["manager"].snapshot().route_id

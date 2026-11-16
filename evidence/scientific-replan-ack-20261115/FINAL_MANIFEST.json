@@ -1,0 +1,182 @@
+{
+  "created_at_utc": "2026-11-16T03:28:23.248530+00:00",
+  "files": {
+    "AI_USAGE.json": {
+      "bytes": 397,
+      "sha256": "461a96b86df66501d0e19a04ea7304492ea8fb6028ba927eb70457dc1a8d4683"
+    },
+    "README.md": {
+      "bytes": 3217,
+      "sha256": "8dbcd0e09ba8009fcbd0b8da64431d06da86ff87bb3c125d639fd4fe49ec171e"
+    },
+    "blocked/agents.yaml": {
+      "bytes": 144,
+      "sha256": "8955a7995370d61a6bdfb85d18e92d20c73b67e85c822bc75002a8033f9bba54"
+    },
+    "blocked/control-loop.json": {
+      "bytes": 1056,
+      "sha256": "c11c7ced416cae11a389c0e9af4a2a989ac5e10e91e0d04b55cb08fd7c417362"
+    },
+    "blocked/executor.log": {
+      "bytes": 411,
+      "sha256": "568f6a04bd224b25ee16d65d2ff7ca538debd1826519282de831ad026cf65c61"
+    },
+    "blocked/recorded/simulated-human-scientific-replan-blocked/manifest.json": {
+      "bytes": 1176,
+      "sha256": "c9da9f1d8c97075797a557f3b858c820d02aa1524001118c9d61e27cb6f71839"
+    },
+    "blocked/recorded/simulated-human-scientific-replan-blocked/public_rasters.json": {
+      "bytes": 25687,
+      "sha256": "6b416ed4a923be564aef10b6378be079bf8e10f31010e2aba82538ed93b73648"
+    },
+    "blocked/recorded/simulated-human-scientific-replan-blocked/snapshot.json": {
+      "bytes": 9507,
+      "sha256": "dd2f1ce34a812dfc628db464893272ad3082bd263f4c0952956b21db85242f9f"
+    },
+    "blocked/recorded/simulated-human-scientific-replan-blocked/timeline.jsonl": {
+      "bytes": 40900,
+      "sha256": "6ce0cdc50df15e75b68c58969b1d0e7015687c7358569df947d75d9a84837dec"
+    },
+    "blocked/recorder.log": {
+      "bytes": 253,
+      "sha256": "c497a286dbede173df76723757edcff02dd7e9eb5cee8820ec96d30ea034c6c4"
+    },
+    "build-ack-venv.log": {
+      "bytes": 496,
+      "sha256": "aa46c64c2630283be6a11a03249abf2950e6db60b9d1bc8fd3e826e69bee90e2"
+    },
+    "build-ack.log": {
+      "bytes": 496,
+      "sha256": "993640b90487369f2381381070d9c76c0f20f589bdc6937952e2549a3c65fe74"
+    },
+    "cases.json": {
+      "bytes": 3599,
+      "sha256": "3885e1f153cabaa0aee56b03c2bff75ccb82e4495322a20b20711d6595f7153b"
+    },
+    "checked-interfaces.txt": {
+      "bytes": 13920,
+      "sha256": "b5087ae2f25867b3ed6538fd26aafef53face1a4856cc8dbd9f7a3ea2a4a4a00"
+    },
+    "contingency-return/agents.yaml": {
+      "bytes": 144,
+      "sha256": "8955a7995370d61a6bdfb85d18e92d20c73b67e85c822bc75002a8033f9bba54"
+    },
+    "contingency-return/control-loop.json": {
+      "bytes": 1079,
+      "sha256": "7eab5b45871bdf5fdbaa093a9d17072465365c0b6515a1fd1b2c96f193e95ed0"
+    },
+    "contingency-return/executor.log": {
+      "bytes": 529,
+      "sha256": "339207e04514019674e344ff15ca14a0c7f9f482a72367901c50413a5e22099b"
+    },
+    "contingency-return/recorded/simulated-human-scientific-replan-contingency-return/manifest.json": {
+      "bytes": 1197,
+      "sha256": "4a4cd69a5f67df5a4a1e2ef5da29099954f1f1f5d082c48eac9bb50d0403c9b7"
+    },
+    "contingency-return/recorded/simulated-human-scientific-replan-contingency-return/public_rasters.json": {
+      "bytes": 19068,
+      "sha256": "bfc292bf9e2bcd70d6275a0786f7e5fd5c1b9895b0f2d49fc7cbd22f95d1237b"
+    },
+    "contingency-return/recorded/simulated-human-scientific-replan-contingency-return/snapshot.json": {
+      "bytes": 10567,
+      "sha256": "79052b30d4b1979d4cee7aaf3e33c9023c3f5fad9467f5fc15ea89464fe5128c"
+    },
+    "contingency-return/recorded/simulated-human-scientific-replan-contingency-return/timeline.jsonl": {
+      "bytes": 42561,
+      "sha256": "def9725b811343cc4f2fc03f8ca98e8f60a86de97682f77fda66738e5b3237b6"
+    },
+    "contingency-return/recorder.log": {
+      "bytes": 275,
+      "sha256": "2c869c6dafe6435d774d38583ddc9bb7092467fc67bcb1275b9f54b426b7a91f"
+    },
+    "detour/agents.yaml": {
+      "bytes": 144,
+      "sha256": "8955a7995370d61a6bdfb85d18e92d20c73b67e85c822bc75002a8033f9bba54"
+    },
+    "detour/control-loop.json": {
+      "bytes": 1045,
+      "sha256": "86f1dc6bdbd479af0d3c3cb24f8c11abc27b2a87f5d45dd30cf0c8dceb6abf23"
+    },
+    "detour/executor.log": {
+      "bytes": 517,
+      "sha256": "3cc9dae730927d36c195ea5c4a98b5068a54d73027741aa3212eb858a77c47bc"
+    },
+    "detour/recorded/simulated-human-scientific-replan-detour/manifest.json": {
+      "bytes": 1174,
+      "sha256": "85b356d9b4b92853f5b62252b4320d79e7bd67329b0c435338c67b8c2d3a9ca9"
+    },
+    "detour/recorded/simulated-human-scientific-replan-detour/public_rasters.json": {
+      "bytes": 18724,
+      "sha256": "a98270f1e36e29c44dff767a57d0b811c0e88c4ce650a8e39759cf84dac7a4c9"
+    },
+    "detour/recorded/simulated-human-scientific-replan-detour/snapshot.json": {
+      "bytes": 11812,
+      "sha256": "3502afb51379a77976c7f70058947967bce29a33425e5520bd194755afd9d034"
+    },
+    "detour/recorded/simulated-human-scientific-replan-detour/timeline.jsonl": {
+      "bytes": 84822,
+      "sha256": "fca86b084fafa4dabad74f588cc8120f7d2a3b2d6ddb283c591d0f8812ae38e0"
+    },
+    "detour/recorder.log": {
+      "bytes": 251,
+      "sha256": "8774340c136f1ef3e1121cbceb1ae7667d50064a4778f7e89c592bfc2e0647ed"
+    },
+    "eof-equivalence.json": {
+      "bytes": 1003,
+      "sha256": "c51cf6044f1c601cd2f75991f03709eedb0733b439b8d50b298556c5bca41f64"
+    },
+    "final-consumer.log": {
+      "bytes": 197,
+      "sha256": "8a770f9355d5511b76db46d24aaf43e86a4804c53ab42fb7c008107193dd476f"
+    },
+    "final-consumer.xml": {
+      "bytes": 8102,
+      "sha256": "f8ca178dd451b742922df676f0b5f2c4a2b632caaaf8c3b2684b0dc656647e81"
+    },
+    "full-01.log": {
+      "bytes": 18956,
+      "sha256": "f63cc8720ff7cf4bf2a9a335ffffb82556118b41fe58dbd515f3d5c214240be4"
+    },
+    "full-01.xml": {
+      "bytes": 254237,
+      "sha256": "8485b1f87ae5da2d31849009f9a6eb5b874aa43a7a1f7e7bf9d46d690ad2ccd1"
+    },
+    "full-02.log": {
+      "bytes": 2594,
+      "sha256": "87ab23e08796f969039f6066ee4a62569736cd151f0305b30704d09b0beb5b7b"
+    },
+    "full-02.xml": {
+      "bytes": 242336,
+      "sha256": "5a26baf6f38e414f672d52b4a9284c9d8595dae86a0c84d50e826305833cb322"
+    },
+    "source-lock.json": {
+      "bytes": 75857,
+      "sha256": "9c8e7a57371651ea277a5ece6d5690f25802ec654ee5e8bfb1756236ff566df3"
+    },
+    "targeted-01.log": {
+      "bytes": 983,
+      "sha256": "c40b6ae765524c74349eeb957608a7d99e1c43877745afe12da875195358cdaf"
+    },
+    "targeted-01.xml": {
+      "bytes": 13543,
+      "sha256": "1823aa837fd76a7d09c2221b93785f46cb02ba85008dc63917b095d49909c275"
+    },
+    "targeted-02.log": {
+      "bytes": 273,
+      "sha256": "fc5755cb3b10e66bd835a1b5dcbda835b54020ea4c0eac46be1962309ad87098"
+    },
+    "targeted-02.xml": {
+      "bytes": 12964,
+      "sha256": "bedeb4a081f0b77874c62018f7dcc38c3c70994d0c99a62a0630a2d2ffd9974a"
+    },
+    "validation.json": {
+      "bytes": 2579,
+      "sha256": "90ae62a09f8be1fadbcc026547651c171e49814e2d27c5022be9c4ecd703c0a5"
+    },
+    "web-validation.json": {
+      "bytes": 461,
+      "sha256": "8a695c4df1e73012b2b07257fefc6a4d6b18e75fc4cc24c67696052bfc0c2232"
+    }
+  },
+  "scope": "SIMULATED one-human software validation; no acceptance gate closure"
+}

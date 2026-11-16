@@ -1,0 +1,16 @@
+{
+  "src/mge_planning/mge_planning/mission_replan.py": {
+    "full_suite_sha256": "edf203e74b24f537fec91b3bfe4d0f2ab46342244cc369faeed6991258ee5610",
+    "final_sha256": "a241126915ebadf7372291781981e2e6e5ee4ad348cfb50ed90be9a0a5611e5c",
+    "difference": "Remove blank lines at EOF; identical AST",
+    "ast_sha256_python_3_14": "05eafb57291e922d5ccbd352b3ebdc633ea8d1533dde69afa3c0fb390bcec3eb",
+    "ast_sha256_python_3_12": "b53fabc26dd7103040bb7c47f3f868e0f5c62e508c022e3b56b615b372cffbba"
+  },
+  "tests/integration/test_scientific_mission_replan.py": {
+    "full_suite_sha256": "54ea4300e250b037b9c4630daf340ea37fc25c5c6dac192b0859882b6a0b8f44",
+    "final_sha256": "c8a7762f06d676a89528389da2780f04873baec88a96a89b35c88c0f40195682",
+    "difference": "Remove blank lines at EOF; identical AST",
+    "ast_sha256_python_3_14": "85b78e0a103704e2c186d5a44f4e6c0e89c4bb6fb21f8e3fd6f8368a1b02ebcb",
+    "ast_sha256_python_3_12": "06c0463a5fa9245d1e96781e4dff26b2bf13643e077763273aecb1e90f594a5c"
+  }
+}

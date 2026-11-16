@@ -1,0 +1,18 @@
+Starting >>> mge_interfaces
+Finished <<< mge_interfaces [11.5s]
+Starting >>> mge_data
+Starting >>> mge_mission
+Starting >>> mge_gateway
+Finished <<< mge_data [1.81s]
+Starting >>> mge_mapping
+Starting >>> mge_sim
+Finished <<< mge_mission [1.82s]
+Starting >>> mge_planning
+Finished <<< mge_gateway [1.82s]
+Finished <<< mge_sim [2.11s]
+Finished <<< mge_mapping [2.22s]
+Finished <<< mge_planning [2.40s]
+Starting >>> mge_bringup
+Finished <<< mge_bringup [5.37s]
+
+Summary: 8 packages finished [21.6s]
