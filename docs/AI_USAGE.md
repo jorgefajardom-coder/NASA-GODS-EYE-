@@ -1110,3 +1110,7 @@ OpenAI Codex assisted add conservative terrain mobility diagnostics. Affected co
 
 ## Local terrain contribution 2
 OpenAI Codex assisted add experimental scientific fine-surface evaluation. Affected code/tests: src/mge_planning/mge_planning/local_surface.py, tests/planning/test_local_surface.py. Synthetic fixtures only; no physical certification, coefficient approval or operational activation.
+
+
+## Local terrain contribution 3
+OpenAI Codex assisted validate terrain evidence and scientific compatibility. Affected code/tests: tests/planning/test_final_terrain_audit.py, tests/planning/test_graph_scientific_compatibility.py, tests/planning/test_mvp_mission_consumer.py. Synthetic fixtures only; no physical certification, coefficient approval or operational activation.

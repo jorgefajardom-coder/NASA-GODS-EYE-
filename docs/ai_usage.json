@@ -2185,6 +2185,16 @@
         "tests/planning/test_local_surface.py"
       ],
       "use": "add experimental scientific fine-surface evaluation; synthetic experimental code/tests, not physical or scientific approval."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_terrain_contribution_3",
+      "paths": [
+        "tests/planning/test_final_terrain_audit.py",
+        "tests/planning/test_graph_scientific_compatibility.py",
+        "tests/planning/test_mvp_mission_consumer.py"
+      ],
+      "use": "validate terrain evidence and scientific compatibility; synthetic experimental code/tests, not physical or scientific approval."
     }
   ],
   "generated_media": [
