@@ -168,7 +168,7 @@ def test_walking_actor_rewrites_sparse_accessors(tmp_path, sparse):
     assert g['buffers'][0]['byteLength'] == len(bin_)
 
 
-def test_unsupported_cosmetic_parts_do_not_abort_the_world(tmp_path, caplog):
+def test_unsupported_cosmetic_parts_do_not_abort_the_world(tmp_path):
     models = tmp_path / 'models'
     models.mkdir()
     path, _ = sparse_rover_glb(models / 'rover.glb', 'base')
@@ -182,8 +182,8 @@ def test_unsupported_cosmetic_parts_do_not_abort_the_world(tmp_path, caplog):
     path.write_bytes(struct.pack('<4sII', b'glTF', 2, 12 + 8 + len(body) + len(rest))
                      + struct.pack('<I4s', len(body), b'JSON') + body + rest)
     out = tmp_path / 'w'
-    meta = build_world(out, GRID, np.full((32, 32), -2570.0), [], [('rover_1', 'ROVER', -14.0, -10.0, -2570.0)],
-                       physical=('rover_1',), web_models={'ROVER': path})
+    with pytest.warns(RuntimeWarning, match='whole web model'):
+        meta = build_world(out, GRID, np.full((32, 32), -2570.0), [], [('rover_1', 'ROVER', -14.0, -10.0, -2570.0)],
+                           physical=('rover_1',), web_models={'ROVER': path})
     assert (out / 'world.sdf').exists() and 'derived_models' not in meta
     assert 'wheel_visuals' not in meta['agents']['rover_1']
-    assert any('rover' in r.getMessage() and 'undivided' in r.getMessage() for r in caplog.records)

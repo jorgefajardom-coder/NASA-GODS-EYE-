@@ -2173,7 +2173,25 @@
         "docs/AI_USAGE.md",
         "docs/ai_usage.json"
       ],
-      "use": "Reproduce the web viewer's model animations in the Gazebo Harmonic world: at world-build time split the web rover GLB's single six-wheel mesh per wheel with the web's rule (side by sign, axle by 1-D k-means) into derived rover_body.glb and rover_wheel_<k>.glb, place the physical rover's six wheel links at the web wheels' positions and radius and draw each wheel on its link so it rolls with the DiffDrive physics; split the drone's two coaxial rotors into derived GLBs on revolute joints with velocity JointControllers that gz_mirror spins up while the drone is not IDLE and down when it is (web rates and speed); opt-in, write a derived astronaut_walk.glb (web size and Z-up baked into the skeleton, bind matrices, walk clip and vertices because gz-common ignores transforms above the skeleton) played by a Gazebo actor led through gz FollowActor by the invisible mirrored model. The derived meshes are cosmetic copies of the existing third-party models (attributions unchanged) written into the generated world directory; nothing is a NASA product, an observation or a validated mission, and the animation is not a mechanical or biomechanical validation. Review fixes: the GLB reader decodes glTF 2.0 sparse accessors (zeros or a base bufferView, then sparse indices and values), the walking-actor copy stores them as dense views, a model whose cosmetic parts cannot be derived is drawn undivided with a logged warning instead of aborting the world build, and gz_world/gz_mirror no longer import the undeclared SciPy (a pure-numpy linear/cubic resampler replaces scipy.ndimage; linear heights unchanged), covered by test_gz_world_glb.py (synthetic sparse GLBs with and without a bufferView) and test_gz_world_no_scipy.py (imports with scipy blocked)."
+      "use": "Reproduce the web viewer's model animations in the Gazebo Harmonic world: at world-build time split the web rover GLB's single six-wheel mesh per wheel with the web's rule (side by sign, axle by 1-D k-means) into derived rover_body.glb and rover_wheel_<k>.glb, place the physical rover's six wheel links at the web wheels' positions and radius and draw each wheel on its link so it rolls with the DiffDrive physics; split the drone's two coaxial rotors into derived GLBs on revolute joints with velocity JointControllers that gz_mirror spins up while the drone is not IDLE and down when it is (web rates and speed); opt-in, write a derived astronaut_walk.glb (web size and Z-up baked into the skeleton, bind matrices, walk clip and vertices because gz-common ignores transforms above the skeleton) played by a Gazebo actor led through gz FollowActor by the invisible mirrored model. The derived meshes are cosmetic copies of the existing third-party models (attributions unchanged) written into the generated world directory; nothing is a NASA product, an observation or a validated mission, and the animation is not a mechanical or biomechanical validation. Review fixes: the GLB reader decodes glTF 2.0 sparse accessors (zeros or a base bufferView, then sparse indices and values), the walking-actor copy stores them as dense views, the sparse-accessor tests also exercise the review's whole-model fallback, and gz_world/gz_mirror no longer import the undeclared SciPy (a pure-numpy linear/cubic resampler replaces scipy.ndimage; linear heights unchanged), covered by test_gz_world_glb.py (synthetic sparse GLBs with and without a bufferView) and test_gz_world_no_scipy.py (imports with scipy blocked)."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "gazebo_animation_review_fixes",
+      "source_revision": "aeaf224",
+      "generation": "AI-assisted code, tests and documentation fixing integration review findings; no data, media or measured results generated",
+      "paths": [
+        "src/mge_sim/mge_sim/gz_world.py",
+        "src/mge_sim/mge_sim/gz_mirror.py",
+        "src/mge_sim/mge_sim/rotors.py",
+        "src/mge_sim/package.xml",
+        "src/mge_sim/README.md",
+        "tests/unit/test_gz_world.py",
+        "tests/unit/test_rotors.py",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "use": "Fall back to the whole web model when GLB part derivation fails; record wheel visuals only for the layout the SDF uses; return the drone body name from derive_drone_parts; move the rotor animation to a pure-Python module so gz_mirror does not load numpy, scipy or the world generator; follow the web viewer's airborne rotor rule using per-cell Gazebo ground heights in world.json; skip repeated zero rotor commands. Cosmetic Gazebo display only; no NASA data, physical validation or LIVE mission is claimed."
     }
   ],
   "generated_media": [

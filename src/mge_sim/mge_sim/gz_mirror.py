@@ -6,8 +6,11 @@ run; it does not drive it. The models have no collision, so this is a view of th
 kinematic MOCK execution, not a physics simulation of the agents.
 
 Cosmetic animation like the web viewer's: a drone's rotors (world.json `rotors`) spin up
-while its mode is not IDLE and spin down when it is, at the web's rates, through the rotor
-joints' velocity commands (gz.msgs.Double on /model/<id>/joint/<rotor>_joint/cmd_vel).
+while its mode is not IDLE or it is drawn more than 0.3 m above the ground (world.json
+`ground_z_m`), and spin down otherwise, at the web's rates, through the rotor joints'
+velocity commands (gz.msgs.Double on /model/<id>/joint/<rotor>_joint/cmd_vel). A rotor that
+is still and stays still gets no command. The animation logic is mge_sim.rotors (pure
+Python): this node does not import the world generator, numpy or scipy.
 """
 import json
 import time
@@ -18,7 +21,7 @@ from rclpy.node import Node
 from mge_interfaces.msg import AgentState
 from mge_sim.common import RELIABLE, agent_state_topic
 from mge_sim.gz_control import gz_pose
-from mge_sim.gz_world import rotor_command
+from mge_sim.rotors import is_airborne, rotor_command, should_publish
 
 ROTOR_PERIOD_S = 0.1
 
@@ -41,6 +44,7 @@ class GzMirror(Node):
         self.service = f'/world/{self.meta["world_name"]}/set_pose'
         self.last = {}
         self.modes = {}
+        self.airborne = {}      # agent id -> drawn above the ground (like the web viewer)
         self.rotors = {}        # agent id -> (speed share 0..1, [(publisher, direction, max rad/s)])
         for agent_id, info in self.meta['agents'].items():
             if info.get('physical'):
@@ -62,6 +66,7 @@ class GzMirror(Node):
         self.modes[msg.agent_id] = msg.mode
         now = time.monotonic()
         pose = gz_pose(msg, self.meta)
+        self.airborne[msg.agent_id] = is_airborne(self.meta, pose[:3])
         previous = self.last.get(msg.agent_id)
         if previous and (now - previous[0] < self.min_period_s or previous[1] == pose):
             return
@@ -77,8 +82,12 @@ class GzMirror(Node):
         now = time.monotonic()
         dt, self.last_tick = now - self.last_tick, now
         for agent_id, entry in self.rotors.items():
-            # Unknown mode (no state yet) counts as IDLE: the rotors stay still.
-            entry[0] = rotor_command(entry[0], self.modes.get(agent_id, 'IDLE'), dt)
+            # Unknown mode (no state yet) counts as IDLE on the ground: the rotors stay still.
+            previous = entry[0]
+            entry[0] = rotor_command(previous, self.modes.get(agent_id, 'IDLE'), dt,
+                                     airborne=self.airborne.get(agent_id, False))
+            if not should_publish(previous, entry[0]):
+                continue
             for pub, direction, max_rad_s in entry[1]:
                 cmd = self.Double()
                 cmd.data = direction * max_rad_s * entry[0]
