@@ -2255,6 +2255,19 @@
       ],
       "human_review": "pending display review Jorge; radiation wording David",
       "use": "Atmos run totals use the zone's surface dose rate (the HUD's), Gale rate rows relabelled, REMS sol count from the seasonal bins, guards for missing sunrise/sunset and empty chart values; stale 600 mSv career-limit wording, the Guo et al. year and the crew-dose source text corrected. Display and text only."
+    },
+    {
+      "tool": "Claude (Anthropic) through Claude Code",
+      "kind": "readme_full_update_20261115",
+      "source_revision": "822ce07",
+      "generation": "AI-assisted documentation text only; no code, data, imagery, audio or NASA observation generated",
+      "paths": [
+        "README.md",
+        "docs/AI_USAGE.md",
+        "docs/ai_usage.json"
+      ],
+      "human_review": "pending owner review",
+      "use": "README brought up to date with the PRs merged on 15 November 2026 (#49-#58, #60, #61): project status, stop-acknowledgement gate and its limits, launch arguments, Gazebo experiment and animations, new checks, branches and pull requests, open milestones and the organizer delivery gate. Existing MOCK/SIMULATED labels, scientific caveats, AI declarations and licence text retained."
     }
   ],
   "generated_media": [
