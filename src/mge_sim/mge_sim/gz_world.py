@@ -18,7 +18,9 @@ No ROS imports. `build_world(out_dir, ...)` writes one self-contained directory:
   world.sdf      terrain + one boulder (mesh visual, ellipsoid collision) on every blocked
                  cell of the SIMULATED scene, smaller visual-only rocks around it, Mars
                  gravity, a low sun, a dusty sky, and one visual-only model per agent.
-  world.json     frame and z_ref_m (gz z = ROS z - z_ref_m) for gz_mirror.
+  world.json     frame and z_ref_m (gz z = ROS z - z_ref_m) for gz_mirror, and ground_z_m:
+                 the Gazebo ground height at every cell centre (rows from origin_y upwards),
+                 so the mirror can tell an airborne drone without loading the heightmap.
 
 Boulders follow the viewer's display choice (main rock from 1.5 m, deliberately enlarged
 for readability; Golombek-Rapp tail above it). Nothing here is a NASA product, a measured
@@ -29,10 +31,15 @@ import math
 from pathlib import Path
 import shutil
 import struct
+import warnings
 import zlib
 
 import numpy as np
 from scipy import ndimage
+
+# The drone's rotor animation lives in mge_sim.rotors (pure Python, imported by gz_mirror);
+# re-exported here for existing callers.
+from mge_sim.rotors import ROTOR_RAD_S, ROTOR_SPINDOWN_PER_S, ROTOR_SPINUP_PER_S, rotor_command  # noqa: F401
 
 HEIGHTMAP_SIZE = 129             # 2^7 + 1 vertices per side
 TEXTURE_PX = 1024
@@ -230,7 +237,12 @@ def _rock_sdf(rock, z):
             f'<link name="link">{collision}{visual}</link></model>')
 
 
-def _agent_sdf(agent_id, kind, x, y, z, glb=None):
+def _agent_sdf(agent_id, kind, x, y, z, glb=None, rotors=None, walker=None):
+    if glb is not None and rotors:      # the web's drone with its two rotors on spinning joints
+        return drone_sdf(agent_id, x, y, z, glb, rotors)
+    if walker is not None:              # an invisible mirrored leader and the walking actor
+        return (f'<model name="{agent_id}"><pose>{x:.3f} {y:.3f} {z:.3f} 0 0 0</pose><link name="link">'
+                '<gravity>false</gravity></link></model>' + walking_actor_sdf(agent_id, x, y, z, walker))
     if glb is not None:     # the web's model, resting on its origin (lift 0)
         return (f'<model name="{agent_id}"><pose>{x:.3f} {y:.3f} {z:.3f} 0 0 0</pose><link name="link">'
                 f'<gravity>false</gravity>{web_model_visual("v", glb[0], kind, glb[1], glb[2])}</link></model>')
@@ -282,20 +294,530 @@ def glb_bbox(path):
     return lo, hi
 
 
-def web_model_visual(name, uri, kind, lo, hi, z_shift=0.0):
-    """A <visual> drawing a Y-up GLB upright (Z-up), sized like the web and resting on z = 0."""
+# ---------------------------------------------------------------------------------------------
+# Derived parts of the web GLBs (COSMETIC, derived at world-build time from the same files; the
+# source GLBs are never modified). Gazebo turns a whole mesh visual with its link, so the parts
+# that move in the web viewer (the rover's six wheels, the drone's two rotors) are written as
+# separate small GLBs with the same vertices, normals, UVs and materials, and the rest of the
+# model as a body GLB. Pure numpy; no glTF library is needed.
+
+_COMPONENTS = {5120: np.int8, 5121: np.uint8, 5122: np.int16, 5123: np.uint16, 5125: np.uint32, 5126: np.float32}
+_WIDTH = {'SCALAR': 1, 'VEC2': 2, 'VEC3': 3, 'VEC4': 4, 'MAT2': 4, 'MAT3': 9, 'MAT4': 16}
+ROVER_WHEELS_NODE = 'Wheels_objs'                       # VehicleModel.tsx WHEELS = /^Wheels_objs/
+DRONE_ROTOR_NODES = (('rotors_01', 1), ('rotors_02', -1))  # VehicleModel.tsx ROTORS (coaxial, counter-rotating)
+
+
+def read_glb(path):
+    """(glTF JSON, BIN chunk bytes) of a binary glTF."""
+    data = Path(path).read_bytes()
+    if data[:4] != b'glTF':
+        raise ValueError(f'{path} is not a binary glTF')
+    n = struct.unpack('<I', data[12:16])[0]
+    g = json.loads(data[20:20 + n])
+    rest = data[20 + n:]
+    bin_ = rest[8:8 + struct.unpack('<I', rest[:4])[0]] if len(rest) >= 8 and rest[4:8] == b'BIN\x00' else b''
+    return g, bin_
+
+
+def _accessor_bytes(g, bin_, i):
+    """Tightly packed raw bytes of accessor i (byteStride removed)."""
+    acc = g['accessors'][i]
+    if 'sparse' in acc or 'bufferView' not in acc:
+        raise ValueError('sparse or view-less accessors are not supported')
+    view = g['bufferViews'][acc['bufferView']]
+    item = np.dtype(_COMPONENTS[acc['componentType']]).itemsize * _WIDTH[acc['type']]
+    start = view.get('byteOffset', 0) + acc.get('byteOffset', 0)
+    stride = view.get('byteStride') or item
+    if stride == item:
+        return bin_[start:start + item * acc['count']]
+    return b''.join(bin_[start + k * stride:start + k * stride + item] for k in range(acc['count']))
+
+
+def accessor_array(g, bin_, i):
+    acc = g['accessors'][i]
+    a = np.frombuffer(_accessor_bytes(g, bin_, i), dtype=_COMPONENTS[acc['componentType']])
+    return a.reshape(acc['count'], _WIDTH[acc['type']]) if _WIDTH[acc['type']] > 1 else a
+
+
+def _local_matrix(node):
+    if 'matrix' in node:
+        return np.array(node['matrix'], dtype=float).reshape(4, 4).T
+    x, y, z, w = node.get('rotation', [0, 0, 0, 1])
+    m = np.eye(4)
+    m[:3, :3] = np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+                          [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+                          [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]]) * np.array(node.get('scale', [1, 1, 1]))
+    m[:3, 3] = node.get('translation', [0, 0, 0])
+    return m
+
+
+def node_world_matrices(g):
+    """{node index: 4x4 scene matrix} for the default scene."""
+    out = {}
+
+    def walk(i, parent):
+        out[i] = parent @ _local_matrix(g['nodes'][i])
+        for c in g['nodes'][i].get('children', []):
+            walk(c, out[i])
+    for i in g['scenes'][g.get('scene', 0)]['nodes']:
+        walk(i, np.eye(4))
+    return out
+
+
+def _node_by_prefix(g, prefix):
+    return next((i for i, n in enumerate(g['nodes']) if n.get('name', '').startswith(prefix)), None)
+
+
+def _subtree(g, i):
+    out = [i]
+    for c in g['nodes'][i].get('children', []):
+        out += _subtree(g, c)
+    return out
+
+
+def _prim_indices(g, bin_, prim):
+    if 'indices' in prim:
+        return accessor_array(g, bin_, prim['indices']).astype(np.uint32)
+    return np.arange(g['accessors'][prim['attributes']['POSITION']]['count'], dtype=np.uint32)
+
+
+def split_wheel_triangles(parts, iterations=12):
+    """The web viewer's wheel split (VehicleModel.tsx splitWheels), in the mesh's own frame
+    (x lateral, z forward): triangle centroids are grouped by side (sign of x) and by the
+    nearest of three axle positions along z (1-D k-means from min, middle, max over every part),
+    so a tyre, its rim and its hub share a wheel. parts = [(positions N x 3, indices 3T)].
+    Returns (per part: six index arrays, wheel centres 6 x 3, wheel radii 6). Wheels 0-2 are
+    the -x side, 3-5 the +x side, each ordered by axle position along z (low to high)."""
+    cents = []
+    for pos, idx in parts:
+        tri = np.asarray(pos, dtype=float)[np.asarray(idx).reshape(-1, 3)]
+        cents.append(tri.mean(axis=1))
+    allz = np.concatenate([c[:, 2] for c in cents])
+    centres = np.array([allz.min(), (allz.min() + allz.max()) / 2, allz.max()])
+    for _ in range(iterations):
+        near = np.argmin(np.abs(allz[:, None] - centres[None, :]), axis=1)
+        centres = np.array([allz[near == k].mean() if (near == k).any() else centres[k] for k in range(3)])
+    out, lo, hi = [], np.full((6, 3), np.inf), np.full((6, 3), -np.inf)
+    for (pos, idx), c in zip(parts, cents):
+        wheel = np.where(c[:, 0] < 0, 0, 3) + np.argmin(np.abs(c[:, 2][:, None] - centres[None, :]), axis=1)
+        tris = np.asarray(idx).reshape(-1, 3)
+        groups = []
+        for w in range(6):
+            ids = tris[wheel == w].reshape(-1)
+            groups.append(ids)
+            if ids.size:
+                p = np.asarray(pos, dtype=float)[ids]
+                lo[w], hi[w] = np.minimum(lo[w], p.min(axis=0)), np.maximum(hi[w], p.max(axis=0))
+        out.append(groups)
+    if not np.isfinite(lo).all():
+        raise ValueError('the wheel meshes do not look like 2 x 3 wheels')
+    return out, (lo + hi) / 2, (hi[:, 1] - lo[:, 1]) / 2
+
+
+def write_glb(path, g, bin_, nodes):
+    """A compact GLB of selected primitives of a source glTF (g, bin_), each output node with its
+    own 4x4 matrix: nodes = [(matrix, [(primitive dict, index array or None)])]. Vertex
+    attributes, materials, textures and images are copied unchanged; new index lists are
+    written as uint32. No animation, skin or morph target is copied."""
+    out = {'asset': {'version': '2.0', 'generator': 'mge_sim.gz_world (derived part of a web model)'},
+           'scene': 0, 'scenes': [{'nodes': list(range(len(nodes)))}], 'nodes': [], 'meshes': [],
+           'accessors': [], 'bufferViews': [], 'buffers': []}
+    blob = bytearray()
+    acc_map, mat_map, tex_map, img_map, smp_map = {}, {}, {}, {}, {}
+
+    def view(data, target=None):
+        blob.extend(b'\x00' * (-len(blob) % 4))
+        v = {'buffer': 0, 'byteOffset': len(blob), 'byteLength': len(data)}
+        if target:
+            v['target'] = target
+        blob.extend(data)
+        out['bufferViews'].append(v)
+        return len(out['bufferViews']) - 1
+
+    def accessor(i, target=34962):
+        if i not in acc_map:
+            src = g['accessors'][i]
+            a = {k: src[k] for k in ('componentType', 'count', 'type', 'normalized', 'min', 'max') if k in src}
+            a['bufferView'] = view(_accessor_bytes(g, bin_, i), target)
+            out['accessors'].append(a)
+            acc_map[i] = len(out['accessors']) - 1
+        return acc_map[i]
+
+    def remap(table, key, i, copy):
+        if i not in table:
+            out.setdefault(key, []).append(None)
+            table[i] = len(out[key]) - 1
+            out[key][table[i]] = copy(i)
+        return table[i]
+
+    def image(i):
+        src = dict(g['images'][i])
+        if 'bufferView' in src:
+            v = g['bufferViews'][src['bufferView']]
+            src['bufferView'] = view(bin_[v.get('byteOffset', 0):v.get('byteOffset', 0) + v['byteLength']])
+        return src
+
+    def texture(i):
+        src = dict(g['textures'][i])
+        if 'source' in src:
+            src['source'] = remap(img_map, 'images', src['source'], image)
+        if 'sampler' in src:
+            src['sampler'] = remap(smp_map, 'samplers', src['sampler'], lambda k: dict(g['samplers'][k]))
+        return src
+
+    def retex(obj):
+        if isinstance(obj, dict):
+            return {k: (remap(tex_map, 'textures', v, texture) if k == 'index' and isinstance(v, int) else retex(v))
+                    for k, v in obj.items()}
+        return [retex(v) for v in obj] if isinstance(obj, list) else obj
+
+    def subset(i, used):
+        """Accessor i restricted to the vertices `used` (POSITION bounds recomputed)."""
+        src = g['accessors'][i]
+        a = accessor_array(g, bin_, i)[used]
+        new = {k: src[k] for k in ('componentType', 'type', 'normalized') if k in src}
+        new['count'] = int(len(used))
+        if 'min' in src:
+            flat = a.reshape(len(used), -1)
+            new['min'], new['max'] = flat.min(axis=0).tolist(), flat.max(axis=0).tolist()
+        new['bufferView'] = view(np.ascontiguousarray(a).tobytes(), 34962)
+        out['accessors'].append(new)
+        return len(out['accessors']) - 1
+
+    keep = ('POSITION', 'NORMAL', 'TEXCOORD_', 'COLOR_', 'TANGENT')
+    for matrix, prims in nodes:
+        mesh = {'primitives': []}
+        for prim, indices in prims:
+            attrs = {k: v for k, v in prim['attributes'].items() if k.startswith(keep)}
+            if indices is not None:     # only the vertices this part uses, re-indexed
+                used, ids = np.unique(np.asarray(indices, dtype=np.int64), return_inverse=True)
+                p = {'attributes': {k: subset(v, used) for k, v in attrs.items()}}
+                ids = np.ascontiguousarray(ids, dtype='<u4')
+                out['accessors'].append({'componentType': 5125, 'count': int(ids.size), 'type': 'SCALAR',
+                                         'bufferView': view(ids.tobytes(), 34963)})
+                p['indices'] = len(out['accessors']) - 1
+            else:
+                p = {'attributes': {k: accessor(v) for k, v in attrs.items()}}
+                if 'indices' in prim:
+                    p['indices'] = accessor(prim['indices'], 34963)
+            if 'material' in prim:
+                p['material'] = remap(mat_map, 'materials', prim['material'], lambda k: retex(g['materials'][k]))
+            if 'mode' in prim:
+                p['mode'] = prim['mode']
+            mesh['primitives'].append(p)
+        out['meshes'].append(mesh)
+        out['nodes'].append({'mesh': len(out['meshes']) - 1,
+                             'matrix': [float(v) for v in np.asarray(matrix, dtype=float).T.reshape(-1)]})
+    for key in ('extensionsUsed',):
+        if key in g:
+            out[key] = list(g[key])
+    blob.extend(b'\x00' * (-len(blob) % 4))
+    out['buffers'].append({'byteLength': len(blob)})
+    text = json.dumps(out, separators=(',', ':')).encode()
+    text += b' ' * (-len(text) % 4)
+    Path(path).write_bytes(struct.pack('<4sII', b'glTF', 2, 12 + 8 + len(text) + 8 + len(blob))
+                           + struct.pack('<I4s', len(text), b'JSON') + text
+                           + struct.pack('<I4s', len(blob), b'BIN\x00') + bytes(blob))
+
+
+def _mesh_nodes(g, wm, skip=()):
+    return [(wm[i], [(p, None) for p in g['meshes'][g['nodes'][i]['mesh']]['primitives']])
+            for i in sorted(wm) if 'mesh' in g['nodes'][i] and i not in skip]
+
+
+def derive_rover_parts(src, out_dir, stem='rover'):
+    """Split the web rover GLB like the web viewer: <stem>_body.glb (everything but the wheels,
+    in scene coordinates) and <stem>_wheel_<k>.glb (one wheel each, centred on its axle).
+    Returns {'body': file, 'wheels': [(file, axle centre in scene coordinates)] ordered like
+    split_wheel_triangles, 'radii', 'width' (scene units) and 'box' (scene bounds of the wheel
+    set)}, or None when the model has no 2 x 3 wheel set."""
+    g, bin_ = read_glb(src)
+    w = _node_by_prefix(g, ROVER_WHEELS_NODE)
+    if w is None or 'mesh' not in g['nodes'][w]:
+        return None
+    wm = node_world_matrices(g)
+    prims = g['meshes'][g['nodes'][w]['mesh']]['primitives']
+    parts = [(accessor_array(g, bin_, p['attributes']['POSITION']), _prim_indices(g, bin_, p)) for p in prims]
+    try:
+        groups, centres, radii = split_wheel_triangles(parts)
+    except ValueError:
+        return None
+    out = Path(out_dir)
+    write_glb(out / f'{stem}_body.glb', g, bin_, _mesh_nodes(g, wm, skip={w}))
+    wheels = []
+    for k in range(6):
+        c = (wm[w] @ np.append(centres[k], 1.0))[:3]
+        shift = np.eye(4)
+        shift[:3, 3] = -c
+        name = f'{stem}_wheel_{k}.glb'
+        write_glb(out / name, g, bin_, [(shift @ wm[w], [(p, groups[j][k]) for j, p in enumerate(prims) if groups[j][k].size])])
+        wheels.append((name, c))
+    scale = float(np.linalg.norm(wm[w][:3, 1]))
+    used = np.concatenate([np.asarray(pos, dtype=float)[np.asarray(idx)] for pos, idx in parts])
+    scene = (wm[w] @ np.c_[used, np.ones(len(used))].T).T[:, :3]
+    widths = []
+    for k in range(6):      # lateral (mesh x) extent of each wheel
+        ids = np.concatenate([groups[j][k] for j in range(len(parts))])
+        xs = np.concatenate([np.asarray(parts[j][0], dtype=float)[groups[j][k], 0] for j in range(len(parts))]) if ids.size else [0]
+        widths.append(float(np.ptp(xs)))
+    return {'body': f'{stem}_body.glb', 'wheels': wheels, 'radii': radii * scale,
+            'width': max(float(np.mean(widths)), float(np.mean(radii)) / 2) * scale, 'box': (scene.min(axis=0), scene.max(axis=0))}
+
+
+def derive_drone_parts(src, out_dir, stem='drone'):
+    """<stem>_body.glb (everything but the rotors) and <stem>_rotor_<k>.glb (one rotor, its hub
+    at the origin). Returns {'body': file, 'rotors': [(file, hub in scene coordinates, spin
+    direction)]} like derive_rover_parts, or None."""
+    g, bin_ = read_glb(src)
+    found = [(_node_by_prefix(g, name), d) for name, d in DRONE_ROTOR_NODES]
+    if any(i is None for i, _ in found):
+        return None
+    wm = node_world_matrices(g)
+    rotor_nodes = {j for i, _ in found for j in _subtree(g, i)}
+    out = Path(out_dir)
+    write_glb(out / f'{stem}_body.glb', g, bin_, _mesh_nodes(g, wm, skip=rotor_nodes))
+    rotors = []
+    for k, (i, d) in enumerate(found):
+        hub = wm[i][:3, 3].copy()
+        shift = np.eye(4)
+        shift[:3, 3] = -hub
+        name = f'{stem}_rotor_{k}.glb'
+        write_glb(out / name, g, bin_, [(shift @ m, prims) for m, prims in _mesh_nodes(g, {j: wm[j] for j in _subtree(g, i)})])
+        rotors.append((name, hub, d))
+    return {'body': f'{stem}_body.glb', 'rotors': rotors}
+
+
+# The astronaut as a Gazebo <actor> walking with the web's moon_walk clip (AstronautModel.tsx).
+# gz-common's glTF loader (assimp) ignores the transforms of the nodes above the skeleton (the
+# Sketchfab root rotation and 1/100 scale), so the derived file bakes the web size and the
+# Y-up -> Z-up, face +x turn into the skeleton, the bind matrices, the clip and the vertices.
+WALK_CLIP = 'moon_walk'
+_PERM = [2, 0, 1]           # glTF (x, y, z) -> Gazebo (z, x, y): up y -> z, forward z -> x
+
+
+def _sample(times, values, t):
+    """LINEAR glTF sampler at time t (quaternions renormalised)."""
+    i = int(np.clip(np.searchsorted(times, t) - 1, 0, len(times) - 2)) if len(times) > 1 else 0
+    if len(times) == 1:
+        return values[0]
+    u = float(np.clip((t - times[i]) / max(times[i + 1] - times[i], 1e-9), 0, 1))
+    a, b = values[i], values[i + 1]
+    if len(a) == 4:
+        b = b if np.dot(a, b) >= 0 else -b
+        q = a + (b - a) * u
+        return q / np.linalg.norm(q)
+    return a + (b - a) * u
+
+
+def clip_walk_speed(g, bin_, clip, samples=200):
+    """The web's clipWalkSpeed (astronautPose.ts) in glTF scene units per second: median
+    horizontal speed of the stance (lower) ankle relative to the hips over the clip."""
+    names = {k: next((i for i, n in enumerate(g['nodes']) if n.get('name', '').startswith(k)), None)
+             for k in ('Center', 'L_Ankle', 'R_Ankle')}
+    if None in names.values():
+        return 0.0
+    chans = {}
+    for c in clip['channels']:
+        s = clip['samplers'][c['sampler']]
+        chans[(c['target']['node'], c['target']['path'])] = (
+            accessor_array(g, bin_, s['input']).astype(float), accessor_array(g, bin_, s['output']).astype(float))
+    duration = max(float(t[-1]) for t, _ in chans.values())
+    parent = {ch: i for i, n in enumerate(g['nodes']) for ch in n.get('children', [])}
+
+    def world(i, t, memo):
+        if i in memo:
+            return memo[i]
+        node = dict(g['nodes'][i])
+        for path in ('translation', 'rotation', 'scale'):
+            if (i, path) in chans:
+                node[path] = list(_sample(*chans[(i, path)], t))
+        m = _local_matrix(node)
+        memo[i] = (world(parent[i], t, memo) @ m) if i in parent else m
+        return memo[i]
+    speeds, prev = [], None
+    dt = duration / samples
+    for k in range(samples + 1):
+        memo = {}
+        h, a, b = (world(names[n], min(k * dt, duration - 1e-6), memo)[:3, 3] for n in ('Center', 'L_Ankle', 'R_Ankle'))
+        left = a[1] < b[1]
+        foot = a if left else b
+        cur = (left, foot[0] - h[0], foot[2] - h[2])
+        if prev and prev[0] == left:
+            speeds.append(math.hypot(cur[1] - prev[1], cur[2] - prev[2]) / dt)
+        prev = cur
+    return float(np.median(speeds)) if speeds else 0.0
+
+
+def derive_walking_actor(src, out_dir, height_m=WEB_MODEL_FIT['HUMAN'][1], clip_name=WALK_CLIP,
+                         name='astronaut_walk.glb'):
+    """Write the skinned astronaut with only `clip_name`, at the web's height, Z-up and facing
+    +x, for a Gazebo <actor>. Returns (file, clip ground speed in m/s) or None."""
+    g, bin_ = read_glb(src)
+    if not g.get('skins') or not any(a.get('name') == clip_name for a in g.get('animations', [])):
+        return None
+    sk = g['skins'][0]
+    parent = {c: i for i, n in enumerate(g['nodes']) for c in n.get('children', [])}
+    joints = set(sk['joints'])
+    root = parent.get(sk['joints'][0])
+    while root is not None and root in joints:
+        root = parent.get(root)
+    if root is None:
+        return None
+    lo, hi = glb_bbox(src)
+    above = node_world_matrices(g)[root][:3, :3]
+    f = height_m / (hi[1] - lo[1]) * float(np.cbrt(abs(np.linalg.det(above))))   # metres per skeleton unit
+    clip = next(a for a in g['animations'] if a['name'] == clip_name)
+    speed = clip_walk_speed(g, bin_, clip) * height_m / (hi[1] - lo[1])
+    data = bytearray(bin_)
+    P = np.eye(4)[[*_PERM, 3]]
+    A, A_inv = np.diag([f, f, f, 1.0]) @ P, P.T @ np.diag([1 / f, 1 / f, 1 / f, 1.0])
+
+    def rewrite(i, fn):
+        acc = g['accessors'][i]
+        view = g['bufferViews'][acc['bufferView']]
+        a = fn(accessor_array(g, bin_, i).astype(np.float32).copy()).astype(np.float32)
+        item = a[0].nbytes
+        start = view.get('byteOffset', 0) + acc.get('byteOffset', 0)
+        stride = view.get('byteStride') or item
+        for k in range(len(a)):
+            data[start + k * stride:start + k * stride + item] = a[k].tobytes()
+        if 'min' in acc:
+            flat = a.reshape(len(a), -1)
+            acc['min'], acc['max'] = flat.min(axis=0).tolist(), flat.max(axis=0).tolist()
+
+    def vec(scale):
+        return lambda a: a[:, _PERM] * scale
+
+    def quat(a):
+        return a[:, [2, 0, 1, 3]]
+
+    def tangent(a):
+        a[:, :3] = a[:, _PERM]
+        return a
+
+    def ibm(a):
+        m = a.reshape(-1, 4, 4).transpose(0, 2, 1)          # column-major -> row-major
+        return (A @ m @ A_inv).transpose(0, 2, 1).reshape(-1, 16)
+    done = set()
+    for mesh in g['meshes']:
+        for prim in mesh['primitives']:
+            if 'targets' in prim:
+                return None
+            for key, fn in (('POSITION', vec(f)), ('NORMAL', vec(1.0)), ('TANGENT', tangent)):
+                i = prim['attributes'].get(key)
+                if i is not None and i not in done:
+                    rewrite(i, fn)
+                    done.add(i)
+    rewrite(sk['inverseBindMatrices'], ibm)
+    for c in clip['channels']:
+        i = clip['samplers'][c['sampler']]['output']
+        fn = {'translation': vec(f), 'rotation': quat, 'scale': vec(1.0)}.get(c['target']['path'])
+        if fn is not None and i not in done:
+            rewrite(i, fn)
+            done.add(i)
+    for i in [j for j in range(len(g['nodes'])) if j in joints or parent.get(j) == root]:
+        node = g['nodes'][i]
+        if 'matrix' in node:
+            return None
+        if 'translation' in node:
+            node['translation'] = [float(v) * f for v in np.asarray(node['translation'])[_PERM]]
+        if 'rotation' in node:
+            x, y, z, w = node['rotation']
+            node['rotation'] = [z, x, y, w]
+        if 'scale' in node:
+            node['scale'] = [float(v) for v in np.asarray(node['scale'])[_PERM]]
+    g['nodes'][root] = {k: v for k, v in g['nodes'][root].items() if k not in ('translation', 'rotation', 'scale', 'matrix')}
+    g['scenes'], g['scene'] = [{'nodes': [root]}], 0
+    g['animations'] = [clip]
+    g['asset'] = {**g.get('asset', {}), 'generator': 'mge_sim.gz_world (derived walking actor of the web astronaut)'}
+    text = json.dumps(g, separators=(',', ':')).encode()
+    text += b' ' * (-len(text) % 4)
+    data.extend(b'\x00' * (-len(data) % 4))
+    Path(out_dir, name).write_bytes(struct.pack('<4sII', b'glTF', 2, 12 + 8 + len(text) + 8 + len(data))
+                                    + struct.pack('<I4s', len(text), b'JSON') + text
+                                    + struct.pack('<I4s', len(data), b'BIN\x00') + bytes(data))
+    return name, speed
+
+
+def walking_actor_sdf(agent_id, x, y, z, actor):
+    """A Gazebo <actor> playing the web's walk clip, led by the agent's mirrored model through
+    gz FollowActor (set_pose cannot move an actor): it walks toward the model at up to
+    WALKER_SPEED_MPS (above the illustrative 0.9 m/s human speed, so it keeps up) while the
+    model is more than 5 cm away, the walk cycle advancing with the distance walked divided by
+    the clip's ground speed (so the stance foot does not slide, like the web), and freezes in
+    its current frame when it arrives (no idle clip). FollowActor keeps the actor at its spawn
+    height (no terrain following) and turns it only about the vertical."""
+    name, speed = actor
+    return (f'<actor name="{agent_id}_walker"><pose>{x:.3f} {y:.3f} {z:.3f} 0 0 0</pose>'
+            f'<skin><filename>{name}</filename></skin>'
+            f'<animation name="{WALK_CLIP}"><filename>{name}</filename><interpolate_x>false</interpolate_x></animation>'
+            '<plugin filename="gz-sim-follow-actor-system" name="gz::sim::systems::FollowActor">'
+            f'<target>{agent_id}</target><min_distance>0.05</min_distance><max_distance>100000</max_distance>'
+            f'<velocity>{WALKER_SPEED_MPS}</velocity><animation>{WALK_CLIP}</animation>'
+            f'<animation_x_vel>{1.0 / max(speed, 1e-3):.4f}</animation_x_vel></plugin></actor>')
+
+
+WALKER_SPEED_MPS = 1.0
+
+
+def web_scale(kind, lo, hi):
+    """Metres per GLB unit of the web viewer's fit rule for `kind`."""
     rule, target = WEB_MODEL_FIT[kind]
     size = hi - lo
     if rule == 'length':
-        s = target / max(size[0], size[2])
-    elif rule == 'height':
-        s = target / size[1]
-    else:
-        s = target
-    cx, cz = (lo[0] + hi[0]) / 2, (lo[2] + hi[2]) / 2
+        return target / max(size[0], size[2])
+    return target / size[1] if rule == 'height' else target
+
+
+def to_gz(p, s, centre, lo):
+    """A point of a Y-up GLB scene (x, y, z) in the model frame of its visual: roll +90 deg maps
+    glTF (x, y, z) to Gazebo (x, -z, y); centred horizontally on `centre` (glTF x, z) and resting
+    on z = 0 (the GLB's lowest point)."""
+    return ((p[0] - centre[0]) * s, -(p[2] - centre[1]) * s, (p[1] - lo[1]) * s)
+
+
+def web_model_visual(name, uri, kind, lo, hi, z_shift=0.0, centre=None):
+    """A <visual> drawing a Y-up GLB upright (Z-up), sized like the web and resting on z = 0.
+    It is centred horizontally on its bounds, or on `centre` (glTF x, z) when given."""
+    s = web_scale(kind, lo, hi)
+    cx, cz = centre if centre is not None else ((lo[0] + hi[0]) / 2, (lo[2] + hi[2]) / 2)
     # Roll +90 deg about x maps glTF (x, y, z) to Gazebo (x, -z, y): centre it, base on z = 0.
     return (f'<visual name="{name}"><pose>{-cx * s:.4f} {cz * s:.4f} {-lo[1] * s + z_shift:.4f} 1.5708 0 0</pose>'
             f'<geometry><mesh><uri>{uri}</uri><scale>{s:.5f} {s:.5f} {s:.5f}</scale></mesh></geometry></visual>')
+
+
+def _mesh_visual(name, uri, s, rpy='1.5708 0 0', xyz='0 0 0'):
+    return (f'<visual name="{name}"><pose>{xyz} {rpy}</pose><geometry><mesh><uri>{uri}</uri>'
+            f'<scale>{s:.5f} {s:.5f} {s:.5f}</scale></mesh></geometry></visual>')
+
+
+def drone_sdf(agent_id, x, y, z, glb, rotors):
+    """The web's drone as a body link plus one link per rotor on a revolute joint about the
+    vertical through its hub. rotors = {'body': body GLB, 'rotors': derive_drone_parts(...)}.
+    A JointController (velocity mode) per rotor listens on
+    /model/<id>/joint/<rotor>_joint/cmd_vel (gz_mirror commands it from the AgentState mode).
+    Visual only: no collision, no gravity; the body is heavy so the light rotors cannot turn it."""
+    uri, lo, hi = glb
+    s = web_scale('DRONE', lo, hi)
+    centre = ((lo[0] + hi[0]) / 2, (lo[2] + hi[2]) / 2)
+    links = (f'<link name="link"><gravity>false</gravity>{_box_inertia(500, 1.2, 1.2, 0.6)}'
+             + web_model_visual('v', rotors['body'], 'DRONE', lo, hi) + '</link>')
+    joints, plugins = '', ''
+    for k, (name, hub, _) in enumerate(rotors['rotors']):
+        hx, hy, hz = to_gz(hub, s, centre, lo)
+        link = f'rotor_{k}'
+        links += (f'<link name="{link}"><pose>{hx:.4f} {hy:.4f} {hz:.4f} 0 0 0</pose><gravity>false</gravity>'
+                  '<inertial><mass>0.05</mass><inertia><ixx>0.002</ixx><iyy>0.002</iyy><izz>0.004</izz>'
+                  '<ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>'
+                  + _mesh_visual('v', name, s) + '</link>')
+        joints += (f'<joint name="{link}_joint" type="revolute"><parent>link</parent><child>{link}</child>'
+                   '<axis><xyz>0 0 1</xyz><limit><lower>-1e16</lower><upper>1e16</upper></limit></axis></joint>')
+        plugins += ('<plugin filename="gz-sim-joint-controller-system" name="gz::sim::systems::JointController">'
+                    f'<joint_name>{link}_joint</joint_name><topic>/model/{agent_id}/joint/{link}_joint/cmd_vel</topic>'
+                    '<initial_velocity>0</initial_velocity></plugin>')
+    plugins += ('<plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">'
+                + ''.join(f'<joint_name>rotor_{k}_joint</joint_name>' for k in range(len(rotors['rotors']))) + '</plugin>')
+    return (f'<model name="{agent_id}"><pose>{x:.3f} {y:.3f} {z:.3f} 0 0 0</pose>' + links + joints + plugins + '</model>')
 
 
 # Physical rover (display proportions near Perseverance's: 3 m long, 2.7 m wide, 52.5 cm wheels;
@@ -314,13 +836,51 @@ def _box_inertia(m, x, y, z):
             '<ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>')
 
 
-def physical_rover_sdf(agent_id, x, y, z, yaw=0.0, glb=None):
+def rover_wheel_layout(glb, parts):
+    """Physical wheel layout from the web rover's split wheels (derive_rover_parts), at the
+    web's size: [(link name, x, y, radius, width, wheel GLB)] in the model frame (origin under
+    the wheel-set centre, on the ground), named wheel_<l|r><k> with k = 0 at the front like
+    the stand-in layout; plus the wheel-set centre (glTF x, z) the body visual is centred on."""
+    uri, lo, hi = glb
+    s = web_scale('ROVER', lo, hi)
+    wheels, radii, width, box = parts['wheels'], parts['radii'], parts['width'], parts['box']
+    centre = ((box[0][0] + box[1][0]) / 2, (box[0][2] + box[1][2]) / 2)
+    placed = [(to_gz(c, s, centre, lo), r * s, name) for (name, c), r in zip(wheels, radii)]
+    out = []
+    for side, sign in (('l', 1), ('r', -1)):
+        row = sorted((p for p in placed if p[0][1] * sign > 0), key=lambda p: -p[0][0])
+        out += [(f'wheel_{side}{k}', xyz, r, width * s, name) for k, (xyz, r, name) in enumerate(row)]
+    return out, centre
+
+
+def usable_wheel_layout(glb, parts):
+    """rover_wheel_layout when it gives three wheels per side, else (None, None).
+
+    The single rule both the SDF and world.json use, so the metadata never claims per-wheel
+    visuals for a rover that is drawn as the whole model on its chassis."""
+    if glb is None or not parts:
+        return None, None
+    layout, centre = rover_wheel_layout(glb, parts)
+    if len(layout) != 6 or sum(w[0].startswith('wheel_l') for w in layout) != 3:
+        return None, None
+    return layout, centre
+
+
+def physical_rover_sdf(agent_id, x, y, z, yaw=0.0, glb=None, parts=None):
     """A six-wheel rover driven by gz DiffDrive on /model/<id>/cmd_vel, with ground-truth
-    odometry on /model/<id>/odometry_gt. It rests on the terrain under Mars gravity."""
+    odometry on /model/<id>/odometry_gt. It rests on the terrain under Mars gravity.
+
+    With the web rover GLB split into parts (derive_rover_parts), the six physical wheels take
+    the web model's wheel positions and radius and each wheel link draws its own wheel mesh,
+    so the wheels visibly roll with the physics; the chassis draws the body without wheels."""
     cz = WHEEL_R + CLEARANCE + CHASSIS[2] / 2 - 0.35
     mat = '<material><ambient>0.6 0.6 0.62 1</ambient><diffuse>0.78 0.78 0.8 1</diffuse></material>'
     dark = '<material><ambient>0.15 0.15 0.16 1</ambient><diffuse>0.22 0.22 0.24 1</diffuse></material>'
-    if glb is not None:     # the web's rover model; the chassis link sits cz above the ground
+    layout, centre = usable_wheel_layout(glb, parts)   # the web's rover split into body + six wheels
+    if layout is not None:
+        body = web_model_visual('web_model', parts['body'], 'ROVER', glb[1], glb[2], z_shift=-cz, centre=centre)
+        s = web_scale('ROVER', glb[1], glb[2])
+    elif glb is not None:   # the web's rover model; the chassis link sits cz above the ground
         body = web_model_visual('web_model', glb[0], 'ROVER', glb[1], glb[2], z_shift=-cz)
     else:                   # simple stand-in shapes
         body = (f'<visual name="body"><geometry><box><size>{CHASSIS[0]} {CHASSIS[1]} {CHASSIS[2]}</size></box></geometry>{mat}</visual>'
@@ -330,29 +890,41 @@ def physical_rover_sdf(agent_id, x, y, z, yaw=0.0, glb=None):
     links = (f'<link name="chassis"><pose>0 0 {cz:.3f} 0 0 0</pose>{_box_inertia(900, *CHASSIS)}'
              f'<collision name="c"><geometry><box><size>{CHASSIS[0]} {CHASSIS[1]} {CHASSIS[2]}</size></box></geometry></collision>'
              + body + '</link>')
+    if layout is None:
+        layout = [(f'wheel_{side}{k}', (wx, sy, WHEEL_R), WHEEL_R, WHEEL_W, None)
+                  for side, sy in (('l', WHEEL_Y), ('r', -WHEEL_Y)) for k, wx in enumerate(WHEEL_X)]
     joints, left, right = '', [], []
-    for side, sy in (('l', WHEEL_Y), ('r', -WHEEL_Y)):
-        for k, wx in enumerate(WHEEL_X):
-            name = f'wheel_{side}{k}'
-            geom = f'<cylinder><radius>{WHEEL_R}</radius><length>{WHEEL_W}</length></cylinder>'
-            links += (f'<link name="{name}"><pose>{wx} {sy} {WHEEL_R} -1.5708 0 0</pose>'
-                      '<inertial><mass>25</mass><inertia><ixx>0.8</ixx><iyy>0.8</iyy><izz>0.9</izz>'
-                      '<ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>'
-                      f'<collision name="c"><geometry>{geom}</geometry><surface><friction><ode><mu>0.9</mu><mu2>0.9</mu2></ode></friction></surface></collision>'
-                      + ('' if glb is not None else f'<visual name="v"><geometry>{geom}</geometry>{dark}</visual>')
-                      + '</link>')
-            joints += (f'<joint name="{name}_joint" type="revolute"><parent>chassis</parent><child>{name}</child>'
-                       '<axis><xyz>0 0 1</xyz><limit><lower>-1e16</lower><upper>1e16</upper></limit></axis></joint>')
-            (left if side == 'l' else right).append(f'{name}_joint')
+    for name, (wx, wy, _), r, width, mesh in layout:
+        if mesh is not None:    # the web wheel, centred on its axle: link z (axle) = model +y
+            visual = _mesh_visual('v', mesh, s, rpy='3.14159 0 0')
+        elif glb is not None:   # the whole web model is on the chassis
+            visual = ''
+        else:
+            visual = (f'<visual name="v"><geometry><cylinder><radius>{r}</radius><length>{width}</length>'
+                      f'</cylinder></geometry>{dark}</visual>')
+        links += (f'<link name="{name}"><pose>{wx:.4f} {wy:.4f} {r:.4f} -1.5708 0 0</pose>'
+                  '<inertial><mass>25</mass><inertia><ixx>0.8</ixx><iyy>0.8</iyy><izz>0.9</izz>'
+                  '<ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>'
+                  f'<collision name="c"><geometry><cylinder><radius>{r:.4f}</radius><length>{width:.4f}</length>'
+                  '</cylinder></geometry>'
+                  '<surface><friction><ode><mu>0.9</mu><mu2>0.9</mu2></ode></friction></surface></collision>'
+                  + visual + '</link>')
+        joints += (f'<joint name="{name}_joint" type="revolute"><parent>chassis</parent><child>{name}</child>'
+                   '<axis><xyz>0 0 1</xyz><limit><lower>-1e16</lower><upper>1e16</upper></limit></axis></joint>')
+        (left if name.startswith('wheel_l') else right).append(f'{name}_joint')
+    separation = sum(abs(w[1][1]) for w in layout) / len(layout) * 2
+    radius = sum(w[2] for w in layout) / len(layout)
     plugins = ('<plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">'
                + ''.join(f'<left_joint>{j}</left_joint>' for j in left)
                + ''.join(f'<right_joint>{j}</right_joint>' for j in right)
-               + f'<wheel_separation>{2 * WHEEL_Y}</wheel_separation><wheel_radius>{WHEEL_R}</wheel_radius>'
+               + f'<wheel_separation>{separation:.4f}</wheel_separation><wheel_radius>{radius:.4f}</wheel_radius>'
                f'<topic>/model/{agent_id}/cmd_vel</topic><max_linear_acceleration>0.5</max_linear_acceleration>'
                '<max_angular_acceleration>1.0</max_angular_acceleration></plugin>'
                '<plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">'
                f'<odom_topic>/model/{agent_id}/odometry_gt</odom_topic><dimensions>3</dimensions>'
-               '<odom_publish_frequency>20</odom_publish_frequency></plugin>')
+               '<odom_publish_frequency>20</odom_publish_frequency></plugin>'
+               '<plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">'
+               + ''.join(f'<joint_name>{j}</joint_name>' for j in left + right) + '</plugin>')
     return (f'<model name="{agent_id}"><pose>{x:.3f} {y:.3f} {z + 0.05:.3f} 0 0 {yaw:.3f}</pose>'
             + links + joints + plugins + '</model>')
 
@@ -367,14 +939,37 @@ def _base_sdf(models, base_xy, ground):
             f'<link name="link">{web_model_visual("v", uri, "BASE", lo, hi)}</link></model>')
 
 
+# glTF layouts the minimal reader does not support (Draco/meshopt compression, sparse or
+# view-less accessors, missing min/max, truncated buffers) surface as these errors.
+DERIVE_ERRORS = (ValueError, KeyError, IndexError, TypeError, struct.error)
+
+
+def _derived_or_none(derive, *args):
+    """Run a COSMETIC part derivation; on an unsupported model warn and return None, so the
+    world is still built with the whole web model (the behaviour before part derivation)."""
+    try:
+        return derive(*args)
+    except DERIVE_ERRORS as e:
+        warnings.warn(f'{derive.__name__}({Path(args[0]).name}): {type(e).__name__}: {e}; '
+                      'drawing the whole web model instead', RuntimeWarning, stacklevel=2)
+        return None
+
+
 def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name='jezero', physical=(),
-                web_models=None, base_xy=None):
+                web_models=None, base_xy=None, walking_actor=False):
     """grid = (origin_x_m, origin_y_m, resolution_m, rows, cols); heights and ctx_dn are
     rows x cols arrays with row 0 = south (None/NaN = NoData); blocked = flat indices of the
     SIMULATED scene's obstacle cells; agents = [(agent_id, kind, x, y, z)] in ROS ENU;
     physical = agent IDs built as driven rovers (gz_rover_driver) instead of mirrored models;
     web_models = {'ROVER'|'DRONE'|'HUMAN'|'BASE': path to the web viewer's GLB} draws the same
-    models at the same true sizes (copied into the world); base_xy = base point of the habitat."""
+    models at the same true sizes (copied into the world); base_xy = base point of the habitat.
+
+    With the web models, the moving parts follow the web viewer (COSMETIC, derived GLB parts):
+    a physical rover's six wheels are split from the rover GLB and drawn on its wheel links
+    (they roll with the physics); a drone's two rotors are links on revolute joints spun by
+    gz_mirror while the drone is not IDLE. walking_actor=True (opt-in) draws the astronaut as
+    a Gazebo actor walking with the web's walk clip behind its mirrored (invisible) model; the
+    actor keeps its spawn height, so on sloped ground it floats or sinks."""
     ox, oy, res, rows, cols = grid
     if rows != cols:
         raise ValueError('the heightmap needs a square grid')
@@ -395,6 +990,18 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
             shutil.copyfile(src, out / Path(src).name)
             lo, hi = glb_bbox(src)
             models[kind] = (Path(src).name, lo, hi)
+    # Moving parts like the web viewer's (derived at build time; the source GLBs are untouched).
+    # Any unsupported model falls back to the whole web model instead of aborting the build.
+    rover_parts = drone_parts = None
+    if 'ROVER' in models and any(a in physical and k == 'ROVER' for a, k, *_ in agents):
+        rover_parts = _derived_or_none(derive_rover_parts, out / models['ROVER'][0], out)
+        if usable_wheel_layout(models['ROVER'], rover_parts)[0] is None:
+            rover_parts = None      # the SDF would draw the whole model; claim no wheel parts
+    if 'DRONE' in models and any(k == 'DRONE' and a not in physical for a, k, *_ in agents):
+        drone_parts = _derived_or_none(derive_drone_parts, out / models['DRONE'][0], out)
+    walker = None
+    if walking_actor and 'HUMAN' in models and any(k == 'HUMAN' and a not in physical for a, k, *_ in agents):
+        walker = _derived_or_none(derive_walking_actor, out / models['HUMAN'][0], out)
     width, height = cols * res, rows * res
     x0, y0 = ox + res / 2, oy + res / 2               # the lattice starts on the first cell centre
 
@@ -423,8 +1030,11 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
            f'<collision name="c"><geometry>{terrain}</geometry></collision>'
            f'<visual name="v"><geometry>{terrain}</geometry></visual></link></model>'
            + ''.join(_rock_sdf(r, ground(r['x'], r['y'])) for r in rocks)
-           + ''.join(physical_rover_sdf(a, x, y, ground(x, y), glb=models.get(k)) if a in physical
-                     else _agent_sdf(a, k, x, y, (ground(x, y) if k in models else z - z_ref), glb=models.get(k))
+           + ''.join(physical_rover_sdf(a, x, y, ground(x, y), glb=models.get(k),
+                                        parts=rover_parts if k == 'ROVER' else None) if a in physical
+                     else _agent_sdf(a, k, x, y, (ground(x, y) if k in models else z - z_ref), glb=models.get(k),
+                                     rotors=drone_parts if k == 'DRONE' else None,
+                                     walker=walker if k == 'HUMAN' else None)
                      for a, k, x, y, z in agents)
            + _base_sdf(models, base_xy, ground)
            + '</world></sdf>')
@@ -432,6 +1042,10 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
     meta = {'world_name': world_name, 'origin_x_m': ox, 'origin_y_m': oy, 'resolution_m': res,
             'rows': rows, 'cols': cols, 'z_ref_m': z_ref, 'relief_m': span,
             'heightmap_origin_m': [x0, y0], 'heightmap_on_cell_centres': True,
+            # Gazebo ground z at each cell centre (row i = origin_y upwards): lets gz_mirror tell
+            # an airborne drone like the web viewer, without numpy or the heightmap.
+            'ground_z_m': [[round(ground(x0 + j * res, y0 + i * res), 4) for j in range(cols)]
+                           for i in range(rows)],
             'boulders': sum(r['collide'] for r in rocks), 'small_rocks': sum(not r['collide'] for r in rocks),
             'agents': {a: {'model': AGENT_MODELS[k][0],
                            'lift_m': 0.0 if a in physical or k in models else AGENT_MODELS[k][3],
@@ -443,5 +1057,25 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
             'real_inputs': ['public prior heights (collision surface)', 'MRO CTX orthoimage DN (albedo)'],
             'cosmetic': ['regolith tint and grain', 'normal map', 'boulder shapes and sizes (enlarged)'],
             'note': 'SIMULATED scene on the public Jezero crop; not a NASA product or a validated mission.'}
+    derived = []
+    for a, k, *_ in agents:
+        if k == 'ROVER' and a in physical and rover_parts:
+            meta['agents'][a]['wheel_visuals'] = True       # each physical wheel draws its web wheel
+        if k == 'DRONE' and a not in physical and drone_parts:
+            meta['agents'][a]['rotors'] = [{'joint': f'rotor_{i}_joint', 'direction': d, 'max_rad_s': ROTOR_RAD_S,
+                                            'topic': f'/model/{a}/joint/rotor_{i}_joint/cmd_vel'}
+                                           for i, (_, _, d) in enumerate(drone_parts['rotors'])]
+        if k == 'HUMAN' and a not in physical and walker:
+            meta['agents'][a]['walker'] = {'actor': f'{a}_walker', 'clip': WALK_CLIP,
+                                           'clip_speed_mps': round(walker[1], 4), 'max_speed_mps': WALKER_SPEED_MPS}
+    if walker:
+        derived.append(walker[0])
+    if rover_parts:
+        derived += [rover_parts['body']] + [n for n, _ in rover_parts['wheels']]
+    if drone_parts:
+        derived += [drone_parts['body']] + [n for n, _, _ in drone_parts['rotors']]
+    if derived:
+        meta['derived_models'] = derived
+        meta['cosmetic'].append('derived GLB parts (body, wheels, rotors) split from the web models for animation')
     (out / 'world.json').write_text(json.dumps(meta, indent=1), encoding='utf-8')
     return meta
