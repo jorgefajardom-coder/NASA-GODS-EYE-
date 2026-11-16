@@ -29,6 +29,7 @@ import math
 from pathlib import Path
 import shutil
 import struct
+import warnings
 import zlib
 
 import numpy as np
@@ -559,7 +560,8 @@ def derive_rover_parts(src, out_dir, stem='rover'):
 
 def derive_drone_parts(src, out_dir, stem='drone'):
     """<stem>_body.glb (everything but the rotors) and <stem>_rotor_<k>.glb (one rotor, its hub
-    at the origin). Returns [(file, hub in scene coordinates, spin direction)] or None."""
+    at the origin). Returns {'body': file, 'rotors': [(file, hub in scene coordinates, spin
+    direction)]} like derive_rover_parts, or None."""
     g, bin_ = read_glb(src)
     found = [(_node_by_prefix(g, name), d) for name, d in DRONE_ROTOR_NODES]
     if any(i is None for i, _ in found):
@@ -576,7 +578,7 @@ def derive_drone_parts(src, out_dir, stem='drone'):
         name = f'{stem}_rotor_{k}.glb'
         write_glb(out / name, g, bin_, [(shift @ m, prims) for m, prims in _mesh_nodes(g, {j: wm[j] for j in _subtree(g, i)})])
         rotors.append((name, hub, d))
-    return rotors
+    return {'body': f'{stem}_body.glb', 'rotors': rotors}
 
 
 # The astronaut as a Gazebo <actor> walking with the web's moon_walk clip (AstronautModel.tsx).
@@ -860,6 +862,19 @@ def rover_wheel_layout(glb, parts):
     return out, centre
 
 
+def usable_wheel_layout(glb, parts):
+    """rover_wheel_layout when it gives three wheels per side, else (None, None).
+
+    The single rule both the SDF and world.json use, so the metadata never claims per-wheel
+    visuals for a rover that is drawn as the whole model on its chassis."""
+    if glb is None or not parts:
+        return None, None
+    layout, centre = rover_wheel_layout(glb, parts)
+    if len(layout) != 6 or sum(w[0].startswith('wheel_l') for w in layout) != 3:
+        return None, None
+    return layout, centre
+
+
 def physical_rover_sdf(agent_id, x, y, z, yaw=0.0, glb=None, parts=None):
     """A six-wheel rover driven by gz DiffDrive on /model/<id>/cmd_vel, with ground-truth
     odometry on /model/<id>/odometry_gt. It rests on the terrain under Mars gravity.
@@ -937,6 +952,22 @@ def _base_sdf(models, base_xy, ground):
             f'<link name="link">{web_model_visual("v", uri, "BASE", lo, hi)}</link></model>')
 
 
+# glTF layouts the minimal reader does not support (Draco/meshopt compression, sparse or
+# view-less accessors, missing min/max, truncated buffers) surface as these errors.
+DERIVE_ERRORS = (ValueError, KeyError, IndexError, TypeError, struct.error)
+
+
+def _derived_or_none(derive, *args):
+    """Run a COSMETIC part derivation; on an unsupported model warn and return None, so the
+    world is still built with the whole web model (the behaviour before part derivation)."""
+    try:
+        return derive(*args)
+    except DERIVE_ERRORS as e:
+        warnings.warn(f'{derive.__name__}({Path(args[0]).name}): {type(e).__name__}: {e}; '
+                      'drawing the whole web model instead', RuntimeWarning, stacklevel=2)
+        return None
+
+
 def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name='jezero', physical=(),
                 web_models=None, base_xy=None, walking_actor=False):
     """grid = (origin_x_m, origin_y_m, resolution_m, rows, cols); heights and ctx_dn are
@@ -973,15 +1004,17 @@ def build_world(out_dir, grid, heights, blocked, agents, ctx_dn=None, world_name
             lo, hi = glb_bbox(src)
             models[kind] = (Path(src).name, lo, hi)
     # Moving parts like the web viewer's (derived at build time; the source GLBs are untouched).
+    # Any unsupported model falls back to the whole web model instead of aborting the build.
     rover_parts = drone_parts = None
     if 'ROVER' in models and any(a in physical and k == 'ROVER' for a, k, *_ in agents):
-        rover_parts = derive_rover_parts(out / models['ROVER'][0], out)
+        rover_parts = _derived_or_none(derive_rover_parts, out / models['ROVER'][0], out)
+        if usable_wheel_layout(models['ROVER'], rover_parts)[0] is None:
+            rover_parts = None      # the SDF would draw the whole model; claim no wheel parts
     if 'DRONE' in models and any(k == 'DRONE' and a not in physical for a, k, *_ in agents):
-        found = derive_drone_parts(out / models['DRONE'][0], out)
-        drone_parts = {'body': 'drone_body.glb', 'rotors': found} if found else None
+        drone_parts = _derived_or_none(derive_drone_parts, out / models['DRONE'][0], out)
     walker = None
     if walking_actor and 'HUMAN' in models and any(k == 'HUMAN' and a not in physical for a, k, *_ in agents):
-        walker = derive_walking_actor(out / models['HUMAN'][0], out)
+        walker = _derived_or_none(derive_walking_actor, out / models['HUMAN'][0], out)
     width, height = cols * res, rows * res
     x0, y0 = ox + res / 2, oy + res / 2               # the lattice starts on the first cell centre
 
