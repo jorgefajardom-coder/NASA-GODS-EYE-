@@ -108,3 +108,11 @@ Exact validation commands, versions, hashes and outcomes accompany the final
 handoff and evidence. These are software/model-consistency tests with declared
 synthetic maps; they do not constitute physical mission execution or new Mars
 observations.
+
+The [executed verification record](../evidence/scientific-cost-integration-20261115/README.md)
+pins implementation `3830b8b0fb2d6269ac3e73e8b8fd8de71c876334`.
+The scientific comparison is 7/7, the deliberate legacy control remains 1/7,
+and the same seven cases pass through actual ROS services. Regression results:
+1,346 Python tests passed on Windows, 871 contract/mission/integration tests
+passed on Ubuntu/Jazzy, and 412 frontend tests plus build passed. Skips, warnings,
+environment setup and original output hashes are recorded separately.

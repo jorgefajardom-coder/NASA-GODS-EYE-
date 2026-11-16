@@ -1,0 +1,156 @@
+{
+  "implementation_sha": "3830b8b0fb2d6269ac3e73e8b8fd8de71c876334",
+  "files": {
+    ".github/workflows/ci.yml": {
+      "commit_sha256": "dbd903abeed4c1be902709847e3aaad74b3ca80ee43d7126af8e691e47683c67",
+      "runtime_checkout_sha256": "dbd903abeed4c1be902709847e3aaad74b3ca80ee43d7126af8e691e47683c67",
+      "lf_normalized_text_equal": true
+    },
+    "scripts/check_planner_conformance.py": {
+      "commit_sha256": "99e403efc8e9cda9aca575cd18f361e48e97c21f21eaae64ee559333e234c749",
+      "runtime_checkout_sha256": "99e403efc8e9cda9aca575cd18f361e48e97c21f21eaae64ee559333e234c749",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_bringup/launch/vertical_mock.launch.py": {
+      "commit_sha256": "b3d435e750866d39a049898f2b50ae31aec1fcce0ed93067a03de1720fc3909b",
+      "runtime_checkout_sha256": "b3d435e750866d39a049898f2b50ae31aec1fcce0ed93067a03de1720fc3909b",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_bringup/mge_bringup/launch_profiles.py": {
+      "commit_sha256": "3588f74cc08a25ac485c1c27d2d62c79cb9696c771eaf1a44834870d5478305f",
+      "runtime_checkout_sha256": "3588f74cc08a25ac485c1c27d2d62c79cb9696c771eaf1a44834870d5478305f",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_interfaces/CMakeLists.txt": {
+      "commit_sha256": "21994ca63ee032f4565911fe611b7e5dabbff6ab7470a3190899f9385dfb7bbd",
+      "runtime_checkout_sha256": "21994ca63ee032f4565911fe611b7e5dabbff6ab7470a3190899f9385dfb7bbd",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_interfaces/package.xml": {
+      "commit_sha256": "18f22eb688bab45d657e5ca5c14055118619cedea76ff5ce5e245b4d34bb43f8",
+      "runtime_checkout_sha256": "18f22eb688bab45d657e5ca5c14055118619cedea76ff5ce5e245b4d34bb43f8",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_interfaces/srv/RegisterPlanningContext.srv": {
+      "commit_sha256": "3113e619bc33dc5e0e581922ef66e3dc4024cbed3a16b6ca8db352eaf5bd5ca9",
+      "runtime_checkout_sha256": "3113e619bc33dc5e0e581922ef66e3dc4024cbed3a16b6ca8db352eaf5bd5ca9",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_mission/mge_mission/conformance.py": {
+      "commit_sha256": "52dc70904e297dd70bad8facceb504d7848290ac6152adcd2c9585bdfdec0c57",
+      "runtime_checkout_sha256": "52dc70904e297dd70bad8facceb504d7848290ac6152adcd2c9585bdfdec0c57",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_mission/mge_mission/manager.py": {
+      "commit_sha256": "99bc76acaf3c97ed2f2afe4f089e02d36f892ed3ea7b295e59965295a935a742",
+      "runtime_checkout_sha256": "99bc76acaf3c97ed2f2afe4f089e02d36f892ed3ea7b295e59965295a935a742",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_mission/mge_mission/node.py": {
+      "commit_sha256": "a9328ea4dddf5a4977d0fae596644e8b3987333a4ad28d29f59e21c2ea3e054a",
+      "runtime_checkout_sha256": "a9328ea4dddf5a4977d0fae596644e8b3987333a4ad28d29f59e21c2ea3e054a",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_mission/mge_mission/planning_context.py": {
+      "commit_sha256": "b102074b6c777ce9d223c59e53525b88fb6e3d86c226371c61491ea4ace541b9",
+      "runtime_checkout_sha256": "b102074b6c777ce9d223c59e53525b88fb6e3d86c226371c61491ea4ace541b9",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_planning/mge_planning/core.py": {
+      "commit_sha256": "3b421cdaf76d045d1c4ca42aa4047b481880e22d0a2e4364473cb8a83229ed93",
+      "runtime_checkout_sha256": "3b421cdaf76d045d1c4ca42aa4047b481880e22d0a2e4364473cb8a83229ed93",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_planning/mge_planning/node.py": {
+      "commit_sha256": "9a8ff222d9261d56fd8389a3bddeb98a68800ec72b5f18bda30227eaff75891f",
+      "runtime_checkout_sha256": "9a8ff222d9261d56fd8389a3bddeb98a68800ec72b5f18bda30227eaff75891f",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_planning/mge_planning/resource_costs.py": {
+      "commit_sha256": "8bd0eaa82ca58a0de6b34e1bbb5fac9fdb45bc507dc6ed677853ab56615e6b48",
+      "runtime_checkout_sha256": "8bd0eaa82ca58a0de6b34e1bbb5fac9fdb45bc507dc6ed677853ab56615e6b48",
+      "lf_normalized_text_equal": true
+    },
+    "src/mge_planning/package.xml": {
+      "commit_sha256": "28f9051fb9e500d1e0dc458d0eecec7f7835d59c3e03310c5f027740ed28b769",
+      "runtime_checkout_sha256": "28f9051fb9e500d1e0dc458d0eecec7f7835d59c3e03310c5f027740ed28b769",
+      "lf_normalized_text_equal": true
+    },
+    "tests/contract/test_configuration.py": {
+      "commit_sha256": "555aff565b711d4b705a57ab98eaca58beeab610929695dd16fc0f89d194d6f3",
+      "runtime_checkout_sha256": "3d7fe352e4bfe963d8d6172fc4cee293b6be3bbeec5b60ab4d852b0552a56153",
+      "lf_normalized_text_equal": true
+    },
+    "tests/contract/test_mission_launch.py": {
+      "commit_sha256": "9af656b1918119fdb29f96387443dc2513de212a3f5bbc3a8e4f4cbc94d92633",
+      "runtime_checkout_sha256": "82c03ba5e395a8eca8f87813115d76b8a38164257a0852ff9494d587d3f8a123",
+      "lf_normalized_text_equal": true
+    },
+    "tests/contract/test_mission_service.py": {
+      "commit_sha256": "fd4723690976ac89aaa2d9d82183ef94c8243209efa4b07ce2a8aea9c298e167",
+      "runtime_checkout_sha256": "fd4723690976ac89aaa2d9d82183ef94c8243209efa4b07ce2a8aea9c298e167",
+      "lf_normalized_text_equal": true
+    },
+    "tests/contract/test_planner_service.py": {
+      "commit_sha256": "1881533bfa9bc17ff0a7a5fd56c4ba24d33fc712afd4ec9a9ce18209a8d24a7e",
+      "runtime_checkout_sha256": "1881533bfa9bc17ff0a7a5fd56c4ba24d33fc712afd4ec9a9ce18209a8d24a7e",
+      "lf_normalized_text_equal": true
+    },
+    "tests/integration/test_planner_concurrency.py": {
+      "commit_sha256": "31e2fc5b1c0de78a556e0d53acc9f912e43e6124e192ad824e7a6df5ce855fb5",
+      "runtime_checkout_sha256": "960ccf27167f977c9b4bfdf9b03722ddb6a59910ff0d03a4eead5af0c60bbace",
+      "lf_normalized_text_equal": true
+    },
+    "tests/integration/test_scientific_cost_service.py": {
+      "commit_sha256": "5287548eab83bc94c8547489d45474af84f283c106eb96f2db46af493d09cb14",
+      "runtime_checkout_sha256": "5287548eab83bc94c8547489d45474af84f283c106eb96f2db46af493d09cb14",
+      "lf_normalized_text_equal": true
+    },
+    "tests/integration/test_terrain_batch.py": {
+      "commit_sha256": "25e806f353152c7343a834e718c1e8b9ffce3c117f58f350c95771059bb85222",
+      "runtime_checkout_sha256": "0a9b14656da79bf390f1d50675e991bf756fcdf982b4936cac08617b277a46f6",
+      "lf_normalized_text_equal": true
+    },
+    "tests/integration/test_vertical_execution.py": {
+      "commit_sha256": "f92ce777e9122117e29c405e6ed6dba6948eda51f05e3119cbf60aac9b72dddd",
+      "runtime_checkout_sha256": "6dd62b559ae4d8f8e8133db302ad65d2bc323a401e0e46eb6bfd601184ae3e89",
+      "lf_normalized_text_equal": true
+    },
+    "tests/integration/test_vertical_mission.py": {
+      "commit_sha256": "ea543497a294362d09503bcefdebe4ea795e87daa6cc408fe4869e8ad321dd81",
+      "runtime_checkout_sha256": "ea543497a294362d09503bcefdebe4ea795e87daa6cc408fe4869e8ad321dd81",
+      "lf_normalized_text_equal": true
+    },
+    "tests/integration/test_vertical_planner.py": {
+      "commit_sha256": "3e9ffdfeb1e763c5ee9d90e6c48108ed526832250d1f98d951f8c250a261ca71",
+      "runtime_checkout_sha256": "d736b54ae0917059b08bbfd1d9c0cd45a5f44dde3842d53c2a0de87214a0d23f",
+      "lf_normalized_text_equal": true
+    },
+    "tests/integration/test_vertical_terrain.py": {
+      "commit_sha256": "591de42a3ae1bb8a999b1b6a17dfed1ac6dd557a0930d6df8d787d4f9a9b4db6",
+      "runtime_checkout_sha256": "1a777b595e8720de465d560dd6ed3186e5a91479bddbfce5528eee434395dba1",
+      "lf_normalized_text_equal": true
+    },
+    "tests/mission/test_conformance.py": {
+      "commit_sha256": "07afe25ef7832f92d06038c38316b8bbe9c166d8bfa8ac7ca5e191c74b07a368",
+      "runtime_checkout_sha256": "07afe25ef7832f92d06038c38316b8bbe9c166d8bfa8ac7ca5e191c74b07a368",
+      "lf_normalized_text_equal": true
+    },
+    "tests/mission/test_manager.py": {
+      "commit_sha256": "70b155d308a3c9a99912c2d2f96ced024f07ddcfd25a2f167fa57258e843b9b9",
+      "runtime_checkout_sha256": "70b155d308a3c9a99912c2d2f96ced024f07ddcfd25a2f167fa57258e843b9b9",
+      "lf_normalized_text_equal": true
+    },
+    "tests/mission/test_planning_context.py": {
+      "commit_sha256": "ccb0811dfe9310ce9d8de4ce9b0f090a7541d1fa25d4d69942e44b24f07b4fbb",
+      "runtime_checkout_sha256": "ccb0811dfe9310ce9d8de4ce9b0f090a7541d1fa25d4d69942e44b24f07b4fbb",
+      "lf_normalized_text_equal": true
+    },
+    "tests/planning/test_scientific_search_backend.py": {
+      "commit_sha256": "7a0ec27640108540fd00f905b229302f3c52500526e8ddbbacca918cbac4dfa9",
+      "runtime_checkout_sha256": "7a0ec27640108540fd00f905b229302f3c52500526e8ddbbacca918cbac4dfa9",
+      "lf_normalized_text_equal": true
+    }
+  },
+  "note": "Where Git/Windows checkout newline bytes differ, LF-normalized text equality is explicitly verified; exact committed source is used by the conformance snapshot."
+}

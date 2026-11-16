@@ -1,0 +1,40 @@
+{
+  "classification": "SOFTWARE_AND_SYNTHETIC_MODEL_CONFORMANCE_NOT_PHYSICAL_EXECUTION",
+  "implementation_sha": "3830b8b0fb2d6269ac3e73e8b8fd8de71c876334",
+  "files": [
+    {
+      "path": "implementation-files.json",
+      "sha256": "53fa0f2379c4dd4e35709067126e38043951ceeed3d199115443128d90e3dbb5",
+      "bytes": 8878
+    },
+    {
+      "path": "legacy/conformance.json",
+      "sha256": "5f314bcfcfb8c9d2b41522c935a565750346ff7f0459f55493d3de3b23b343da",
+      "bytes": 29160
+    },
+    {
+      "path": "README.md",
+      "sha256": "0a1420374cc5052d430459fbbd4f576bb7f8bb4eeecab4f37f4ac09f1b4857bf",
+      "bytes": 2999
+    },
+    {
+      "path": "ros/regression.xml",
+      "sha256": "2ca8fd0e03c3fa6f3722c2008c0e448575011e918f511e2636d73e96e38b6102",
+      "bytes": 122328
+    },
+    {
+      "path": "scientific/conformance.json",
+      "sha256": "aa21dd0087c25a5ed01205b5cf2129eb953b221ec8f2cd69e7dd43adba56beb9",
+      "bytes": 28927
+    },
+    {
+      "path": "validation.json",
+      "sha256": "55e3f332443d32578da44de9f0dab1959e5226f611cc6931029e28b0873d8767",
+      "bytes": 2127
+    }
+  ],
+  "ai_usage": {
+    "tool": "OpenAI Codex",
+    "use": "Code/test/context integration, local diagnostic orchestration, evidence assembly and documentation. Numerical outputs produced by actual unchanged scientific formulas."
+  }
+}
