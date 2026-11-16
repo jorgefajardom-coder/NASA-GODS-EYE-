@@ -2166,10 +2166,11 @@
         "tests/e2e/test_offline_replay.py",
         "web/index.html",
         "web/public/llms.txt",
+        "web/tests/staticSummaryFallback.test.ts",
         "docs/AI_USAGE.md",
         "docs/ai_usage.json"
       ],
-      "use": "T08/R15 static check that every catalogued replay opens from static files with MOCK or illustrative labels and no published evaluator reference; hide the no-JavaScript summary during start-up; align llms.txt with the current viewer entries"
+      "use": "T08/R15 static check that every catalogued replay opens from static files with MOCK or illustrative labels and no published evaluator reference; hide the no-JavaScript summary during start-up and show it again when a module script or stylesheet fails to load or the viewer has not replaced it within 6 s (jsdom regression test); align llms.txt with the current viewer entries"
     }
   ],
   "generated_media": [
