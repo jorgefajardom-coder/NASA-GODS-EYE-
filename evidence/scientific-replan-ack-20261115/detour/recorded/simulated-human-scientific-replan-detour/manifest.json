@@ -1,0 +1,50 @@
+{
+ "schema_version": "1.0.0",
+ "run_id": "simulated-human-scientific-replan-detour",
+ "mode": "REPLAY",
+ "map_version": 2,
+ "timestamp_sim_s": 135.2,
+ "recorded_from": "LIVE",
+ "source_mode": "MOCK",
+ "clock_source": "sim",
+ "time_start_sim_s": 100.0,
+ "record_count": 44,
+ "event_count": 13,
+ "terrain_meta": {
+  "header": {
+   "stamp": {
+    "sec": 114,
+    "nanosec": 350000000
+   },
+   "frame_id": "map"
+  },
+  "run_id": "simulated-human-scientific-replan-detour",
+  "dataset_id": "MOCK-synthetic-control-loop",
+  "map_version": 2,
+  "origin_x_m": 0.0,
+  "origin_y_m": 0.0,
+  "resolution_m": 1.0,
+  "rows": 20,
+  "cols": 20,
+  "crs": "LOCAL_ENU_SIMULATED",
+  "origin_lat_deg": 0.0,
+  "origin_lon_deg": 0.0,
+  "vertical_datum": "synthetic flat software-test datum",
+  "nodata_value": -9999.0,
+  "sources": [
+   "SIMULATED deterministic test grid; not NASA observational data"
+  ],
+  "checksum_sha256": "e61f41d57db208c5f92a35c4ce7198570924a3fc87eeba83441fceee5d6a2865"
+ },
+ "agents": [
+  {
+   "agent_id": "human_1",
+   "agent_kind": "HUMAN"
+  }
+ ],
+ "files": {
+  "timeline": "timeline.jsonl",
+  "snapshot": "snapshot.json",
+  "public_rasters": "public_rasters.json"
+ }
+}

@@ -14,6 +14,7 @@ setup(
         ('share/' + package_name + '/launch', glob('launch/*.launch.py')),
         ('share/' + package_name + '/config', glob('config/*.yaml')),
     ],
+    entry_points={'console_scripts': ['mission_replan_node = mge_bringup.mission_replan:main']},
     install_requires=['setuptools'],
     zip_safe=True,
     description='Mars Gods Eye launch files and run configuration.',

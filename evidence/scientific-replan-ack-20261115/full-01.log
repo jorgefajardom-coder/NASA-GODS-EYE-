@@ -1,0 +1,252 @@
+........................................................................ [  4%]
+........................................................................ [  8%]
+........................................................................ [ 12%]
+........................................................................ [ 17%]
+........................................................................ [ 21%]
+........................................................................ [ 25%]
+..........E.........F..................EEEEEEEEEEEEEEEEEEE.EEEEE........ [ 29%]
+........................................................................ [ 34%]
+........................................................................ [ 38%]
+........................................................................ [ 42%]
+..........s............................................................. [ 46%]
+........................................................................ [ 51%]
+........................................................................ [ 55%]
+........................................................................ [ 59%]
+........................................................................ [ 64%]
+........................................................................ [ 68%]
+........................................................................ [ 72%]
+........................................................................ [ 76%]
+........................................................................ [ 81%]
+........................................................................ [ 85%]
+........................................................................ [ 89%]
+........................................................................ [ 93%]
+........................................................................ [ 98%]
+..............................                                           [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_initial_estimate_then_one_contradiction_stop_replan_return_and_offline_package _
+tests/integration/test_estimated_exploration.py:41: in estimated_stack
+    wait_for(lambda: len(get("/api/manifest").get("agents", [])) == 3,
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway and three labelled MOCK agent states
+_____ ERROR at setup of test_agents_wait_idle_until_a_route_is_authorized ______
+tests/integration/test_vertical_execution.py:228: in stack
+    wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3,
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway and 3 agents
+____ ERROR at setup of test_agent_follows_the_authorized_route_and_returns _____
+tests/integration/test_vertical_execution.py:228: in stack
+    wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3,
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway and 3 agents
+_ ERROR at setup of test_new_map_version_halts_then_replans_from_the_acknowledged_pose _
+tests/integration/test_vertical_execution.py:228: in stack
+    wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3,
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway and 3 agents
+___________ ERROR at setup of test_recorded_package_shows_the_motion ___________
+tests/integration/test_vertical_execution.py:228: in stack
+    wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3,
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway and 3 agents
+___ ERROR at setup of test_real_mission_is_the_only_goal_and_route_authority ___
+tests/integration/test_vertical_mission.py:119: in stack
+    wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest', timeout=5).json().get('agents', [])) == 3)
+tests/integration/test_vertical_mission.py:52: in wait_for
+    raise AssertionError('Real mission transport smoke did not reach its expected condition')
+E   AssertionError: Real mission transport smoke did not reach its expected condition
+---------------------------- Captured stdout setup -----------------------------
+[INFO] [launch]: All log files can be found below /home/dryanguasr/.ros/log/2026-11-15-22-12-07-206735-LAPTOP-C6UQO8L3-1616
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [mock_agents-1]: process started with pid [1646]
+[INFO] [mock_terrain-2]: process started with pid [1647]
+[INFO] [planning_node-3]: process started with pid [1648]
+[INFO] [mission_replan_node-4]: process started with pid [1649]
+[INFO] [gateway-5]: process started with pid [1650]
+[gateway-5] Traceback (most recent call last):
+[gateway-5]   File "/home/dryanguasr/.local/share/mge-replan-ack-20261115/install/mge_gateway/lib/mge_gateway/gateway", line 33, in <module>
+[gateway-5]     sys.exit(load_entry_point('mge-gateway', 'console_scripts', 'gateway')())
+[gateway-5]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gateway-5]   File "/home/dryanguasr/.local/share/mge-replan-ack-20261115/install/mge_gateway/lib/mge_gateway/gateway", line 25, in importlib_load_entry_point
+[gateway-5]     return next(matches).load()
+[gateway-5]            ^^^^^^^^^^^^^^^^^^^^
+[gateway-5]   File "/usr/lib/python3.12/importlib/metadata/__init__.py", line 205, in load
+[gateway-5]     module = import_module(match.group('module'))
+[gateway-5]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gateway-5]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+[gateway-5]     return _bootstrap._gcd_import(name[level:], package, level)
+[gateway-5]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[gateway-5]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+[gateway-5]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+[gateway-5]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+[gateway-5]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+[gateway-5]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+[gateway-5]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+[gateway-5]   File "/home/dryanguasr/.local/share/mge-replan-ack-20261115/build/mge_gateway/mge_gateway/main.py", line 2, in <module>
+[gateway-5]     import uvicorn
+[gateway-5] ModuleNotFoundError: No module named 'uvicorn'
+[ERROR] [gateway-5]: process has died [pid 1650, exit code 1, cmd '/home/dryanguasr/.local/share/mge-replan-ack-20261115/install/mge_gateway/lib/mge_gateway/gateway --ros-args -p rows:=16 -p cols:=16 --params-file /tmp/launch_params_b2tv7wpq'].
+[mock_agents-1] [WARN] [1794798729.712719777] [mock_agents]: MOCK data: publishing static state for 3 agents (run_id=synthetic-real-mission-handoff)
+[mock_terrain-2] [WARN] [1794798729.764695226] [mock_terrain]: MOCK data: synthetic flat grid, no Mars products
+[planning_node-3] [INFO] [1794798729.813968885] [planning_node]: PlanRoute ready; waits for explicit profiles and coherent public map batches
+
+_ ERROR at setup of test_actual_planner_candidate_is_blocked_without_model_agreement _
+tests/integration/test_vertical_mission.py:119: in stack
+    wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest', timeout=5).json().get('agents', [])) == 3)
+tests/integration/test_vertical_mission.py:52: in wait_for
+    raise AssertionError('Real mission transport smoke did not reach its expected condition')
+E   AssertionError: Real mission transport smoke did not reach its expected condition
+_ ERROR at setup of test_changed_payload_cannot_reuse_real_mission_request_id __
+tests/integration/test_vertical_mission.py:119: in stack
+    wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest', timeout=5).json().get('agents', [])) == 3)
+tests/integration/test_vertical_mission.py:52: in wait_for
+    raise AssertionError('Real mission transport smoke did not reach its expected condition')
+E   AssertionError: Real mission transport smoke did not reach its expected condition
+_________________ ERROR at setup of test_envelope_and_manifest _________________
+tests/integration/test_vertical_mock.py:72: in stack
+    wait_for(lambda: (h := httpx.get(f'{BASE}/api/health').json())
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, mission state and 3 agents
+_____________________ ERROR at setup of test_goal_to_route _____________________
+tests/integration/test_vertical_mock.py:72: in stack
+    wait_for(lambda: (h := httpx.get(f'{BASE}/api/health').json())
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, mission state and 3 agents
+____________ ERROR at setup of test_repeated_request_is_idempotent _____________
+tests/integration/test_vertical_mock.py:72: in stack
+    wait_for(lambda: (h := httpx.get(f'{BASE}/api/health').json())
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, mission state and 3 agents
+___________ ERROR at setup of test_observation_bumps_map_and_replans ___________
+tests/integration/test_vertical_mock.py:72: in stack
+    wait_for(lambda: (h := httpx.get(f'{BASE}/api/health').json())
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, mission state and 3 agents
+____________ ERROR at setup of test_insufficient_budget_is_explicit ____________
+tests/integration/test_vertical_mock.py:72: in stack
+    wait_for(lambda: (h := httpx.get(f'{BASE}/api/health').json())
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, mission state and 3 agents
+_______________ ERROR at setup of test_unknown_agent_is_rejected _______________
+tests/integration/test_vertical_mock.py:72: in stack
+    wait_for(lambda: (h := httpx.get(f'{BASE}/api/health').json())
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, mission state and 3 agents
+_______________ ERROR at setup of test_invalid_body_is_rejected ________________
+tests/integration/test_vertical_mock.py:72: in stack
+    wait_for(lambda: (h := httpx.get(f'{BASE}/api/health').json())
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, mission state and 3 agents
+______________ ERROR at setup of test_websocket_and_polling_agree ______________
+tests/integration/test_vertical_mock.py:72: in stack
+    wait_for(lambda: (h := httpx.get(f'{BASE}/api/health').json())
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, mission state and 3 agents
+__________ ERROR at setup of test_real_planner_route_reaches_the_web ___________
+tests/integration/test_vertical_planner.py:73: in stack
+    wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway and 3 agents
+_____ ERROR at setup of test_new_map_version_replans_with_the_real_planner _____
+tests/integration/test_vertical_planner.py:73: in stack
+    wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway and 3 agents
+__________________ ERROR at setup of test_rover_has_no_oxygen __________________
+tests/integration/test_vertical_planner.py:73: in stack
+    wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway and 3 agents
+_____________ ERROR at setup of test_planner_errors_stay_explicit ______________
+tests/integration/test_vertical_planner.py:73: in stack
+    wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway and 3 agents
+____ ERROR at setup of test_jezero_batch_reaches_the_gateway_as_a_mock_run _____
+tests/integration/test_vertical_terrain.py:179: in stack
+    wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, 3 agents and terrain metadata
+_____ ERROR at setup of test_unobserved_terrain_is_unknown_not_infeasible ______
+tests/integration/test_vertical_terrain.py:179: in stack
+    wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, 3 agents and terrain metadata
+_ ERROR at setup of test_simulated_observation_replans_on_the_new_map_version __
+tests/integration/test_vertical_terrain.py:179: in stack
+    wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, 3 agents and terrain metadata
+___ ERROR at setup of test_recorded_package_is_complete_after_the_run_stops ____
+tests/integration/test_vertical_terrain.py:179: in stack
+    wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, 3 agents and terrain metadata
+_ ERROR at setup of test_recorded_public_rasters_make_the_package_viewer_ready _
+tests/integration/test_vertical_terrain.py:179: in stack
+    wait_for(lambda: len(get('/api/manifest').get('agents', [])) == 3
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway, 3 agents and terrain metadata
+=================================== FAILURES ===================================
+________________ test_recorded_run_is_readable_without_backend _________________
+tests/integration/test_replay_package.py:28: in test_recorded_run_is_readable_without_backend
+    wait_for(lambda: len(httpx.get(f'{BASE}/api/manifest').json().get('agents', [])) == 3,
+tests/integration/test_vertical_mock.py:48: in wait_for
+    raise AssertionError(f'timed out waiting for {what}')
+E   AssertionError: timed out waiting for gateway and 3 agents
+=============================== warnings summary ===============================
+../../../.cache/mge-closure-height-venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  Warning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /home/dryanguasr/.local/share/mge-replan-ack-20261115/full-01.xml -
+=========================== short test summary info ============================
+SKIPPED [1] tests/mission/test_conformance.py:227: Explicit published planner snapshot is not materialized
+ERROR tests/integration/test_estimated_exploration.py::test_initial_estimate_then_one_contradiction_stop_replan_return_and_offline_package
+ERROR tests/integration/test_vertical_execution.py::test_agents_wait_idle_until_a_route_is_authorized
+ERROR tests/integration/test_vertical_execution.py::test_agent_follows_the_authorized_route_and_returns
+ERROR tests/integration/test_vertical_execution.py::test_new_map_version_halts_then_replans_from_the_acknowledged_pose
+ERROR tests/integration/test_vertical_execution.py::test_recorded_package_shows_the_motion
+ERROR tests/integration/test_vertical_mission.py::test_real_mission_is_the_only_goal_and_route_authority
+ERROR tests/integration/test_vertical_mission.py::test_actual_planner_candidate_is_blocked_without_model_agreement
+ERROR tests/integration/test_vertical_mission.py::test_changed_payload_cannot_reuse_real_mission_request_id
+ERROR tests/integration/test_vertical_mock.py::test_envelope_and_manifest - A...
+ERROR tests/integration/test_vertical_mock.py::test_goal_to_route - Assertion...
+ERROR tests/integration/test_vertical_mock.py::test_repeated_request_is_idempotent
+ERROR tests/integration/test_vertical_mock.py::test_observation_bumps_map_and_replans
+ERROR tests/integration/test_vertical_mock.py::test_insufficient_budget_is_explicit
+ERROR tests/integration/test_vertical_mock.py::test_unknown_agent_is_rejected
+ERROR tests/integration/test_vertical_mock.py::test_invalid_body_is_rejected
+ERROR tests/integration/test_vertical_mock.py::test_websocket_and_polling_agree
+ERROR tests/integration/test_vertical_planner.py::test_real_planner_route_reaches_the_web
+ERROR tests/integration/test_vertical_planner.py::test_new_map_version_replans_with_the_real_planner
+ERROR tests/integration/test_vertical_planner.py::test_rover_has_no_oxygen - ...
+ERROR tests/integration/test_vertical_planner.py::test_planner_errors_stay_explicit
+ERROR tests/integration/test_vertical_terrain.py::test_jezero_batch_reaches_the_gateway_as_a_mock_run
+ERROR tests/integration/test_vertical_terrain.py::test_unobserved_terrain_is_unknown_not_infeasible
+ERROR tests/integration/test_vertical_terrain.py::test_simulated_observation_replans_on_the_new_map_version
+ERROR tests/integration/test_vertical_terrain.py::test_recorded_package_is_complete_after_the_run_stops
+ERROR tests/integration/test_vertical_terrain.py::test_recorded_public_rasters_make_the_package_viewer_ready
+FAILED tests/integration/test_replay_package.py::test_recorded_run_is_readable_without_backend
+1 failed, 1659 passed, 1 skipped, 1 warning, 25 errors in 255.43s (0:04:15)

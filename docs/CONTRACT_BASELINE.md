@@ -158,3 +158,14 @@ semantics and models were never frozen or scientifically approved by that audit.
 Base main `9013beb`; this cut requires the reviewed PR path and is not a contract freeze. ROS package/messages and canonical JSON/raster versions remain unchanged. Scene initialization is explicit SIMULATED public-prior construction; parked-drone Z is absolute datum height. Execution preserves finite current XYZ, and display samples its rendered mesh without changing telemetry. Planner snapshots also bind origin latitude/longitude, prior checksum and sources immutably. See `docs/height_reconciliation_handoff.md` for source locks, actual checks and remaining acceptance.
 
 `recorded-recovery-001` remains byte-for-byte historical evidence. Its idle drone retained an omitted-height default of zero over negative terrain; it does not evidence flight or three-role completion. A corrected recording must have a separate package/revision and retain MOCK/REPLAY and final READY limitations.
+
+
+## Scientific stop/replan reconciliation — 15 November 2026
+
+Candidate branch `codex/scientific-human-replan` now includes published main
+`d06de5e` and D-CLK-01. Its [handoff](replan_control_handoff.md) records the
+latched late-ACK fix, run-clock deadline, independent steady liveness watchdog,
+actual ROS consumer tests and outstanding scientific/three-role/work gates.
+David confirmed the clock split; no profile/rate approval, ICD freeze or
+milestone closure is implied. Existing wire, replay and public-raster versions
+are unchanged. Review the PR before integration.

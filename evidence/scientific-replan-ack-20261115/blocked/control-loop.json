@@ -1,0 +1,49 @@
+{
+  "run_id": "simulated-human-scientific-replan-blocked",
+  "source": "d06de5e6532811a6becbd5be6d52df0e85ab81bf-plus-isolated-candidate",
+  "scope": "SIMULATED one-human control loop; no scientific/physical/three-role completion",
+  "real_nodes": [
+    "MissionManager",
+    "MissionNode",
+    "PlanningNode",
+    "ReplanPolicy",
+    "KinematicExecutor",
+    "ReplayRecorder"
+  ],
+  "scenario": "blocked",
+  "original_route": "route-d85ef815317d0b9e1ea426b3",
+  "replanned_route": null,
+  "actual_stopped_start": [
+    7.749789979973642,
+    5.5,
+    0.0
+  ],
+  "remaining": [
+    3593.699951171875,
+    599.26904296875,
+    149.85073852539062
+  ],
+  "map_version": 2,
+  "request_phase": "RETURN",
+  "ros_states": 21,
+  "halted_states": 2,
+  "reasons": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "MAP_CHANGED",
+    "",
+    "STOP_REQUESTED",
+    "",
+    "STOP_ACKNOWLEDGED"
+  ],
+  "mission_complete": false,
+  "actual_arrival": false,
+  "planner_calls": 2,
+  "final_state": "BLOCKED",
+  "final_reason": "NO_ADMISSIBLE_START_CONNECTOR"
+}

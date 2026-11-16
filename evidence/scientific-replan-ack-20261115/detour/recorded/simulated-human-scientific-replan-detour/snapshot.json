@@ -1,0 +1,553 @@
+{
+ "schema_version": "1.0.0",
+ "run_id": "simulated-human-scientific-replan-detour",
+ "mode": "REPLAY",
+ "map_version": 2,
+ "timestamp_sim_s": 135.2,
+ "mission_state": {
+  "header": {
+   "stamp": {
+    "sec": 135,
+    "nanosec": 200000000
+   },
+   "frame_id": "map"
+  },
+  "run_id": "simulated-human-scientific-replan-detour",
+  "last_event_seq": 14,
+  "mission_state": "ACTIVE",
+  "reason_code": "",
+  "base": {
+   "x": 2.5,
+   "y": 5.5,
+   "z": 0.0
+  },
+  "primary_goal": {
+   "x": 15.5,
+   "y": 5.5,
+   "z": 0.0
+  },
+  "primary_agent_id": "human_1",
+  "active_task_id": "primary",
+  "active_task_kind": "primary",
+  "active_task_state": "EXECUTING",
+  "map_version": 2,
+  "route_id": "route-74dfa5eeb2ec5d1ad6ef89c1",
+  "active_route": {
+   "header": {
+    "stamp": {
+     "sec": 135,
+     "nanosec": 200000000
+    },
+    "frame_id": "map"
+   },
+   "run_id": "simulated-human-scientific-replan-detour",
+   "request_id": "simulated-human-scientific-replan-detour:primary:plan:4",
+   "route_id": "route-74dfa5eeb2ec5d1ad6ef89c1",
+   "agent_id": "human_1",
+   "mode": "FAST",
+   "map_version_used": 2,
+   "status": "FEASIBLE",
+   "reason_code": "FEASIBLE_UNDER_MODEL",
+   "detail": "Verified known-grid candidate under the supplied resource and conservative footprint model; not certified physical safety.",
+   "outbound_path": [
+    {
+     "x": 7.749789979973642,
+     "y": 5.5,
+     "z": 0.0
+    },
+    {
+     "x": 7.5,
+     "y": 5.5,
+     "z": 0.0
+    },
+    {
+     "x": 8.5,
+     "y": 5.5,
+     "z": 0.0
+    },
+    {
+     "x": 9.5,
+     "y": 4.5,
+     "z": 0.0
+    },
+    {
+     "x": 10.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 11.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 12.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 13.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 14.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 14.5,
+     "y": 4.5,
+     "z": 0.0
+    },
+    {
+     "x": 15.5,
+     "y": 5.5,
+     "z": 0.0
+    }
+   ],
+   "return_path": [
+    {
+     "x": 15.5,
+     "y": 5.5,
+     "z": 0.0
+    },
+    {
+     "x": 14.5,
+     "y": 4.5,
+     "z": 0.0
+    },
+    {
+     "x": 14.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 13.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 12.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 11.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 10.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 9.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 8.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 7.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 6.5,
+     "y": 3.5,
+     "z": 0.0
+    },
+    {
+     "x": 5.5,
+     "y": 4.5,
+     "z": 0.0
+    },
+    {
+     "x": 4.5,
+     "y": 4.5,
+     "z": 0.0
+    },
+    {
+     "x": 3.5,
+     "y": 4.5,
+     "z": 0.0
+    },
+    {
+     "x": 2.5,
+     "y": 5.5,
+     "z": 0.0
+    }
+   ],
+   "travel_time_s": 30.88332176208496,
+   "energy_est_wh": 3.5833230018615723,
+   "oxygen_est_l": 0.7317243218421936,
+   "min_clearance_m": 0.4178932309150696,
+   "reserve_time_s": 3562.816650390625,
+   "reserve_wh": 595.6857299804688,
+   "reserve_oxygen_l": 149.1190185546875
+  },
+  "agents": [
+   {
+    "header": {
+     "stamp": {
+      "sec": 135,
+      "nanosec": 200000000
+     },
+     "frame_id": "map"
+    },
+    "run_id": "simulated-human-scientific-replan-detour",
+    "agent_id": "human_1",
+    "agent_kind": "HUMAN",
+    "pose": {
+     "position": {
+      "x": 15.5,
+      "y": 5.5,
+      "z": 0.0
+     },
+     "orientation": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0,
+      "w": 1.0
+     }
+    },
+    "velocity": {
+     "linear": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     },
+     "angular": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+     }
+    },
+    "mode": "IDLE",
+    "time_remaining_s": 3581.108642578125,
+    "energy_remaining_wh": 597.8080444335938,
+    "oxygen_remaining_l": 149.55239868164062,
+    "confidence": 1.0
+   }
+  ]
+ },
+ "terrain_meta": {
+  "header": {
+   "stamp": {
+    "sec": 114,
+    "nanosec": 350000000
+   },
+   "frame_id": "map"
+  },
+  "run_id": "simulated-human-scientific-replan-detour",
+  "dataset_id": "MOCK-synthetic-control-loop",
+  "map_version": 2,
+  "origin_x_m": 0.0,
+  "origin_y_m": 0.0,
+  "resolution_m": 1.0,
+  "rows": 20,
+  "cols": 20,
+  "crs": "LOCAL_ENU_SIMULATED",
+  "origin_lat_deg": 0.0,
+  "origin_lon_deg": 0.0,
+  "vertical_datum": "synthetic flat software-test datum",
+  "nodata_value": -9999.0,
+  "sources": [
+   "SIMULATED deterministic test grid; not NASA observational data"
+  ],
+  "checksum_sha256": "e61f41d57db208c5f92a35c4ce7198570924a3fc87eeba83441fceee5d6a2865"
+ },
+ "events": [
+  {
+   "header": {
+    "stamp": {
+     "sec": 103,
+     "nanosec": 0
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:2",
+   "seq": 2,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "single-human-goal",
+   "event_type": "GOAL_ACCEPTED",
+   "task_id": "",
+   "agent_id": "human_1",
+   "map_version": 1,
+   "route_id": "",
+   "previous_state": "",
+   "new_state": "",
+   "reason_code": "",
+   "detail": ""
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 103,
+     "nanosec": 0
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:3",
+   "seq": 3,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "single-human-goal",
+   "event_type": "MISSION_STATE_CHANGED",
+   "task_id": "",
+   "agent_id": "",
+   "map_version": 1,
+   "route_id": "",
+   "previous_state": "IDLE",
+   "new_state": "PLANNING",
+   "reason_code": "",
+   "detail": ""
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 107,
+     "nanosec": 200000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:4",
+   "seq": 4,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "simulated-human-scientific-replan-detour:primary:plan:1",
+   "event_type": "ROUTE_PUBLISHED",
+   "task_id": "",
+   "agent_id": "human_1",
+   "map_version": 1,
+   "route_id": "route-48cf178a7c0fb67d231f385a",
+   "previous_state": "",
+   "new_state": "",
+   "reason_code": "",
+   "detail": ""
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 107,
+     "nanosec": 200000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:5",
+   "seq": 5,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "simulated-human-scientific-replan-detour:primary:plan:1",
+   "event_type": "MISSION_STATE_CHANGED",
+   "task_id": "",
+   "agent_id": "",
+   "map_version": 1,
+   "route_id": "route-48cf178a7c0fb67d231f385a",
+   "previous_state": "PLANNING",
+   "new_state": "READY",
+   "reason_code": "",
+   "detail": ""
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 109,
+     "nanosec": 500000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:6",
+   "seq": 6,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "human_1",
+   "event_type": "MISSION_STATE_CHANGED",
+   "task_id": "",
+   "agent_id": "",
+   "map_version": 1,
+   "route_id": "route-48cf178a7c0fb67d231f385a",
+   "previous_state": "READY",
+   "new_state": "ACTIVE",
+   "reason_code": "",
+   "detail": ""
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 114,
+     "nanosec": 350000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:7",
+   "seq": 7,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "simulated-human-scientific-replan-detour:map:2",
+   "event_type": "MAP_UPDATED",
+   "task_id": "",
+   "agent_id": "",
+   "map_version": 2,
+   "route_id": "route-48cf178a7c0fb67d231f385a",
+   "previous_state": "",
+   "new_state": "",
+   "reason_code": "",
+   "detail": ""
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 114,
+     "nanosec": 350000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:8",
+   "seq": 8,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "simulated-human-scientific-replan-detour:map:2",
+   "event_type": "ROUTE_INVALIDATED",
+   "task_id": "",
+   "agent_id": "",
+   "map_version": 2,
+   "route_id": "route-48cf178a7c0fb67d231f385a",
+   "previous_state": "",
+   "new_state": "",
+   "reason_code": "MAP_CHANGED",
+   "detail": ""
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 114,
+     "nanosec": 350000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:9",
+   "seq": 9,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "simulated-human-scientific-replan-detour:map:2",
+   "event_type": "MISSION_STATE_CHANGED",
+   "task_id": "",
+   "agent_id": "",
+   "map_version": 2,
+   "route_id": "",
+   "previous_state": "ACTIVE",
+   "new_state": "REPLAN",
+   "reason_code": "",
+   "detail": ""
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 114,
+     "nanosec": 350000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:10",
+   "seq": 10,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "STOP_REQUESTED",
+   "event_type": "MISSION_STATE_CHANGED",
+   "task_id": "",
+   "agent_id": "",
+   "map_version": 2,
+   "route_id": "route-48cf178a7c0fb67d231f385a",
+   "previous_state": "REPLAN",
+   "new_state": "REPLAN",
+   "reason_code": "STOP_REQUESTED",
+   "detail": "Invalidated route; await fresh stationary feedback"
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 116,
+     "nanosec": 200000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:11",
+   "seq": 11,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "STOP_ACKNOWLEDGED",
+   "event_type": "MISSION_STATE_CHANGED",
+   "task_id": "",
+   "agent_id": "",
+   "map_version": 2,
+   "route_id": "route-48cf178a7c0fb67d231f385a",
+   "previous_state": "REPLAN",
+   "new_state": "REPLAN",
+   "reason_code": "STOP_ACKNOWLEDGED",
+   "detail": "Fresh stationary pose and zero twist"
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 121,
+     "nanosec": 100000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:12",
+   "seq": 12,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "simulated-human-scientific-replan-detour:primary:plan:4",
+   "event_type": "ROUTE_PUBLISHED",
+   "task_id": "",
+   "agent_id": "human_1",
+   "map_version": 2,
+   "route_id": "route-74dfa5eeb2ec5d1ad6ef89c1",
+   "previous_state": "",
+   "new_state": "",
+   "reason_code": "",
+   "detail": ""
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 121,
+     "nanosec": 100000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:13",
+   "seq": 13,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "simulated-human-scientific-replan-detour:primary:plan:4",
+   "event_type": "MISSION_STATE_CHANGED",
+   "task_id": "",
+   "agent_id": "",
+   "map_version": 2,
+   "route_id": "route-74dfa5eeb2ec5d1ad6ef89c1",
+   "previous_state": "REPLAN",
+   "new_state": "READY",
+   "reason_code": "",
+   "detail": ""
+  },
+  {
+   "header": {
+    "stamp": {
+     "sec": 123,
+     "nanosec": 200000000
+    },
+    "frame_id": "map"
+   },
+   "event_id": "simulated-human-scientific-replan-detour:event:14",
+   "seq": 14,
+   "run_id": "simulated-human-scientific-replan-detour",
+   "causality_id": "human_1",
+   "event_type": "MISSION_STATE_CHANGED",
+   "task_id": "",
+   "agent_id": "",
+   "map_version": 2,
+   "route_id": "route-74dfa5eeb2ec5d1ad6ef89c1",
+   "previous_state": "READY",
+   "new_state": "ACTIVE",
+   "reason_code": "",
+   "detail": ""
+  }
+ ]
+}
