@@ -189,9 +189,15 @@
       "file": "prior-observation.gif",
       "kind": "Conceptual simulation",
       "source": "Synthetic grid; causal observation concept",
-      "frames": 12,
+      "frames": 3,
       "visible_watermark": "AI-generated | Conceptual simulation",
-      "sha256": "aa51ee231a28fad5477f8ef8689afa3112f35f96916b2425a492cf260e876c28"
+      "sha256": "8629c746d0183b394751e756ffe5c67130619bc5aef10e72923d28411b5d2e41",
+      "frame_duration_ms": [
+        2200,
+        2500,
+        2800
+      ],
+      "replacement_receipt": "../audit/slower-prior-observation-20261115.json"
     },
     {
       "file": "prior-observation-poster.png",
