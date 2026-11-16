@@ -2166,6 +2166,16 @@
         "docs/ai_usage.json"
       ],
       "use": "Preserve published main backend, remove incompatible historical tree differences, retain historical disclosures and original commit history."
+    },
+    {
+      "tool": "OpenAI Codex",
+      "kind": "planner_terrain_contribution_1",
+      "paths": [
+        "src/mge_planning/mge_planning/terrain_diagnostics.py",
+        "tests/planning/terrain_fixtures.py",
+        "tests/planning/test_terrain_diagnostics.py"
+      ],
+      "use": "add conservative terrain mobility diagnostics; synthetic experimental code/tests, not physical or scientific approval."
     }
   ],
   "generated_media": [

@@ -1102,3 +1102,7 @@ OpenAI Codex assisted local_surface.py, test_local_surface.py, planner_terrain_m
 
 ## Local planner reconciliation
 Codex assisted conflict reconciliation preserving the published scientific backend and historical disclosure records; no scientific coefficients or interfaces changed.
+
+
+## Local terrain contribution 1
+OpenAI Codex assisted add conservative terrain mobility diagnostics. Affected code/tests: src/mge_planning/mge_planning/terrain_diagnostics.py, tests/planning/terrain_fixtures.py, tests/planning/test_terrain_diagnostics.py. Synthetic fixtures only; no physical certification, coefficient approval or operational activation.
