@@ -1,6 +1,6 @@
 {
   "baseline_version": "2.0.0-rc.1",
-  "status": "candidate_scientific_cost_context_pending_owner_review",
+  "status": "owner_approved_migration_pending_ci_integration",
   "reference_main_sha": "d13a4b3f1035260cebf9f065472c56cc53158401",
   "candidate_branch": "codex/audit-contract-reconciliation",
   "recorded_at_utc": "2026-11-15T23:31:41.673308+00:00",
@@ -255,5 +255,12 @@
     }
   },
   "history_note": "The rc.1 object is retained exactly as recorded at its older audit. Its status/ref/implementation observations are historical; later main integrations supersede them.",
-  "planning_context_schema": "mge-planning-cost-context-1.0.0"
+  "planning_context_schema": "mge-planning-cost-context-1.0.0",
+  "cost_context_owner_approval": {
+    "decision": "docs/decisions/2026-11-15-scientific-cost-context-migration.md",
+    "pull_request": 50,
+    "merge_condition": "all_final_head_CI_checks_pass",
+    "profile_approval_changed": false,
+    "global_contract_frozen": false
+  }
 }

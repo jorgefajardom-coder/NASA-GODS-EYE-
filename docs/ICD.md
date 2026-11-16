@@ -8,8 +8,9 @@ The operational cost fix over main `d13a4b3` adds the typed
 their exact definitions. The scientific PlanRoute server requires an immutable
 registered request/activity context by default; old callers require explicit
 legacy server opt-in. This changed prerequisite is a major semantic migration,
-recorded as candidate baseline `2.0.0-rc.1`, pending integration/scientific owner
-review. It does not freeze the contract or approve profile coefficients.
+recorded as candidate baseline `2.0.0-rc.1`. The owner accepted the migration and
+authorized PR50 integration after CI in [D-COST-03](decisions/2026-11-15-scientific-cost-context-migration.md).
+This does not freeze every contract or approve profile coefficients.
 
 The context binds all original PlanRoute fields, actual float64 XYZ, float32
 resource/service values, model ID/source hash, profile-registry hash and ordered

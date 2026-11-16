@@ -19,6 +19,7 @@
         "docs/ai_usage.json",
         "docs/audit_cost_execution_gaps.md",
         "docs/contract_baseline.json",
+        "docs/decisions/2026-11-15-scientific-cost-context-migration.md",
         "docs/handoffs/david.md",
         "docs/planner_model_conformance.md",
         "docs/scientific_cost_integration.md",

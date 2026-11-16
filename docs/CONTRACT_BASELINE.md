@@ -8,8 +8,10 @@ to register an immutable cost/activity context before PlanRoute. Explicit legacy
 server opt-in supports historical callers. The machine-readable lock retains
 the original rc.2 data under `historical_baselines` and records all nine current
 definitions. See [scientific cost integration](scientific_cost_integration.md)
-for producer/consumer semantics and migration. Owner review, coefficient approval,
-execution evidence and contract freeze remain separate; this is not a release.
+for producer/consumer semantics and migration. [D-COST-03](decisions/2026-11-15-scientific-cost-context-migration.md)
+records the owner's migration approval and merge authorization after CI.
+Coefficient approval, execution evidence and global contract freeze remain
+separate; this is not a release.
 
 The following published rc.2 record is historical relative to this candidate.
 
